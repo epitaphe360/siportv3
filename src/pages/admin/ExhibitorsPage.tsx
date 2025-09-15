@@ -1,0 +1,388 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ROUTES } from '../../lib/routes';
+import {
+  Building2,
+  Search,
+  Filter,
+  MapPin,
+  Users,
+  Star,
+  MoreVertical,
+  Edit,
+  Eye,
+  CheckCircle,
+  XCircle,
+  AlertTriangle
+} from 'lucide-react';
+import { Card } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
+import { motion } from 'framer-motion';
+
+export default function ExhibitorsPage() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('');
+
+  // Données mockées pour les exposants
+  const exhibitors = [
+    {
+      id: '1',
+      name: 'Port Maritime Marseille',
+      category: 'Infrastructure Portuaire',
+      description: 'Solutions complètes pour la gestion portuaire moderne',
+      status: 'approved',
+      standNumber: 'A12',
+      contactName: 'Jean Dupont',
+      contactEmail: 'jean.dupont@port-maritime.fr',
+      website: 'https://port-maritime-marseille.com',
+      employees: 450,
+      founded: 1920,
+      location: 'Marseille, France',
+      rating: 4.8,
+      visitorsCount: 1250,
+      registrationDate: new Date(Date.now() - 2592000000)
+    },
+    {
+      id: '2',
+      name: 'TechNav Solutions',
+      category: 'Technologie',
+      description: 'Solutions de navigation et de tracking maritime avancées',
+      status: 'approved',
+      standNumber: 'B08',
+      contactName: 'Marie Martin',
+      contactEmail: 'marie.martin@technav.com',
+      website: 'https://technav-solutions.com',
+      employees: 85,
+      founded: 2015,
+      location: 'Toulon, France',
+      rating: 4.6,
+      visitorsCount: 890,
+      registrationDate: new Date(Date.now() - 5184000000)
+    },
+    {
+      id: '3',
+      name: 'Ocean Freight Corp',
+      category: 'Logistique',
+      description: 'Services de fret maritime international',
+      status: 'pending',
+      standNumber: null,
+      contactName: 'Pierre Durand',
+      contactEmail: 'p.durand@ocean-freight.com',
+      website: 'https://ocean-freight.com',
+      employees: 320,
+      founded: 1998,
+      location: 'Le Havre, France',
+      rating: null,
+      visitorsCount: 0,
+      registrationDate: new Date(Date.now() - 86400000)
+    },
+    {
+      id: '4',
+      name: 'Maritime Data Systems',
+      category: 'Data & Analytics',
+      description: 'Plateformes de données pour l\'industrie maritime',
+      status: 'approved',
+      standNumber: 'C15',
+      contactName: 'Sophie Leroy',
+      contactEmail: 's.leroy@maritime-data.com',
+      website: 'https://maritime-data.com',
+      employees: 65,
+      founded: 2018,
+      location: 'Nantes, France',
+      rating: 4.9,
+      visitorsCount: 1450,
+      registrationDate: new Date(Date.now() - 7776000000)
+    },
+    {
+      id: '5',
+      name: 'Port Engineering Ltd',
+      category: 'Ingénierie',
+      description: 'Services d\'ingénierie et de construction portuaire',
+      status: 'rejected',
+      standNumber: null,
+      contactName: 'Michel Bernard',
+      contactEmail: 'm.bernard@port-engineering.com',
+      website: 'https://port-engineering.com',
+      employees: 180,
+      founded: 2005,
+      location: 'Bordeaux, France',
+      rating: null,
+      visitorsCount: 0,
+      registrationDate: new Date(Date.now() - 172800000)
+    }
+  ];
+
+  const filteredExhibitors = exhibitors.filter(exhibitor => {
+    const matchesSearch = exhibitor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         exhibitor.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         exhibitor.contactName.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = !selectedCategory || exhibitor.category === selectedCategory;
+    const matchesStatus = !selectedStatus || exhibitor.status === selectedStatus;
+
+    return matchesSearch && matchesCategory && matchesStatus;
+  });
+
+  const formatDate = (date: Date) => {
+    return new Intl.DateTimeFormat('fr-FR', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    }).format(date);
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return <Badge variant="success"><CheckCircle className="h-3 w-3 mr-1" />Approuvé</Badge>;
+      case 'pending':
+        return <Badge variant="warning"><AlertTriangle className="h-3 w-3 mr-1" />En attente</Badge>;
+      case 'rejected':
+        return <Badge variant="error"><XCircle className="h-3 w-3 mr-1" />Rejeté</Badge>;
+      default:
+        return <Badge variant="info">{status}</Badge>;
+    }
+  };
+
+  const handleExhibitorAction = (exhibitorId: string, action: string) => {
+    console.log(`Action ${action} pour l'exposant ${exhibitorId}`);
+    // Ici vous pouvez implémenter les actions réelles
+  };
+
+  const categories = [
+    'Infrastructure Portuaire',
+    'Technologie',
+    'Logistique',
+    'Data & Analytics',
+    'Ingénierie',
+    'Sécurité',
+    'Environnement'
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Gestion des Exposants</h1>
+              <p className="text-gray-600 mt-2">
+                Administration et validation des exposants SIPORTS 2026
+              </p>
+            </div>
+            <Link to={ROUTES.ADMIN_CREATE_EXHIBITOR}>
+              <Button variant="default">
+                <Building2 className="h-4 w-4 mr-2" />
+                Ajouter Exposant
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <div className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Total Exposants</p>
+                  <p className="text-3xl font-bold text-gray-900">{exhibitors.length}</p>
+                </div>
+                <Building2 className="h-8 w-8 text-blue-600" />
+              </div>
+            </div>
+          </Card>
+
+          <Card>
+            <div className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Approuvés</p>
+                  <p className="text-3xl font-bold text-green-600">
+                    {exhibitors.filter(e => e.status === 'approved').length}
+                  </p>
+                </div>
+                <CheckCircle className="h-8 w-8 text-green-600" />
+              </div>
+            </div>
+          </Card>
+
+          <Card>
+            <div className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">En Attente</p>
+                  <p className="text-3xl font-bold text-yellow-600">
+                    {exhibitors.filter(e => e.status === 'pending').length}
+                  </p>
+                </div>
+                <AlertTriangle className="h-8 w-8 text-yellow-600" />
+              </div>
+            </div>
+          </Card>
+
+          <Card>
+            <div className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Visiteurs Totaux</p>
+                  <p className="text-3xl font-bold text-purple-600">
+                    {exhibitors.reduce((sum, e) => sum + e.visitorsCount, 0).toLocaleString()}
+                  </p>
+                </div>
+                <Users className="h-8 w-8 text-purple-600" />
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        {/* Filters and Search */}
+        <Card className="mb-6">
+          <div className="p-6">
+            <div className="flex flex-col lg:flex-row gap-4 items-center">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Rechercher par nom, description ou contact..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Toutes les catégories</option>
+                {categories.map(category => (
+                  <option key={category} value={category}>{category}</option>
+                ))}
+              </select>
+
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Tous les statuts</option>
+                <option value="approved">Approuvé</option>
+                <option value="pending">En attente</option>
+                <option value="rejected">Rejeté</option>
+              </select>
+
+              <Button variant="outline">
+                <Filter className="h-4 w-4 mr-2" />
+                Filtrer
+              </Button>
+            </div>
+          </div>
+        </Card>
+
+        {/* Exhibitors Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredExhibitors.map((exhibitor, index) => (
+            <motion.div
+              key={exhibitor.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <Card hover className="h-full">
+                <div className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                        {exhibitor.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-2">{exhibitor.category}</p>
+                      {getStatusBadge(exhibitor.status)}
+                    </div>
+                    <div className="ml-4">
+                      <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Building2 className="h-6 w-6 text-blue-600" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-sm text-gray-700 mb-4 line-clamp-2">
+                    {exhibitor.description}
+                  </p>
+
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-center text-sm text-gray-600">
+                      <MapPin className="h-4 w-4 mr-2" />
+                      <span>{exhibitor.location}</span>
+                    </div>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <Users className="h-4 w-4 mr-2" />
+                      <span>{exhibitor.employees} employés</span>
+                    </div>
+                    {exhibitor.standNumber && (
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Building2 className="h-4 w-4 mr-2" />
+                        <span>Stand {exhibitor.standNumber}</span>
+                      </div>
+                    )}
+                    {exhibitor.rating && (
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Star className="h-4 w-4 mr-2 text-yellow-500" />
+                        <span>{exhibitor.rating}/5 ({exhibitor.visitorsCount} visiteurs)</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+                    <span>Inscrit le {formatDate(exhibitor.registrationDate)}</span>
+                  </div>
+
+                  <div className="flex space-x-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => handleExhibitorAction(exhibitor.id, 'view')}
+                    >
+                      <Eye className="h-4 w-4 mr-2" />
+                      Voir
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleExhibitorAction(exhibitor.id, 'edit')}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => handleExhibitorAction(exhibitor.id, 'more')}
+                    >
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+
+        {filteredExhibitors.length === 0 && (
+          <div className="text-center py-12">
+            <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              Aucun exposant trouvé
+            </h3>
+            <p className="text-gray-600">
+              Essayez de modifier vos critères de recherche
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};

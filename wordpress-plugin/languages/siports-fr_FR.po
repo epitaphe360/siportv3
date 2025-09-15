@@ -1,0 +1,99 @@
+# SIPORTS 2026 Integration - French Translation
+# Copyright (C) 2024 SIPORTS Team
+msgid ""
+msgstr ""
+"Project-Id-Version: SIPORTS 2026 Integration 1.0.0\n"
+"Report-Msgid-Bugs-To: support@siportevent.com\n"
+"POT-Creation-Date: 2024-01-20 10:00+0000\n"
+"PO-Revision-Date: 2024-01-20 10:00+0000\n"
+"Last-Translator: SIPORTS Team <support@siportevent.com>\n"
+"Language-Team: French\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "SIPORTS 2026"
+msgstr "SIPORTS 2026"
+
+msgid "Exhibitors"
+msgstr "Exposants"
+
+msgid "Events"
+msgstr "Événements"
+
+msgid "Networking"
+msgstr "Réseautage"
+
+msgid "News"
+msgstr "Actualités"
+
+msgid "Partners"
+msgstr "Partenaires"
+
+msgid "Pavilions"
+msgstr "Pavillons"
+
+msgid "Statistics"
+msgstr "Statistiques"
+
+msgid "Countdown"
+msgstr "Compte à Rebours"
+
+msgid "View Profile"
+msgstr "Voir le Profil"
+
+msgid "Contact"
+msgstr "Contact"
+
+msgid "Register"
+msgstr "S'inscrire"
+
+msgid "Learn More"
+msgstr "En savoir plus"
+
+msgid "Read Article"
+msgstr "Lire l'article"
+
+msgid "Connect"
+msgstr "Se connecter"
+
+msgid "Message"
+msgstr "Message"
+
+msgid "No results found"
+msgstr "Aucun résultat trouvé"
+
+msgid "Loading..."
+msgstr "Chargement..."
+
+msgid "days"
+msgstr "jours"
+
+msgid "hours"
+msgstr "heures"
+
+msgid "minutes"
+msgstr "minutes"
+
+msgid "seconds"
+msgstr "secondes"
+
+msgid "El Jadida, Morocco"
+msgstr "El Jadida, Maroc"
+
+msgid "Mohammed VI Exhibition Center"
+msgstr "Centre d'Exposition Mohammed VI"
+
+msgid "Professional Visitors"
+msgstr "Visiteurs Professionnels"
+
+msgid "Countries Represented"
+msgstr "Pays Représentés"
+
+msgid "Conferences & Workshops"
+msgstr "Conférences & Ateliers"
+
+msgid "Official Partners"
+msgstr "Partenaires Officiels"

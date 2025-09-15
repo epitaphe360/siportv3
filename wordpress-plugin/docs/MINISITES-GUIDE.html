@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide des Mini-Sites SIPORTS 2026</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; color: #333; }
+        .guide { max-width: 900px; margin: 0 auto; }
+        .section { background: #f8f9fa; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .code { background: #e9ecef; padding: 15px; border-radius: 4px; font-family: monospace; overflow-x: auto; }
+        h1 { color: #1e40af; }
+        h2 { color: #3b82f6; border-bottom: 2px solid #3b82f6; padding-bottom: 5px; }
+        h3 { color: #4b5563; }
+        .note { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 4px; margin: 15px 0; }
+        .tip { background: #d1e7dd; border: 1px solid #badbcc; padding: 15px; border-radius: 4px; margin: 15px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        table, th, td { border: 1px solid #ddd; }
+        th, td { padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        img { max-width: 100%; height: auto; border-radius: 4px; margin: 15px 0; }
+        .steps { counter-reset: step-counter; }
+        .step { margin-bottom: 20px; padding-left: 40px; position: relative; }
+        .step:before { content: counter(step-counter); counter-increment: step-counter; position: absolute; left: 0; top: 0; background: #3b82f6; color: white; width: 30px; height: 30px; border-radius: 50%; text-align: center; line-height: 30px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="guide">
+        <h1>🚢 Guide des Mini-Sites SIPORTS 2026</h1>
+        
+        <div class="section">
+            <h2>Introduction aux Mini-Sites</h2>
+            <p>Les mini-sites sont des espaces web personnalisés pour chaque exposant de SIPORTS 2026. Ils permettent aux exposants de présenter leur entreprise, leurs produits, services et expertises de manière structurée et attractive.</p>
+            
+            <div class="note">
+                <strong>📋 Fonctionnalités clés :</strong>
+                <ul>
+                    <li>Présentation complète de l'entreprise avec sections personnalisables</li>
+                    <li>Présentation des produits et services</li>
+                    <li>Galerie de photos et réalisations</li>
+                    <li>Témoignages clients</li>
+                    <li>Certifications et accréditations</li>
+                    <li>Équipe et experts</li>
+                    <li>Formulaire de contact intégré</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Shortcodes pour Mini-Sites</h2>
+            
+            <h3>1. Liste des Mini-Sites</h3>
+            <p>Pour afficher une liste des mini-sites des exposants :</p>
+            <div class="code">[siports_minisites limit="12" layout="grid" sector="" country="" featured="false" orderby="name"]</div>
+            
+            <table>
+                <tr>
+                    <th>Paramètre</th>
+                    <th>Description</th>
+                    <th>Valeurs possibles</th>
+                    <th>Par défaut</th>
+                </tr>
+                <tr>
+                    <td>limit</td>
+                    <td>Nombre de mini-sites à afficher</td>
+                    <td>Nombre entier</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>layout</td>
+                    <td>Style d'affichage</td>
+                    <td>grid, list</td>
+                    <td>grid</td>
+                </tr>
+                <tr>
+                    <td>sector</td>
+                    <td>Filtrer par secteur d'activité</td>
+                    <td>port-management, equipment, logistics, maritime, digital</td>
+                    <td>vide (tous)</td>
+                </tr>
+                <tr>
+                    <td>country</td>
+                    <td>Filtrer par pays</td>
+                    <td>Nom du pays (ex: Maroc)</td>
+                    <td>vide (tous)</td>
+                </tr>
+                <tr>
+                    <td>featured</td>
+                    <td>Mini-sites premium uniquement</td>
+                    <td>true, false</td>
+                    <td>false</td>
+                </tr>
+                <tr>
+                    <td>orderby</td>
+                    <td>Ordre de tri</td>
+                    <td>name, country, featured</td>
+                    <td>name</td>
+                </tr>
+            </table>
+            
+            <h3>2. Mini-Site Individuel</h3>
+            <p>Pour afficher un mini-site spécifique :</p>
+            <div class="code">[siports_minisite id="port-solutions"]</div>
+            <p>ou</p>
+            <div class="code">[siports_minisite slug="port-solutions"]</div>
+            
+            <div class="tip">
+                <strong>💡 Astuce :</strong> Vous pouvez créer une page template pour chaque mini-site en utilisant le shortcode individuel. WordPress utilise alors l'URL personnalisée pour chaque exposant.
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Intégration dans WordPress</h2>
+            
+            <h3>Créer une Page de Listing des Mini-Sites</h3>
+            <div class="steps">
+                <div class="step">
+                    <p>Créez une nouvelle page dans WordPress (ex: "Mini-Sites Exposants")</p>
+                </div>
+                <div class="step">
+                    <p>Utilisez le template "SIPORTS - Page Mini-Sites" si disponible dans votre thème</p>
+                </div>
+                <div class="step">
+                    <p>Ou insérez le shortcode suivant dans votre page :</p>
+                    <div class="code">
+&lt;h1&gt;Mini-Sites des Exposants SIPORTS 2026&lt;/h1&gt;
+
+&lt;p&gt;Découvrez les entreprises participantes et leurs solutions innovantes pour le secteur portuaire.&lt;/p&gt;
+
+[siports_stats show="exhibitors,countries" layout="horizontal"]
+
+&lt;h2&gt;Exposants Premium&lt;/h2&gt;
+[siports_minisites featured="true" limit="6"]
+
+&lt;h2&gt;Tous les Exposants&lt;/h2&gt;
+[siports_minisites limit="24"]
+                    </div>
+                </div>
+                <div class="step">
+                    <p>Publiez la page et vérifiez son apparence</p>
+                </div>
+            </div>
+            
+            <h3>Créer une Structure pour les Mini-Sites Individuels</h3>
+            <p>Pour créer une structure URL du type <code>/exposants/mini-sites/nom-exposant/</code> :</p>
+            <div class="steps">
+                <div class="step">
+                    <p>Créez une page parent "Exposants" et une sous-page "Mini-Sites"</p>
+                </div>
+                <div class="step">
+                    <p>Dans la page "Mini-Sites", utilisez le template "SIPORTS - Page Mini-Sites" ou le shortcode principal</p>
+                </div>
+                <div class="step">
+                    <p>Pour chaque exposant, créez une sous-page sous "Mini-Sites" avec l'URL souhaitée</p>
+                </div>
+                <div class="step">
+                    <p>Dans chaque page individuelle, utilisez le shortcode :</p>
+                    <div class="code">[siports_minisite id="nom-exposant"]</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Personnalisation des Mini-Sites</h2>
+            
+            <h3>Styles CSS Personnalisés</h3>
+            <p>Vous pouvez personnaliser l'apparence des mini-sites en ajoutant du CSS dans votre thème :</p>
+            <div class="code">
+/* Style des cartes de mini-sites */
+.siports-minisite-card {
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+/* Style du header du mini-site */
+.minisite-header {
+    background: linear-gradient(135deg, #3b82f6, #1e40af);
+    color: white;
+}
+
+/* Style des sections */
+.minisite-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+/* Style des badges */
+.minisite-badges .badge {
+    background: #3b82f6;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8em;
+}
+            </div>
+            
+            <h3>Organisation des Sections</h3>
+            <p>Les sections d'un mini-site sont organisées dans l'ordre suivant par défaut :</p>
+            <ol>
+                <li>À Propos</li>
+                <li>Produits</li>
+                <li>Services</li>
+                <li>Équipe</li>
+                <li>Galerie</li>
+                <li>Témoignages</li>
+                <li>Certifications</li>
+                <li>Contact</li>
+            </ol>
+            
+            <div class="tip">
+                <strong>💡 Pour les développeurs :</strong> Vous pouvez modifier l'ordre ou ajouter des sections personnalisées en étendant la classe <code>SiportsMinisites</code> et en surchargeant la méthode <code>get_minisite_data()</code>.
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Exemples d'Utilisation</h2>
+            
+            <h3>Page Principale avec Filtres</h3>
+            <div class="code">
+&lt;h1&gt;Exposants SIPORTS 2026&lt;/h1&gt;
+
+&lt;div class="filters-container"&gt;
+    &lt;select id="sector-filter"&gt;
+        &lt;option value=""&gt;Tous les secteurs&lt;/option&gt;
+        &lt;option value="port-management"&gt;Gestion Portuaire&lt;/option&gt;
+        &lt;option value="equipment"&gt;Équipement&lt;/option&gt;
+        &lt;option value="logistics"&gt;Logistique&lt;/option&gt;
+    &lt;/select&gt;
+    
+    &lt;select id="country-filter"&gt;
+        &lt;option value=""&gt;Tous les pays&lt;/option&gt;
+    &lt;/select&gt;
+    
+    &lt;button id="filter-button" class="siports-btn"&gt;Filtrer&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;div id="minisites-container"&gt;
+    [siports_minisites limit="24" layout="grid"]
+&lt;/div&gt;
+
+&lt;script&gt;
+document.getElementById('filter-button').addEventListener('click', function() {
+    let sector = document.getElementById('sector-filter').value;
+    let country = document.getElementById('country-filter').value;
+    
+    // Logique de filtrage (à implémenter avec AJAX ou JavaScript)
+});
+&lt;/script&gt;
+            </div>
+            
+            <h3>Affichage par Catégories</h3>
+            <div class="code">
+&lt;h2&gt;Secteur Maritime&lt;/h2&gt;
+[siports_minisites sector="maritime" limit="8"]
+
+&lt;h2&gt;Secteur Logistique&lt;/h2&gt;
+[siports_minisites sector="logistics" limit="8"]
+
+&lt;h2&gt;Secteur Technologique&lt;/h2&gt;
+[siports_minisites sector="digital" limit="8"]
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>FAQ sur les Mini-Sites</h2>
+            
+            <h3>Comment un exposant peut-il mettre à jour son mini-site ?</h3>
+            <p>Les exposants peuvent mettre à jour leur mini-site en se connectant à leur espace exposant sur la plateforme SIPORTS. Les modifications sont synchronisées automatiquement avec le site WordPress.</p>
+            
+            <h3>Peut-on personnaliser les sections affichées ?</h3>
+            <p>Oui, chaque exposant peut choisir les sections qu'il souhaite afficher dans son mini-site et leur ordre d'apparition.</p>
+            
+            <h3>Les mini-sites sont-ils responsive ?</h3>
+            <p>Oui, tous les mini-sites sont entièrement responsives et s'adaptent à tous les appareils (desktop, tablettes, mobiles).</p>
+            
+            <h3>Comment ajouter des filtres personnalisés ?</h3>
+            <p>Vous pouvez implémenter des filtres personnalisés en utilisant JavaScript et AJAX pour recharger dynamiquement le shortcode <code>[siports_minisites]</code> avec différents paramètres.</p>
+        </div>
+        
+        <div class="section">
+            <h2>Synchronisation des Données</h2>
+            <p>Les données des mini-sites sont synchronisées avec la plateforme SIPORTS de deux façons :</p>
+            
+            <ol>
+                <li><strong>Synchronisation automatique</strong> : Toutes les 24 heures via une tâche CRON WordPress</li>
+                <li><strong>Synchronisation manuelle</strong> : Via le bouton "Synchroniser" dans le tableau de bord d'administration SIPORTS</li>
+            </ol>
+            
+            <div class="note">
+                <strong>⚠️ Important :</strong> La première synchronisation peut prendre plusieurs minutes selon le nombre d'exposants et la quantité de données à transférer.
+            </div>
+        </div>
+        
+        <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666;">
+            <p>Documentation des Mini-Sites SIPORTS 2026</p>
+            <p><strong>Version 1.0 - Septembre 2025</strong></p>
+            <p>Pour toute assistance : <a href="mailto:support@siportevent.com">support@siportevent.com</a></p>
+        </footer>
+    </div>
+</body>
+</html>

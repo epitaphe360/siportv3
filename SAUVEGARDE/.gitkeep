@@ -1,0 +1,11 @@
+# Dossier SAUVEGARDE pour les archives SIPORTS 2026
+# Ce fichier permet de tracker le dossier dans Git
+
+Archive complète SIPORTS 2026 avec :
+- Code source complet
+- Comptes de démonstration
+- Configuration multi-plateforme
+- Plugin WordPress
+- Documentation complète
+
+Généré le: $(date)

@@ -1,0 +1,58 @@
+/* stylelint-disable */
+/* Autogénéré pour TailwindCSS - désactivé stylelint */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply text-gray-900 bg-gradient-to-br from-siports-light via-siports-secondary to-siports-primary;
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .siports-gradient {
+    background: linear-gradient(135deg, #1B365D 0%, #2E5984 50%, #4A90A4 100%);
+  }
+  
+  .siports-text-gradient {
+    background: linear-gradient(135deg, #1B365D 0%, #4A90A4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .siports-card-hover {
+    @apply hover:shadow-siports-lg hover:-translate-y-1 transition-all duration-300;
+  }
+  
+  .siports-btn-primary {
+    @apply bg-siports-primary text-white hover:bg-siports-dark focus:ring-siports-primary shadow-lg font-semibold;
+  }
+  
+  .siports-btn-secondary {
+    @apply bg-siports-gold text-siports-dark hover:bg-yellow-400 focus:ring-siports-gold shadow-lg font-semibold;
+  }
+  
+  /* Nouveau style pour les sections principales */
+  .siports-section {
+    @apply bg-white/95 backdrop-blur-sm border border-white/20;
+  }
+  
+  /* Style pour les cartes avec effet de verre */
+  .siports-glass-card {
+    @apply bg-white/90 backdrop-blur-md border border-white/30 shadow-xl;
+  }
+}

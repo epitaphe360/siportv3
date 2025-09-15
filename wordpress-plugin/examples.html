@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIPORTS 2026 - Exemples d'Intégration WordPress</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; }
+        .example { background: #f8f9fa; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .shortcode { background: #e9ecef; padding: 10px; border-radius: 4px; font-family: monospace; }
+        h1 { color: #1e40af; }
+        h2 { color: #3b82f6; border-bottom: 2px solid #3b82f6; padding-bottom: 5px; }
+        .note { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 4px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <h1>🚢 SIPORTS 2026 - Guide d'Intégration WordPress</h1>
+    
+    <div class="note">
+        <strong>📋 Installation :</strong>
+        <ol>
+            <li>Uploadez le dossier <code>wordpress-plugin</code> dans <code>/wp-content/plugins/</code></li>
+            <li>Renommez-le en <code>siports-integration</code></li>
+            <li>Activez le plugin dans l'administration WordPress</li>
+            <li>Configurez les paramètres dans <strong>SIPORTS → Paramètres</strong></li>
+        </ol>
+    </div>
+    
+    <h2>🏠 Page d'Accueil Complète</h2>
+    <div class="example">
+        <p><strong>Utilisez ce code dans votre page d'accueil :</strong></p>
+        <div class="shortcode">
+<!-- Hero avec compte à rebours --><br>
+[siports_countdown show_days="true" show_hours="true" style="full"]<br><br>
+
+<!-- Statistiques principales --><br>
+[siports_stats show="exhibitors,visitors,countries,events" animated="true" layout="horizontal"]<br><br>
+
+&lt;h2&gt;Exposants à la Une&lt;/h2&gt;<br>
+[siports_exhibitors featured="true" limit="6" layout="grid"]<br><br>
+
+&lt;h2&gt;Événements Phares&lt;/h2&gt;<br>
+[siports_events featured_only="true" limit="4"]<br><br>
+
+&lt;h2&gt;Nos Partenaires&lt;/h2&gt;<br>
+[siports_partners type="platinum" show_logos="true"]
+        </div>
+    </div>
+    
+    <h2>👥 Page Exposants</h2>
+    <div class="example">
+        <div class="shortcode">
+&lt;h1&gt;Exposants SIPORTS 2026&lt;/h1&gt;<br><br>
+
+&lt;h2&gt;Pavillon Institutionnel&lt;/h2&gt;<br>
+[siports_exhibitors category="institutional" limit="20" layout="grid"]<br><br>
+
+&lt;h2&gt;Pavillon Industrie Portuaire&lt;/h2&gt;<br>
+[siports_exhibitors category="port-industry" limit="20" layout="grid"]<br><br>
+
+&lt;h2&gt;Pavillon Performance & Exploitation&lt;/h2&gt;<br>
+[siports_exhibitors category="port-operations" limit="20" layout="grid"]<br><br>
+
+&lt;h2&gt;Pavillon Académique&lt;/h2&gt;<br>
+[siports_exhibitors category="academic" limit="20" layout="grid"]
+        </div>
+    </div>
+    
+    <h2>📅 Page Événements</h2>
+    <div class="example">
+        <div class="shortcode">
+&lt;h1&gt;Programme SIPORTS 2026&lt;/h1&gt;<br><br>
+
+&lt;h2&gt;Conférences Plénières&lt;/h2&gt;<br>
+[siports_events type="conference" limit="10"]<br><br>
+
+&lt;h2&gt;Ateliers Techniques&lt;/h2&gt;<br>
+[siports_events type="workshop" limit="8"]<br><br>
+
+&lt;h2&gt;Sessions de Réseautage&lt;/h2&gt;<br>
+[siports_events type="networking" limit="6"]<br><br>
+
+&lt;h2&gt;Webinaires&lt;/h2&gt;<br>
+[siports_events type="webinar" limit="5"]
+        </div>
+    </div>
+    
+    <h2>🤝 Page Réseautage</h2>
+    <div class="example">
+        <div class="shortcode">
+&lt;h1&gt;Réseautage Professionnel&lt;/h1&gt;<br><br>
+
+[siports_networking recommendations="8" show_ai="true"]<br><br>
+
+[siports_stats show="exhibitors,visitors,countries" animated="true"]
+        </div>
+    </div>
+    
+    <h2>📰 Page Actualités</h2>
+    <div class="example">
+        <div class="shortcode">
+&lt;h1&gt;Actualités Portuaires&lt;/h1&gt;<br><br>
+
+&lt;h2&gt;À la Une&lt;/h2&gt;<br>
+[siports_news featured_only="true" limit="3" show_excerpt="true"]<br><br>
+
+&lt;h2&gt;Innovation & Technologie&lt;/h2&gt;<br>
+[siports_news category="Innovation" limit="4"]<br><br>
+
+&lt;h2&gt;Partenariats & Coopération&lt;/h2&gt;<br>
+[siports_news category="Partenariat" limit="4"]
+        </div>
+    </div>
+    
+    <h2>🏛️ Page Pavillons</h2>
+    <div class="example">
+        <div class="shortcode">
+&lt;h1&gt;Pavillons Thématiques&lt;/h1&gt;<br><br>
+
+[siports_pavilions show_stats="true" layout="grid"]<br><br>
+
+[siports_stats show="exhibitors,visitors,events,countries" animated="true" layout="horizontal"]
+        </div>
+    </div>
+    
+    <h2>📱 Sidebar/Widget</h2>
+    <div class="example">
+        <p><strong>Pour votre sidebar ou footer :</strong></p>
+        <div class="shortcode">
+[siports_countdown style="compact"]<br><br>
+
+[siports_stats show="exhibitors,visitors" layout="vertical"]<br><br>
+
+&lt;h3&gt;Prochains Événements&lt;/h3&gt;<br>
+[siports_events limit="3" featured_only="true"]
+        </div>
+    </div>
+    
+    <h2>🎨 Personnalisation CSS</h2>
+    <div class="example">
+        <p><strong>Ajoutez ce CSS dans votre thème pour personnaliser :</strong></p>
+        <div class="shortcode">
+/* Couleurs personnalisées */<br>
+.siports-btn-primary {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;background: #votre-couleur-primaire;<br>
+}<br><br>
+
+.siports-countdown {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;background: linear-gradient(135deg, #couleur1, #couleur2);<br>
+}<br><br>
+
+/* Responsive personnalisé */<br>
+@media (max-width: 768px) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.siports-exhibitors-grid {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;grid-template-columns: 1fr;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}
+        </div>
+    </div>
+    
+    <h2>🔧 Configuration Avancée</h2>
+    <div class="example">
+        <p><strong>Fonctions PHP pour développeurs :</strong></p>
+        <div class="shortcode">
+// Récupérer les données via l'API REST<br>
+$exhibitors = wp_remote_get(site_url('/wp-json/siports/v1/exhibitors'));<br><br>
+
+// Utiliser les données dans vos templates<br>
+$siports_data = json_decode(wp_remote_retrieve_body($exhibitors), true);<br><br>
+
+// Hook pour personnaliser les données<br>
+add_filter('siports_exhibitors_data', 'my_custom_exhibitors_filter');<br>
+function my_custom_exhibitors_filter($exhibitors) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Votre logique personnalisée<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return $exhibitors;<br>
+}
+        </div>
+    </div>
+    
+    <div class="note">
+        <strong>🎯 Support & Documentation :</strong><br>
+        • <strong>Email :</strong> support@siportevent.com<br>
+        • <strong>Site officiel :</strong> https://siportevent.com<br>
+        • <strong>Documentation :</strong> https://siportevent.com/docs/wordpress-plugin<br>
+        • <strong>API REST :</strong> /wp-json/siports/v1/
+    </div>
+    
+    <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666;">
+        <p>Plugin développé par l'équipe SIPORTS pour le Salon International des Ports 2026</p>
+        <p><strong>5-7 Février 2026 • El Jadida, Maroc</strong></p>
+    </footer>
+</body>
+</html>
