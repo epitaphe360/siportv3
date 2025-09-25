@@ -40,10 +40,15 @@ export const Header: React.FC = () => {
           {/* Logo */}
           <Link to={ROUTES.HOME} className="flex items-center">
             <div className="h-12 w-auto">
-              <img 
-                src="/logo .jpeg" 
-                alt="SIPORTS Logo" 
+              <img
+                src="./assets/logo.jpeg"
+                alt="SIPORTS Logo"
                 className="h-full w-full object-contain"
+                onError={(e) => {
+                  const t = e.currentTarget as HTMLImageElement;
+                  // fallback to a tiny transparent svg to avoid broken image icon
+                  t.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1" height="1"%3E%3C/svg%3E';
+                }}
               />
             </div>
           </Link>

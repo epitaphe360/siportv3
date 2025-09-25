@@ -64,6 +64,7 @@ import { ChatBotToggle } from './components/chatbot/ChatBotToggle';
 import { useLanguageStore } from './store/languageStore';
 import { ROUTES } from './lib/routes';
 
+
 const App = () => {
   const [isChatBotOpen, setIsChatBotOpen] = React.useState(false);
   const { currentLanguage, getCurrentLanguage } = useLanguageStore();
@@ -76,88 +77,86 @@ const App = () => {
   }, [currentLanguage, getCurrentLanguage]);
 
   return (
-    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1">
-          <Suspense fallback={<div className="flex justify-center items-center h-full"><div>Chargement...</div></div>}>
-            <Routes>
-              <Route path={ROUTES.HOME} element={<HomePage />} />
-              <Route path={ROUTES.EXHIBITORS} element={<ExhibitorsPage />} />
-              <Route path={ROUTES.EXHIBITOR_DETAIL} element={<ExhibitorDetailPage />} />
-              <Route path={ROUTES.PARTNERS} element={<PartnersPage />} />
-              <Route path={ROUTES.PARTNER_DETAIL} element={<PartnerDetailPage />} />
-              <Route path={ROUTES.PAVILIONS} element={<PavillonsPage />} />
-              <Route path={ROUTES.METRICS} element={<MetricsPage />} />
-              <Route path={ROUTES.NETWORKING} element={<NetworkingPage />} />
-              <Route path={ROUTES.EVENTS} element={<EventsPage />} />
-              <Route path={ROUTES.LOGIN} element={<LoginPage />} />
-              <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
-              <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
-              <Route path={ROUTES.REGISTER_EXHIBITOR} element={<ExhibitorSignUpPage />} />
-              <Route path={ROUTES.REGISTER_PARTNER} element={<PartnerSignUpPage />} />
-              <Route path={ROUTES.SIGNUP_SUCCESS} element={<SignUpSuccessPage />} />
-              <Route path={ROUTES.PENDING_ACCOUNT} element={<PendingAccountPage />} />
-              <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
-              <Route path={ROUTES.PROFILE_DETAILED} element={<DetailedProfilePage />} />
-              <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
-              <Route path={ROUTES.EXHIBITOR_PROFILE} element={<ProfilePage />} />
-              <Route path={ROUTES.EXHIBITOR_DASHBOARD} element={<ExhibitorDashboard />} />
-              <Route path={ROUTES.VISITOR_DASHBOARD} element={<VisitorDashboard />} />
-              <Route path={ROUTES.VISITOR_SETTINGS} element={<VisitorProfileSettings />} />
-              <Route path={ROUTES.MESSAGES} element={<ChatInterface />} />
-              <Route path={ROUTES.CHAT} element={<ChatInterface />} />
-              <Route path={ROUTES.APPOINTMENTS} element={<AppointmentCalendar />} />
-              <Route path={ROUTES.CALENDAR} element={<AppointmentCalendar />} />
-              <Route path={ROUTES.MINISITE} element={<MiniSitePreview />} />
-              <Route path={ROUTES.MINISITE_CREATION} element={<MiniSiteCreationPage />} />
-              <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
-              <Route path={ROUTES.MINISITE_EDITOR} element={<MiniSiteEditor />} />
-              <Route path={ROUTES.ADMIN_CREATE_EXHIBITOR} element={<ExhibitorCreationSimulator />} />
-              <Route path={ROUTES.ADMIN_CREATE_PARTNER} element={<PartnerCreationForm />} />
-              <Route path={ROUTES.ADMIN_CREATE_NEWS} element={<NewsArticleCreationForm />} />
-              <Route path={ROUTES.MINISITE_PREVIEW} element={<MiniSitePreview />} />
-              <Route path={ROUTES.ADMIN_ACTIVITY} element={<ActivityPage />} />
-              <Route path={ROUTES.ADMIN_VALIDATION} element={<ExhibitorValidation />} />
-              <Route path={ROUTES.ADMIN_MODERATION} element={<ModerationPanel />} />
-              <Route path={ROUTES.NEWS} element={<NewsPage />} />
-              <Route path={ROUTES.NEWS_DETAIL} element={<ArticleDetailPage />} />
-              <Route path={ROUTES.ADMIN_DASHBOARD} element={<AdminDashboard />} />
-              <Route path={ROUTES.ADMIN_USERS} element={<UserManagementPage />} />
-              <Route path={ROUTES.ADMIN_PAVILIONS} element={<PavillonsAdminPage />} />
-              <Route path={ROUTES.ADMIN_CREATE_PAVILION} element={<CreatePavilionPage />} />
-              <Route path={ROUTES.ADMIN_PAVILION_ADD_DEMO} element={<AddDemoProgramPage />} />
-              <Route path={ROUTES.ADMIN_CONTENT} element={<ContentManagementPage />} />
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1">
+        <Suspense fallback={<div className="flex justify-center items-center h-full"><div>Chargement...</div></div>}>
+          <Routes>
+            <Route path={ROUTES.HOME} element={<HomePage />} />
+            <Route path={ROUTES.EXHIBITORS} element={<ExhibitorsPage />} />
+            <Route path={ROUTES.EXHIBITOR_DETAIL} element={<ExhibitorDetailPage />} />
+            <Route path={ROUTES.PARTNERS} element={<PartnersPage />} />
+            <Route path={ROUTES.PARTNER_DETAIL} element={<PartnerDetailPage />} />
+            <Route path={ROUTES.PAVILIONS} element={<PavillonsPage />} />
+            <Route path={ROUTES.METRICS} element={<MetricsPage />} />
+            <Route path={ROUTES.NETWORKING} element={<NetworkingPage />} />
+            <Route path={ROUTES.EVENTS} element={<EventsPage />} />
+            <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+            <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
+            <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
+            <Route path={ROUTES.REGISTER_EXHIBITOR} element={<ExhibitorSignUpPage />} />
+            <Route path={ROUTES.REGISTER_PARTNER} element={<PartnerSignUpPage />} />
+            <Route path={ROUTES.SIGNUP_SUCCESS} element={<SignUpSuccessPage />} />
+            <Route path={ROUTES.PENDING_ACCOUNT} element={<PendingAccountPage />} />
+            <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
+            <Route path={ROUTES.PROFILE_DETAILED} element={<DetailedProfilePage />} />
+            <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
+            <Route path={ROUTES.EXHIBITOR_PROFILE} element={<ProfilePage />} />
+            <Route path={ROUTES.EXHIBITOR_DASHBOARD} element={<ExhibitorDashboard />} />
+            <Route path={ROUTES.VISITOR_DASHBOARD} element={<VisitorDashboard />} />
+            <Route path={ROUTES.VISITOR_SETTINGS} element={<VisitorProfileSettings />} />
+            <Route path={ROUTES.MESSAGES} element={<ChatInterface />} />
+            <Route path={ROUTES.CHAT} element={<ChatInterface />} />
+            <Route path={ROUTES.APPOINTMENTS} element={<AppointmentCalendar />} />
+            <Route path={ROUTES.CALENDAR} element={<AppointmentCalendar />} />
+            <Route path={ROUTES.MINISITE} element={<MiniSitePreview />} />
+            <Route path={ROUTES.MINISITE_CREATION} element={<MiniSiteCreationPage />} />
+            <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
+            <Route path={ROUTES.MINISITE_EDITOR} element={<MiniSiteEditor />} />
+            <Route path={ROUTES.ADMIN_CREATE_EXHIBITOR} element={<ExhibitorCreationSimulator />} />
+            <Route path={ROUTES.ADMIN_CREATE_PARTNER} element={<PartnerCreationForm />} />
+            <Route path={ROUTES.ADMIN_CREATE_NEWS} element={<NewsArticleCreationForm />} />
+            <Route path={ROUTES.MINISITE_PREVIEW} element={<MiniSitePreview />} />
+            <Route path={ROUTES.ADMIN_ACTIVITY} element={<ActivityPage />} />
+            <Route path={ROUTES.ADMIN_VALIDATION} element={<ExhibitorValidation />} />
+            <Route path={ROUTES.ADMIN_MODERATION} element={<ModerationPanel />} />
+            <Route path={ROUTES.NEWS} element={<NewsPage />} />
+            <Route path={ROUTES.NEWS_DETAIL} element={<ArticleDetailPage />} />
+            <Route path={ROUTES.ADMIN_DASHBOARD} element={<AdminDashboard />} />
+            <Route path={ROUTES.ADMIN_USERS} element={<UserManagementPage />} />
+            <Route path={ROUTES.ADMIN_PAVILIONS} element={<PavillonsAdminPage />} />
+            <Route path={ROUTES.ADMIN_CREATE_PAVILION} element={<CreatePavilionPage />} />
+            <Route path={ROUTES.ADMIN_PAVILION_ADD_DEMO} element={<AddDemoProgramPage />} />
+            <Route path={ROUTES.ADMIN_CONTENT} element={<ContentManagementPage />} />
 
-              {/* New routes for footer links */}
-              <Route path={ROUTES.CONTACT} element={<ContactPage />} />
-              <Route path={ROUTES.PARTNERSHIP} element={<PartnershipPage />} />
-              <Route path={ROUTES.SUPPORT} element={<SupportPage />} />
-              <Route path={ROUTES.API} element={<APIPage />} />
-              <Route path={ROUTES.PRIVACY} element={<PrivacyPage />} />
-              <Route path={ROUTES.TERMS} element={<TermsPage />} />
-              <Route path={ROUTES.COOKIES} element={<CookiesPage />} />
-              <Route path={ROUTES.AVAILABILITY_SETTINGS} element={<AvailabilitySettingsPage />} />
-            </Routes>
-          </Suspense>
-        </main>
-        <Footer />
+            {/* New routes for footer links */}
+            <Route path={ROUTES.CONTACT} element={<ContactPage />} />
+            <Route path={ROUTES.PARTNERSHIP} element={<PartnershipPage />} />
+            <Route path={ROUTES.SUPPORT} element={<SupportPage />} />
+            <Route path={ROUTES.API} element={<APIPage />} />
+            <Route path={ROUTES.PRIVACY} element={<PrivacyPage />} />
+            <Route path={ROUTES.TERMS} element={<TermsPage />} />
+            <Route path={ROUTES.COOKIES} element={<CookiesPage />} />
+            <Route path={ROUTES.AVAILABILITY_SETTINGS} element={<AvailabilitySettingsPage />} />
+          </Routes>
+        </Suspense>
+      </main>
+      <Footer />
 
-        {/* ChatBot */}
-        <ChatBot
-          isOpen={isChatBotOpen}
-          onToggle={() => setIsChatBotOpen(!isChatBotOpen)}
+      {/* ChatBot */}
+      <ChatBot
+        isOpen={isChatBotOpen}
+        onToggle={() => setIsChatBotOpen(!isChatBotOpen)}
+      />
+
+      {/* ChatBot Toggle Button */}
+      {!isChatBotOpen && (
+        <ChatBotToggle
+          onClick={() => setIsChatBotOpen(true)}
+          hasUnreadMessages={false}
         />
-
-        {/* ChatBot Toggle Button */}
-        {!isChatBotOpen && (
-          <ChatBotToggle
-            onClick={() => setIsChatBotOpen(true)}
-            hasUnreadMessages={false}
-          />
-        )}
-      </div>
-    </Router>
+      )}
+    </div>
   );
 }
 

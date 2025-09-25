@@ -118,7 +118,17 @@ export const FeaturedExhibitors: React.FC = () => {
                         className="h-14 w-14 rounded-xl object-cover border-2 border-gray-100"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
-                          target.src = 'https://via.placeholder.com/56x56/6366f1/ffffff?text=' + exhibitor.companyName.charAt(0);
+                          // Use placehold.co instead of via.placeholder (more reliable) and fallback to inline SVG if that fails
+                          const initial = exhibitor.companyName ? exhibitor.companyName.charAt(0) : 'X';
+                          target.onerror = null; // prevent infinite loop
+                          target.src = `https://placehold.co/56x56/6366f1/ffffff?text=${encodeURIComponent(initial)}`;
+                          // after a short delay, if the image still fails, replace with a data SVG
+                          setTimeout(() => {
+                            if (!target.complete || target.naturalWidth === 0) {
+                              const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='56' height='56'><rect width='100%' height='100%' fill='#6366f1'/><text x='50%' y='50%' dy='.35em' font-family='Arial, Helvetica, sans-serif' font-size='24' fill='#ffffff' text-anchor='middle'>${initial}</text></svg>`;
+                              target.src = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+                            }
+                          }, 300);
                         }}
                       />
                       <div>

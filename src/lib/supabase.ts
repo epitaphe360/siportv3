@@ -662,15 +662,24 @@ export type Database = {
   };
 };
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
+// Autoriser une configuration runtime injectée par WordPress (plugin) via window.SIPORTS_CONFIG
+type RuntimeConfig = {
+  VITE_SUPABASE_URL?: string;
+  VITE_SUPABASE_ANON_KEY?: string;
+  VITE_SUPABASE_SERVICE_ROLE_KEY?: string;
+};
+const runtimeCfg: RuntimeConfig = (typeof window !== 'undefined' && (window as any).SIPORTS_CONFIG) || {};
 
-// Debug logging
-console.log('🔍 Supabase Environment Variables:');
-console.log('URL:', supabaseUrl);
-console.log('Anon Key Length:', supabaseAnonKey?.length);
-console.log('Service Key Length:', supabaseServiceKey?.length);
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || runtimeCfg.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || runtimeCfg.VITE_SUPABASE_ANON_KEY;
+const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY || runtimeCfg.VITE_SUPABASE_SERVICE_ROLE_KEY;
+
+// Debug logging (safe): do not print keys or lengths in client
+console.log('🔍 Supabase config:', {
+  urlProvided: !!supabaseUrl,
+  anonKeyPresent: !!supabaseAnonKey,
+  serviceKeyPresent: !!supabaseServiceKey // note: service key must never be exposed to browsers
+});
 
 // Vérifier si Supabase est configuré avec de vraies valeurs
 const isSupabaseConfigured = supabaseUrl &&
@@ -683,17 +692,29 @@ const isSupabaseConfigured = supabaseUrl &&
                              !supabaseAnonKey.startsWith('demo_');
 
 if (!isSupabaseConfigured) {
-  console.info('ℹ️ Mode développement - Utilisation des valeurs de démonstration');
-  console.info('Pour la production, configurez VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY dans .env');
-  console.info('URL actuelle:', supabaseUrl);
-  console.info('Configuration check details:');
-  console.info('- Has URL:', !!supabaseUrl);
-  console.info('- Has Anon Key:', !!supabaseAnonKey);
-  console.info('- URL starts with https:', supabaseUrl?.startsWith('https://'));
-  console.info('- URL has no placeholder:', !supabaseUrl?.includes('placeholder'));
-  console.info('- Anon Key length > 50:', supabaseAnonKey && supabaseAnonKey.length > 50);
-  console.info('- Anon Key has no placeholder:', !supabaseAnonKey?.includes('placeholder'));
-  console.info('- Anon Key does not start with demo_:', !supabaseAnonKey?.startsWith('demo_'));
+  const errorMessage = 'CRITICAL: Supabase environment variables (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY) are not correctly configured in the .env file. The application cannot start.';
+  console.error(errorMessage);
+  // Rendre l'erreur visible sur la page elle-même (même si script en footer)
+  const renderConfigError = () => {
+    const rootElement =
+      document.getElementById('siports-networking-app') ||
+      document.getElementById('siports-exhibitor-dashboard-app') ||
+      document.body;
+    if (rootElement) {
+      rootElement.innerHTML = `<div style="padding: 20px; background-color: #ffcccc; border: 1px solid #ff0000; color: #a94442;">
+        <h3>Erreur de Configuration</h3>
+        <p>${errorMessage}</p>
+        <p>Veuillez contacter l'administrateur du site.</p>
+      </div>`;
+    }
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderConfigError);
+  } else {
+    renderConfigError();
+  }
+  // Arrêter l'exécution pour éviter d'autres erreurs
+  throw new Error(errorMessage);
 }
 
 // Utiliser une approche globale pour garantir un seul client

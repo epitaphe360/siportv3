@@ -15,17 +15,28 @@ import useAuthStore from '../../store/authStore';
 import { useEventStore } from '../../store/eventStore';
 import { Link } from 'react-router-dom';
 import PersonalCalendar from './PersonalCalendar';
+import { useAppointmentStore } from '../../store/appointmentStore';
 
 export default function VisitorDashboard() {
-  // Appointment management logic (copied/adapted from ExhibitorDashboard)
-  const { appointments, fetchAppointments, updateAppointmentStatus, cancelAppointment, isLoading: isAppointmentsLoading } = require('../../store/appointmentStore').useAppointmentStore();
+  // Auth first so it's available below
+  const { user, isAuthenticated } = useAuthStore();
+
+  // Stores
+  const {
+    appointments,
+    fetchAppointments,
+    updateAppointmentStatus,
+    cancelAppointment,
+    isLoading: isAppointmentsLoading,
+  } = useAppointmentStore();
+
   const [showAvailabilityModal, setShowAvailabilityModal] = useState<{ exhibitorId: string } | null>(null);
 
   useEffect(() => {
     fetchAppointments();
   }, [fetchAppointments]);
 
-  // Filtrer les rendez-vous reçus (où le visiteur est le user connecté)
+  // Filter appointments for current visitor (use user after it's declared)
   const receivedAppointments = appointments?.filter((a: import('../../types').Appointment) => user && a.visitorId === user.id) || [];
   const pendingAppointments = receivedAppointments.filter((a: import('../../types').Appointment) => a.status === 'pending');
   const confirmedAppointments = receivedAppointments.filter((a: import('../../types').Appointment) => a.status === 'confirmed');
@@ -42,7 +53,7 @@ export default function VisitorDashboard() {
   const handleRequestAnother = (exhibitorId: string) => {
     setShowAvailabilityModal({ exhibitorId });
   };
-  const { user, isAuthenticated } = useAuthStore();
+
   const { 
     events, 
     registeredEvents, 

@@ -317,11 +317,53 @@ export class SupabaseService {
       throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
     }
     const safeSupabase = supabase!;
-    const { data, error } = await (safeSupabase as any)
+    // Use safe separate queries only (avoid embedded selects entirely).
+    // 1) Fetch exhibitors basic fields
+    const { data: exhibitorsData, error: exhibitorsError } = await (safeSupabase as any)
       .from('exhibitors')
-      .select(`*, user:users(*), products(*), mini_site:mini_sites(*)`);
-    if (error) throw error;
-    return (data || []).map(this.mapExhibitorFromDB);
+      .select('id,user_id,company_name,category,sector,description,logo_url,website,verified,featured,contact_info');
+    if (exhibitorsError) throw exhibitorsError;
+
+    const exhibitors = (exhibitorsData || []) as any[];
+    if (exhibitors.length === 0) return [];
+
+    const ids = exhibitors.map(e => e.id);
+
+    // 2) Fetch products for these exhibitors in one query
+    const { data: productsData, error: productsError } = await (safeSupabase as any)
+      .from('products')
+      .select('*')
+      .in('exhibitor_id', ids);
+    if (productsError) throw productsError;
+
+    // 3) Fetch mini_sites for these exhibitors in one query
+    const { data: miniSitesData, error: miniSitesError } = await (safeSupabase as any)
+      .from('mini_sites')
+      .select('*')
+      .in('exhibitor_id', ids);
+    if (miniSitesError) throw miniSitesError;
+
+    // Group products and mini_sites by exhibitor_id
+    const productsByEx: Record<string, any[]> = {};
+    (productsData || []).forEach((p: any) => {
+      const k = String(p.exhibitor_id);
+      if (!productsByEx[k]) productsByEx[k] = [];
+      productsByEx[k].push(p);
+    });
+
+    const miniByEx: Record<string, any> = {};
+    (miniSitesData || []).forEach((m: any) => {
+      miniByEx[String(m.exhibitor_id)] = m;
+    });
+
+    // Merge into exhibitor shapes expected by mapExhibitorFromDB
+    const merged = exhibitors.map(e => ({
+      ...e,
+      products: productsByEx[String(e.id)] || [],
+      mini_site: miniByEx[String(e.id)] || null
+    }));
+
+    return merged.map(this.mapExhibitorFromDB);
   }
 
   static async getExhibitorById(id: string): Promise<Exhibitor | null> {
@@ -330,23 +372,48 @@ export class SupabaseService {
     }
     
     const safeSupabase = supabase!;
-    const { data, error } = await (safeSupabase as any)
-      .from('exhibitors')
-      .select(`
-        *,
-        user:users(*),
-        products(*),
-        mini_site:mini_sites(*)
-      `)
-      .eq('id', id)
-      .single();
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('exhibitors')
+        .select(`*, user:users!exhibitors_user_id_fkey(*), products:products!fk_products_exhibitor(*), mini_site:mini_sites!mini_sites_exhibitor_id_fkey(*)`)
+        .eq('id', id)
+        .single();
 
-    if (error) {
-      if (error.code === 'PGRST116') return null;
-      throw error;
+      if (error) {
+        if (error.code === 'PGRST116') return null;
+        throw error;
+      }
+
+      return this.mapExhibitorFromDB(data);
+    } catch (err: any) {
+      // Fallback to safer separate queries and merge (avoid PostgREST embed failures)
+      console.warn('Embedded single exhibitor select failed, falling back to safe queries:', err?.message || err);
+      const { data: basic, error: basicErr } = await (safeSupabase as any)
+        .from('exhibitors')
+        .select('id,user_id,company_name,category,sector,description,logo_url,website,verified,featured,contact_info')
+        .eq('id', id)
+        .single();
+      if (basicErr) {
+        if (basicErr.code === 'PGRST116') return null;
+        throw basicErr;
+      }
+
+      const exId = basic.id;
+      const [{ data: productsData, error: productsError }, { data: miniData, error: miniError }] = await Promise.all([
+        (safeSupabase as any).from('products').select('*').eq('exhibitor_id', exId),
+        (safeSupabase as any).from('mini_sites').select('*').eq('exhibitor_id', exId).maybeSingle?.() || (safeSupabase as any).from('mini_sites').select('*').eq('exhibitor_id', exId).single()
+      ] as any);
+
+      if (productsError) throw productsError;
+      if (miniError && miniError.code !== 'PGRST116') throw miniError;
+
+      const merged = {
+        ...basic,
+        products: productsData || [],
+        mini_site: miniData || null
+      };
+      return this.mapExhibitorFromDB(merged as any);
     }
-    
-    return this.mapExhibitorFromDB(data);
   }
 
   static async createExhibitor(exhibitorData: Partial<Exhibitor>): Promise<Exhibitor> {
@@ -355,6 +422,7 @@ export class SupabaseService {
     }
     
     const safeSupabase = supabase!;
+    // Use explicit relation aliases on insert to avoid ambiguous embedding
     const { data, error } = await (safeSupabase as any)
       .from('exhibitors')
       .insert([{
@@ -367,12 +435,7 @@ export class SupabaseService {
         website: exhibitorData.website,
         contact_info: exhibitorData.contactInfo || {}
       }])
-      .select(`
-        *,
-        user:users(*),
-        products(*),
-        mini_site:mini_sites(*)
-      `)
+      .select(`*, user:users!exhibitors_user_id_fkey(*), products:products!fk_products_exhibitor(*), mini_site:mini_sites!mini_sites_exhibitor_id_fkey(*)`)
       .single();
 
     if (error) throw error;
@@ -399,12 +462,7 @@ export class SupabaseService {
         contact_info: updates.contactInfo
       })
       .eq('id', id)
-      .select(`
-        *,
-        user:users(*),
-        products(*),
-        mini_site:mini_sites(*)
-      `)
+      .select(`*, user:users!exhibitors_user_id_fkey(*), products:products!fk_products_exhibitor(*), mini_site:mini_sites!mini_sites_exhibitor_id_fkey(*)`)
       .single();
 
     if (error) throw error;
