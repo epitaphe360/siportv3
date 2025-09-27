@@ -34,3 +34,17 @@ curl -X POST http://localhost:4001/generate -H 'Content-Type: application/json' 
 If you don't set GROQ_* env vars the agent will return the basic scraped payload.
 
 Do not add `.env` files with secrets to the repository. Use your deployment platform's secret manager.
+
+Server helper
+--------------
+
+This agent now exposes a small server-side helper on startup as `globalThis.__runLocalAiCliFallback`.
+It can be used by other server-side modules in the project to run the local CLI generator synchronously and
+obtain the parsed JSON payload without forking the process directly. This avoids bundling node-only modules
+into client builds.
+
+Example usage from another server module:
+
+```js
+const payload = await globalThis.__runLocalAiCliFallback('https://example.com');
+```
