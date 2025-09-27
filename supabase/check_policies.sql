@@ -6,7 +6,7 @@
 SELECT count(*) AS exhibitors_count FROM public.exhibitors;
 
 -- 2) Check that mini_sites only returns published records
-SELECT id, title, published FROM public.mini_sites LIMIT 10;
+SELECT id, published FROM public.mini_sites LIMIT 10;
 
 -- 3) Verify public_users view exists and is safe
 SELECT column_name, data_type FROM information_schema.columns

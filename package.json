@@ -20,9 +20,20 @@
     "mobile:add-android": "npx cap add android",
     "mobile:sync": "npx cap sync",
     "mobile:open-ios": "npx cap open ios",
-    "mobile:open-android": "npx cap open android"
+    "mobile:open-android": "npx cap open android",
+  "test:e2e": "node scripts/wait-for-server.js && playwright test --project=chromium",
+  "apply-sql": "node scripts/apply_sql.cjs",
+  "verify-db": "node scripts/verify_db.cjs",
+  "run:combined-sql": "node scripts/run_combined_sql.cjs",
+  "test:concurrency": "node --experimental-top-level-await scripts/concurrent_book_test.mjs",
+  "import:exhibitors": "node scripts/run_import_exhibitors.mjs",
+  "db:quick-check": "node scripts/db_quick_check.mjs",
+  "ai-agent": "node server/ai-agent/index.mjs"
   },
   "dependencies": {
+  "cheerio": "^1.0.0-rc.12",
+  "express": "^4.18.2",
+  "node-fetch": "^2.6.12",
     "@google-cloud/firestore": "^7.11.3",
     "@headlessui/react": "^1.7.19",
     "@heroicons/react": "^2.2.0",
@@ -38,6 +49,7 @@
     "firebase": "^12.2.1",
     "framer-motion": "^10.16.16",
     "lucide-react": "^0.344.0",
+    "pg": "^8.16.3",
     "qrcode.react": "^4.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -52,6 +64,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
+    "@playwright/test": "^1.55.1",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",

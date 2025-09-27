@@ -42,7 +42,7 @@ CREATE POLICY "Users can read own profile"
   ON users
   FOR SELECT
   TO authenticated
-  USING (auth.uid() = id);
+  USING (auth.uid()::uuid = id);
 
 -- 5. Events (si table existe)
 ALTER TABLE events DISABLE ROW LEVEL SECURITY;

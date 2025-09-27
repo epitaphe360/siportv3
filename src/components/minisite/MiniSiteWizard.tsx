@@ -24,6 +24,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [importUrl, setImportUrl] = useState<string>('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, files, type } = e.target as any;
@@ -45,6 +46,15 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
     setLoading(true);
     setError(null);
     try {
+      // If an import URL is provided, use the AI agent flow
+      if (importUrl && importUrl.trim().length > 0) {
+        const created = await SupabaseService.createMiniSiteFromWebsite(importUrl.trim());
+        console.log('createMiniSiteFromWebsite result:', created);
+        setSuccess(true);
+        if (onSuccess) onSuccess();
+        setLoading(false);
+        return;
+      }
       // Pour l'instant, on ne gère pas l'upload de fichiers
       // Les URLs des fichiers seront gérées plus tard dans l'interface d'administration
       const logoUrl = '';
@@ -89,6 +99,11 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
   return (
     <Card className="max-w-lg mx-auto p-8 mt-8">
       <div className="mb-6 text-xl font-bold text-center">Création rapide de votre mini-site</div>
+      <div className="mb-4">
+        <label className="block font-medium mb-2">Importer depuis l'URL du site (optionnel)</label>
+        <input type="url" className="w-full p-2 border rounded" placeholder="https://votresite.com" value={importUrl} onChange={e => setImportUrl(e.target.value)} />
+        <div className="text-sm text-gray-500 mt-1">Fournissez l'URL officielle de votre site et l'agent importera automatiquement le contenu.</div>
+      </div>
       <form onSubmit={e => { e.preventDefault(); step === steps.length - 1 ? handleSubmit() : handleNext(); }}>
         <div className="mb-4">
           <label className="block font-medium mb-2">{current.label}</label>

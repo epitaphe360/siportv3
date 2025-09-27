@@ -122,6 +122,8 @@ export interface MiniSiteSection {
 
 export interface TimeSlot {
   id: string;
+  // userId links the timeslot to the owner (exhibitor/partner user id)
+  userId?: string;
   date: Date;
   startTime: string;
   endTime: string;

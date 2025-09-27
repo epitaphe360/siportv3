@@ -54,6 +54,12 @@ export default function VisitorDashboard() {
     setShowAvailabilityModal({ exhibitorId });
   };
 
+  // Quotas
+  const quotas: Record<string, number> = { free: 0, basic: 2, premium: 5, vip: 99 };
+  const userLevel = (user?.visitor_level as string) || 'free';
+  const confirmedCountLen = confirmedAppointments.length;
+  const remaining = Math.max(0, (quotas[userLevel] || 0) - confirmedCountLen);
+
   const { 
     events, 
     registeredEvents, 
@@ -134,13 +140,14 @@ export default function VisitorDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="p-6">
             <div className="flex items-center">
               <Calendar className="h-8 w-8 text-blue-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">RDV programmés</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.appointmentsBooked}</p>
+    <p className="text-sm font-medium text-gray-600">RDV programmés</p>
+    <p className="text-2xl font-bold text-gray-900">{confirmedAppointments.length}</p>
+    <p className="text-xs text-gray-500">Niveau: {user?.visitor_level || 'free'}</p>
               </div>
             </div>
           </Card>
@@ -202,12 +209,18 @@ export default function VisitorDashboard() {
             <p className="text-gray-600 mb-4">
               Planifiez des rencontres avec les exposants selon leurs disponibilités
             </p>
-            <Link to="/networking?action=schedule">
-              <Button variant="outline" className="w-full">
-                <Calendar className="h-4 w-4 mr-2" />
-                Programmer un RDV
-              </Button>
-            </Link>
+            <div>
+              <Link to="/networking?action=schedule">
+                <Button variant="outline" className="w-full" disabled={remaining <= 0}>
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Programmer un RDV
+                </Button>
+              </Link>
+              <p className="text-xs text-gray-500 mt-2">RDV restants: <strong>{remaining}</strong></p>
+              {remaining <= 0 && (
+                <p className="text-sm text-red-600 mt-1">Quota RDV atteint pour votre niveau ({userLevel}).</p>
+              )}
+            </div>
           </Card>
         </div>
 

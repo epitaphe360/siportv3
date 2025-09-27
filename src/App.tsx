@@ -18,6 +18,7 @@ const ChatInterface = React.lazy(() => import('./components/chat/ChatInterface')
 const AppointmentCalendar = React.lazy(() => import('./components/appointments/AppointmentCalendar'));
 const MiniSitePreview = React.lazy(() => import('./components/minisite/MiniSitePreview'));
 const ExhibitorDetailPage = React.lazy(() => import('./components/exhibitor/ExhibitorDetailPage'));
+const ProfileEdit = React.lazy(() => import('./pages/exhibitor/ProfileEdit'));
 const ActivityPage = React.lazy(() => import('./pages/admin/ActivityPage'));
 const ResetPasswordPage = React.lazy(() => import('./pages/ResetPasswordPage'));
 const PartnersPage = React.lazy(() => import('./pages/PartnersPage'));
@@ -26,6 +27,7 @@ const PavillonsPage = React.lazy(() => import('./components/pavilions/PavillonsP
 const MetricsPage = React.lazy(() => import('./components/metrics/MetricsPage'));
 const DetailedProfilePage = React.lazy(() => import('./components/profile/DetailedProfilePage'));
 const VisitorDashboard = React.lazy(() => import('./components/visitor/VisitorDashboard'));
+const TestFlowPage = React.lazy(() => import('./pages/dev/TestFlowPage'));
 const VisitorProfileSettings = React.lazy(() => import('./components/visitor/VisitorProfileSettings'));
 const AdminDashboard = React.lazy(() => import('./components/dashboard/AdminDashboard'));
 const ExhibitorDashboard = React.lazy(() => import('./components/dashboard/ExhibitorDashboard'));
@@ -102,8 +104,10 @@ const App = () => {
             <Route path={ROUTES.PROFILE_DETAILED} element={<DetailedProfilePage />} />
             <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
             <Route path={ROUTES.EXHIBITOR_PROFILE} element={<ProfilePage />} />
+            <Route path={`${ROUTES.EXHIBITOR_PROFILE}/edit`} element={<ProfileEdit />} />
             <Route path={ROUTES.EXHIBITOR_DASHBOARD} element={<ExhibitorDashboard />} />
             <Route path={ROUTES.VISITOR_DASHBOARD} element={<VisitorDashboard />} />
+            <Route path="/dev/test-flow" element={<TestFlowPage />} />
             <Route path={ROUTES.VISITOR_SETTINGS} element={<VisitorProfileSettings />} />
             <Route path={ROUTES.MESSAGES} element={<ChatInterface />} />
             <Route path={ROUTES.CHAT} element={<ChatInterface />} />

@@ -36,7 +36,8 @@ DROP POLICY IF EXISTS "Admins can manage all users" ON public.users;
 CREATE POLICY "Admins can manage all users" ON public.users
   FOR ALL
   TO authenticated
-  USING (is_admin(auth.uid()));
+  -- is_admin expects uuid, cast auth.uid()
+  USING (is_admin(auth.uid()::uuid));
 
 -- 4) Public read policies for other tables
 -- Exhibitors

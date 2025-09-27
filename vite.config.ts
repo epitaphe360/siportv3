@@ -11,6 +11,16 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) return 'vendor';
+          if (id.endsWith('src/types') || id.includes('/src/types/')) return 'types';
+        },
+      },
+    },
+  },
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
