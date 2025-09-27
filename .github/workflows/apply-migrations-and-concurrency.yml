@@ -11,6 +11,8 @@ on:
 jobs:
   apply-and-test:
     runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: '--dns-result-order=ipv4first'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,11 +25,47 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Check DNS resolution (IPv4 / IPv6)
+        run: |
+          HOST=$(echo "${{ secrets.DATABASE_URL }}" | sed -E 's#.*@([^:/]+).*#\1#')
+          echo "Checking DNS for $HOST (IPv4 then IPv6)..."
+          node -e "const dns=require('dns'); const h=process.argv[1]; dns.lookup(h, {family:4}, (e,a)=>{ if(e){ console.error('v4 lookup failed',e); process.exit(2);} else console.log('v4 addr',a); })" "$HOST" || true
+          node -e "const dns=require('dns'); const h=process.argv[1]; dns.lookup(h, {family:6}, (e,a)=>{ if(e) console.error('v6 lookup failed',e); else console.log('v6 addr',a); })" "$HOST" || true
+
+      - name: Node & env diagnostics
+        run: |
+          echo "node version:"; node -v || true
+          echo "NODE_OPTIONS:"; echo "$NODE_OPTIONS" || true
+
+      - name: IPv4 TCP connectivity test to DB host
+        run: |
+          HOST=$(echo "${{ secrets.DATABASE_URL }}" | sed -E 's#.*@([^:/]+).*#\1#')
+          echo "Resolving A records for $HOST..."
+          apt-get update -y >/dev/null || true
+          apt-get install -y dnsutils netcat-openbsd >/dev/null || true
+          dig +short A $HOST || true
+          dig +short AAAA $HOST || true
+          echo "Testing IPv4 TCP connectivity to $HOST:5432 (this may fail if host blocks GitHub Actions egress)"
+          # Try IPv4 TCP connect; nc returns non-zero on failure but we want to capture output
+          nc -4 -vz -w 5 $HOST 5432 || echo "nc IPv4 connect failed (expected if host unreachable)"
+
+
       - name: Apply SQL migrations
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          node scripts/apply_sql.cjs --database-url "${{ secrets.DATABASE_URL }}" --continue-on-error | tee migration.log
+          echo "NODE_OPTIONS=$NODE_OPTIONS"
+          # extract host from DATABASE_URL
+          # try to resolve an IPv4 and get an alternative connection string
+          URL_REPLACED=$(node scripts/resolve_db_ipv4.mjs --database-url "${{ secrets.DATABASE_URL }}" || true)
+          if [ -n "$URL_REPLACED" ]; then
+            echo "Using replaced connection string (IPv4)"
+            echo "Using connection string (masked): ${URL_REPLACED//:*@/:****@}"
+            node scripts/apply_sql.cjs --database-url "$URL_REPLACED" --continue-on-error | tee migration.log
+          else
+            echo "No IPv4 replacement available; running with original DATABASE_URL"
+            node scripts/apply_sql.cjs --database-url "${{ secrets.DATABASE_URL }}" --continue-on-error | tee migration.log
+          fi
 
       - name: Upload migration log
         if: always()

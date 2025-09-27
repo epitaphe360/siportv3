@@ -36,7 +36,31 @@ async function main() {
 
   const continueOnError = process.argv.includes('--continue-on-error');
 
-  const client = new Client({ connectionString: databaseUrl });
+  // Prefer IPv4 resolution for environments that have flaky IPv6 connectivity (ENETUNREACH on IPv6)
+  let connectionStringToUse = databaseUrl;
+  try {
+    const urlObj = new URL(databaseUrl);
+    const host = urlObj.hostname;
+    const dns = require('dns').promises;
+    try {
+      const v4 = await dns.lookup(host, { family: 4 });
+      if (v4 && v4.address) {
+        console.log('Resolved IPv4 for', host, '->', v4.address);
+        // replace host in the connection string with the IPv4 literal
+        urlObj.hostname = v4.address;
+        // If the original had a hostname that is not an IP, keep the original host in the 'options' parameter
+        connectionStringToUse = urlObj.toString();
+        console.log('Using IPv4 connection string (host replaced)');
+      }
+    } catch (dnsErr) {
+      console.warn('IPv4 DNS lookup failed for host', host, dnsErr && dnsErr.code ? dnsErr.code : dnsErr);
+      console.warn('Falling back to original DATABASE_URL host resolution (may attempt IPv6)');
+    }
+  } catch (err) {
+    console.warn('Could not parse DATABASE_URL for IPv4 resolution; using original connection string.');
+  }
+
+  const client = new Client({ connectionString: connectionStringToUse });
   await client.connect();
 
   const sqlDir = join(__dirname, '..', 'supabase');
