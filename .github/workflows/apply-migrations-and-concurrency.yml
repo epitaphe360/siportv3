@@ -1,0 +1,57 @@
+name: Apply migrations and run concurrency test
+
+on:
+  workflow_dispatch:
+    inputs:
+      parallel:
+        description: 'Number of parallel calls for concurrency test'
+        required: false
+        default: '50'
+
+jobs:
+  apply-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply SQL migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          node scripts/apply_sql.cjs --database-url "${{ secrets.DATABASE_URL }}" --continue-on-error
+
+      - name: Create test entities
+        id: create_entities
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          node scripts/create_test_entities.mjs --database-url "${{ secrets.DATABASE_URL }}" | tee created.txt
+          # created.txt should contain lines like 'visitor_id: <uuid>' and 'time_slot_id: <uuid>'
+          VISITOR_ID=$(grep visitor_id created.txt | awk '{print $2}')
+          TIME_SLOT_ID=$(grep time_slot_id created.txt | awk '{print $2}')
+          echo "visitor=$VISITOR_ID" >> $GITHUB_OUTPUT
+          echo "timeslot=$TIME_SLOT_ID" >> $GITHUB_OUTPUT
+
+      - name: Run concurrency test
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          PARALLEL=${{ github.event.inputs.parallel || '50' }}
+          echo "Running concurrency test with parallel=$PARALLEL, time_slot=${{ steps.create_entities.outputs.timeslot }}, visitor=${{ steps.create_entities.outputs.visitor }}"
+          node scripts/concurrent_book_test.mjs --database-url "${{ secrets.DATABASE_URL }}" --time-slot ${{ steps.create_entities.outputs.timeslot }} --visitor ${{ steps.create_entities.outputs.visitor }} --parallel $PARALLEL
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: concurrency-results
+          path: created.txt
