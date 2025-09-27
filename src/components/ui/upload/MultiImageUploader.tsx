@@ -40,7 +40,7 @@ const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
     if (JSON.stringify(initialImages) !== JSON.stringify(images)) {
       setImages(initialImages);
     }
-  }, [initialImages]);
+  }, [initialImages, images]);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (disabled) return;

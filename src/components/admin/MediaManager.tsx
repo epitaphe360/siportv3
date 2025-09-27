@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { 
@@ -52,7 +52,7 @@ export default function MediaManager() {
   // Charger la liste des buckets au chargement de la page
   useEffect(() => {
     fetchBuckets();
-  }, []);
+  }, [fetchBuckets]);
 
   // Charger les fichiers lorsqu'un bucket est sélectionné
   useEffect(() => {
@@ -63,7 +63,7 @@ export default function MediaManager() {
     }
   }, [selectedBucket]);
 
-  const fetchBuckets = async () => {
+  const fetchBuckets = useCallback(async () => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase!.storage.listBuckets();
@@ -85,7 +85,7 @@ export default function MediaManager() {
               file_count: fileCount,
               size: totalSize // Approximatif
             };
-          } catch (e) {
+          } catch {
             return { ...bucket, file_count: 0, size: 0 };
           }
         })
@@ -103,7 +103,7 @@ export default function MediaManager() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedBucket]);
 
   const fetchFiles = async (bucketName: string) => {
     setIsLoading(true);
@@ -128,7 +128,7 @@ export default function MediaManager() {
                           'application/octet-stream'
               }
             };
-          } catch (e) {
+          } catch {
             return {
               ...file,
               publicUrl: '',

@@ -25,7 +25,7 @@ const ProfileEdit: React.FC = () => {
           setDescription(exhibitor.description || '');
           setWebsite(exhibitor.website || '');
         }
-      } catch (e) {
+      } catch {
         // ignore
       }
     })();

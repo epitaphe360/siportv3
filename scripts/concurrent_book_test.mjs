@@ -18,7 +18,6 @@ function arg(name, def) {
 const timeSlotId = arg('--time-slot');
 const visitorId = arg('--visitor');
 const parallel = Number(arg('--parallel', '10')) || 10;
-const argv = process.argv;
 const dbIdx = argv.indexOf('--database-url');
 const dbUrl = (dbIdx !== -1 && argv[dbIdx + 1]) ? argv[dbIdx + 1] : (process.env.DATABASE_URL || process.env.SUPABASE_DATABASE_URL);
 

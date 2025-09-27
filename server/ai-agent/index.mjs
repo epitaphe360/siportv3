@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { execFile } from 'child_process';
+import { execFile, execFileSync } from 'child_process';
 import path from 'path';
 import fetch from 'node-fetch';
 import { createClient } from '@supabase/supabase-js';
@@ -8,6 +8,26 @@ import crypto from 'crypto';
 
 const app = express();
 app.use(bodyParser.json());
+
+// Expose a server-side helper that other server processes can call via globalThis.__runLocalAiCliFallback
+// This function runs the local CLI generator synchronously and returns parsed JSON or null on failure.
+globalThis.__runLocalAiCliFallback = async function (websiteUrl) {
+  try {
+    const scriptPath = path.resolve(process.cwd(), 'scripts', 'ai_generate_minisite.mjs');
+    // execFileSync returns stdout as string when encoding is set
+    const stdout = execFileSync(process.execPath, [scriptPath, websiteUrl], { encoding: 'utf8', timeout: 30000 });
+    if (!stdout) return null;
+    try {
+      return JSON.parse(stdout);
+    } catch (e) {
+      console.warn('Global CLI fallback produced invalid JSON:', e, stdout);
+      return null;
+    }
+  } catch (err) {
+    console.warn('Global CLI fallback error', err?.message || err);
+    return null;
+  }
+};
 
 app.post('/generate', async (req, res) => {
   const { url } = req.body || {};

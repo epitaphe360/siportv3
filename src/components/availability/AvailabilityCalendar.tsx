@@ -133,7 +133,7 @@ export default function AvailabilityCalendar({ user, showBooking = false, onBook
 
       toast.success(`Rendez-vous réservé avec ${user.profile.firstName} ${user.profile.lastName} le ${formatDate(slot.date)} à ${slot.startTime}`);
       onBookSlot?.(slot);
-    } catch (error) {
+    } catch {
       toast.error('Erreur lors de la réservation');
     } finally {
       setIsLoading(false);

@@ -497,7 +497,7 @@ export class SupabaseService {
     const safeSupabase = supabase!;
     try {
       // try to resolve exhibitor id from user id
-      const { data: ex, error: exErr } = await (safeSupabase as any)
+      const { data: ex } = await (safeSupabase as any)
         .from('exhibitors')
         .select('id')
         .eq('user_id', exhibitorUserId)
@@ -548,19 +548,22 @@ export class SupabaseService {
     // Fallback: try to run local CLI script via spawn (server-side environment only)
     if (!payload && typeof window === 'undefined') {
       try {
-        // Server-side only: dynamically import node modules at runtime
-        const child = await import('child_process');
-        const path = await import('path');
-        const scriptPath = path.join(process.cwd(), 'scripts', 'ai_generate_minisite.mjs');
-        const r = child.spawnSync(process.execPath, [scriptPath, websiteUrl], { encoding: 'utf8', timeout: 30000 });
-        if (r && r.status === 0) {
-          try {
-            payload = JSON.parse(r.stdout);
-          } catch (e) {
-            console.warn('CLI agent produced invalid JSON:', e, r.stdout);
-          }
+        // Server-side only: call a helper that dynamically requires node modules.
+        // Use a runtime-only require path so Vite does not statically analyze these imports for the browser.
+  const runLocalCli = (globalThis as any).__runLocalAiCliFallback;
+        if (typeof runLocalCli === 'function') {
+          const result = await runLocalCli(websiteUrl);
+          if (result) payload = result;
         } else {
-          console.warn('CLI agent failed:', (r && (r.stderr || r.stdout)) || r);
+          // If helper isn't installed on the global (e.g. in some server hosts), fall back to safe no-op
+          try {
+            // Deliberately use require inside a new Function to avoid static bundlers picking it up.
+            // This keeps the code non-evaluable by Vite for browser bundles.
+            const fn = new Function('w', "return (async function(){ const child = require('child_process'); const path = require('path'); const scriptPath = path.join(process.cwd(), 'scripts', 'ai_generate_minisite.mjs'); const r = child.spawnSync(process.execPath, [scriptPath, w], { encoding: 'utf8', timeout: 30000 }); if (r && r.status === 0) { try { return JSON.parse(r.stdout); } catch(e) { console.warn('CLI agent produced invalid JSON:', e, r.stdout); return null; } } else { console.warn('CLI agent failed:', (r && (r.stderr || r.stdout)) || r); return null;} })();");
+            payload = await fn(websiteUrl);
+          } catch (e) {
+            console.warn('Local CLI fallback failed (final):', e);
+          }
         }
       } catch (err) {
         console.warn('Local CLI fallback failed:', err);

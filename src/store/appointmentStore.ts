@@ -192,7 +192,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
           // best-effort: try to fetch by visitor context — but we need owner; bail gracefully
           // We'll allow DB to resolve exhibitor via appointment create if possible
         }
-      } catch (e) {
+      } catch {
         // ignore
       }
     }
@@ -215,7 +215,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
         // After success, refresh exhibitor slots to pick up server-side counters if possible
         try {
           if (exhibitorIdForSlot) await get().fetchTimeSlots(String(exhibitorIdForSlot));
-        } catch (e) {
+        } catch {
           // ignore refresh errors
         }
 

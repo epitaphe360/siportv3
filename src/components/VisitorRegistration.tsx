@@ -11,7 +11,7 @@ export default function VisitorRegistration() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const profile = { public_bio: bio };
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('users')
       .insert([{
         email,

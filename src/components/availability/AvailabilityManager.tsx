@@ -34,7 +34,7 @@ export default function AvailabilityManager({ userId, userType, onAvailabilityUp
       try {
         const slots = await SupabaseService.getTimeSlotsByUser(userId);
         setTimeSlots(slots);
-      } catch (error) {
+      } catch {
         toast.error('Erreur lors du chargement des créneaux');
       }
       setIsLoading(false);
@@ -72,7 +72,7 @@ export default function AvailabilityManager({ userId, userType, onAvailabilityUp
         location: ''
       });
       setShowAddForm(false);
-    } catch (error) {
+    } catch {
       toast.error('Erreur lors de l\'ajout du créneau');
     } finally {
       setIsLoading(false);
@@ -87,7 +87,7 @@ export default function AvailabilityManager({ userId, userType, onAvailabilityUp
       setTimeSlots(updatedSlots);
       onAvailabilityUpdate?.(updatedSlots);
       toast.success('Créneau supprimé');
-    } catch (error) {
+    } catch {
       toast.error('Erreur lors de la suppression');
     } finally {
       setIsLoading(false);

@@ -23,7 +23,6 @@ interface ExhibitorState {
 }
 
 // Removed large inline mock dataset. The application now relies on Supabase for real data.
-const mockExhibitors: Exhibitor[] = [];
 
 export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
   exhibitors: [],
@@ -61,7 +60,7 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
           body: errObj.response || errObj.body || null
         }, null, 2);
         console.warn('Supabase error (detailed):', serialized);
-      } catch (e) {
+      } catch {
         console.warn('Supabase error (could not serialize):', error);
       }
 

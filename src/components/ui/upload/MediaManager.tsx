@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StorageService } from '../../../services/storage/storageService';
 import { 
   FilePlus, 
@@ -62,7 +62,7 @@ const MediaManager: React.FC<MediaManagerProps> = ({
   const [currentFolder, setCurrentFolder] = useState<string>(folder);
   const [activeFilters, setActiveFilters] = useState(filters);
 
-  const loadFiles = async () => {
+  const loadFiles = useCallback(async () => {
     setLoading(true);
     setError(null);
     
@@ -100,11 +100,11 @@ const MediaManager: React.FC<MediaManagerProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [bucket, currentFolder]);
 
   useEffect(() => {
     loadFiles();
-  }, [bucket, currentFolder]);
+  }, [loadFiles]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;

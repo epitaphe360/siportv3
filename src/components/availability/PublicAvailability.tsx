@@ -47,7 +47,7 @@ const PublicAvailability = ({ userId }: PublicAvailabilityProps) => {
         meetingType: slot.type
       });
       setSuccessId(slot.id);
-    } catch (e) {
+    } catch {
       alert('Erreur lors de la demande de rendez-vous.');
     }
     setRequesting(null);

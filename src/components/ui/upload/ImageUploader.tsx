@@ -40,7 +40,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     if (initialImageUrl !== undefined && initialImageUrl !== imageUrl) {
       setImageUrl(initialImageUrl);
     }
-  }, [initialImageUrl]);
+  }, [initialImageUrl, imageUrl]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;

@@ -111,7 +111,7 @@ export default function NetworkingPage() {
       // fetch exhibitor slots (best-effort)
       try {
         fetchTimeSlots(selectedExhibitorForRDV.id);
-      } catch (e) {
+      } catch {
         // ignore errors, UI will fallback to empty list
         // console.warn('Failed to fetch exhibitor time slots', e);
       }
