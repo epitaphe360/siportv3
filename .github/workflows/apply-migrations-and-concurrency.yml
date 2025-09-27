@@ -1,12 +1,9 @@
 name: Apply migrations and run concurrency test
 
 on:
-  workflow_dispatch:
-    inputs:
-      parallel:
-        description: 'Number of parallel calls for concurrency test'
-        required: false
-        default: '50'
+  push:
+    branches:
+      - master
 
 jobs:
   apply-and-test:
@@ -117,7 +114,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          PARALLEL=${{ github.event.inputs.parallel || '50' }}
+          PARALLEL=50
           echo "Running concurrency test with parallel=$PARALLEL, time_slot=${{ steps.create_entities.outputs.timeslot }}, visitor=${{ steps.create_entities.outputs.visitor }}"
           node scripts/concurrent_book_test.mjs --database-url "${{ secrets.DATABASE_URL }}" --time-slot ${{ steps.create_entities.outputs.timeslot }} --visitor ${{ steps.create_entities.outputs.visitor }} --parallel $PARALLEL
 
