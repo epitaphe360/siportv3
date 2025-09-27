@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
 import { CONFIG } from '@/lib/config';
 import UserProfileView from '@/components/profile/UserProfileView';
+import { useAppointmentStore } from '@/store/appointmentStore';
 
 export default function NetworkingPage() {
   const { user, isAuthenticated } = useAuthStore();
@@ -99,6 +100,24 @@ export default function NetworkingPage() {
     setShowAppointmentModal(true);
   };
 
+  // Subscribe to appointment store to get time slots for selected exhibitor
+  const { timeSlots, fetchTimeSlots } = useAppointmentStore();
+
+  // When the appointment modal is shown for a selected exhibitor, fetch their time slots
+  React.useEffect(() => {
+    if (showAppointmentModal && selectedExhibitorForRDV) {
+      // clear any previously selected slot
+      setSelectedTimeSlot('');
+      // fetch exhibitor slots (best-effort)
+      try {
+        fetchTimeSlots(selectedExhibitorForRDV.id);
+      } catch (e) {
+        // ignore errors, UI will fallback to empty list
+        // console.warn('Failed to fetch exhibitor time slots', e);
+      }
+    }
+  }, [showAppointmentModal, selectedExhibitorForRDV, fetchTimeSlots, setSelectedTimeSlot]);
+
   const handleConfirmAppointment = () => {
     if (!selectedExhibitorForRDV) {
       toast.error('Aucun exposant sélectionné');
@@ -108,17 +127,36 @@ export default function NetworkingPage() {
       toast.error('Veuillez sélectionner un créneau horaire');
       return;
     }
-    const appointmentData = {
-      exhibitor: `${selectedExhibitorForRDV.profile.firstName} ${selectedExhibitorForRDV.profile.lastName}`,
-      timeSlot: selectedTimeSlot,
-      message: appointmentMessage,
-      confirmationId: `RDV-${Date.now()}`
+    // Quotas B2B selon visitor_level
+    const level = user?.visitor_level || 'free';
+    const quotas: Record<string, number> = {
+      free: 0,
+      basic: 2,
+      premium: 5,
+      vip: 99 // VIP illimité
     };
-    toast.success(`Demande de RDV envoyée à ${appointmentData.exhibitor} — ${appointmentData.timeSlot}`);
-    setShowAppointmentModal(false);
-    setSelectedExhibitorForRDV(null);
-    setSelectedTimeSlot('');
-    setAppointmentMessage('');
+    // Compter les RDV confirmés du visiteur
+    const confirmedAppointments = connections?.filter(
+      (a: any) => a.visitorId === user?.id && a.status === 'confirmed'
+    ) || [];
+    if (confirmedAppointments.length >= quotas[level]) {
+      toast.error(`Quota atteint : vous avez déjà ${quotas[level]} RDV B2B confirmés pour votre niveau.`);
+      return;
+    }
+    const appointmentStore = useAppointmentStore.getState();
+    // Try to call the canonical booking flow. The selectedTimeSlot should ideally be a slot id.
+    appointmentStore.bookAppointment(selectedTimeSlot, appointmentMessage)
+      .then(() => {
+        toast.success(`Demande de RDV envoyée à ${selectedExhibitorForRDV.profile.firstName} ${selectedExhibitorForRDV.profile.lastName}`);
+        setShowAppointmentModal(false);
+        setSelectedExhibitorForRDV(null);
+        setSelectedTimeSlot('');
+        setAppointmentMessage('');
+      })
+      .catch((err: any) => {
+        console.error('Booking failed', err);
+        toast.error(err?.message || 'Échec de la réservation');
+      });
   };
 
   const handleFavoriteToggle = (userId: string, userName: string, isFavorite: boolean) => {
@@ -1357,18 +1395,22 @@ export default function NetworkingPage() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Sélectionner un créneau</option>
-                <option value="2025-09-15 09:00">15 Septembre 2025 - 09:00</option>
-                <option value="2025-09-15 10:00">15 Septembre 2025 - 10:00</option>
-                <option value="2025-09-15 11:00">15 Septembre 2025 - 11:00</option>
-                <option value="2025-09-15 14:00">15 Septembre 2025 - 14:00</option>
-                <option value="2025-09-15 15:00">15 Septembre 2025 - 15:00</option>
-                <option value="2025-09-15 16:00">15 Septembre 2025 - 16:00</option>
-                <option value="2025-09-16 09:00">16 Septembre 2025 - 09:00</option>
-                <option value="2025-09-16 10:00">16 Septembre 2025 - 10:00</option>
-                <option value="2025-09-16 11:00">16 Septembre 2025 - 11:00</option>
-                <option value="2025-09-16 14:00">16 Septembre 2025 - 14:00</option>
-                <option value="2025-09-16 15:00">16 Septembre 2025 - 15:00</option>
-                <option value="2025-09-16 16:00">16 Septembre 2025 - 16:00</option>
+                {Array.isArray(timeSlots) && timeSlots.length > 0 ? (
+                  timeSlots.map((slot) => {
+                    const dateObj = slot.date ? new Date(slot.date as any) : null;
+                    const dateLabel = dateObj ? dateObj.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : String(slot.date || '');
+                    const locationPart = slot.location ? ` • ${slot.location}` : '';
+                    const availability = slot.available === false ? ' (Complet)' : '';
+                    return (
+                      <option key={slot.id} value={slot.id}>
+                        {`${dateLabel} - ${slot.startTime}${locationPart}${availability}`}
+                      </option>
+                    );
+                  })
+                ) : (
+                  // graceful fallback when no slots available
+                  <option value="" disabled>Aucun créneau disponible</option>
+                )}
               </select>
             </div>
             

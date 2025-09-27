@@ -11,6 +11,7 @@ export type Database = {
           email: string;
           name: string;
           type: 'exhibitor' | 'partner' | 'visitor' | 'admin';
+          visitor_level?: 'free' | 'basic' | 'premium' | 'vip'; // Ajouté
           profile: UserProfile;
           status?: 'active' | 'pending' | 'suspended' | 'rejected';
           created_at: string;
@@ -21,6 +22,7 @@ export type Database = {
           email: string;
           name: string;
           type: 'exhibitor' | 'partner' | 'visitor' | 'admin';
+          visitor_level?: 'free' | 'basic' | 'premium' | 'vip'; // Ajouté
           profile: UserProfile;
           status?: 'active' | 'pending' | 'suspended' | 'rejected';
           created_at?: string;
@@ -31,6 +33,7 @@ export type Database = {
           email?: string;
           name?: string;
           type?: 'exhibitor' | 'partner' | 'visitor' | 'admin';
+          visitor_level?: 'free' | 'basic' | 'premium' | 'vip'; // Ajouté
           profile?: UserProfile;
           status?: 'active' | 'pending' | 'suspended' | 'rejected';
           created_at?: string;

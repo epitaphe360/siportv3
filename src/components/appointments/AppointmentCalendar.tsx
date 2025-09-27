@@ -147,20 +147,26 @@ export default function AppointmentCalendar() {
       const endTime = new Date(`2000-01-01T${newSlotData.endTime}`);
       const calculatedDuration = Math.round((endTime.getTime() - startTime.getTime()) / (1000 * 60));
 
-      // Vérifier les conflits avec les créneaux existants
+      // Vérifier les conflits avec les créneaux existants (comparaisons numériques)
       const conflictingSlot = timeSlots.find(slot => {
         const slotDate = new Date(slot.date).toDateString();
         const newDate = selectedDate.toDateString();
 
         if (slotDate !== newDate) return false;
 
-        // Vérifier les chevauchements d'horaires
-        const existingStart = slot.startTime;
-        const existingEnd = slot.endTime;
-        const newStart = newSlotData.startTime;
-        const newEnd = newSlotData.endTime;
+        // Convertir HH:MM en minutes depuis minuit
+        const timeToMinutes = (t: string) => {
+          const [hh, mm] = t.split(':').map(x => parseInt(x, 10));
+          return hh * 60 + mm;
+        };
 
-        return (newStart < existingEnd && newEnd > existingStart);
+        const existingStartMin = timeToMinutes(slot.startTime);
+        const existingEndMin = timeToMinutes(slot.endTime);
+        const newStartMin = timeToMinutes(newSlotData.startTime);
+        const newEndMin = timeToMinutes(newSlotData.endTime);
+
+        // Overlap if newStart < existingEnd && newEnd > existingStart
+        return newStartMin < existingEndMin && newEndMin > existingStartMin;
       });
 
       if (conflictingSlot) {
@@ -169,6 +175,7 @@ export default function AppointmentCalendar() {
       }
 
       const slotData = {
+        userId: exhibitorId,
         date: selectedDate,
         startTime: newSlotData.startTime,
         endTime: newSlotData.endTime,
@@ -219,9 +226,26 @@ export default function AppointmentCalendar() {
     }
     
     try {
+      // Pré-vérification du quota côté client
+      const auth = await import('../../store/authStore');
+      const user = auth?.default?.getState ? auth.default.getState().user : null;
+      const visitorId = user?.id || 'user1';
+      const visitorLevel = user?.visitor_level || user?.profile?.visitor_level || 'free';
+      const quotas: Record<string, number> = { free: 0, basic: 2, premium: 5, vip: 99 };
+      const confirmedCount = appointments.filter(a => a.visitorId === visitorId && a.status === 'confirmed').length;
+      if (confirmedCount >= (quotas[visitorLevel] || 0)) {
+        toast.error('Quota RDV atteint pour votre niveau');
+        return;
+      }
+
+      // Prevent duplicate same-slot booking
+      if (appointments.some(a => a.visitorId === visitorId && a.timeSlotId === selectedSlot)) {
+        toast.error('Vous avez déjà réservé ce créneau');
+        return;
+      }
+
       await bookAppointment(selectedSlot, bookingMessage);
-      
-  toast.success('Rendez-vous réservé !');
+      toast.success('Rendez-vous réservé !');
       
       setShowBookingModal(false);
       setSelectedSlot(null);

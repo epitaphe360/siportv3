@@ -416,6 +416,24 @@ export class SupabaseService {
     }
   }
 
+  // New: lookup exhibitor by user_id
+  static async getExhibitorByUserId(userId: string): Promise<Exhibitor | null> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré.');
+    }
+    const safeSupabase = supabase!;
+    const { data, error } = await (safeSupabase as any)
+      .from('exhibitors')
+      .select(`*, user:users!exhibitors_user_id_fkey(*), products:products!fk_products_exhibitor(*), mini_site:mini_sites!mini_sites_exhibitor_id_fkey(*)`)
+      .eq('user_id', userId)
+      .single();
+    if (error) {
+      if (error.code === 'PGRST116') return null;
+      throw error;
+    }
+    return this.mapExhibitorFromDB(data);
+  }
+
   static async createExhibitor(exhibitorData: Partial<Exhibitor>): Promise<Exhibitor> {
     if (!this.checkSupabaseConnection()) {
       throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
@@ -467,6 +485,101 @@ export class SupabaseService {
 
     if (error) throw error;
     return this.mapExhibitorFromDB(data);
+  }
+
+  /**
+   * Upload exhibitor logo to storage and return public URL
+   */
+  static async uploadExhibitorLogo(exhibitorUserId: string, file: File): Promise<{ path: string; publicUrl?: string } | null> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré.');
+    }
+    const safeSupabase = supabase!;
+    try {
+      // try to resolve exhibitor id from user id
+      const { data: ex, error: exErr } = await (safeSupabase as any)
+        .from('exhibitors')
+        .select('id')
+        .eq('user_id', exhibitorUserId)
+        .single();
+      const exhibitorId = ex?.id || exhibitorUserId;
+
+      const ext = file.name.includes('.') ? file.name.substring(file.name.lastIndexOf('.')) : '';
+      const key = `exhibitors/${exhibitorId}/logo-${Date.now()}${ext}`;
+  // @ts-expect-error - browser File type accepted by supabase-js
+      const { data, error } = await (safeSupabase as any).storage.from('exhibitor-logos').upload(key, file as any, { upsert: true });
+      if (error) throw error;
+      const { data: publicUrlData } = (safeSupabase as any).storage.from('exhibitor-logos').getPublicUrl(data.path || key);
+      return { path: data.path || key, publicUrl: publicUrlData?.publicUrl };
+    } catch (err) {
+      console.error('uploadExhibitorLogo error', err);
+      return null;
+    }
+  }
+
+  /**
+   * Create a mini-site by providing only the exhibitor website URL.
+   * This method calls a local AI agent endpoint (configurable via env VITE_AI_AGENT_URL)
+   * which returns a mini-site payload compatible with createMiniSite.
+   */
+  static async createMiniSiteFromWebsite(websiteUrl: string): Promise<any> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré.');
+    }
+
+    // Try to call configured AI agent endpoint first
+    const agentUrl = (import.meta.env && (import.meta.env as any).VITE_AI_AGENT_URL) || (process.env.REACT_APP_AI_AGENT_URL as string) || (process.env.VITE_AI_AGENT_URL as string) || null;
+
+    let payload: any = null;
+    if (agentUrl) {
+      try {
+        const res = await fetch(agentUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: websiteUrl })
+        });
+        if (!res.ok) throw new Error(`Agent returned ${res.status}`);
+        payload = await res.json();
+      } catch (err) {
+        console.warn('AI agent call failed, falling back to local script:', err);
+      }
+    }
+
+    // Fallback: try to run local CLI script via spawn (server-side environment only)
+    if (!payload && typeof window === 'undefined') {
+      try {
+        // Server-side only: dynamically import node modules at runtime
+        const child = await import('child_process');
+        const path = await import('path');
+        const scriptPath = path.join(process.cwd(), 'scripts', 'ai_generate_minisite.mjs');
+        const r = child.spawnSync(process.execPath, [scriptPath, websiteUrl], { encoding: 'utf8', timeout: 30000 });
+        if (r && r.status === 0) {
+          try {
+            payload = JSON.parse(r.stdout);
+          } catch (e) {
+            console.warn('CLI agent produced invalid JSON:', e, r.stdout);
+          }
+        } else {
+          console.warn('CLI agent failed:', (r && (r.stderr || r.stdout)) || r);
+        }
+      } catch (err) {
+        console.warn('Local CLI fallback failed:', err);
+      }
+    }
+
+    if (!payload) {
+      throw new Error('Could not generate mini-site payload; no AI agent available.');
+    }
+
+    // Use createMiniSite to persist (this will create exhibitor if needed)
+    return this.createMiniSite({
+      company: payload.company,
+      logo: payload.logo,
+      description: payload.description,
+      products: JSON.stringify(payload.products || []),
+      socials: JSON.stringify(payload.socials || []),
+      documents: payload.documents || []
+    });
   }
 
   // ==================== MOCK DATA ====================
@@ -644,6 +757,48 @@ export class SupabaseService {
       throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
     }
     const safeSupabase = supabase!;
+    // Try to call the atomic booking RPC first (ensures no overbooking in concurrent scenarios)
+    try {
+      // Supabase RPC call: book_time_slot_atomic(visitor_id, time_slot_id, meeting_type, message)
+      const rpcParams = {
+        p_visitor_id: appointmentData.visitorId,
+        p_time_slot_id: appointmentData.timeSlotId,
+        p_meeting_type: (appointmentData.meetingType || 'in-person'),
+        p_message: appointmentData.message || null
+      } as any;
+
+      const { data: rpcData, error: rpcErr } = await (safeSupabase as any)
+        .rpc('book_time_slot_atomic', [rpcParams.p_visitor_id, rpcParams.p_time_slot_id, rpcParams.p_meeting_type, rpcParams.p_message]);
+
+      if (!rpcErr && rpcData) {
+        // rpc returns the inserted appointment row (single)
+        return this.mapAppointmentFromDB(rpcData);
+      }
+
+      // If RPC returned an error, fall through to fallback insert below and rethrow known conditions
+      if (rpcErr) {
+        // Translate common Postgres errors
+        const msg = (rpcErr.message || String(rpcErr)).toLowerCase();
+        if (msg.includes('fully booked') || msg.includes('time slot fully booked') || msg.includes('time slot fully booked')) {
+          throw new Error('Ce créneau est complet.');
+        }
+        if (msg.includes('duplicate') || msg.includes('unique')) {
+          throw new Error('Vous avez déjà réservé ce créneau.');
+        }
+        // Otherwise, continue to try normal insert which may provide richer error details
+      }
+    } catch (rpcCallErr: any) {
+      // If RPC call failed (function not found or permission), we'll try the standard insert as fallback
+      const low = String(rpcCallErr?.message || rpcCallErr || '').toLowerCase();
+      if (low.includes('function') && low.includes('does not exist')) {
+        // expected on older DBs; continue to fallback insert
+      } else if (low.includes('time slot fully booked') || low.includes('fully booked')) {
+        throw new Error('Ce créneau est complet.');
+      }
+      // else continue to fallback behavior
+    }
+
+    // Fallback: legacy insert (DB triggers will adjust counts if RPC not present)
     const { data, error } = await (safeSupabase as any)
       .from('appointments')
       .insert([{
@@ -660,7 +815,17 @@ export class SupabaseService {
         time_slot:time_slots(*)
       `)
       .single();
-    if (error) throw error;
+    if (error) {
+      // Map common DB errors to friendlier messages
+      const errMsg = String(error.message || error).toLowerCase();
+      if (errMsg.includes('duplicate') || errMsg.includes('unique')) {
+        throw new Error('Vous avez déjà réservé ce créneau.');
+      }
+      if (errMsg.includes('foreign key') || errMsg.includes('violat')) {
+        throw new Error('Données invalides pour la réservation.');
+      }
+      throw error;
+    }
     return this.mapAppointmentFromDB(data);
   }
 
@@ -1359,7 +1524,7 @@ export class SupabaseService {
 
   static async createTimeSlot(slotData: {
     userId: string;
-    date: string;
+    date: string | Date;
     startTime: string;
     endTime: string;
     duration: number;
@@ -1371,11 +1536,13 @@ export class SupabaseService {
       throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
     }
     const safeSupabase = supabase!;
+    const dateString = slotData.date instanceof Date ? slotData.date.toISOString().split('T')[0] : String(slotData.date);
+
     const { data, error } = await (safeSupabase as any)
       .from('time_slots')
       .insert([{
         user_id: slotData.userId,
-        date: slotData.date,
+        date: dateString,
         start_time: slotData.startTime,
         end_time: slotData.endTime,
         duration: slotData.duration,
@@ -1505,7 +1672,7 @@ export class SupabaseService {
   private static mapTimeSlotFromDB(data: Record<string, unknown>): TimeSlot {
     return {
       id: data.id as string,
-      date: new Date(data.date as string),
+      date: data.date ? new Date(String(data.date)) : new Date(),
       startTime: data.start_time as string,
       endTime: data.end_time as string,
       duration: data.duration as number,
@@ -1513,7 +1680,8 @@ export class SupabaseService {
       maxBookings: data.max_bookings as number,
       currentBookings: data.current_bookings as number,
       available: data.available as boolean,
-      location: data.location as string
+      location: data.location as string,
+      userId: (data as any).user_id as string
     };
   }
 }
