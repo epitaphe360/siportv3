@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import fetch from 'node-fetch';
-import cheerio from 'cheerio';
+import { load } from 'cheerio';
 
 async function fetchHtml(url) {
   const res = await fetch(url, { redirect: 'follow', timeout: 15000 });
@@ -9,7 +9,7 @@ async function fetchHtml(url) {
 }
 
 function extractMeta(html, baseUrl) {
-  const $ = cheerio.load(html);
+  const $ = load(html);
   const title = $('head > title').text() || $('meta[property="og:site_name"]').attr('content') || '';
   const description = $('meta[name="description"]').attr('content') || $('meta[property="og:description"]').attr('content') || '';
   const ogImage = $('meta[property="og:image"]').attr('content') || $('link[rel="image_src"]').attr('href') || '';
@@ -62,4 +62,5 @@ async function main() {
   }
 }
 
-if (require.main === module) main();
+// Execute when run as a script
+main();

@@ -4,6 +4,7 @@ import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Textarea } from '../ui/Textarea';
 import { SupabaseService } from '../../services/supabaseService';
+import AiAgentService from '../../services/aiAgentService';
 
 interface MiniSiteWizardProps {
   onSuccess?: () => void;
@@ -48,10 +49,20 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
     try {
       // If an import URL is provided, use the AI agent flow
       if (importUrl && importUrl.trim().length > 0) {
-        const created = await SupabaseService.createMiniSiteFromWebsite(importUrl.trim());
-        console.log('createMiniSiteFromWebsite result:', created);
-        setSuccess(true);
-        if (onSuccess) onSuccess();
+        // Generate payload using the AI agent service and populate form for user review
+        const generated = await AiAgentService.generate(importUrl.trim());
+        console.log('Generated minisite payload (agent):', generated);
+        // Map generated payload into form fields (make editable)
+        setForm({
+          company: generated.company || '',
+          description: generated.description || '',
+          products: Array.isArray(generated.products) ? generated.products.join('\n') : (generated.products || ''),
+          socials: Array.isArray(generated.socials) ? generated.socials.join(', ') : (generated.socials || ''),
+          documents: generated.documents || [],
+          logo: generated.logo || ''
+        });
+        // Move to the first step so exhibitor can review/edit
+        setStep(0);
         setLoading(false);
         return;
       }
@@ -60,17 +71,27 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
       const logoUrl = '';
       const docsUrls: string[] = [];
 
-      // Créer le mini-site en utilisant SupabaseService
+      // If we're submitting after review, persist and publish the mini-site
       const created = await SupabaseService.createMiniSite({
         company: form.company,
-        logo: logoUrl,
+        logo: form.logo || logoUrl,
         description: form.description,
-        products: form.products,
-        socials: form.socials,
+        products: typeof form.products === 'string' ? form.products : JSON.stringify(form.products || []),
+        socials: typeof form.socials === 'string' ? form.socials : JSON.stringify(form.socials || []),
         documents: docsUrls,
       });
 
       console.log('createMiniSite result:', created);
+      // Optionally publish: call updateMiniSite to set published true when created
+      try {
+        const mini = (created && created[0]) ? created[0] : (created || null);
+        if (mini && mini.id) {
+          await SupabaseService.updateMiniSite(mini.exhibitor_id || mini.exhibitor_id, { ...mini, published: true });
+        }
+      } catch (pubErr) {
+        console.warn('Could not auto-publish mini-site:', pubErr);
+      }
+
       setSuccess(true);
       if (onSuccess) onSuccess();
     } catch (e: any) {

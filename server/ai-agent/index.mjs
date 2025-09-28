@@ -29,7 +29,30 @@ globalThis.__runLocalAiCliFallback = async function (websiteUrl) {
   }
 };
 
+// Simple CORS + API key protection middleware
+app.use((req, res, next) => {
+  // Allow local dev origins; adjust in production
+  const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:3000').split(',');
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  }
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-ai-agent-key');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  next();
+});
+
 app.post('/generate', async (req, res) => {
+  // If AI_AGENT_KEY is set in environment, require clients to present the same header
+  const requiredKey = process.env.AI_AGENT_KEY || null;
+  if (requiredKey) {
+    const incoming = req.headers['x-ai-agent-key'] || req.headers['x-ai-agent-key'.toLowerCase()];
+    if (!incoming || String(incoming) !== String(requiredKey)) {
+      return res.status(401).json({ error: 'unauthorized' });
+    }
+  }
   const { url } = req.body || {};
   if (!url) return res.status(400).json({ error: 'url required' });
 

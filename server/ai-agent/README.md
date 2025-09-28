@@ -35,6 +35,17 @@ If you don't set GROQ_* env vars the agent will return the basic scraped payload
 
 Do not add `.env` files with secrets to the repository. Use your deployment platform's secret manager.
 
+Security & configuration
+------------------------
+- `AI_AGENT_KEY` (optional): if set, clients must send `x-ai-agent-key` header with this value to call `/generate`.
+- `ALLOWED_ORIGINS` (optional): comma-separated list of allowed origins for CORS (default `http://localhost:5173,http://localhost:3000`).
+
+Curl example with API key:
+
+```powershell
+curl -X POST http://localhost:4001/generate -H 'Content-Type: application/json' -H 'x-ai-agent-key: your_key_here' -d '{"url":"https://example.com"}'
+```
+
 Server helper
 --------------
 
