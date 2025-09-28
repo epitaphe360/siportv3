@@ -44,3 +44,8 @@ yarn.lock
 
 # JetBrains
 .idea/
+
+# Large artifacts
+*.zip
+*.zip/
+.eslint-report.json
