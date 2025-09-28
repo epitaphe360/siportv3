@@ -238,3 +238,53 @@ scripts/fetch-exhibitors-with-service-key.mjs
   $env:SUPABASE_URL="https://your-project.supabase.co"; $env:SUPABASE_SERVICE_ROLE_KEY="sbp_..."; node scripts/fetch-exhibitors-with-service-key.mjs
 
 Security: do NOT commit service role keys. Only run this script on secure machines.
+
+## 🆕 Nouvelles fonctionnalités récentes (AI mini-site generator)
+
+Nous avons ajouté un flux complet pour permettre à un exposant de fournir uniquement l'URL de son site officiel et de générer automatiquement un mini-site uniforme.
+
+Principaux composants ajoutés :
+- `scripts/ai_generate_minisite.mjs` — petit CLI qui scrape une URL et retourne un payload JSON (company, logo, description, sections...) utilisable directement par `mini_sites`.
+- `server/ai-agent/index.mjs` — micro‑service Express qui expose `POST /generate` (protégé par `x-ai-agent-key` si `AI_AGENT_KEY` est défini) et peut enrichir le payload via OpenAI/GROQ et uploader les images vers Supabase Storage si les clés sont configurées.
+- `src/services/aiAgentService.ts` — client frontend qui appelle l'agent et gère la clé `VITE_AI_AGENT_KEY` côté client (optionnel).
+- Modifications frontend : `src/components/minisite/MiniSiteWizard.tsx` appelle maintenant l'agent pour générer un payload, pré-remplit le formulaire, permet la validation/édition puis appelle `SupabaseService.createMiniSite` pour persister et publier.
+- `scripts/generate_and_publish_minisite.mjs` — script server-side utilitaire qui : génère le payload (CLI), normalise logo/téléphone, upload le logo vers Supabase Storage puis crée l'exhibitor et le mini_site en base (utilise `SUPABASE_SERVICE_ROLE_KEY`).
+
+Variables d'environnement requises pour le fonctionnement complet (NE PAS COMMITTER) :
+- `AI_AGENT_KEY` : clé simple pour protéger le endpoint `POST /generate` (facultatif, recommandé en production).
+- `ALLOWED_ORIGINS` : liste d'origines autorisées pour CORS, ex. `http://localhost:5173,http://localhost:3000`.
+- `VITE_AI_AGENT_URL` / `VITE_AI_AGENT_KEY` : si vous souhaitez que le client appelle un agent distant en production.
+- `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` : nécessaires pour uploader les images et publier automatiquement le mini-site.
+- `SUPABASE_BUCKET` (optionnel) : nom du bucket pour stocker les images (par défaut `mini-sites`).
+- `OPENAI_API_KEY` (optionnel) : si vous activez l'enrichissement via OpenAI dans l'agent.
+
+Commandes utiles (PowerShell)
+
+Générer localement le payload sans publication :
+```powershell
+node .\scripts\ai_generate_minisite.mjs "https://example.com"
+```
+
+Démarrer l'agent localement (protégé par clé facultative) :
+```powershell
+#$env:AI_AGENT_KEY = 'votre_cle_agent'     # facultatif
+#$env:ALLOWED_ORIGINS = 'http://localhost:5173'
+npm run ai-agent
+```
+
+Générer et publier automatiquement (doit être exécuté sur une machine sûre où les secrets sont définis) :
+```powershell
+$env:SUPABASE_URL = 'https://xyz.supabase.co'
+$env:SUPABASE_SERVICE_ROLE_KEY = 'service_role_...'
+$env:SUPABASE_BUCKET = 'mini-sites'   # facultatif
+node .\scripts\generate_and_publish_minisite.mjs "https://example.com"
+```
+
+Sécurité & bonnes pratiques
+- Ne stockez jamais `SUPABASE_SERVICE_ROLE_KEY` dans le dépôt. Utilisez le gestionnaire de secrets de votre plateforme (Railway, Vercel, etc.).
+- Préférez appeler `POST /generate` depuis votre backend (ou via l'agent) afin de ne pas exposer des clés sensibles côté client.
+
+Si vous voulez, je peux :
+- Ajouter un endpoint `POST /generate-and-publish` (serveur) pour qu'un seul appel HTTP côté client puisse lancer génération + publication (sécurisé côté serveur). 
+- Améliorer la validation du numéro de téléphone au format E.164.
+- Ajouter des tests e2e pour le flux complet.
