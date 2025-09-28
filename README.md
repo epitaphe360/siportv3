@@ -229,3 +229,12 @@ L'application SIPORTS 2026 est **100% prête** pour :
 
 **Contact** : contact@siportevent.com
 **Site officiel** : https://siportevent.com
+
+## Scripts
+
+scripts/fetch-exhibitors-with-service-key.mjs
+- Usage: run locally on a trusted machine. Requires SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables.
+- Example (PowerShell):
+  $env:SUPABASE_URL="https://your-project.supabase.co"; $env:SUPABASE_SERVICE_ROLE_KEY="sbp_..."; node scripts/fetch-exhibitors-with-service-key.mjs
+
+Security: do NOT commit service role keys. Only run this script on secure machines.

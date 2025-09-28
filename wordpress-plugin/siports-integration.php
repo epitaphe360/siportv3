@@ -69,12 +69,12 @@ function siports_load_assets() {
     // Hook pour filtres personnalisés
     $runtime = apply_filters('siports_runtime_config', $runtime);
 
-    // SI AUCUNE CONFIG, INJECTER UNE CONFIG DE TEST POUR ÉVITER L'ERREUR
+    // SI AUCUNE CONFIG, afficher une erreur explicite côté client
     if (empty($runtime)) {
-        $runtime = array(
-            'VITE_SUPABASE_URL' => 'https://demo-project.supabase.co',
-            'VITE_SUPABASE_ANON_KEY' => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.demo-key-for-testing-purposes-only-12345678901234567890123456789012345678901234567890'
-        );
+        $runtime = array();
+        // Ajoute une variable JS pour signaler l'absence de config
+        $conf = 'window.SIPORTS_CONFIG_ERROR = "Aucune configuration Supabase valide injectée. Veuillez définir les constantes SIPORTS_SUPABASE_URL et SIPORTS_SUPABASE_ANON_KEY dans wp-config.php ou les options WordPress.";';
+        wp_add_inline_script('siports-react-script', $conf, 'before');
     }
 
     // JS module (index-*.js)

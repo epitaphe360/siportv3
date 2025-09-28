@@ -665,17 +665,16 @@ export type Database = {
   };
 };
 
-// Autoriser une configuration runtime injectée par WordPress (plugin) via window.SIPORTS_CONFIG
-type RuntimeConfig = {
-  VITE_SUPABASE_URL?: string;
-  VITE_SUPABASE_ANON_KEY?: string;
-  VITE_SUPABASE_SERVICE_ROLE_KEY?: string;
-};
-const runtimeCfg: RuntimeConfig = (typeof window !== 'undefined' && (window as any).SIPORTS_CONFIG) || {};
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || runtimeCfg.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || runtimeCfg.VITE_SUPABASE_ANON_KEY;
-const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY || runtimeCfg.VITE_SUPABASE_SERVICE_ROLE_KEY;
+// FORCÉ : N'utilise QUE la config .env (Vite) et ignore toute injection WordPress
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
+
+// Log d'avertissement si une config WordPress est détectée (debug)
+if (typeof window !== 'undefined' && window.SIPORTS_CONFIG) {
+  console.warn('[SIPORTS] La config injectée par WordPress (window.SIPORTS_CONFIG) est ignorée. Seule la config .env est utilisée.');
+}
 
 // Debug logging (safe): do not print keys or lengths in client
 console.log('🔍 Supabase config:', {
@@ -695,29 +694,28 @@ const isSupabaseConfigured = supabaseUrl &&
                              !supabaseAnonKey.startsWith('demo_');
 
 if (!isSupabaseConfigured) {
-  const errorMessage = 'CRITICAL: Supabase environment variables (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY) are not correctly configured in the .env file. The application cannot start.';
-  console.error(errorMessage);
-  // Rendre l'erreur visible sur la page elle-même (même si script en footer)
-  const renderConfigError = () => {
+  const errorMessage = 'Supabase env vars missing or invalid. Some features requiring Supabase will be disabled in this session.';
+  console.warn(errorMessage);
+  // Show a non-fatal banner on the page to inform developers
+  try {
     const rootElement =
       document.getElementById('siports-networking-app') ||
       document.getElementById('siports-exhibitor-dashboard-app') ||
       document.body;
     if (rootElement) {
-      rootElement.innerHTML = `<div style="padding: 20px; background-color: #ffcccc; border: 1px solid #ff0000; color: #a94442;">
-        <h3>Erreur de Configuration</h3>
-        <p>${errorMessage}</p>
-        <p>Veuillez contacter l'administrateur du site.</p>
-      </div>`;
+      const banner = document.createElement('div');
+      banner.style.padding = '12px';
+      banner.style.backgroundColor = '#fff4e5';
+      banner.style.border = '1px solid #f1c40f';
+      banner.style.color = '#663c00';
+      banner.style.margin = '8px';
+      banner.textContent = errorMessage + ' (see console for details)';
+      rootElement.insertBefore(banner, rootElement.firstChild);
     }
-  };
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', renderConfigError);
-  } else {
-    renderConfigError();
+  } catch (e) {
+    // ignore DOM errors in non-browser contexts
   }
-  // Arrêter l'exécution pour éviter d'autres erreurs
-  throw new Error(errorMessage);
+  // Don't throw: allow the app to run in degraded mode (useful for local dev without keys)
 }
 
 // Utiliser une approche globale pour garantir un seul client

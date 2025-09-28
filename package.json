@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+  "dev": "vite",
+  "check-env": "node scripts/check-env.cjs",
+  "check-env:legacy": "node scripts/check-env.js",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
