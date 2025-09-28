@@ -49,43 +49,16 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
         isLoading: false 
       });
     } catch (error: any) {
-      // Log expanded Supabase error details to help debug 500 / PGRST errors
-      try {
-        const errObj = error || {};
-        const serialized = JSON.stringify({
-          message: errObj.message || errObj.msg || null,
-          code: errObj.code || null,
-          details: errObj.details || errObj.hint || null,
-          status: errObj.status || null,
-          body: errObj.response || errObj.body || null
-        }, null, 2);
-        console.warn('Supabase error (detailed):', serialized);
-      } catch {
-        console.warn('Supabase error (could not serialize):', error);
-      }
-
-      // Map common Supabase auth error to a clear action message for devs
-      const errMsg = (() => {
-        try {
-          const e = error || {};
-          const msg = (e.message || e.msg || '').toString();
-          const details = (e.details || e.hint || '').toString();
-          if (msg.includes('Invalid API key') || details.includes('Invalid API key')) {
-            return 'Clé API Supabase invalide. Vérifiez et mettez à jour VITE_SUPABASE_ANON_KEY (ou la configuration WordPress) puis relancez l\'application.';
-          }
-        } catch (_) {
-          // fall through
-        }
-        return 'Impossible de charger les données réelles depuis Supabase. Voir la console pour les détails.';
-      })();
-
-      // Do not fall back to inline mock data automatically. Use empty arrays and
-      // surface an actionable error so the UI can show clear instructions.
+      console.error('Erreur lors du chargement des exposants:', error);
+      
+      // Message d'erreur simple et clair
+      const errorMessage = error?.message || 'Erreur de connexion à la base de données';
+      
       set({ 
         exhibitors: [],
         filteredExhibitors: [],
         isLoading: false,
-        error: errMsg
+        error: errorMessage
       });
     }
   },

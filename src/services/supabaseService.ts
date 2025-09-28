@@ -506,7 +506,6 @@ export class SupabaseService {
 
       const ext = file.name.includes('.') ? file.name.substring(file.name.lastIndexOf('.')) : '';
       const key = `exhibitors/${exhibitorId}/logo-${Date.now()}${ext}`;
-  // @ts-expect-error - browser File type accepted by supabase-js
       const { data, error } = await (safeSupabase as any).storage.from('exhibitor-logos').upload(key, file as any, { upsert: true });
       if (error) throw error;
       const { data: publicUrlData } = (safeSupabase as any).storage.from('exhibitor-logos').getPublicUrl(data.path || key);

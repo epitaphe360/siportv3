@@ -669,18 +669,18 @@ export type Database = {
 // FORCÉ : N'utilise QUE la config .env (Vite) et ignore toute injection WordPress
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
+// SÉCURITÉ : La service role key ne doit JAMAIS être exposée côté client
+// Elle est uniquement utilisée côté serveur dans les fichiers server/
 
 // Log d'avertissement si une config WordPress est détectée (debug)
-if (typeof window !== 'undefined' && window.SIPORTS_CONFIG) {
+if (typeof window !== 'undefined' && (window as any).SIPORTS_CONFIG) {
   console.warn('[SIPORTS] La config injectée par WordPress (window.SIPORTS_CONFIG) est ignorée. Seule la config .env est utilisée.');
 }
 
 // Debug logging (safe): do not print keys or lengths in client
 console.log('🔍 Supabase config:', {
   urlProvided: !!supabaseUrl,
-  anonKeyPresent: !!supabaseAnonKey,
-  serviceKeyPresent: !!supabaseServiceKey // note: service key must never be exposed to browsers
+  anonKeyPresent: !!supabaseAnonKey
 });
 
 // Vérifier si Supabase est configuré avec de vraies valeurs
@@ -718,60 +718,33 @@ if (!isSupabaseConfigured) {
   // Don't throw: allow the app to run in degraded mode (useful for local dev without keys)
 }
 
-// Utiliser une approche globale pour garantir un seul client
-declare global {
-  var __supabaseClient: ReturnType<typeof createClient<Database>> | null;
-  var __supabaseAdminClient: ReturnType<typeof createClient<Database>> | null;
-  var __supabaseClientCreated: boolean;
-  var __supabaseAdminClientCreated: boolean;
-}
+// Client Supabase simplifié et sécurisé
+let supabaseClientInstance: ReturnType<typeof createClient<Database>> | null = null;
 
-// Initialiser les variables globales si elles n'existent pas
-if (typeof globalThis.__supabaseClient === 'undefined') {
-  globalThis.__supabaseClient = null;
-  globalThis.__supabaseClientCreated = false;
-}
-if (typeof globalThis.__supabaseAdminClient === 'undefined') {
-  globalThis.__supabaseAdminClient = null;
-  globalThis.__supabaseAdminClientCreated = false;
-}
-
-// Fonction pour obtenir le client Supabase standard avec vérification globale
+// Fonction pour obtenir le client Supabase avec création paresseuse
 function getSupabaseClient(): ReturnType<typeof createClient<Database>> | null {
-  if (!globalThis.__supabaseClient && !globalThis.__supabaseClientCreated && isSupabaseConfigured && supabaseUrl && supabaseAnonKey) {
-    globalThis.__supabaseClientCreated = true;
-    console.log('🔧 Creating global Supabase client instance');
-    globalThis.__supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey);
+  // Retourner null si pas configuré
+  if (!isSupabaseConfigured || !supabaseUrl || !supabaseAnonKey) {
+    return null;
   }
-  return globalThis.__supabaseClient;
+  
+  // Créer le client une seule fois
+  if (!supabaseClientInstance) {
+    console.log('🔧 Creating Supabase client instance');
+    supabaseClientInstance = createClient<Database>(supabaseUrl, supabaseAnonKey);
+  }
+  
+  return supabaseClientInstance;
 }
 
-// Fonction pour obtenir le client Supabase admin avec vérification globale
-function getSupabaseAdminClient(): ReturnType<typeof createClient<Database>> | null {
-  // Never create the admin client in the browser – it's for server-only operations
-  if (typeof window !== 'undefined') {
-    // In browser context return the already-created client if any, but avoid creating a new one
-    return globalThis.__supabaseAdminClient ?? null;
-  }
+// SÉCURITÉ : Aucun client admin côté client !
+// Les opérations admin doivent être effectuées via les serveurs Express dans server/
 
-  if (!globalThis.__supabaseAdminClient && !globalThis.__supabaseAdminClientCreated && isSupabaseConfigured && supabaseUrl && supabaseServiceKey) {
-    globalThis.__supabaseAdminClientCreated = true;
-    console.log('🔧 Creating global Supabase admin client instance (server)');
-    globalThis.__supabaseAdminClient = createClient<Database>(supabaseUrl, supabaseServiceKey, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      }
-    });
-  }
-
-  return globalThis.__supabaseAdminClient;
-}
-
-// Export des clients via des getters
+// Export du client Supabase standard uniquement (sécurisé)
 export const supabase = getSupabaseClient();
-export const supabaseAdmin = getSupabaseAdminClient();
 
 // Export de la fonction de vérification
 export const isSupabaseReady = () => isSupabaseConfigured && getSupabaseClient() !== null;
-export const isSupabaseAdminReady = () => isSupabaseConfigured && getSupabaseAdminClient() !== null;
+
+// Note: Les opérations admin doivent utiliser les serveurs Express dans server/
+// qui ont accès aux service role keys de manière sécurisée
