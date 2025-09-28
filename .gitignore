@@ -23,3 +23,24 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Build / artifact folders
+.cache
+.turbo
+coverage
+.next
+out
+build
+android
+ios
+*.keystore
+npm-debug.log*
+pnpm-lock.yaml
+yarn.lock
+
+# local env
+.env.local
+.env.*.local
+
+# JetBrains
+.idea/
