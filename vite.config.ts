@@ -11,12 +11,12 @@ export default defineConfig({
     port: 5000,
     hmr: {
       port: 5000,
-      clientPort: 5000,
-      host: 'localhost'
+      overlay: false
     },
     allowedHosts: true,
     watch: {
       usePolling: true,
+      interval: 1000,
     },
   },
   preview: {

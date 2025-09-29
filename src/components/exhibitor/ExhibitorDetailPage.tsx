@@ -958,7 +958,7 @@ export default function ExhibitorDetailPage() {
               <div className="flex items-center space-x-2">
                 <Badge variant="success" size="sm">
                   <Eye className="h-3 w-3 mr-1" />
-                  {exhibitor.miniSite.views} vues
+                  {exhibitor.miniSite?.views || 0} vues
                 </Badge>
               </div>
             </div>
