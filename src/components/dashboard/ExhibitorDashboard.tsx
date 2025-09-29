@@ -6,8 +6,11 @@ import { Link, Navigate } from 'react-router-dom';
 import useAuthStore from '../../store/authStore';
 import { useDashboardStore } from '../../store/dashboardStore';
 import { QRCodeCanvas as QRCode } from 'qrcode.react';
-import { AppointmentCalendarWidget } from '../appointments/AppointmentCalendarWidget';
 import { useAppointmentStore } from '../../store/appointmentStore';
+import PublicAvailabilityCalendar from '../calendar/PublicAvailabilityCalendar';
+import PersonalAppointmentsCalendar from '../calendar/PersonalAppointmentsCalendar';
+import { Calendar, Zap } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 
 export default function ExhibitorDashboard() {
@@ -378,18 +381,60 @@ export default function ExhibitorDashboard() {
           ))}
         </div>
 
+        {/* Section Système de Double Calendrier */}
+        <div className="mb-12">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              <Calendar className="inline-block mr-3 text-siports-primary" />
+              Gestion Calendaire Avancée
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Votre système complet de gestion des rendez-vous : définissez vos disponibilités publiques et suivez tous vos rendez-vous personnels
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            {/* Calendrier Public des Disponibilités */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <PublicAvailabilityCalendar 
+                userId={user?.id || ''} 
+                isEditable={true}
+              />
+            </motion.div>
+
+            {/* Calendrier Personnel des Rendez-vous */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <PersonalAppointmentsCalendar userType="exhibitor" />
+            </motion.div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Actions Rapides */}
           <div className="lg:col-span-2">
             <Card className="siports-glass-card">
               <div className="p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                  <span className="mr-2">⚡</span>
+                  <Zap className="mr-3 text-siports-primary" />
                   Actions Rapides
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {quickActions.map((action, index) => (
-                    <div key={index} className="group">
+                    <motion.div 
+                      key={index} 
+                      className="group"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                    >
                       {action.link ? (
                         <Link to={action.link} className="block">
                           <div className="p-4 border border-gray-200 rounded-xl hover:border-siports-primary hover:shadow-md transition-all duration-300 group-hover:bg-siports-primary/5">
@@ -430,7 +475,7 @@ export default function ExhibitorDashboard() {
                           </Button>
                         </div>
                       )}
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               </div>
@@ -439,7 +484,6 @@ export default function ExhibitorDashboard() {
 
           {/* Right Column */}
           <div className="space-y-8">
-            <AppointmentCalendarWidget />
 
             {/* Bloc Rendez-vous reçus */}
             <Card className="siports-glass-card">
