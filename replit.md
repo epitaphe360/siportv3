@@ -52,15 +52,24 @@ The project includes multiple Express.js backend services:
 - All dependencies installed and ready
 
 ### Environment Variables
-Required for production:
-- `DATABASE_URL` - PostgreSQL connection string (for local auth mode)
+**Required for production:**
+- `JWT_SECRET` - **MANDATORY** Strong secret key for JWT signing (server crashes if missing in prod)
+- `SUPABASE_SERVICE_ROLE_KEY` - **MANDATORY** Supabase service role key for server-side auth
 - `VITE_SUPABASE_URL` - Supabase project URL
-- `VITE_SUPABASE_ANON_KEY` - Supabase anonymous key
-- `JWT_SECRET` - Secret key for JWT signing (default: demo key, change in production!)
+- `VITE_SUPABASE_ANON_KEY` - Supabase anonymous key (for frontend)
 - `AUTH_MODE` - Authentication mode: 'local' (dev) or 'supabase' (prod)
+- `NODE_ENV` - Environment: 'development' or 'production'
 
-Optional:
+**Development only:**
+- `DATABASE_URL` - PostgreSQL connection string (for local auth mode)
+
+**Optional:**
 - Firebase configuration variables for Google authentication
+
+**Security Notes:**
+- Demo accounts (admin@siports.com, exposant@siports.com, etc.) only work in development mode
+- Production requires proper password hashes in database
+- Server validates all required secrets and crashes on missing configuration in production
 
 ### Available Scripts
 - `npm run dev` - Start development server (configured workflow)

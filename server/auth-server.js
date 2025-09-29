@@ -10,7 +10,17 @@ const { Pool } = pg;
 const PORT = process.env.AUTH_PORT || 3003;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const AUTH_MODE = process.env.AUTH_MODE || (NODE_ENV === 'production' ? 'supabase' : 'local');
-const JWT_SECRET = process.env.JWT_SECRET || 'siports-2026-demo-secret-key-change-in-production';
+
+// SECURITY: JWT_SECRET must be set in production
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET && NODE_ENV === 'production') {
+  console.error('❌ FATAL: JWT_SECRET environment variable is required in production');
+  process.exit(1);
+}
+if (!JWT_SECRET && NODE_ENV !== 'production') {
+  console.warn('⚠️  WARNING: Using default JWT_SECRET for development. Set JWT_SECRET env var for production!');
+}
+const EFFECTIVE_JWT_SECRET = JWT_SECRET || 'dev-only-secret-change-in-production';
 
 const app = express();
 app.use(cors());
@@ -24,10 +34,23 @@ const pool = new Pool({
 
 // Configuration Supabase (pour production)
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+// SECURITY: Always use service role key for server-side auth
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 let supabase = null;
 
-if (AUTH_MODE === 'supabase' && supabaseUrl && supabaseKey) {
+if (AUTH_MODE === 'supabase') {
+  if (!supabaseUrl || !supabaseKey) {
+    console.error('❌ FATAL: Supabase configuration incomplete in production mode');
+    console.error('   Required: VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY');
+    if (NODE_ENV === 'production') {
+      process.exit(1);
+    }
+  }
+  
+  if (supabaseKey === process.env.VITE_SUPABASE_ANON_KEY && NODE_ENV === 'production') {
+    console.warn('⚠️  WARNING: Using anon key for server-side auth. Use SUPABASE_SERVICE_ROLE_KEY instead!');
+  }
+  
   supabase = createClient(supabaseUrl, supabaseKey);
   console.log('✅ Supabase client configured for production authentication');
 } else {
@@ -73,8 +96,7 @@ app.post('/api/auth/login', async (req, res) => {
       const userData = result.rows[0];
       
       // Vérifier le mot de passe
-      // Pour les comptes de test, vérifier contre 'demo123' hashé
-      // En production, le password_hash devrait être dans la base de données
+      // SECURITY: Les comptes de démo sont seulement disponibles en mode développement
       const testAccounts = [
         'admin@siports.com',
         'exposant@siports.com',
@@ -84,12 +106,16 @@ app.post('/api/auth/login', async (req, res) => {
       
       let isPasswordValid = false;
       
-      if (testAccounts.includes(email)) {
-        // Comparer avec le mot de passe de test
+      if (testAccounts.includes(email) && NODE_ENV === 'development') {
+        // Comptes de démo - seulement en développement
         isPasswordValid = (password === 'demo123');
       } else if (userData.password_hash) {
-        // Comparer avec le hash bcrypt stocké dans la base
+        // Production : comparer avec le hash bcrypt stocké dans la base
         isPasswordValid = await bcrypt.compare(password, userData.password_hash);
+      } else {
+        // Pas de hash de mot de passe disponible
+        console.error('❌ Aucun password_hash trouvé pour:', email);
+        return res.status(500).json({ error: 'Configuration du compte invalide' });
       }
       
       if (!isPasswordValid) {
@@ -105,7 +131,7 @@ app.post('/api/auth/login', async (req, res) => {
           email: user.email,
           type: user.type
         },
-        JWT_SECRET,
+        EFFECTIVE_JWT_SECRET,
         { expiresIn: '7d' }
       );
       
@@ -147,7 +173,14 @@ app.post('/api/auth/login', async (req, res) => {
       }
       
       const user = transformUserDBToUser(userProfile);
-      const token = data.session?.access_token || `sb-${Date.now()}-${user.id}`;
+      
+      // SECURITY: Ne jamais générer de faux token
+      if (!data.session?.access_token) {
+        console.error('❌ Supabase n\'a pas retourné de token d\'accès');
+        return res.status(500).json({ error: 'Erreur d\'authentification Supabase' });
+      }
+      
+      const token = data.session.access_token;
       
       console.log('✅ Utilisateur authentifié via Supabase:', user.email);
       
@@ -173,7 +206,7 @@ app.get('/api/auth/me', async (req, res) => {
       // Vérifier et décoder le JWT
       let decoded;
       try {
-        decoded = jwt.verify(token, JWT_SECRET);
+        decoded = jwt.verify(token, EFFECTIVE_JWT_SECRET);
       } catch (err) {
         return res.status(401).json({ error: 'Token invalide ou expiré' });
       }
