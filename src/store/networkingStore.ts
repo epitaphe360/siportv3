@@ -7,7 +7,6 @@ import { SupabaseService } from '@/services/supabaseService';
 import { 
   getNetworkingPermissions, 
   getEventAccessPermissions,
-  canPerformNetworkingAction,
   checkDailyLimits,
   getPermissionErrorMessage,
   type NetworkingPermissions,
@@ -277,7 +276,7 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
                        now.getFullYear() !== lastReset.getFullYear();
 
     if (shouldReset) {
-      set(state => ({
+      set(() => ({
         dailyUsage: {
           connections: 0,
           messages: 0,

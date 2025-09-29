@@ -38,6 +38,9 @@ export interface UserProfile {
   expertise: string[];
   visitObjectives?: string[];
   competencies?: string[];
+  // Networking system fields
+  passType?: 'free' | 'basic' | 'premium' | 'vip';
+  status?: 'active' | 'pending' | 'suspended' | 'rejected';
 }
 
 export interface Exhibitor {
@@ -51,7 +54,7 @@ export interface Exhibitor {
   website?: string;
   products: Product[];
   availability: TimeSlot[];
-  miniSite: MiniSite;
+  miniSite: MiniSite | null;
   verified: boolean;
   featured: boolean;
   contactInfo: ContactInfo;

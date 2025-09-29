@@ -23,12 +23,11 @@ function getDemoExhibitors(): Exhibitor[] {
         city: 'Casablanca',
         country: 'Maroc'
       },
-      location: 'Stand A12',
       establishedYear: 2010,
       employees: 150,
       certifications: ['ISO 9001', 'ISO 14001'],
       products: [],
-      miniSite: undefined
+      miniSite: null
     },
     {
       id: '2',
@@ -47,12 +46,11 @@ function getDemoExhibitors(): Exhibitor[] {
         city: 'Le Havre',
         country: 'France'
       },
-      location: 'Stand B05',
       establishedYear: 2015,
       employees: 75,
       certifications: ['ISO 27001'],
       products: [],
-      miniSite: undefined
+      miniSite: null
     },
     {
       id: '3',
@@ -71,12 +69,11 @@ function getDemoExhibitors(): Exhibitor[] {
         city: 'Barcelone',
         country: 'Espagne'
       },
-      location: 'Stand C18',
       establishedYear: 2018,
       employees: 45,
       certifications: ['LEED', 'BREEAM'],
       products: [],
-      miniSite: undefined
+      miniSite: null
     },
     {
       id: '4',
@@ -95,12 +92,11 @@ function getDemoExhibitors(): Exhibitor[] {
         city: 'New York',
         country: 'USA'
       },
-      location: 'Stand D03',
       establishedYear: 2008,
       employees: 300,
       certifications: ['ISO 28000', 'C-TPAT'],
       products: [],
-      miniSite: undefined
+      miniSite: null
     },
     {
       id: '5',
@@ -119,12 +115,11 @@ function getDemoExhibitors(): Exhibitor[] {
         city: 'Rabat',
         country: 'Maroc'
       },
-      location: 'Stand E09',
       establishedYear: 1985,
       employees: 120,
       certifications: ['ISO 9001'],
       products: [],
-      miniSite: undefined
+      miniSite: null
     },
     {
       id: '6',
@@ -143,12 +138,11 @@ function getDemoExhibitors(): Exhibitor[] {
         city: 'Hambourg',
         country: 'Allemagne'
       },
-      location: 'Stand A25',
       establishedYear: 2020,
       employees: 35,
       certifications: ['CE', 'FCC'],
       products: [],
-      miniSite: undefined
+      miniSite: null
     }
   ];
 }
