@@ -1,4 +1,4 @@
-import { supabase, supabaseAdmin } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 
 export interface AdminMetrics {
   totalUsers: number;
@@ -39,10 +39,10 @@ export class AdminMetricsService {
 
   // Primary entry: prefers server-side admin client. In browser, tries metrics-server fallback.
   static async getMetrics(): Promise<AdminMetrics> {
-    const client = supabaseAdmin ?? (supabase as any);
+    const client = (supabase as any);
 
     // If no service client present and running in browser, try metrics-server endpoint.
-    if (supabaseAdmin == null && typeof window !== 'undefined') {
+    if (supabase == null && typeof window !== 'undefined') {
       try {
         const headers: Record<string, string> = { 'Content-Type': 'application/json' };
         if (METRICS_SECRET) headers['x-metrics-secret'] = METRICS_SECRET;
@@ -107,7 +107,7 @@ export class AdminMetricsService {
   }
 
   static async getPendingValidations(): Promise<number> {
-    const client = supabaseAdmin ?? (supabase as any);
+    const client = (supabase as any);
     if (!client) return defaultMetrics.pendingValidations;
     try {
       const res = await client.from('exhibitors').select('id', { count: 'exact', head: true }).eq('verified', false);
@@ -119,7 +119,7 @@ export class AdminMetricsService {
   }
 
   static async getActiveContracts(): Promise<number> {
-    const client = supabaseAdmin ?? (supabase as any);
+    const client = (supabase as any);
     if (!client) return defaultMetrics.activeContracts;
     try {
       const res = await client.from('exhibitors').select('id', { count: 'exact', head: true }).eq('featured', true);
@@ -131,7 +131,7 @@ export class AdminMetricsService {
   }
 
   static async getContentModerations(): Promise<number> {
-    const client = supabaseAdmin ?? (supabase as any);
+    const client = (supabase as any);
     if (!client) return defaultMetrics.contentModerations;
     try {
       const res = await client.from('mini_sites').select('id', { count: 'exact', head: true }).eq('published', false);

@@ -72,16 +72,34 @@ const useAuthStore = create<AuthState>((set, get) => ({
         throw new Error('Email et mot de passe requis');
       }
 
-      // Production authentication via Supabase
-      console.log('🔄 Connexion Supabase pour:', email);
+      // Authentification via le backend unifié
+      console.log('🔄 Connexion via Auth Server pour:', email);
       
-      const user = await SupabaseService.signIn(email, password);
+      // Utiliser l'URL du backend appropriée selon l'environnement
+      const authUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:3003/api/auth/login'
+        : `${window.location.protocol}//${window.location.hostname}:3003/api/auth/login`;
+      
+      const response = await fetch(authUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Email ou mot de passe incorrect');
+      }
+      
+      const { user, token } = await response.json();
       
       if (user && user.status === 'active') {
         console.log('✅ Utilisateur authentifié:', user.email);
         set({ 
           user, 
-          token: `sb-${Date.now()}-${user.id}`, 
+          token, 
           isAuthenticated: true,
           isLoading: false 
         });

@@ -1,4 +1,4 @@
-import { supabase, supabaseAdmin, isSupabaseReady } from '../lib/supabase';
+import { supabase, isSupabaseReady } from '../lib/supabase';
 
 export interface PavilionMetrics {
   totalExhibitors: number;
@@ -18,11 +18,10 @@ const defaultPavilionMetrics: PavilionMetrics = {
 export class PavilionMetricsService {
   static async getMetrics(): Promise<PavilionMetrics> {
     // Si Supabase n'est pas configuré, retourner les valeurs par défaut
-    if (!isSupabaseReady() || !supabase || !supabaseAdmin) {
+    if (!isSupabaseReady() || !supabase) {
       console.info('🔄 Utilisation des métriques de pavilions par défaut (mode développement)');
       console.info('ℹ️ Supabase configuré:', isSupabaseReady());
       console.info('ℹ️ Client Supabase disponible:', !!supabase);
-      console.info('ℹ️ Client Supabase Admin disponible:', !!supabaseAdmin);
       return defaultPavilionMetrics;
     }
 
@@ -37,16 +36,16 @@ export class PavilionMetricsService {
         countriesResult
       ] = await Promise.all([
         // Total exposants (tous les exposants vérifiés)
-        (supabaseAdmin as any).from('exhibitors').select('id', { count: 'exact', head: true }).eq('verified', true),
+        (supabase as any).from('exhibitors').select('id', { count: 'exact', head: true }).eq('verified', true),
 
         // Total visiteurs
-        (supabaseAdmin as any).from('users').select('id', { count: 'exact', head: true }).eq('type', 'visitor'),
+        (supabase as any).from('users').select('id', { count: 'exact', head: true }).eq('type', 'visitor'),
 
         // Total conférences/événements
-        (supabaseAdmin as any).from('events').select('id', { count: 'exact', head: true }),
+        (supabase as any).from('events').select('id', { count: 'exact', head: true }),
 
         // Pays représentés (distinct des pays des exposants)
-        (supabaseAdmin as any).from('exhibitors').select('country').eq('verified', true)
+        (supabase as any).from('exhibitors').select('country').eq('verified', true)
       ]);
 
       // Calculer le nombre de pays distincts

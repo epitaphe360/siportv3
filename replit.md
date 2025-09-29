@@ -4,6 +4,12 @@
 This is a React + TypeScript application for the SIPORTS 2026 International Ports Exhibition platform. The application provides a comprehensive digital platform for exhibitors, visitors, partners, and organizers of the international ports exhibition in El Jadida, Morocco.
 
 ## Recent Changes
+- **2025-09-29**: Architecture d'authentification unifiée implémentée
+  - Backend Auth Server (port 3003) avec dual-mode dev/prod
+  - Authentification JWT sécurisée avec bcrypt et jsonwebtoken
+  - Support PostgreSQL local (dev) et Supabase Auth (prod)
+  - 4 comptes de test opérationnels : admin, exposant, partenaire, visiteur
+  - Frontend utilise endpoint backend au lieu de Supabase directement
 - **2024-09-28**: Successfully configured for Replit environment
   - Updated Vite configuration to bind to 0.0.0.0:5000 for Replit compatibility
   - Configured frontend workflow for port 5000 with webview output
@@ -19,12 +25,15 @@ This is a React + TypeScript application for the SIPORTS 2026 International Port
 - **UI Components**: Radix UI + Custom components
 - **Development Server**: Vite dev server on port 5000
 
-### Backend Services (Optional)
-The project includes multiple Express.js backend services that can be run separately:
+### Backend Services
+The project includes multiple Express.js backend services:
+- **`server/auth-server.js`** - Unified authentication server (port 3003) ⭐ REQUIRED
+  - Dual-mode: PostgreSQL local (dev) / Supabase Auth (prod)
+  - JWT-based authentication with 7-day expiry
+  - Secure password verification with bcrypt
 - `server/create-mini-site.js` - Mini-site creation service (port 4000)
 - `server/exhibitors-server.js` - Exhibitor data fallback service (port 4002)
 - `server/metrics-server.js` - Metrics API service (port 4001)
-- `server/ai-agent/index.mjs` - AI agent for site generation (port 4001)
 
 ### External Services
 - **Supabase**: Primary database and authentication (requires configuration)
@@ -43,9 +52,14 @@ The project includes multiple Express.js backend services that can be run separa
 - All dependencies installed and ready
 
 ### Environment Variables
-The application can run in demo mode without database configuration. For full functionality, configure:
+Required for production:
+- `DATABASE_URL` - PostgreSQL connection string (for local auth mode)
 - `VITE_SUPABASE_URL` - Supabase project URL
 - `VITE_SUPABASE_ANON_KEY` - Supabase anonymous key
+- `JWT_SECRET` - Secret key for JWT signing (default: demo key, change in production!)
+- `AUTH_MODE` - Authentication mode: 'local' (dev) or 'supabase' (prod)
+
+Optional:
 - Firebase configuration variables for Google authentication
 
 ### Available Scripts
@@ -66,8 +80,16 @@ The application can run in demo mode without database configuration. For full fu
 - ✅ **Admin dashboard** for content moderation
 - ✅ **Partner spaces** with premium branding
 
+## Authentication - Comptes de Démonstration
+Comptes de test disponibles (mot de passe: `demo123`):
+- **Admin**: `admin@siports.com` - Gestion complète, validation comptes, analytics
+- **Exposant**: `exposant@siports.com` - Mini-sites, gestion produits, RDV et networking
+- **Partenaire**: `partenaire@siports.com` - Espaces VIP, branding premium, analytics ROI
+- **Visiteur**: `visiteur@siports.com` - Navigation salon, networking IA, favoris et RDV
+
 ## Notes
 - Application successfully loads and displays the main interface
-- Ready for further development and configuration
+- **Auth Server is REQUIRED** for login functionality
+- JWT tokens expire after 7 days
 - Backend services are optional for basic frontend functionality
-- Deployment configuration will be set up after verification
+- Ready for production deployment with proper environment variables
