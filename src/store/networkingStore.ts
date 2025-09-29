@@ -4,6 +4,15 @@ import { NetworkingRecommendation, User } from '@/types';
 import RecommendationService from '@/services/recommendationService';
 import useAuthStore from './authStore';
 import { SupabaseService } from '@/services/supabaseService';
+import { 
+  getNetworkingPermissions, 
+  getEventAccessPermissions,
+  canPerformNetworkingAction,
+  checkDailyLimits,
+  getPermissionErrorMessage,
+  type NetworkingPermissions,
+  type EventAccessPermissions
+} from '@/lib/networkingPermissions';
 
 // Types
 interface AIInsights {
@@ -23,6 +32,13 @@ const MOCK_AI_INSIGHTS: AIInsights = {
   topKeywords: ["IA", "Durabilité", "Automatisation", "Sécurité"],
 };
 
+interface DailyUsage {
+  connections: number;
+  messages: number;
+  meetings: number;
+  lastReset: Date;
+}
+
 interface NetworkingState {
   recommendations: NetworkingRecommendation[];
   connections: string[]; // Array of user IDs
@@ -31,6 +47,11 @@ interface NetworkingState {
   aiInsights: AIInsights | null;
   isLoading: boolean;
   error: string | null;
+  
+  // Permissions and usage tracking
+  permissions: NetworkingPermissions | null;
+  eventPermissions: EventAccessPermissions | null;
+  dailyUsage: DailyUsage;
   
   // Appointment Modal State
   showAppointmentModal: boolean;
@@ -43,14 +64,19 @@ interface NetworkingState {
   generateRecommendations: (userId: string) => Promise<void>;
   markAsContacted: (recommendedUserId: string) => void;
   
-  // Connection & Favorites
+  // Permission-aware actions
   handleConnect: (userId: string, userName: string) => void;
   addToFavorites: (userId: string) => void;
   removeFromFavorites: (userId: string) => void;
-
-  // UI Actions
   handleMessage: (userName: string, company: string) => void;
   handleScheduleMeeting: (userName: string, company: string) => void;
+  
+  // Permission management
+  updatePermissions: () => void;
+  checkActionPermission: (action: 'connect' | 'message' | 'meeting') => boolean;
+  getRemainingQuota: () => { connections: number; messages: number; meetings: number };
+  
+  // AI and insights
   loadAIInsights: () => void;
 
   // Modal Actions
@@ -69,6 +95,16 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
   aiInsights: null,
   isLoading: false,
   error: null,
+  
+  // Permissions and usage
+  permissions: null,
+  eventPermissions: null,
+  dailyUsage: {
+    connections: 0,
+    messages: 0,
+    meetings: 0,
+    lastReset: new Date(),
+  },
   
   // Appointment Modal State
   showAppointmentModal: false,
@@ -111,11 +147,34 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
   },
 
   handleConnect: (userId: string, userName: string) => {
+    const { user } = useAuthStore.getState();
+    if (!user) {
+      toast.error("Vous devez être connecté pour envoyer une demande de connexion.");
+      return;
+    }
+
+    // Check permissions
+    if (!get().checkActionPermission('connect')) {
+      const errorMessage = getPermissionErrorMessage(user.type, user.profile.passType || user.profile.status, 'connection');
+      toast.error(errorMessage);
+      return;
+    }
+
     set(state => ({
       pendingConnections: [...state.pendingConnections, userId],
+      dailyUsage: {
+        ...state.dailyUsage,
+        connections: state.dailyUsage.connections + 1,
+      },
     }));
-    toast.success(`Demande de connexion envoyée à ${userName}.`);
-    // In a real app, this would trigger a backend notification
+    
+    toast.success(`✅ Demande de connexion envoyée à ${userName}.`);
+    
+    // Show remaining quota if limited
+    const remaining = get().getRemainingQuota();
+    if (remaining.connections > 0 && remaining.connections < 5) {
+      toast.info(`📊 Il vous reste ${remaining.connections} connexion(s) aujourd'hui.`);
+    }
   },
 
   addToFavorites: (userId: string) => {
@@ -131,13 +190,144 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
   },
 
   handleMessage: (userName: string, company: string) => {
-    toast.info(`Ouverture du chat avec ${userName} (${company})...`);
-    // Placeholder for chat functionality
+    const { user } = useAuthStore.getState();
+    if (!user) {
+      toast.error("Vous devez être connecté pour envoyer un message.");
+      return;
+    }
+
+    // Check permissions
+    if (!get().checkActionPermission('message')) {
+      const errorMessage = getPermissionErrorMessage(user.type, user.profile.passType || user.profile.status, 'message');
+      toast.error(errorMessage);
+      return;
+    }
+
+    set(state => ({
+      dailyUsage: {
+        ...state.dailyUsage,
+        messages: state.dailyUsage.messages + 1,
+      },
+    }));
+
+    toast.success(`💬 Message envoyé à ${userName} de ${company}.`);
+    
+    // Show remaining quota
+    const remaining = get().getRemainingQuota();
+    if (remaining.messages > 0 && remaining.messages < 5) {
+      toast.info(`📊 Il vous reste ${remaining.messages} message(s) aujourd'hui.`);
+    }
   },
 
-  handleScheduleMeeting: (userName:string, company:string) => {
-    toast.info(`Planification d'un RDV avec ${userName} (${company})...`);
-    // Placeholder for scheduling functionality
+  handleScheduleMeeting: (userName: string, company: string) => {
+    const { user } = useAuthStore.getState();
+    if (!user) {
+      toast.error("Vous devez être connecté pour programmer un rendez-vous.");
+      return;
+    }
+
+    // Check permissions
+    if (!get().checkActionPermission('meeting')) {
+      const errorMessage = getPermissionErrorMessage(user.type, user.profile.passType || user.profile.status, 'meeting');
+      toast.error(errorMessage);
+      return;
+    }
+
+    set(state => ({
+      dailyUsage: {
+        ...state.dailyUsage,
+        meetings: state.dailyUsage.meetings + 1,
+      },
+    }));
+
+    toast.success(`📅 Demande de rendez-vous envoyée à ${userName} de ${company}.`);
+    
+    // Show remaining quota
+    const remaining = get().getRemainingQuota();
+    if (remaining.meetings > 0 && remaining.meetings < 3) {
+      toast.info(`📊 Il vous reste ${remaining.meetings} rendez-vous aujourd'hui.`);
+    }
+  },
+
+  // Permission management methods
+  updatePermissions: () => {
+    const { user } = useAuthStore.getState();
+    if (!user) return;
+
+    const permissions = getNetworkingPermissions(user.type, user.profile.passType || user.profile.status);
+    const eventPermissions = getEventAccessPermissions(user.type, user.profile.passType || user.profile.status);
+    
+    set({ permissions, eventPermissions });
+  },
+
+  checkActionPermission: (action: 'connect' | 'message' | 'meeting') => {
+    const { user } = useAuthStore.getState();
+    const state = get();
+    
+    if (!user || !state.permissions) {
+      get().updatePermissions();
+      return false;
+    }
+
+    // Check if today's usage should be reset
+    const now = new Date();
+    const lastReset = state.dailyUsage.lastReset;
+    const shouldReset = now.getDate() !== lastReset.getDate() || 
+                       now.getMonth() !== lastReset.getMonth() || 
+                       now.getFullYear() !== lastReset.getFullYear();
+
+    if (shouldReset) {
+      set(state => ({
+        dailyUsage: {
+          connections: 0,
+          messages: 0,
+          meetings: 0,
+          lastReset: now,
+        },
+      }));
+    }
+
+    // Check basic permission
+    switch (action) {
+      case 'connect':
+        if (!state.permissions.canMakeConnections) return false;
+        break;
+      case 'message':
+        if (!state.permissions.canSendMessages) return false;
+        break;
+      case 'meeting':
+        if (!state.permissions.canScheduleMeetings) return false;
+        break;
+    }
+
+    // Check daily limits
+    const limits = checkDailyLimits(user.type, user.profile.passType || user.profile.status, state.dailyUsage);
+    
+    switch (action) {
+      case 'connect':
+        return limits.canMakeConnection;
+      case 'message':
+        return limits.canSendMessage;
+      case 'meeting':
+        return limits.canScheduleMeeting;
+      default:
+        return false;
+    }
+  },
+
+  getRemainingQuota: () => {
+    const { user } = useAuthStore.getState();
+    const state = get();
+    
+    if (!user) return { connections: 0, messages: 0, meetings: 0 };
+    
+    const limits = checkDailyLimits(user.type, user.profile.passType || user.profile.status, state.dailyUsage);
+    
+    return {
+      connections: limits.remainingConnections,
+      messages: limits.remainingMessages,
+      meetings: limits.remainingMeetings,
+    };
   },
 
   loadAIInsights: () => {
