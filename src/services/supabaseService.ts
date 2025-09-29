@@ -3,6 +3,156 @@ import { supabase } from '../lib/supabase';
 import { isSupabaseReady } from '../lib/supabase';
 import { User, Exhibitor, Product, Appointment, Event, ChatMessage, ChatConversation, MiniSiteSection, MessageAttachment, ExhibitorCategory, ContactInfo, TimeSlot } from '../types';
 
+// Demo data when Supabase is not configured
+function getDemoExhibitors(): Exhibitor[] {
+  return [
+    {
+      id: '1',
+      companyName: 'Port Solutions Inc.',
+      description: 'Solutions innovantes pour la gestion portuaire moderne avec des technologies de pointe pour optimiser les opérations.',
+      category: 'port-operations' as ExhibitorCategory,
+      sector: 'Gestion Portuaire',
+      logo: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=200&h=200&fit=crop&crop=center',
+      website: 'https://portsolutions.com',
+      verified: true,
+      featured: true,
+      contactInfo: {
+        email: 'contact@portsolutions.com',
+        phone: '+212 5 23 12 34 56',
+        address: 'Casablanca, Maroc',
+        city: 'Casablanca',
+        country: 'Maroc'
+      },
+      location: 'Stand A12',
+      establishedYear: 2010,
+      employees: 150,
+      certifications: ['ISO 9001', 'ISO 14001'],
+      products: [],
+      miniSite: undefined
+    },
+    {
+      id: '2',
+      companyName: 'Maritime Tech Systems',
+      description: 'Technologies avancées pour l\'automatisation des terminaux et la digitalisation des opérations portuaires.',
+      category: 'port-industry' as ExhibitorCategory,
+      sector: 'Technologies Maritimes',
+      logo: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=200&h=200&fit=crop&crop=center',
+      website: 'https://maritimetech.com',
+      verified: true,
+      featured: false,
+      contactInfo: {
+        email: 'info@maritimetech.com',
+        phone: '+33 1 23 45 67 89',
+        address: 'Le Havre, France',
+        city: 'Le Havre',
+        country: 'France'
+      },
+      location: 'Stand B05',
+      establishedYear: 2015,
+      employees: 75,
+      certifications: ['ISO 27001'],
+      products: [],
+      miniSite: undefined
+    },
+    {
+      id: '3',
+      companyName: 'EcoPort Consultants',
+      description: 'Conseil en développement durable et solutions écologiques pour les infrastructures portuaires modernes.',
+      category: 'institutional' as ExhibitorCategory,
+      sector: 'Conseil Environnemental',
+      logo: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=200&h=200&fit=crop&crop=center',
+      website: 'https://ecoport.eu',
+      verified: true,
+      featured: false,
+      contactInfo: {
+        email: 'contact@ecoport.eu',
+        phone: '+34 91 234 56 78',
+        address: 'Barcelone, Espagne',
+        city: 'Barcelone',
+        country: 'Espagne'
+      },
+      location: 'Stand C18',
+      establishedYear: 2018,
+      employees: 45,
+      certifications: ['LEED', 'BREEAM'],
+      products: [],
+      miniSite: undefined
+    },
+    {
+      id: '4',
+      companyName: 'Global Shipping Alliance',
+      description: 'Alliance mondiale pour l\'optimisation des chaînes logistiques et le transport maritime international.',
+      category: 'port-industry' as ExhibitorCategory,
+      sector: 'Logistique Maritime',
+      logo: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=200&h=200&fit=crop&crop=center',
+      website: 'https://globalshipping.net',
+      verified: true,
+      featured: true,
+      contactInfo: {
+        email: 'alliance@globalshipping.net',
+        phone: '+1 555 123 4567',
+        address: 'New York, USA',
+        city: 'New York',
+        country: 'USA'
+      },
+      location: 'Stand D03',
+      establishedYear: 2008,
+      employees: 300,
+      certifications: ['ISO 28000', 'C-TPAT'],
+      products: [],
+      miniSite: undefined
+    },
+    {
+      id: '5',
+      companyName: 'Institut Maritime du Maroc',
+      description: 'Formation et recherche dans le domaine maritime, développement des compétences portuaires pour l\'avenir.',
+      category: 'academic' as ExhibitorCategory,
+      sector: 'Formation Maritime',
+      logo: 'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?w=200&h=200&fit=crop&crop=center',
+      website: 'https://imm.ma',
+      verified: true,
+      featured: false,
+      contactInfo: {
+        email: 'contact@imm.ma',
+        phone: '+212 5 22 98 76 54',
+        address: 'Rabat, Maroc',
+        city: 'Rabat',
+        country: 'Maroc'
+      },
+      location: 'Stand E09',
+      establishedYear: 1985,
+      employees: 120,
+      certifications: ['ISO 9001'],
+      products: [],
+      miniSite: undefined
+    },
+    {
+      id: '6',
+      companyName: 'Smart Dock Solutions',
+      description: 'Solutions intelligentes pour la modernisation des quais et l\'automatisation des opérations de chargement.',
+      category: 'port-operations' as ExhibitorCategory,
+      sector: 'Automatisation Portuaire',
+      logo: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=200&h=200&fit=crop&crop=center',
+      website: 'https://smartdock.io',
+      verified: true,
+      featured: false,
+      contactInfo: {
+        email: 'hello@smartdock.io',
+        phone: '+49 30 12 34 56 78',
+        address: 'Hambourg, Allemagne',
+        city: 'Hambourg',
+        country: 'Allemagne'
+      },
+      location: 'Stand A25',
+      establishedYear: 2020,
+      employees: 35,
+      certifications: ['CE', 'FCC'],
+      products: [],
+      miniSite: undefined
+    }
+  ];
+}
+
 // Interfaces pour les données de base de données
 interface UserDB {
   id: string;
@@ -314,7 +464,8 @@ export class SupabaseService {
   
   static async getExhibitors(): Promise<Exhibitor[]> {
     if (!this.checkSupabaseConnection()) {
-      throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
+      // Return demo data when Supabase is not configured
+      return getDemoExhibitors();
     }
     const safeSupabase = supabase!;
     // Use safe separate queries only (avoid embedded selects entirely).
