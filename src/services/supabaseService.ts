@@ -263,7 +263,37 @@ export class SupabaseService {
     if (!this.checkSupabaseConnection()) return null;
     
     const safeSupabase = supabase!;
+    
     try {
+      // AUTHENTIFICATION LOCALE POUR LES COMPTES DE TEST
+      const testAccounts = [
+        'admin@siports.com',
+        'exposant@siports.com', 
+        'partenaire@siports.com',
+        'visiteur@siports.com'
+      ];
+      
+      if (testAccounts.includes(email) && password === 'demo123') {
+        console.log('🔄 Authentification locale pour compte de test:', email);
+        
+        // Récupération directe depuis la base pour les tests
+        const { data: userData, error } = await (safeSupabase as any)
+          .from('users')
+          .select('*')
+          .eq('email', email)
+          .single();
+          
+        if (userData && userData.status === 'active') {
+          console.log('✅ Compte de test authentifié:', userData.email);
+          const user = this.transformUserDBToUser(userData);
+          return user;
+        } else {
+          console.log('⚠️ Utilisateur test trouvé mais statut non actif ou utilisateur inexistant:', userData);
+          return null;
+        }
+      }
+      
+      // AUTHENTIFICATION SUPABASE STANDARD
       const { data, error } = await safeSupabase.auth.signInWithPassword({
         email,
         password,
