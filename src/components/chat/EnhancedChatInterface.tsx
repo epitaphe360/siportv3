@@ -29,15 +29,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import useAuthStore from '../../store/authStore';
 import { useNetworkingStore } from '../../store/networkingStore';
+import { useChatStore } from '../../store/chatStore';
+import { ChatMessage, ChatConversation } from '../../types';
 
-interface ChatMessage {
-  id: string;
-  senderId: string;
-  receiverId: string;
-  content: string;
-  timestamp: Date;
-  read: boolean;
-  type: 'text' | 'file' | 'image' | 'system';
+// Extended interface for enhanced chat features
+interface EnhancedChatMessage extends ChatMessage {
   reactions?: { emoji: string; userId: string; userName: string }[];
   isEncrypted?: boolean;
   attachments?: { 
@@ -48,141 +44,48 @@ interface ChatMessage {
   }[];
 }
 
-interface ChatConversation {
-  id: string;
+interface EnhancedChatConversation extends ChatConversation {
   participants: { id: string; name: string; avatar?: string; type: string; online: boolean }[];
-  lastMessage?: ChatMessage;
-  unreadCount: number;
-  isPinned: boolean;
-  isArchived: boolean;
-  priority: 'low' | 'normal' | 'high' | 'urgent';
-  createdAt: Date;
-  updatedAt: Date;
+  isPinned?: boolean;
+  isArchived?: boolean;
+  priority?: 'low' | 'normal' | 'high' | 'urgent';
 }
-
-// Mock data with enhanced features
-const mockConversations: ChatConversation[] = [
-  {
-    id: '1',
-    participants: [
-      { id: 'user1', name: 'Marie Dubois', avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b851?w=150', type: 'exhibitor', online: true },
-      { id: 'user2', name: 'Ahmed Ben Ali', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', type: 'partner', online: false },
-    ],
-    lastMessage: {
-      id: '1',
-      senderId: 'user2',
-      receiverId: 'user1',
-      content: 'Parfait ! Je vous envoie les détails techniques par email. Au plaisir de collaborer avec vous sur ce projet innovant.',
-      timestamp: new Date(Date.now() - 300000),
-      read: false,
-      type: 'text',
-      reactions: [{ emoji: '👍', userId: 'user1', userName: 'Marie Dubois' }],
-    },
-    unreadCount: 2,
-    isPinned: true,
-    isArchived: false,
-    priority: 'high',
-    createdAt: new Date(Date.now() - 86400000),
-    updatedAt: new Date(Date.now() - 300000),
-  },
-  {
-    id: '2',
-    participants: [
-      { id: 'user1', name: 'Sophie Martin', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150', type: 'visitor', online: true },
-      { id: 'user3', name: 'Karim Bensalem', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150', type: 'exhibitor', online: true },
-    ],
-    lastMessage: {
-      id: '2',
-      senderId: 'user3',
-      receiverId: 'user1',
-      content: 'Nous pourrions organiser une démonstration de nos solutions IA pour la gestion portuaire.',
-      timestamp: new Date(Date.now() - 1800000),
-      read: true,
-      type: 'text',
-      isEncrypted: true,
-    },
-    unreadCount: 0,
-    isPinned: false,
-    isArchived: false,
-    priority: 'normal',
-    createdAt: new Date(Date.now() - 7200000),
-    updatedAt: new Date(Date.now() - 1800000),
-  },
-];
-
-const mockMessages: Record<string, ChatMessage[]> = {
-  '1': [
-    {
-      id: '1',
-      senderId: 'user2',
-      receiverId: 'user1',
-      content: 'Bonjour Marie, j\'ai vu votre présentation sur l\'automatisation portuaire. Très impressionnant !',
-      timestamp: new Date(Date.now() - 3600000),
-      read: true,
-      type: 'text',
-    },
-    {
-      id: '2',
-      senderId: 'user1',
-      receiverId: 'user2',
-      content: 'Merci Ahmed ! J\'ai également consulté votre profil. Vos solutions de logistique intelligente pourraient parfaitement compléter nos systèmes.',
-      timestamp: new Date(Date.now() - 3300000),
-      read: true,
-      type: 'text',
-      reactions: [{ emoji: '🤝', userId: 'user2', userName: 'Ahmed Ben Ali' }],
-    },
-    {
-      id: '3',
-      senderId: 'user2',
-      receiverId: 'user1',
-      content: 'Exactement ! Nous cherchons justement des partenaires technologiques pour notre expansion au Maghreb.',
-      timestamp: new Date(Date.now() - 3000000),
-      read: true,
-      type: 'text',
-    },
-    {
-      id: '4',
-      senderId: 'user1',
-      receiverId: 'user2',
-      content: 'Parfait ! Pourriez-vous me partager votre présentation technique ? Voici notre deck commercial.',
-      timestamp: new Date(Date.now() - 2700000),
-      read: true,
-      type: 'text',
-      attachments: [
-        { name: 'Presentation_AutoPort_2026.pdf', url: '#', size: '2.4 MB', type: 'pdf' },
-      ],
-    },
-    {
-      id: '5',
-      senderId: 'user2',
-      receiverId: 'user1',
-      content: 'Parfait ! Je vous envoie les détails techniques par email. Au plaisir de collaborer avec vous sur ce projet innovant.',
-      timestamp: new Date(Date.now() - 300000),
-      read: false,
-      type: 'text',
-      reactions: [{ emoji: '👍', userId: 'user1', userName: 'Marie Dubois' }],
-    },
-  ],
-};
 
 export const EnhancedChatInterface: React.FC = () => {
   const { user } = useAuthStore();
   const { permissions } = useNetworkingStore();
-  const [conversations, setConversations] = useState<ChatConversation[]>(mockConversations);
-  const [activeConversation, setActiveConversation] = useState<string>('1');
-  const [messages, setMessages] = useState<Record<string, ChatMessage[]>>(mockMessages);
+  const { 
+    conversations: chatConversations, 
+    activeConversation: activeChatConversation,
+    messages: chatMessages,
+    isLoading: chatLoading,
+    onlineUsers,
+    fetchConversations,
+    setActiveConversation: setChatActiveConversation,
+    sendMessage: sendChatMessage,
+    markAsRead,
+    startConversation
+  } = useChatStore();
+
   const [messageInput, setMessageInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'unread' | 'pinned' | 'archived'>('all');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isTyping, setIsTyping] = useState<Record<string, boolean>>({});
+  const [enhancedFeatures, setEnhancedFeatures] = useState<Record<string, { isPinned: boolean; isArchived: boolean; priority: string }>>({});
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, activeConversation]);
+  }, [chatMessages, activeChatConversation]);
+
+  useEffect(() => {
+    if (user) {
+      fetchConversations();
+    }
+  }, [user, fetchConversations]);
 
   // Check permissions
   if (!permissions?.canSendMessages) {
@@ -200,8 +103,8 @@ export const EnhancedChatInterface: React.FC = () => {
     );
   }
 
-  const handleSendMessage = () => {
-    if (!messageInput.trim() || !activeConversation || !user) return;
+  const handleSendMessage = async () => {
+    if (!messageInput.trim() || !activeChatConversation || !user) return;
 
     // Check daily limits
     const remaining = useNetworkingStore.getState().getRemainingQuota();
@@ -210,37 +113,25 @@ export const EnhancedChatInterface: React.FC = () => {
       return;
     }
 
-    const newMessage: ChatMessage = {
-      id: Date.now().toString(),
-      senderId: user.id,
-      receiverId: 'other-user', // Would be dynamic in real app
-      content: messageInput,
-      timestamp: new Date(),
-      read: false,
-      type: 'text',
-    };
+    try {
+      await sendChatMessage(activeChatConversation, messageInput);
+      setMessageInput('');
+      
+      // Update networking store usage
+      useNetworkingStore.getState().handleMessage(
+        `Utilisateur ${activeChatConversation}`, 
+        'Conversation'
+      );
+      
+      // Simulate typing indicator
+      setIsTyping(prev => ({ ...prev, [activeChatConversation]: true }));
+      setTimeout(() => {
+        setIsTyping(prev => ({ ...prev, [activeChatConversation]: false }));
+      }, 2000);
 
-    setMessages(prev => ({
-      ...prev,
-      [activeConversation]: [...(prev[activeConversation] || []), newMessage],
-    }));
-
-    // Update conversation
-    setConversations(prev => prev.map(conv => 
-      conv.id === activeConversation 
-        ? { ...conv, lastMessage: newMessage, updatedAt: new Date() }
-        : conv
-    ));
-
-    setMessageInput('');
-    
-    // Simulate typing indicator
-    setIsTyping(prev => ({ ...prev, [activeConversation]: true }));
-    setTimeout(() => {
-      setIsTyping(prev => ({ ...prev, [activeConversation]: false }));
-    }, 2000);
-
-    toast.success('Message envoyé ! 💬');
+    } catch (error) {
+      toast.error('Erreur lors de l\'envoi du message');
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -251,61 +142,64 @@ export const EnhancedChatInterface: React.FC = () => {
   };
 
   const addReaction = (messageId: string, emoji: string) => {
-    if (!user) return;
+    if (!user || !activeChatConversation) return;
 
-    setMessages(prev => ({
-      ...prev,
-      [activeConversation]: prev[activeConversation]?.map(msg => {
-        if (msg.id === messageId) {
-          const reactions = msg.reactions || [];
-          const existingReaction = reactions.find(r => r.userId === user.id);
-          
-          if (existingReaction) {
-            // Remove reaction if same emoji, otherwise update
-            if (existingReaction.emoji === emoji) {
-              return { ...msg, reactions: reactions.filter(r => r.userId !== user.id) };
-            } else {
-              return { 
-                ...msg, 
-                reactions: reactions.map(r => 
-                  r.userId === user.id ? { ...r, emoji } : r
-                )
-              };
-            }
-          } else {
-            // Add new reaction
-            return { 
-              ...msg, 
-              reactions: [...reactions, { emoji, userId: user.id, userName: user.name }]
-            };
-          }
-        }
-        return msg;
-      }) || []
-    }));
+    // This would normally be handled by the backend
+    // For now, we'll just show a toast
+    toast.success(`Réaction ${emoji} ajoutée !`);
   };
 
   const togglePin = (conversationId: string) => {
-    setConversations(prev => prev.map(conv => 
-      conv.id === conversationId 
-        ? { ...conv, isPinned: !conv.isPinned }
-        : conv
-    ));
+    setEnhancedFeatures(prev => ({
+      ...prev,
+      [conversationId]: {
+        ...prev[conversationId],
+        isPinned: !prev[conversationId]?.isPinned
+      }
+    }));
   };
 
   const archiveConversation = (conversationId: string) => {
-    setConversations(prev => prev.map(conv => 
-      conv.id === conversationId 
-        ? { ...conv, isArchived: !conv.isArchived }
-        : conv
-    ));
+    setEnhancedFeatures(prev => ({
+      ...prev,
+      [conversationId]: {
+        ...prev[conversationId],
+        isArchived: !prev[conversationId]?.isArchived
+      }
+    }));
     
-    if (activeConversation === conversationId) {
-      setActiveConversation(conversations.find(c => c.id !== conversationId)?.id || '');
+    if (activeChatConversation === conversationId) {
+      const remainingConversations = chatConversations.filter(c => c.id !== conversationId);
+      if (remainingConversations.length > 0) {
+        setChatActiveConversation(remainingConversations[0].id);
+      }
     }
   };
 
-  const filteredConversations = conversations.filter(conv => {
+  const enhancedConversations = chatConversations.map(conv => ({
+    ...conv,
+    isPinned: enhancedFeatures[conv.id]?.isPinned || false,
+    isArchived: enhancedFeatures[conv.id]?.isArchived || false,
+    priority: enhancedFeatures[conv.id]?.priority || 'normal',
+    participants: conv.participants.map((participantId: string) => {
+      // Map participant IDs to user info
+      const isOnline = onlineUsers.includes(participantId);
+      return {
+        id: participantId,
+        name: participantId === 'siports-bot' ? 'Assistant SIPORTS' : 
+              participantId === 'user2' ? 'Contact Professionnel' : 
+              `Utilisateur ${participantId}`,
+        avatar: participantId === 'siports-bot' ? 
+               'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=100' :
+               undefined,
+        type: participantId === 'siports-bot' ? 'bot' : 
+              participantId === 'user2' ? 'partner' : 'visitor',
+        online: isOnline
+      };
+    })
+  }));
+
+  const filteredConversations = enhancedConversations.filter(conv => {
     if (selectedFilter === 'unread' && conv.unreadCount === 0) return false;
     if (selectedFilter === 'pinned' && !conv.isPinned) return false;
     if (selectedFilter === 'archived' && !conv.isArchived) return false;
@@ -320,8 +214,8 @@ export const EnhancedChatInterface: React.FC = () => {
     return true;
   });
 
-  const activeConv = conversations.find(c => c.id === activeConversation);
-  const activeMessages = activeConversation ? messages[activeConversation] || [] : [];
+  const activeConv = enhancedConversations.find(c => c.id === activeChatConversation);
+  const activeMessages = activeChatConversation ? chatMessages[activeChatConversation] || [] : [];
 
   const formatTime = (date: Date) => {
     return new Intl.DateTimeFormat('fr-FR', {
@@ -344,6 +238,7 @@ export const EnhancedChatInterface: React.FC = () => {
     switch (userType) {
       case 'partner': return <Crown className="h-3 w-3 text-amber-500" />;
       case 'exhibitor': return <Star className="h-3 w-3 text-blue-500" />;
+      case 'bot': return <Shield className="h-3 w-3 text-green-500" />;
       default: return <User className="h-3 w-3 text-gray-500" />;
     }
   };
@@ -412,9 +307,12 @@ export const EnhancedChatInterface: React.FC = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
-                    activeConversation === conversation.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                    activeChatConversation === conversation.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
                   }`}
-                  onClick={() => setActiveConversation(conversation.id)}
+                  onClick={() => {
+                    setChatActiveConversation(conversation.id);
+                    markAsRead(conversation.id);
+                  }}
                 >
                   <div className="flex items-start space-x-3">
                     <div className="relative">
@@ -507,7 +405,7 @@ export const EnhancedChatInterface: React.FC = () => {
                           </h3>
                           <p className="text-sm text-gray-500">
                             {otherParticipant.online ? 'En ligne' : 'Hors ligne'}
-                            {isTyping[activeConversation] && ' • En train d\'écrire...'}
+                            {activeChatConversation && isTyping[activeChatConversation] && ' • En train d\'écrire...'}
                           </p>
                         </div>
                       </>
@@ -522,10 +420,10 @@ export const EnhancedChatInterface: React.FC = () => {
                   <Button size="sm" variant="ghost">
                     <Video className="h-4 w-4" />
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => togglePin(activeConversation)}>
-                    <Star className={`h-4 w-4 ${activeConv.isPinned ? 'text-yellow-500 fill-current' : ''}`} />
+                  <Button size="sm" variant="ghost" onClick={() => activeChatConversation && togglePin(activeChatConversation)}>
+                    <Star className={`h-4 w-4 ${activeConv?.isPinned ? 'text-yellow-500 fill-current' : ''}`} />
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => archiveConversation(activeConversation)}>
+                  <Button size="sm" variant="ghost" onClick={() => activeChatConversation && archiveConversation(activeChatConversation)}>
                     <Archive className="h-4 w-4" />
                   </Button>
                   <Button size="sm" variant="ghost">
@@ -555,9 +453,9 @@ export const EnhancedChatInterface: React.FC = () => {
                       }`}>
                         <p className="text-sm">{message.content}</p>
                         
-                        {message.attachments && message.attachments.length > 0 && (
+                        {(message as any).attachments && (message as any).attachments.length > 0 && (
                           <div className="mt-2 space-y-1">
-                            {message.attachments.map((attachment, index) => (
+                            {(message as any).attachments.map((attachment: any, index: number) => (
                               <div key={index} className="flex items-center space-x-2 p-2 bg-white bg-opacity-20 rounded">
                                 <Paperclip className="h-3 w-3" />
                                 <span className="text-xs truncate">{attachment.name}</span>
@@ -572,7 +470,7 @@ export const EnhancedChatInterface: React.FC = () => {
                             {formatTime(message.timestamp)}
                           </span>
                           <div className="flex items-center space-x-1">
-                            {message.isEncrypted && (
+                            {(message as any).isEncrypted && (
                               <Shield className="h-3 w-3 opacity-75" />
                             )}
                             {isCurrentUser && (
@@ -581,10 +479,10 @@ export const EnhancedChatInterface: React.FC = () => {
                           </div>
                         </div>
                         
-                        {/* Reactions */}
-                        {message.reactions && message.reactions.length > 0 && (
+                        {/* Reactions (Enhanced feature) */}
+                        {(message as any).reactions && (message as any).reactions.length > 0 && (
                           <div className="absolute -bottom-6 left-0 flex space-x-1">
-                            {message.reactions.map((reaction, index) => (
+                            {(message as any).reactions.map((reaction: any, index: number) => (
                               <span 
                                 key={index}
                                 className="bg-white border border-gray-200 rounded-full px-2 py-1 text-xs shadow-sm"
@@ -616,7 +514,7 @@ export const EnhancedChatInterface: React.FC = () => {
                 })}
               </AnimatePresence>
               
-              {isTyping[activeConversation] && (
+              {activeChatConversation && isTyping[activeChatConversation] && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
