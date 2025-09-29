@@ -166,7 +166,7 @@ export const FeaturedExhibitors: React.FC = () => {
                   <div className="flex items-center justify-between text-sm text-gray-600 mb-6 bg-gray-50 p-3 rounded-lg">
                     <div className="flex items-center space-x-1">
                       <Users className="h-4 w-4 text-blue-500" />
-                      <span>{exhibitor.miniSite.views} vues</span>
+                      <span>{exhibitor.miniSite?.views || 0} vues</span>
                     </div>
                     <div className="flex items-center space-x-1">
                       <MapPin className="h-4 w-4 text-green-500" />
