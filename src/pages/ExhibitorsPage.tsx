@@ -15,6 +15,7 @@ import {
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
+import LogoWithFallback from '../components/ui/LogoWithFallback';
 import { useExhibitorStore } from '../store/exhibitorStore';
 import useAuthStore from '../store/authStore';
 import { motion } from 'framer-motion';
@@ -240,7 +241,7 @@ export default function ExhibitorsPage() {
                       {/* Header */}
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center space-x-3">
-                          <img
+                          <LogoWithFallback
                             src={exhibitor.logo}
                             alt={exhibitor.companyName}
                             className="h-12 w-12 rounded-lg object-cover"
@@ -319,7 +320,7 @@ export default function ExhibitorsPage() {
                     </div>
                   ) : (
                     <div className="flex items-center space-x-6 w-full">
-                      <img
+                      <LogoWithFallback
                         src={exhibitor.logo}
                         alt={exhibitor.companyName}
                         className="h-16 w-16 rounded-lg object-cover flex-shrink-0"
