@@ -47,55 +47,72 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
     setLoading(true);
     setError(null);
     try {
-      // If an import URL is provided, use the AI agent flow
+      // Création automatique complète du mini-site
+      let miniSiteData;
+      
+      // Si une URL est fournie, générer automatiquement le contenu
       if (importUrl && importUrl.trim().length > 0) {
-        // Generate payload using the AI agent service and populate form for user review
-        const generated = await AiAgentService.generate(importUrl.trim());
-        console.log('Generated minisite payload (agent):', generated);
-        // Map generated payload into form fields (make editable)
-        setForm({
-          company: generated.company || '',
-          description: generated.description || '',
-          products: Array.isArray(generated.products) ? generated.products.join('\n') : (generated.products || ''),
-          socials: Array.isArray(generated.socials) ? generated.socials.join(', ') : (generated.socials || ''),
-          documents: generated.documents || [],
-          logo: generated.logo || ''
-        });
-        // Move to the first step so exhibitor can review/edit
-        setStep(0);
-        setLoading(false);
-        return;
+        console.log('🚀 Génération automatique du mini-site depuis:', importUrl.trim());
+        
+        try {
+          // Génération du contenu via l'agent IA
+          const generated = await AiAgentService.generate(importUrl.trim());
+          console.log('✅ Contenu généré:', generated);
+          
+          // Préparation des données pour la création du mini-site
+          miniSiteData = {
+            company: generated.company || 'Entreprise',
+            logo: generated.logo || '',
+            description: generated.description || '',
+            products: Array.isArray(generated.products) ? generated.products.join('\n') : (generated.products || ''),
+            socials: Array.isArray(generated.socials) ? generated.socials.join(', ') : (generated.socials || ''),
+            documents: generated.documents || [],
+          };
+        } catch (aiError) {
+          console.error('❌ Erreur agent IA:', aiError);
+          setError('Impossible de récupérer les informations du site web. Vérifiez l\'URL et réessayez.');
+          setLoading(false);
+          return;
+        }
+      } else {
+        // Utilisation des données du formulaire manuel
+        miniSiteData = {
+          company: form.company || 'Entreprise',
+          logo: form.logo || '',
+          description: form.description || '',
+          products: typeof form.products === 'string' ? form.products : JSON.stringify(form.products || []),
+          socials: typeof form.socials === 'string' ? form.socials : JSON.stringify(form.socials || []),
+          documents: form.documents || [],
+        };
       }
-      // Pour l'instant, on ne gère pas l'upload de fichiers
-      // Les URLs des fichiers seront gérées plus tard dans l'interface d'administration
-      const logoUrl = '';
-      const docsUrls: string[] = [];
 
-      // If we're submitting after review, persist and publish the mini-site
-      const created = await SupabaseService.createMiniSite({
-        company: form.company,
-        logo: form.logo || logoUrl,
-        description: form.description,
-        products: typeof form.products === 'string' ? form.products : JSON.stringify(form.products || []),
-        socials: typeof form.socials === 'string' ? form.socials : JSON.stringify(form.socials || []),
-        documents: docsUrls,
-      });
+      console.log('🔄 Création du mini-site avec les données:', miniSiteData);
+      
+      // Création et publication automatique du mini-site
+      const created = await SupabaseService.createMiniSite(miniSiteData);
+      console.log('✅ Mini-site créé:', created);
 
-      console.log('createMiniSite result:', created);
-      // Optionally publish: call updateMiniSite to set published true when created
+      // Publication automatique du mini-site
       try {
-        const mini = (created && created[0]) ? created[0] : (created || null);
-        if (mini && mini.id) {
-          await SupabaseService.updateMiniSite(mini.exhibitor_id || mini.exhibitor_id, { ...mini, published: true });
+        const miniSite = Array.isArray(created) ? created[0] : created;
+        if (miniSite && (miniSite.id || miniSite.exhibitor_id)) {
+          const exhibitorId = miniSite.exhibitor_id || miniSite.id;
+          await SupabaseService.updateMiniSite(exhibitorId, { 
+            ...miniSite, 
+            published: true 
+          });
+          console.log('✅ Mini-site publié automatiquement');
         }
       } catch (pubErr) {
-        console.warn('Could not auto-publish mini-site:', pubErr);
+        console.warn('⚠️ Impossible de publier automatiquement:', pubErr);
+        // Le mini-site est créé même si la publication échoue
       }
 
       setSuccess(true);
       if (onSuccess) onSuccess();
+      
     } catch (e: any) {
-      console.error('MiniSiteWizard handleSubmit error:', e);
+      console.error('❌ Erreur création mini-site:', e);
       setError(e?.message || 'Erreur lors de la création du mini-site.');
     }
     setLoading(false);
@@ -119,37 +136,100 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
 
   return (
     <Card className="max-w-lg mx-auto p-8 mt-8">
-      <div className="mb-6 text-xl font-bold text-center">Création rapide de votre mini-site</div>
-      <div className="mb-4">
-        <label className="block font-medium mb-2">Importer depuis l'URL du site (optionnel)</label>
-        <input type="url" className="w-full p-2 border rounded" placeholder="https://votresite.com" value={importUrl} onChange={e => setImportUrl(e.target.value)} />
-        <div className="text-sm text-gray-500 mt-1">Fournissez l'URL officielle de votre site et l'agent importera automatiquement le contenu.</div>
+      <div className="mb-6 text-xl font-bold text-center">🚀 Création automatique de votre mini-site</div>
+      
+      {/* Mode automatique avec URL prioritaire */}
+      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <label className="block font-medium mb-2 text-blue-800">
+          ✨ Création automatique depuis votre site web
+        </label>
+        <input 
+          type="url" 
+          className="w-full p-3 border border-blue-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200" 
+          placeholder="https://votresite.com" 
+          value={importUrl} 
+          onChange={e => setImportUrl(e.target.value)}
+          data-testid="input-website-url"
+        />
+        <div className="text-sm text-blue-600 mt-2">
+          🤖 Notre IA récupérera automatiquement toutes les informations de votre site : nom, logo, description, produits, etc.
+        </div>
+        {importUrl && (
+          <Button 
+            onClick={handleSubmit} 
+            disabled={loading} 
+            className="w-full mt-3 bg-blue-600 hover:bg-blue-700"
+            data-testid="button-auto-generate"
+          >
+            {loading ? '🔄 Génération automatique en cours...' : '🚀 Créer automatiquement mon mini-site'}
+          </Button>
+        )}
       </div>
-      <form onSubmit={e => { e.preventDefault(); step === steps.length - 1 ? handleSubmit() : handleNext(); }}>
-        <div className="mb-4">
-          <label className="block font-medium mb-2">{current.label}</label>
-          {current.type === 'text' && (
-            <Input name={current.key} value={form[current.key] || ''} onChange={handleChange} placeholder={current.placeholder} required />
-          )}
-          {current.type === 'textarea' && (
-            <Textarea name={current.key} value={form[current.key] || ''} onChange={handleChange} placeholder={current.placeholder} required />
-          )}
-          {current.type === 'file' && (
-            <Input name={current.key} type="file" onChange={handleChange} multiple={current.multiple} />
-          )}
+
+      {/* Mode manuel en option */}
+      <div className="border-t pt-4">
+        <div className="text-center text-gray-500 mb-4 text-sm">
+          Ou remplissez manuellement les informations
         </div>
-        {error && <div className="text-red-500 mb-2">{error}</div>}
-        <div className="flex justify-between mt-6">
-          <Button type="button" variant="outline" onClick={handlePrev} disabled={step === 0}>Précédent</Button>
-          {step < steps.length - 1 ? (
-            <Button type="submit">Suivant</Button>
-          ) : (
-            <Button type="submit" disabled={loading}>
-              {loading ? 'Génération en cours...' : 'Générer mon mini-site'}
+        
+        <form onSubmit={e => { e.preventDefault(); step === steps.length - 1 ? handleSubmit() : handleNext(); }}>
+          <div className="mb-4">
+            <label className="block font-medium mb-2">{current.label}</label>
+            {current.type === 'text' && (
+              <Input 
+                name={current.key} 
+                value={form[current.key] || ''} 
+                onChange={handleChange} 
+                placeholder={current.placeholder} 
+                required 
+                data-testid={`input-${current.key}`}
+              />
+            )}
+            {current.type === 'textarea' && (
+              <Textarea 
+                name={current.key} 
+                value={form[current.key] || ''} 
+                onChange={handleChange} 
+                placeholder={current.placeholder} 
+                required 
+                data-testid={`textarea-${current.key}`}
+              />
+            )}
+            {current.type === 'file' && (
+              <Input 
+                name={current.key} 
+                type="file" 
+                onChange={handleChange} 
+                multiple={current.multiple} 
+                data-testid={`file-${current.key}`}
+              />
+            )}
+          </div>
+          {error && <div className="text-red-500 mb-2" data-testid="error-message">{error}</div>}
+          <div className="flex justify-between mt-6">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={handlePrev} 
+              disabled={step === 0}
+              data-testid="button-previous"
+            >
+              Précédent
             </Button>
-          )}
-        </div>
-      </form>
+            {step < steps.length - 1 ? (
+              <Button type="submit" data-testid="button-next">Suivant</Button>
+            ) : (
+              <Button 
+                type="submit" 
+                disabled={loading}
+                data-testid="button-manual-generate"
+              >
+                {loading ? 'Génération en cours...' : 'Générer mon mini-site'}
+              </Button>
+            )}
+          </div>
+        </form>
+      </div>
     </Card>
   );
 }
