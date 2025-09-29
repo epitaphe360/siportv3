@@ -3,38 +3,10 @@ import { supabase } from '../lib/supabase';
 import { isSupabaseReady } from '../lib/supabase';
 import { User, Exhibitor, Product, Appointment, Event, ChatMessage, ChatConversation, MiniSiteSection, MessageAttachment, ExhibitorCategory, ContactInfo, TimeSlot } from '../types';
 
-// Demo data when Supabase is not configured
+// Production: All data from Supabase only
 function getDemoExhibitors(): Exhibitor[] {
-  return [
-    {
-      id: '1',
-      companyName: 'Port Solutions Inc.',
-      description: 'Solutions innovantes pour la gestion portuaire moderne avec des technologies de pointe pour optimiser les opérations.',
-      category: 'port-operations' as ExhibitorCategory,
-      sector: 'Gestion Portuaire',
-      logo: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=200&h=200&fit=crop&crop=center',
-      website: 'https://portsolutions.com',
-      verified: true,
-      featured: true,
-      contactInfo: {
-        email: 'contact@portsolutions.com',
-        phone: '+212 5 23 12 34 56',
-        address: 'Casablanca, Maroc',
-        city: 'Casablanca',
-        country: 'Maroc'
-      },
-      establishedYear: 2010,
-      employees: 150,
-      certifications: ['ISO 9001', 'ISO 14001'],
-      products: [],
-      miniSite: null
-    },
-    {
-      id: '2',
-      companyName: 'Maritime Tech Systems',
-      description: 'Technologies avancées pour l\'automatisation des terminaux et la digitalisation des opérations portuaires.',
-      category: 'port-industry' as ExhibitorCategory,
-      sector: 'Technologies Maritimes',
+  return [];
+}
       logo: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=200&h=200&fit=crop&crop=center',
       website: 'https://maritimetech.com',
       verified: true,
@@ -458,8 +430,9 @@ export class SupabaseService {
   
   static async getExhibitors(): Promise<Exhibitor[]> {
     if (!this.checkSupabaseConnection()) {
-      // Return demo data when Supabase is not configured
-      return getDemoExhibitors();
+      // Production: return empty array if no Supabase connection
+      console.warn('⚠️ Supabase non configuré - aucun exposant disponible');
+      return [];
     }
     const safeSupabase = supabase!;
     // Use safe separate queries only (avoid embedded selects entirely).

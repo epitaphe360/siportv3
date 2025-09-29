@@ -52,13 +52,7 @@ const minimalUserProfile = (overrides: Partial<User['profile']> = {}): User['pro
   competencies: overrides.competencies ?? []
 });
 
-// Utilisateurs de test pour développement uniquement
-const TEST_CREDENTIALS = {
-  'admin@siports.com': { password: 'admin123', type: 'admin' as const },
-  'exposant@siports.com': { password: 'expo123', type: 'exhibitor' as const },
-  'partenaire@siports.com': { password: 'partner123', type: 'partner' as const },
-  'visiteur@siports.com': { password: 'visitor123', type: 'visitor' as const },
-};
+// Production authentication only via Supabase
 
 
 const useAuthStore = create<AuthState>((set, get) => ({
@@ -78,53 +72,20 @@ const useAuthStore = create<AuthState>((set, get) => ({
         throw new Error('Email et mot de passe requis');
       }
 
-      // Connexion directe via Supabase
+      // Production authentication via Supabase only
+      console.log('🔄 Connexion Supabase pour:', email);
       
-      // Vérification des credentials de test pour développement
-      const testCred = TEST_CREDENTIALS[email as keyof typeof TEST_CREDENTIALS];
-      if (testCred && password === testCred.password) {
-        // Créer un utilisateur temporaire pour le test
-        const testUser: User = {
-          id: `test-${Date.now()}`,
-          email,
-          name: email.split('@')[0],
-          type: testCred.type,
-          status: 'active',
-          profile: minimalUserProfile({
-            firstName: email.split('@')[0],
-            lastName: 'Test',
-            country: 'Morocco'
-          }),
-          createdAt: new Date(),
-          updatedAt: new Date()
-        };
-        
+      const user = await SupabaseService.getUserByEmail(email);
+      
+      if (user && user.status === 'active') {
+        console.log('✅ Utilisateur Supabase authentifié:', user.email);
         set({ 
-          user: testUser, 
-          token: 'test-token', 
+          user, 
+          token: `sb-${Date.now()}-${user.id}`, 
           isAuthenticated: true,
           isLoading: false 
         });
         return;
-      }
-
-      // Tentative de connexion via Supabase
-      try {
-        console.log('🔄 Tentative de connexion Supabase pour:', email);
-        const user = await SupabaseService.getUserByEmail(email);
-        
-        if (user) {
-          console.log('✅ Utilisateur Supabase trouvé:', user.email);
-          set({ 
-            user, 
-            token: 'supabase-token', 
-            isAuthenticated: true,
-            isLoading: false 
-          });
-          return;
-        }
-      } catch (supabaseError) {
-        console.warn('⚠️ Erreur Supabase lors de la connexion:', supabaseError);
       }
       
       // Si aucune méthode n'a fonctionné
