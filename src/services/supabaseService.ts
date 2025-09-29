@@ -214,41 +214,486 @@ export class SupabaseService {
     };
   }
 
-  // ==================== EMPTY STUBS FOR OTHER METHODS ====================
-  static async createMiniSite(miniSiteData: any): Promise<any> {
-    console.log('Mini-site creation - will be implemented with real Supabase integration');
-    return null;
+  // ==================== AUTHENTICATION ====================
+  static async signUp(email: string, password: string, userData: any): Promise<User | null> {
+    if (!this.checkSupabaseConnection()) return null;
+    
+    const safeSupabase = supabase!;
+    try {
+      // 1. Créer l'utilisateur dans Supabase Auth
+      const { data: authData, error: authError } = await safeSupabase.auth.signUp({
+        email,
+        password,
+      });
+      
+      if (authError) throw authError;
+      if (!authData.user) return null;
+      
+      // 2. Créer le profil utilisateur
+      const { data: userData, error: userError } = await (safeSupabase as any)
+        .from('users')
+        .insert([{
+          id: authData.user.id,
+          email,
+          name: userData.name,
+          type: userData.type,
+          profile: userData.profile,
+          status: 'pending' // Nécessite validation admin
+        }])
+        .select()
+        .single();
+        
+      if (userError) throw userError;
+      
+      // 3. Si c'est un exposant ou partenaire, créer l'entrée correspondante
+      if (userData.type === 'exhibitor') {
+        await this.createExhibitorProfile(authData.user.id, userData);
+      } else if (userData.type === 'partner') {
+        await this.createPartnerProfile(authData.user.id, userData);
+      }
+      
+      return this.transformUserDBToUser(userData);
+    } catch (error) {
+      console.error('Erreur inscription:', error);
+      return null;
+    }
   }
 
-  static async getAppointmentsByUser(userId: string): Promise<Appointment[]> {
-    return [];
+  static async signIn(email: string, password: string): Promise<User | null> {
+    if (!this.checkSupabaseConnection()) return null;
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await safeSupabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      if (error) throw error;
+      if (!data.user) return null;
+      
+      // Récupérer le profil utilisateur
+      const user = await this.getUserByEmail(email);
+      return user;
+    } catch (error) {
+      console.error('Erreur connexion:', error);
+      return null;
+    }
+  }
+
+  // ==================== REAL IMPLEMENTATIONS ====================
+  static async createMiniSite(exhibitorId: string, miniSiteData: any): Promise<any> {
+    if (!this.checkSupabaseConnection()) return null;
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('mini_sites')
+        .insert([{
+          exhibitor_id: exhibitorId,
+          theme: miniSiteData.theme || 'default',
+          custom_colors: miniSiteData.customColors || {},
+          sections: miniSiteData.sections || [],
+          published: false
+        }])
+        .select()
+        .single();
+        
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Erreur création mini-site:', error);
+      return null;
+    }
   }
 
   static async getEvents(): Promise<Event[]> {
-    return [];
-  }
-
-  static async searchExhibitors(query: string, filters: SearchFilters = {}): Promise<Exhibitor[]> {
-    return [];
+    if (!this.checkSupabaseConnection()) return [];
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('events')
+        .select('*')
+        .order('start_time', { ascending: true });
+        
+      if (error) throw error;
+      
+      return (data || []).map((event: any) => ({
+        id: event.id,
+        title: event.title,
+        description: event.description,
+        type: event.event_type,
+        startTime: new Date(event.start_time),
+        endTime: new Date(event.end_time),
+        location: event.location,
+        maxParticipants: event.max_participants,
+        registrationRequired: event.registration_required,
+        qrCode: event.qr_code_data
+      }));
+    } catch (error) {
+      console.error('Erreur récupération événements:', error);
+      return [];
+    }
   }
 
   static async getConversations(userId: string): Promise<ChatConversation[]> {
-    return [];
+    if (!this.checkSupabaseConnection()) return [];
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('conversations')
+        .select(`
+          id,
+          participant_ids,
+          conversation_type,
+          title,
+          created_at,
+          updated_at,
+          messages:messages(
+            id,
+            content,
+            message_type,
+            created_at,
+            sender:sender_id(id, name)
+          )
+        `)
+        .contains('participant_ids', [userId])
+        .order('updated_at', { ascending: false });
+        
+      if (error) throw error;
+      
+      return (data || []).map((conv: any) => {
+        const lastMessage = conv.messages?.[0];
+        return {
+          id: conv.id,
+          participants: conv.participant_ids,
+          lastMessage: lastMessage ? {
+            id: lastMessage.id,
+            senderId: lastMessage.sender.id,
+            receiverId: conv.participant_ids.find((id: string) => id !== lastMessage.sender.id),
+            content: lastMessage.content,
+            type: lastMessage.message_type,
+            timestamp: new Date(lastMessage.created_at),
+            read: true // Simplifié pour l'instant
+          } : null,
+          unreadCount: 0, // À implémenter
+          createdAt: new Date(conv.created_at),
+          updatedAt: new Date(conv.updated_at)
+        };
+      });
+    } catch (error) {
+      console.error('Erreur récupération conversations:', error);
+      return [];
+    }
+  }
+
+  static async sendMessage(conversationId: string, senderId: string, content: string, type: string = 'text'): Promise<ChatMessage | null> {
+    if (!this.checkSupabaseConnection()) return null;
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('messages')
+        .insert([{
+          conversation_id: conversationId,
+          sender_id: senderId,
+          content,
+          message_type: type
+        }])
+        .select()
+        .single();
+        
+      if (error) throw error;
+      
+      // Mettre à jour la conversation
+      await (safeSupabase as any)
+        .from('conversations')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', conversationId);
+      
+      return {
+        id: data.id,
+        senderId,
+        receiverId: '', // À déterminer depuis la conversation
+        content,
+        type: type as any,
+        timestamp: new Date(data.created_at),
+        read: false
+      };
+    } catch (error) {
+      console.error('Erreur envoi message:', error);
+      return null;
+    }
+  }
+
+  static async createAppointment(appointmentData: any): Promise<Appointment | null> {
+    if (!this.checkSupabaseConnection()) return null;
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('appointments')
+        .insert([appointmentData])
+        .select()
+        .single();
+        
+      if (error) throw error;
+      
+      return {
+        id: data.id,
+        organizerId: data.organizer_id,
+        participantId: data.participant_id,
+        exhibitorId: data.exhibitor_id,
+        title: data.title,
+        description: data.description,
+        startTime: new Date(data.start_time),
+        endTime: new Date(data.end_time),
+        status: data.status,
+        type: data.meeting_type,
+        location: data.location,
+        notes: data.notes,
+        createdAt: new Date(data.created_at)
+      };
+    } catch (error) {
+      console.error('Erreur création rendez-vous:', error);
+      return null;
+    }
+  }
+
+  // ==================== HELPER METHODS ====================
+  private static async createExhibitorProfile(userId: string, userData: any): Promise<void> {
+    const safeSupabase = supabase!;
+    
+    const { error } = await (safeSupabase as any)
+      .from('exhibitors')
+      .insert([{
+        user_id: userId,
+        company_name: userData.profile?.company || userData.name,
+        category: userData.profile?.category || 'port-operations',
+        sector: userData.profile?.sector || 'General',
+        description: userData.profile?.bio || '',
+        contact_info: {
+          email: userData.email,
+          phone: userData.profile?.phone || '',
+          address: userData.profile?.address || '',
+          city: userData.profile?.city || '',
+          country: userData.profile?.country || ''
+        },
+        verified: false,
+        featured: false
+      }]);
+      
+    if (error) console.error('Erreur création profil exposant:', error);
+  }
+
+  private static async createPartnerProfile(userId: string, userData: any): Promise<void> {
+    const safeSupabase = supabase!;
+    
+    const { error } = await (safeSupabase as any)
+      .from('partners')
+      .insert([{
+        user_id: userId,
+        company_name: userData.profile?.company || userData.name,
+        partner_type: 'sponsor',
+        description: userData.profile?.bio || '',
+        tier: 3
+      }]);
+      
+    if (error) console.error('Erreur création profil partenaire:', error);
+  }
+
+  static async getAppointmentsByUser(userId: string): Promise<Appointment[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('appointments')
+        .select('*')
+        .or(`organizer_id.eq.${userId},participant_id.eq.${userId}`)
+        .order('start_time', { ascending: true });
+        
+      if (error) throw error;
+      
+      return (data || []).map((apt: any) => ({
+        id: apt.id,
+        organizerId: apt.organizer_id,
+        participantId: apt.participant_id,
+        exhibitorId: apt.exhibitor_id,
+        title: apt.title,
+        description: apt.description,
+        startTime: new Date(apt.start_time),
+        endTime: new Date(apt.end_time),
+        status: apt.status,
+        type: apt.meeting_type,
+        location: apt.location,
+        notes: apt.notes,
+        createdAt: new Date(apt.created_at)
+      }));
+    } catch (error) {
+      console.error('Erreur récupération rendez-vous:', error);
+      return [];
+    }
+  }
+
+  static async searchExhibitors(query: string, filters: SearchFilters = {}): Promise<Exhibitor[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    
+    const safeSupabase = supabase!;
+    try {
+      let queryBuilder = (safeSupabase as any)
+        .from('exhibitors')
+        .select('*');
+        
+      if (query) {
+        queryBuilder = queryBuilder.or(`company_name.ilike.%${query}%,description.ilike.%${query}%,sector.ilike.%${query}%`);
+      }
+      
+      if (filters.category) {
+        queryBuilder = queryBuilder.eq('category', filters.category);
+      }
+      
+      if (filters.sector) {
+        queryBuilder = queryBuilder.ilike('sector', `%${filters.sector}%`);
+      }
+      
+      const { data, error } = await queryBuilder.limit(20);
+      
+      if (error) throw error;
+      
+      return (data || []).map(this.transformExhibitorDBToExhibitor);
+    } catch (error) {
+      console.error('Erreur recherche exposants:', error);
+      return [];
+    }
   }
 
   static async getEventRegistrations(eventId?: string, userId?: string): Promise<EventRegistration[]> {
-    return [];
+    if (!this.checkSupabaseConnection()) return [];
+    
+    const safeSupabase = supabase!;
+    try {
+      let queryBuilder = (safeSupabase as any)
+        .from('event_registrations')
+        .select('*');
+        
+      if (eventId) queryBuilder = queryBuilder.eq('event_id', eventId);
+      if (userId) queryBuilder = queryBuilder.eq('user_id', userId);
+      
+      const { data, error } = await queryBuilder.order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      
+      return (data || []).map((reg: any) => ({
+        id: reg.id,
+        eventId: reg.event_id,
+        userId: reg.user_id,
+        registrationType: reg.registration_type,
+        status: reg.status,
+        registrationDate: new Date(reg.created_at),
+        attendedAt: reg.attended_at ? new Date(reg.attended_at) : undefined,
+        notes: reg.notes,
+        specialRequirements: reg.special_requirements,
+        createdAt: new Date(reg.created_at),
+        updatedAt: new Date(reg.created_at)
+      }));
+    } catch (error) {
+      console.error('Erreur récupération inscriptions événements:', error);
+      return [];
+    }
   }
 
   static async getNetworkingRecommendations(userId: string): Promise<NetworkingRecommendationDB[]> {
-    return [];
+    if (!this.checkSupabaseConnection()) return [];
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('networking_recommendations')
+        .select(`
+          *,
+          recommendedUser:recommended_user_id(
+            id,
+            name,
+            email,
+            type,
+            profile
+          )
+        `)
+        .eq('user_id', userId)
+        .eq('viewed', false)
+        .gte('expires_at', new Date().toISOString())
+        .order('score', { ascending: false })
+        .limit(10);
+        
+      if (error) throw error;
+      
+      return data || [];
+    } catch (error) {
+      console.error('Erreur récupération recommandations:', error);
+      return [];
+    }
   }
 
   static async getActivities(userId?: string, limit: number = 50): Promise<ActivityDB[]> {
-    return [];
+    if (!this.checkSupabaseConnection()) return [];
+    
+    const safeSupabase = supabase!;
+    try {
+      let queryBuilder = (safeSupabase as any)
+        .from('activities')
+        .select(`
+          *,
+          user:user_id(id, name),
+          relatedUser:related_user_id(id, name)
+        `)
+        .eq('is_public', true)
+        .order('created_at', { ascending: false })
+        .limit(limit);
+        
+      if (userId) {
+        queryBuilder = queryBuilder.eq('user_id', userId);
+      }
+      
+      const { data, error } = await queryBuilder;
+      
+      if (error) throw error;
+      
+      return data || [];
+    } catch (error) {
+      console.error('Erreur récupération activités:', error);
+      return [];
+    }
   }
 
   static async getTimeSlotsByUser(userId: string): Promise<TimeSlot[]> {
-    return [];
+    if (!this.checkSupabaseConnection()) return [];
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('time_slots')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('is_available', true)
+        .gte('start_time', new Date().toISOString())
+        .order('start_time', { ascending: true });
+        
+      if (error) throw error;
+      
+      return (data || []).map((slot: any) => ({
+        id: slot.id,
+        userId: slot.user_id,
+        startTime: new Date(slot.start_time),
+        endTime: new Date(slot.end_time),
+        isAvailable: slot.is_available,
+        createdAt: new Date(slot.created_at)
+      }));
+    } catch (error) {
+      console.error('Erreur récupération créneaux:', error);
+      return [];
+    }
   }
 }

@@ -72,13 +72,13 @@ const useAuthStore = create<AuthState>((set, get) => ({
         throw new Error('Email et mot de passe requis');
       }
 
-      // Production authentication via Supabase only
+      // Production authentication via Supabase
       console.log('🔄 Connexion Supabase pour:', email);
       
-      const user = await SupabaseService.getUserByEmail(email);
+      const user = await SupabaseService.signIn(email, password);
       
       if (user && user.status === 'active') {
-        console.log('✅ Utilisateur Supabase authentifié:', user.email);
+        console.log('✅ Utilisateur authentifié:', user.email);
         set({ 
           user, 
           token: `sb-${Date.now()}-${user.id}`, 
