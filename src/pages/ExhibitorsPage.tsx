@@ -281,7 +281,7 @@ export default function ExhibitorsPage() {
                       <div className="flex items-center justify-between text-sm text-gray-500 mb-6">
                         <div className="flex items-center space-x-1">
                           <Users className="h-4 w-4" />
-                          <span>{exhibitor.miniSite.views} vues</span>
+                          <span>{exhibitor.miniSite?.views || 0} vues</span>
                         </div>
                         <div className="flex items-center space-x-1">
                           <MapPin className="h-4 w-4" />
@@ -354,7 +354,7 @@ export default function ExhibitorsPage() {
                           <div className="flex items-center space-x-4 text-sm text-gray-500">
                             <div className="flex items-center space-x-1">
                               <Users className="h-4 w-4" />
-                              <span>{exhibitor.miniSite.views} vues</span>
+                              <span>{exhibitor.miniSite?.views || 0} vues</span>
                             </div>
                             <div className="flex items-center space-x-1">
                               <MapPin className="h-4 w-4" />
