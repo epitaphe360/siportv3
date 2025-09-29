@@ -143,10 +143,16 @@ const useAuthStore = create<AuthState>((set, get) => ({
     set({ isLoading: true });
     
     try {
-      // Pour la démo, vérifier les comptes de test
+      // Validation des entrées
+      if (!email || !password) {
+        throw new Error('Email et mot de passe requis');
+      }
+
+      // Pour la démo, vérifier les comptes de test en premier
       const mockUser = mockUsers.find(u => u.email === email);
       
       if (mockUser && password === 'demo123') {
+        console.log('✅ Connexion démo réussie pour:', email);
         set({ 
           user: mockUser, 
           token: 'mock-token', 
@@ -156,22 +162,33 @@ const useAuthStore = create<AuthState>((set, get) => ({
         return;
       }
       
-      // Essayer de récupérer l'utilisateur depuis Supabase
-      const user = await SupabaseService.getUserByEmail(email);
-      
-      if (user) {
-        set({ 
-          user, 
-          token: 'supabase-token', 
-          isAuthenticated: true,
-          isLoading: false 
-        });
-      } else {
-        throw new Error('Email ou mot de passe incorrect');
+      // Tentative de connexion via Supabase avec gestion d'erreurs robuste
+      try {
+        console.log('🔄 Tentative de connexion Supabase pour:', email);
+        const user = await SupabaseService.getUserByEmail(email);
+        
+        if (user) {
+          console.log('✅ Utilisateur Supabase trouvé:', user.email);
+          set({ 
+            user, 
+            token: 'supabase-token', 
+            isAuthenticated: true,
+            isLoading: false 
+          });
+          return;
+        }
+      } catch (supabaseError) {
+        console.warn('⚠️ Erreur Supabase lors de la connexion:', supabaseError);
+        // Continuer avec l'erreur générique si Supabase échoue
       }
-    } catch (error) {
+      
+      // Si aucune méthode n'a fonctionné
+      throw new Error('Email ou mot de passe incorrect');
+      
+    } catch (error: any) {
+      console.error('❌ Erreur de connexion:', error);
       set({ isLoading: false });
-      throw error;
+      throw new Error(error?.message || 'Erreur de connexion');
     }
   },
 
@@ -198,9 +215,17 @@ const useAuthStore = create<AuthState>((set, get) => ({
     
     try {
       const ud = userData as Record<string, unknown>;
-  await SupabaseService.createUser({
-        email: String(ud.email ?? ''),
-        name: `${String(ud.firstName ?? '')} ${String(ud.lastName ?? '')}`.trim(),
+      
+      // Validation des données requises
+      if (!ud.email || !ud.firstName || !ud.lastName) {
+        throw new Error('Email, prénom et nom sont requis');
+      }
+
+      console.log('🔄 Création d\'utilisateur avec Supabase...');
+      
+      const newUser = await SupabaseService.createUser({
+        email: String(ud.email),
+        name: `${String(ud.firstName)} ${String(ud.lastName)}`.trim(),
         type: (['admin','exhibitor','partner','visitor'].includes(String(ud.accountType)) ? String(ud.accountType) : 'visitor') as User['type'],
         profile: minimalUserProfile({
           firstName: String(ud.firstName ?? ''),
@@ -216,12 +241,13 @@ const useAuthStore = create<AuthState>((set, get) => ({
         })
       });
       
+      console.log('✅ Utilisateur créé avec succès:', newUser.email);
       set({ isLoading: false });
-      // Ne pas connecter automatiquement, laisser l'utilisateur se connecter
-      // On peut stocker un indicateur ou juste terminer silencieusement
-    } catch (error) {
+      
+    } catch (error: any) {
+      console.error('❌ Erreur lors de l\'inscription:', error);
       set({ isLoading: false });
-      throw error;
+      throw new Error(error?.message || 'Erreur lors de l\'inscription');
     }
   },
 
