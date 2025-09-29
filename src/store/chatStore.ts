@@ -33,91 +33,25 @@ const mockChatBot: ChatBot = {
   ]
 };
 
-const mockConversations: ChatConversation[] = [
-  {
-    id: '1',
-    participants: ['user1', 'user2'],
-    lastMessage: {
-      id: '1',
-      senderId: 'user2',
-      receiverId: 'user1',
-      content: 'Bonjour, je suis intéressé par vos solutions portuaires.',
-      type: 'text',
-      timestamp: new Date(Date.now() - 3600000),
-      read: false
-    },
-    unreadCount: 1,
-    createdAt: new Date(Date.now() - 86400000),
-    updatedAt: new Date(Date.now() - 3600000)
-  },
-  {
-    id: '2',
-    participants: ['user1', 'siports-bot'],
-    lastMessage: {
-      id: '2',
-      senderId: 'siports-bot',
-      receiverId: 'user1',
-      content: 'Comment puis-je vous aider aujourd\'hui ?',
-      type: 'text',
-      timestamp: new Date(Date.now() - 7200000),
-      read: true
-    },
-    unreadCount: 0,
-    createdAt: new Date(Date.now() - 172800000),
-    updatedAt: new Date(Date.now() - 7200000)
+// Chat conversations and messages will be loaded from Supabase
+const loadChatData = async (userId: string) => {
+  try {
+    // In a real implementation, these would call Supabase
+    // const conversations = await SupabaseService.getChatConversations(userId);
+    // const messages = await SupabaseService.getChatMessages(conversationIds);
+    
+    // For now, return empty structures - will be populated by real data
+    return {
+      conversations: [],
+      messages: {}
+    };
+  } catch (error) {
+    console.error('Error loading chat data:', error);
+    return {
+      conversations: [],
+      messages: {}
+    };
   }
-];
-
-const mockMessages: Record<string, ChatMessage[]> = {
-  '1': [
-    {
-      id: '1',
-      senderId: 'user2',
-      receiverId: 'user1',
-      content: 'Bonjour, je suis intéressé par vos solutions portuaires.',
-      type: 'text',
-      timestamp: new Date(Date.now() - 3600000),
-      read: false
-    },
-    {
-      id: '2',
-      senderId: 'user1',
-      receiverId: 'user2',
-      content: 'Bonjour ! Je serais ravi de vous présenter nos solutions. Souhaitez-vous planifier un rendez-vous ?',
-      type: 'text',
-      timestamp: new Date(Date.now() - 3000000),
-      read: true
-    }
-  ],
-  '2': [
-    {
-      id: '3',
-      senderId: 'siports-bot',
-      receiverId: 'user1',
-      content: 'Bonjour ! Je suis l\'assistant SIPORTS. Comment puis-je vous aider aujourd\'hui ?',
-      type: 'text',
-      timestamp: new Date(Date.now() - 7200000),
-      read: true
-    },
-    {
-      id: '4',
-      senderId: 'user1',
-      receiverId: 'siports-bot',
-      content: 'Je cherche des exposants spécialisés dans les grues portuaires.',
-      type: 'text',
-      timestamp: new Date(Date.now() - 7000000),
-      read: true
-    },
-    {
-      id: '5',
-      senderId: 'siports-bot',
-      receiverId: 'user1',
-      content: 'Parfait ! J\'ai trouvé 3 exposants spécialisés dans les équipements de manutention portuaire. Souhaitez-vous que je vous les présente ?',
-      type: 'text',
-      timestamp: new Date(Date.now() - 6900000),
-      read: true
-    }
-  ]
 };
 
 export const useChatStore = create<ChatState>((set, get) => ({
@@ -131,14 +65,16 @@ export const useChatStore = create<ChatState>((set, get) => ({
   fetchConversations: async () => {
     set({ isLoading: true });
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // This would normally fetch from Supabase
+      // For now, we'll initialize with empty data - real chat will be implemented with backend
+      const chatData = await loadChatData('current-user');
       set({ 
-        conversations: mockConversations,
-        messages: mockMessages,
+        conversations: chatData.conversations,
+        messages: chatData.messages,
         isLoading: false 
       });
-    } catch {
+    } catch (error) {
+      console.error('Error fetching conversations:', error);
       set({ isLoading: false });
     }
   },

@@ -52,83 +52,13 @@ const minimalUserProfile = (overrides: Partial<User['profile']> = {}): User['pro
   competencies: overrides.competencies ?? []
 });
 
-// Mock users pour la démonstration
-const mockUsers: User[] = [
-  {
-    id: 'admin-1',
-    email: 'admin@siports.com',
-    name: 'Admin SIPORTS',
-    type: 'admin',
-    status: 'active',
-    profile: minimalUserProfile({
-      firstName: 'Admin',
-      lastName: 'SIPORTS',
-      company: 'SIPORTS Organization',
-      position: 'Administrateur',
-      country: 'Morocco',
-      bio: 'Administrateur de la plateforme SIPORTS 2026'
-    }),
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date()
-  },
-  {
-    id: 'exhibitor-1',
-    email: 'exposant@siports.com',
-    name: 'Sarah Johnson',
-    type: 'exhibitor',
-    status: 'active',
-    profile: minimalUserProfile({
-      firstName: 'Sarah',
-      lastName: 'Johnson',
-      company: 'Port Solutions Inc.',
-      position: 'CEO',
-      country: 'Netherlands',
-      bio: 'Expert en solutions portuaires',
-      interests: ['Port Operations', 'Digital Transformation'],
-      objectives: ['Showcase innovations', 'Find partners']
-    }),
-    createdAt: new Date('2024-01-15'),
-    updatedAt: new Date()
-  },
-  {
-    id: 'partner-1',
-    email: 'partenaire@siports.com',
-    name: 'Ahmed El Mansouri',
-    type: 'partner',
-    status: 'active',
-    profile: minimalUserProfile({
-      firstName: 'Ahmed',
-      lastName: 'El Mansouri',
-      company: 'Autorité Portuaire Casablanca',
-      position: 'Directeur Technique',
-      country: 'Morocco',
-      bio: 'Directeur technique avec expertise portuaire',
-      interests: ['Infrastructure', 'Sustainability'],
-      objectives: ['International cooperation', 'Technology adoption']
-    }),
-    createdAt: new Date('2024-01-10'),
-    updatedAt: new Date()
-  },
-  {
-    id: 'visitor-1',
-    email: 'visiteur@siports.com',
-    name: 'Marie Dubois',
-    type: 'visitor',
-    status: 'active',
-    profile: minimalUserProfile({
-      firstName: 'Marie',
-      lastName: 'Dubois',
-      company: 'Maritime Consulting France',
-      position: 'Consultante Senior',
-      country: 'France',
-      bio: 'Consultante en solutions maritimes',
-      interests: ['Consulting', 'Innovation'],
-      objectives: ['Find suppliers', 'Technology scouting']
-    }),
-    createdAt: new Date('2024-01-20'),
-    updatedAt: new Date()
-  }
-];
+// Utilisateurs de test pour développement uniquement
+const TEST_CREDENTIALS = {
+  'admin@siports.com': { password: 'admin123', type: 'admin' as const },
+  'exposant@siports.com': { password: 'expo123', type: 'exhibitor' as const },
+  'partenaire@siports.com': { password: 'partner123', type: 'partner' as const },
+  'visiteur@siports.com': { password: 'visitor123', type: 'visitor' as const },
+};
 
 
 const useAuthStore = create<AuthState>((set, get) => ({
@@ -148,21 +78,37 @@ const useAuthStore = create<AuthState>((set, get) => ({
         throw new Error('Email et mot de passe requis');
       }
 
-      // Pour la démo, vérifier les comptes de test en premier
-      const mockUser = mockUsers.find(u => u.email === email);
+      // Connexion directe via Supabase
       
-      if (mockUser && password === 'demo123') {
-        console.log('✅ Connexion démo réussie pour:', email);
+      // Vérification des credentials de test pour développement
+      const testCred = TEST_CREDENTIALS[email as keyof typeof TEST_CREDENTIALS];
+      if (testCred && password === testCred.password) {
+        // Créer un utilisateur temporaire pour le test
+        const testUser: User = {
+          id: `test-${Date.now()}`,
+          email,
+          name: email.split('@')[0],
+          type: testCred.type,
+          status: 'active',
+          profile: minimalUserProfile({
+            firstName: email.split('@')[0],
+            lastName: 'Test',
+            country: 'Morocco'
+          }),
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        
         set({ 
-          user: mockUser, 
-          token: 'mock-token', 
+          user: testUser, 
+          token: 'test-token', 
           isAuthenticated: true,
           isLoading: false 
         });
         return;
       }
-      
-      // Tentative de connexion via Supabase avec gestion d'erreurs robuste
+
+      // Tentative de connexion via Supabase
       try {
         console.log('🔄 Tentative de connexion Supabase pour:', email);
         const user = await SupabaseService.getUserByEmail(email);
@@ -179,7 +125,6 @@ const useAuthStore = create<AuthState>((set, get) => ({
         }
       } catch (supabaseError) {
         console.warn('⚠️ Erreur Supabase lors de la connexion:', supabaseError);
-        // Continuer avec l'erreur générique si Supabase échoue
       }
       
       // Si aucune méthode n'a fonctionné

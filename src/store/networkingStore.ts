@@ -20,15 +20,23 @@ interface AIInsights {
   topKeywords: string[];
 }
 
-// Mock data for demonstration
-const MOCK_AI_INSIGHTS: AIInsights = {
-  summary: "Votre activité réseau est en hausse de 15% cette semaine.",
-  suggestions: [
-    "Engagez avec des exposants dans le secteur 'Logistique 4.0'.",
-    "Participez au webinaire 'Ports du Futur' prévu demain.",
-    "3 nouveaux profils hautement compatibles ont été identifiés.",
-  ],
-  topKeywords: ["IA", "Durabilité", "Automatisation", "Sécurité"],
+// AI Insights will be fetched from backend
+const generateAIInsights = async (userId: string): Promise<AIInsights> => {
+  try {
+    // Call to AI service would be here
+    const insights = await SupabaseService.getNetworkingInsights?.(userId);
+    return insights || {
+      summary: "Analyse de votre réseau en cours...",
+      suggestions: ["Connectez-vous avec plus d'exposants", "Participez aux événements recommandés"],
+      topKeywords: ["Réseautage", "Opportunités"],
+    };
+  } catch {
+    return {
+      summary: "Développez votre réseau professionnel.",
+      suggestions: ["Explorez les profils d'exposants", "Participez aux événements"],
+      topKeywords: ["Networking", "Connections"],
+    };
+  }
 };
 
 interface DailyUsage {
@@ -88,8 +96,8 @@ interface NetworkingState {
 export const useNetworkingStore = create<NetworkingState>((set, get) => ({
   // State
   recommendations: [],
-  connections: ['user_2', 'user_4'], // Mock initial connections
-  favorites: ['user_3'], // Mock initial favorites
+  connections: [], // Will be loaded from Supabase
+  favorites: [], // Will be loaded from Supabase
   pendingConnections: [],
   aiInsights: null,
   isLoading: false,
@@ -329,19 +337,19 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     };
   },
 
-  loadAIInsights: () => {
+  loadAIInsights: async () => {
+    const { user } = useAuthStore.getState();
+    if (!user) return;
+
     set({ isLoading: true });
-    toast.promise(
-      new Promise(resolve => setTimeout(() => {
-        set({ aiInsights: MOCK_AI_INSIGHTS, isLoading: false });
-        resolve(MOCK_AI_INSIGHTS);
-      }, 1500)),
-      {
-        loading: 'L\'IA analyse vos données...',
-        success: 'Insights IA générés avec succès !',
-        error: 'Erreur lors de la génération des insights.',
-      }
-    );
+    try {
+      const insights = await generateAIInsights(user.id);
+      set({ aiInsights: insights, isLoading: false });
+      toast.success('Insights IA générés avec succès !');
+    } catch (error) {
+      set({ isLoading: false });
+      toast.error('Erreur lors de la génération des insights.');
+    }
   },
 
   // Modal Actions
