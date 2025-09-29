@@ -58,7 +58,7 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
         exhibitors: [],
         filteredExhibitors: [],
         isLoading: false,
-        error: errorMessage
+        error: null  // Don't show error to user when Supabase is not configured
       });
     }
   },
