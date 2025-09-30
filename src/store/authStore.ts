@@ -65,50 +65,33 @@ const useAuthStore = create<AuthState>((set, get) => ({
   
   login: async (email: string, password: string) => {
     set({ isLoading: true });
-    
+
     try {
-      // Validation des entrées
       if (!email || !password) {
         throw new Error('Email et mot de passe requis');
       }
 
-      // Authentification via le backend unifié
-      console.log('🔄 Connexion via Auth Server pour:', email);
-      
-      // Utiliser l'URL du backend appropriée selon l'environnement
-      const authUrl = window.location.hostname === 'localhost' 
-        ? 'http://localhost:3003/api/auth/login'
-        : `${window.location.protocol}//${window.location.hostname}:3003/api/auth/login`;
-      
-      const response = await fetch(authUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
+      console.log('🔄 Connexion via Supabase pour:', email);
+
+      const user = await SupabaseService.signIn(email, password);
+
+      if (!user) {
+        throw new Error('Email ou mot de passe incorrect');
+      }
+
+      if (user.status && user.status !== 'active') {
+        throw new Error('Votre compte est en attente de validation');
+      }
+
+      console.log('✅ Utilisateur authentifié:', user.email);
+
+      set({
+        user,
+        token: user.id,
+        isAuthenticated: true,
+        isLoading: false
       });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Email ou mot de passe incorrect');
-      }
-      
-      const { user, token } = await response.json();
-      
-      if (user && user.status === 'active') {
-        console.log('✅ Utilisateur authentifié:', user.email);
-        set({ 
-          user, 
-          token, 
-          isAuthenticated: true,
-          isLoading: false 
-        });
-        return;
-      }
-      
-      // Si aucune méthode n'a fonctionné
-      throw new Error('Email ou mot de passe incorrect');
-      
+
     } catch (error: any) {
       console.error('❌ Erreur de connexion:', error);
       set({ isLoading: false });
