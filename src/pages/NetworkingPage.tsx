@@ -268,75 +268,128 @@ export default function NetworkingPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      {/* Bannière avec image de fond */}
-      <div className="relative bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 overflow-hidden">
-        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
-        <div className="absolute inset-0 bg-cover bg-center opacity-20" style={{
-          backgroundImage: `url('/salon-logo01.png')`
+      {/* Bannière avec image de fond améliorée */}
+      <div className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-cyan-900 overflow-hidden">
+        {/* Overlay avec motif géométrique */}
+        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div className="absolute inset-0 opacity-10" style={{
+          backgroundImage: 'radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 80%, white 1px, transparent 1px)',
+          backgroundSize: '50px 50px'
         }}></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+
+        {/* Bulles décoratives animées */}
+        <div className="absolute top-10 left-10 w-64 h-64 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+        <div className="absolute bottom-10 right-10 w-72 h-72 bg-cyan-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-teal-400 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse" style={{ animationDelay: '4s' }}></div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
           <motion.div
             initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="text-center text-white"
           >
-            <div className="flex justify-center mb-6">
-              <img
-                src="/siports-logo.jpg"
-                alt="SIPORTS Logo"
-                className="h-16 w-auto filter brightness-0 invert"
-              />
-            </div>
-            <h1 className="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight">
+            <motion.div
+              className="flex justify-center mb-8"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+            >
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 shadow-2xl border border-white/20">
+                <img
+                  src="/siports-logo.jpg"
+                  alt="SIPORTS Logo"
+                  className="h-16 w-auto filter brightness-0 invert"
+                />
+              </div>
+            </motion.div>
+
+            <motion.h1
+              className="text-5xl md:text-7xl font-black mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-cyan-100"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+            >
               Réseautage Intelligent
-            </h1>
-            <p className="text-xl md:text-2xl font-medium mb-8 max-w-3xl mx-auto opacity-90 leading-relaxed">
-              Connectez-vous avec les bonnes personnes grâce à notre intelligence artificielle de matching
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <div className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
-                <Brain className="h-6 w-6 text-blue-300" />
-                <span className="text-lg font-medium">IA Matching Avancé</span>
+            </motion.h1>
+
+            <motion.p
+              className="text-xl md:text-2xl font-light mb-10 max-w-3xl mx-auto leading-relaxed text-blue-50"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+            >
+              Connectez-vous avec les bons professionnels grâce à notre IA de matching nouvelle génération
+            </motion.p>
+
+            <motion.div
+              className="flex flex-wrap gap-4 justify-center items-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.8 }}
+            >
+              <div className="flex items-center space-x-3 bg-white/15 backdrop-blur-md rounded-2xl px-6 py-4 shadow-xl border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+                <div className="bg-blue-500/30 p-2 rounded-lg">
+                  <Brain className="h-6 w-6 text-blue-100" />
+                </div>
+                <span className="text-lg font-semibold">IA Matching Avancé</span>
               </div>
-              <div className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
-                <Users className="h-6 w-6 text-green-300" />
-                <span className="text-lg font-medium">+500 Professionnels</span>
+              <div className="flex items-center space-x-3 bg-white/15 backdrop-blur-md rounded-2xl px-6 py-4 shadow-xl border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+                <div className="bg-green-500/30 p-2 rounded-lg">
+                  <Users className="h-6 w-6 text-green-100" />
+                </div>
+                <span className="text-lg font-semibold">+500 Professionnels</span>
               </div>
-              <div className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
-                <Handshake className="h-6 w-6 text-yellow-300" />
-                <span className="text-lg font-medium">Opportunités Business</span>
+              <div className="flex items-center space-x-3 bg-white/15 backdrop-blur-md rounded-2xl px-6 py-4 shadow-xl border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+                <div className="bg-yellow-500/30 p-2 rounded-lg">
+                  <Handshake className="h-6 w-6 text-yellow-100" />
+                </div>
+                <span className="text-lg font-semibold">Opportunités Business</span>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </div>
 
-      {/* Navigation améliorée */}
-      <div className="bg-white shadow-lg border-b border-gray-100 sticky top-0 z-40">
+      {/* Navigation améliorée avec design moderne */}
+      <div className="bg-white/80 backdrop-blur-lg shadow-xl border-b border-gray-200/50 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center py-6">
-            <nav className="flex flex-wrap justify-center gap-2 lg:gap-4">
+          <div className="flex justify-center py-8">
+            <nav className="flex flex-wrap justify-center gap-3 lg:gap-4">
               {[
-                { id: 'recommendations', label: 'Recommandations IA', icon: Brain, color: 'blue' },
-                { id: 'search', label: 'Recherche Avancée', icon: Search, color: 'green' },
-                { id: 'connections', label: 'Mes Connexions', icon: Users, color: 'purple' },
-                { id: 'favorites', label: 'Mes Favoris', icon: Heart, color: 'red' },
-                { id: 'insights', label: 'Insights IA', icon: TrendingUp, color: 'orange' }
+                { id: 'recommendations', label: 'Recommandations IA', icon: Brain, color: 'blue', bgGradient: 'from-blue-500 to-blue-600' },
+                { id: 'search', label: 'Recherche Avancée', icon: Search, color: 'green', bgGradient: 'from-green-500 to-green-600' },
+                { id: 'connections', label: 'Mes Connexions', icon: Users, color: 'purple', bgGradient: 'from-purple-500 to-purple-600' },
+                { id: 'favorites', label: 'Mes Favoris', icon: Heart, color: 'red', bgGradient: 'from-red-500 to-red-600' },
+                { id: 'insights', label: 'Insights IA', icon: TrendingUp, color: 'orange', bgGradient: 'from-orange-500 to-orange-600' }
               ].map((tab) => (
                 <motion.button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as keyof typeof CONFIG.tabIds)}
-                  className={`flex items-center space-x-3 px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 ${
+                  className={`group relative flex items-center space-x-3 px-6 py-4 rounded-2xl font-semibold transition-all duration-300 overflow-hidden ${
                     activeTab === tab.id
-                      ? `bg-${tab.color}-100 text-${tab.color}-700 shadow-lg border-2 border-${tab.color}-200`
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 border-2 border-transparent'
+                      ? `bg-gradient-to-r ${tab.bgGradient} text-white shadow-2xl scale-105`
+                      : 'text-gray-600 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 border-2 border-transparent hover:border-gray-200'
                   }`}
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ y: -3, scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <tab.icon className="h-5 w-5" />
-                  <span className="hidden sm:inline">{tab.label}</span>
+                  {/* Effet de brillance animé au survol */}
+                  {activeTab !== tab.id && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform -skew-x-12 group-hover:translate-x-full"></div>
+                  )}
+
+                  <tab.icon className={`h-5 w-5 ${activeTab === tab.id ? '' : 'group-hover:scale-110 transition-transform'}`} />
+                  <span className="hidden sm:inline relative z-10">{tab.label}</span>
+
+                  {/* Badge indicateur actif */}
+                  {activeTab === tab.id && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-lg"
+                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    />
+                  )}
                 </motion.button>
               ))}
             </nav>
