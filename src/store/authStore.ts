@@ -119,21 +119,23 @@ const useAuthStore = create<AuthState>((set, get) => ({
 
   register: async (userData: Record<string, unknown>) => {
     set({ isLoading: true });
-    
+
     try {
       const ud = userData as Record<string, unknown>;
-      
+
       // Validation des données requises
       if (!ud.email || !ud.firstName || !ud.lastName) {
         throw new Error('Email, prénom et nom sont requis');
       }
 
       console.log('🔄 Création d\'utilisateur avec Supabase...');
-      
+
+      const userType = (['admin','exhibitor','partner','visitor'].includes(String(ud.accountType)) ? String(ud.accountType) : 'visitor') as User['type'];
+
       const newUser = await SupabaseService.createUser({
         email: String(ud.email),
         name: `${String(ud.firstName)} ${String(ud.lastName)}`.trim(),
-        type: (['admin','exhibitor','partner','visitor'].includes(String(ud.accountType)) ? String(ud.accountType) : 'visitor') as User['type'],
+        type: userType,
         profile: minimalUserProfile({
           firstName: String(ud.firstName ?? ''),
           lastName: String(ud.lastName ?? ''),
@@ -147,10 +149,38 @@ const useAuthStore = create<AuthState>((set, get) => ({
           objectives: (Array.isArray(ud.objectives) ? (ud.objectives as string[]) : [])
         })
       });
-      
+
       console.log('✅ Utilisateur créé avec succès:', newUser.email);
+
+      // Créer une demande d'inscription pour exposants et partenaires
+      if (userType === 'exhibitor' || userType === 'partner') {
+        console.log('📝 Création de la demande d\'inscription...');
+        await SupabaseService.createRegistrationRequest(newUser.id, {
+          type: userType,
+          email: String(ud.email),
+          firstName: String(ud.firstName),
+          lastName: String(ud.lastName),
+          company: String(ud.companyName ?? ''),
+          position: String(ud.position ?? ''),
+          phone: String(ud.phone ?? ''),
+          ...ud
+        });
+
+        // Envoyer l'email de confirmation
+        console.log('📧 Envoi de l\'email de confirmation...');
+        await SupabaseService.sendRegistrationEmail({
+          userType: userType as 'exhibitor' | 'partner',
+          email: String(ud.email),
+          firstName: String(ud.firstName),
+          lastName: String(ud.lastName),
+          companyName: String(ud.companyName ?? '')
+        });
+
+        console.log('✅ Email de confirmation envoyé');
+      }
+
       set({ isLoading: false });
-      
+
     } catch (error: any) {
       console.error('❌ Erreur lors de l\'inscription:', error);
       set({ isLoading: false });

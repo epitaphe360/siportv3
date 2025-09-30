@@ -941,27 +941,6 @@ export class SupabaseService {
     return this.transformUserDBToUser(data);
   }
 
-  static async getUserByEmail(email: string): Promise<User | null> {
-    if (!this.checkSupabaseConnection()) {
-      return null;
-    }
-
-    const safeSupabase = supabase!;
-    const { data, error } = await (safeSupabase as any)
-      .from('users')
-      .select('*')
-      .eq('email', email)
-      .maybeSingle();
-
-    if (error) {
-      console.error('Erreur getUserByEmail:', error);
-      return null;
-    }
-
-    if (!data) return null;
-    return this.transformUserDBToUser(data);
-  }
-
   static async updateUser(userId: string, updates: Partial<User>): Promise<User> {
     if (!this.checkSupabaseConnection()) {
       throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
@@ -983,5 +962,116 @@ export class SupabaseService {
 
     if (error) throw error;
     return this.transformUserDBToUser(data);
+  }
+
+  // ==================== REGISTRATION REQUESTS ====================
+  static async createRegistrationRequest(userId: string, userData: any): Promise<any> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré');
+    }
+
+    const safeSupabase = supabase!;
+    const { data, error } = await safeSupabase
+      .from('registration_requests')
+      .insert([{
+        user_id: userId,
+        user_type: userData.type,
+        email: userData.email,
+        first_name: userData.firstName,
+        last_name: userData.lastName,
+        company_name: userData.company,
+        position: userData.position,
+        phone: userData.phone,
+        profile_data: userData,
+        status: 'pending'
+      }])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  static async getRegistrationRequests(status?: string): Promise<any[]> {
+    if (!this.checkSupabaseConnection()) {
+      return [];
+    }
+
+    const safeSupabase = supabase!;
+    let query = safeSupabase
+      .from('registration_requests')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (status) {
+      query = query.eq('status', status);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error('Erreur lors de la récupération des demandes:', error);
+      return [];
+    }
+
+    return data || [];
+  }
+
+  static async updateRegistrationRequestStatus(
+    requestId: string,
+    status: 'approved' | 'rejected',
+    reviewerId: string,
+    rejectionReason?: string
+  ): Promise<any> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré');
+    }
+
+    const safeSupabase = supabase!;
+    const updateData: any = {
+      status,
+      reviewed_at: new Date().toISOString(),
+      reviewed_by: reviewerId
+    };
+
+    if (rejectionReason) {
+      updateData.rejection_reason = rejectionReason;
+    }
+
+    const { data, error } = await safeSupabase
+      .from('registration_requests')
+      .update(updateData)
+      .eq('id', requestId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  static async sendRegistrationEmail(userData: {
+    userType: 'exhibitor' | 'partner' | 'visitor';
+    email: string;
+    firstName: string;
+    lastName: string;
+    companyName?: string;
+  }): Promise<void> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré');
+    }
+
+    const safeSupabase = supabase!;
+
+    try {
+      const { data, error } = await safeSupabase.functions.invoke('send-registration-email', {
+        body: userData
+      });
+
+      if (error) throw error;
+      console.log('✅ Email de confirmation envoyé:', data);
+    } catch (error) {
+      console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
+      throw error;
+    }
   }
 }

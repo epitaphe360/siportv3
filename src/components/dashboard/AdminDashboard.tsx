@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
+import {
   BarChart3,
-  Users, 
-  Building2, 
-  Calendar, 
+  Users,
+  Building2,
+  Calendar,
   Activity,
   Award,
   Shield,
@@ -13,7 +13,8 @@ import {
   UserCheck,
   FileText,
   AlertTriangle,
-  Plus
+  Plus,
+  ClipboardList
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
@@ -21,10 +22,12 @@ import { Button } from '../ui/Button';
 import useAuthStore from '../../store/authStore';
 import { useAdminDashboardStore } from '../../store/adminDashboardStore';
 import { motion } from 'framer-motion';
+import RegistrationRequests from '../admin/RegistrationRequests';
 
 export default function AdminDashboard() {
   const { metrics, isLoading, error, fetchMetrics } = useAdminDashboardStore();
   const { user } = useAuthStore();
+  const [showRegistrationRequests, setShowRegistrationRequests] = useState(false);
 
   useEffect(() => {
     fetchMetrics();
@@ -228,12 +231,20 @@ export default function AdminDashboard() {
                   </h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="bg-white p-4 rounded-lg border border-yellow-200">
+                  <button
+                    onClick={() => setShowRegistrationRequests(!showRegistrationRequests)}
+                    className="bg-white p-4 rounded-lg border border-yellow-200 hover:border-yellow-400 transition-colors cursor-pointer text-left"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <ClipboardList className="h-5 w-5 text-yellow-600" />
+                      <Badge variant="warning">{adminMetrics.pendingValidations}</Badge>
+                    </div>
                     <div className="text-2xl font-bold text-yellow-600 mb-1">
                       {adminMetrics.pendingValidations}
                     </div>
-                    <div className="text-sm text-yellow-700">Comptes à valider</div>
-                  </div>
+                    <div className="text-sm text-yellow-700">Demandes d'inscription</div>
+                    <div className="text-xs text-yellow-600 mt-2">Cliquez pour voir</div>
+                  </button>
                   <div className="bg-white p-4 rounded-lg border border-yellow-200">
                     <div className="text-2xl font-bold text-yellow-600 mb-1">
                       {adminMetrics.contentModerations}
@@ -251,6 +262,17 @@ export default function AdminDashboard() {
             </Card>
           </motion.div>
         </div>
+
+        {/* Section des demandes d'inscription */}
+        {showRegistrationRequests && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8"
+          >
+            <RegistrationRequests />
+          </motion.div>
+        )}
 
         {/* Métriques Système Globales */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
