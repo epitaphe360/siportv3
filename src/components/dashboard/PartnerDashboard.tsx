@@ -20,12 +20,15 @@ import { useDashboardStore } from '../../store/dashboardStore';
 import useAuthStore from '../../store/authStore';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Edit } from 'lucide-react';
+import { CreditCard as Edit } from 'lucide-react';
 
 export default function PartnerDashboard() {
-  // Appointment management logic (copied/adapted from ExhibitorDashboard)
+  // Auth doit être déclaré en premier
+  const { user } = useAuthStore();
+  const { dashboard, isLoading, fetchDashboard } = useDashboardStore();
+
+  // Appointment management logic
   const { appointments, fetchAppointments, updateAppointmentStatus, cancelAppointment, isLoading: isAppointmentsLoading } = useAppointmentStore();
-  // (user already declared above, do not redeclare)
 
   useEffect(() => {
     fetchAppointments();
@@ -44,8 +47,6 @@ export default function PartnerDashboard() {
     await cancelAppointment(appointmentId);
     fetchAppointments();
   };
-  const { dashboard, isLoading, fetchDashboard } = useDashboardStore();
-  const { user } = useAuthStore();
   const [showMediaModal, setShowMediaModal] = useState(false);
   const [showLeadsModal, setShowLeadsModal] = useState(false);
   const [showEventsModal, setShowEventsModal] = useState(false);
