@@ -304,13 +304,6 @@ export default function ExhibitorDashboard() {
       action: () => setShowQRModal(true),
       variant: 'outline' as const
     },
-    {
-      title: 'Mes Disponibilités',
-      description: 'Gérez vos créneaux de rendez-vous',
-      icon: '�',
-      link: '/availability/settings',
-      variant: 'outline' as const
-    },
   ];
 
 
