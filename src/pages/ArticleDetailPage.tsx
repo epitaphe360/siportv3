@@ -234,7 +234,7 @@ export default function ArticleDetailPage() {
             <div className="mb-8">
               <ArticleAudioPlayer
                 articleId={article.id}
-                articleText={article.content}
+                articleText={`${article.title}. ${article.content}`}
                 articleTitle={article.title}
                 language="fr"
               />
