@@ -231,7 +231,7 @@ export class SupabaseService {
       name: userDB.name,
       type: userDB.type,
       profile: userDB.profile as any,
-      status: userDB.status,
+      status: userDB.status || 'active',
       createdAt: new Date(userDB.created_at),
       updatedAt: new Date(userDB.updated_at)
     };
@@ -912,8 +912,7 @@ export class SupabaseService {
         email: userData.email,
         name: userData.name,
         type: userData.type || 'visitor',
-        profile: userData.profile || {},
-        status: userData.status || 'active'
+        profile: userData.profile || {}
       }] as any)
       .select()
       .single();
@@ -973,7 +972,6 @@ export class SupabaseService {
 
     if (updates.name) updateData.name = updates.name;
     if (updates.profile) updateData.profile = updates.profile;
-    if (updates.status) updateData.status = updates.status;
     if (updates.type) updateData.type = updates.type;
 
     const { data, error } = await (safeSupabase as any)
