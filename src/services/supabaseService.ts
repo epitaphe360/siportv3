@@ -899,4 +899,91 @@ export class SupabaseService {
       return [];
     }
   }
+
+  static async createUser(userData: Partial<User>): Promise<User> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
+    }
+
+    const safeSupabase = supabase!;
+    const { data, error } = await safeSupabase
+      .from('users')
+      .insert([{
+        email: userData.email,
+        name: userData.name,
+        type: userData.type || 'visitor',
+        profile: userData.profile || {},
+        status: userData.status || 'active'
+      }] as any)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return this.transformUserDBToUser(data);
+  }
+
+  static async getUserById(id: string): Promise<User | null> {
+    if (!this.checkSupabaseConnection()) {
+      return null;
+    }
+
+    const safeSupabase = supabase!;
+    const { data, error } = await (safeSupabase as any)
+      .from('users')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') return null;
+      throw error;
+    }
+
+    return this.transformUserDBToUser(data);
+  }
+
+  static async getUserByEmail(email: string): Promise<User | null> {
+    if (!this.checkSupabaseConnection()) {
+      return null;
+    }
+
+    const safeSupabase = supabase!;
+    const { data, error } = await (safeSupabase as any)
+      .from('users')
+      .select('*')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Erreur getUserByEmail:', error);
+      return null;
+    }
+
+    if (!data) return null;
+    return this.transformUserDBToUser(data);
+  }
+
+  static async updateUser(userId: string, updates: Partial<User>): Promise<User> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
+    }
+
+    const safeSupabase = supabase!;
+    const updateData: any = {};
+
+    if (updates.name) updateData.name = updates.name;
+    if (updates.profile) updateData.profile = updates.profile;
+    if (updates.status) updateData.status = updates.status;
+    if (updates.type) updateData.type = updates.type;
+
+    const { data, error } = await (safeSupabase as any)
+      .from('users')
+      .update(updateData)
+      .eq('id', userId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return this.transformUserDBToUser(data);
+  }
 }
