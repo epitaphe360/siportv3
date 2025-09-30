@@ -767,29 +767,64 @@ export class SupabaseService {
 
   static async getTimeSlotsByUser(userId: string): Promise<TimeSlot[]> {
     if (!this.checkSupabaseConnection()) return [];
-    
+
     const safeSupabase = supabase!;
     try {
+      const { data: exhibitor } = await (safeSupabase as any)
+        .from('exhibitors')
+        .select('id')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (!exhibitor) {
+        console.log('Aucun exposant trouvé pour user_id:', userId);
+        return [];
+      }
+
       const { data, error } = await (safeSupabase as any)
         .from('time_slots')
         .select('*')
-        .eq('user_id', userId)
-        .eq('is_available', true)
-        .gte('start_time', new Date().toISOString())
+        .eq('exhibitor_id', exhibitor.id)
+        .eq('available', true)
+        .gte('slot_date', new Date().toISOString().split('T')[0])
+        .order('slot_date', { ascending: true })
         .order('start_time', { ascending: true });
-        
+
       if (error) throw error;
-      
+
       return (data || []).map((slot: any) => ({
         id: slot.id,
-        userId: slot.user_id,
-        startTime: new Date(slot.start_time),
-        endTime: new Date(slot.end_time),
-        isAvailable: slot.is_available,
+        userId: exhibitor.id,
+        startTime: new Date(`${slot.slot_date}T${slot.start_time}`),
+        endTime: new Date(`${slot.slot_date}T${slot.end_time}`),
+        isAvailable: slot.available,
         createdAt: new Date(slot.created_at)
       }));
     } catch (error) {
       console.error('Erreur récupération créneaux:', error);
+      return [];
+    }
+  }
+
+  // ==================== USERS ====================
+  static async getUsers(): Promise<User[]> {
+    if (!this.checkSupabaseConnection()) {
+      console.warn('⚠️ Supabase non configuré - aucun utilisateur disponible');
+      return [];
+    }
+
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('users')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      return (data || []).map((user: any) => this.transformUserDBToUser(user));
+    } catch (error) {
+      console.error('Erreur lors de la récupération des utilisateurs:', error);
       return [];
     }
   }
