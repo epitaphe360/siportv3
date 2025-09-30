@@ -278,45 +278,62 @@ export class SupabaseService {
   // ==================== AUTHENTICATION ====================
   static async signUp(email: string, password: string, userData: any): Promise<User | null> {
     if (!this.checkSupabaseConnection()) return null;
-    
+
     const safeSupabase = supabase!;
     try {
+      console.log('🔐 Création compte Auth Supabase pour:', email);
+
       // 1. Créer l'utilisateur dans Supabase Auth
       const { data: authData, error: authError } = await safeSupabase.auth.signUp({
         email,
         password,
       });
-      
-      if (authError) throw authError;
-      if (!authData.user) return null;
-      
+
+      if (authError) {
+        console.error('❌ Erreur Auth:', authError);
+        throw authError;
+      }
+      if (!authData.user) {
+        console.error('❌ Aucun utilisateur retourné par Auth');
+        return null;
+      }
+
+      console.log('✅ Compte Auth créé, ID:', authData.user.id);
+      console.log('📝 Création du profil utilisateur dans la table users...');
+
       // 2. Créer le profil utilisateur
-      const { data: userData, error: userError } = await (safeSupabase as any)
+      const { data: userProfile, error: userError } = await (safeSupabase as any)
         .from('users')
         .insert([{
           id: authData.user.id,
           email,
           name: userData.name,
           type: userData.type,
-          profile: userData.profile,
-          status: 'pending' // Nécessite validation admin
+          profile: userData.profile
         }])
         .select()
         .single();
-        
-      if (userError) throw userError;
-      
+
+      if (userError) {
+        console.error('❌ Erreur création profil:', userError);
+        throw userError;
+      }
+
+      console.log('✅ Profil utilisateur créé');
+
       // 3. Si c'est un exposant ou partenaire, créer l'entrée correspondante
       if (userData.type === 'exhibitor') {
+        console.log('📋 Création profil exposant...');
         await this.createExhibitorProfile(authData.user.id, userData);
       } else if (userData.type === 'partner') {
+        console.log('📋 Création profil partenaire...');
         await this.createPartnerProfile(authData.user.id, userData);
       }
-      
-      return this.transformUserDBToUser(userData);
+
+      return this.transformUserDBToUser(userProfile);
     } catch (error) {
-      console.error('Erreur inscription:', error);
-      return null;
+      console.error('❌ Erreur inscription:', error);
+      throw error;
     }
   }
 

@@ -124,31 +124,39 @@ const useAuthStore = create<AuthState>((set, get) => ({
       const ud = userData as Record<string, unknown>;
 
       // Validation des données requises
-      if (!ud.email || !ud.firstName || !ud.lastName) {
-        throw new Error('Email, prénom et nom sont requis');
+      if (!ud.email || !ud.firstName || !ud.lastName || !ud.password) {
+        throw new Error('Email, prénom, nom et mot de passe sont requis');
       }
 
-      console.log('🔄 Création d\'utilisateur avec Supabase...');
+      console.log('🔄 Création d\'utilisateur avec Supabase Auth...');
 
       const userType = (['admin','exhibitor','partner','visitor'].includes(String(ud.accountType)) ? String(ud.accountType) : 'visitor') as User['type'];
 
-      const newUser = await SupabaseService.createUser({
-        email: String(ud.email),
-        name: `${String(ud.firstName)} ${String(ud.lastName)}`.trim(),
-        type: userType,
-        profile: minimalUserProfile({
-          firstName: String(ud.firstName ?? ''),
-          lastName: String(ud.lastName ?? ''),
-          company: String(ud.companyName ?? ''),
-          position: String(ud.position ?? ''),
-          country: String(ud.country ?? ''),
-          phone: String(ud.phone ?? ''),
-          linkedin: String(ud.linkedin ?? ''),
-          website: String(ud.website ?? ''),
-          bio: String(ud.description ?? ''),
-          objectives: (Array.isArray(ud.objectives) ? (ud.objectives as string[]) : [])
-        })
-      });
+      // Appeler la fonction signUp de SupabaseService qui gère Auth + profil
+      const newUser = await SupabaseService.signUp(
+        String(ud.email),
+        String(ud.password),
+        {
+          name: `${String(ud.firstName)} ${String(ud.lastName)}`.trim(),
+          type: userType,
+          profile: minimalUserProfile({
+            firstName: String(ud.firstName ?? ''),
+            lastName: String(ud.lastName ?? ''),
+            company: String(ud.companyName ?? ''),
+            position: String(ud.position ?? ''),
+            country: String(ud.country ?? ''),
+            phone: String(ud.phone ?? ''),
+            linkedin: String(ud.linkedin ?? ''),
+            website: String(ud.website ?? ''),
+            bio: String(ud.description ?? ''),
+            objectives: (Array.isArray(ud.objectives) ? (ud.objectives as string[]) : [])
+          })
+        }
+      );
+
+      if (!newUser) {
+        throw new Error('Échec de la création de l\'utilisateur');
+      }
 
       console.log('✅ Utilisateur créé avec succès:', newUser.email);
 
