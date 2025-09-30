@@ -65,11 +65,24 @@ export class ArticleAudioService {
       });
 
       if (error) {
-        console.error('Erreur lors de la conversion:', error);
-        return { success: false, error: error.message };
+        console.error('❌ Erreur lors de la conversion:', error);
+        console.error('Details:', error);
+        return {
+          success: false,
+          error: `${error.message}${error.context?.body ? ` - ${JSON.stringify(error.context.body)}` : ''}`
+        };
       }
 
       console.log('✅ Réponse de la conversion:', data);
+
+      // Vérifier si la réponse contient une erreur
+      if (data && !data.success) {
+        console.error('❌ Erreur dans la réponse:', data);
+        return {
+          success: false,
+          error: `${data.error || 'Erreur inconnue'}${data.details ? ` - ${data.details}` : ''}`
+        };
+      }
 
       // Si la conversion doit être faite côté client
       if (data.useClientSide) {

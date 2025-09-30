@@ -40,6 +40,7 @@ Deno.serve(async (req: Request) => {
       .maybeSingle();
 
     if (checkError && checkError.code !== 'PGRST116') {
+      console.error('❌ Erreur check:', checkError);
       throw checkError;
     }
 
@@ -72,7 +73,10 @@ Deno.serve(async (req: Request) => {
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Erreur update:', error);
+        throw error;
+      }
       audioRecord = data;
     } else {
       const { data, error } = await supabaseClient
@@ -86,15 +90,20 @@ Deno.serve(async (req: Request) => {
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Erreur insert:', error);
+        throw error;
+      }
       audioRecord = data;
     }
 
     console.log('🔄 Statut mis à jour: processing');
 
     // Utiliser Google Cloud Text-to-Speech
-    const googleApiKey = Deno.env.get('GOOGLE_TTS_API_KEY') || 'AIzaSyD3t1wu2BpwlQ6CfQeTfgQGkpd1VLGxVQI';
-    
+    const googleApiKey = Deno.env.get('GOOGLE_TTS_API_KEY');
+
+    console.log('🔑 Clé Google TTS disponible:', googleApiKey ? 'Oui' : 'Non');
+
     if (googleApiKey) {
       console.log('🌟 Utilisation de Google Cloud Text-to-Speech...');
       
@@ -279,11 +288,16 @@ Deno.serve(async (req: Request) => {
     );
 
   } catch (error: any) {
-    console.error('Erreur dans convert-text-to-speech:', error);
+    console.error('❌ Erreur dans convert-text-to-speech:', error);
+    console.error('Stack trace:', error.stack);
+    console.error('Error details:', JSON.stringify(error, null, 2));
+
     return new Response(
-      JSON.stringify({ 
-        success: false, 
-        error: error.message || 'Une erreur est survenue lors de la conversion audio' 
+      JSON.stringify({
+        success: false,
+        error: error.message || 'Une erreur est survenue lors de la conversion audio',
+        details: error.toString(),
+        stack: error.stack
       }),
       {
         headers: {
