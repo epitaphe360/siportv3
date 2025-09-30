@@ -27,7 +27,7 @@ Deno.serve(async (req: Request) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { articleId, text, language = 'fr', voiceType = 'alloy' }: TextToSpeechRequest = await req.json();
+    const { articleId, text, language = 'fr', voiceType = 'default' }: TextToSpeechRequest = await req.json();
 
     console.log(`🎵 Conversion texte en audio pour l'article ${articleId}`);
 
@@ -92,48 +92,88 @@ Deno.serve(async (req: Request) => {
 
     console.log('🔄 Statut mis à jour: processing');
 
-    // OPTION 1: Utiliser OpenAI TTS (recommandé)
-    const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
+    // Utiliser Google Cloud Text-to-Speech
+    const googleApiKey = Deno.env.get('GOOGLE_TTS_API_KEY') || 'AIzaSyD3t1wu2BpwlQ6CfQeTfgQGkpd1VLGxVQI';
     
-    if (openaiApiKey) {
-      console.log('🤖 Utilisation de OpenAI TTS...');
+    if (googleApiKey) {
+      console.log('🌟 Utilisation de Google Cloud Text-to-Speech...');
       
       try {
-        // Nettoyer et limiter le texte (OpenAI TTS limite: 4096 caractères)
-        const cleanText = text.replace(/<[^>]*>/g, '').substring(0, 4096);
+        // Nettoyer le texte HTML et limiter la longueur
+        const cleanText = text.replace(/<[^>]*>/g, '').substring(0, 5000);
         
-        // Mapper les langues aux voix OpenAI
-        const voiceMap: { [key: string]: string } = {
-          'fr': 'alloy',
-          'en': 'nova',
-          'ar': 'shimmer'
+        // Mapper les langues aux codes Google Cloud
+        const languageCodeMap: { [key: string]: string } = {
+          'fr': 'fr-FR',
+          'en': 'en-US',
+          'ar': 'ar-XA'
         };
-        const voice = voiceMap[language] || 'alloy';
+        const languageCode = languageCodeMap[language] || 'fr-FR';
 
-        const response = await fetch('https://api.openai.com/v1/audio/speech', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${openaiApiKey}`,
-            'Content-Type': 'application/json',
+        // Mapper les langues aux voix Google Cloud
+        const voiceNameMap: { [key: string]: { name: string, gender: string } } = {
+          'fr': { name: 'fr-FR-Wavenet-C', gender: 'FEMALE' },
+          'en': { name: 'en-US-Wavenet-F', gender: 'FEMALE' },
+          'ar': { name: 'ar-XA-Wavenet-A', gender: 'FEMALE' }
+        };
+        const voiceConfig = voiceNameMap[language] || { name: 'fr-FR-Wavenet-C', gender: 'FEMALE' };
+
+        // Requête vers Google Cloud Text-to-Speech API
+        const requestBody = {
+          input: {
+            text: cleanText
           },
-          body: JSON.stringify({
-            model: 'tts-1',
-            input: cleanText,
-            voice: voice,
-            response_format: 'mp3'
-          }),
-        });
+          voice: {
+            languageCode: languageCode,
+            name: voiceConfig.name,
+            ssmlGender: voiceConfig.gender
+          },
+          audioConfig: {
+            audioEncoding: 'MP3',
+            speakingRate: 1.0,
+            pitch: 0.0,
+            volumeGainDb: 0.0
+          }
+        };
+
+        console.log('📡 Envoi de la requête à Google Cloud TTS...');
+        console.log('Langue:', languageCode, 'Voix:', voiceConfig.name);
+
+        const response = await fetch(
+          `https://texttospeech.googleapis.com/v1/text:synthesize?key=${googleApiKey}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          }
+        );
 
         if (!response.ok) {
-          throw new Error(`OpenAI TTS error: ${response.statusText}`);
+          const errorText = await response.text();
+          console.error('❌ Erreur Google TTS:', errorText);
+          throw new Error(`Google TTS error: ${response.status} - ${errorText}`);
         }
 
-        const audioBlob = await response.blob();
-        const audioBuffer = await audioBlob.arrayBuffer();
-        const audioBytes = new Uint8Array(audioBuffer);
+        const responseData = await response.json();
+        
+        if (!responseData.audioContent) {
+          throw new Error('Pas de contenu audio dans la réponse');
+        }
+
+        console.log('✅ Audio reçu de Google Cloud TTS');
+
+        // Décoder le contenu audio base64
+        const audioBase64 = responseData.audioContent;
+        const audioBytes = Uint8Array.from(atob(audioBase64), c => c.charCodeAt(0));
+
+        console.log(`💾 Taille audio: ${audioBytes.length} bytes`);
 
         // Upload vers Supabase Storage
         const fileName = `${articleId}_${language}_${Date.now()}.mp3`;
+        console.log(`📤 Upload vers Storage: ${fileName}`);
+        
         const { data: uploadData, error: uploadError } = await supabaseClient
           .storage
           .from('article-audio')
@@ -143,13 +183,20 @@ Deno.serve(async (req: Request) => {
             upsert: true
           });
 
-        if (uploadError) throw uploadError;
+        if (uploadError) {
+          console.error('❌ Erreur upload:', uploadError);
+          throw uploadError;
+        }
+
+        console.log('✅ Upload réussi:', uploadData);
 
         // Obtenir l'URL publique
         const { data: urlData } = supabaseClient
           .storage
           .from('article-audio')
           .getPublicUrl(fileName);
+
+        console.log('🔗 URL publique:', urlData.publicUrl);
 
         // Estimer la durée (environ 150 mots par minute)
         const wordCount = cleanText.split(/\s+/).length;
@@ -162,21 +209,26 @@ Deno.serve(async (req: Request) => {
             audio_url: urlData.publicUrl,
             duration: estimatedDuration,
             file_size: audioBytes.length,
-            status: 'ready'
+            status: 'ready',
+            voice_type: voiceConfig.name
           })
           .eq('id', audioRecord.id)
           .select()
           .single();
 
-        if (updateError) throw updateError;
+        if (updateError) {
+          console.error('❌ Erreur mise à jour:', updateError);
+          throw updateError;
+        }
 
-        console.log('✅ Audio créé avec succès via OpenAI');
+        console.log('✅ Audio créé avec succès via Google Cloud TTS');
 
         return new Response(
           JSON.stringify({ 
             success: true, 
             audio: updatedAudio,
-            message: 'Audio généré avec succès (OpenAI)'
+            message: 'Audio généré avec succès (Google Cloud TTS)',
+            provider: 'google'
           }),
           {
             headers: {
@@ -186,24 +238,24 @@ Deno.serve(async (req: Request) => {
             status: 200,
           }
         );
-      } catch (openaiError) {
-        console.error('❌ Erreur OpenAI TTS:', openaiError);
+      } catch (googleError: any) {
+        console.error('❌ Erreur Google TTS:', googleError);
         
         // Mettre à jour le statut en erreur
         await supabaseClient
           .from('articles_audio')
           .update({
             status: 'error',
-            error_message: `OpenAI TTS error: ${openaiError.message}`
+            error_message: `Google TTS error: ${googleError.message}`
           })
           .eq('id', audioRecord.id);
 
-        throw openaiError;
+        throw googleError;
       }
     }
 
-    // OPTION 2: Fallback - Retourner un statut 'pending' pour génération côté client
-    console.log('⚠️ Pas de clé OpenAI - Audio sera généré côté client');
+    // Fallback - Retourner un statut 'pending' pour génération côté client
+    console.log('⚠️ Pas de clé Google - Audio sera généré côté client');
     
     await supabaseClient
       .from('articles_audio')
@@ -226,7 +278,7 @@ Deno.serve(async (req: Request) => {
       }
     );
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Erreur dans convert-text-to-speech:', error);
     return new Response(
       JSON.stringify({ 
