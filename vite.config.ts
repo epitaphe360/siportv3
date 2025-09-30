@@ -26,22 +26,24 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      'react': path.resolve(__dirname, './node_modules/react'),
+      'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
     },
+    dedupe: ['react', 'react-dom'],
   },
   build: {
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/scheduler')) {
-              return 'react-vendor';
-            }
-            if (id.includes('node_modules/@supabase')) return 'supabase-vendor';
-            if (id.includes('node_modules/lucide-react')) return 'icons-vendor';
-            if (id.includes('node_modules/@radix-ui')) return 'radix-vendor';
-            return 'vendor';
-          }
-          if (id.endsWith('src/types') || id.includes('/src/types/')) return 'types';
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react/jsx-runtime'],
+          'supabase-vendor': ['@supabase/supabase-js'],
+          'icons-vendor': ['lucide-react'],
+          'radix-vendor': [
+            '@radix-ui/react-avatar',
+            '@radix-ui/react-label',
+            '@radix-ui/react-select',
+            '@radix-ui/react-slot'
+          ],
         },
       },
     },
@@ -50,6 +52,14 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: ['lucide-react'],
-    include: ['react', 'react-dom', '@radix-ui/react-avatar', '@radix-ui/react-label', '@radix-ui/react-select', '@radix-ui/react-slot'],
+    include: [
+      'react',
+      'react-dom',
+      'react/jsx-runtime',
+      '@radix-ui/react-avatar',
+      '@radix-ui/react-label',
+      '@radix-ui/react-select',
+      '@radix-ui/react-slot'
+    ],
   },
 });
