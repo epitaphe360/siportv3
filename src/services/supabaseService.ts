@@ -144,19 +144,40 @@ export class SupabaseService {
       console.warn('⚠️ Supabase non configuré - aucun exposant disponible');
       return [];
     }
-    
+
     const safeSupabase = supabase!;
     try {
       const { data: exhibitorsData, error: exhibitorsError } = await (safeSupabase as any)
         .from('exhibitors')
         .select('id,user_id,company_name,category,sector,description,logo_url,website,verified,featured,contact_info');
-      
+
       if (exhibitorsError) throw exhibitorsError;
-      
+
       const exhibitors = (exhibitorsData || []) as any[];
       if (exhibitors.length === 0) return [];
-      
-      return exhibitors.map(this.transformExhibitorDBToExhibitor);
+
+      const enrichedExhibitors = await Promise.all(
+        exhibitors.map(async (exhibitorDB) => {
+          const { data: products } = await (safeSupabase as any)
+            .from('products')
+            .select('*')
+            .eq('exhibitor_id', exhibitorDB.id) || { data: [] };
+
+          const { data: miniSite } = await (safeSupabase as any)
+            .from('mini_sites')
+            .select('*')
+            .eq('exhibitor_id', exhibitorDB.id)
+            .maybeSingle() || { data: null };
+
+          return {
+            ...exhibitorDB,
+            products: products || [],
+            mini_site: miniSite
+          };
+        })
+      );
+
+      return enrichedExhibitors.map(this.transformExhibitorDBToExhibitor);
     } catch (error) {
       console.error('Erreur lors de la récupération des exposants:', error);
       return [];
@@ -198,6 +219,27 @@ export class SupabaseService {
   }
 
   private static transformExhibitorDBToExhibitor(exhibitorDB: ExhibitorDB): Exhibitor {
+    const products = (exhibitorDB.products || []).map((p: any) => ({
+      id: p.id,
+      exhibitorId: p.exhibitor_id,
+      name: p.name,
+      description: p.description,
+      category: p.category,
+      images: p.images || [],
+      specifications: p.specifications,
+      price: p.price,
+      featured: p.featured || false
+    }));
+
+    const miniSite = exhibitorDB.mini_site ? {
+      theme: exhibitorDB.mini_site.theme || 'default',
+      customColors: exhibitorDB.mini_site.custom_colors || {},
+      sections: (exhibitorDB.mini_site.sections || []) as MiniSiteSection[],
+      published: exhibitorDB.mini_site.published || false,
+      views: exhibitorDB.mini_site.views || 0,
+      lastUpdated: new Date(exhibitorDB.mini_site.last_updated || Date.now())
+    } : null;
+
     return {
       id: exhibitorDB.id,
       companyName: exhibitorDB.company_name,
@@ -209,8 +251,8 @@ export class SupabaseService {
       verified: exhibitorDB.verified,
       featured: exhibitorDB.featured,
       contactInfo: exhibitorDB.contact_info as ContactInfo,
-      products: [],
-      miniSite: null
+      products,
+      miniSite
     };
   }
 
