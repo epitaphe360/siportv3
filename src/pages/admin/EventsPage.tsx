@@ -1,33 +1,66 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Calendar,
-  Search,
-  Filter,
-  Users,
-  Clock,
-  MapPin,
-  Video,
-  MoreVertical,
-  Edit,
-  Eye,
-  Plus,
-  CheckCircle,
-  XCircle,
-  AlertTriangle
-} from 'lucide-react';
+import { Calendar, Search, Filter, Users, Clock, MapPin, Video, MoreVertical, CreditCard as Edit, Eye, Plus, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { motion } from 'framer-motion';
+import { EventsService, Event } from '../../services/eventsService';
 
 export default function EventsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
+  const [events, setEvents] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Données mockées pour les événements
-  const events = [
+  useEffect(() => {
+    loadEvents();
+  }, []);
+
+  const loadEvents = async () => {
+    try {
+      setIsLoading(true);
+      const data = await EventsService.getAllEvents();
+
+      const formattedEvents = data.map((event: Event) => {
+        const startDate = new Date(event.start_date);
+        const endDate = new Date(event.end_date);
+        const now = new Date();
+
+        let status = 'confirmed';
+        if (endDate < now) {
+          status = 'completed';
+        }
+
+        return {
+          id: event.id,
+          title: event.title,
+          type: event.event_type,
+          description: event.description,
+          date: startDate,
+          startTime: startDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+          endTime: endDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+          location: event.location || '',
+          capacity: event.capacity || 0,
+          registered: event.registered || 0,
+          status,
+          organizer: 'SIPORTS Team',
+          virtual: false,
+          speakers: []
+        };
+      });
+
+      setEvents(formattedEvents);
+    } catch (error) {
+      console.error('Error loading events:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fallback mock data for initial load
+  const mockEvents = [
     {
       id: '1',
       title: 'Conférence Innovation Portuaire',

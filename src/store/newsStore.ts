@@ -1,6 +1,7 @@
 import { create } from 'zustand';
+import { supabase } from '../lib/supabase';
 
-// Mock data for news articles
+// Mock data for news articles (kept for backwards compatibility)
 const mockNewsArticles: NewsArticle[] = [
   {
     id: '1',
@@ -173,18 +174,52 @@ export const useNewsStore = create<NewsState>((set, get) => ({
   fetchNews: async () => {
     set({ isLoading: true });
     try {
-      // Simulation d'appel API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const articles = mockNewsArticles;
-      const featuredArticles = articles.filter((article: NewsArticle) => article.featured);
-      const categories = [...new Set(articles.map((article: NewsArticle) => article.category))];
-      
-      set({ 
+      const { data, error } = await supabase
+        .from('news_articles')
+        .select(`
+          id,
+          title,
+          content,
+          excerpt,
+          category,
+          tags,
+          image_url,
+          published,
+          published_at,
+          views,
+          author_id
+        `)
+        .eq('published', true)
+        .order('published_at', { ascending: false });
+
+      if (error) {
+        throw error;
+      }
+
+      const articles: NewsArticle[] = (data || []).map(article => ({
+        id: article.id,
+        title: article.title,
+        excerpt: article.excerpt || '',
+        content: article.content,
+        author: 'Équipe SIPORTS',
+        publishedAt: new Date(article.published_at || ''),
+        category: article.category,
+        tags: article.tags || [],
+        featured: false,
+        image: article.image_url || undefined,
+        readTime: Math.ceil(article.content.split(' ').length / 200),
+        source: 'siports' as const,
+        views: article.views || 0
+      }));
+
+      const featuredArticles = articles.slice(0, 3);
+      const categories = [...new Set(articles.map(article => article.category))];
+
+      set({
         articles,
         featuredArticles,
         categories,
-        isLoading: false 
+        isLoading: false
       });
     } catch (_error) {
       console.error('Erreur chargement articles:', _error);
@@ -193,25 +228,7 @@ export const useNewsStore = create<NewsState>((set, get) => ({
   },
 
   fetchFromOfficialSite: async () => {
-    set({ isLoading: true });
-    try {
-      // Simulation d'appel API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const articles = mockNewsArticles;
-      const featuredArticles = articles.filter((article: NewsArticle) => article.featured);
-      const categories = [...new Set(articles.map((article: NewsArticle) => article.category))];
-      
-      set({ 
-        articles,
-        featuredArticles,
-        categories,
-        isLoading: false 
-      });
-    } catch (_error) {
-      console.error('Erreur synchronisation articles:', _error);
-      set({ isLoading: false });
-    }
+    await get().fetchNews();
   },
 
   setCategory: (category) => {
