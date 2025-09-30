@@ -17,19 +17,19 @@ export interface AdminMetrics {
 }
 
 const defaultMetrics: AdminMetrics = {
-  totalUsers: 6847,
-  activeUsers: 1247,
-  totalExhibitors: 330,
-  totalPartners: 25,
-  totalVisitors: 6300,
-  totalEvents: 40,
+  totalUsers: 9,
+  activeUsers: 2,
+  totalExhibitors: 1,
+  totalPartners: 6,
+  totalVisitors: 4,
+  totalEvents: 6,
   systemUptime: 99.8,
   dataStorage: 2.4,
   apiCalls: 125000,
   avgResponseTime: 145,
-  pendingValidations: 12,
-  activeContracts: 285,
-  contentModerations: 8
+  pendingValidations: 0,
+  activeContracts: 1,
+  contentModerations: 0
 };
 
 const METRICS_SERVER_URL = (import.meta.env.VITE_METRICS_SERVER_URL as string) || (import.meta.env.DEV ? 'http://localhost:4001/metrics' : '');
@@ -76,11 +76,11 @@ export class AdminMetricsService {
 
       await runCount('users', client.from('users').select('id', { count: 'exact', head: true }));
       await runCount('exhibitors', client.from('exhibitors').select('id', { count: 'exact', head: true }).eq('verified', true));
-      await runCount('partners', client.from('users').select('id', { count: 'exact', head: true }).eq('type', 'partner'));
+      await runCount('partners', client.from('partners').select('id', { count: 'exact', head: true }));
       await runCount('visitors', client.from('users').select('id', { count: 'exact', head: true }).eq('type', 'visitor'));
       await runCount('events', client.from('events').select('id', { count: 'exact', head: true }));
-      await runCount('pendingValidations', client.from('exhibitors').select('id', { count: 'exact', head: true }).eq('verified', false));
-      await runCount('activeContracts', client.from('exhibitors').select('id', { count: 'exact', head: true }).eq('featured', true));
+      await runCount('pendingValidations', client.from('registration_requests').select('id', { count: 'exact', head: true }).eq('status', 'pending'));
+      await runCount('activeContracts', client.from('partners').select('id', { count: 'exact', head: true }).eq('verified', true));
       await runCount('contentModerations', client.from('mini_sites').select('id', { count: 'exact', head: true }).eq('published', false));
 
       const metrics: AdminMetrics = {
