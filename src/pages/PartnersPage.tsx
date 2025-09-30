@@ -140,6 +140,14 @@ export default function PartnersPage() {
   const [viewMode, setViewMode] = useState<keyof typeof CONFIG.viewModes>(CONFIG.viewModes.grid);
   const [showFilters, setShowFilters] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [partnerStats, setPartnerStats] = useState({
+    organisateur: 0,
+    platine: 0,
+    or: 0,
+    argent: 0,
+    bronze: 0,
+    total: 0
+  });
 
   useEffect(() => {
     const loadPartners = async () => {
@@ -148,10 +156,30 @@ export default function PartnersPage() {
         const data = await SupabaseService.getPartners();
         setPartners(data);
         setFilteredPartners(data);
+
+        // Calculer les statistiques par niveau
+        const stats = {
+          organisateur: data.filter(p => p.sponsorshipLevel?.toLowerCase() === 'organisateur').length,
+          platine: data.filter(p => p.sponsorshipLevel?.toLowerCase() === 'platine').length,
+          or: data.filter(p => p.sponsorshipLevel?.toLowerCase() === 'or').length,
+          argent: data.filter(p => p.sponsorshipLevel?.toLowerCase() === 'argent').length,
+          bronze: data.filter(p => p.sponsorshipLevel?.toLowerCase() === 'bronze').length,
+          total: data.length
+        };
+        setPartnerStats(stats);
       } catch (error) {
         console.error('Erreur lors du chargement des partenaires:', error);
         setPartners(mockPartners);
         setFilteredPartners(mockPartners);
+        // Statistiques par défaut basées sur mockPartners
+        setPartnerStats({
+          organisateur: 1,
+          platine: 1,
+          or: 2,
+          argent: 1,
+          bronze: 1,
+          total: 6
+        });
       } finally {
         setIsLoading(false);
       }
@@ -327,36 +355,36 @@ export default function PartnersPage() {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats */}
+        {/* Stats - Données dynamiques */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
             <div className="p-6 text-center">
               <Crown className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">1</div>
+              <div className="text-2xl font-bold text-gray-900">{partnerStats.organisateur}</div>
               <div className="text-sm text-gray-600">Organisateur</div>
             </div>
           </Card>
-          
+
           <Card>
             <div className="p-6 text-center">
               <Award className="h-8 w-8 text-gray-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">1</div>
+              <div className="text-2xl font-bold text-gray-900">{partnerStats.platine}</div>
               <div className="text-sm text-gray-600">Partenaire Platine</div>
             </div>
           </Card>
-          
+
           <Card>
             <div className="p-6 text-center">
               <Star className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">2</div>
+              <div className="text-2xl font-bold text-gray-900">{partnerStats.or}</div>
               <div className="text-sm text-gray-600">Partenaires Or</div>
             </div>
           </Card>
-          
+
           <Card>
             <div className="p-6 text-center">
               <Handshake className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">6</div>
+              <div className="text-2xl font-bold text-gray-900">{partnerStats.total}</div>
               <div className="text-sm text-gray-600">Total Partenaires</div>
             </div>
           </Card>
