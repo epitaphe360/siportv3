@@ -343,8 +343,15 @@ export class SupabaseService {
           .eq('email', email)
           .single();
 
+        if (error) {
+          console.error('❌ Erreur lors de la récupération du compte test:', error);
+          return null;
+        }
+
         if (userData) {
           console.log('✅ Compte de test authentifié:', userData.email);
+          console.log('   Type:', userData.type);
+          console.log('   ID:', userData.id);
           const user = this.transformUserDBToUser(userData);
           return user;
         } else {
