@@ -806,6 +806,77 @@ export class SupabaseService {
     }
   }
 
+  static async createTimeSlot(slotData: {
+    userId: string;
+    date: string | Date;
+    startTime: string;
+    endTime: string;
+    duration: number;
+    type: 'in-person' | 'virtual' | 'hybrid';
+    maxBookings: number;
+    location?: string;
+  }): Promise<TimeSlot> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
+    }
+
+    const safeSupabase = supabase!;
+
+    const { data: exhibitor } = await (safeSupabase as any)
+      .from('exhibitors')
+      .select('id')
+      .eq('user_id', slotData.userId)
+      .maybeSingle();
+
+    if (!exhibitor) {
+      throw new Error('Aucun exposant trouvé pour cet utilisateur');
+    }
+
+    const dateString = slotData.date instanceof Date ? slotData.date.toISOString().split('T')[0] : String(slotData.date);
+
+    const { data, error } = await (safeSupabase as any)
+      .from('time_slots')
+      .insert([{
+        exhibitor_id: exhibitor.id,
+        slot_date: dateString,
+        start_time: slotData.startTime,
+        end_time: slotData.endTime,
+        duration: slotData.duration,
+        type: slotData.type,
+        max_bookings: slotData.maxBookings,
+        current_bookings: 0,
+        available: true,
+        location: slotData.location || null
+      }])
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return {
+      id: data.id,
+      userId: exhibitor.id,
+      startTime: new Date(`${data.slot_date}T${data.start_time}`),
+      endTime: new Date(`${data.slot_date}T${data.end_time}`),
+      isAvailable: data.available,
+      createdAt: new Date(data.created_at)
+    };
+  }
+
+  static async deleteTimeSlot(slotId: string): Promise<void> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
+    }
+
+    const safeSupabase = supabase!;
+    const { error } = await (safeSupabase as any)
+      .from('time_slots')
+      .delete()
+      .eq('id', slotId);
+
+    if (error) throw error;
+  }
+
   // ==================== USERS ====================
   static async getUsers(): Promise<User[]> {
     if (!this.checkSupabaseConnection()) {
