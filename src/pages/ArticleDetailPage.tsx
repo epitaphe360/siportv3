@@ -8,6 +8,7 @@ import { Badge } from '../components/ui/Badge';
 import { useNewsStore } from '../store/newsStore';
 import type { NewsArticle } from '../store/newsStore';
 import { motion } from 'framer-motion';
+import ArticleAudioPlayer from '../components/news/ArticleAudioPlayer';
 
 export default function ArticleDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -227,6 +228,18 @@ export default function ArticleDetailPage() {
           <p className="text-xl text-gray-600 mb-8 leading-relaxed">
             {article.excerpt}
           </p>
+
+          {/* Lecteur Audio */}
+          {article.id && (
+            <div className="mb-8">
+              <ArticleAudioPlayer
+                articleId={article.id}
+                articleText={article.content}
+                articleTitle={article.title}
+                language="fr"
+              />
+            </div>
+          )}
           
           {article.image && (
             <div className="relative mb-8">
