@@ -12,7 +12,16 @@ const findMount = () =>
   document.getElementById('siports-exhibitor-dashboard-app') ||
   document.getElementById('root');
 
+// Track si déjà monté pour éviter les doubles montages
+let isMounted = false;
+
 const mount = (el: Element) => {
+  if (isMounted) {
+    console.warn('SIPORTS: Already mounted, skipping duplicate mount');
+    return;
+  }
+
+  isMounted = true;
   ReactDOM.createRoot(el as HTMLElement).render(
     <React.StrictMode>
       <Router>
@@ -21,7 +30,6 @@ const mount = (el: Element) => {
     </React.StrictMode>
   );
 };
-
 
 const initial = findMount();
 if (initial) {
