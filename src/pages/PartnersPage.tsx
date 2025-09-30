@@ -1,25 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Search, 
-  Filter, 
-  Grid, 
-  List, 
-  MapPin, 
-  Users, 
-  ExternalLink,
-  Star,
-  Verified,
-  Award,
-  Building2,
-  Crown,
-  Handshake
-} from 'lucide-react';
+import { Search, Filter, Grid2x2 as Grid, List, MapPin, Users, ExternalLink, Star, EggFried as Verified, Award, Building2, Crown, Handshake } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { motion } from 'framer-motion';
 import { CONFIG } from '../lib/config';
+import { SupabaseService } from '../services/supabaseService';
 
 interface Partner {
   id: string;
@@ -155,12 +142,22 @@ export default function PartnersPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setPartners(mockPartners);
-      setFilteredPartners(mockPartners);
-      setIsLoading(false);
-    }, 1000);
+    const loadPartners = async () => {
+      setIsLoading(true);
+      try {
+        const data = await SupabaseService.getPartners();
+        setPartners(data);
+        setFilteredPartners(data);
+      } catch (error) {
+        console.error('Erreur lors du chargement des partenaires:', error);
+        setPartners(mockPartners);
+        setFilteredPartners(mockPartners);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPartners();
   }, []);
 
   useEffect(() => {

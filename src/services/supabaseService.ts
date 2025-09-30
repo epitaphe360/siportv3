@@ -185,19 +185,38 @@ export class SupabaseService {
   }
 
   // ==================== PARTNERS ====================
-  static async getPartners(): Promise<Exhibitor[]> {
+  static async getPartners(): Promise<any[]> {
     if (!this.checkSupabaseConnection()) {
+      console.warn('⚠️ Supabase non configuré - aucun partenaire disponible');
       return [];
     }
-    
+
     const safeSupabase = supabase!;
     try {
       const { data, error } = await (safeSupabase as any)
         .from('partners')
-        .select('*');
-      
+        .select('*')
+        .order('type', { ascending: true });
+
       if (error) throw error;
-      return data || [];
+
+      return (data || []).map((partner: any) => ({
+        id: partner.id,
+        name: partner.name,
+        type: partner.type,
+        category: partner.category,
+        description: partner.description,
+        logo: partner.logo_url,
+        website: partner.website,
+        country: partner.country,
+        sector: partner.sector,
+        verified: partner.verified,
+        featured: partner.featured,
+        sponsorshipLevel: partner.sponsorship_level,
+        contributions: partner.contributions || [],
+        establishedYear: partner.established_year,
+        employees: partner.employees
+      }));
     } catch (error) {
       console.error('Erreur lors de la récupération des partenaires:', error);
       return [];
