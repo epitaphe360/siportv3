@@ -356,7 +356,7 @@ export default function PartnersPage() {
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats - Données dynamiques */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
           <Card>
             <div className="p-6 text-center">
               <Crown className="h-8 w-8 text-purple-600 mx-auto mb-2" />
@@ -369,7 +369,7 @@ export default function PartnersPage() {
             <div className="p-6 text-center">
               <Award className="h-8 w-8 text-gray-600 mx-auto mb-2" />
               <div className="text-2xl font-bold text-gray-900">{partnerStats.platine}</div>
-              <div className="text-sm text-gray-600">Partenaire Platine</div>
+              <div className="text-sm text-gray-600">Platine</div>
             </div>
           </Card>
 
@@ -377,7 +377,15 @@ export default function PartnersPage() {
             <div className="p-6 text-center">
               <Star className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
               <div className="text-2xl font-bold text-gray-900">{partnerStats.or}</div>
-              <div className="text-sm text-gray-600">Partenaires Or</div>
+              <div className="text-sm text-gray-600">Or</div>
+            </div>
+          </Card>
+
+          <Card>
+            <div className="p-6 text-center">
+              <Building2 className="h-8 w-8 text-gray-500 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-gray-900">{partnerStats.argent}</div>
+              <div className="text-sm text-gray-600">Argent</div>
             </div>
           </Card>
 
@@ -385,7 +393,7 @@ export default function PartnersPage() {
             <div className="p-6 text-center">
               <Handshake className="h-8 w-8 text-blue-600 mx-auto mb-2" />
               <div className="text-2xl font-bold text-gray-900">{partnerStats.total}</div>
-              <div className="text-sm text-gray-600">Total Partenaires</div>
+              <div className="text-sm text-gray-600">Total</div>
             </div>
           </Card>
         </div>
