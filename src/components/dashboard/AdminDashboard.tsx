@@ -560,8 +560,7 @@ export default function AdminDashboard() {
                 </Link>
               </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
 
           {/* Navigation Section */}
           <motion.div
@@ -625,9 +624,8 @@ export default function AdminDashboard() {
                 </Link>
               </div>
             </div>
-          </div>
-        </motion.div>
-      </div>
+          </motion.div>
+        </div>
 
       {/* Santé Système */}
       <motion.div
