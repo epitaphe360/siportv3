@@ -62,7 +62,7 @@ interface NetworkingState {
   
   // Appointment Modal State
   showAppointmentModal: boolean;
-  selectedExhibitorForRDV: User | null; // Using User type for profile data
+  selectedExhibitorForRDV: User | null;
   selectedTimeSlot: string;
   appointmentMessage: string;
 
@@ -72,11 +72,17 @@ interface NetworkingState {
   markAsContacted: (recommendedUserId: string) => void;
   
   // Permission-aware actions
-  handleConnect: (userId: string, userName: string) => void;
-  addToFavorites: (userId: string) => void;
-  removeFromFavorites: (userId: string) => void;
+  handleConnect: (userId: string, userName: string) => Promise<void>;
+  addToFavorites: (userId: string) => Promise<void>;
+  removeFromFavorites: (userId: string) => Promise<void>;
   handleMessage: (userName: string, company: string) => void;
   handleScheduleMeeting: (userName: string, company: string) => void;
+  
+  // Data loading
+  loadConnections: () => Promise<void>;
+  loadFavorites: () => Promise<void>;
+  loadPendingConnections: () => Promise<void>;
+  loadDailyUsage: () => Promise<void>;
   
   // Permission management
   updatePermissions: () => void;
@@ -96,8 +102,8 @@ interface NetworkingState {
 export const useNetworkingStore = create<NetworkingState>((set, get) => ({
   // State
   recommendations: [],
-  connections: [], // Will be loaded from Supabase
-  favorites: [], // Will be loaded from Supabase
+  connections: [],
+  favorites: [],
   pendingConnections: [],
   aiInsights: null,
   isLoading: false,
@@ -139,7 +145,6 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
   },
 
   generateRecommendations: async (userId: string) => {
-    // This can be an alias for fetchRecommendations or have its own logic
     toast.info(`Génération de recommandations pour l'utilisateur ${userId}...`);
     await get().fetchRecommendations();
   },
@@ -153,7 +158,7 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     toast.success("Utilisateur marqué comme contacté.");
   },
 
-  handleConnect: (userId: string, userName: string) => {
+  handleConnect: async (userId: string, userName: string) => {
     const { user } = useAuthStore.getState();
     if (!user) {
       toast.error("Vous devez être connecté pour envoyer une demande de connexion.");
@@ -167,33 +172,65 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
       return;
     }
 
-    set(state => ({
-      pendingConnections: [...state.pendingConnections, userId],
-      dailyUsage: {
-        ...state.dailyUsage,
-        connections: state.dailyUsage.connections + 1,
-      },
-    }));
-    
-    toast.success(`✅ Demande de connexion envoyée à ${userName}.`);
-    
-    // Show remaining quota if limited
-    const remaining = get().getRemainingQuota();
-    if (remaining.connections > 0 && remaining.connections < 5) {
-      toast.info(`📊 Il vous reste ${remaining.connections} connexion(s) aujourd'hui.`);
+    try {
+      // Créer la connexion dans Supabase
+      await SupabaseService.createConnection(user.id, userId);
+      
+      // Mettre à jour le state local
+      set(state => ({
+        pendingConnections: [...state.pendingConnections, userId],
+      }));
+      
+      // Recharger l'usage quotidien depuis la DB
+      await get().loadDailyUsage();
+      
+      toast.success(`✅ Demande de connexion envoyée à ${userName}.`);
+      
+      // Show remaining quota if limited
+      const remaining = get().getRemainingQuota();
+      if (remaining.connections > 0 && remaining.connections < 5) {
+        toast.info(`📊 Il vous reste ${remaining.connections} connexion(s) aujourd'hui.`);
+      }
+    } catch (error: any) {
+      console.error('Erreur lors de la connexion:', error);
+      toast.error(error.message || 'Erreur lors de l\'envoi de la demande de connexion.');
     }
   },
 
-  addToFavorites: (userId: string) => {
-    set(state => ({
-      favorites: [...state.favorites, userId],
-    }));
+  addToFavorites: async (userId: string) => {
+    const { user } = useAuthStore.getState();
+    if (!user) {
+      toast.error("Vous devez être connecté.");
+      return;
+    }
+
+    try {
+      await SupabaseService.addFavorite(user.id, userId);
+      set(state => ({
+        favorites: [...state.favorites, userId],
+      }));
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout aux favoris:', error);
+      toast.error('Erreur lors de l\'ajout aux favoris.');
+    }
   },
 
-  removeFromFavorites: (userId: string) => {
-    set(state => ({
-      favorites: state.favorites.filter(id => id !== userId),
-    }));
+  removeFromFavorites: async (userId: string) => {
+    const { user } = useAuthStore.getState();
+    if (!user) {
+      toast.error("Vous devez être connecté.");
+      return;
+    }
+
+    try {
+      await SupabaseService.removeFavorite(user.id, userId);
+      set(state => ({
+        favorites: state.favorites.filter(id => id !== userId),
+      }));
+    } catch (error) {
+      console.error('Erreur lors de la suppression du favori:', error);
+      toast.error('Erreur lors de la suppression du favori.');
+    }
   },
 
   handleMessage: (userName: string, company: string) => {
@@ -256,6 +293,62 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     }
   },
 
+  // Data loading methods
+  loadConnections: async () => {
+    const { user } = useAuthStore.getState();
+    if (!user) return;
+
+    try {
+      const connections = await SupabaseService.getUserConnections(user.id);
+      set({ connections });
+    } catch (error) {
+      console.error('Erreur lors du chargement des connexions:', error);
+    }
+  },
+
+  loadFavorites: async () => {
+    const { user } = useAuthStore.getState();
+    if (!user) return;
+
+    try {
+      const favorites = await SupabaseService.getUserFavorites(user.id);
+      set({ favorites });
+    } catch (error) {
+      console.error('Erreur lors du chargement des favoris:', error);
+    }
+  },
+
+  loadPendingConnections: async () => {
+    const { user } = useAuthStore.getState();
+    if (!user) return;
+
+    try {
+      const pendingConnections = await SupabaseService.getPendingConnections(user.id);
+      set({ pendingConnections });
+    } catch (error) {
+      console.error('Erreur lors du chargement des connexions en attente:', error);
+    }
+  },
+
+  loadDailyUsage: async () => {
+    const { user } = useAuthStore.getState();
+    if (!user) return;
+
+    try {
+      const quotas = await SupabaseService.getDailyQuotas(user.id);
+      set({
+        dailyUsage: {
+          connections: quotas.connections,
+          messages: quotas.messages,
+          meetings: quotas.meetings,
+          lastReset: new Date(),
+        },
+      });
+    } catch (error) {
+      console.error('Erreur lors du chargement de l\'usage quotidien:', error);
+    }
+  },
+
   // Permission management methods
   updatePermissions: () => {
     const { user } = useAuthStore.getState();
@@ -274,24 +367,6 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     if (!user || !state.permissions) {
       get().updatePermissions();
       return false;
-    }
-
-    // Check if today's usage should be reset
-    const now = new Date();
-    const lastReset = state.dailyUsage.lastReset;
-    const shouldReset = now.getDate() !== lastReset.getDate() || 
-                       now.getMonth() !== lastReset.getMonth() || 
-                       now.getFullYear() !== lastReset.getFullYear();
-
-    if (shouldReset) {
-      set(() => ({
-        dailyUsage: {
-          connections: 0,
-          messages: 0,
-          meetings: 0,
-          lastReset: now,
-        },
-      }));
     }
 
     // Check basic permission

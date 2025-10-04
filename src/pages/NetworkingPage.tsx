@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
 import { CONFIG } from '@/lib/config';
 import UserProfileView from '@/components/profile/UserProfileView';
 import { useAppointmentStore } from '@/store/appointmentStore';
+import { SupabaseService } from '@/services/supabaseService';
 
 export default function NetworkingPage() {
   const { user, isAuthenticated } = useAuthStore();
@@ -47,29 +48,58 @@ export default function NetworkingPage() {
 
   const [activeTab, setActiveTab] = React.useState<keyof typeof CONFIG.tabIds>(CONFIG.tabIds.recommendations);
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [searchResults, setSearchResults] = React.useState<NetworkingRecommendation[]>([]);
+  const [searchFilters, setSearchFilters] = React.useState({
+    sector: '',
+    userType: '',
+    location: ''
+  });
+  const [searchResults, setSearchResults] = React.useState<User[]>([]);
+  const [isSearching, setIsSearching] = React.useState(false);
   const [selectedUserProfile, setSelectedUserProfile] = React.useState<User | null>(null);
 
   React.useEffect(() => {
     if (isAuthenticated && user) {
       fetchRecommendations();
+      // Charger les données de réseautage
+      const store = useNetworkingStore.getState();
+      store.loadConnections();
+      store.loadFavorites();
+      store.loadPendingConnections();
+      store.loadDailyUsage();
+      store.updatePermissions();
     }
   }, [isAuthenticated, user, fetchRecommendations]);
 
-  const handleSearch = () => {
-    if (!searchTerm.trim()) {
-      toast.error('Veuillez saisir un terme de recherche');
+  const handleSearch = async () => {
+    if (!searchTerm.trim() && !searchFilters.sector && !searchFilters.userType && !searchFilters.location) {
+      toast.error('Veuillez saisir un terme de recherche ou sélectionner au moins un filtre');
       return;
     }
-    // Mock search results - replace with real search logic
-    const filteredResults = recommendations.filter(rec =>
-      rec.recommendedUser.profile.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      rec.recommendedUser.profile.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      rec.recommendedUser.profile.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      rec.recommendedUser.profile.position?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setSearchResults(filteredResults);
-    setActiveTab(CONFIG.tabIds.search);
+    
+    setIsSearching(true);
+    try {
+      const results = await SupabaseService.searchUsers({
+        searchTerm: searchTerm.trim(),
+        sector: searchFilters.sector,
+        userType: searchFilters.userType,
+        location: searchFilters.location,
+        limit: 50
+      });
+      
+      setSearchResults(results);
+      setActiveTab(CONFIG.tabIds.search);
+      
+      if (results.length === 0) {
+        toast.info('Aucun résultat trouvé pour votre recherche');
+      } else {
+        toast.success(`${results.length} profil(s) trouvé(s)`);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la recherche:', error);
+      toast.error('Erreur lors de la recherche');
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   const handleViewProfile = (userName: string, company: string, user?: User) => {
@@ -118,7 +148,7 @@ export default function NetworkingPage() {
     }
   }, [showAppointmentModal, selectedExhibitorForRDV, fetchTimeSlots, setSelectedTimeSlot]);
 
-  const handleConfirmAppointment = () => {
+  const handleConfirmAppointment = async () => {
     if (!selectedExhibitorForRDV) {
       toast.error('Aucun exposant sélectionné');
       return;
@@ -127,6 +157,7 @@ export default function NetworkingPage() {
       toast.error('Veuillez sélectionner un créneau horaire');
       return;
     }
+    
     // Quotas B2B selon visitor_level
     const level = user?.visitor_level || 'free';
     const quotas: Record<string, number> = {
@@ -135,16 +166,19 @@ export default function NetworkingPage() {
       premium: 5,
       vip: 99 // VIP illimité
     };
-    // Compter les RDV confirmés du visiteur
-    const confirmedAppointments = connections?.filter(
+    
+    // Récupérer les VRAIS rendez-vous depuis appointmentStore
+    const appointmentStore = useAppointmentStore.getState();
+    const userAppointments = appointmentStore.appointments.filter(
       (a: any) => a.visitorId === user?.id && a.status === 'confirmed'
-    ) || [];
-    if (confirmedAppointments.length >= quotas[level]) {
+    );
+    
+    if (userAppointments.length >= quotas[level]) {
       toast.error(`Quota atteint : vous avez déjà ${quotas[level]} RDV B2B confirmés pour votre niveau.`);
       return;
     }
-    const appointmentStore = useAppointmentStore.getState();
-    // Try to call the canonical booking flow. The selectedTimeSlot should ideally be a slot id.
+    
+    // Try to call the canonical booking flow
     appointmentStore.bookAppointment(selectedTimeSlot, appointmentMessage)
       .then(() => {
         toast.success(`Demande de RDV envoyée à ${selectedExhibitorForRDV.profile.firstName} ${selectedExhibitorForRDV.profile.lastName}`);
@@ -725,7 +759,11 @@ export default function NetworkingPage() {
                     <Building2 className="h-4 w-4 mr-2 text-green-500" />
                     Secteur d'activité
                   </label>
-                  <select className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                  <select 
+                    value={searchFilters.sector}
+                    onChange={(e) => setSearchFilters({...searchFilters, sector: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  >
                     <option value="">Tous les secteurs</option>
                     <option value="portuaire">Portuaire</option>
                     <option value="logistique">Logistique</option>
@@ -739,7 +777,11 @@ export default function NetworkingPage() {
                     <UserIcon className="h-4 w-4 mr-2 text-purple-500" />
                     Type de profil
                   </label>
-                  <select className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                  <select 
+                    value={searchFilters.userType}
+                    onChange={(e) => setSearchFilters({...searchFilters, userType: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  >
                     <option value="">Tous types</option>
                     <option value="exhibitor">Exposant</option>
                     <option value="visitor">Visiteur</option>
@@ -751,7 +793,11 @@ export default function NetworkingPage() {
                     <MapPin className="h-4 w-4 mr-2 text-orange-500" />
                     Localisation
                   </label>
-                  <select className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                  <select 
+                    value={searchFilters.location}
+                    onChange={(e) => setSearchFilters({...searchFilters, location: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  >
                     <option value="">Toutes régions</option>
                     <option value="europe">Europe</option>
                     <option value="afrique">Afrique</option>
@@ -794,9 +840,10 @@ export default function NetworkingPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {searchResults.map((rec, index) => {
-                    const profile = rec.recommendedUser;
+                  {searchResults.map((profile, index) => {
                     const isConnected = connections.includes(profile.id);
+                    const isFavorite = favorites.includes(profile.id);
+                    const isPending = pendingConnections.includes(profile.id);
 
                     return (
                       <motion.div
@@ -822,16 +869,31 @@ export default function NetworkingPage() {
                             </div>
                           </div>
 
-                          <div className="mt-3 flex justify-between items-center">
-                            <Button size="sm" variant="outline">
+                          <div className="mt-3 flex justify-between items-center gap-2">
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => handleViewProfile(`${profile.profile.firstName} ${profile.profile.lastName}`, profile.profile.company || '', profile)}
+                            >
                               <Eye className="h-3 w-3 mr-1" />
                               Voir profil
                             </Button>
-                            {!isConnected && (
+                            {isConnected ? (
+                              <Button size="sm" variant="outline" disabled className="bg-green-50">
+                                <CheckCircle className="h-3 w-3 mr-1" />
+                                Connecté
+                              </Button>
+                            ) : isPending ? (
+                              <Button size="sm" variant="outline" disabled className="bg-yellow-50">
+                                <Clock className="h-3 w-3 mr-1" />
+                                En attente
+                              </Button>
+                            ) : (
                               <Button
                                 size="sm"
                                 onClick={() => handleConnect(profile.id, `${profile.profile.firstName} ${profile.profile.lastName}`)}
                               >
+                                <UserPlus className="h-3 w-3 mr-1" />
                                 Connecter
                               </Button>
                             )}

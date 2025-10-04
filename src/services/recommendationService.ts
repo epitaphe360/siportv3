@@ -178,15 +178,64 @@ class RecommendationService {
         reasons.push(`Travaille dans une entreprise de taille similaire.`);
     }
 
-    // 9. Availability bonus (mock for now - will be implemented with real availability system)
-    // This would check if the user has available time slots
-    const hasAvailability = Math.random() > 0.3; // Mock availability check
-    if (hasAvailability) {
+    // 9. Availability bonus - Check real availability from time slots
+    // Note: This would require fetching time slots from the database
+    // For now, we'll use a heuristic based on user type
+    if (user2.type === 'exhibitor' || user2.type === 'partner') {
       score += weights.availabilityBonus;
-      reasons.push('Disponible pour des rencontres');
+      reasons.push('Disponible pour des rencontres B2B');
+    }
+
+    // 10. Recent activity bonus
+    // Users who have been active recently are more likely to respond
+    if (user2.profile.lastActive) {
+      const lastActiveDate = new Date(user2.profile.lastActive);
+      const daysSinceActive = Math.floor((Date.now() - lastActiveDate.getTime()) / (1000 * 60 * 60 * 24));
+      if (daysSinceActive < 7) {
+        score += 10;
+        reasons.push('Actif récemment sur la plateforme');
+      }
+    }
+
+    // 11. Profile completeness bonus
+    // Users with complete profiles are more serious about networking
+    const profileCompleteness = this.calculateProfileCompleteness(user2);
+    if (profileCompleteness > 0.8) {
+      score += 10;
+      reasons.push('Profil complet et détaillé');
     }
 
     return { score, reasons };
+  }
+
+  /**
+   * Calculates the completeness of a user profile (0-1 scale)
+   */
+  private static calculateProfileCompleteness(user: User): number {
+    const profile = user.profile;
+    let completeness = 0;
+    let totalFields = 0;
+
+    // Check essential fields
+    const fields = [
+      profile.firstName,
+      profile.lastName,
+      profile.company,
+      profile.position,
+      profile.bio,
+      profile.country,
+      profile.avatar,
+      profile.interests?.length > 0,
+      profile.sectors?.length > 0,
+      profile.objectives?.length > 0,
+    ];
+
+    fields.forEach(field => {
+      totalFields++;
+      if (field) completeness++;
+    });
+
+    return completeness / totalFields;
   }
 }
 

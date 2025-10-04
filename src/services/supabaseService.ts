@@ -1092,3 +1092,243 @@ export class SupabaseService {
     }
   }
 }
+  // ===== NETWORKING FUNCTIONS =====
+
+  /**
+   * Recherche avancée d'utilisateurs avec filtres
+   */
+  static async searchUsers(filters: {
+    searchTerm?: string;
+    sector?: string;
+    userType?: string;
+    location?: string;
+    limit?: number;
+  }): Promise<User[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    
+    const safeSupabase = supabase!;
+    try {
+      let query = (safeSupabase as any).from('users').select('*');
+
+      // Filtre par terme de recherche (nom, entreprise, poste)
+      if (filters.searchTerm && filters.searchTerm.trim()) {
+        const term = filters.searchTerm.trim().toLowerCase();
+        query = query.or(`profile->>firstName.ilike.%${term}%,profile->>lastName.ilike.%${term}%,profile->>company.ilike.%${term}%,profile->>position.ilike.%${term}%`);
+      }
+
+      // Filtre par secteur
+      if (filters.sector) {
+        query = query.contains('profile', { sectors: [filters.sector] });
+      }
+
+      // Filtre par type d'utilisateur
+      if (filters.userType) {
+        query = query.eq('type', filters.userType);
+      }
+
+      // Filtre par localisation
+      if (filters.location) {
+        query = query.eq('profile->>country', filters.location);
+      }
+
+      // Limiter les résultats
+      query = query.limit(filters.limit || 50);
+
+      const { data, error } = await query;
+      
+      if (error) throw error;
+      
+      return (data || []).map((user: any) => this.mapUserFromDB(user));
+    } catch (error) {
+      console.error('Erreur lors de la recherche d\'utilisateurs:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Obtenir les connexions d'un utilisateur
+   */
+  static async getUserConnections(userId: string): Promise<string[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('connections')
+        .select('connected_user_id')
+        .eq('user_id', userId)
+        .eq('status', 'accepted');
+        
+      if (error) throw error;
+      
+      return (data || []).map((conn: any) => conn.connected_user_id);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des connexions:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Créer une demande de connexion
+   */
+  static async createConnection(userId: string, connectedUserId: string): Promise<boolean> {
+    if (!this.checkSupabaseConnection()) return false;
+    
+    const safeSupabase = supabase!;
+    try {
+      // Vérifier le quota
+      const { data: quotaCheck, error: quotaError } = await (safeSupabase as any)
+        .rpc('check_and_increment_quota', {
+          p_user_id: userId,
+          p_action: 'connection'
+        });
+
+      if (quotaError) throw quotaError;
+      if (!quotaCheck) {
+        throw new Error('Quota de connexions quotidien atteint');
+      }
+
+      // Créer la connexion
+      const { error } = await (safeSupabase as any)
+        .from('connections')
+        .insert([{
+          user_id: userId,
+          connected_user_id: connectedUserId,
+          status: 'pending'
+        }]);
+        
+      if (error) throw error;
+      
+      return true;
+    } catch (error) {
+      console.error('Erreur lors de la création de la connexion:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Obtenir les favoris d'un utilisateur
+   */
+  static async getUserFavorites(userId: string): Promise<string[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('favorites')
+        .select('favorited_user_id')
+        .eq('user_id', userId);
+        
+      if (error) throw error;
+      
+      return (data || []).map((fav: any) => fav.favorited_user_id);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des favoris:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Ajouter un favori
+   */
+  static async addFavorite(userId: string, favoritedUserId: string): Promise<boolean> {
+    if (!this.checkSupabaseConnection()) return false;
+    
+    const safeSupabase = supabase!;
+    try {
+      const { error } = await (safeSupabase as any)
+        .from('favorites')
+        .insert([{
+          user_id: userId,
+          favorited_user_id: favoritedUserId
+        }]);
+        
+      if (error) throw error;
+      
+      return true;
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout du favori:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Retirer un favori
+   */
+  static async removeFavorite(userId: string, favoritedUserId: string): Promise<boolean> {
+    if (!this.checkSupabaseConnection()) return false;
+    
+    const safeSupabase = supabase!;
+    try {
+      const { error } = await (safeSupabase as any)
+        .from('favorites')
+        .delete()
+        .eq('user_id', userId)
+        .eq('favorited_user_id', favoritedUserId);
+        
+      if (error) throw error;
+      
+      return true;
+    } catch (error) {
+      console.error('Erreur lors de la suppression du favori:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Obtenir les quotas quotidiens d'un utilisateur
+   */
+  static async getDailyQuotas(userId: string): Promise<{
+    connections: number;
+    messages: number;
+    meetings: number;
+  }> {
+    if (!this.checkSupabaseConnection()) {
+      return { connections: 0, messages: 0, meetings: 0 };
+    }
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('daily_quotas')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('date', new Date().toISOString().split('T')[0])
+        .single();
+        
+      if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows
+      
+      return {
+        connections: data?.connections_count || 0,
+        messages: data?.messages_count || 0,
+        meetings: data?.meetings_count || 0,
+      };
+    } catch (error) {
+      console.error('Erreur lors de la récupération des quotas:', error);
+      return { connections: 0, messages: 0, meetings: 0 };
+    }
+  }
+
+  /**
+   * Obtenir les connexions en attente
+   */
+  static async getPendingConnections(userId: string): Promise<string[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('connections')
+        .select('connected_user_id')
+        .eq('user_id', userId)
+        .eq('status', 'pending');
+        
+      if (error) throw error;
+      
+      return (data || []).map((conn: any) => conn.connected_user_id);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des connexions en attente:', error);
+      return [];
+    }
+  }
+}
