@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { ROUTES } from '../../lib/routes';
 import {
   Settings,
   FileText,
@@ -12,109 +13,105 @@ import {
   Edit,
   Save,
   Eye,
-  ArrowLeft
+  ArrowLeft,
+  RefreshCw,
+  AlertTriangle
 } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { motion } from 'framer-motion';
+import { apiService } from '../../services/apiService';
 
-export default function ContentManagementPage() {
-  const [selectedSection, setSelectedSection] = useState<string | null>(null);
+interface ContentSection {
+  id: string;
+  title: string;
+  description: string;
+  icon_name: string; // Store icon name as string
+  color: string;
+  bg_color: string;
+  last_modified: string;
+  status: 'published' | 'draft' | 'archived';
+  content_data: any; // JSONB field for actual content
+}
+
+// Map icon names to Lucide React components
+const iconMap: { [key: string]: any } = {
+  Globe: Globe,
+  Building2: Building2,
+  Users: Users,
+  Calendar: Calendar,
+  FileText: FileText,
+  Shield: Shield,
+  BarChart3: BarChart3,
+};
+
+export default function ContentManagement() {
+  const [contentSections, setContentSections] = useState<ContentSection[]>([]);
+  const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentContentData, setCurrentContentData] = useState<any>({});
 
-  // Sections modifiables de l'application
-  const contentSections = [
-    {
-      id: 'home',
-      title: 'Page d\'Accueil',
-      description: 'Contenu principal, héros, statistiques, témoignages',
-      icon: Globe,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100',
-      lastModified: '2025-01-15',
-      status: 'published'
-    },
-    {
-      id: 'pavilions',
-      title: 'Pavillons Thématiques',
-      description: 'Gestion des pavillons SIPORTS 2026 et programmes',
-      icon: Building2,
-      color: 'text-green-600',
-      bgColor: 'bg-green-100',
-      lastModified: '2025-01-20',
-      status: 'published'
-    },
-    {
-      id: 'exhibitors',
-      title: 'Exposants',
-      description: 'Gestion des profils exposants et mini-sites',
-      icon: Users,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-100',
-      lastModified: '2025-01-18',
-      status: 'published'
-    },
-    {
-      id: 'events',
-      title: 'Événements',
-      description: 'Gestion des conférences et programmes',
-      icon: Calendar,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-100',
-      lastModified: '2025-01-19',
-      status: 'published'
-    },
-    {
-      id: 'news',
-      title: 'Actualités',
-      description: 'Articles, communiqués et annonces',
-      icon: FileText,
-      color: 'text-indigo-600',
-      bgColor: 'bg-indigo-100',
-      lastModified: '2025-01-17',
-      status: 'published'
-    },
-    {
-      id: 'partners',
-      title: 'Partenaires',
-      description: 'Gestion des partenaires et sponsors',
-      icon: Shield,
-      color: 'text-red-600',
-      bgColor: 'bg-red-100',
-      lastModified: '2025-01-16',
-      status: 'published'
-    },
-    {
-      id: 'metrics',
-      title: 'Métriques & Analytics',
-      description: 'Tableaux de bord et statistiques',
-      icon: BarChart3,
-      color: 'text-teal-600',
-      bgColor: 'bg-teal-100',
-      lastModified: '2025-01-14',
-      status: 'published'
+  useEffect(() => {
+    fetchContentSections();
+  }, []);
+
+  const fetchContentSections = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await apiService.getAll('content_sections');
+      setContentSections(data as ContentSection[]);
+      if (selectedSectionId) {
+        const current = data.find((s: ContentSection) => s.id === selectedSectionId);
+        setCurrentContentData(current?.content_data || {});
+      }
+    } catch (err) {
+      console.error('Error fetching content sections:', err);
+      setError('Failed to load content sections. Please try again later.');
+    } finally {
+      setIsLoading(false);
     }
-  ];
+  };
 
   const handleSectionSelect = (sectionId: string) => {
-    setSelectedSection(sectionId);
+    setSelectedSectionId(sectionId);
     setIsEditing(false);
+    const section = contentSections.find(s => s.id === sectionId);
+    setCurrentContentData(section?.content_data || {});
   };
 
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    // Ici vous pouvez implémenter la logique de sauvegarde
-    console.log('Sauvegarde du contenu pour la section:', selectedSection);
+  const handleSave = async () => {
+    if (!selectedSectionId) return;
+
+    setIsLoading(true);
+    setError(null);
+    try {
+      const updatedSection = { ...contentSections.find(s => s.id === selectedSectionId), content_data: currentContentData, last_modified: new Date().toISOString() };
+      await apiService.update('content_sections', selectedSectionId, updatedSection);
+      await fetchContentSections(); // Re-fetch to update the list and last_modified date
+      setIsEditing(false);
+    } catch (err) {
+      console.error('Error saving content:', err);
+      setError('Failed to save content. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handlePreview = () => {
-    // Ici vous pouvez implémenter la logique de prévisualisation
-    console.log('Prévisualisation de la section:', selectedSection);
+    console.log('Prévisualisation de la section:', selectedSectionId, currentContentData);
+    // Implement actual preview logic, e.g., open in new tab or modal
+  };
+
+  const handleContentChange = (key: string, value: any) => {
+    setCurrentContentData(prev => ({ ...prev, [key]: value }));
   };
 
   const getStatusBadge = (status: string) => {
@@ -130,7 +127,34 @@ export default function ContentManagementPage() {
     }
   };
 
-  const selectedSectionData = contentSections.find(section => section.id === selectedSection);
+  const selectedSectionData = contentSections.find(section => section.id === selectedSectionId);
+
+  if (isLoading && contentSections.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="h-12 w-12 text-blue-500 animate-spin mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900">Chargement du contenu...</h3>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center p-6 bg-white rounded-lg shadow-md">
+          <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Erreur de chargement</h3>
+          <p className="text-gray-600">{error}</p>
+          <Button onClick={fetchContentSections} className="mt-4">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Réessayer
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -138,7 +162,7 @@ export default function ContentManagementPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center space-x-4 mb-4">
-            <Link to="/admin/dashboard">
+            <Link to={ROUTES.ADMIN_DASHBOARD}>
               <Button variant="outline" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour au Dashboard
@@ -165,8 +189,8 @@ export default function ContentManagementPage() {
 
                 <div className="space-y-3">
                   {contentSections.map((section) => {
-                    const IconComponent = section.icon;
-                    const isSelected = selectedSection === section.id;
+                    const IconComponent = iconMap[section.icon_name] || Settings;
+                    const isSelected = selectedSectionId === section.id;
 
                     return (
                       <motion.div
@@ -183,7 +207,7 @@ export default function ContentManagementPage() {
                           }`}
                         >
                           <div className="flex items-start space-x-3">
-                            <div className={`p-2 rounded-lg ${section.bgColor}`}>
+                            <div className={`p-2 rounded-lg ${section.bg_color}`}>
                               <IconComponent className={`h-4 w-4 ${section.color}`} />
                             </div>
                             <div className="flex-1 min-w-0">
@@ -195,7 +219,7 @@ export default function ContentManagementPage() {
                               </p>
                               <div className="flex items-center justify-between mt-2">
                                 <span className="text-xs text-gray-500">
-                                  Modifié: {section.lastModified}
+                                  Modifié: {new Date(section.last_modified).toLocaleDateString('fr-FR')}
                                 </span>
                                 {getStatusBadge(section.status)}
                               </div>
@@ -212,26 +236,22 @@ export default function ContentManagementPage() {
 
           {/* Éditeur de contenu */}
           <div className="lg:col-span-2">
-            {selectedSection ? (
+            {selectedSectionData ? (
               <Card>
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-3">
-                      {selectedSectionData && (
-                        <>
-                          <div className={`p-2 rounded-lg ${selectedSectionData.bgColor}`}>
-                            <selectedSectionData.icon className={`h-5 w-5 ${selectedSectionData.color}`} />
-                          </div>
-                          <div>
-                            <h2 className="text-xl font-semibold text-gray-900">
-                              {selectedSectionData.title}
-                            </h2>
-                            <p className="text-sm text-gray-600">
-                              {selectedSectionData.description}
-                            </p>
-                          </div>
-                        </>
-                      )}
+                      <div className={`p-2 rounded-lg ${selectedSectionData.bg_color}`}>
+                        <selectedSectionData.icon_name && iconMap[selectedSectionData.icon_name] ? iconMap[selectedSectionData.icon_name] : Settings} className={`h-5 w-5 ${selectedSectionData.color}`} />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-semibold text-gray-900">
+                          {selectedSectionData.title}
+                        </h2>
+                        <p className="text-sm text-gray-600">
+                          {selectedSectionData.description}
+                        </p>
+                      </div>
                     </div>
 
                     <div className="flex space-x-2">
@@ -245,9 +265,18 @@ export default function ContentManagementPage() {
                           Modifier
                         </Button>
                       ) : (
-                        <Button variant="default" size="sm" onClick={handleSave}>
-                          <Save className="h-4 w-4 mr-2" />
-                          Sauvegarder
+                        <Button variant="default" size="sm" onClick={handleSave} disabled={isLoading}>
+                          {isLoading ? (
+                            <>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                              Sauvegarde...
+                            </>
+                          ) : (
+                            <>
+                              <Save className="h-4 w-4 mr-2" />
+                              Sauvegarder
+                            </>
+                          )}
                         </Button>
                       )}
                     </div>
@@ -255,7 +284,7 @@ export default function ContentManagementPage() {
 
                   {/* Zone d'édition */}
                   <div className="space-y-6">
-                    {selectedSection === 'home' && (
+                    {selectedSectionId === 'home' && (
                       <div className="space-y-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -264,7 +293,8 @@ export default function ContentManagementPage() {
                           <input
                             type="text"
                             disabled={!isEditing}
-                            defaultValue="SIPORTS 2026 - Salon International des Ports et Technologies"
+                            value={currentContentData.mainTitle || ''}
+                            onChange={(e) => handleContentChange('mainTitle', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
                           />
                         </div>
@@ -276,47 +306,35 @@ export default function ContentManagementPage() {
                           <textarea
                             rows={4}
                             disabled={!isEditing}
-                            defaultValue="Le rendez-vous mondial des professionnels des ports et de la logistique maritime. Découvrez les innovations technologiques qui transforment l'industrie portuaire."
+                            value={currentContentData.descriptionText || ''}
+                            onChange={(e) => handleContentChange('descriptionText', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
                           />
                         </div>
 
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Statistiques Clés
+                            Statistiques Clés (séparées par des virgules)
                           </label>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <input
-                              type="text"
-                              disabled={!isEditing}
-                              defaultValue="500+ Exposants"
-                              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
-                            />
-                            <input
-                              type="text"
-                              disabled={!isEditing}
-                              defaultValue="10,000+ Visiteurs"
-                              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
-                            />
-                            <input
-                              type="text"
-                              disabled={!isEditing}
-                              defaultValue="50+ Pays"
-                              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
-                            />
-                          </div>
+                          <input
+                            type="text"
+                            disabled={!isEditing}
+                            value={currentContentData.keyStats ? currentContentData.keyStats.join(', ') : ''}
+                            onChange={(e) => handleContentChange('keyStats', e.target.value.split(',').map((s: string) => s.trim()))}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                          />
                         </div>
                       </div>
                     )}
 
-                    {selectedSection === 'pavilions' && (
+                    {selectedSectionId === 'pavilions' && (
                       <div className="space-y-4">
                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                           <p className="text-sm text-blue-800">
                             <strong>Info:</strong> La gestion des pavillons se fait via la page dédiée
                             "Gestion des Pavillons" dans le menu principal.
                           </p>
-                          <Link to="/admin/pavilions">
+                          <Link to={ROUTES.ADMIN_PAVILIONS}>
                             <Button variant="outline" size="sm" className="mt-2">
                               <Building2 className="h-4 w-4 mr-2" />
                               Aller à la Gestion des Pavillons
@@ -326,14 +344,14 @@ export default function ContentManagementPage() {
                       </div>
                     )}
 
-                    {selectedSection === 'events' && (
+                    {selectedSectionId === 'events' && (
                       <div className="space-y-4">
                         <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
                           <p className="text-sm text-orange-800">
                             <strong>Info:</strong> La gestion des événements se fait via la page dédiée
                             "Gestion des Événements" dans le menu principal.
                           </p>
-                          <Link to="/admin/content">
+                          <Link to={ROUTES.ADMIN_EVENTS}>
                             <Button variant="outline" size="sm" className="mt-2">
                               <Calendar className="h-4 w-4 mr-2" />
                               Aller à la Gestion des Événements
@@ -343,14 +361,14 @@ export default function ContentManagementPage() {
                       </div>
                     )}
 
-                    {selectedSection === 'news' && (
+                    {selectedSectionId === 'news' && (
                       <div className="space-y-4">
                         <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
                           <p className="text-sm text-indigo-800">
                             <strong>Info:</strong> La gestion des actualités se fait via le système
                             de création d'articles dans le menu principal.
                           </p>
-                          <Link to="/admin/create-news">
+                          <Link to={ROUTES.ADMIN_CREATE_NEWS}>
                             <Button variant="outline" size="sm" className="mt-2">
                               <FileText className="h-4 w-4 mr-2" />
                               Créer un Article
@@ -361,7 +379,7 @@ export default function ContentManagementPage() {
                     )}
 
                     {/* Sections génériques */}
-                    {(selectedSection === 'exhibitors' || selectedSection === 'partners' || selectedSection === 'metrics') && (
+                    {(selectedSectionId === 'exhibitors' || selectedSectionId === 'partners' || selectedSectionId === 'metrics') && (
                       <div className="space-y-4">
                         <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                           <p className="text-sm text-gray-700">
@@ -393,3 +411,4 @@ export default function ContentManagementPage() {
     </div>
   );
 }
+

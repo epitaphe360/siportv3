@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Activity,
   Search,
@@ -20,131 +20,79 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { motion } from 'framer-motion';
+import { apiService } from '../../services/apiService';
+import { useFilterSearch } from '../../hooks/useFilterSearch';
+
+interface ActivityItem {
+  id: string;
+  activity_type: string;
+  description: string;
+  created_at: string;
+  metadata: any; // Assuming metadata can be any JSON object
+  user_id: string; // Assuming user_id is available for filtering
+}
 
 export default function ActivityPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedType, setSelectedType] = useState('');
-  const [selectedSeverity, setSelectedSeverity] = useState('');
+  const [activities, setActivities] = useState<ActivityItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Données mockées pour l'activité système
-  const activities = [
-    {
-      id: '1',
-      type: 'user_registration',
-      description: 'Nouveau compte utilisateur créé - Marie Martin (Partenaire)',
-      timestamp: new Date(Date.now() - 3600000),
-      severity: 'info',
-      user: 'System',
-      details: {
-        userId: 'user_123',
-        email: 'marie.martin@tech-nav.com',
-        role: 'partner'
+  useEffect(() => {
+    const fetchActivities = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const data = await apiService.getAll('activities');
+        setActivities(data as ActivityItem[]);
+      } catch (err) {
+        console.error('Error fetching activities:', err);
+        setError('Failed to load activities. Please try again later.');
+      } finally {
+        setIsLoading(false);
       }
-    },
-    {
-      id: '2',
-      type: 'exhibitor_validation',
-      description: 'Exposant approuvé - Port Maritime Marseille',
-      timestamp: new Date(Date.now() - 7200000),
-      severity: 'success',
-      user: 'Admin System',
-      details: {
-        exhibitorId: 'exhib_456',
-        standNumber: 'A12',
-        category: 'Infrastructure Portuaire'
-      }
-    },
-    {
-      id: '3',
-      type: 'content_moderation',
-      description: 'Contenu signalé modéré - Mini-site Maritime Solutions',
-      timestamp: new Date(Date.now() - 10800000),
-      severity: 'warning',
-      user: 'Modérateur Content',
-      details: {
-        contentId: 'content_789',
-        reason: 'Contenu inapproprié',
-        action: 'Modéré'
-      }
-    },
-    {
-      id: '4',
-      type: 'security_alert',
-      description: 'Tentative de connexion échouée - IP: 192.168.1.100',
-      timestamp: new Date(Date.now() - 14400000),
-      severity: 'error',
-      user: 'Security System',
-      details: {
-        ipAddress: '192.168.1.100',
-        attempts: 5,
-        userAgent: 'Chrome/91.0'
-      }
-    },
-    {
-      id: '5',
-      type: 'event_registration',
-      description: 'Inscription à un événement - 45 participants pour "Conférence Innovation"',
-      timestamp: new Date(Date.now() - 18000000),
-      severity: 'info',
-      user: 'Event System',
-      details: {
-        eventId: 'event_101',
-        registrations: 45,
-        capacity: 500
-      }
-    },
-    {
-      id: '6',
-      type: 'system_backup',
-      description: 'Sauvegarde automatique du système terminée avec succès',
-      timestamp: new Date(Date.now() - 21600000),
-      severity: 'success',
-      user: 'System',
-      details: {
-        backupSize: '2.4 GB',
-        duration: '15 minutes',
-        status: 'Success'
-      }
-    },
-    {
-      id: '7',
-      type: 'user_suspension',
-      description: 'Compte utilisateur suspendu - Violation des conditions d\'utilisation',
-      timestamp: new Date(Date.now() - 25200000),
-      severity: 'warning',
-      user: 'Admin System',
-      details: {
-        userId: 'user_999',
-        reason: 'Violation CGU',
-        duration: '7 jours'
-      }
-    },
-    {
-      id: '8',
-      type: 'api_rate_limit',
-      description: 'Limite de taux API dépassée pour l\'application partenaire',
-      timestamp: new Date(Date.now() - 28800000),
-      severity: 'warning',
-      user: 'API Gateway',
-      details: {
-        appId: 'app_456',
-        requests: 1200,
-        limit: 1000,
-        resetTime: '1 heure'
-      }
+    };
+
+    fetchActivities();
+  }, []);
+
+  const getSeverityFromType = (type: string): 'info' | 'success' | 'warning' | 'error' => {
+    switch (type) {
+      case 'security_alert':
+      case 'system_error':
+        return 'error';
+      case 'user_suspension':
+      case 'api_rate_limit':
+      case 'content_moderation_warning':
+        return 'warning';
+      case 'exhibitor_validation':
+      case 'system_backup_success':
+        return 'success';
+      default:
+        return 'info';
     }
-  ];
+  };
 
-  const filteredActivities = activities.filter(activity => {
-    const matchesSearch = activity.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         activity.user.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = !selectedType || activity.type === selectedType;
-    const matchesSeverity = !selectedSeverity || activity.severity === selectedSeverity;
+  const { searchTerm, setSearchTerm, selectedFilter: selectedType, setSelectedFilter: setSelectedType, filteredData: filteredActivities } =
+    useFilterSearch<ActivityItem>({
+      data: activities,
+      searchKeys: ['description', 'metadata.user'],
+      filterKey: 'activity_type',
+    });
 
-    return matchesSearch && matchesType && matchesSeverity;
+  const { selectedFilter: selectedSeverity, setSelectedFilter: setSelectedSeverity, filteredData: filteredActivitiesBySeverity } =
+    useFilterSearch<ActivityItem>({
+      data: filteredActivities,
+      searchKeys: [], // Already filtered by searchTerm
+      filterKey: 'activity_type',
+      initialFilterValue: selectedSeverity, // Pass current severity to maintain filter
+    });
+
+  const finalFilteredActivities = filteredActivitiesBySeverity.filter(activity => {
+    return !selectedSeverity || getSeverityFromType(activity.activity_type) === selectedSeverity;
   });
 
-  const formatDate = (date: Date) => {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
     return new Intl.DateTimeFormat('fr-FR', {
       day: 'numeric',
       month: 'short',
@@ -182,7 +130,7 @@ export default function ActivityPage() {
     }
   };
 
-  const getSeverityBadge = (severity: string) => {
+  const getSeverityBadge = (severity: 'info' | 'success' | 'warning' | 'error') => {
     switch (severity) {
       case 'error':
         return <Badge variant="error">Erreur</Badge>;
@@ -207,13 +155,13 @@ export default function ActivityPage() {
       case 'system_backup': return 'Sauvegarde système';
       case 'user_suspension': return 'Suspension utilisateur';
       case 'api_rate_limit': return 'Limite API';
-      default: return type;
+      default: return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     }
   };
 
   const handleActivityAction = (activityId: string, action: string) => {
     console.log(`Action ${action} pour l'activité ${activityId}`);
-    // Ici vous pouvez implémenter les actions réelles
+    // Implement actual actions like viewing details or performing moderation
   };
 
   const activityTypes = [
@@ -224,8 +172,37 @@ export default function ActivityPage() {
     { value: 'event_registration', label: 'Inscription événement' },
     { value: 'system_backup', label: 'Sauvegarde système' },
     { value: 'user_suspension', label: 'Suspension utilisateur' },
-    { value: 'api_rate_limit', label: 'Limite API' }
+    { value: 'api_rate_limit', label: 'Limite API' },
+    { value: 'system_error', label: 'Erreur système' },
+    { value: 'content_moderation_warning', label: 'Avertissement modération' },
   ];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="h-12 w-12 text-blue-500 animate-spin mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900">Chargement des activités...</h3>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center p-6 bg-white rounded-lg shadow-md">
+          <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Erreur de chargement</h3>
+          <p className="text-gray-600">{error}</p>
+          <Button onClick={() => window.location.reload()} className="mt-4">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Réessayer
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -244,7 +221,7 @@ export default function ActivityPage() {
                 <Download className="h-4 w-4 mr-2" />
                 Exporter
               </Button>
-              <Button variant="default">
+              <Button variant="default" onClick={() => window.location.reload()}>
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Actualiser
               </Button>
@@ -272,7 +249,7 @@ export default function ActivityPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Alertes Sécurité</p>
                   <p className="text-3xl font-bold text-red-600">
-                    {activities.filter(a => a.type === 'security_alert').length}
+                    {activities.filter(a => getSeverityFromType(a.activity_type) === 'error').length}
                   </p>
                 </div>
                 <Shield className="h-8 w-8 text-red-600" />
@@ -286,7 +263,7 @@ export default function ActivityPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Validations</p>
                   <p className="text-3xl font-bold text-green-600">
-                    {activities.filter(a => a.severity === 'success').length}
+                    {activities.filter(a => getSeverityFromType(a.activity_type) === 'success').length}
                   </p>
                 </div>
                 <UserCheck className="h-8 w-8 text-green-600" />
@@ -300,7 +277,7 @@ export default function ActivityPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Avertissements</p>
                   <p className="text-3xl font-bold text-yellow-600">
-                    {activities.filter(a => a.severity === 'warning').length}
+                    {activities.filter(a => getSeverityFromType(a.activity_type) === 'warning').length}
                   </p>
                 </div>
                 <AlertTriangle className="h-8 w-8 text-yellow-600" />
@@ -359,9 +336,10 @@ export default function ActivityPage() {
         <Card>
           <div className="p-6">
             <div className="space-y-4">
-              {filteredActivities.map((activity, index) => {
-                const ActivityIcon = getActivityIcon(activity.type);
-                const iconColor = getActivityColor(activity.type);
+              {finalFilteredActivities.map((activity, index) => {
+                const ActivityIcon = getActivityIcon(activity.activity_type);
+                const iconColor = getActivityColor(activity.activity_type);
+                const severity = getSeverityFromType(activity.activity_type);
 
                 return (
                   <motion.div
@@ -378,9 +356,9 @@ export default function ActivityPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="text-sm font-medium text-gray-900">
-                          {getTypeLabel(activity.type)}
+                          {getTypeLabel(activity.activity_type)}
                         </h3>
-                        {getSeverityBadge(activity.severity)}
+                        {getSeverityBadge(severity)}
                       </div>
 
                       <p className="text-sm text-gray-700 mb-2">
@@ -388,24 +366,24 @@ export default function ActivityPage() {
                       </p>
 
                       <div className="flex items-center space-x-4 text-xs text-gray-500">
-                        <span>{formatDate(activity.timestamp)}</span>
+                        <span>{formatDate(activity.created_at)}</span>
                         <span>•</span>
-                        <span>{activity.user}</span>
+                        <span>{activity.metadata?.user || 'N/A'}</span>
                       </div>
 
                       {/* Détails supplémentaires */}
                       <div className="mt-2 text-xs text-gray-600">
-                        {activity.type === 'user_registration' && activity.details && (
-                          <span>ID: {activity.details.userId} • Email: {activity.details.email}</span>
+                        {activity.activity_type === 'user_registration' && activity.metadata && (
+                          <span>ID: {activity.metadata.userId} • Email: {activity.metadata.email}</span>
                         )}
-                        {activity.type === 'exhibitor_validation' && activity.details && (
-                          <span>Stand: {activity.details.standNumber} • Catégorie: {activity.details.category}</span>
+                        {activity.activity_type === 'exhibitor_validation' && activity.metadata && (
+                          <span>Stand: {activity.metadata.standNumber} • Catégorie: {activity.metadata.category}</span>
                         )}
-                        {activity.type === 'security_alert' && activity.details && (
-                          <span>IP: {activity.details.ipAddress} • Tentatives: {activity.details.attempts}</span>
+                        {activity.activity_type === 'security_alert' && activity.metadata && (
+                          <span>IP: {activity.metadata.ipAddress} • Tentatives: {activity.metadata.attempts}</span>
                         )}
-                        {activity.type === 'event_registration' && activity.details && (
-                          <span>Inscriptions: {activity.details.registrations}/{activity.details.capacity}</span>
+                        {activity.activity_type === 'event_registration' && activity.metadata && (
+                          <span>Inscriptions: {activity.metadata.registrations}/{activity.metadata.capacity}</span>
                         )}
                       </div>
                     </div>
@@ -431,7 +409,7 @@ export default function ActivityPage() {
               })}
             </div>
 
-            {filteredActivities.length === 0 && (
+            {finalFilteredActivities.length === 0 && (
               <div className="text-center py-12">
                 <Activity className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">

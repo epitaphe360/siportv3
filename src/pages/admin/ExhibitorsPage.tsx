@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -13,118 +13,83 @@ import {
   Eye,
   CheckCircle,
   XCircle,
-  AlertTriangle
+  AlertTriangle,
+  RefreshCw
 } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { motion } from 'framer-motion';
+import { apiService } from '../../services/apiService';
+import { useFilterSearch } from '../../hooks/useFilterSearch';
+
+interface Exhibitor {
+  id: string;
+  company_name: string;
+  category: string;
+  description: string;
+  verified: boolean; // Assuming 'status' is now 'verified'
+  contact_info: { name: string; email: string };
+  website: string | null;
+  employees: number | null;
+  founded: number | null;
+  location: string | null;
+  rating: number | null;
+  visitorsCount: number; // This might need to be derived or added to DB
+  created_at: string;
+  status: 'approved' | 'pending' | 'rejected'; // Added for UI display
+  // Add other fields as per your Supabase 'exhibitors' table structure
+}
 
 export default function ExhibitorsPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('');
+  const [exhibitors, setExhibitors] = useState<Exhibitor[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Données mockées pour les exposants
-  const exhibitors = [
-    {
-      id: '1',
-      name: 'Port Maritime Marseille',
-      category: 'Infrastructure Portuaire',
-      description: 'Solutions complètes pour la gestion portuaire moderne',
-      status: 'approved',
-      standNumber: 'A12',
-      contactName: 'Jean Dupont',
-      contactEmail: 'jean.dupont@port-maritime.fr',
-      website: 'https://port-maritime-marseille.com',
-      employees: 450,
-      founded: 1920,
-      location: 'Marseille, France',
-      rating: 4.8,
-      visitorsCount: 1250,
-      registrationDate: new Date(Date.now() - 2592000000)
-    },
-    {
-      id: '2',
-      name: 'TechNav Solutions',
-      category: 'Technologie',
-      description: 'Solutions de navigation et de tracking maritime avancées',
-      status: 'approved',
-      standNumber: 'B08',
-      contactName: 'Marie Martin',
-      contactEmail: 'marie.martin@technav.com',
-      website: 'https://technav-solutions.com',
-      employees: 85,
-      founded: 2015,
-      location: 'Toulon, France',
-      rating: 4.6,
-      visitorsCount: 890,
-      registrationDate: new Date(Date.now() - 5184000000)
-    },
-    {
-      id: '3',
-      name: 'Ocean Freight Corp',
-      category: 'Logistique',
-      description: 'Services de fret maritime international',
-      status: 'pending',
-      standNumber: null,
-      contactName: 'Pierre Durand',
-      contactEmail: 'p.durand@ocean-freight.com',
-      website: 'https://ocean-freight.com',
-      employees: 320,
-      founded: 1998,
-      location: 'Le Havre, France',
-      rating: null,
-      visitorsCount: 0,
-      registrationDate: new Date(Date.now() - 86400000)
-    },
-    {
-      id: '4',
-      name: 'Maritime Data Systems',
-      category: 'Data & Analytics',
-      description: 'Plateformes de données pour l\'industrie maritime',
-      status: 'approved',
-      standNumber: 'C15',
-      contactName: 'Sophie Leroy',
-      contactEmail: 's.leroy@maritime-data.com',
-      website: 'https://maritime-data.com',
-      employees: 65,
-      founded: 2018,
-      location: 'Nantes, France',
-      rating: 4.9,
-      visitorsCount: 1450,
-      registrationDate: new Date(Date.now() - 7776000000)
-    },
-    {
-      id: '5',
-      name: 'Port Engineering Ltd',
-      category: 'Ingénierie',
-      description: 'Services d\'ingénierie et de construction portuaire',
-      status: 'rejected',
-      standNumber: null,
-      contactName: 'Michel Bernard',
-      contactEmail: 'm.bernard@port-engineering.com',
-      website: 'https://port-engineering.com',
-      employees: 180,
-      founded: 2005,
-      location: 'Bordeaux, France',
-      rating: null,
-      visitorsCount: 0,
-      registrationDate: new Date(Date.now() - 172800000)
-    }
-  ];
+  useEffect(() => {
+    const fetchExhibitors = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const data = await apiService.getAll('exhibitors');
+        const formattedData = data.map((item: any) => ({
+          ...item,
+          company_name: item.company_name || 'N/A',
+          category: item.category || 'N/A',
+          description: item.description || 'N/A',
+          verified: item.verified || false,
+          contact_info: item.contact_info || { name: 'N/A', email: 'N/A' },
+          visitorsCount: item.visitorsCount || 0, // Placeholder, adjust if DB has this
+          status: item.verified ? 'approved' : 'pending', // Map 'verified' to a display status
+        }));
+        setExhibitors(formattedData as Exhibitor[]);
+      } catch (err) {
+        console.error('Error fetching exhibitors:', err);
+        setError('Failed to load exhibitors. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const filteredExhibitors = exhibitors.filter(exhibitor => {
-    const matchesSearch = exhibitor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         exhibitor.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         exhibitor.contactName.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = !selectedCategory || exhibitor.category === selectedCategory;
-    const matchesStatus = !selectedStatus || exhibitor.status === selectedStatus;
+    fetchExhibitors();
+  }, []);
 
-    return matchesSearch && matchesCategory && matchesStatus;
-  });
+  const { searchTerm, setSearchTerm, selectedFilter: selectedCategory, setSelectedFilter: setSelectedCategory, filteredData: filteredExhibitorsByCategory } =
+    useFilterSearch<Exhibitor>({
+      data: exhibitors,
+      searchKeys: ['company_name', 'description', 'contact_info.name'],
+      filterKey: 'category',
+    });
 
-  const formatDate = (date: Date) => {
+  const { selectedFilter: selectedStatus, setSelectedFilter: setSelectedStatus, filteredData: finalFilteredExhibitors } =
+    useFilterSearch<Exhibitor>({
+      data: filteredExhibitorsByCategory,
+      searchKeys: [], // Already filtered by searchTerm
+      filterKey: 'status',
+    });
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
     return new Intl.DateTimeFormat('fr-FR', {
       day: 'numeric',
       month: 'short',
@@ -147,7 +112,7 @@ export default function ExhibitorsPage() {
 
   const handleExhibitorAction = (exhibitorId: string, action: string) => {
     console.log(`Action ${action} pour l'exposant ${exhibitorId}`);
-    // Ici vous pouvez implémenter les actions réelles
+    // Implement actual actions like viewing details, editing, approving/rejecting
   };
 
   const categories = [
@@ -159,6 +124,33 @@ export default function ExhibitorsPage() {
     'Sécurité',
     'Environnement'
   ];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="h-12 w-12 text-blue-500 animate-spin mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900">Chargement des exposants...</h3>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center p-6 bg-white rounded-lg shadow-md">
+          <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Erreur de chargement</h3>
+          <p className="text-gray-600">{error}</p>
+          <Button onClick={() => window.location.reload()} className="mt-4">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Réessayer
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -285,7 +277,7 @@ export default function ExhibitorsPage() {
 
         {/* Exhibitors Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredExhibitors.map((exhibitor, index) => (
+          {finalFilteredExhibitors.map((exhibitor, index) => (
             <motion.div
               key={exhibitor.id}
               initial={{ opacity: 0, y: 20 }}
@@ -297,7 +289,7 @@ export default function ExhibitorsPage() {
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                        {exhibitor.name}
+                        {exhibitor.company_name}
                       </h3>
                       <p className="text-sm text-gray-600 mb-2">{exhibitor.category}</p>
                       {getStatusBadge(exhibitor.status)}
@@ -316,18 +308,19 @@ export default function ExhibitorsPage() {
                   <div className="space-y-2 mb-4">
                     <div className="flex items-center text-sm text-gray-600">
                       <MapPin className="h-4 w-4 mr-2" />
-                      <span>{exhibitor.location}</span>
+                      <span>{exhibitor.location || 'N/A'}</span>
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <Users className="h-4 w-4 mr-2" />
-                      <span>{exhibitor.employees} employés</span>
+                      <span>{exhibitor.employees || 'N/A'} employés</span>
                     </div>
-                    {exhibitor.standNumber && (
+                    {/* Assuming standNumber is not directly in the DB or needs to be fetched separately */}
+                    {/* {exhibitor.standNumber && (
                       <div className="flex items-center text-sm text-gray-600">
                         <Building2 className="h-4 w-4 mr-2" />
                         <span>Stand {exhibitor.standNumber}</span>
                       </div>
-                    )}
+                    )} */}
                     {exhibitor.rating && (
                       <div className="flex items-center text-sm text-gray-600">
                         <Star className="h-4 w-4 mr-2 text-yellow-500" />
@@ -337,7 +330,7 @@ export default function ExhibitorsPage() {
                   </div>
 
                   <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
-                    <span>Inscrit le {formatDate(exhibitor.registrationDate)}</span>
+                    <span>Inscrit le {formatDate(exhibitor.created_at)}</span>
                   </div>
 
                   <div className="flex space-x-2">
@@ -371,7 +364,7 @@ export default function ExhibitorsPage() {
           ))}
         </div>
 
-        {filteredExhibitors.length === 0 && (
+        {finalFilteredExhibitors.length === 0 && (
           <div className="text-center py-12">
             <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">

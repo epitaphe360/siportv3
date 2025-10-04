@@ -1,26 +1,26 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Search, Filter, Users, Clock, MapPin, Video, MoreVertical, CreditCard as Edit, Eye, Plus, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { Calendar, Search, Filter, Users, Clock, MapPin, Video, MoreVertical, Edit, Eye, Plus, CheckCircle, XCircle, AlertTriangle, RefreshCw } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { motion } from 'framer-motion';
 import { EventsService, Event } from '../../services/eventsService';
+import { useFilterSearch } from '../../hooks/useFilterSearch';
 
 export default function EventsPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedType, setSelectedType] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('');
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadEvents();
   }, []);
 
   const loadEvents = async () => {
+    setIsLoading(true);
+    setError(null);
     try {
-      setIsLoading(true);
       const data = await EventsService.getAllEvents();
 
       const formattedEvents = data.map((event: Event) => {
@@ -28,159 +28,53 @@ export default function EventsPage() {
         const endDate = new Date(event.end_date);
         const now = new Date();
 
-        let status = 'confirmed';
-        if (endDate < now) {
+        let status: 'confirmed' | 'completed' | 'cancelled' | 'pending' = 'confirmed'; // Default status
+        if (event.status) { // If status is provided by the backend
+          status = event.status;
+        } else if (endDate < now) {
           status = 'completed';
+        } else if (startDate > now) {
+          status = 'pending'; // Assuming events in the future are pending until confirmed
         }
 
         return {
-          id: event.id,
-          title: event.title,
-          type: event.event_type,
-          description: event.description,
-          date: startDate,
+          ...event,
+          date: startDate, // Add a date property for easier display
           startTime: startDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
           endTime: endDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
-          location: event.location || '',
+          status, // Use the determined status
+          // Default values for missing fields if necessary
+          location: event.location || 'N/A',
           capacity: event.capacity || 0,
           registered: event.registered || 0,
-          status,
-          organizer: 'SIPORTS Team',
-          virtual: false,
-          speakers: []
+          organizer: event.organizer_id || 'SIPORTS Team', // Assuming organizer_id can be used as organizer name
+          virtual: event.virtual || false,
+          speakers: event.speakers || [], // Assuming speakers can be part of the event object
         };
       });
 
       setEvents(formattedEvents);
-    } catch (error) {
-      console.error('Error loading events:', error);
+    } catch (err) {
+      console.error('Error loading events:', err);
+      setError('Failed to load events. Please try again later.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Fallback mock data for initial load
-  const mockEvents = [
-    {
-      id: '1',
-      title: 'Conférence Innovation Portuaire',
-      type: 'conference',
-      description: 'Découvrez les dernières innovations technologiques pour les ports du futur',
-      date: new Date(Date.now() + 86400000), // Demain
-      startTime: '09:00',
-      endTime: '12:00',
-      location: 'Salle principale - Palais des Congrès',
-      capacity: 500,
-      registered: 387,
-      status: 'confirmed',
-      organizer: 'SIPORTS Team',
-      virtual: false,
-      speakers: [
-        { name: 'Dr. Marie Dubois', company: 'Port Tech Institute' },
-        { name: 'Jean-Pierre Martin', company: 'Maritime Solutions' }
-      ]
-    },
-    {
-      id: '2',
-      title: 'Workshop Digitalisation',
-      type: 'workshop',
-      description: 'Atelier pratique sur la transformation digitale des opérations portuaires',
-      date: new Date(Date.now() + 172800000), // Après-demain
-      startTime: '14:00',
-      endTime: '17:00',
-      location: 'Salle B - Palais des Congrès',
-      capacity: 80,
-      registered: 65,
-      status: 'confirmed',
-      organizer: 'TechNav Solutions',
-      virtual: false,
-      speakers: [
-        { name: 'Sophie Leroy', company: 'Maritime Data Systems' }
-      ]
-    },
-    {
-      id: '3',
-      title: 'Table Ronde Cybersécurité',
-      type: 'roundtable',
-      description: 'Discussion sur les défis de cybersécurité dans l\'industrie maritime',
-      date: new Date(Date.now() - 86400000), // Hier
-      startTime: '10:00',
-      endTime: '11:30',
-      location: 'Salle C - Palais des Congrès',
-      capacity: 60,
-      registered: 45,
-      status: 'completed',
-      organizer: 'CyberPort Security',
-      virtual: true,
-      speakers: [
-        { name: 'Michel Bernard', company: 'SecureMaritime' },
-        { name: 'Claire Dupont', company: 'Port Authority' }
-      ]
-    },
-    {
-      id: '4',
-      title: 'Networking VIP',
-      type: 'networking',
-      description: 'Session de réseautage exclusive pour les décideurs de l\'industrie',
-      date: new Date(Date.now() + 259200000), // Dans 3 jours
-      startTime: '18:00',
-      endTime: '21:00',
-      location: 'Salon VIP - Hôtel Marriott',
-      capacity: 100,
-      registered: 78,
-      status: 'confirmed',
-      organizer: 'SIPORTS Partners',
-      virtual: false,
-      speakers: []
-    },
-    {
-      id: '5',
-      title: 'Démonstration Technologique',
-      type: 'demo',
-      description: 'Présentation des dernières solutions technologiques portuaires',
-      date: new Date(Date.now() + 345600000), // Dans 4 jours
-      startTime: '11:00',
-      endTime: '13:00',
-      location: 'Zone démonstration - Hall principal',
-      capacity: 200,
-      registered: 156,
-      status: 'confirmed',
-      organizer: 'Tech Innovation Hub',
-      virtual: false,
-      speakers: [
-        { name: 'Pierre Durand', company: 'Ocean Freight Corp' },
-        { name: 'Marie Martin', company: 'TechNav Solutions' }
-      ]
-    },
-    {
-      id: '6',
-      title: 'Keynote IA & Ports',
-      type: 'keynote',
-      description: 'Conférence sur l\'impact de l\'intelligence artificielle sur les ports',
-      date: new Date(Date.now() + 432000000), // Dans 5 jours
-      startTime: '09:30',
-      endTime: '10:30',
-      location: 'Auditorium principal',
-      capacity: 400,
-      registered: 298,
-      status: 'confirmed',
-      organizer: 'AI Maritime Institute',
-      virtual: true,
-      speakers: [
-        { name: 'Dr. Alain Moreau', company: 'AI Research Lab' }
-      ]
-    }
-  ];
+  const { searchTerm, setSearchTerm, selectedFilter: selectedType, setSelectedFilter: setSelectedType, filteredData: filteredEventsByType } =
+    useFilterSearch<Event>({
+      data: events,
+      searchKeys: ['title', 'description', 'organizer'],
+      filterKey: 'event_type',
+    });
 
-  const filteredEvents = events.filter(event => {
-    const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         event.organizer.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = !selectedType || event.type === selectedType;
-    const matchesStatus = !selectedStatus || event.status === selectedStatus;
-
-    return matchesSearch && matchesType && matchesStatus;
-  });
+  const { selectedFilter: selectedStatus, setSelectedFilter: setSelectedStatus, filteredData: finalFilteredEvents } =
+    useFilterSearch<Event>({
+      data: filteredEventsByType,
+      searchKeys: [], // Already filtered by searchTerm
+      filterKey: 'status',
+    });
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('fr-FR', {
@@ -199,7 +93,7 @@ export default function EventsPage() {
       case 'networking': return 'Réseautage';
       case 'demo': return 'Démonstration';
       case 'keynote': return 'Keynote';
-      default: return type;
+      default: return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     }
   };
 
@@ -231,6 +125,33 @@ export default function EventsPage() {
     { value: 'demo', label: 'Démonstration' },
     { value: 'keynote', label: 'Keynote' }
   ];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="h-12 w-12 text-blue-500 animate-spin mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900">Chargement des événements...</h3>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center p-6 bg-white rounded-lg shadow-md">
+          <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Erreur de chargement</h3>
+          <p className="text-gray-600">{error}</p>
+          <Button onClick={() => window.location.reload()} className="mt-4">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Réessayer
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -301,8 +222,10 @@ export default function EventsPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Taux d'occupation</p>
                   <p className="text-3xl font-bold text-orange-600">
-                    {Math.round((events.reduce((sum, e) => sum + e.registered, 0) /
-                               events.reduce((sum, e) => sum + e.capacity, 0)) * 100)}%
+                    {events.length > 0 && events.reduce((sum, e) => sum + e.capacity, 0) > 0
+                      ? Math.round((events.reduce((sum, e) => sum + e.registered, 0) /
+                                   events.reduce((sum, e) => sum + e.capacity, 0)) * 100)
+                      : 0}%
                   </p>
                 </div>
                 <AlertTriangle className="h-8 w-8 text-orange-600" />
@@ -359,7 +282,7 @@ export default function EventsPage() {
 
         {/* Events Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredEvents.map((event, index) => (
+          {finalFilteredEvents.map((event, index) => (
             <motion.div
               key={event.id}
               initial={{ opacity: 0, y: 20 }}
@@ -374,7 +297,7 @@ export default function EventsPage() {
                         {event.title}
                       </h3>
                       <p className="text-sm text-gray-600 mb-2">
-                        {getEventTypeLabel(event.type)} • {event.organizer}
+                        {getEventTypeLabel(event.event_type)} • {event.organizer}
                       </p>
                       {getStatusBadge(event.status)}
                     </div>
@@ -414,7 +337,7 @@ export default function EventsPage() {
                     )}
                   </div>
 
-                  {event.speakers.length > 0 && (
+                  {event.speakers && event.speakers.length > 0 && (
                     <div className="mb-4">
                       <h4 className="text-sm font-medium text-gray-900 mb-2">Intervenants :</h4>
                       <div className="space-y-1">
@@ -463,7 +386,7 @@ export default function EventsPage() {
           ))}
         </div>
 
-        {filteredEvents.length === 0 && (
+        {finalFilteredEvents.length === 0 && (
           <div className="text-center py-12">
             <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">

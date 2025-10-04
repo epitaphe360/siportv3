@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { ROUTES } from '../../lib/routes';
 import {
   Users,
   Search,
@@ -13,89 +14,69 @@ import {
   Edit,
   Shield,
   Crown,
-  User
+  User as UserIcon, // Renamed to avoid conflict with interface User
+  RefreshCw
 } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { motion } from 'framer-motion';
+import { apiService } from '../../services/apiService';
+import { Database } from '../../lib/supabase'; // Import the Database type
+
+// Define User type based on Supabase schema
+type User = Database['public']['Tables']['users']['Row'] & {
+  company?: string; // Assuming company might be joined or part of profile metadata
+  lastLogin?: string; // Assuming lastLogin might be a separate field or part of metadata
+  registrationDate?: string; // Assuming registrationDate is created_at
+};
 
 export default function UsersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Données mockées pour les utilisateurs
-  const users = [
-    {
-      id: '1',
-      name: 'Jean Dupont',
-      email: 'jean.dupont@port-maritime.fr',
-      role: 'exhibitor',
-      company: 'Port Maritime Marseille',
-      status: 'active',
-      lastLogin: new Date(Date.now() - 86400000),
-      registrationDate: new Date(Date.now() - 2592000000),
-      avatar: null
-    },
-    {
-      id: '2',
-      name: 'Marie Martin',
-      email: 'marie.martin@tech-nav.com',
-      role: 'partner',
-      company: 'TechNav Solutions',
-      status: 'active',
-      lastLogin: new Date(Date.now() - 3600000),
-      registrationDate: new Date(Date.now() - 5184000000),
-      avatar: null
-    },
-    {
-      id: '3',
-      name: 'Pierre Durand',
-      email: 'p.durand@ocean-freight.com',
-      role: 'visitor',
-      company: 'Ocean Freight Corp',
-      status: 'pending',
-      lastLogin: null,
-      registrationDate: new Date(Date.now() - 86400000),
-      avatar: null
-    },
-    {
-      id: '4',
-      name: 'Sophie Leroy',
-      email: 's.leroy@maritime-data.com',
-      role: 'exhibitor',
-      company: 'Maritime Data Systems',
-      status: 'suspended',
-      lastLogin: new Date(Date.now() - 604800000),
-      registrationDate: new Date(Date.now() - 7776000000),
-      avatar: null
-    },
-    {
-      id: '5',
-      name: 'Admin System',
-      email: 'admin@siports.com',
-      role: 'admin',
-      company: 'SIPORTS',
-      status: 'active',
-      lastLogin: new Date(Date.now() - 1800000),
-      registrationDate: new Date(Date.now() - 31536000000),
-      avatar: null
-    }
-  ];
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const data = await apiService.getAll('users');
+        const formattedData = data.map((item: any) => ({
+          ...item,
+          name: item.name || `${item.profile?.firstName || ''} ${item.profile?.lastName || ''}`.trim() || item.email,
+          company: item.profile?.company || 'N/A', // Assuming company is in profile metadata
+          lastLogin: item.updated_at, // Using updated_at as a proxy for last login
+          registrationDate: item.created_at,
+        }));
+        setUsers(formattedData as User[]);
+      } catch (err) {
+        console.error('Error fetching users:', err);
+        setError('Failed to load users. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.company.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesRole = !selectedRole || user.role === selectedRole;
+                         (user.company || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesRole = !selectedRole || user.type === selectedRole;
     const matchesStatus = !selectedStatus || user.status === selectedStatus;
 
     return matchesSearch && matchesRole && matchesStatus;
   });
 
-  const formatDate = (date: Date | null) => {
-    if (!date) return 'Jamais';
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return 'Jamais';
+    const date = new Date(dateString);
     return new Intl.DateTimeFormat('fr-FR', {
       day: 'numeric',
       month: 'short',
@@ -110,8 +91,8 @@ export default function UsersPage() {
       case 'admin': return Shield;
       case 'partner': return Crown;
       case 'exhibitor': return Building2;
-      case 'visitor': return User;
-      default: return User;
+      case 'visitor': return UserIcon;
+      default: return UserIcon;
     }
   };
 
@@ -140,6 +121,7 @@ export default function UsersPage() {
       case 'active': return <Badge variant="success">Actif</Badge>;
       case 'pending': return <Badge variant="warning">En attente</Badge>;
       case 'suspended': return <Badge variant="error">Suspendu</Badge>;
+      case 'rejected': return <Badge variant="error">Rejeté</Badge>;
       default: return <Badge variant="info">{status}</Badge>;
     }
   };
@@ -148,6 +130,33 @@ export default function UsersPage() {
     console.log(`Action ${action} pour l'utilisateur ${userId}`);
     // Ici vous pouvez implémenter les actions réelles
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="h-12 w-12 text-blue-500 animate-spin mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900">Chargement des utilisateurs...</h3>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center p-6 bg-white rounded-lg shadow-md">
+          <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Erreur de chargement</h3>
+          <p className="text-gray-600">{error}</p>
+          <Button onClick={() => window.location.reload()} className="mt-4">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Réessayer
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -161,7 +170,7 @@ export default function UsersPage() {
                 Administration complète des comptes utilisateur SIPORTS
               </p>
             </div>
-            <Link to="/admin/users">
+            <Link to={ROUTES.ADMIN_CREATE_USER || '/admin/users/create'}> {/* Corrected link */}
               <Button variant="default">
                 <Users className="h-4 w-4 mr-2" />
                 Créer Utilisateur
@@ -219,8 +228,9 @@ export default function UsersPage() {
                   <p className="text-sm font-medium text-gray-600">Nouveaux ce mois</p>
                   <p className="text-3xl font-bold text-purple-600">
                     {users.filter(u => {
+                      if (!u.registrationDate) return false;
                       const monthAgo = new Date(Date.now() - 2592000000);
-                      return u.registrationDate > monthAgo;
+                      return new Date(u.registrationDate) > monthAgo;
                     }).length}
                   </p>
                 </div>
@@ -266,6 +276,7 @@ export default function UsersPage() {
                 <option value="active">Actif</option>
                 <option value="pending">En attente</option>
                 <option value="suspended">Suspendu</option>
+                <option value="rejected">Rejeté</option>
               </select>
 
               <Button variant="outline">
@@ -293,8 +304,8 @@ export default function UsersPage() {
                 </thead>
                 <tbody>
                   {filteredUsers.map((user, index) => {
-                    const RoleIcon = getRoleIcon(user.role);
-                    const roleColor = getRoleColor(user.role);
+                    const RoleIcon = getRoleIcon(user.type);
+                    const roleColor = getRoleColor(user.type);
 
                     return (
                       <motion.tr
@@ -307,7 +318,7 @@ export default function UsersPage() {
                         <td className="py-4 px-4">
                           <div className="flex items-center space-x-3">
                             <div className="h-10 w-10 bg-gray-300 rounded-full flex items-center justify-center">
-                              <User className="h-5 w-5 text-gray-600" />
+                              <UserIcon className="h-5 w-5 text-gray-600" />
                             </div>
                             <div>
                               <div className="font-medium text-gray-900">{user.name}</div>
@@ -318,17 +329,17 @@ export default function UsersPage() {
                         <td className="py-4 px-4">
                           <div className="flex items-center space-x-2">
                             <RoleIcon className={`h-4 w-4 ${roleColor}`} />
-                            <span className="text-sm text-gray-900">{getRoleLabel(user.role)}</span>
+                            <span className="text-sm text-gray-900">{getRoleLabel(user.type)}</span>
                           </div>
                         </td>
                         <td className="py-4 px-4">
                           <span className="text-sm text-gray-900">{user.company}</span>
                         </td>
                         <td className="py-4 px-4">
-                          {getStatusBadge(user.status)}
+                          {getStatusBadge(user.status || 'pending')}
                         </td>
                         <td className="py-4 px-4">
-                          <span className="text-sm text-gray-600">{formatDate(user.lastLogin)}</span>
+                          <span className="text-sm text-gray-600">{formatDate(user.lastLogin || user.updated_at)}</span>
                         </td>
                         <td className="py-4 px-4">
                           <div className="flex items-center space-x-2">
@@ -379,3 +390,4 @@ export default function UsersPage() {
     </div>
   );
 };
+

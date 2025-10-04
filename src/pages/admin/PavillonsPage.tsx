@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -17,261 +17,91 @@ import {
   AlertTriangle,
   Presentation,
   Lightbulb,
-  Settings
+  Settings,
+  RefreshCw
 } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { motion } from 'framer-motion';
+import { apiService } from '../../services/apiService';
+import { Database } from '../../lib/supabase'; // Import the Database type
+import { useFilterSearch } from '../../hooks/useFilterSearch';
+
+// Define Pavilion type based on Supabase schema
+type Pavilion = Database['public']['Tables']['pavilions']['Row'] & {
+  demoPrograms?: DemoProgram[]; // Assuming demoPrograms might be a JSONB column or related table
+  totalPrograms?: number;
+  totalCapacity?: number;
+  totalRegistered?: number;
+};
+
+interface DemoProgram {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  duration: string;
+  speaker: string;
+  company: string;
+  type: string;
+  capacity: number;
+  registered: number;
+  location: string;
+  tags: string[];
+}
 
 export default function PavillonsPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedTheme, setSelectedTheme] = useState('');
+  const [pavilions, setPavilions] = useState<Pavilion[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Données mockées pour les pavillons thématiques SIPORTS 2026
-  const pavilions = [
-    {
-      id: 'digitalization',
-      name: 'Pavillon Digitalisation',
-      theme: 'digitalization',
-      description: 'Transformation digitale des opérations portuaires et solutions technologiques innovantes',
-      objectives: [
-        'Présenter les dernières innovations technologiques',
-        'Faciliter l\'adoption des solutions numériques',
-        'Créer des synergies entre acteurs technologiques'
-      ],
-      features: [
-        'Intelligence Artificielle & Machine Learning',
-        'IoT et capteurs connectés',
-        'Big Data et analyse prédictive',
-        'Blockchain et sécurité numérique'
-      ],
-      targetAudience: ['Directeurs IT', 'Responsables innovation', 'Startups tech', 'Investisseurs'],
-      demoPrograms: [
-        {
-          id: 'd1',
-          title: 'Démonstration IA Portuaire',
-          description: 'Présentation d\'un système d\'IA pour l\'optimisation des flux portuaires',
-          date: new Date(Date.now() + 86400000),
-          time: '10:00',
-          duration: '45 min',
-          speaker: 'Dr. Marie Dubois',
-          company: 'Port Tech Institute',
-          type: 'presentation',
-          capacity: 80,
-          registered: 65,
-          location: 'Salle principale pavillon',
-          tags: ['IA', 'Optimisation', 'Flux']
-        },
-        {
-          id: 'd2',
-          title: 'Atelier IoT en Temps Réel',
-          description: 'Workshop pratique sur l\'implémentation d\'IoT dans les terminaux portuaires',
-          date: new Date(Date.now() + 172800000),
-          time: '14:00',
-          duration: '2h',
-          speaker: 'Jean-Pierre Martin',
-          company: 'Maritime Solutions',
-          type: 'workshop',
-          capacity: 30,
-          registered: 28,
-          location: 'Salle atelier',
-          tags: ['IoT', 'Pratique', 'Implémentation']
-        },
-        {
-          id: 'd3',
-          title: 'Démonstration Live Blockchain',
-          description: 'Présentation en direct d\'une solution blockchain pour la traçabilité des conteneurs',
-          date: new Date(Date.now() + 259200000),
-          time: '11:00',
-          duration: '30 min',
-          speaker: 'Sophie Leroy',
-          company: 'SecureChain',
-          type: 'demo',
-          capacity: 60,
-          registered: 45,
-          location: 'Zone démonstration',
-          tags: ['Blockchain', 'Traçabilité', 'Sécurité']
-        }
-      ],
-      status: 'active',
-      totalPrograms: 3,
-      totalCapacity: 170,
-      totalRegistered: 138
-    },
-    {
-      id: 'sustainability',
-      name: 'Pavillon Développement Durable',
-      theme: 'sustainability',
-      description: 'Solutions écologiques et stratégies de développement durable pour l\'industrie maritime',
-      objectives: [
-        'Promouvoir les pratiques durables',
-        'Présenter les technologies vertes',
-        'Favoriser la transition énergétique'
-      ],
-      features: [
-        'Énergies renouvelables portuaires',
-        'Réduction des émissions CO2',
-        'Gestion durable des déchets',
-        'Économie circulaire maritime'
-      ],
-      targetAudience: ['Responsables RSE', 'Écologues', 'Décideurs politiques', 'ONG environnementales'],
-      demoPrograms: [
-        {
-          id: 's1',
-          title: 'Solutions Énergies Renouvelables',
-          description: 'Présentation des technologies solaires et éoliennes adaptées aux ports',
-          date: new Date(Date.now() + 86400000),
-          time: '09:30',
-          duration: '1h',
-          speaker: 'Claire Dupont',
-          company: 'GreenPort Solutions',
-          type: 'presentation',
-          capacity: 100,
-          registered: 87,
-          location: 'Amphithéâtre vert',
-          tags: ['Énergie', 'Renouvelable', 'Solaire']
-        },
-        {
-          id: 's2',
-          title: 'Workshop Économie Circulaire',
-          description: 'Atelier collaboratif sur l\'application de l\'économie circulaire dans les ports',
-          date: new Date(Date.now() + 345600000),
-          time: '15:00',
-          duration: '1h30',
-          speaker: 'Michel Bernard',
-          company: 'Circular Ports',
-          type: 'workshop',
-          capacity: 40,
-          registered: 35,
-          location: 'Salle collaborative',
-          tags: ['Circulaire', 'Déchets', 'Innovation']
-        }
-      ],
-      status: 'active',
-      totalPrograms: 2,
-      totalCapacity: 140,
-      totalRegistered: 122
-    },
-    {
-      id: 'security',
-      name: 'Pavillon Sécurité & Cybersécurité',
-      theme: 'security',
-      description: 'Technologies et stratégies de sécurité pour les infrastructures portuaires critiques',
-      objectives: [
-        'Renforcer la sécurité des installations portuaires',
-        'Présenter les solutions cybersécurité',
-        'Former aux meilleures pratiques'
-      ],
-      features: [
-        'Systèmes de surveillance avancés',
-        'Cybersécurité maritime',
-        'Gestion des risques',
-        'Formation et sensibilisation'
-      ],
-      targetAudience: ['Responsables sécurité', 'Experts cybersécurité', 'Autorités portuaires', 'Forces de l\'ordre'],
-      demoPrograms: [
-        {
-          id: 'sec1',
-          title: 'Simulation Cyberattaque',
-          description: 'Démonstration d\'une simulation de cyberattaque sur un système portuaire',
-          date: new Date(Date.now() + 172800000),
-          time: '13:00',
-          duration: '45 min',
-          speaker: 'Pierre Durand',
-          company: 'CyberPort Security',
-          type: 'demo',
-          capacity: 50,
-          registered: 48,
-          location: 'Salle sécurisée',
-          tags: ['Cybersécurité', 'Simulation', 'Risques']
-        },
-        {
-          id: 'sec2',
-          title: 'Table Ronde Sécurité',
-          description: 'Discussion avec experts sur les défis de sécurité dans les ports modernes',
-          date: new Date(Date.now() + 432000000),
-          time: '10:00',
-          duration: '2h',
-          speaker: 'Marie Martin',
-          company: 'Port Authority',
-          type: 'roundtable',
-          capacity: 80,
-          registered: 72,
-          location: 'Salle conférence',
-          tags: ['Sécurité', 'Discussion', 'Experts']
-        }
-      ],
-      status: 'active',
-      totalPrograms: 2,
-      totalCapacity: 130,
-      totalRegistered: 120
-    },
-    {
-      id: 'innovation',
-      name: 'Pavillon Innovation & Start-ups',
-      theme: 'innovation',
-      description: 'Espace dédié aux jeunes entreprises innovantes et aux projets disruptifs',
-      objectives: [
-        'Soutenir l\'innovation portuaire',
-        'Faciliter les rencontres investisseurs-startups',
-        'Accélérer le développement de solutions'
-      ],
-      features: [
-        'Pitchs de startups',
-        'Démonstrations de prototypes',
-        'Sessions de networking',
-        'Concours d\'innovation'
-      ],
-      targetAudience: ['Startups', 'Investisseurs', 'Incubateurs', 'Chercheurs'],
-      demoPrograms: [
-        {
-          id: 'i1',
-          title: 'Pitch Battle Startups',
-          description: 'Compétition de pitchs entre 5 startups innovantes du secteur maritime',
-          date: new Date(Date.now() + 259200000),
-          time: '16:00',
-          duration: '1h30',
-          speaker: 'Alain Moreau',
-          company: 'Maritime Innovation Hub',
-          type: 'presentation',
-          capacity: 120,
-          registered: 115,
-          location: 'Scène innovation',
-          tags: ['Pitch', 'Startups', 'Innovation']
-        },
-        {
-          id: 'i2',
-          title: 'Démonstration Prototypes',
-          description: 'Présentation de prototypes technologiques développés par des startups',
-          date: new Date(Date.now() + 518400000),
-          time: '11:00',
-          duration: '2h',
-          speaker: 'Sophie Chen',
-          company: 'Tech Accelerator',
-          type: 'demo',
-          capacity: 60,
-          registered: 52,
-          location: 'Zone prototypes',
-          tags: ['Prototypes', 'Technologie', 'Démonstration']
-        }
-      ],
-      status: 'active',
-      totalPrograms: 2,
-      totalCapacity: 180,
-      totalRegistered: 167
-    }
-  ];
+  useEffect(() => {
+    const fetchPavilions = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const data = await apiService.getAll('pavilions');
+        const formattedData = data.map((item: any) => {
+          // Calculate aggregated stats if demoPrograms are part of the pavilion object
+          const demoPrograms = item.demo_programs || []; // Assuming demo_programs is the column name
+          const totalPrograms = demoPrograms.length;
+          const totalCapacity = demoPrograms.reduce((sum: number, program: DemoProgram) => sum + program.capacity, 0);
+          const totalRegistered = demoPrograms.reduce((sum: number, program: DemoProgram) => sum + program.registered, 0);
 
-  const filteredPavilions = pavilions.filter(pavilion => {
-    const matchesSearch = pavilion.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         pavilion.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesTheme = !selectedTheme || pavilion.theme === selectedTheme;
+          return {
+            ...item,
+            name: item.name || 'N/A',
+            theme: item.theme || 'N/A',
+            description: item.description || 'N/A',
+            demoPrograms: demoPrograms,
+            totalPrograms,
+            totalCapacity,
+            totalRegistered,
+          };
+        });
+        setPavilions(formattedData as Pavilion[]);
+      } catch (err) {
+        console.error('Error fetching pavilions:', err);
+        setError('Failed to load pavilions. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    return matchesSearch && matchesTheme;
-  });
+    fetchPavilions();
+  }, []);
 
-  const formatDate = (date: Date) => {
+  const { searchTerm, setSearchTerm, selectedFilter: selectedTheme, setSelectedFilter: setSelectedTheme, filteredData: finalFilteredPavilions } =
+    useFilterSearch<Pavilion>({
+      data: pavilions,
+      searchKeys: ['name', 'description'],
+      filterKey: 'theme',
+    });
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
     return new Intl.DateTimeFormat('fr-FR', {
       weekday: 'long',
       day: 'numeric',
@@ -286,7 +116,7 @@ export default function PavillonsPage() {
       case 'sustainability': return 'Développement Durable';
       case 'security': return 'Sécurité';
       case 'innovation': return 'Innovation';
-      default: return theme;
+      default: return theme.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     }
   };
 
@@ -326,6 +156,33 @@ export default function PavillonsPage() {
     { value: 'security', label: 'Sécurité' },
     { value: 'innovation', label: 'Innovation' }
   ];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="h-12 w-12 text-blue-500 animate-spin mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900">Chargement des pavillons...</h3>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center p-6 bg-white rounded-lg shadow-md">
+          <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Erreur de chargement</h3>
+          <p className="text-gray-600">{error}</p>
+          <Button onClick={() => window.location.reload()} className="mt-4">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Réessayer
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -368,7 +225,7 @@ export default function PavillonsPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Programmes</p>
                   <p className="text-3xl font-bold text-green-600">
-                    {pavilions.reduce((sum, p) => sum + p.totalPrograms, 0)}
+                    {pavilions.reduce((sum, p) => sum + (p.totalPrograms || 0), 0)}
                   </p>
                 </div>
                 <Calendar className="h-8 w-8 text-green-600" />
@@ -382,7 +239,7 @@ export default function PavillonsPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Participants Totaux</p>
                   <p className="text-3xl font-bold text-purple-600">
-                    {pavilions.reduce((sum, p) => sum + p.totalRegistered, 0).toLocaleString()}
+                    {pavilions.reduce((sum, p) => sum + (p.totalRegistered || 0), 0).toLocaleString()}
                   </p>
                 </div>
                 <Users className="h-8 w-8 text-purple-600" />
@@ -396,8 +253,10 @@ export default function PavillonsPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Taux d'occupation</p>
                   <p className="text-3xl font-bold text-orange-600">
-                    {Math.round((pavilions.reduce((sum, p) => sum + p.totalRegistered, 0) /
-                               pavilions.reduce((sum, p) => sum + p.totalCapacity, 0)) * 100)}%
+                    {pavilions.reduce((sum, p) => sum + (p.totalCapacity || 0), 0) > 0
+                      ? Math.round((pavilions.reduce((sum, p) => sum + (p.totalRegistered || 0), 0) /
+                                   pavilions.reduce((sum, p) => sum + (p.totalCapacity || 0), 0)) * 100)
+                      : 0}%
                   </p>
                 </div>
                 <AlertTriangle className="h-8 w-8 text-orange-600" />
@@ -442,7 +301,7 @@ export default function PavillonsPage() {
 
         {/* Pavilions Grid */}
         <div className="space-y-6">
-          {filteredPavilions.map((pavilion, index) => (
+          {finalFilteredPavilions.map((pavilion, index) => (
             <motion.div
               key={pavilion.id}
               initial={{ opacity: 0, y: 20 }}
@@ -460,126 +319,75 @@ export default function PavillonsPage() {
                         <Badge className={getThemeColor(pavilion.theme)}>
                           {getThemeLabel(pavilion.theme)}
                         </Badge>
-                        <Badge variant="success">
-                          <CheckCircle className="h-3 w-3 mr-1" />
-                          Actif
-                        </Badge>
                       </div>
-                      <p className="text-gray-600 mb-4">
+                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">
                         {pavilion.description}
                       </p>
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Calendar className="h-4 w-4 mr-2" />
+                        <span>Créé le {formatDate(pavilion.created_at)}</span>
+                      </div>
                     </div>
                     <div className="ml-4">
-                      <div className="h-16 w-16 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <Building2 className="h-8 w-8 text-blue-600" />
+                      <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Building2 className="h-6 w-6 text-blue-600" />
                       </div>
                     </div>
                   </div>
 
-                  {/* Métriques du pavillon */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                    <div className="bg-blue-50 p-3 rounded-lg">
-                      <div className="text-lg font-semibold text-blue-600">{pavilion.totalPrograms}</div>
-                      <div className="text-sm text-blue-700">Programmes</div>
-                    </div>
-                    <div className="bg-green-50 p-3 rounded-lg">
-                      <div className="text-lg font-semibold text-green-600">{pavilion.totalCapacity}</div>
-                      <div className="text-sm text-green-700">Capacité totale</div>
-                    </div>
-                    <div className="bg-purple-50 p-3 rounded-lg">
-                      <div className="text-lg font-semibold text-purple-600">{pavilion.totalRegistered}</div>
-                      <div className="text-sm text-purple-700">Inscrits</div>
-                    </div>
-                    <div className="bg-orange-50 p-3 rounded-lg">
-                      <div className="text-lg font-semibold text-orange-600">
-                        {Math.round((pavilion.totalRegistered / pavilion.totalCapacity) * 100)}%
-                      </div>
-                      <div className="text-sm text-orange-700">Taux remplissage</div>
-                    </div>
-                  </div>
-
-                  {/* Programmes de démonstration */}
-                  <div className="mb-6">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                      <Calendar className="h-5 w-5 mr-2 text-indigo-600" />
-                      Programmes de Démonstration ({pavilion.demoPrograms.length})
-                    </h4>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {pavilion.demoPrograms.map((program) => {
-                        const DemoIcon = getDemoTypeIcon(program.type);
-                        return (
-                          <Card key={program.id} className="p-4 bg-gray-50">
-                            <div className="flex items-start space-x-3">
-                              <div className="bg-indigo-100 p-2 rounded-lg">
-                                <DemoIcon className="h-4 w-4 text-indigo-600" />
+                  {pavilion.demoPrograms && pavilion.demoPrograms.length > 0 && (
+                    <div className="mt-6">
+                      <h4 className="text-lg font-semibold text-gray-900 mb-3">Programmes de Démonstration</h4>
+                      <div className="space-y-4">
+                        {pavilion.demoPrograms.map((program, programIndex) => {
+                          const DemoIcon = getDemoTypeIcon(program.type);
+                          return (
+                            <div key={program.id} className="flex items-start space-x-3 p-3 border border-gray-200 rounded-lg bg-gray-50">
+                              <div className="p-2 rounded-md bg-white shadow-sm">
+                                <DemoIcon className="h-5 w-5 text-blue-500" />
                               </div>
-
                               <div className="flex-1">
-                                <h5 className="font-semibold text-gray-900 text-sm mb-1">
-                                  {program.title}
-                                </h5>
-                                <div className="text-xs text-gray-600 mb-2">
-                                  <div className="flex items-center mb-1">
-                                    <Calendar className="h-3 w-3 mr-1" />
-                                    {formatDate(program.date)}
-                                  </div>
-                                  <div className="flex items-center mb-1">
-                                    <Clock className="h-3 w-3 mr-1" />
-                                    {program.time} ({program.duration})
-                                  </div>
-                                  <div className="flex items-center">
-                                    <Users className="h-3 w-3 mr-1" />
-                                    {program.registered}/{program.capacity}
-                                  </div>
-                                </div>
-                                <div className="flex space-x-2">
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => handleDemoAction(program.id, 'edit')}
-                                  >
-                                    <Edit className="h-3 w-3" />
-                                  </Button>
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    onClick={() => handleDemoAction(program.id, 'delete')}
-                                  >
-                                    <XCircle className="h-3 w-3" />
-                                  </Button>
+                                <h5 className="text-md font-medium text-gray-900">{program.title}</h5>
+                                <p className="text-sm text-gray-700 line-clamp-1">{program.description}</p>
+                                <div className="flex items-center text-xs text-gray-500 mt-1 space-x-3">
+                                  <span><Calendar className="inline-block h-3 w-3 mr-1" />{formatDate(program.date)}</span>
+                                  <span><Clock className="inline-block h-3 w-3 mr-1" />{program.time} ({program.duration})</span>
+                                  <span><Users className="inline-block h-3 w-3 mr-1" />{program.registered}/{program.capacity}</span>
                                 </div>
                               </div>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleDemoAction(program.id, 'view')}
+                              >
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
                             </div>
-                          </Card>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
-                  {/* Actions du pavillon */}
-                  <div className="flex space-x-3">
+                  <div className="flex space-x-2 mt-6">
                     <Button
+                      size="sm"
                       variant="outline"
+                      className="flex-1"
                       onClick={() => handlePavilionAction(pavilion.id, 'view')}
                     >
                       <Eye className="h-4 w-4 mr-2" />
-                      Voir Détails
+                      Voir
                     </Button>
                     <Button
+                      size="sm"
                       variant="outline"
                       onClick={() => handlePavilionAction(pavilion.id, 'edit')}
                     >
-                      <Edit className="h-4 w-4 mr-2" />
-                      Modifier Pavillon
+                      <Edit className="h-4 w-4" />
                     </Button>
-                    <Link to={`/admin/pavilion/${pavilion.id}/add-demo`}>
-                      <Button variant="default">
-                        <Plus className="h-4 w-4 mr-2" />
-                        Ajouter Programme
-                      </Button>
-                    </Link>
                     <Button
+                      size="sm"
                       variant="ghost"
                       onClick={() => handlePavilionAction(pavilion.id, 'more')}
                     >
@@ -592,7 +400,7 @@ export default function PavillonsPage() {
           ))}
         </div>
 
-        {filteredPavilions.length === 0 && (
+        {finalFilteredPavilions.length === 0 && (
           <div className="text-center py-12">
             <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
