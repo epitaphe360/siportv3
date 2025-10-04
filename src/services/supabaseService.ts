@@ -1332,3 +1332,117 @@ export class SupabaseService {
     }
   }
 }
+
+  // ===== MINI-SITE FUNCTIONS =====
+
+  /**
+   * Récupérer le mini-site d'un exposant par son ID
+   */
+  static async getMiniSite(exhibitorId: string): Promise<any | null> {
+    if (!this.checkSupabaseConnection()) return null;
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('mini_sites')
+        .select('*')
+        .eq('exhibitor_id', exhibitorId)
+        .eq('published', true)
+        .single();
+        
+      if (error) {
+        if (error.code === 'PGRST116') {
+          // Aucun mini-site trouvé
+          return null;
+        }
+        throw error;
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Erreur lors de la récupération du mini-site:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Incrémenter le compteur de vues d'un mini-site
+   */
+  static async incrementMiniSiteViews(exhibitorId: string): Promise<boolean> {
+    if (!this.checkSupabaseConnection()) return false;
+    
+    const safeSupabase = supabase!;
+    try {
+      const { error } = await (safeSupabase as any)
+        .rpc('increment_minisite_views', {
+          p_exhibitor_id: exhibitorId
+        });
+        
+      if (error) throw error;
+      
+      return true;
+    } catch (error) {
+      console.error('Erreur lors de l\'incrémentation des vues:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Récupérer les produits d'un exposant
+   */
+  static async getExhibitorProducts(exhibitorId: string): Promise<Product[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('products')
+        .select('*')
+        .eq('exhibitor_id', exhibitorId)
+        .eq('active', true)
+        .order('created_at', { ascending: false });
+        
+      if (error) throw error;
+      
+      return (data || []).map((product: any) => ({
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        image: product.image_url,
+        price: product.price,
+        category: product.category,
+        features: product.features || [],
+        specifications: product.specifications || {},
+      }));
+    } catch (error) {
+      console.error('Erreur lors de la récupération des produits:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Récupérer les informations complètes d'un exposant pour le mini-site
+   */
+  static async getExhibitorForMiniSite(exhibitorId: string): Promise<any | null> {
+    if (!this.checkSupabaseConnection()) return null;
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('exhibitors')
+        .select(`
+          *,
+          user:users!exhibitors_user_id_fkey(*)
+        `)
+        .eq('id', exhibitorId)
+        .single();
+        
+      if (error) throw error;
+      
+      return data;
+    } catch (error) {
+      console.error('Erreur lors de la récupération de l\'exposant:', error);
+      return null;
+    }
+  }
+}

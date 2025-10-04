@@ -113,14 +113,13 @@ const App = () => {
             <Route path={ROUTES.CHAT} element={<ChatInterface />} />
             <Route path={ROUTES.APPOINTMENTS} element={<AppointmentCalendar />} />
             <Route path={ROUTES.CALENDAR} element={<AppointmentCalendar />} />
-            <Route path={ROUTES.MINISITE} element={<MiniSitePreview />} />
             <Route path={ROUTES.MINISITE_CREATION} element={<MiniSiteCreationPage />} />
-            <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
             <Route path={ROUTES.MINISITE_EDITOR} element={<MiniSiteEditor />} />
+            <Route path={ROUTES.MINISITE_PREVIEW} element={<MiniSitePreview />} />
+            <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
             <Route path={ROUTES.ADMIN_CREATE_EXHIBITOR} element={<ExhibitorCreationSimulator />} />
             <Route path={ROUTES.ADMIN_CREATE_PARTNER} element={<PartnerCreationForm />} />
             <Route path={ROUTES.ADMIN_CREATE_NEWS} element={<NewsArticleCreationForm />} />
-            <Route path={ROUTES.MINISITE_PREVIEW} element={<MiniSitePreview />} />
             <Route path={ROUTES.ADMIN_ACTIVITY} element={<ActivityPage />} />
             <Route path={ROUTES.ADMIN_VALIDATION} element={<ExhibitorValidation />} />
             <Route path={ROUTES.ADMIN_MODERATION} element={<ModerationPanel />} />
