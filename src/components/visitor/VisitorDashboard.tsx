@@ -16,6 +16,8 @@ import { useEventStore } from '../../store/eventStore';
 import { Link } from 'react-router-dom';
 import PersonalCalendar from './PersonalCalendar';
 import { useAppointmentStore } from '../../store/appointmentStore';
+import { useVisitorStats } from '../../hooks/useVisitorStats';
+import { calculateRemainingQuota } from '../../config/quotas';
 
 export default function VisitorDashboard() {
   // Auth first so it's available below
@@ -30,35 +32,59 @@ export default function VisitorDashboard() {
     isLoading: isAppointmentsLoading,
   } = useAppointmentStore();
 
+  // Utiliser le hook personnalisé pour les statistiques dynamiques
+  const stats = useVisitorStats();
+
   const [showAvailabilityModal, setShowAvailabilityModal] = useState<{ exhibitorId: string } | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchAppointments();
+    const loadAppointments = async () => {
+      try {
+        setError(null);
+        await fetchAppointments();
+      } catch (err) {
+        console.error('Erreur lors du chargement des rendez-vous:', err);
+        setError('Impossible de charger les rendez-vous. Veuillez réessayer.');
+      }
+    };
+    
+    loadAppointments();
   }, [fetchAppointments]);
 
   // Filter appointments for current visitor (use user after it's declared)
-  const receivedAppointments = appointments?.filter((a: import('../../types').Appointment) => user && a.visitorId === user.id) || [];
-  const pendingAppointments = receivedAppointments.filter((a: import('../../types').Appointment) => a.status === 'pending');
-  const confirmedAppointments = receivedAppointments.filter((a: import('../../types').Appointment) => a.status === 'confirmed');
-  const refusedAppointments = receivedAppointments.filter((a: import('../../types').Appointment) => a.status === 'cancelled');
+  const receivedAppointments = appointments?.filter((a) => user && a.visitorId === user.id) || [];
+  const pendingAppointments = receivedAppointments.filter((a) => a.status === 'pending');
+  const confirmedAppointments = receivedAppointments.filter((a) => a.status === 'confirmed');
+  const refusedAppointments = receivedAppointments.filter((a) => a.status === 'cancelled');
 
   const handleAccept = async (appointmentId: string) => {
-    await updateAppointmentStatus(appointmentId, 'confirmed');
-    fetchAppointments();
+    try {
+      await updateAppointmentStatus(appointmentId, 'confirmed');
+      await fetchAppointments();
+    } catch (err) {
+      console.error('Erreur lors de l\'acceptation du rendez-vous:', err);
+      setError('Impossible d\'accepter le rendez-vous. Veuillez réessayer.');
+    }
   };
+
   const handleReject = async (appointmentId: string) => {
-    await cancelAppointment(appointmentId);
-    fetchAppointments();
+    try {
+      await cancelAppointment(appointmentId);
+      await fetchAppointments();
+    } catch (err) {
+      console.error('Erreur lors du refus du rendez-vous:', err);
+      setError('Impossible de refuser le rendez-vous. Veuillez réessayer.');
+    }
   };
+
   const handleRequestAnother = (exhibitorId: string) => {
     setShowAvailabilityModal({ exhibitorId });
   };
 
-  // Quotas
-  const quotas: Record<string, number> = { free: 0, basic: 2, premium: 5, vip: 99 };
-  const userLevel = (user?.visitor_level as string) || 'free';
-  const confirmedCountLen = confirmedAppointments.length;
-  const remaining = Math.max(0, (quotas[userLevel] || 0) - confirmedCountLen);
+  // Calcul du quota avec la fonction centralisée
+  const userLevel = user?.visitor_level || 'free';
+  const remaining = calculateRemainingQuota(userLevel, confirmedAppointments.length);
 
   const { 
     events, 
@@ -67,13 +93,6 @@ export default function VisitorDashboard() {
     fetchUserEventRegistrations,
     unregisterFromEvent 
   } = useEventStore();
-  
-  const [stats] = useState({
-    appointmentsBooked: 3,
-    exhibitorsVisited: 12,
-    eventsAttended: 5,
-    connectionsRequested: 8
-  });
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -108,6 +127,17 @@ export default function VisitorDashboard() {
       .slice(0, 3);
   };
 
+  // Fonction helper pour afficher le nom de l'exposant
+  const getExhibitorName = (appointment: any) => {
+    if (appointment.exhibitor?.companyName) {
+      return appointment.exhibitor.companyName;
+    }
+    if (appointment.exhibitor?.name) {
+      return appointment.exhibitor.name;
+    }
+    return `Exposant #${appointment.exhibitorId}`;
+  };
+
   if (!isAuthenticated || !user) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -139,15 +169,28 @@ export default function VisitorDashboard() {
           </p>
         </div>
 
-        {/* Stats Cards */}
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* Message d'erreur global */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-800 text-sm">{error}</p>
+            <button 
+              onClick={() => setError(null)}
+              className="text-red-600 text-xs underline mt-1"
+            >
+              Fermer
+            </button>
+          </div>
+        )}
+
+        {/* Stats Cards - Maintenant avec des données dynamiques */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="p-6">
             <div className="flex items-center">
               <Calendar className="h-8 w-8 text-blue-600" />
               <div className="ml-4">
-    <p className="text-sm font-medium text-gray-600">RDV programmés</p>
-    <p className="text-2xl font-bold text-gray-900">{confirmedAppointments.length}</p>
-    <p className="text-xs text-gray-500">Niveau: {user?.visitor_level || 'free'}</p>
+                <p className="text-sm font-medium text-gray-600">RDV programmés</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.appointmentsBooked}</p>
+                <p className="text-xs text-gray-500">Niveau: {userLevel}</p>
               </div>
             </div>
           </Card>
@@ -322,11 +365,13 @@ export default function VisitorDashboard() {
               {pendingAppointments.length === 0 && (
                 <div className="text-center text-gray-500 py-4">Aucune demande en attente</div>
               )}
-              {pendingAppointments.map((app: import('../../types').Appointment) => (
+              {pendingAppointments.map((app) => (
                 <div key={app.id} className="flex items-center justify-between border-b py-2 last:border-b-0">
                   <div>
-                    <div className="font-medium text-gray-900">Invitation de {app.exhibitorId}</div>
-                    <div className="text-xs text-gray-600">{app.message}</div>
+                    <div className="font-medium text-gray-900">
+                      Invitation de {getExhibitorName(app)}
+                    </div>
+                    <div className="text-xs text-gray-600">{app.message || 'Aucun message'}</div>
                   </div>
                   <div className="flex gap-2">
                     <Button size="sm" variant="default" onClick={() => handleAccept(app.id)}>Accepter</Button>
@@ -334,15 +379,18 @@ export default function VisitorDashboard() {
                   </div>
                 </div>
               ))}
+              
               {/* Show refused appointments with option to request another slot */}
               {refusedAppointments.length > 0 && (
                 <>
                   <h4 className="text-lg font-semibold text-gray-900 mt-6 mb-2">Rendez-vous refusés</h4>
-                  {refusedAppointments.map((app: import('../../types').Appointment) => (
+                  {refusedAppointments.map((app) => (
                     <div key={app.id} className="flex items-center justify-between border-b py-2 last:border-b-0">
                       <div>
-                        <div className="font-medium text-gray-900">Invitation de {app.exhibitorId}</div>
-                        <div className="text-xs text-gray-600">{app.message}</div>
+                        <div className="font-medium text-gray-900">
+                          Invitation de {getExhibitorName(app)}
+                        </div>
+                        <div className="text-xs text-gray-600">{app.message || 'Aucun message'}</div>
                       </div>
                       <Button size="sm" variant="outline" onClick={() => handleRequestAnother(app.exhibitorId)}>
                         Demander un autre créneau
@@ -351,15 +399,18 @@ export default function VisitorDashboard() {
                   ))}
                 </>
               )}
+              
               <h4 className="text-lg font-semibold text-gray-900 mt-6 mb-2">Rendez-vous confirmés</h4>
               {confirmedAppointments.length === 0 ? (
                 <div className="text-center text-gray-500 py-2">Aucun rendez-vous confirmé</div>
               ) : (
-                confirmedAppointments.map((app: import('../../types').Appointment) => (
+                confirmedAppointments.map((app) => (
                   <div key={app.id} className="flex items-center justify-between border-b py-2 last:border-b-0">
                     <div>
-                      <div className="font-medium text-gray-900">Avec {app.exhibitorId}</div>
-                      <div className="text-xs text-gray-600">{app.message}</div>
+                      <div className="font-medium text-gray-900">
+                        Avec {getExhibitorName(app)}
+                      </div>
+                      <div className="text-xs text-gray-600">{app.message || 'Aucun message'}</div>
                     </div>
                     <Badge variant="success">Confirmé</Badge>
                   </div>
@@ -384,4 +435,4 @@ export default function VisitorDashboard() {
       </div>
     </div>
   );
-};
+}

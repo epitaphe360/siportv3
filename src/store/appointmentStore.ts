@@ -30,72 +30,12 @@ interface AppointmentState {
   clearMockAppointments: () => Promise<void>;
 }
 
-const mockTimeSlots: TimeSlot[] = [
-  {
-    id: '1',
-    date: new Date('2026-02-05'),
-    startTime: '09:00',
-    endTime: '09:30',
-    duration: 30,
-    type: 'in-person',
-    maxBookings: 1,
-    currentBookings: 0,
-    available: true,
-    location: 'Stand A-12'
-  },
-  {
-    id: '2',
-    date: new Date('2026-02-05'),
-    startTime: '10:00',
-    endTime: '10:30',
-    duration: 30,
-    type: 'virtual',
-    maxBookings: 1,
-    currentBookings: 1,
-    available: false
-  },
-  {
-    id: '3',
-    date: new Date('2026-02-05'),
-    startTime: '14:00',
-    endTime: '14:45',
-    duration: 45,
-    type: 'hybrid',
-    maxBookings: 2,
-    currentBookings: 1,
-    available: true,
-    location: 'Salle de réunion B-5'
-  }
-];
-
-const mockAppointments: Appointment[] = [
-  {
-    id: '1',
-    exhibitorId: '1',
-    visitorId: 'user1',
-    timeSlotId: '2',
-    status: 'confirmed',
-    message: 'Intéressé par vos solutions de gestion portuaire',
-    createdAt: new Date(Date.now() - 86400000),
-    meetingType: 'virtual',
-    meetingLink: 'https://meet.google.com/abc-defg-hij'
-  },
-  {
-    id: '2',
-    exhibitorId: '2',
-    visitorId: 'user1',
-    timeSlotId: '3',
-    status: 'pending',
-    message: 'Souhait de discuter de partenariat technologique',
-    createdAt: new Date(Date.now() - 3600000),
-    meetingType: 'hybrid'
-  }
-];
-
+// Fonctions utilitaires pour la synchronisation avec les mini-sites
 async function syncWithMiniSite(slot: TimeSlot, availableCount: number): Promise<void> {
   try {
     void slot;
     void availableCount;
+    // TODO: Implémenter la synchronisation avec les mini-sites
   } catch {
     // silencieux
   }
@@ -104,6 +44,7 @@ async function syncWithMiniSite(slot: TimeSlot, availableCount: number): Promise
 async function notifyInterestedVisitors(slot: TimeSlot): Promise<void> {
   try {
     void slot;
+    // TODO: Implémenter les notifications aux visiteurs intéressés
   } catch {
     // silencieux
   }
@@ -117,10 +58,63 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
   fetchAppointments: async () => {
     set({ isLoading: true });
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      set({ appointments: mockAppointments, isLoading: false });
-    } catch {
-      set({ isLoading: false });
+      // Essayer de récupérer depuis Supabase via SupabaseService
+      if (SupabaseService && typeof SupabaseService.getAppointments === 'function') {
+        const appointments = await SupabaseService.getAppointments();
+        set({ appointments: appointments || [], isLoading: false });
+        return;
+      }
+
+      // Fallback: si SupabaseService n'est pas disponible, utiliser supabaseClient directement
+      if (supabaseClient) {
+        const { data, error } = await supabaseClient
+          .from('appointments')
+          .select(`
+            *,
+            exhibitor:users!appointments_exhibitor_id_fkey(id, name, profile),
+            visitor:users!appointments_visitor_id_fkey(id, name, profile)
+          `)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        // Transformer les données pour correspondre à l'interface Appointment
+        const transformedAppointments = (data || []).map((apt: any) => ({
+          id: apt.id,
+          exhibitorId: apt.exhibitor_id,
+          visitorId: apt.visitor_id,
+          timeSlotId: apt.time_slot_id,
+          status: apt.status,
+          message: apt.message,
+          notes: apt.notes,
+          rating: apt.rating,
+          createdAt: new Date(apt.created_at),
+          meetingType: apt.meeting_type || 'in-person',
+          meetingLink: apt.meeting_link,
+          exhibitor: apt.exhibitor ? {
+            id: apt.exhibitor.id,
+            name: apt.exhibitor.name,
+            companyName: apt.exhibitor.profile?.company || apt.exhibitor.profile?.companyName,
+            avatar: apt.exhibitor.profile?.avatar
+          } : undefined,
+          visitor: apt.visitor ? {
+            id: apt.visitor.id,
+            name: apt.visitor.name,
+            avatar: apt.visitor.profile?.avatar
+          } : undefined
+        }));
+
+        set({ appointments: transformedAppointments, isLoading: false });
+        return;
+      }
+
+      // Si aucune méthode n'est disponible, retourner un tableau vide
+      console.warn('Aucune méthode de récupération des rendez-vous disponible');
+      set({ appointments: [], isLoading: false });
+    } catch (error) {
+      console.error('Erreur lors de la récupération des rendez-vous:', error);
+      set({ isLoading: false, appointments: [] });
+      throw error;
     }
   },
 
@@ -135,12 +129,43 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
         return;
       }
 
-      // Fallback to mock data for dev
-      await new Promise(resolve => setTimeout(resolve, 800));
-      set({ timeSlots: mockTimeSlots, isLoading: false });
+      // Fallback: utiliser supabaseClient directement
+      if (supabaseClient) {
+        const { data, error } = await supabaseClient
+          .from('time_slots')
+          .select('*')
+          .eq('user_id', exhibitorId)
+          .order('date', { ascending: true })
+          .order('start_time', { ascending: true });
+
+        if (error) throw error;
+
+        // Transformer les données pour correspondre à l'interface TimeSlot
+        const transformedSlots = (data || []).map((slot: any) => ({
+          id: slot.id,
+          userId: slot.user_id,
+          date: new Date(slot.date),
+          startTime: slot.start_time,
+          endTime: slot.end_time,
+          duration: slot.duration,
+          type: slot.type || 'in-person',
+          maxBookings: slot.max_bookings || 1,
+          currentBookings: slot.current_bookings || 0,
+          available: (slot.current_bookings || 0) < (slot.max_bookings || 1),
+          location: slot.location
+        }));
+
+        set({ timeSlots: transformedSlots, isLoading: false });
+        return;
+      }
+
+      // Si aucune méthode n'est disponible, retourner un tableau vide
+      console.warn('Aucune méthode de récupération des créneaux disponible');
+      set({ timeSlots: [], isLoading: false });
     } catch (err) {
-      console.warn('fetchTimeSlots error', err);
-      set({ isLoading: false });
+      console.error('Erreur lors de la récupération des créneaux:', err);
+      set({ timeSlots: [], isLoading: false });
+      throw err;
     }
   },
 
@@ -167,12 +192,24 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
   const visitorId = resolvedUser?.id || 'user1';
 
-    // Vérifier le quota selon visitor_level
+    // Vérifier le quota selon visitor_level (utilise la configuration centralisée)
     const visitorLevel = resolvedUser?.visitor_level || resolvedUser?.profile?.visitor_level || 'free';
-    const quotas: Record<string, number> = { free: 0, basic: 2, premium: 5, vip: 99 };
+    
+    // Import dynamique de la configuration des quotas
+    let getVisitorQuota: (level: string) => number;
+    try {
+      const quotasModule = await import('../config/quotas');
+      getVisitorQuota = quotasModule.getVisitorQuota;
+    } catch {
+      // Fallback si le module n'est pas disponible
+      const FALLBACK_QUOTAS: Record<string, number> = { free: 0, basic: 2, premium: 5, vip: 99 };
+      getVisitorQuota = (level: string) => FALLBACK_QUOTAS[level] || 0;
+    }
 
+    const quota = getVisitorQuota(visitorLevel);
     const confirmedCount = appointments.filter(a => a.visitorId === visitorId && a.status === 'confirmed').length;
-    if (confirmedCount >= (quotas[visitorLevel] || 0)) {
+    
+    if (confirmedCount >= quota) {
       throw new Error('Quota RDV atteint pour votre niveau');
     }
 

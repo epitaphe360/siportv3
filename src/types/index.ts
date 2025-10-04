@@ -3,6 +3,7 @@ export interface User {
   email: string;
   name: string;
   type: 'exhibitor' | 'partner' | 'visitor' | 'admin';
+  visitor_level?: 'free' | 'basic' | 'premium' | 'vip';
   profile: UserProfile;
   status: 'pending' | 'active' | 'suspended' | 'rejected';
   createdAt: Date;
@@ -150,6 +151,18 @@ export interface Appointment {
   createdAt: Date;
   meetingType: 'in-person' | 'virtual' | 'hybrid';
   meetingLink?: string;
+  // Relations pour affichage
+  exhibitor?: {
+    id: string;
+    name: string;
+    companyName?: string;
+    avatar?: string;
+  };
+  visitor?: {
+    id: string;
+    name: string;
+    avatar?: string;
+  };
 }
 
 export interface ChatMessage {
