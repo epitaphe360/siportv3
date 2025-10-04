@@ -105,82 +105,7 @@ export default function ExhibitorDetailPage() {
   // local non-null alias pour simplifier les accès (après la garde)
   const exhibitor = selectedExhibitor!;
 
-  // Mock data enrichie pour le mini-site avancé
-  const miniSiteData = {
-    hero: {
-      title: exhibitor.companyName,
-      subtitle: exhibitor.description,
-      description: exhibitor.description + ' Notre \u00e9quipe d\'experts d\u00e9veloppe des solutions innovantes pour optimiser les op\u00e9rations portuaires et am\u00e9liorer l\'efficacit\u00e9 des cha\u00eenes logistiques.',
-      backgroundImage: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1200',
-      ctaText: 'Découvrir nos solutions',
-      stats: [
-        { number: '20+', label: 'Années d\'expérience' },
-        { number: '150+', label: 'Ports équipés' },
-        { number: '40+', label: 'Pays' },
-        { number: '500+', label: 'Clients satisfaits' }
-      ]
-    },
-    about: {
-      title: 'Notre expertise',
-  description: exhibitor.description + ' Notre équipe d\'experts développe des solutions innovantes pour optimiser les opérations portuaires et améliorer l\'efficacité des chaînes logistiques.',
-      features: [
-        'Solutions innovantes',
-        'Expertise reconnue',
-        'Support 24/7',
-        'Présence internationale'
-      ],
-      certifications: [
-        'ISO 9001:2015',
-        'ISO 14001:2015',
-        'OHSAS 18001',
-        'Port Security Certified'
-      ]
-    },
-    news: [
-      {
-        id: '1',
-        title: 'Nouveau partenariat avec le Port de Rotterdam',
-        excerpt: 'Nous sommes fiers d\'annoncer notre nouveau partenariat stratégique pour la digitalisation des opérations portuaires.',
-        date: '2024-01-15',
-        image: 'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=300',
-        category: 'Partenariat'
-      },
-      {
-        id: '2',
-        title: 'Lancement de la version 3.0 de SmartPort',
-        excerpt: 'La nouvelle version apporte des fonctionnalités révolutionnaires d\'intelligence artificielle et d\'automatisation.',
-        date: '2024-01-10',
-        image: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=300',
-        category: 'Innovation'
-      }
-    ],
-    gallery: [
-      'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400',
-      'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=400',
-      'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=400',
-      'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400',
-      'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=400',
-      'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=400'
-    ],
-    testimonials: [
-      {
-        name: 'Jean Dupont',
-        position: 'Directeur Technique',
-        company: 'Port de Marseille',
-        comment: 'Une solution exceptionnelle qui a transformé nos opérations portuaires. L\'équipe de Port Solutions Inc. nous a accompagnés avec professionnalisme.',
-        avatar: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=100',
-        rating: 5
-      },
-      {
-        name: 'Maria Santos',
-        position: 'CEO',
-        company: 'Barcelona Port Authority',
-        comment: 'Innovation remarquable et support technique exceptionnel. Nous recommandons vivement leurs solutions.',
-        avatar: 'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=100',
-        rating: 5
-      }
-    ]
-  };
+// Les données du mini-site sont maintenant chargées depuis Supabase
 
   const formatDate = (date: Date | string) => {
     const d = typeof date === 'string' ? new Date(date) : date;
@@ -223,7 +148,16 @@ export default function ExhibitorDetailPage() {
             </div>
 
             <div className="flex items-center space-x-3">
+              <Button 
+                size="sm"
+                variant="default"
+                onClick={() => navigate(`/minisite/${exhibitor.id}`)}
+              >
+                <Eye className="h-4 w-4 mr-2" />
+                Mini-site
+              </Button>
               <Button size="sm"
+                variant="outline"
                 onClick={() => {
                   const contactSection = document.getElementById('contact');
                   if (contactSection) {

@@ -81,80 +81,7 @@ interface Partner {
   projects: Project[];
 }
 
-const mockPartnerData: Partner = {
-  id: '2',
-  name: 'Autorité Portuaire de Casablanca',
-  type: 'platinum',
-  category: 'Partenaire Platine',
-  description: 'Premier port du Maroc et partenaire stratégique majeur, leader dans la modernisation portuaire africaine avec plus de 100 ans d\'expertise.',
-  logo: 'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=200',
-  website: 'https://www.portcasablanca.ma',
-  country: 'Maroc',
-  sector: 'Autorité Portuaire',
-  verified: true,
-  featured: true,
-  sponsorshipLevel: 'Platine',
-  contributions: ['Financement principal', 'Expertise technique', 'Réseau international'],
-  establishedYear: 1907,
-  employees: '2500+',
-  projects: [
-    {
-      id: 'project-1',
-      name: 'Modernisation Terminal Conteneurs',
-      description: 'Projet de modernisation complète du terminal conteneurs avec automatisation des équipements et digitalisation des processus.',
-      status: 'active',
-      startDate: new Date('2023-06-01'),
-      endDate: new Date('2025-12-31'),
-      budget: '450M€',
-      impact: 'Augmentation de 40% de la capacité de traitement',
-      image: 'https://images.pexels.com/photos/906982/pexels-photo-906982.jpeg?auto=compress&cs=tinysrgb&w=800',
-      technologies: ['IoT Sensors', 'AI Analytics', 'Automated Cranes', 'Blockchain Tracking'],
-      team: ['Dr. Ahmed El Mansouri', 'Sarah Johnson', 'Mohamed Alami', 'Lisa Chen'],
-      kpis: {
-        progress: 75,
-        satisfaction: 94,
-        roi: 285
-      },
-      timeline: [
-        {
-          phase: 'Phase 1: Études et Conception',
-          date: new Date('2023-06-01'),
-          status: 'completed',
-          description: 'Études de faisabilité et conception détaillée'
-        },
-        {
-          phase: 'Phase 2: Infrastructure',
-          date: new Date('2024-01-15'),
-          status: 'completed',
-          description: 'Construction des nouvelles infrastructures'
-        },
-        {
-          phase: 'Phase 3: Équipements',
-          date: new Date('2024-08-01'),
-          status: 'current',
-          description: 'Installation des équipements automatisés'
-        },
-        {
-          phase: 'Phase 4: Tests et Formation',
-          date: new Date('2025-06-01'),
-          status: 'upcoming',
-          description: 'Tests système et formation des équipes'
-        }
-      ],
-      partners: ['Maersk Line', 'Port of Rotterdam', 'Siemens'],
-      documents: [
-        { name: 'Rapport d\'avancement Q4 2024', type: 'PDF', url: '#' },
-        { name: 'Présentation technique', type: 'PowerPoint', url: '#' },
-        { name: 'Vidéo de démonstration', type: 'MP4', url: '#' }
-      ],
-      gallery: [
-        'https://images.pexels.com/photos/906982/pexels-photo-906982.jpeg?auto=compress&cs=tinysrgb&w=400',
-        'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400',
-        'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=400'
-      ]
-    }
-  ]
-};
+// Les données du partenaire sont maintenant chargées depuis Supabase
 
 export default function PartnerDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -167,7 +94,7 @@ export default function PartnerDetailPage() {
   useEffect(() => {
     // Simulation de chargement des données du partenaire
     setTimeout(() => {
-      setPartner(mockPartnerData);
+      setPartner(null);
     }, 500);
   }, [id]);
 

@@ -26,110 +26,7 @@ interface Partner {
   employees: string;
 }
 
-const mockPartners: Partner[] = [
-  {
-    id: '1',
-    name: 'Ministère de l\'Équipement et de l\'Eau',
-    type: 'institutional',
-    category: 'Organisateur Principal',
-    description: 'Ministère organisateur du salon SIPORTS 2026, promoteur du développement portuaire au Maroc et de la coopération internationale.',
-    logo: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=200',
-    website: 'https://www.equipement.gov.ma',
-    country: 'Maroc',
-    sector: 'Gouvernement',
-    verified: true,
-    featured: true,
-    sponsorshipLevel: 'Organisateur',
-    contributions: ['Organisation générale', 'Coordination internationale', 'Promotion du salon'],
-    establishedYear: 1956,
-    employees: '10000+'
-  },
-  {
-    id: '2',
-    name: 'Autorité Portuaire de Casablanca',
-    type: 'platinum',
-    category: 'Partenaire Platine',
-    description: 'Premier port du Maroc et partenaire stratégique majeur, leader dans la modernisation portuaire africaine.',
-    logo: 'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=200',
-    website: 'https://www.portcasablanca.ma',
-    country: 'Maroc',
-    sector: 'Autorité Portuaire',
-    verified: true,
-    featured: true,
-    sponsorshipLevel: 'Platine',
-    contributions: ['Financement principal', 'Expertise technique', 'Réseau international'],
-    establishedYear: 1907,
-    employees: '2500+'
-  },
-  {
-    id: '3',
-    name: 'Maersk Line',
-    type: 'gold',
-    category: 'Partenaire Or',
-    description: 'Leader mondial du transport maritime et de la logistique, partenaire privilégié pour le développement des corridors maritimes.',
-    logo: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=200',
-    website: 'https://www.maersk.com',
-    country: 'Danemark',
-    sector: 'Transport Maritime',
-    verified: true,
-    featured: true,
-    sponsorshipLevel: 'Or',
-    contributions: ['Conférences techniques', 'Networking premium', 'Innovation showcase'],
-    establishedYear: 1904,
-    employees: '100000+'
-  },
-  {
-    id: '4',
-    name: 'Port Authority of Rotterdam',
-    type: 'gold',
-    category: 'Partenaire Or',
-    description: 'Plus grand port d\'Europe, pionnier de l\'innovation portuaire et de la digitalisation des opérations.',
-    logo: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=200',
-    website: 'https://www.portofrotterdam.com',
-    country: 'Pays-Bas',
-    sector: 'Autorité Portuaire',
-    verified: true,
-    featured: false,
-    sponsorshipLevel: 'Or',
-    contributions: ['Expertise digitale', 'Best practices', 'Formations techniques'],
-    establishedYear: 1872,
-    employees: '1200+'
-  },
-  {
-    id: '5',
-    name: 'CMA CGM Group',
-    type: 'silver',
-    category: 'Partenaire Argent',
-    description: 'Groupe français leader mondial du transport maritime et de la logistique, acteur majeur des échanges internationaux.',
-    logo: 'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=200',
-    website: 'https://www.cma-cgm.com',
-    country: 'France',
-    sector: 'Transport Maritime',
-    verified: true,
-    featured: false,
-    sponsorshipLevel: 'Argent',
-    contributions: ['Solutions logistiques', 'Réseau global', 'Innovation verte'],
-    establishedYear: 1978,
-    employees: '155000+'
-  },
-  {
-    id: '6',
-    name: 'Université Hassan II Casablanca',
-    type: 'bronze',
-    category: 'Partenaire Académique',
-    description: 'Institution académique de référence au Maroc, spécialisée dans la formation maritime et portuaire.',
-    logo: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=200',
-    website: 'https://www.univh2c.ma',
-    country: 'Maroc',
-    sector: 'Éducation',
-    verified: true,
-    featured: false,
-    sponsorshipLevel: 'Bronze',
-    contributions: ['Formation professionnelle', 'Recherche appliquée', 'Étudiants stagiaires'],
-    establishedYear: 1975,
-    employees: '5000+'
-  }
-];
+// Les partenaires sont maintenant chargés depuis Supabase
 
 export default function PartnersPage() {
   const [partners, setPartners] = useState<Partner[]>([]);
@@ -169,9 +66,10 @@ export default function PartnersPage() {
         setPartnerStats(stats);
       } catch (error) {
         console.error('Erreur lors du chargement des partenaires:', error);
-        setPartners(mockPartners);
-        setFilteredPartners(mockPartners);
-        // Statistiques par défaut basées sur mockPartners
+        setPartners([]);
+// TODO: Charger depuis Supabase avec SupabaseService.getPartners()
+        setFilteredPartners([]);
+        // Statistiques par défaut basées sur []
         setPartnerStats({
           organisateur: 1,
           platine: 1,
