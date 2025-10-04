@@ -11,18 +11,32 @@ import PublicAvailabilityCalendar from '../calendar/PublicAvailabilityCalendar';
 import PersonalAppointmentsCalendar from '../calendar/PersonalAppointmentsCalendar';
 import { Calendar, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
-
+import { getVisitorDisplayName } from '../../utils/visitorHelpers';
+import { useDashboardStats } from '../../hooks/useDashboardStats';
+import { DEFAULT_SALON_CONFIG, formatSalonDates, formatSalonLocation, formatSalonHours } from '../../config/salonInfo';
+import { ErrorMessage } from '../common/ErrorMessage';
 
 export default function ExhibitorDashboard() {
   const [showQRModal, setShowQRModal] = useState(false);
   const [modal, setModal] = useState<{title: string, content: React.ReactNode} | null>(null);
   const [isDownloadingQR, setIsDownloadingQR] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
   const { user } = useAuthStore();
-  const { dashboard, fetchDashboard } = useDashboardStore();
+  const { dashboard, fetchDashboard, error: dashboardError } = useDashboardStore();
   const { appointments, fetchAppointments, updateAppointmentStatus, cancelAppointment, isLoading: isAppointmentsLoading } = useAppointmentStore();
+  const dashboardStats = useDashboardStats();
 
   useEffect(() => {
-    fetchAppointments();
+    const loadAppointments = async () => {
+      try {
+        await fetchAppointments();
+      } catch (err) {
+        console.error('Erreur lors du chargement des rendez-vous:', err);
+        setError('Impossible de charger les rendez-vous');
+      }
+    };
+    loadAppointments();
   }, [fetchAppointments]);
 
   // Filtrer les rendez-vous reçus (où l'exposant est le user connecté)
@@ -31,20 +45,40 @@ export default function ExhibitorDashboard() {
   const confirmedAppointments = receivedAppointments.filter((a: any) => a.status === 'confirmed');
 
   const handleAccept = async (appointmentId: string) => {
-    await updateAppointmentStatus(appointmentId, 'confirmed');
-    fetchAppointments();
+    try {
+      await updateAppointmentStatus(appointmentId, 'confirmed');
+      await fetchAppointments();
+    } catch (err) {
+      console.error('Erreur lors de l\'acceptation:', err);
+      setError('Impossible d\'accepter le rendez-vous');
+    }
   };
+
   const handleReject = async (appointmentId: string) => {
-    await cancelAppointment(appointmentId);
-    fetchAppointments();
+    try {
+      await cancelAppointment(appointmentId);
+      await fetchAppointments();
+    } catch (err) {
+      console.error('Erreur lors du refus:', err);
+      setError('Impossible de refuser le rendez-vous');
+    }
   };
 
   useEffect(() => {
     if (user?.status === 'pending') {
-      // The user is pending, do nothing here, let the render handle it.
       return;
     }
-    fetchDashboard();
+    
+    const loadDashboard = async () => {
+      try {
+        await fetchDashboard();
+      } catch (err) {
+        console.error('Erreur lors du chargement du dashboard:', err);
+        setError('Impossible de charger le tableau de bord');
+      }
+    };
+    
+    loadDashboard();
   }, [fetchDashboard, user?.status]);
 
   if (user?.status === 'pending') {
@@ -62,7 +96,6 @@ export default function ExhibitorDashboard() {
         link.href = canvas.toDataURL();
         link.click();
         
-        // Afficher un message de succès
         setModal({
           title: 'Téléchargement Réussi',
           content: (
@@ -88,9 +121,6 @@ export default function ExhibitorDashboard() {
             <p className="text-gray-700">
               Une erreur s'est produite lors du téléchargement du QR code.
             </p>
-            <p className="text-sm text-gray-500 mt-2">
-              Veuillez réessayer ou contacter le support.
-            </p>
           </div>
         )
       });
@@ -108,7 +138,7 @@ export default function ExhibitorDashboard() {
           {dashboard?.recentActivity?.map((activity) => (
             <div key={activity.id} className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg border">
               <div className="flex-shrink-0 w-10 h-10 bg-siports-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
-                {activity.type === 'profile_view' && '�️'}
+                {activity.type === 'profile_view' && '👁️'}
                 {activity.type === 'message' && '💬'}
                 {activity.type === 'appointment' && '📅'}
                 {activity.type === 'connection' && '🤝'}
@@ -151,13 +181,11 @@ export default function ExhibitorDashboard() {
               <div className="bg-blue-50 p-4 rounded-lg">
                 <h4 className="font-semibold text-blue-900">📊 Statistiques des Vues</h4>
                 <p className="text-blue-700 mt-2">
-                  Votre mini-site a été consulté {dashboard?.stats?.miniSiteViews?.toLocaleString() || '2,156'} fois ce mois-ci.
+                  Votre mini-site a été consulté {dashboardStats?.miniSiteViews.value.toLocaleString() || '0'} fois.
                 </p>
               </div>
               <div className="text-sm text-gray-600">
-                <p>• Pages les plus consultées : Accueil, Produits, Contact</p>
-                <p>• Provenance : Site web SIPORTS, QR codes, réseaux sociaux</p>
-                <p>• Durée moyenne de visite : 3 minutes 24 secondes</p>
+                <p>Consultez les analytics détaillées dans la section Mini-Site.</p>
               </div>
             </div>
           )
@@ -169,20 +197,15 @@ export default function ExhibitorDashboard() {
           content: (
             <div className="space-y-4">
               <div className="bg-green-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-green-900">📅 Rendez-vous Programmés</h4>
+                <h4 className="font-semibold text-green-900">📅 Rendez-vous</h4>
                 <p className="text-green-700 mt-2">
-                  Vous avez {dashboard?.stats?.appointments || '8'} demandes de rendez-vous en attente.
+                  Vous avez {dashboardStats?.appointments.value || '0'} rendez-vous.
                 </p>
               </div>
               <div className="space-y-2">
                 <Link to="/appointments">
                   <Button variant="outline" className="w-full">
                     Voir tous les rendez-vous
-                  </Button>
-                </Link>
-                <Link to="/calendar">
-                  <Button variant="outline" className="w-full">
-                    Ouvrir le calendrier
                   </Button>
                 </Link>
               </div>
@@ -198,13 +221,8 @@ export default function ExhibitorDashboard() {
               <div className="bg-purple-50 p-4 rounded-lg">
                 <h4 className="font-semibold text-purple-900">📥 Documents Téléchargés</h4>
                 <p className="text-purple-700 mt-2">
-                  {dashboard?.stats?.catalogDownloads || '89'} téléchargements de vos documents ce mois-ci.
+                  {dashboardStats?.catalogDownloads.value || '0'} téléchargements de vos documents.
                 </p>
-              </div>
-              <div className="text-sm text-gray-600">
-                <p>• Catalogue produit : 45 téléchargements</p>
-                <p>• Brochure entreprise : 32 téléchargements</p>
-                <p>• Fiche technique : 12 téléchargements</p>
               </div>
             </div>
           )
@@ -216,17 +234,12 @@ export default function ExhibitorDashboard() {
           content: (
             <div className="space-y-4">
               <div className="bg-orange-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-orange-900">💬 Messages Reçus</h4>
+                <h4 className="font-semibold text-orange-900">💬 Messages</h4>
                 <p className="text-orange-700 mt-2">
-                  Vous avez {dashboard?.stats?.messages || '15'} messages non lus.
+                  Vous avez {dashboardStats?.messages.value || '0'} messages non lus.
                 </p>
               </div>
               <div className="space-y-2">
-                <Link to="/messages">
-                  <Button variant="outline" className="w-full">
-                    Voir tous les messages
-                  </Button>
-                </Link>
                 <Link to="/chat">
                   <Button variant="outline" className="w-full">
                     Ouvrir le chat
@@ -243,34 +256,34 @@ export default function ExhibitorDashboard() {
   const stats = [
     {
       title: 'Vues Mini-Site',
-      value: dashboard?.stats?.miniSiteViews?.toLocaleString() || '2,156',
+      value: dashboardStats?.miniSiteViews.value.toLocaleString() || '0',
       icon: '👁️',
-      change: '+12%',
-      changeType: 'positive' as const,
+      change: dashboardStats?.miniSiteViews.growth || '--',
+      changeType: dashboardStats?.miniSiteViews.growthType || 'neutral',
       type: 'miniSiteViews' as const
     },
     {
       title: 'Demandes de RDV',
-      value: dashboard?.stats?.appointments?.toString() || '8',
+      value: dashboardStats?.appointments.value.toString() || '0',
       icon: '📅',
-      change: '+5',
-      changeType: 'positive' as const,
+      change: dashboardStats?.appointments.growth || '--',
+      changeType: dashboardStats?.appointments.growthType || 'neutral',
       type: 'appointments' as const
     },
     {
       title: 'Téléchargements',
-      value: dashboard?.stats?.catalogDownloads?.toString() || '89',
+      value: dashboardStats?.catalogDownloads.value.toString() || '0',
       icon: '📥',
-      change: '+8',
-      changeType: 'positive' as const,
+      change: dashboardStats?.catalogDownloads.growth || '--',
+      changeType: dashboardStats?.catalogDownloads.growthType || 'neutral',
       type: 'downloads' as const
     },
     {
       title: 'Messages',
-      value: dashboard?.stats?.messages?.toString() || '15',
+      value: dashboardStats?.messages.value.toString() || '0',
       icon: '💬',
-      change: '+3',
-      changeType: 'neutral' as const,
+      change: dashboardStats?.messages.growth || '--',
+      changeType: dashboardStats?.messages.growthType || 'neutral',
       type: 'messages' as const
     }
   ];
@@ -306,7 +319,6 @@ export default function ExhibitorDashboard() {
     },
   ];
 
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-siports-light via-white to-siports-secondary/20">
       {/* Header avec gradient SIPORTS */}
@@ -328,12 +340,13 @@ export default function ExhibitorDashboard() {
             <div className="hidden md:block">
               <div className="text-right">
                 <div className="text-2xl font-bold">{new Date().toLocaleDateString('fr-FR')}</div>
-                <div className="text-sm opacity-75">SIPORTS 2026 - El Jadida</div>
+                <div className="text-sm opacity-75">{DEFAULT_SALON_CONFIG.name} - {DEFAULT_SALON_CONFIG.location.city}</div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
       {/* Bouton d'accès rapide mini-site */}
       <div className="max-w-7xl mx-auto px-4 mt-4 flex justify-end">
         <Link to="/minisite-creation">
@@ -344,6 +357,14 @@ export default function ExhibitorDashboard() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8 -mt-6">
+        {/* Messages d'erreur */}
+        {(error || dashboardError) && (
+          <ErrorMessage 
+            message={error || dashboardError || 'Une erreur est survenue'} 
+            onDismiss={() => setError(null)}
+          />
+        )}
+
         {/* Statistiques avec cartes améliorées */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {stats.map((stat, index) => (
@@ -359,7 +380,9 @@ export default function ExhibitorDashboard() {
                     <div className={`text-sm font-medium px-2 py-1 rounded-full ${
                       stat.changeType === 'positive' 
                         ? 'bg-green-100 text-green-800' 
-                        : 'bg-blue-100 text-blue-800'
+                        : stat.changeType === 'negative'
+                        ? 'bg-red-100 text-red-800'
+                        : 'bg-gray-100 text-gray-800'
                     }`}>
                       {stat.change}
                     </div>
@@ -424,65 +447,47 @@ export default function ExhibitorDashboard() {
                     <motion.div 
                       key={index} 
                       className="group"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                      whileHover={{ scale: 1.02 }}
+                      transition={{ duration: 0.2 }}
                     >
                       {action.link ? (
-                        <Link to={action.link} className="block">
-                          <div className="p-4 border border-gray-200 rounded-xl hover:border-siports-primary hover:shadow-md transition-all duration-300 group-hover:bg-siports-primary/5">
-                            <div className="flex items-center space-x-3 mb-2">
+                        <Link to={action.link}>
+                          <Button variant={action.variant} className="w-full h-auto py-4 justify-start">
+                            <div className="flex items-start space-x-3">
                               <span className="text-2xl">{action.icon}</span>
-                              <div>
-                                <h4 className="font-semibold text-gray-900">{action.title}</h4>
-                                <p className="text-sm text-gray-600">{action.description}</p>
+                              <div className="text-left">
+                                <div className="font-semibold">{action.title}</div>
+                                <div className="text-xs opacity-75">{action.description}</div>
                               </div>
                             </div>
-                            <Button 
-                              className="w-full" 
-                              variant={action.variant}
-                              size="sm"
-                            >
-                              Accéder
-                            </Button>
-                          </div>
+                          </Button>
                         </Link>
                       ) : (
-                        <div 
-                          className="p-4 border border-gray-200 rounded-xl hover:border-siports-primary hover:shadow-md transition-all duration-300 group-hover:bg-siports-primary/5 cursor-pointer"
+                        <Button 
+                          variant={action.variant} 
+                          className="w-full h-auto py-4 justify-start"
                           onClick={action.action}
                         >
-                          <div className="flex items-center space-x-3 mb-2">
+                          <div className="flex items-start space-x-3">
                             <span className="text-2xl">{action.icon}</span>
-                            <div>
-                              <h4 className="font-semibold text-gray-900">{action.title}</h4>
-                              <p className="text-sm text-gray-600">{action.description}</p>
+                            <div className="text-left">
+                              <div className="font-semibold">{action.title}</div>
+                              <div className="text-xs opacity-75">{action.description}</div>
                             </div>
                           </div>
-                          <Button 
-                            className="w-full" 
-                            variant={action.variant}
-                            size="sm"
-                          >
-                            Ouvrir
-                          </Button>
-                        </div>
+                        </Button>
                       )}
                     </motion.div>
                   ))}
                 </div>
               </div>
             </Card>
-          </div>
 
-          {/* Right Column */}
-          <div className="space-y-8">
-
-            {/* Bloc Rendez-vous reçus */}
-            <Card className="siports-glass-card">
+            {/* Rendez-vous reçus */}
+            <Card className="siports-glass-card mt-8">
               <div className="p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                  <span className="mr-2">📅</span>
+                  <Calendar className="h-5 w-5 mr-2 text-purple-600" />
                   Rendez-vous reçus
                 </h3>
                 {isAppointmentsLoading ? (
@@ -492,11 +497,13 @@ export default function ExhibitorDashboard() {
                     {pendingAppointments.length === 0 && (
                       <div className="text-center text-gray-500 py-4">Aucune demande en attente</div>
                     )}
-                    {pendingAppointments.map(app => (
+                    {pendingAppointments.map((app: any) => (
                       <div key={app.id} className="flex items-center justify-between border-b py-2 last:border-b-0">
                         <div>
-                          <div className="font-medium text-gray-900">Demande de {app.visitorId}</div>
-                          <div className="text-xs text-gray-600">{app.message}</div>
+                          <div className="font-medium text-gray-900">
+                            Demande de {getVisitorDisplayName(app)}
+                          </div>
+                          <div className="text-xs text-gray-600">{app.message || 'Aucun message'}</div>
                         </div>
                         <div className="flex gap-2">
                           <Button size="sm" variant="default" onClick={() => handleAccept(app.id)}>Accepter</Button>
@@ -504,27 +511,29 @@ export default function ExhibitorDashboard() {
                         </div>
                       </div>
                     ))}
+                    <h4 className="text-lg font-semibold text-gray-900 mt-6 mb-2">Rendez-vous confirmés</h4>
+                    {confirmedAppointments.length === 0 ? (
+                      <div className="text-center text-gray-500 py-2">Aucun rendez-vous confirmé</div>
+                    ) : (
+                      confirmedAppointments.map((app: any) => (
+                        <div key={app.id} className="flex items-center justify-between border-b py-2 last:border-b-0">
+                          <div>
+                            <div className="font-medium text-gray-900">
+                              Avec {getVisitorDisplayName(app)}
+                            </div>
+                            <div className="text-xs text-gray-600">{app.message || 'Aucun message'}</div>
+                          </div>
+                          <Badge variant="success">Confirmé</Badge>
+                        </div>
+                      ))
+                    )}
                   </>
-                )}
-                <h4 className="text-lg font-semibold text-gray-900 mt-6 mb-2">Rendez-vous confirmés</h4>
-                {confirmedAppointments.length === 0 ? (
-                  <div className="text-center text-gray-500 py-2">Aucun rendez-vous confirmé</div>
-                ) : (
-                  confirmedAppointments.map(app => (
-                    <div key={app.id} className="flex items-center justify-between border-b py-2 last:border-b-0">
-                      <div>
-                        <div className="font-medium text-gray-900">Avec {app.visitorId}</div>
-                        <div className="text-xs text-gray-600">{app.message}</div>
-                      </div>
-                      <Badge variant="success">Confirmé</Badge>
-                    </div>
-                  ))
                 )}
               </div>
             </Card>
 
             {/* Activité Récente */}
-            <Card className="siports-glass-card">
+            <Card className="siports-glass-card mt-8">
               <div className="p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
                   <span className="mr-2">📈</span>
@@ -548,6 +557,9 @@ export default function ExhibitorDashboard() {
                       </div>
                     </div>
                   ))}
+                  {(!dashboard?.recentActivity || dashboard.recentActivity.length === 0) && (
+                    <div className="text-center text-gray-500 py-4">Aucune activité récente</div>
+                  )}
                 </div>
                 <div className="mt-4 pt-4 border-t border-gray-200">
                   <Button 
@@ -573,16 +585,16 @@ export default function ExhibitorDashboard() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-blue-50 p-4 rounded-lg">
-                  <h4 className="font-semibold text-blue-900 mb-2">📅 Salon SIPORTS 2026</h4>
-                  <p className="text-sm text-blue-700">5-7 Février 2026 • El Jadida, Maroc</p>
+                  <h4 className="font-semibold text-blue-900 mb-2">📅 {DEFAULT_SALON_CONFIG.name}</h4>
+                  <p className="text-sm text-blue-700">{formatSalonDates(DEFAULT_SALON_CONFIG)} • {formatSalonLocation(DEFAULT_SALON_CONFIG)}</p>
                 </div>
                 <div className="bg-green-50 p-4 rounded-lg">
                   <h4 className="font-semibold text-green-900 mb-2">⏰ Stand Ouverture</h4>
-                  <p className="text-sm text-green-700">Tous les jours de 9h à 18h</p>
+                  <p className="text-sm text-green-700">{formatSalonHours(DEFAULT_SALON_CONFIG)}</p>
                 </div>
                 <div className="bg-purple-50 p-4 rounded-lg">
                   <h4 className="font-semibold text-purple-900 mb-2">🎯 Objectif 2026</h4>
-                  <p className="text-sm text-purple-700">6,300 visiteurs attendus</p>
+                  <p className="text-sm text-purple-700">{DEFAULT_SALON_CONFIG.expectedVisitors.toLocaleString()} visiteurs attendus</p>
                 </div>
               </div>
             </div>
@@ -623,11 +635,11 @@ export default function ExhibitorDashboard() {
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Stand :</span>
-                  <span>A-12</span>
+                  <span>{user?.profile?.standNumber || 'Non attribué'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Valide jusqu'au :</span>
-                  <span>7 Février 2026 18:00</span>
+                  <span>{DEFAULT_SALON_CONFIG.dates.end} 18:00</span>
                 </div>
               </div>
               

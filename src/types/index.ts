@@ -42,6 +42,8 @@ export interface UserProfile {
   // Networking system fields
   passType?: 'free' | 'basic' | 'premium' | 'vip';
   status?: 'active' | 'pending' | 'suspended' | 'rejected';
+  // Exhibitor specific fields
+  standNumber?: string; // Numéro de stand pour les exposants
 }
 
 export interface Exhibitor {
