@@ -881,3 +881,75 @@ export class SupabaseService {
     }
   }
 }
+
+
+
+  // ==================== TIME SLOTS ====================
+  static async getTimeSlotsByUser(userId: string): Promise<TimeSlot[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('time_slots')
+        .select('*')
+        .eq('user_id', userId);
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Erreur lors de la récupération des créneaux horaires:', error);
+      return [];
+    }
+  }
+
+  static async createTimeSlot(slotData: Omit<TimeSlot, 'id' | 'currentBookings' | 'available'>): Promise<TimeSlot> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('time_slots')
+        .insert([slotData])
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Erreur lors de la création du créneau horaire:', error);
+      throw error;
+    }
+  }
+
+  static async deleteTimeSlot(slotId: string): Promise<void> {
+    if (!this.checkSupabaseConnection()) return;
+    const safeSupabase = supabase!;
+    try {
+      const { error } = await (safeSupabase as any)
+        .from('time_slots')
+        .delete()
+        .eq('id', slotId);
+      if (error) throw error;
+    } catch (error) {
+      console.error('Erreur lors de la suppression du créneau horaire:', error);
+    }
+  }
+
+
+
+
+  // ==================== APPOINTMENTS ====================
+  static async createAppointment(appointmentData: Omit<Appointment, 'id' | 'createdAt' | 'visitor' | 'exhibitor'>): Promise<Appointment> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('appointments')
+        .insert([appointmentData])
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Erreur lors de la création du rendez-vous:', error);
+      throw error;
+    }
+  }
+

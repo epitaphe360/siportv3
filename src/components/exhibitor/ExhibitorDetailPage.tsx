@@ -29,6 +29,7 @@ import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { useNewsStore } from '../../store/newsStore';
 import { ROUTES } from '../../lib/routes';
+import PublicAvailability from '../availability/PublicAvailability';
 
 export default function ExhibitorDetailPage() {
   const navigate = useNavigate();
@@ -56,13 +57,10 @@ export default function ExhibitorDetailPage() {
   }, [fetchNews]);
 
   // Fonction pour gérer le clic sur le bouton RDV
-  const handleAppointmentClick = (exhibitorId: string) => {
-    if (!isAuthenticated) {
-      // Rediriger vers la page de connexion avec redirection vers les RDV
-      navigate(`/login?redirect=/appointments?exhibitor=${exhibitorId}`);
-    } else {
-      // Rediriger vers la page de networking avec l'action de planification
-      navigate(`/networking?action=schedule&exhibitor=${exhibitorId}&source=exhibitor-detail`);
+  const handleAppointmentClick = () => {
+    const availabilitySection = document.getElementById("disponibilites");
+    if (availabilitySection) {
+      availabilitySection.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -145,6 +143,7 @@ export default function ExhibitorDetailPage() {
               <a href="#produits" className="text-gray-700 hover:text-blue-600 transition-colors">Produits</a>
               <a href="#actualites" className="text-gray-700 hover:text-blue-600 transition-colors">Actualités</a>
               <a href="#galerie" className="text-gray-700 hover:text-blue-600 transition-colors">Galerie</a>
+              <a href="#disponibilites" className="text-gray-700 hover:text-blue-600 transition-colors">Disponibilités</a>
             </div>
 
             <div className="flex items-center space-x-3">
@@ -158,15 +157,10 @@ export default function ExhibitorDetailPage() {
               </Button>
               <Button size="sm"
                 variant="outline"
-                onClick={() => {
-                  const contactSection = document.getElementById('contact');
-                  if (contactSection) {
-                    contactSection.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }}
+                onClick={handleAppointmentClick}
               >
-                <MessageCircle className="h-4 w-4 mr-2" />
-                Contact
+                <Calendar className="h-4 w-4 mr-2" />
+                Prendre RDV
               </Button>
               <Button variant="outline" size="sm">
                 <Share2 className="h-4 w-4" />
@@ -600,6 +594,26 @@ export default function ExhibitorDetailPage() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Availability Section */}
+      <section id="disponibilites" className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Prendre Rendez-vous
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Consultez les créneaux disponibles de {exhibitor.companyName} et réservez votre rencontre.
+            </p>
+          </motion.div>
+          <PublicAvailability userId={exhibitor.id} />
         </div>
       </section>
 
