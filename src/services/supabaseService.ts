@@ -217,6 +217,31 @@ export class SupabaseService {
     }
   }
 
+  // ==================== RECOMMENDATIONS ====================
+  static async getRecommendationsForUser(userId: string, limit: number = 10): Promise<{ itemId: string; itemType: string; similarityScore: number }[]> {
+    if (!this.checkSupabaseConnection()) {
+      console.warn("⚠️ Supabase non configuré - impossible de récupérer les recommandations");
+      return [];
+    }
+
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .rpc("get_recommendations_for_user", { p_user_id: userId, p_limit: limit });
+
+      if (error) throw error;
+
+      return (data || []).map((rec: any) => ({
+        itemId: rec.item_id,
+        itemType: rec.item_type,
+        similarityScore: rec.similarity_score,
+      }));
+    } catch (error) {
+      console.error("Erreur lors de la récupération des recommandations:", error);
+      return [];
+    }
+  }
+
   // ==================== TRANSFORMATION METHODS ====================
   private static transformUserDBToUser(userDB: UserDB): User {
     return {
