@@ -66,6 +66,7 @@ export interface Exhibitor {
   employeeCount?: string;
   revenue?: string;
   markets: string[];
+  standNumber?: string; // Numéro de stand pour la carte interactive
 }
 
 export interface ContactInfo {

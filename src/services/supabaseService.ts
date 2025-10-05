@@ -33,6 +33,7 @@ interface ExhibitorDB {
   contact_info: Record<string, unknown>;
   products?: Record<string, unknown>[];
   mini_site?: Record<string, unknown>;
+  user?: { profile: { standNumber?: string } }; // Ajout du champ user pour le standNumber
 }
 
 interface MiniSiteDB {
@@ -162,7 +163,8 @@ export class SupabaseService {
           featured,
           contact_info,
           products:products(id, exhibitor_id, name, description, category, images, specifications, price, featured),
-          mini_site:mini_sites(theme, custom_colors, sections, published, views, last_updated)
+          mini_site:mini_sites(theme, custom_colors, sections, published, views, last_updated),
+          user:users(profile->>standNumber) // Joindre la table users pour récupérer le standNumber
         `);
 
       if (exhibitorsError) throw exhibitorsError;
@@ -263,7 +265,8 @@ export class SupabaseService {
       featured: exhibitorDB.featured,
       contactInfo: exhibitorDB.contact_info as ContactInfo,
       products,
-      miniSite
+      miniSite,
+      standNumber: exhibitorDB.user?.profile?.standNumber || undefined
     };
   }
 

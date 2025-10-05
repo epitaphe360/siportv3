@@ -60,6 +60,7 @@ const PrivacyPage = React.lazy(() => import('./pages/PrivacyPage'));
 const TermsPage = React.lazy(() => import('./pages/TermsPage'));
 const CookiesPage = React.lazy(() => import('./pages/CookiesPage'));
 const AvailabilitySettingsPage = React.lazy(() => import('./pages/AvailabilitySettingsPage'));
+const VenuePage = React.lazy(() => import('./pages/VenuePage'));
 
 import { ChatBot } from './components/chatbot/ChatBot';
 import { ChatBotToggle } from './components/chatbot/ChatBotToggle';
@@ -141,6 +142,7 @@ const App = () => {
             <Route path={ROUTES.TERMS} element={<TermsPage />} />
             <Route path={ROUTES.COOKIES} element={<CookiesPage />} />
             <Route path={ROUTES.AVAILABILITY_SETTINGS} element={<AvailabilitySettingsPage />} />
+            <Route path={ROUTES.VENUE} element={<VenuePage />} />
           </Routes>
         </Suspense>
       </main>

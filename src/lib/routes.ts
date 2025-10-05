@@ -53,6 +53,7 @@ export const ROUTES = {
   TERMS: '/terms',
   COOKIES: '/cookies',
   AVAILABILITY_SETTINGS: '/availability/settings',
+  VENUE: '/venue',
 } as const;
 
 export type RouteKey = keyof typeof ROUTES;
