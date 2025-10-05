@@ -292,7 +292,7 @@ export default function ExhibitorsPage() {
 
                       {/* Actions */}
                       <div className="flex space-x-3">
-                        <Link to={`/exhibitors/${exhibitor.id}`} className="flex-1">
+                        <Link to={`/minisite/${exhibitor.id}`} className="flex-1">
                           <Button variant="outline" size="sm" className="w-full">
                             Voir le Profil
                           </Button>
@@ -364,7 +364,7 @@ export default function ExhibitorsPage() {
                           </div>
                           
                           <div className="flex items-center space-x-3">
-                            <Link to={`/exhibitors/${exhibitor.id}`}>
+                            <Link to={`/minisite/${exhibitor.id}`}>
                               <Button variant="outline" size="sm">
                                 Voir le Profil
                               </Button>

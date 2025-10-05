@@ -176,7 +176,7 @@ export const FeaturedExhibitors: React.FC = () => {
 
                   {/* Actions */}
                   <div className="flex flex-col space-y-2">
-                    <Link to={`/exhibitors/${exhibitor.id}`} className="flex-1">
+                    <Link to={`/minisite/${exhibitor.id}`} className="flex-1">
                       <Button variant="outline" size="sm" className="w-full justify-center">
                         <Eye className="h-4 w-4 mr-2" />
                         Voir le Profil
