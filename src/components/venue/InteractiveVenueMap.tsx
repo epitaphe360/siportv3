@@ -124,42 +124,66 @@ const InteractiveVenueMap: React.FC = () => {
                   className="transition-all duration-200"
                 />
 
+                {/* Rectangle du stand */}
+                <rect
+                  x={position.x}
+                  y={position.y}
+                  width={position.width}
+                  height={position.height}
+                  fill={isSelected ? \'#3b82f6\' : \'#e0f2fe\'}
+                  stroke={isSelected ? \'#1d4ed8\' : \'#0284c7\'}
+                  strokeWidth={isSelected ? 3 : 2}
+                  rx="8"
+                  className="transition-all duration-200"
+                />
+
                 {/* Numéro de stand */}
                 <text
                   x={position.x + position.width / 2}
-                  y={position.y + 30}
-                  fontSize="18"
+                  y={position.y + 20}
+                  fontSize="16"
                   fontWeight="bold"
-                  fill={isSelected ? '#ffffff' : '#0c4a6e'}
+                  fill={isSelected ? \'#ffffff\' : \'#0c4a6e\'}
                   textAnchor="middle"
                 >
                   {exhibitor.standNumber}
                 </text>
 
-                {/* Nom de l'entreprise */}
+                {/* Nom de l\'entreprise */}
                 <text
                   x={position.x + position.width / 2}
-                  y={position.y + 55}
-                  fontSize="12"
-                  fill={isSelected ? '#ffffff' : '#374151'}
+                  y={position.y + 40}
+                  fontSize="10"
+                  fill={isSelected ? \'#ffffff\' : \'#374151\'}
                   textAnchor="middle"
                   style={{
                     maxWidth: `${position.width - 10}px`,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
+                    overflow: \'hidden\',
+                    textOverflow: \'ellipsis\',
                   }}
                 >
-                  {exhibitor.companyName.length > 15
-                    ? `${exhibitor.companyName.substring(0, 15)}...`
+                  {exhibitor.companyName.length > 18
+                    ? `${exhibitor.companyName.substring(0, 18)}...`
                     : exhibitor.companyName}
+                </text>
+
+                {/* Catégorie */}
+                <text
+                  x={position.x + position.width / 2}
+                  y={position.y + 55}
+                  fontSize="8"
+                  fill={isSelected ? \'#e0f2fe\' : \'#6b7280\'}
+                  textAnchor="middle"
+                >
+                  {exhibitor.category}
                 </text>
 
                 {/* Secteur */}
                 <text
                   x={position.x + position.width / 2}
-                  y={position.y + 75}
-                  fontSize="10"
-                  fill={isSelected ? '#e0f2fe' : '#6b7280'}
+                  y={position.y + 70}
+                  fontSize="8"
+                  fill={isSelected ? \'#e0f2fe\' : \'#6b7280\'}
                   textAnchor="middle"
                 >
                   {exhibitor.sector}
@@ -168,9 +192,9 @@ const InteractiveVenueMap: React.FC = () => {
                 {/* Badge vérifié */}
                 {exhibitor.verified && (
                   <circle
-                    cx={position.x + position.width - 15}
-                    cy={position.y + 15}
-                    r="8"
+                    cx={position.x + position.width - 10}
+                    cy={position.y + 10}
+                    r="6"
                     fill="#10b981"
                   />
                 )}
@@ -220,9 +244,20 @@ const InteractiveVenueMap: React.FC = () => {
                     )}
                   </h3>
                   <p className="text-sm text-gray-600 mt-1">{exhibitor.description}</p>
-                  <div className="mt-2 flex items-center gap-4 text-sm text-gray-500">
+                  <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500">
                     <span>Stand: {exhibitor.standNumber}</span>
+                    <span>Catégorie: {exhibitor.category}</span>
                     <span>Secteur: {exhibitor.sector}</span>
+                    {exhibitor.website && (
+                      <a
+                        href={exhibitor.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline"
+                      >
+                        Site Web
+                      </a>
+                    )}
                   </div>
                   <button
                     onClick={() => handleBoothClick(exhibitor.id)}
