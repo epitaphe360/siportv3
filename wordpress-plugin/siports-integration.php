@@ -14,6 +14,32 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Define SIPORTS_PLUGIN_PATH if not already defined
+if ( ! defined( 'SIPORTS_PLUGIN_PATH' ) ) {
+    define( 'SIPORTS_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+}
+
+// Define SIPORTS_PLUGIN_URL if not already defined
+if ( ! defined( 'SIPORTS_PLUGIN_URL' ) ) {
+    define( 'SIPORTS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+}
+
+// Define SIPORTS_VERSION if not already defined
+if ( ! defined( 'SIPORTS_VERSION' ) ) {
+    define( 'SIPORTS_VERSION', '1.0.0' ); // Or dynamically get from plugin header
+}
+
+// Inclure la classe des mini-sites
+require_once SIPORTS_PLUGIN_PATH . 'includes/class-siports-minisites.php';
+
+// Inclure la classe d'API Supabase
+require_once SIPORTS_PLUGIN_PATH . 'includes/class-siports-supabase-api.php';
+
+// Instancier la classe des mini-sites pour enregistrer les shortcodes
+add_action('plugins_loaded', function() {
+    new SiportsMinisites();
+});
+
 /**
  * Version ultra simplifiée pour éviter tout conflit et problème de compatibilité.
  * Utilise un shortcode basic et des fonctions de bas niveau pour l'intégration.
@@ -201,3 +227,4 @@ function siports_cors_add_font_headers( $headers ) {
     }
     return $headers;
 }
+
