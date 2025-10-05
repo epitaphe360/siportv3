@@ -242,7 +242,7 @@ export default function ContentManagement() {
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-3">
                       <div className={`p-2 rounded-lg ${selectedSectionData.bg_color}`}>
-                        <selectedSectionData.icon_name && iconMap[selectedSectionData.icon_name] ? iconMap[selectedSectionData.icon_name] : Settings} className={`h-5 w-5 ${selectedSectionData.color}`} />
+                        {selectedSectionData.icon_name && iconMap[selectedSectionData.icon_name] ? React.createElement(iconMap[selectedSectionData.icon_name], { className: `h-5 w-5 ${selectedSectionData.color}` }) : <Settings className={`h-5 w-5 ${selectedSectionData.color}`} />}
                       </div>
                       <div>
                         <h2 className="text-xl font-semibold text-gray-900">

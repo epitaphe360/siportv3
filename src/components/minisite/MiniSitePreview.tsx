@@ -443,7 +443,7 @@ export default function MiniSitePreview() {
                     rel="noopener noreferrer"
                     className="text-gray-600 hover:underline"
                   >
-                    Visiter le site
+                    {exhibitorData.website}
                   </a>
                 </Card>
               )}
@@ -457,9 +457,9 @@ export default function MiniSitePreview() {
               )}
             </div>
 
-            {/* Social Media Links */}
-            {Object.keys(socialLinks).length > 0 && (
-              <div className="mt-12 flex justify-center gap-4">
+            {/* Social Links */}
+            {Object.values(socialLinks).some(link => link) && (
+              <div className="flex justify-center gap-4 mt-12">
                 {socialLinks.linkedin && (
                   <a
                     href={socialLinks.linkedin}
@@ -518,7 +518,7 @@ export default function MiniSitePreview() {
               </div>
             )}
           </motion.div>
-        </section>
+        </div>
       </section>
 
       {/* Footer */}
@@ -535,3 +535,4 @@ export default function MiniSitePreview() {
     </div>
   );
 }
+

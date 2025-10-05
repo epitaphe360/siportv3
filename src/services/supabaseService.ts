@@ -503,7 +503,35 @@ export class SupabaseService {
     }
   }
 
-  static async sendMessage(conversationId: string, senderId: string, content: string, type: string = 'text'): Promise<ChatMessage | null> {
+  static async getMessages(conversationId: string): Promise<ChatMessage[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('messages')
+        .select('*')
+        .eq('conversation_id', conversationId)
+        .order('created_at', { ascending: true });
+        
+      if (error) throw error;
+      
+      return (data || []).map((msg: any) => ({
+        id: msg.id,
+        senderId: msg.sender_id,
+        receiverId: msg.receiver_id,
+        content: msg.content,
+        type: msg.message_type,
+        timestamp: new Date(msg.created_at),
+        read: msg.read_at !== null
+      }));
+    } catch (error) {
+      console.error('Erreur récupération messages:', error);
+      return [];
+    }
+  }
+
+  static async sendMessage(conversationId: string, senderId: string, receiverId: string, content: string, type: 'text' | 'image' = 'text'): Promise<ChatMessage | null> {
     if (!this.checkSupabaseConnection()) return null;
     
     const safeSupabase = supabase!;
@@ -513,6 +541,7 @@ export class SupabaseService {
         .insert([{
           conversation_id: conversationId,
           sender_id: senderId,
+          receiver_id: receiverId,
           content,
           message_type: type
         }])
@@ -521,18 +550,12 @@ export class SupabaseService {
         
       if (error) throw error;
       
-      // Mettre à jour la conversation
-      await (safeSupabase as any)
-        .from('conversations')
-        .update({ updated_at: new Date().toISOString() })
-        .eq('id', conversationId);
-      
       return {
         id: data.id,
-        senderId,
-        receiverId: '', // À déterminer depuis la conversation
-        content,
-        type: type as any,
+        senderId: data.sender_id,
+        receiverId: data.receiver_id,
+        content: data.content,
+        type: data.message_type,
         timestamp: new Date(data.created_at),
         read: false
       };
@@ -542,540 +565,144 @@ export class SupabaseService {
     }
   }
 
-  static async createAppointment(appointmentData: any): Promise<Appointment | null> {
+  static async getMiniSite(exhibitorId: string): Promise<any | null> {
     if (!this.checkSupabaseConnection()) return null;
     
     const safeSupabase = supabase!;
     try {
       const { data, error } = await (safeSupabase as any)
-        .from('appointments')
-        .insert([appointmentData])
-        .select()
+        .from('mini_sites')
+        .select('*')
+        .eq('exhibitor_id', exhibitorId)
+        .single();
+        
+      if (error) {
+        console.warn('Mini-site non trouvé:', error.message);
+        return null;
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Erreur récupération mini-site:', error);
+      return null;
+    }
+  }
+
+  static async getExhibitorProducts(exhibitorId: string): Promise<Product[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('products')
+        .select('*')
+        .eq('exhibitor_id', exhibitorId);
+        
+      if (error) throw error;
+      
+      return (data || []).map((p: any) => ({
+        id: p.id,
+        exhibitorId: p.exhibitor_id,
+        name: p.name,
+        description: p.description,
+        category: p.category,
+        images: p.images || [],
+        specifications: p.specifications,
+        price: p.price,
+        featured: p.featured || false
+      }));
+    } catch (error) {
+      console.error('Erreur récupération produits:', error);
+      return [];
+    }
+  }
+
+  static async incrementMiniSiteViews(exhibitorId: string): Promise<void> {
+    if (!this.checkSupabaseConnection()) return;
+    
+    const safeSupabase = supabase!;
+    try {
+      await (safeSupabase as any).rpc('increment_view_count', { exhibitor_id_param: exhibitorId });
+    } catch (error) {
+      console.error('Erreur incrémentation vues:', error);
+    }
+  }
+
+  static async getExhibitorForMiniSite(exhibitorId: string): Promise<any | null> {
+    if (!this.checkSupabaseConnection()) return null;
+    
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('exhibitors')
+        .select('id, company_name, logo_url, description, website, contact_info')
+        .eq('id', exhibitorId)
         .single();
         
       if (error) throw error;
       
-      return {
-        id: data.id,
-        organizerId: data.organizer_id,
-        participantId: data.participant_id,
-        exhibitorId: data.exhibitor_id,
-        title: data.title,
-        description: data.description,
-        startTime: new Date(data.start_time),
-        endTime: new Date(data.end_time),
-        status: data.status,
-        type: data.meeting_type,
-        location: data.location,
-        notes: data.notes,
-        createdAt: new Date(data.created_at)
-      };
+      return data;
     } catch (error) {
-      console.error('Erreur création rendez-vous:', error);
+      console.error('Erreur récupération exposant pour mini-site:', error);
       return null;
     }
   }
 
-  // ==================== HELPER METHODS ====================
-  private static async createExhibitorProfile(userId: string, userData: any): Promise<void> {
-    const safeSupabase = supabase!;
-    
-    const { error } = await (safeSupabase as any)
-      .from('exhibitors')
-      .insert([{
-        user_id: userId,
-        company_name: userData.profile?.company || userData.name,
-        category: userData.profile?.category || 'port-operations',
-        sector: userData.profile?.sector || 'General',
-        description: userData.profile?.bio || '',
-        contact_info: {
-          email: userData.email,
-          phone: userData.profile?.phone || '',
-          address: userData.profile?.address || '',
-          city: userData.profile?.city || '',
-          country: userData.profile?.country || ''
-        },
-        verified: false,
-        featured: false
-      }]);
-      
-    if (error) console.error('Erreur création profil exposant:', error);
-  }
-
-  private static async createPartnerProfile(userId: string, userData: any): Promise<void> {
-    const safeSupabase = supabase!;
-    
-    const { error } = await (safeSupabase as any)
-      .from('partners')
-      .insert([{
-        user_id: userId,
-        company_name: userData.profile?.company || userData.name,
-        partner_type: 'sponsor',
-        description: userData.profile?.bio || '',
-        tier: 3
-      }]);
-      
-    if (error) console.error('Erreur création profil partenaire:', error);
-  }
-
-  static async getAppointmentsByUser(userId: string): Promise<Appointment[]> {
-    if (!this.checkSupabaseConnection()) return [];
+  static async createExhibitorProfile(userId: string, userData: any): Promise<void> {
+    if (!this.checkSupabaseConnection()) return;
     
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
-        .from('appointments')
-        .select('*')
-        .or(`organizer_id.eq.${userId},participant_id.eq.${userId}`)
-        .order('start_time', { ascending: true });
-        
-      if (error) throw error;
-      
-      return (data || []).map((apt: any) => ({
-        id: apt.id,
-        organizerId: apt.organizer_id,
-        participantId: apt.participant_id,
-        exhibitorId: apt.exhibitor_id,
-        title: apt.title,
-        description: apt.description,
-        startTime: new Date(apt.start_time),
-        endTime: new Date(apt.end_time),
-        status: apt.status,
-        type: apt.meeting_type,
-        location: apt.location,
-        notes: apt.notes,
-        createdAt: new Date(apt.created_at)
-      }));
-    } catch (error) {
-      console.error('Erreur récupération rendez-vous:', error);
-      return [];
-    }
-  }
-
-  static async searchExhibitors(query: string, filters: SearchFilters = {}): Promise<Exhibitor[]> {
-    if (!this.checkSupabaseConnection()) return [];
-    
-    const safeSupabase = supabase!;
-    try {
-      let queryBuilder = (safeSupabase as any)
+      const { error } = await (safeSupabase as any)
         .from('exhibitors')
-        .select('*');
-        
-      if (query) {
-        queryBuilder = queryBuilder.or(`company_name.ilike.%${query}%,description.ilike.%${query}%,sector.ilike.%${query}%`);
-      }
-      
-      if (filters.category) {
-        queryBuilder = queryBuilder.eq('category', filters.category);
-      }
-      
-      if (filters.sector) {
-        queryBuilder = queryBuilder.ilike('sector', `%${filters.sector}%`);
-      }
-      
-      const { data, error } = await queryBuilder.limit(20);
-      
-      if (error) throw error;
-      
-      return (data || []).map(this.transformExhibitorDBToExhibitor);
-    } catch (error) {
-      console.error('Erreur recherche exposants:', error);
-      return [];
-    }
-  }
-
-  static async getEventRegistrations(eventId?: string, userId?: string): Promise<EventRegistration[]> {
-    if (!this.checkSupabaseConnection()) return [];
-    
-    const safeSupabase = supabase!;
-    try {
-      let queryBuilder = (safeSupabase as any)
-        .from('event_registrations')
-        .select('*');
-        
-      if (eventId) queryBuilder = queryBuilder.eq('event_id', eventId);
-      if (userId) queryBuilder = queryBuilder.eq('user_id', userId);
-      
-      const { data, error } = await queryBuilder.order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      
-      return (data || []).map((reg: any) => ({
-        id: reg.id,
-        eventId: reg.event_id,
-        userId: reg.user_id,
-        registrationType: reg.registration_type,
-        status: reg.status,
-        registrationDate: new Date(reg.created_at),
-        attendedAt: reg.attended_at ? new Date(reg.attended_at) : undefined,
-        notes: reg.notes,
-        specialRequirements: reg.special_requirements,
-        createdAt: new Date(reg.created_at),
-        updatedAt: new Date(reg.created_at)
-      }));
-    } catch (error) {
-      console.error('Erreur récupération inscriptions événements:', error);
-      return [];
-    }
-  }
-
-  static async getNetworkingRecommendations(userId: string): Promise<NetworkingRecommendationDB[]> {
-    if (!this.checkSupabaseConnection()) return [];
-    
-    const safeSupabase = supabase!;
-    try {
-      const { data, error } = await (safeSupabase as any)
-        .from('networking_recommendations')
-        .select(`
-          *,
-          recommendedUser:recommended_user_id(
-            id,
-            name,
-            email,
-            type,
-            profile
-          )
-        `)
-        .eq('user_id', userId)
-        .eq('viewed', false)
-        .gte('expires_at', new Date().toISOString())
-        .order('score', { ascending: false })
-        .limit(10);
+        .insert([{
+          id: userId, // Utilise l'ID utilisateur comme ID exposant
+          user_id: userId,
+          company_name: userData.profile.company,
+          category: userData.profile.category || 'default',
+          sector: userData.profile.sector || 'default',
+          description: userData.profile.description || '',
+          contact_info: {
+            email: userData.email,
+            phone: userData.profile.phone || ''
+          }
+        }]);
         
       if (error) throw error;
-      
-      return data || [];
+      console.log('✅ Profil exposant créé');
     } catch (error) {
-      console.error('Erreur récupération recommandations:', error);
-      return [];
-    }
-  }
-
-  static async getActivities(userId?: string, limit: number = 50): Promise<ActivityDB[]> {
-    if (!this.checkSupabaseConnection()) return [];
-    
-    const safeSupabase = supabase!;
-    try {
-      let queryBuilder = (safeSupabase as any)
-        .from('activities')
-        .select(`
-          *,
-          user:user_id(id, name),
-          relatedUser:related_user_id(id, name)
-        `)
-        .eq('is_public', true)
-        .order('created_at', { ascending: false })
-        .limit(limit);
-        
-      if (userId) {
-        queryBuilder = queryBuilder.eq('user_id', userId);
-      }
-      
-      const { data, error } = await queryBuilder;
-      
-      if (error) throw error;
-      
-      return data || [];
-    } catch (error) {
-      console.error('Erreur récupération activités:', error);
-      return [];
-    }
-  }
-
-  static async getTimeSlotsByUser(userId: string): Promise<TimeSlot[]> {
-    if (!this.checkSupabaseConnection()) return [];
-
-    const safeSupabase = supabase!;
-    try {
-      const { data: exhibitor } = await (safeSupabase as any)
-        .from('exhibitors')
-        .select('id')
-        .eq('user_id', userId)
-        .maybeSingle();
-
-      if (!exhibitor) {
-        console.log('Aucun exposant trouvé pour user_id:', userId);
-        return [];
-      }
-
-      const { data, error } = await (safeSupabase as any)
-        .from('time_slots')
-        .select('*')
-        .eq('exhibitor_id', exhibitor.id)
-        .eq('available', true)
-        .gte('slot_date', new Date().toISOString().split('T')[0])
-        .order('slot_date', { ascending: true })
-        .order('start_time', { ascending: true });
-
-      if (error) throw error;
-
-      return (data || []).map((slot: any) => ({
-        id: slot.id,
-        userId: exhibitor.id,
-        startTime: new Date(`${slot.slot_date}T${slot.start_time}`),
-        endTime: new Date(`${slot.slot_date}T${slot.end_time}`),
-        isAvailable: slot.available,
-        createdAt: new Date(slot.created_at)
-      }));
-    } catch (error) {
-      console.error('Erreur récupération créneaux:', error);
-      return [];
-    }
-  }
-
-  static async createTimeSlot(slotData: {
-    userId: string;
-    date: string | Date;
-    startTime: string;
-    endTime: string;
-    duration: number;
-    type: 'in-person' | 'virtual' | 'hybrid';
-    maxBookings: number;
-    location?: string;
-  }): Promise<TimeSlot> {
-    if (!this.checkSupabaseConnection()) {
-      throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
-    }
-
-    const safeSupabase = supabase!;
-
-    const { data: exhibitor } = await (safeSupabase as any)
-      .from('exhibitors')
-      .select('id')
-      .eq('user_id', slotData.userId)
-      .maybeSingle();
-
-    if (!exhibitor) {
-      throw new Error('Aucun exposant trouvé pour cet utilisateur');
-    }
-
-    const dateString = slotData.date instanceof Date ? slotData.date.toISOString().split('T')[0] : String(slotData.date);
-
-    const { data, error } = await (safeSupabase as any)
-      .from('time_slots')
-      .insert([{
-        exhibitor_id: exhibitor.id,
-        slot_date: dateString,
-        start_time: slotData.startTime,
-        end_time: slotData.endTime,
-        duration: slotData.duration,
-        type: slotData.type,
-        max_bookings: slotData.maxBookings,
-        current_bookings: 0,
-        available: true,
-        location: slotData.location || null
-      }])
-      .select()
-      .single();
-
-    if (error) throw error;
-
-    return {
-      id: data.id,
-      userId: exhibitor.id,
-      startTime: new Date(`${data.slot_date}T${data.start_time}`),
-      endTime: new Date(`${data.slot_date}T${data.end_time}`),
-      isAvailable: data.available,
-      createdAt: new Date(data.created_at)
-    };
-  }
-
-  static async deleteTimeSlot(slotId: string): Promise<void> {
-    if (!this.checkSupabaseConnection()) {
-      throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
-    }
-
-    const safeSupabase = supabase!;
-    const { error } = await (safeSupabase as any)
-      .from('time_slots')
-      .delete()
-      .eq('id', slotId);
-
-    if (error) throw error;
-  }
-
-  // ==================== USERS ====================
-  static async getUsers(): Promise<User[]> {
-    if (!this.checkSupabaseConnection()) {
-      console.warn('⚠️ Supabase non configuré - aucun utilisateur disponible');
-      return [];
-    }
-
-    const safeSupabase = supabase!;
-    try {
-      const { data, error } = await (safeSupabase as any)
-        .from('users')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      return (data || []).map((user: any) => this.transformUserDBToUser(user));
-    } catch (error) {
-      console.error('Erreur lors de la récupération des utilisateurs:', error);
-      return [];
-    }
-  }
-
-  static async createUser(userData: Partial<User>): Promise<User> {
-    if (!this.checkSupabaseConnection()) {
-      throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
-    }
-
-    const safeSupabase = supabase!;
-    const { data, error } = await safeSupabase
-      .from('users')
-      .insert([{
-        email: userData.email,
-        name: userData.name,
-        type: userData.type || 'visitor',
-        profile: userData.profile || {}
-      }] as any)
-      .select()
-      .single();
-
-    if (error) throw error;
-    return this.transformUserDBToUser(data);
-  }
-
-  static async getUserById(id: string): Promise<User | null> {
-    if (!this.checkSupabaseConnection()) {
-      return null;
-    }
-
-    const safeSupabase = supabase!;
-    const { data, error } = await (safeSupabase as any)
-      .from('users')
-      .select('*')
-      .eq('id', id)
-      .single();
-
-    if (error) {
-      if (error.code === 'PGRST116') return null;
+      console.error('❌ Erreur création profil exposant:', error);
       throw error;
     }
-
-    return this.transformUserDBToUser(data);
   }
 
-  static async updateUser(userId: string, updates: Partial<User>): Promise<User> {
-    if (!this.checkSupabaseConnection()) {
-      throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
-    }
-
+  static async createPartnerProfile(userId: string, userData: any): Promise<void> {
+    if (!this.checkSupabaseConnection()) return;
+    
     const safeSupabase = supabase!;
-    const updateData: any = {};
-
-    if (updates.name) updateData.name = updates.name;
-    if (updates.profile) updateData.profile = updates.profile;
-    if (updates.type) updateData.type = updates.type;
-
-    const { data, error } = await (safeSupabase as any)
-      .from('users')
-      .update(updateData)
-      .eq('id', userId)
-      .select()
-      .single();
-
-    if (error) throw error;
-    return this.transformUserDBToUser(data);
+    try {
+      const { error } = await (safeSupabase as any)
+        .from('partners')
+        .insert([{
+          id: userId, // Utilise l'ID utilisateur comme ID partenaire
+          user_id: userId,
+          name: userData.profile.company,
+          type: userData.profile.partnerType || 'sponsor',
+          sector: userData.profile.sector || 'default',
+          description: userData.profile.description || '',
+          website: userData.profile.website || ''
+        }]);
+        
+      if (error) throw error;
+      console.log('✅ Profil partenaire créé');
+    } catch (error) {
+      console.error('❌ Erreur création profil partenaire:', error);
+      throw error;
+    }
   }
 
-  // ==================== REGISTRATION REQUESTS ====================
-  static async createRegistrationRequest(userId: string, userData: any): Promise<any> {
-    if (!this.checkSupabaseConnection()) {
-      throw new Error('Supabase non configuré');
-    }
-
-    const safeSupabase = supabase!;
-    const { data, error } = await safeSupabase
-      .from('registration_requests')
-      .insert([{
-        user_id: userId,
-        user_type: userData.type,
-        email: userData.email,
-        first_name: userData.firstName,
-        last_name: userData.lastName,
-        company_name: userData.company,
-        position: userData.position,
-        phone: userData.phone,
-        profile_data: userData,
-        status: 'pending'
-      }])
-      .select()
-      .single();
-
-    if (error) throw error;
-    return data;
-  }
-
-  static async getRegistrationRequests(status?: string): Promise<any[]> {
-    if (!this.checkSupabaseConnection()) {
-      return [];
-    }
-
-    const safeSupabase = supabase!;
-    let query = safeSupabase
-      .from('registration_requests')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (status) {
-      query = query.eq('status', status);
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
-      console.error('Erreur lors de la récupération des demandes:', error);
-      return [];
-    }
-
-    return data || [];
-  }
-
-  static async updateRegistrationRequestStatus(
-    requestId: string,
-    status: 'approved' | 'rejected',
-    reviewerId: string,
-    rejectionReason?: string
-  ): Promise<any> {
-    if (!this.checkSupabaseConnection()) {
-      throw new Error('Supabase non configuré');
-    }
-
-    const safeSupabase = supabase!;
-    const updateData: any = {
-      status,
-      reviewed_at: new Date().toISOString(),
-      reviewed_by: reviewerId
-    };
-
-    if (rejectionReason) {
-      updateData.rejection_reason = rejectionReason;
-    }
-
-    const { data, error } = await safeSupabase
-      .from('registration_requests')
-      .update(updateData)
-      .eq('id', requestId)
-      .select()
-      .single();
-
-    if (error) throw error;
-    return data;
-  }
-
-  static async sendRegistrationEmail(userData: {
-    userType: 'exhibitor' | 'partner' | 'visitor';
-    email: string;
-    firstName: string;
-    lastName: string;
-    companyName?: string;
-  }): Promise<void> {
-    if (!this.checkSupabaseConnection()) {
-      throw new Error('Supabase non configuré');
-    }
+  static async sendRegistrationEmail(userData: any): Promise<void> {
+    if (!this.checkSupabaseConnection()) return;
 
     const safeSupabase = supabase!;
 
@@ -1091,7 +718,6 @@ export class SupabaseService {
       throw error;
     }
   }
-}
   // ===== NETWORKING FUNCTIONS =====
 
   /**
@@ -1118,7 +744,7 @@ export class SupabaseService {
 
       // Filtre par secteur
       if (filters.sector) {
-        query = query.contains('profile', { sectors: [filters.sector] });
+        query = query.eq('profile->>sector', filters.sector);
       }
 
       // Filtre par type d'utilisateur
@@ -1126,19 +752,21 @@ export class SupabaseService {
         query = query.eq('type', filters.userType);
       }
 
-      // Filtre par localisation
+      // Filtre par localisation (pays)
       if (filters.location) {
         query = query.eq('profile->>country', filters.location);
       }
 
-      // Limiter les résultats
-      query = query.limit(filters.limit || 50);
+      // Limite
+      if (filters.limit) {
+        query = query.limit(filters.limit);
+      }
 
       const { data, error } = await query;
-      
+
       if (error) throw error;
-      
-      return (data || []).map((user: any) => this.mapUserFromDB(user));
+
+      return (data || []).map(this.transformUserDBToUser);
     } catch (error) {
       console.error('Erreur lors de la recherche d\'utilisateurs:', error);
       return [];
@@ -1146,303 +774,110 @@ export class SupabaseService {
   }
 
   /**
-   * Obtenir les connexions d'un utilisateur
+   * Récupère les recommandations de networking pour un utilisateur
    */
-  static async getUserConnections(userId: string): Promise<string[]> {
+  static async getRecommendations(userId: string, limit: number = 10): Promise<User[]> {
     if (!this.checkSupabaseConnection()) return [];
-    
+
     const safeSupabase = supabase!;
     try {
       const { data, error } = await (safeSupabase as any)
-        .from('connections')
-        .select('connected_user_id')
+        .from('recommendations')
+        .select('recommended_user:recommended_user_id(*)')
         .eq('user_id', userId)
-        .eq('status', 'accepted');
-        
+        .limit(limit);
+
       if (error) throw error;
-      
-      return (data || []).map((conn: any) => conn.connected_user_id);
+
+      return (data || []).map((rec: any) => this.transformUserDBToUser(rec.recommended_user));
+    } catch (error) {
+      console.error('Erreur lors de la récupération des recommandations:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Envoie une demande de connexion
+   */
+  static async sendConnectionRequest(fromUserId: string, toUserId: string): Promise<boolean> {
+    if (!this.checkSupabaseConnection()) return false;
+
+    const safeSupabase = supabase!;
+    try {
+      const { error } = await (safeSupabase as any).from('connections').insert([{
+        requester_id: fromUserId,
+        addressee_id: toUserId,
+        status: 'pending'
+      }]);
+
+      if (error) throw error;
+
+      // TODO: Envoyer une notification
+
+      return true;
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi de la demande de connexion:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Accepte une demande de connexion
+   */
+  static async acceptConnectionRequest(connectionId: string): Promise<boolean> {
+    if (!this.checkSupabaseConnection()) return false;
+
+    const safeSupabase = supabase!;
+    try {
+      const { error } = await (safeSupabase as any)
+        .from('connections')
+        .update({ status: 'accepted' })
+        .eq('id', connectionId);
+
+      if (error) throw error;
+
+      return true;
+    } catch (error) {
+      console.error('Erreur lors de l\'acceptation de la demande:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Récupère les connexions d'un utilisateur
+   */
+  static async getConnections(userId: string): Promise<User[]> {
+    if (!this.checkSupabaseConnection()) return [];
+
+    const safeSupabase = supabase!;
+    try {
+      // On récupère les IDs des utilisateurs connectés
+      const { data: connections, error } = await (safeSupabase as any)
+        .from('connections')
+        .select('requester_id, addressee_id')
+        .eq('status', 'accepted')
+        .or(`requester_id.eq.${userId},addressee_id.eq.${userId}`);
+
+      if (error) throw error;
+
+      const connectedUserIds = (connections || []).map((conn: any) => 
+        conn.requester_id === userId ? conn.addressee_id : conn.requester_id
+      );
+
+      if (connectedUserIds.length === 0) return [];
+
+      // On récupère les profils de ces utilisateurs
+      const { data: users, error: usersError } = await (safeSupabase as any)
+        .from('users')
+        .select('*')
+        .in('id', connectedUserIds);
+
+      if (usersError) throw usersError;
+
+      return (users || []).map(this.transformUserDBToUser);
     } catch (error) {
       console.error('Erreur lors de la récupération des connexions:', error);
       return [];
-    }
-  }
-
-  /**
-   * Créer une demande de connexion
-   */
-  static async createConnection(userId: string, connectedUserId: string): Promise<boolean> {
-    if (!this.checkSupabaseConnection()) return false;
-    
-    const safeSupabase = supabase!;
-    try {
-      // Vérifier le quota
-      const { data: quotaCheck, error: quotaError } = await (safeSupabase as any)
-        .rpc('check_and_increment_quota', {
-          p_user_id: userId,
-          p_action: 'connection'
-        });
-
-      if (quotaError) throw quotaError;
-      if (!quotaCheck) {
-        throw new Error('Quota de connexions quotidien atteint');
-      }
-
-      // Créer la connexion
-      const { error } = await (safeSupabase as any)
-        .from('connections')
-        .insert([{
-          user_id: userId,
-          connected_user_id: connectedUserId,
-          status: 'pending'
-        }]);
-        
-      if (error) throw error;
-      
-      return true;
-    } catch (error) {
-      console.error('Erreur lors de la création de la connexion:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Obtenir les favoris d'un utilisateur
-   */
-  static async getUserFavorites(userId: string): Promise<string[]> {
-    if (!this.checkSupabaseConnection()) return [];
-    
-    const safeSupabase = supabase!;
-    try {
-      const { data, error } = await (safeSupabase as any)
-        .from('favorites')
-        .select('favorited_user_id')
-        .eq('user_id', userId);
-        
-      if (error) throw error;
-      
-      return (data || []).map((fav: any) => fav.favorited_user_id);
-    } catch (error) {
-      console.error('Erreur lors de la récupération des favoris:', error);
-      return [];
-    }
-  }
-
-  /**
-   * Ajouter un favori
-   */
-  static async addFavorite(userId: string, favoritedUserId: string): Promise<boolean> {
-    if (!this.checkSupabaseConnection()) return false;
-    
-    const safeSupabase = supabase!;
-    try {
-      const { error } = await (safeSupabase as any)
-        .from('favorites')
-        .insert([{
-          user_id: userId,
-          favorited_user_id: favoritedUserId
-        }]);
-        
-      if (error) throw error;
-      
-      return true;
-    } catch (error) {
-      console.error('Erreur lors de l\'ajout du favori:', error);
-      return false;
-    }
-  }
-
-  /**
-   * Retirer un favori
-   */
-  static async removeFavorite(userId: string, favoritedUserId: string): Promise<boolean> {
-    if (!this.checkSupabaseConnection()) return false;
-    
-    const safeSupabase = supabase!;
-    try {
-      const { error } = await (safeSupabase as any)
-        .from('favorites')
-        .delete()
-        .eq('user_id', userId)
-        .eq('favorited_user_id', favoritedUserId);
-        
-      if (error) throw error;
-      
-      return true;
-    } catch (error) {
-      console.error('Erreur lors de la suppression du favori:', error);
-      return false;
-    }
-  }
-
-  /**
-   * Obtenir les quotas quotidiens d'un utilisateur
-   */
-  static async getDailyQuotas(userId: string): Promise<{
-    connections: number;
-    messages: number;
-    meetings: number;
-  }> {
-    if (!this.checkSupabaseConnection()) {
-      return { connections: 0, messages: 0, meetings: 0 };
-    }
-    
-    const safeSupabase = supabase!;
-    try {
-      const { data, error } = await (safeSupabase as any)
-        .from('daily_quotas')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('date', new Date().toISOString().split('T')[0])
-        .single();
-        
-      if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows
-      
-      return {
-        connections: data?.connections_count || 0,
-        messages: data?.messages_count || 0,
-        meetings: data?.meetings_count || 0,
-      };
-    } catch (error) {
-      console.error('Erreur lors de la récupération des quotas:', error);
-      return { connections: 0, messages: 0, meetings: 0 };
-    }
-  }
-
-  /**
-   * Obtenir les connexions en attente
-   */
-  static async getPendingConnections(userId: string): Promise<string[]> {
-    if (!this.checkSupabaseConnection()) return [];
-    
-    const safeSupabase = supabase!;
-    try {
-      const { data, error } = await (safeSupabase as any)
-        .from('connections')
-        .select('connected_user_id')
-        .eq('user_id', userId)
-        .eq('status', 'pending');
-        
-      if (error) throw error;
-      
-      return (data || []).map((conn: any) => conn.connected_user_id);
-    } catch (error) {
-      console.error('Erreur lors de la récupération des connexions en attente:', error);
-      return [];
-    }
-  }
-}
-
-  // ===== MINI-SITE FUNCTIONS =====
-
-  /**
-   * Récupérer le mini-site d'un exposant par son ID
-   */
-  static async getMiniSite(exhibitorId: string): Promise<any | null> {
-    if (!this.checkSupabaseConnection()) return null;
-    
-    const safeSupabase = supabase!;
-    try {
-      const { data, error } = await (safeSupabase as any)
-        .from('mini_sites')
-        .select('*')
-        .eq('exhibitor_id', exhibitorId)
-        .eq('published', true)
-        .single();
-        
-      if (error) {
-        if (error.code === 'PGRST116') {
-          // Aucun mini-site trouvé
-          return null;
-        }
-        throw error;
-      }
-      
-      return data;
-    } catch (error) {
-      console.error('Erreur lors de la récupération du mini-site:', error);
-      return null;
-    }
-  }
-
-  /**
-   * Incrémenter le compteur de vues d'un mini-site
-   */
-  static async incrementMiniSiteViews(exhibitorId: string): Promise<boolean> {
-    if (!this.checkSupabaseConnection()) return false;
-    
-    const safeSupabase = supabase!;
-    try {
-      const { error } = await (safeSupabase as any)
-        .rpc('increment_minisite_views', {
-          p_exhibitor_id: exhibitorId
-        });
-        
-      if (error) throw error;
-      
-      return true;
-    } catch (error) {
-      console.error('Erreur lors de l\'incrémentation des vues:', error);
-      return false;
-    }
-  }
-
-  /**
-   * Récupérer les produits d'un exposant
-   */
-  static async getExhibitorProducts(exhibitorId: string): Promise<Product[]> {
-    if (!this.checkSupabaseConnection()) return [];
-    
-    const safeSupabase = supabase!;
-    try {
-      const { data, error } = await (safeSupabase as any)
-        .from('products')
-        .select('*')
-        .eq('exhibitor_id', exhibitorId)
-        .eq('active', true)
-        .order('created_at', { ascending: false });
-        
-      if (error) throw error;
-      
-      return (data || []).map((product: any) => ({
-        id: product.id,
-        name: product.name,
-        description: product.description,
-        image: product.image_url,
-        price: product.price,
-        category: product.category,
-        features: product.features || [],
-        specifications: product.specifications || {},
-      }));
-    } catch (error) {
-      console.error('Erreur lors de la récupération des produits:', error);
-      return [];
-    }
-  }
-
-  /**
-   * Récupérer les informations complètes d'un exposant pour le mini-site
-   */
-  static async getExhibitorForMiniSite(exhibitorId: string): Promise<any | null> {
-    if (!this.checkSupabaseConnection()) return null;
-    
-    const safeSupabase = supabase!;
-    try {
-      const { data, error } = await (safeSupabase as any)
-        .from('exhibitors')
-        .select(`
-          *,
-          user:users!exhibitors_user_id_fkey(*)
-        `)
-        .eq('id', exhibitorId)
-        .single();
-        
-      if (error) throw error;
-      
-      return data;
-    } catch (error) {
-      console.error('Erreur lors de la récupération de l\'exposant:', error);
-      return null;
     }
   }
 }
