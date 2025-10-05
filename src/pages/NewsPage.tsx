@@ -72,7 +72,26 @@ export default function NewsPage() {
   };
 
   const handleRefreshFromOfficialSite = async () => {
-    await fetchFromOfficialSite();
+    try {
+      toast.loading('Synchronisation en cours...', { id: 'sync-articles' });
+      const result = await fetchFromOfficialSite();
+      
+      if (result && result.success) {
+        const { inserted, updated, total } = result.stats;
+        toast.success(
+          `✅ Synchronisation réussie ! ${inserted} nouveaux articles, ${updated} mis à jour sur ${total} trouvés`,
+          { id: 'sync-articles', duration: 5000 }
+        );
+      } else {
+        toast.success('Articles actualisés', { id: 'sync-articles' });
+      }
+    } catch (error: any) {
+      console.error('Error syncing articles:', error);
+      toast.error(
+        `Erreur lors de la synchronisation : ${error.message || 'Erreur inconnue'}`,
+        { id: 'sync-articles' }
+      );
+    }
   };
 
   return (

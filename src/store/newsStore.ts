@@ -107,7 +107,31 @@ export const useNewsStore = create<NewsState>((set, get) => ({
   },
 
   fetchFromOfficialSite: async () => {
-    await get().fetchNews();
+    set({ isLoading: true });
+    try {
+      console.log('🔄 Synchronizing articles from official website...');
+      
+      // Appeler l'Edge Function de synchronisation
+      const { data, error } = await supabase.functions.invoke('sync-news-articles', {
+        body: {}
+      });
+
+      if (error) {
+        console.error('❌ Error syncing articles:', error);
+        throw error;
+      }
+
+      console.log('✅ Sync response:', data);
+
+      // Recharger les articles depuis la base de données
+      await get().fetchNews();
+
+      return data;
+    } catch (error) {
+      console.error('❌ Failed to sync articles:', error);
+      set({ isLoading: false });
+      throw error;
+    }
   },
 
   setCategory: (category) => {
