@@ -24,6 +24,7 @@ import {
   Shield
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
+import MiniSitePreview from '../components/minisite/MiniSitePreview';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { motion } from 'framer-motion';
@@ -236,7 +237,8 @@ export default function ExhibitorDetailPage() {
               { id: 'overview', label: 'Vue d\'ensemble', icon: Eye },
               { id: 'projects', label: 'Produits', icon: Package },
               { id: 'impact', label: 'À propos', icon: Building2 },
-              { id: 'contact', label: 'Contact', icon: MessageCircle }
+              { id: 'contact', label: 'Contact', icon: MessageCircle },
+              { id: 'minisite', label: 'Mini-site', icon: Globe }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -337,8 +339,8 @@ export default function ExhibitorDetailPage() {
                     </Badge>
                   ))}
                 </div>
-              </div>
-            </Card>
+              </Card>
+            )}
           </motion.div>
         )}
 
@@ -432,7 +434,16 @@ export default function ExhibitorDetailPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-4">
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x
+        {activeTab === CONFIG.tabIds.minisite && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <MiniSitePreview exhibitorId={exhibitor.id} />
+          </motion.div>
+        )}
+-3">
                       <Building2 className="h-5 w-5 text-gray-400" />
                       <div>
                         <p className="font-medium text-gray-900">Secteur d'activité</p>

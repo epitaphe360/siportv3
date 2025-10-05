@@ -592,8 +592,9 @@ export class SupabaseService {
     try {
       const { data, error } = await (safeSupabase as any)
         .from('mini_sites')
-        .select('*')
-        .eq('exhibitor_id', exhibitorId)
+        .select("*")
+        .eq("exhibitor_id", exhibitorId)
+        .eq("published", true) // Ajouter ce filtre
         .single();
         
       if (error) {

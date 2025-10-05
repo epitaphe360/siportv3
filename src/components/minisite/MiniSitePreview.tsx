@@ -62,8 +62,11 @@ interface ExhibitorData {
   };
 }
 
-export default function MiniSitePreview() {
-  const { exhibitorId } = useParams<{ exhibitorId: string }>();
+interface MiniSitePreviewProps {
+  exhibitorId: string;
+}
+
+export default function MiniSitePreview({ exhibitorId }: MiniSitePreviewProps) {
   const navigate = useNavigate();
   const { articles, fetchNews } = useNewsStore();
   
@@ -163,7 +166,7 @@ export default function MiniSitePreview() {
           <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Mini-site introuvable</h2>
           <p className="text-gray-600 mb-6">
-            {error || 'Ce mini-site n\'existe pas ou n\'est pas encore publié.'}
+            {error || 'Le mini-site n\'a pas été trouvé. Il est possible qu\'il n\'existe pas, qu\'il ne soit pas encore publié, ou que l\'ID de l\'exposant soit incorrect.'}
           </p>
           <Button onClick={() => navigate(ROUTES.EXHIBITORS)}>
             <ArrowLeft className="h-4 w-4 mr-2" />
