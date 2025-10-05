@@ -178,7 +178,7 @@ export default function ExhibitorDetailPage() {
 
       {/* Hero Section */}
       <section id="accueil" className="relative h-96 bg-cover bg-center" style={{
-        backgroundImage: `url(${miniSiteData.hero.backgroundImage})`
+        backgroundImage: `url(${exhibitor.heroImage})`
       }}>
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
@@ -188,10 +188,10 @@ export default function ExhibitorDetailPage() {
             className="text-white max-w-2xl"
           >
             <h1 className="text-4xl lg:text-6xl font-bold mb-4">
-              {miniSiteData.hero.title}
+              {exhibitor.miniSite?.hero?.title}
             </h1>
             <p className="text-xl mb-8 opacity-90">
-              {miniSiteData.hero.subtitle}
+              {exhibitor.miniSite?.hero?.subtitle}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50"
@@ -203,7 +203,7 @@ export default function ExhibitorDetailPage() {
                 }}
               >
                 <Zap className="h-4 w-4 mr-2" />
-                {miniSiteData.hero.ctaText}
+                {exhibitor.miniSite?.hero?.ctaText}
               </Button>
               <Button
                 variant="outline"
@@ -235,7 +235,7 @@ export default function ExhibitorDetailPage() {
             
             {/* Stats Hero */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {miniSiteData.hero.stats.map((stat, index) => (
+              {exhibitor.miniSite?.hero?.stats.map((stat, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
@@ -264,16 +264,16 @@ export default function ExhibitorDetailPage() {
             className="text-center mb-12"
           >
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              {miniSiteData.about.title}
+              {exhibitor.miniSite?.about?.title}
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              {miniSiteData.about.description}
+              {exhibitor.miniSite?.about?.description}
             </p>
           </motion.div>
 
           {/* Features Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {miniSiteData.about.features.map((feature, index) => (
+            {exhibitor.miniSite?.about?.features.map((feature, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -301,7 +301,7 @@ export default function ExhibitorDetailPage() {
               Certifications & Accréditations
             </h3>
             <div className="flex flex-wrap justify-center gap-4">
-              {miniSiteData.about.certifications.map((cert, index) => (
+              {exhibitor.miniSite?.about?.certifications.map((cert, index) => (
                 <Badge key={index} variant="success" className="px-4 py-2">
                   <Award className="h-4 w-4 mr-2" />
                   {cert}
@@ -525,7 +525,7 @@ export default function ExhibitorDetailPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {miniSiteData.gallery.map((image, index) => (
+            {exhibitor.miniSite.gallery.map((image, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -563,7 +563,7 @@ export default function ExhibitorDetailPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {miniSiteData.testimonials.map((testimonial, index) => (
+            {exhibitor.miniSite.testimonials.map((testimonial, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}

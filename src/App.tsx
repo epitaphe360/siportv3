@@ -17,7 +17,7 @@ const EventsPage = React.lazy(() => import('./components/events/EventsPage'));
 const ChatInterface = React.lazy(() => import('./components/chat/ChatInterface'));
 const AppointmentCalendar = React.lazy(() => import('./components/appointments/AppointmentCalendar'));
 const MiniSitePreview = React.lazy(() => import('./components/minisite/MiniSitePreview'));
-const ExhibitorDetailPage = React.lazy(() => import('./components/exhibitor/ExhibitorDetailPage'));
+const ExhibitorDetailPage = React.lazy(() => import('./pages/ExhibitorDetailPage'));
 const ProfileEdit = React.lazy(() => import('./pages/exhibitor/ProfileEdit'));
 const ActivityPage = React.lazy(() => import('./pages/admin/ActivityPage'));
 const ResetPasswordPage = React.lazy(() => import('./pages/ResetPasswordPage'));
