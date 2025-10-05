@@ -395,8 +395,7 @@ export class SupabaseService {
           console.log('⚠️ Utilisateur test introuvable:', email);
           // Si l'utilisateur de test n'est pas trouvé dans public.users, on ne peut pas l'authentifier localement.
           // On ne tente PAS l'authentification Supabase standard pour un compte de test non trouvé.
-          throw new Error('Email ou mot de passe incorrect'); // Provoque une erreur pour arrêter le processus
-        }
+          return null; // Retourne null si l\'utilisateur de test n\'est pas trouvé       }
       }
       
       // AUTHENTIFICATION SUPABASE STANDARD (pour les comptes non-test)
