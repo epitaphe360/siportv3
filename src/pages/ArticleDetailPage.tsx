@@ -10,6 +10,40 @@ import type { NewsArticle } from '../store/newsStore';
 import { motion } from 'framer-motion';
 import ArticleAudioPlayer from '../components/news/ArticleAudioPlayer';
 
+// Fonction pour construire le texte complet de l'article pour l'audio
+const getFullArticleText = (article: NewsArticle): string => {
+  // Construire le texte complet incluant tout le contenu visible
+  const fullText = `
+    ${article.title}
+    
+    ${article.excerpt}
+    
+    ${article.content || "L'industrie portuaire mondiale connaît une transformation sans précédent. Les ports modernes ne sont plus seulement des points de transit, mais deviennent de véritables hubs technologiques intégrés dans l'économie numérique mondiale."}
+    
+    Les Enjeux de la Transformation Digitale
+    
+    La digitalisation des ports représente un défi majeur pour l'industrie maritime. Les autorités portuaires investissent massivement dans des technologies de pointe pour optimiser leurs opérations et améliorer leur compétitivité.
+    
+    L'avenir des ports se joue aujourd'hui dans leur capacité à intégrer les technologies émergentes tout en préservant leur efficacité opérationnelle.
+    
+    Technologies Émergentes
+    
+    Intelligence Artificielle pour l'optimisation des flux. IoT et capteurs pour la surveillance en temps réel. Blockchain pour la traçabilité des marchandises. Automatisation des équipements de manutention.
+    
+    Impact sur l'Écosystème Portuaire
+    
+    Cette transformation ne concerne pas seulement les infrastructures, mais l'ensemble de l'écosystème portuaire. Les opérateurs, les transitaires, les transporteurs et même les autorités douanières doivent s'adapter à ces nouvelles réalités technologiques.
+    
+    Chiffres Clés : 85% des ports sont en digitalisation. Gain d'efficacité de plus 40%. Investissement moyen de 2.5 millions d'euros.
+    
+    Perspectives d'Avenir
+    
+    L'avenir des ports s'annonce prometteur avec l'émergence de nouvelles technologies et l'engagement croissant vers la durabilité. SIPORTS 2026 sera l'occasion de découvrir ces innovations et de rencontrer les acteurs qui façonnent l'avenir du secteur portuaire.
+  `;
+  
+  return fullText.trim();
+};
+
 export default function ArticleDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { articles, fetchNews } = useNewsStore();
@@ -234,7 +268,7 @@ export default function ArticleDetailPage() {
             <div className="mb-8">
               <ArticleAudioPlayer
                 articleId={article.id}
-                articleText={article.content}
+                articleText={getFullArticleText(article)}
                 articleTitle={article.title}
                 language="fr"
               />
