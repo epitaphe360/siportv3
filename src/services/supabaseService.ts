@@ -141,45 +141,35 @@ export class SupabaseService {
   // ==================== EXHIBITORS ====================
   static async getExhibitors(): Promise<Exhibitor[]> {
     if (!this.checkSupabaseConnection()) {
-      console.warn('⚠️ Supabase non configuré - aucun exposant disponible');
+      console.warn(\'⚠️ Supabase non configuré - aucun exposant disponible\');
       return [];
     }
 
     const safeSupabase = supabase!;
     try {
       const { data: exhibitorsData, error: exhibitorsError } = await (safeSupabase as any)
-        .from('exhibitors')
-        .select('id,user_id,company_name,category,sector,description,logo_url,website,verified,featured,contact_info');
+        .from(\'exhibitors\')
+        .select(`
+          id,
+          user_id,
+          company_name,
+          category,
+          sector,
+          description,
+          logo_url,
+          website,
+          verified,
+          featured,
+          contact_info,
+          products:products(id, exhibitor_id, name, description, category, images, specifications, price, featured),
+          mini_site:mini_sites(theme, custom_colors, sections, published, views, last_updated)
+        `);
 
       if (exhibitorsError) throw exhibitorsError;
 
-      const exhibitors = (exhibitorsData || []) as any[];
-      if (exhibitors.length === 0) return [];
-
-      const enrichedExhibitors = await Promise.all(
-        exhibitors.map(async (exhibitorDB) => {
-          const { data: products } = await (safeSupabase as any)
-            .from('products')
-            .select('*')
-            .eq('exhibitor_id', exhibitorDB.id) || { data: [] };
-
-          const { data: miniSite } = await (safeSupabase as any)
-            .from('mini_sites')
-            .select('*')
-            .eq('exhibitor_id', exhibitorDB.id)
-            .maybeSingle() || { data: null };
-
-          return {
-            ...exhibitorDB,
-            products: products || [],
-            mini_site: miniSite
-          };
-        })
-      );
-
-      return enrichedExhibitors.map(this.transformExhibitorDBToExhibitor);
+      return (exhibitorsData || []).map(this.transformExhibitorDBToExhibitor);
     } catch (error) {
-      console.error('Erreur lors de la récupération des exposants:', error);
+      console.error(\'Erreur lors de la récupération des exposants:\', error);
       return [];
     }
   }
@@ -187,16 +177,18 @@ export class SupabaseService {
   // ==================== PARTNERS ====================
   static async getPartners(): Promise<any[]> {
     if (!this.checkSupabaseConnection()) {
-      console.warn('⚠️ Supabase non configuré - aucun partenaire disponible');
+      console.warn(\'⚠️ Supabase non configuré - aucun partenaire disponible\');
       return [];
     }
 
     const safeSupabase = supabase!;
     try {
       const { data, error } = await (safeSupabase as any)
-        .from('partners')
-        .select('*')
-        .order('type', { ascending: true });
+        .from(\'partners\')
+        .select(
+          `id, name, type, category, description, logo_url, website, country, sector, verified, featured, sponsorship_level, contributions, established_year, employees`
+        )
+        .order(\'type\', { ascending: true });
 
       if (error) throw error;
 
@@ -218,7 +210,7 @@ export class SupabaseService {
         employees: partner.employees
       }));
     } catch (error) {
-      console.error('Erreur lors de la récupération des partenaires:', error);
+      console.error(\'Erreur lors de la récupération des partenaires:\', error);
       return [];
     }
   }
