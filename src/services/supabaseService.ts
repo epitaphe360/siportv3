@@ -953,3 +953,67 @@ export class SupabaseService {
     }
   }
 
+
+
+
+  static async createAppointment(appointmentData: {
+    exhibitorId: string;
+    visitorId: string;
+    timeSlotId: string;
+    status: string;
+    meetingType: string;
+  }): Promise<any> {
+    if (!this.checkSupabaseConnection()) return null;
+
+    const safeSupabase = supabase!;
+    try {
+      // 1. Créer le rendez-vous
+      const { data: appointment, error: appointmentError } = await (safeSupabase as any)
+        .from("appointments")
+        .insert([
+          {
+            exhibitor_id: appointmentData.exhibitorId,
+            visitor_id: appointmentData.visitorId,
+            time_slot_id: appointmentData.timeSlotId,
+            status: appointmentData.status,
+            meeting_type: appointmentData.meetingType,
+          },
+        ])
+        .select()
+        .single();
+
+      if (appointmentError) throw appointmentError;
+
+      // 2. Récupérer le créneau horaire associé
+      const { data: timeSlot, error: timeSlotError } = await (safeSupabase as any)
+        .from("time_slots")
+        .select("id, max_bookings, current_bookings, available")
+        .eq("id", appointmentData.timeSlotId)
+        .single();
+
+      if (timeSlotError) throw timeSlotError;
+
+      // 3. Mettre à jour le nombre de réservations et le statut de disponibilité
+      let newCurrentBookings = (timeSlot.current_bookings || 0) + 1;
+      let newAvailableStatus = timeSlot.available;
+
+      if (newCurrentBookings >= timeSlot.max_bookings) {
+        newAvailableStatus = false;
+      }
+
+      const { error: updateError } = await (safeSupabase as any)
+        .from("time_slots")
+        .update({
+          current_bookings: newCurrentBookings,
+          available: newAvailableStatus,
+        })
+        .eq("id", appointmentData.timeSlotId);
+
+      if (updateError) throw updateError;
+
+      return appointment;
+    } catch (error) {
+      console.error("Erreur lors de la création du rendez-vous ou de la mise à jour du créneau:", error);
+      return null;
+    }
+  }

@@ -44,7 +44,33 @@ export default function AvailabilityManager({ userId, userType, onAvailabilityUp
 
   const handleAddTimeSlot = async () => {
     if (!newSlot.date || !newSlot.startTime || !newSlot.endTime) {
-      toast.error('Veuillez remplir tous les champs requis');
+      toast.error("Veuillez remplir tous les champs requis");
+      return;
+    }
+
+    const startMinutes = timeToMinutes(newSlot.startTime);
+    const endMinutes = timeToMinutes(newSlot.endTime);
+
+    if (endMinutes <= startMinutes) {
+      toast.error("L'heure de fin doit être après l'heure de début.");
+      return;
+    }
+
+    // Check for overlapping time slots
+    const newSlotStart = new Date(`${newSlot.date}T${newSlot.startTime}:00`);
+    const newSlotEnd = new Date(`${newSlot.date}T${newSlot.endTime}:00`);
+
+    const overlappingSlot = timeSlots.find(slot => {
+      const existingSlotStart = new Date(`${slot.date}T${slot.startTime}:00`);
+      const existingSlotEnd = new Date(`${slot.date}T${slot.endTime}:00`);
+
+      return (
+        (newSlotStart < existingSlotEnd && newSlotEnd > existingSlotStart)
+      );
+    });
+
+    if (overlappingSlot) {
+      toast.error("Ce créneau chevauche un créneau existant.");
       return;
     }
     setIsLoading(true);
@@ -260,7 +286,7 @@ export default function AvailabilityManager({ userId, userType, onAvailabilityUp
               disabled={isLoading}
               className="bg-blue-600 hover:bg-blue-700"
             >
-              <Save className="h-4 w-4 mr-2" />
+              {isLoading ? <span className="animate-spin">⚙️</span> : <Save className="h-4 w-4 mr-2" />}
               {isLoading ? 'Ajout...' : 'Ajouter'}
             </Button>
           </div>
@@ -319,8 +345,9 @@ export default function AvailabilityManager({ userId, userType, onAvailabilityUp
                     size="sm"
                     onClick={() => handleDeleteTimeSlot(slot.id)}
                     className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    disabled={isLoading}
                   >
-                    <Trash2 className="h-4 w-4" />
+                    {isLoading ? <span className="animate-spin">⚙️</span> : <Trash2 className="h-4 w-4" />}
                   </Button>
                 </div>
               </div>

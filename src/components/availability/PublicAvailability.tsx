@@ -35,7 +35,13 @@ const PublicAvailability = ({ userId }: PublicAvailabilityProps) => {
 
   // Demande de rendez-vous
   const handleRequestAppointment = async (slot: TimeSlot) => {
-    if (!user) return;
+    if (!user) {
+      // Rediriger vers la page de connexion ou afficher un message
+      alert("Veuillez vous connecter pour prendre un rendez-vous.");
+      // Ou naviguer vers la page de connexion si un hook de navigation est disponible
+      // navigate(`/login?redirect=/exhibitor/${userId}`);
+      return;
+    }
     setRequesting(slot.id);
     setSuccessId(null);
     try {
@@ -72,13 +78,14 @@ const PublicAvailability = ({ userId }: PublicAvailabilityProps) => {
     <div className="space-y-4">
       {isLoading ? (
         <div>Chargement des créneaux...</div>
-      ) : timeSlots.length === 0 ? (
-        <Card className="p-6 text-center">
-          <Calendar className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-          <div className="text-gray-600">Aucun créneau disponible</div>
-        </Card>
       ) : (
-        timeSlots.map(slot => (
+        timeSlots.filter(slot => slot.available && slot.currentBookings < slot.maxBookings).length === 0 ? (
+          <Card className="p-6 text-center">
+            <Calendar className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+            <div className="text-gray-600">Aucun créneau disponible pour le moment.</div>
+          </Card>
+        ) : (
+          timeSlots.filter(slot => slot.available && slot.currentBookings < slot.maxBookings).map(slot => (
           <Card key={slot.id} className="p-4 flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Clock className="h-5 w-5 text-blue-600" />
