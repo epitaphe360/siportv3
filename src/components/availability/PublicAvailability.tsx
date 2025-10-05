@@ -86,7 +86,7 @@ const PublicAvailability = ({ userId }: PublicAvailabilityProps) => {
           </Card>
         ) : (
           timeSlots.filter(slot => slot.available && slot.currentBookings < slot.maxBookings).map(slot => (
-          <Card key={slot.id} className="p-4 flex items-center justify-between">
+            <Card key={slot.id} className="p-4 flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Clock className="h-5 w-5 text-blue-600" />
               <div>
@@ -112,8 +112,9 @@ const PublicAvailability = ({ userId }: PublicAvailabilityProps) => {
                 </Button>
               )}
             </div>
-          </Card>
-        ))
+            </Card>
+          ))
+        )
       )}
     </div>
   );

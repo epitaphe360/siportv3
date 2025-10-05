@@ -142,14 +142,14 @@ export class SupabaseService {
   // ==================== EXHIBITORS ====================
   static async getExhibitors(): Promise<Exhibitor[]> {
     if (!this.checkSupabaseConnection()) {
-      console.warn(\'⚠️ Supabase non configuré - aucun exposant disponible\');
+      console.warn('⚠️ Supabase non configuré - aucun exposant disponible');
       return [];
     }
 
     const safeSupabase = supabase!;
     try {
       const { data: exhibitorsData, error: exhibitorsError } = await (safeSupabase as any)
-        .from(\'exhibitors\')
+        .from('exhibitors')
         .select(`
           id,
           user_id,
@@ -171,7 +171,7 @@ export class SupabaseService {
 
       return (exhibitorsData || []).map(this.transformExhibitorDBToExhibitor);
     } catch (error) {
-      console.error(\'Erreur lors de la récupération des exposants:\', error);
+      console.error('Erreur lors de la récupération des exposants:', error);
       return [];
     }
   }
@@ -179,18 +179,18 @@ export class SupabaseService {
   // ==================== PARTNERS ====================
   static async getPartners(): Promise<any[]> {
     if (!this.checkSupabaseConnection()) {
-      console.warn(\'⚠️ Supabase non configuré - aucun partenaire disponible\');
+      console.warn('⚠️ Supabase non configuré - aucun partenaire disponible');
       return [];
     }
 
     const safeSupabase = supabase!;
     try {
       const { data, error } = await (safeSupabase as any)
-        .from(\'partners\')
+        .from('partners')
         .select(
           `id, name, type, category, description, logo_url, website, country, sector, verified, featured, sponsorship_level, contributions, established_year, employees`
         )
-        .order(\'type\', { ascending: true });
+        .order('type', { ascending: true });
 
       if (error) throw error;
 
@@ -212,7 +212,7 @@ export class SupabaseService {
         employees: partner.employees
       }));
     } catch (error) {
-      console.error(\'Erreur lors de la récupération des partenaires:\', error);
+      console.error('Erreur lors de la récupération des partenaires:', error);
       return [];
     }
   }
@@ -900,9 +900,6 @@ export class SupabaseService {
       return [];
     }
   }
-}
-
-
 
   // ==================== TIME SLOTS ====================
   static async getTimeSlotsByUser(userId: string): Promise<TimeSlot[]> {
@@ -1037,3 +1034,5 @@ export class SupabaseService {
       return null;
     }
   }
+
+}

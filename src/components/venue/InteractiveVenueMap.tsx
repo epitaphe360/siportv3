@@ -130,8 +130,8 @@ const InteractiveVenueMap: React.FC = () => {
                   y={position.y}
                   width={position.width}
                   height={position.height}
-                  fill={isSelected ? \'#3b82f6\' : \'#e0f2fe\'}
-                  stroke={isSelected ? \'#1d4ed8\' : \'#0284c7\'}
+                  fill={isSelected ? '#3b82f6' : '#e0f2fe'}
+                  stroke={isSelected ? '#1d4ed8' : '#0284c7'}
                   strokeWidth={isSelected ? 3 : 2}
                   rx="8"
                   className="transition-all duration-200"
@@ -143,23 +143,23 @@ const InteractiveVenueMap: React.FC = () => {
                   y={position.y + 20}
                   fontSize="16"
                   fontWeight="bold"
-                  fill={isSelected ? \'#ffffff\' : \'#0c4a6e\'}
+                  fill={isSelected ? '#ffffff' : '#0c4a6e'}
                   textAnchor="middle"
                 >
                   {exhibitor.standNumber}
                 </text>
 
-                {/* Nom de l\'entreprise */}
+                {/* Nom de l'entreprise */}
                 <text
                   x={position.x + position.width / 2}
                   y={position.y + 40}
                   fontSize="10"
-                  fill={isSelected ? \'#ffffff\' : \'#374151\'}
+                  fill={isSelected ? '#ffffff' : '#374151'}
                   textAnchor="middle"
                   style={{
                     maxWidth: `${position.width - 10}px`,
-                    overflow: \'hidden\',
-                    textOverflow: \'ellipsis\',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
                   }}
                 >
                   {exhibitor.companyName.length > 18
@@ -172,7 +172,7 @@ const InteractiveVenueMap: React.FC = () => {
                   x={position.x + position.width / 2}
                   y={position.y + 55}
                   fontSize="8"
-                  fill={isSelected ? \'#e0f2fe\' : \'#6b7280\'}
+                  fill={isSelected ? '#e0f2fe' : '#6b7280'}
                   textAnchor="middle"
                 >
                   {exhibitor.category}
@@ -183,7 +183,7 @@ const InteractiveVenueMap: React.FC = () => {
                   x={position.x + position.width / 2}
                   y={position.y + 70}
                   fontSize="8"
-                  fill={isSelected ? \'#e0f2fe\' : \'#6b7280\'}
+                  fill={isSelected ? '#e0f2fe' : '#6b7280'}
                   textAnchor="middle"
                 >
                   {exhibitor.sector}
