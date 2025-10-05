@@ -390,14 +390,16 @@ export class SupabaseService {
           console.log('   Type:', userData.type);
           console.log('   ID:', userData.id);
           const user = this.transformUserDBToUser(userData);
-          return user;
+          return user; // Retourne l'utilisateur directement pour les comptes de test
         } else {
           console.log('⚠️ Utilisateur test introuvable:', email);
-          return null;
+          // Si l'utilisateur de test n'est pas trouvé dans public.users, on ne peut pas l'authentifier localement.
+          // On ne tente PAS l'authentification Supabase standard pour un compte de test non trouvé.
+          throw new Error('Email ou mot de passe incorrect'); // Provoque une erreur pour arrêter le processus
         }
       }
       
-      // AUTHENTIFICATION SUPABASE STANDARD
+      // AUTHENTIFICATION SUPABASE STANDARD (pour les comptes non-test)
       const { data, error } = await safeSupabase.auth.signInWithPassword({
         email,
         password,
