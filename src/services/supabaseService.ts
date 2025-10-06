@@ -134,7 +134,7 @@ export class SupabaseService {
       
       return this.transformUserDBToUser(data);
     } catch (error) {
-      console.error('Erreur lors de la récupération de l\'utilisateur:', error);
+      console.error('Erreur lors de la récupération de l\`utilisateur:', error);
       return null;
     }
   }
@@ -359,29 +359,29 @@ export class SupabaseService {
 
   static async signIn(email: string, password: string): Promise<User | null> {
     if (!this.checkSupabaseConnection()) return null;
-    
+
     const safeSupabase = supabase!;
-    
+
     try {
       // AUTHENTIFICATION LOCALE POUR LES COMPTES DE TEST
       const testAccounts = [
         'admin@siports.com',
-        'exposant@siports.com', 
+        'exposant@siports.com',
         'partenaire@siports.com',
         'visiteur@siports.com'
       ];
-      
+
       if (testAccounts.includes(email) && password === 'demo123') {
         console.log('🔄 Authentification locale pour compte de test:', email);
 
-        const { data: userData, error } = await (safeSupabase as any)
+        const { data: userData, error: testError } = await (safeSupabase as any)
           .from('users')
           .select('*')
           .eq('email', email)
           .single();
 
-        if (error) {
-          console.error('❌ Erreur lors de la récupération du compte test:', error);
+        if (testError) {
+          console.error('❌ Erreur lors de la récupération du compte test:', testError);
           return null;
         }
 
@@ -393,20 +393,22 @@ export class SupabaseService {
           return user; // Retourne l'utilisateur directement pour les comptes de test
         } else {
           console.log('⚠️ Utilisateur test introuvable:', email);
-          // Si l'utilisateur de test n'est pas trouvé dans public.users, on ne peut pas l'authentifier localement.
-          // On ne tente PAS l'authentification Supabase standard pour un compte de test non trouvé.
-          return null; // Retourne null si l\'utilisateur de test n\'est pas trouvé       }
+          return null; // Retourne null si l'utilisateur de test n'est pas trouvé
+        }
       }
-      
+
       // AUTHENTIFICATION SUPABASE STANDARD (pour les comptes non-test)
-      const { data, error } = await safeSupabase.auth.signInWithPassword({
+      const { data, error: authError } = await safeSupabase.auth.signInWithPassword({
         email,
         password,
       });
-      
-      if (error) throw error;
+
+      if (authError) {
+        throw authError;
+      }
+
       if (!data.user) return null;
-      
+
       // Récupérer le profil utilisateur
       const user = await this.getUserByEmail(email);
       return user;
@@ -735,7 +737,7 @@ export class SupabaseService {
       if (error) throw error;
       console.log('✅ Email de confirmation envoyé:', data);
     } catch (error) {
-      console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
+      console.error('❌ Erreur lors de l\`envoi de l\`email:', error);
       throw error;
     }
   }
@@ -789,7 +791,7 @@ export class SupabaseService {
 
       return (data || []).map(this.transformUserDBToUser);
     } catch (error) {
-      console.error('Erreur lors de la recherche d\'utilisateurs:', error);
+      console.error('Erreur lors de la recherche d\`utilisateurs:', error);
       return [];
     }
   }
@@ -837,7 +839,7 @@ export class SupabaseService {
 
       return true;
     } catch (error) {
-      console.error('Erreur lors de l\'envoi de la demande de connexion:', error);
+      console.error('Erreur lors de l\`envoi de la demande de connexion:', error);
       return false;
     }
   }
@@ -859,7 +861,7 @@ export class SupabaseService {
 
       return true;
     } catch (error) {
-      console.error('Erreur lors de l\'acceptation de la demande:', error);
+      console.error('Erreur lors de l\`acceptation de la demande:', error);
       return false;
     }
   }
@@ -1037,3 +1039,4 @@ export class SupabaseService {
   }
 
 }
+
