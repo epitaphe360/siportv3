@@ -801,10 +801,53 @@ export class SupabaseService {
     } catch (error) {
       console.error('Erreur récupération exposant pour mini-site:', error);
       return null;
-    }
-  }
-
-  static async createExhibitorProfile(userId: string, userData: any): Promise<void> {
+	    }
+	  }
+	
+	  static async updateExhibitor(exhibitorId: string, data: Partial<Exhibitor>): Promise<void> {
+	    if (!this.checkSupabaseConnection()) return;
+	
+	    const safeSupabase = supabase!;
+	    try {
+	      const updateData: Record<string, any> = {};
+	      if (data.verified !== undefined) updateData.verified = data.verified;
+	      if (data.featured !== undefined) updateData.featured = data.featured;
+	      if (data.website !== undefined) updateData.website = data.website;
+	      if (data.logo !== undefined) updateData.logo_url = data.logo;
+	      // Ajoutez d'autres champs à mettre à jour si nécessaire
+	
+	      const { error } = await (safeSupabase as any)
+	        .from('exhibitors')
+	        .update(updateData)
+	        .eq('id', exhibitorId);
+	
+	      if (error) throw error;
+	      console.log(`✅ Profil exposant ${exhibitorId} mis à jour`);
+	    } catch (error) {
+	      console.error(`❌ Erreur mise à jour profil exposant ${exhibitorId}:`, error);
+	      throw error;
+	    }
+	  }
+	
+	  static async updateUserStatus(userId: string, status: User['status']): Promise<void> {
+	    if (!this.checkSupabaseConnection()) return;
+	
+	    const safeSupabase = supabase!;
+	    try {
+	      const { error } = await (safeSupabase as any)
+	        .from('users')
+	        .update({ status })
+	        .eq('id', userId);
+	
+	      if (error) throw error;
+	      console.log(`✅ Statut utilisateur ${userId} mis à jour à ${status}`);
+	    } catch (error) {
+	      console.error(`❌ Erreur mise à jour statut utilisateur ${userId}:`, error);
+	      throw error;
+	    }
+	  }
+	
+	  static async createExhibitorProfile(userId: string, userData: any): Promise<void> {
     if (!this.checkSupabaseConnection()) return;
     
     const safeSupabase = supabase!;

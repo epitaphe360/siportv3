@@ -66,9 +66,19 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
   updateExhibitorStatus: async (exhibitorId, newStatus) => {
     set({ isUpdating: exhibitorId, error: null });
     try {
-      await SupabaseService.updateExhibitor(exhibitorId, {
-        verified: newStatus === 'approved',
-      });
+	      const isVerified = newStatus === 'approved';
+	      const userStatus = isVerified ? 'active' : 'rejected';
+	
+	      // 1. Mettre à jour le statut 'verified' de l'exposant
+	      await SupabaseService.updateExhibitor(exhibitorId, {
+	        verified: isVerified,
+	      });
+	
+	      // 2. Mettre à jour le statut de l'utilisateur (dans la table 'users')
+	      // NOTE: On suppose que l'ID de l'exposant est le même que l'ID de l'utilisateur
+	      await SupabaseService.updateUserStatus(exhibitorId, userStatus);
+	
+	      // 3. Optionnel: Supprimer la RegistrationRequest (non implémenté ici, mais logique)
 
       set(state => {
         const updateExhibitor = (ex: Exhibitor) => 
