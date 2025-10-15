@@ -632,12 +632,12 @@ export default function AdminDashboard() {
                   </motion.div>
                 </Link>
 
-                <Link to="/admin/events">
+	                <Link to={ROUTES.ADMIN_EVENTS}>
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer"
                   >
-                    <Calendar className="h-6 w-6 text-purple-600 mb-2" />
+	                    <Calendar className="h-6 w-6 text-purple-600 mb-2" />
                     <div className="font-semibold text-purple-900 text-sm">Événements</div>
                     <div className="text-xs text-purple-600">{adminMetrics.totalEvents}</div>
                   </motion.div>

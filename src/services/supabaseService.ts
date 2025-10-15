@@ -444,6 +444,78 @@ export class SupabaseService {
     }
   }
 
+  static async updateEvent(eventId: string, eventData: Omit<Event, 'id' | 'registered'>): Promise<Event> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('events')
+        .update({
+          title: eventData.title,
+          description: eventData.description,
+          event_type: eventData.type,
+          event_date: eventData.date.toISOString().split('T')[0],
+          start_time: `${eventData.date.toISOString().split('T')[0]}T${eventData.startTime}:00Z`,
+          end_time: `${eventData.date.toISOString().split('T')[0]}T${eventData.endTime}:00Z`,
+          capacity: eventData.capacity,
+          category: eventData.category,
+          virtual: eventData.virtual,
+          featured: eventData.featured,
+          location: eventData.location,
+          meeting_link: eventData.meetingLink,
+          tags: eventData.tags,
+          speakers: eventData.speakers,
+        })
+        .eq('id', eventId)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Transformer les données de la DB au type Event
+      return {
+        id: data.id,
+        title: data.title,
+        description: data.description,
+        type: data.event_type,
+        date: new Date(data.event_date),
+        startTime: data.start_time.split('T')[1].substring(0, 5),
+        endTime: data.end_time.split('T')[1].substring(0, 5),
+        capacity: data.capacity,
+        registered: data.registered,
+        speakers: data.speakers,
+        category: data.category,
+        virtual: data.virtual,
+        featured: data.featured,
+        location: data.location,
+        meetingLink: data.meeting_link,
+        tags: data.tags,
+      } as Event;
+
+    } catch (error) {
+      console.error(`Erreur lors de la mise à jour de l'événement ${eventId}:`, error);
+      throw error;
+    }
+  }
+
+  static async deleteEvent(eventId: string): Promise<void> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+
+    const safeSupabase = supabase!;
+    try {
+      const { error } = await (safeSupabase as any)
+        .from('events')
+        .delete()
+        .eq('id', eventId);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error(`Erreur lors de la suppression de l'événement ${eventId}:`, error);
+      throw error;
+    }
+  }
+
   static async createEvent(eventData: Omit<Event, 'id' | 'registered'>): Promise<Event> {
     if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
 

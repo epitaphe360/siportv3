@@ -40,6 +40,7 @@ const ExhibitorCreationSimulator = React.lazy(() => import('./components/admin/E
 const PartnerCreationForm = React.lazy(() => import('./components/admin/PartnerCreationForm'));
 const NewsArticleCreationForm = React.lazy(() => import('./components/admin/NewsArticleCreationForm'));
 const EventCreationForm = React.lazy(() => import('./components/admin/EventCreationForm'));
+const EventManagementPage = React.lazy(() => import('./components/admin/EventManagementPage'));
 const UserManagementPage = React.lazy(() => import('./pages/UserManagementPage'));
 const ExhibitorSignUpPage = React.lazy(() => import('./pages/auth/ExhibitorSignUpPage'));
 const PartnerSignUpPage = React.lazy(() => import('./pages/auth/PartnerSignUpPage'));
@@ -125,6 +126,7 @@ const App = () => {
             <Route path={ROUTES.ADMIN_CREATE_PARTNER} element={<PartnerCreationForm />} />
             <Route path={ROUTES.ADMIN_CREATE_NEWS} element={<NewsArticleCreationForm />} />
             <Route path={ROUTES.ADMIN_CREATE_EVENT} element={<EventCreationForm />} />
+            <Route path={ROUTES.ADMIN_EVENTS} element={<EventManagementPage />} />
             <Route path={ROUTES.ADMIN_ACTIVITY} element={<ActivityPage />} />
             <Route path={ROUTES.ADMIN_VALIDATION} element={<ExhibitorValidation />} />
             <Route path={ROUTES.ADMIN_MODERATION} element={<ModerationPanel />} />

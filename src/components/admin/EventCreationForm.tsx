@@ -39,11 +39,32 @@ const initialSpeaker: Speaker = {
   expertise: [],
 };
 
-export default function EventCreationForm() {
+interface EventCreationFormProps {
+  eventToEdit?: Event;
+  onSuccess?: () => void;
+  onCancel?: () => void;
+}
+
+export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: EventCreationFormProps) {
   const { user } = useAuthStore();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<EventFormState>({
+  const [formData, setFormData] = useState<EventFormState>(eventToEdit ? {
+    title: eventToEdit.title,
+    description: eventToEdit.description,
+    type: eventToEdit.type,
+    date: eventToEdit.date.toISOString().split('T')[0],
+    startTime: eventToEdit.startTime,
+    endTime: eventToEdit.endTime,
+    capacity: eventToEdit.capacity,
+    category: eventToEdit.category,
+    virtual: eventToEdit.virtual,
+    featured: eventToEdit.featured,
+    location: eventToEdit.location || '',
+    meetingLink: eventToEdit.meetingLink || '',
+    tags: eventToEdit.tags.join(', '),
+    speakers: eventToEdit.speakers.length > 0 ? eventToEdit.speakers : [initialSpeaker],
+  } : {
     title: '',
     description: '',
     type: '',
@@ -160,6 +181,73 @@ export default function EventCreationForm() {
         })),
       };
 
+      if (eventToEdit) {
+        // Modification
+        await SupabaseService.updateEvent(eventToEdit.id, eventData);
+        toast({
+          title: 'Succès',
+          description: `L'événement "${formData.title}" a été mis à jour.`,
+          variant: 'success',
+        });
+        onSuccess && onSuccess();
+      } else {
+        // Création
+        await SupabaseService.createEvent(eventData);
+        toast({
+          title: 'Succès',
+          description: `L'événement "${formData.title}" a été créé et publié.`,
+          variant: 'success',
+        });
+        navigate(ROUTES.ADMIN_DASHBOARD);
+      }
+
+    } catch (error) {
+      console.error('Erreur lors de la gestion de l\'événement:', error);
+      toast({
+        title: 'Erreur',
+        description: error instanceof Error ? error.message : 'Une erreur inattendue est survenue lors de la gestion de l\'événement.',
+        variant: 'error',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      // Validation simple
+      if (!formData.title || !formData.description || !formData.type || !formData.date || !formData.startTime || !formData.endTime) {
+        toast({
+          title: 'Erreur de validation',
+          description: 'Veuillez remplir tous les champs obligatoires.',
+          variant: 'error',
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Préparation des données pour l'API
+      const eventData: Omit<Event, 'id' | 'registered'> = {
+        title: formData.title,
+        description: formData.description,
+        type: formData.type as Event['type'],
+        date: new Date(formData.date),
+        startTime: formData.startTime,
+        endTime: formData.endTime,
+        capacity: formData.capacity,
+        category: formData.category,
+        virtual: formData.virtual,
+        featured: formData.featured,
+        location: formData.location,
+        meetingLink: formData.meetingLink,
+        tags: formData.tags.split(',').map(t => t.trim()).filter(t => t.length > 0),
+        speakers: formData.speakers.filter(s => s.name.length > 0).map(s => ({
+          ...s,
+          id: s.id.startsWith('temp-') ? crypto.randomUUID() : s.id, // Générer un ID pour les nouveaux speakers
+        })),
+      };
+
       // Appel à la nouvelle fonction de création d'événement
       await SupabaseService.createEvent(eventData);
 
@@ -204,7 +292,7 @@ export default function EventCreationForm() {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">
-          Créer un Nouvel Événement
+          {eventToEdit ? 'Modifier l\'Événement' : 'Créer un Nouvel Événement'}
         </h1>
 
         <Card className="p-6 shadow-lg">
@@ -506,14 +594,19 @@ export default function EventCreationForm() {
               </div>
 
               {/* Bouton de Soumission */}
-              <div className="pt-6 border-t border-gray-200 flex justify-end">
+              <div className="pt-6 border-t border-gray-200 flex justify-end space-x-4">
+                {eventToEdit && onCancel && (
+                  <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
+                    Annuler
+                  </Button>
+                )}
                 <Button type="submit" disabled={isLoading} className="w-full md:w-auto">
                   {isLoading ? (
                     <Loader2 className="h-5 w-5 mr-2 animate-spin" />
                   ) : (
                     <Calendar className="h-5 w-5 mr-2" />
                   )}
-                  {isLoading ? 'Création en cours...' : 'Créer et Publier l\'Événement'}
+                  {isLoading ? (eventToEdit ? 'Mise à jour en cours...' : 'Création en cours...') : (eventToEdit ? 'Mettre à jour l\'Événement' : 'Créer et Publier l\'Événement')}
                 </Button>
               </div>
             </div>
