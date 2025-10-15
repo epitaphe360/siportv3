@@ -5,6 +5,7 @@ import { Button } from '../ui/Button';
 import { Link, Navigate } from 'react-router-dom';
 import useAuthStore from '../../store/authStore';
 import { useDashboardStore } from '../../store/dashboardStore';
+import { useRef } from 'react';
 import { QRCodeCanvas as QRCode } from 'qrcode.react';
 import { useAppointmentStore } from '../../store/appointmentStore';
 import PublicAvailabilityCalendar from '../calendar/PublicAvailabilityCalendar';
@@ -17,6 +18,7 @@ import { DEFAULT_SALON_CONFIG, formatSalonDates, formatSalonLocation, formatSalo
 import { ErrorMessage } from '../common/ErrorMessage';
 
 export default function ExhibitorDashboard() {
+  const qrCodeRef = useRef<HTMLCanvasElement>(null);
   const [showQRModal, setShowQRModal] = useState(false);
   const [modal, setModal] = useState<{title: string, content: React.ReactNode} | null>(null);
   const [isDownloadingQR, setIsDownloadingQR] = useState(false);
@@ -89,7 +91,7 @@ export default function ExhibitorDashboard() {
   const downloadQRCode = async () => {
     setIsDownloadingQR(true);
     try {
-      const canvas = document.querySelector('canvas') as HTMLCanvasElement;
+      const canvas = qrCodeRef.current;
       if (canvas) {
         const link = document.createElement('a');
         link.download = `qr-code-${user?.profile.company || 'stand'}.png`;
@@ -612,12 +614,13 @@ export default function ExhibitorDashboard() {
               <p className="text-gray-600 mb-6">Scannez ce code pour accéder rapidement à votre stand</p>
               
               <div className="bg-gray-50 p-4 rounded-xl inline-block mb-6">
-                <QRCode
-                  value={`SIPORTS2026-EXHIBITOR-${user?.id}`}
-                  size={200}
-                  level="H"
-                  includeMargin={true}
-                />
+                  <QRCode
+                    value={`SIPORTS2026-EXHIBITOR-${user?.id}`}
+                    size={200}
+                    level="H"
+                    includeMargin={true}
+                    ref={qrCodeRef}
+                  />
               </div>
               
               <div className="space-y-2 text-sm text-gray-700 bg-gray-50 p-4 rounded-lg">
