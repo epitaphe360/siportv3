@@ -363,41 +363,7 @@ export class SupabaseService {
     const safeSupabase = supabase!;
 
     try {
-      // AUTHENTIFICATION LOCALE POUR LES COMPTES DE TEST
-      const testAccounts = [
-        'admin@siports.com',
-        'exposant@siports.com',
-        'partenaire@siports.com',
-        'visiteur@siports.com'
-      ];
-
-      if (testAccounts.includes(email) && password === 'demo123') {
-        console.log('🔄 Authentification locale pour compte de test:', email);
-
-        const { data: userData, error: testError } = await (safeSupabase as any)
-          .from('users')
-          .select('*')
-          .eq('email', email)
-          .single();
-
-        if (testError) {
-          console.error('❌ Erreur lors de la récupération du compte test:', testError);
-          return null;
-        }
-
-        if (userData) {
-          console.log('✅ Compte de test authentifié:', userData.email);
-          console.log('   Type:', userData.type);
-          console.log('   ID:', userData.id);
-          const user = this.transformUserDBToUser(userData);
-          return user; // Retourne l'utilisateur directement pour les comptes de test
-        } else {
-          console.log('⚠️ Utilisateur test introuvable:', email);
-          return null; // Retourne null si l'utilisateur de test n'est pas trouvé
-        }
-      }
-
-      // AUTHENTIFICATION SUPABASE STANDARD (pour les comptes non-test)
+	      // AUTHENTIFICATION SUPABASE STANDARD
       const { data, error: authError } = await safeSupabase.auth.signInWithPassword({
         email,
         password,
