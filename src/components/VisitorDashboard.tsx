@@ -1,13 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import useAuthStore from '../store/authStore';
 import { useAppointmentStore } from '../store/appointmentStore';
+import { getVisitorQuota, getVisitorLevelInfo } from '../config/quotas';
 
-const LEVELS: Record<string, any> = {
-  free: { label: 'Free Pass', color: '#6c757d', icon: '🟢', access: ['Accès limité', 'Networking'] },
-  basic: { label: 'Basic Pass', color: '#007bff', icon: '🔵', access: ['Accès 1 jour', '2 RDV garantis'] },
-  premium: { label: 'Premium Pass', color: '#17a2b8', icon: '🟣', access: ['Accès 2 jours', '5 RDV garantis'] },
-  vip: { label: 'VIP Pass', color: '#ffd700', icon: '👑', access: ['Accès All Inclusive', 'Service concierge'] }
-};
+// Les niveaux sont maintenant importés depuis ../config/quotas
 
 const cardStyle = {
   boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
@@ -19,37 +15,22 @@ const cardStyle = {
   border: '1px solid #eaeaea'
 } as const;
 
-export default function VisitorDashboard(): JSX.Element {
+export default function VisitorDashboard({ userId }: { userId: string }): JSX.Element {
   const { user } = useAuthStore();
   const { appointments, fetchAppointments } = useAppointmentStore();
-  const [loading, setLoading] = useState(true);
-  const [visitor, setVisitor] = useState<any>(null);
-
-  useEffect(() => {
-    // basic visitor data population (kept minimal)
-    if (!user) {
-      setVisitor(null);
-      setLoading(false);
-      return;
-    }
-    // assume user contains name/email already
-    setVisitor(user);
-    setLoading(false);
-  }, [user]);
 
   useEffect(() => {
     fetchAppointments();
   }, [fetchAppointments]);
 
-  if (loading) return <div style={{ textAlign: 'center', marginTop: 48 }}>Chargement...</div>;
-  if (!visitor) return <div style={{ textAlign: 'center', marginTop: 48 }}>Visiteur non trouvé. Veuillez vous connecter.</div>;
+  if (!user) return <div style={{ textAlign: 'center', marginTop: 48 }}>Visiteur non trouvé. Veuillez vous connecter.</div>;
 
-  const level = visitor.visitor_level || 'free';
-  const levelInfo = LEVELS[level] || LEVELS.free;
+  const level = user.visitor_level || user.profile?.visitor_level || 'free';
+  const levelInfo = getVisitorLevelInfo(level);
 
-  const confirmedCount = (appointments || []).filter((a: any) => a.visitorId === visitor.id && a.status === 'confirmed').length;
-  const quotas: Record<string, number> = { free: 0, basic: 2, premium: 5, vip: 99 };
-  const remaining = Math.max(0, (quotas[level] || 0) - confirmedCount);
+  const confirmedCount = (appointments || []).filter((a: any) => a.visitorId === user.id && a.status === 'confirmed').length;
+  const quota = getVisitorQuota(level);
+  const remaining = Math.max(0, quota - confirmedCount);
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '72vh', background: '#f8fafc' }}>

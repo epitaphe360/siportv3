@@ -195,16 +195,8 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     // Vérifier le quota selon visitor_level (utilise la configuration centralisée)
     const visitorLevel = resolvedUser?.visitor_level || resolvedUser?.profile?.visitor_level || 'free';
     
-    // Import dynamique de la configuration des quotas
-    let getVisitorQuota: (level: string) => number;
-    try {
-      const quotasModule = await import('../config/quotas');
-      getVisitorQuota = quotasModule.getVisitorQuota;
-    } catch {
-      // Fallback si le module n'est pas disponible
-      const FALLBACK_QUOTAS: Record<string, number> = { free: 0, basic: 2, premium: 5, vip: 99 };
-      getVisitorQuota = (level: string) => FALLBACK_QUOTAS[level] || 0;
-    }
+    // Import de la configuration des quotas
+    const { getVisitorQuota } = await import('../config/quotas');
 
     const quota = getVisitorQuota(visitorLevel);
     const confirmedCount = appointments.filter(a => a.visitorId === visitorId && a.status === 'confirmed').length;

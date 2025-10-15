@@ -21,3 +21,21 @@ export const calculateRemainingQuota = (
   const quota = getVisitorQuota(level);
   return Math.max(0, quota - confirmedCount);
 };
+
+
+export const VISITOR_LEVELS: Record<string, { label: string, color: string, icon: string, access: string[] }> = {
+  free: { label: 'Free Pass', color: '#6c757d', icon: '🟢', access: ['Accès limité', 'Networking'] },
+  basic: { label: 'Basic Pass', color: '#007bff', icon: '🔵', access: ['Accès 1 jour', '2 RDV garantis'] },
+  premium: { label: 'Premium Pass', color: '#17a2b8', icon: '🟣', access: ['Accès 2 jours', '5 RDV garantis'] },
+  vip: { label: 'VIP Pass', color: '#ffd700', icon: '👑', access: ['Accès All Inclusive', 'Service concierge'] }
+};
+
+/**
+ * Retourne les informations détaillées pour un niveau de visiteur donné.
+ * @param level Le niveau du visiteur.
+ * @returns Les informations du niveau.
+ */
+export function getVisitorLevelInfo(level: string) {
+  return VISITOR_LEVELS[level] || VISITOR_LEVELS.free;
+}
+
