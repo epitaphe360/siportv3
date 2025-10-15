@@ -19,6 +19,7 @@ export default function ExhibitorSignUpPage() {
     confirmPassword: ''
   });
   const [error, setError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const navigate = useNavigate();
@@ -27,6 +28,18 @@ export default function ExhibitorSignUpPage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+
+    if (name === 'password' && value.length > 0 && value.length < 8) {
+      setPasswordError('Le mot de passe doit contenir au moins 8 caractères.');
+    } else if (name === 'password') {
+      setPasswordError(null);
+    }
+
+    if (name === 'confirmPassword' && formData.password !== value) {
+      setError('Les mots de passe ne correspondent pas.');
+    } else if (name === 'confirmPassword' && formData.password === value) {
+      setError(null);
+    }
   };
 
   const handleConfirmation = (e: React.FormEvent) => {
@@ -38,9 +51,8 @@ export default function ExhibitorSignUpPage() {
       return;
     }
 
-    if (formData.password.length < 6) {
-      setError('Le mot de passe doit contenir au moins 6 caractères.');
-      return;
+    if (formData.password.length < 8) {
+      setError(\'Le mot de passe doit contenir au moins 8 caractères.\');     return;
     }
     setShowConfirmation(true);
   };
@@ -67,12 +79,16 @@ export default function ExhibitorSignUpPage() {
 
       if (error) {
         setError(error.message);
-      } else {
-        // Redirection vers une page de confirmation
+        console.error("Erreur d'inscription:", error.message); // Log l'erreur pour le débogage
+       } else {
+        // Afficher un message de succès temporaire avant la redirection
+        setShowConfirmation(false); // Fermer la modale de confirmation si elle est ouverte
+        alert("Votre compte a été créé avec succès et est en attente d'approbation."); // Message de succès temporaire
         navigate('/signup-success');
       }
-    } catch {
-      setError('Une erreur inattendue est survenue.');
+    } catch (err) {
+      console.error("Erreur inattendue lors de l'inscription:", err); // Log l'erreur inattendue
+      setError('Une erreur inattendue est survenue. Veuillez réessayer.');
     } finally {
       setIsLoading(false);
     }
@@ -208,8 +224,10 @@ export default function ExhibitorSignUpPage() {
                       value={formData.password}
                       onChange={handleInputChange}
                       required
+                      minLength={8}
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
+                    {passwordError && <p className="text-red-500 text-xs mt-1">{passwordError}</p>}
                   </div>
                 </div>
 
@@ -224,8 +242,10 @@ export default function ExhibitorSignUpPage() {
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
                       required
+                      minLength={8}
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
+                    {error && name === 'confirmPassword' && <p className="text-red-500 text-xs mt-1">{error}</p>}
                   </div>
                 </div>
               </div>
