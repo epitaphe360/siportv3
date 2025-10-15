@@ -896,11 +896,35 @@ export class SupabaseService {
       console.log('✅ Profil partenaire créé');
     } catch (error) {
       console.error('❌ Erreur création profil partenaire:', error);
-      throw error;
-    }
-  }
-
-  static async sendRegistrationEmail(userData: any): Promise<void> {
+	      throw error;
+	    }
+	  }
+	
+	  static async sendValidationEmail(userData: {
+	    email: string;
+	    firstName: string;
+	    lastName: string;
+	    companyName: string;
+	    status: 'approved' | 'rejected';
+	  }): Promise<void> {
+	    if (!this.checkSupabaseConnection()) return;
+	
+	    const safeSupabase = supabase!;
+	
+	    try {
+	      const { data, error } = await safeSupabase.functions.invoke('send-validation-email', {
+	        body: userData
+	      });
+	
+	      if (error) throw error;
+	      console.log(`✅ Email de validation (${userData.status}) envoyé:`, data);
+	    } catch (error) {
+	      console.error(`❌ Erreur lors de l\`envoi de l\`email de validation:`, error);
+	      throw error;
+	    }
+	  }
+	
+	  static async sendRegistrationEmail(userData: any): Promise<void> {
     if (!this.checkSupabaseConnection()) return;
 
     const safeSupabase = supabase!;

@@ -63,11 +63,15 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
     }
   },
 
-  updateExhibitorStatus: async (exhibitorId, newStatus) => {
-    set({ isUpdating: exhibitorId, error: null });
-    try {
+	  updateExhibitorStatus: async (exhibitorId, newStatus) => {
+	    set({ isUpdating: exhibitorId, error: null });
+	    try {
 	      const isVerified = newStatus === 'approved';
 	      const userStatus = isVerified ? 'active' : 'rejected';
+	
+	      // Récupérer les données de l'exposant pour l'email
+	      const exhibitorToUpdate = get().exhibitors.find(ex => ex.id === exhibitorId);
+	      if (!exhibitorToUpdate) throw new Error('Exposant non trouvé dans le store');
 	
 	      // 1. Mettre à jour le statut 'verified' de l'exposant
 	      await SupabaseService.updateExhibitor(exhibitorId, {
@@ -75,12 +79,18 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
 	      });
 	
 	      // 2. Mettre à jour le statut de l'utilisateur (dans la table 'users')
-	      // NOTE: On suppose que l'ID de l'exposant est le même que l'ID de l'utilisateur
 	      await SupabaseService.updateUserStatus(exhibitorId, userStatus);
 	
-	      // 3. Optionnel: Supprimer la RegistrationRequest (non implémenté ici, mais logique)
-
-      set(state => {
+	      // 3. Envoyer l'email de validation/rejet
+	      await SupabaseService.sendValidationEmail({
+	        email: exhibitorToUpdate.contactInfo?.email || 'contact@siports.com', // Utiliser l'email de contact
+	        firstName: 'Admin', // Placeholder, l'email doit être générique
+	        lastName: 'Admin', // Placeholder
+	        companyName: exhibitorToUpdate.companyName,
+	        status: newStatus,
+	      });
+	
+	      set(state => {
         const updateExhibitor = (ex: Exhibitor) => 
           ex.id === exhibitorId 
             ? { ...ex, verified: newStatus === 'approved' } 
