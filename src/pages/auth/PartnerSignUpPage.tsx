@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
@@ -26,8 +27,12 @@ const partnerSignUpSchema = z.object({
   email: z.string().email("L'adresse e-mail est invalide"),
   phone: z.string().min(5, "Le numéro de téléphone est requis"),
   password: z.string().min(8, "Le mot de passe doit contenir au moins 8 caractères"),
+  confirmPassword: z.string().min(1, "Veuillez confirmer votre mot de passe"),
   companyDescription: z.string().min(20, "La description doit contenir au moins 20 caractères"),
   partnershipType: z.string().min(2, "Le type de partenariat est requis"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Les mots de passe ne correspondent pas",
+  path: ["confirmPassword"],
 });
 
 type PartnerSignUpFormValues = z.infer<typeof partnerSignUpSchema>;
@@ -63,7 +68,7 @@ export default function PartnerSignUpPage() {
       }
 
       toast.success('Inscription réussie ! Votre compte est en attente de validation.');
-  navigate(ROUTES.SIGNUP_SUCCESS);
+      navigate(ROUTES.SIGNUP_SUCCESS);
     } catch (error) {
       console.error("Sign up error:", error);
       toast.error((error as Error).message || "Une erreur s'est produite lors de l'inscription.");
@@ -192,6 +197,14 @@ export default function PartnerSignUpPage() {
                   </div>
                   {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
                 </div>
+                <div>
+                  <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Input id="confirmPassword" type="password" {...register('confirmPassword')} placeholder="Confirmez votre mot de passe" className="pl-10" />
+                  </div>
+                  {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword.message}</p>}
+                </div>
               </div>
             </div>
 
@@ -213,3 +226,4 @@ export default function PartnerSignUpPage() {
     </div>
   );
 };
+
