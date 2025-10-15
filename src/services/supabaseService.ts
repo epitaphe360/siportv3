@@ -445,9 +445,9 @@ export class SupabaseService {
         title: data.title,
         description: data.description,
         type: data.event_type,
-        date: new Date(data.event_date),
-        startTime: data.start_time.split('T')[1].substring(0, 5),
-        endTime: data.end_time.split('T')[1].substring(0, 5),
+	        date: new Date(data.event_date),
+	        startTime: data.start_time.substring(11, 16),
+	        endTime: data.end_time.substring(11, 16),
         capacity: data.capacity,
         registered: data.registered,
         speakers: data.speakers,
@@ -459,10 +459,11 @@ export class SupabaseService {
         tags: data.tags,
       } as Event;
 
-    } catch (error) {
-      console.error(`Erreur lors de la mise à jour de l'événement ${eventId}:`, error);
-      throw error;
-    }
+	    } catch (error) {
+	      const errorMessage = error instanceof Error ? error.message : `Erreur inconnue lors de la mise à jour de l'événement ${eventId}`;
+	      console.error(`Erreur lors de la mise à jour de l'événement ${eventId}:`, errorMessage);
+	      throw new Error(errorMessage);
+	    }
   }
 
   static async deleteEvent(eventId: string): Promise<void> {
@@ -476,10 +477,11 @@ export class SupabaseService {
         .eq('id', eventId);
 
       if (error) throw error;
-    } catch (error) {
-      console.error(`Erreur lors de la suppression de l'événement ${eventId}:`, error);
-      throw error;
-    }
+	    } catch (error) {
+	      const errorMessage = error instanceof Error ? error.message : `Erreur inconnue lors de la suppression de l'événement ${eventId}`;
+	      console.error(`Erreur lors de la suppression de l'événement ${eventId}:`, errorMessage);
+	      throw new Error(errorMessage);
+	    }
   }
 
   static async createEvent(eventData: Omit<Event, 'id' | 'registered'>): Promise<Event> {
@@ -517,9 +519,9 @@ export class SupabaseService {
         title: data.title,
         description: data.description,
         type: data.event_type,
-        date: new Date(data.event_date),
-        startTime: data.start_time.split('T')[1].substring(0, 5), // Extraire HH:MM
-        endTime: data.end_time.split('T')[1].substring(0, 5), // Extraire HH:MM
+	        date: new Date(data.event_date),
+	        startTime: data.start_time.substring(11, 16), // Extraire HH:MM (position 11 à 15)
+	        endTime: data.end_time.substring(11, 16), // Extraire HH:MM (position 11 à 15)
         capacity: data.capacity,
         registered: data.registered,
         speakers: data.speakers,
@@ -531,10 +533,11 @@ export class SupabaseService {
         tags: data.tags,
       } as Event;
 
-    } catch (error) {
-      console.error('Erreur lors de la création de l\'événement:', error);
-      throw error;
-    }
+	    } catch (error) {
+	      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue lors de la création de l\'événement';
+	      console.error('Erreur lors de la création de l\'événement:', errorMessage);
+	      throw new Error(errorMessage);
+	    }
   }
 
   static async getEvents(): Promise<Event[]> {
@@ -553,10 +556,10 @@ export class SupabaseService {
         id: event.id,
         title: event.title,
         description: event.description,
-        type: event.event_type,
-        date: new Date(event.event_date),
-        startTime: event.start_time.split('T')[1].substring(0, 5),
-        endTime: event.end_time.split('T')[1].substring(0, 5),
+	        type: event.event_type,
+	        date: new Date(event.event_date),
+	        startTime: event.start_time.substring(11, 16),
+	        endTime: event.end_time.substring(11, 16),
         capacity: event.capacity,
         registered: event.registered || 0,
         speakers: event.speakers || [],
@@ -988,49 +991,72 @@ export class SupabaseService {
   /**
    * Envoie une demande de connexion
    */
-  static async sendConnectionRequest(fromUserId: string, toUserId: string): Promise<boolean> {
-    if (!this.checkSupabaseConnection()) return false;
-
-    const safeSupabase = supabase!;
-    try {
-      const { error } = await (safeSupabase as any).from('connections').insert([{
-        requester_id: fromUserId,
-        addressee_id: toUserId,
-        status: 'pending'
-      }]);
-
-      if (error) throw error;
-
-      // TODO: Envoyer une notification
-
-      return true;
-    } catch (error) {
-      console.error('Erreur lors de l\`envoi de la demande de connexion:', error);
-      return false;
-    }
-  }
-
-  /**
-   * Accepte une demande de connexion
-   */
-  static async acceptConnectionRequest(connectionId: string): Promise<boolean> {
-    if (!this.checkSupabaseConnection()) return false;
-
-    const safeSupabase = supabase!;
-    try {
-      const { error } = await (safeSupabase as any)
-        .from('connections')
-        .update({ status: 'accepted' })
-        .eq('id', connectionId);
-
-      if (error) throw error;
-
-      return true;
-    } catch (error) {
-      console.error('Erreur lors de l\`acceptation de la demande:', error);
-      return false;
-    }
-  }
+	  static async createNotification(userId: string, message: string, type: 'connection' | 'event' | 'message' | 'system'): Promise<void> {
+	    if (!this.checkSupabaseConnection()) return;
+	
+	    const safeSupabase = supabase!;
+	    try {
+	      await (safeSupabase as any).from('notifications').insert([{
+	        user_id: userId,
+	        message: message,
+	        type: type,
+	        read: false
+	      }]);
+	    } catch (error) {
+	      console.error('Erreur lors de la création de la notification:', error);
+	    }
+	  }
+	
+	  static async sendConnectionRequest(fromUserId: string, toUserId: string): Promise<boolean> {
+	    if (!this.checkSupabaseConnection()) return false;
+	
+	    const safeSupabase = supabase!;
+	    try {
+	      const { error } = await (safeSupabase as any).from('connections').insert([{
+	        requester_id: fromUserId,
+	        addressee_id: toUserId,
+	        status: 'pending'
+	      }]);
+	
+	      if (error) throw error;
+	
+	      // Envoyer une notification au destinataire
+	      this.createNotification(toUserId, 'Vous avez reçu une demande de connexion.', 'connection');
+	
+	      return true;
+	    } catch (error) {
+	      console.error('Erreur lors de l\`envoi de la demande de connexion:', error);
+	      return false;
+	    }
+	  }
+	
+	  /**
+	   * Accepte une demande de connexion
+	   */
+	  static async acceptConnectionRequest(connectionId: string): Promise<boolean> {
+	    if (!this.checkSupabaseConnection()) return false;
+	
+	    const safeSupabase = supabase!;
+	    try {
+	      const { data, error } = await (safeSupabase as any)
+	        .from('connections')
+	        .update({ status: 'accepted' })
+	        .eq('id', connectionId)
+	        .select('requester_id, addressee_id')
+	        .single();
+	
+	      if (error) throw error;
+	
+	      // Envoyer une notification à l'expéditeur
+	      const requesterId = data.requester_id;
+	      this.createNotification(requesterId, 'Votre demande de connexion a été acceptée !', 'connection');
+	
+	      return true;
+	    } catch (error) {
+	      console.error('Erreur lors de l\`acceptation de la demande:', error);
+	      return false;
+	    }
+	  }
 
   /**
    * Récupère les connexions d'un utilisateur
