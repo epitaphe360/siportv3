@@ -170,7 +170,7 @@ export default function UsersPage() {
                 Administration complète des comptes utilisateur SIPORTS
               </p>
             </div>
-            <Link to={ROUTES.ADMIN_CREATE_USER || '/admin/users/create'}> {/* Corrected link */}
+            <Link to={ROUTES.ADMIN_CREATE_USER}>
               <Button variant="default">
                 <Users className="h-4 w-4 mr-2" />
                 Créer Utilisateur

@@ -50,6 +50,8 @@ const PavillonsAdminPage = React.lazy(() => import('./pages/admin/PavillonsPage'
 const CreatePavilionPage = React.lazy(() => import('./pages/admin/CreatePavilionPage'));
 const AddDemoProgramPage = React.lazy(() => import('./pages/admin/AddDemoProgramPage'));
 const ContentManagementPage = React.lazy(() => import('./pages/admin/ContentManagementPage'));
+const CreateUserPage = React.lazy(() => import('./pages/admin/CreateUserPage'));
+const AdminPartnersPage = React.lazy(() => import('./pages/admin/PartnersPage'));
 
 // New pages for footer links
 const ContactPage = React.lazy(() => import('./pages/ContactPage'));
@@ -128,6 +130,8 @@ const App = () => {
             <Route path={ROUTES.NEWS_DETAIL} element={<ArticleDetailPage />} />
             <Route path={ROUTES.ADMIN_DASHBOARD} element={<AdminDashboard />} />
             <Route path={ROUTES.ADMIN_USERS} element={<UserManagementPage />} />
+            <Route path={ROUTES.ADMIN_CREATE_USER} element={<CreateUserPage />} />
+            <Route path="/admin/partners" element={<AdminPartnersPage />} />
             <Route path={ROUTES.ADMIN_PAVILIONS} element={<PavillonsAdminPage />} />
             <Route path={ROUTES.ADMIN_CREATE_PAVILION} element={<CreatePavilionPage />} />
             <Route path={ROUTES.ADMIN_PAVILION_ADD_DEMO} element={<AddDemoProgramPage />} />

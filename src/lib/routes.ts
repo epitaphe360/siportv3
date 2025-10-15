@@ -41,6 +41,7 @@ export const ROUTES = {
   NEWS_DETAIL: '/news/:id',
   ADMIN_DASHBOARD: '/admin/dashboard',
   ADMIN_USERS: '/admin/users',
+  ADMIN_CREATE_USER: '/admin/users/create',
   ADMIN_PAVILIONS: '/admin/pavilions',
   ADMIN_CREATE_PAVILION: '/admin/create-pavilion',
   ADMIN_PAVILION_ADD_DEMO: '/admin/pavilion/:pavilionId/add-demo',
