@@ -539,7 +539,27 @@ export default function AdminDashboard() {
                   </motion.div>
                 </Link>
 
-                <Link to="/admin/create-news" className="block">
+	                <Link to="/admin/create-event" className="block">
+	                  <motion.div
+	                    whileHover={{ scale: 1.02 }}
+	                    whileTap={{ scale: 0.98 }}
+	                  >
+	                    <div className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
+	                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
+	                        <Calendar className="h-5 w-5" />
+	                      </div>
+	                      <div className="flex-1">
+	                        <div className="font-semibold">Créer Nouvel Événement</div>
+	                        <div className="text-xs text-orange-100">Planifier une conférence ou un atelier</div>
+	                      </div>
+	                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+	                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+	                      </svg>
+	                    </div>
+	                  </motion.div>
+	                </Link>
+	
+	                <Link to="/admin/create-news" className="block">
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}

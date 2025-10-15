@@ -444,6 +444,61 @@ export class SupabaseService {
     }
   }
 
+  static async createEvent(eventData: Omit<Event, 'id' | 'registered'>): Promise<Event> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('events')
+        .insert([{
+          title: eventData.title,
+          description: eventData.description,
+          event_type: eventData.type,
+          event_date: eventData.date.toISOString().split('T')[0], // Stocker la date seule
+          start_time: `${eventData.date.toISOString().split('T')[0]}T${eventData.startTime}:00Z`, // Combiner date et heure pour le timestamp de début
+          end_time: `${eventData.date.toISOString().split('T')[0]}T${eventData.endTime}:00Z`, // Combiner date et heure pour le timestamp de fin
+          capacity: eventData.capacity,
+          category: eventData.category,
+          virtual: eventData.virtual,
+          featured: eventData.featured,
+          location: eventData.location,
+          meeting_link: eventData.meetingLink,
+          tags: eventData.tags,
+          speakers: eventData.speakers,
+          registered: 0, // Initialiser à 0
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Transformer les données de la DB au type Event
+      return {
+        id: data.id,
+        title: data.title,
+        description: data.description,
+        type: data.event_type,
+        date: new Date(data.event_date),
+        startTime: data.start_time.split('T')[1].substring(0, 5), // Extraire HH:MM
+        endTime: data.end_time.split('T')[1].substring(0, 5), // Extraire HH:MM
+        capacity: data.capacity,
+        registered: data.registered,
+        speakers: data.speakers,
+        category: data.category,
+        virtual: data.virtual,
+        featured: data.featured,
+        location: data.location,
+        meetingLink: data.meeting_link,
+        tags: data.tags,
+      } as Event;
+
+    } catch (error) {
+      console.error('Erreur lors de la création de l\'événement:', error);
+      throw error;
+    }
+  }
+
   static async getEvents(): Promise<Event[]> {
     if (!this.checkSupabaseConnection()) return [];
     
@@ -461,12 +516,18 @@ export class SupabaseService {
         title: event.title,
         description: event.description,
         type: event.event_type,
-        startTime: new Date(event.start_time),
-        endTime: new Date(event.end_time),
+        date: new Date(event.event_date),
+        startTime: event.start_time.split('T')[1].substring(0, 5),
+        endTime: event.end_time.split('T')[1].substring(0, 5),
+        capacity: event.capacity,
+        registered: event.registered || 0,
+        speakers: event.speakers || [],
+        category: event.category,
+        virtual: event.virtual,
+        featured: event.featured,
         location: event.location,
-        maxParticipants: event.max_participants,
-        registrationRequired: event.registration_required,
-        qrCode: event.qr_code_data
+        meetingLink: event.meeting_link,
+        tags: event.tags || [],
       }));
     } catch (error) {
       console.error('Erreur récupération événements:', error);

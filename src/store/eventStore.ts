@@ -31,10 +31,16 @@ export const useEventStore = create<EventState>((set, get) => ({
     try {
       // Charger les événements depuis Supabase
       const events = await SupabaseService.getEvents();
-      const featuredEvents = events.filter(event => event.featured);
+      
+      // Assurer que la date est un objet Date pour le tri et l'affichage
+      const processedEvents = events.map(event => ({
+        ...event,
+        date: new Date(event.date),
+      }));
+      const featuredEvents = processedEvents.filter(event => event.featured);
       
       set({ 
-        events,
+        events: processedEvents,
         featuredEvents,
         isLoading: false 
       });

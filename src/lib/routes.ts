@@ -32,6 +32,7 @@ export const ROUTES = {
   MINISITE_EDITOR: '/minisite/editor',
   ADMIN_CREATE_EXHIBITOR: '/admin/create-exhibitor',
   ADMIN_CREATE_PARTNER: '/admin/create-partner',
+  ADMIN_CREATE_EVENT: '/admin/create-event',
   ADMIN_CREATE_NEWS: '/admin/create-news',
   MINISITE_PREVIEW: '/minisite/:exhibitorId',
   ADMIN_ACTIVITY: '/admin/activity',
