@@ -1148,26 +1148,7 @@ export class SupabaseService {
 
 
   // ==================== APPOINTMENTS ====================
-  static async createAppointment(appointmentData: Omit<Appointment, 'id' | 'createdAt' | 'visitor' | 'exhibitor'>): Promise<Appointment> {
-    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
-    const safeSupabase = supabase!;
-    try {
-      const { data, error } = await (safeSupabase as any)
-        .from('appointments')
-        .insert([appointmentData])
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
-    } catch (error) {
-      console.error('Erreur lors de la création du rendez-vous:', error);
-      throw error;
-    }
-  }
-
-
-
-
+  // BUGFIX: Removed duplicate createAppointment definition (kept the more complete one)
   static async createAppointment(appointmentData: {
     exhibitorId: string;
     visitorId: string;
@@ -1227,6 +1208,434 @@ export class SupabaseService {
     } catch (error) {
       console.error("Erreur lors de la création du rendez-vous ou de la mise à jour du créneau:", error);
       return null;
+    }
+  }
+
+  // BUGFIX: Added missing methods that are called by stores but were not implemented
+
+  static async getAppointments(): Promise<Appointment[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    const safeSupabase = supabase!;
+
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('appointments')
+        .select(`
+          *,
+          exhibitor:users!appointments_exhibitor_id_fkey(id, name, email, profile),
+          visitor:users!appointments_visitor_id_fkey(id, name, email, profile),
+          time_slot:time_slots(date, start_time, end_time, location)
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+      return [];
+    }
+  }
+
+  static async updateAppointmentStatus(
+    appointmentId: string,
+    status: 'pending' | 'confirmed' | 'cancelled' | 'completed'
+  ): Promise<void> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+    const safeSupabase = supabase!;
+
+    const { error } = await (safeSupabase as any)
+      .from('appointments')
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq('id', appointmentId);
+
+    if (error) throw error;
+  }
+
+  static async createRegistrationRequest(userId: string, data: any): Promise<void> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+    const safeSupabase = supabase!;
+
+    const { error } = await (safeSupabase as any)
+      .from('registration_requests')
+      .insert([{
+        user_id: userId,
+        type: data.type,
+        data: data,
+        status: 'pending',
+        created_at: new Date().toISOString()
+      }]);
+
+    if (error) throw error;
+  }
+
+  static async getUsers(): Promise<User[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    const safeSupabase = supabase!;
+
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('users')
+        .select('*')
+        .eq('status', 'active');
+
+      if (error) throw error;
+      return (data || []).map(this.transformUserDBToUser);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      return [];
+    }
+  }
+
+  static async getUserById(userId: string): Promise<User | null> {
+    if (!this.checkSupabaseConnection()) return null;
+    const safeSupabase = supabase!;
+
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('users')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (error) throw error;
+      return data ? this.transformUserDBToUser(data) : null;
+    } catch (error) {
+      console.error('Error fetching user by id:', error);
+      return null;
+    }
+  }
+
+  static async updateUser(userId: string, userData: Partial<User>): Promise<User> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+    const safeSupabase = supabase!;
+
+    const { data, error } = await (safeSupabase as any)
+      .from('users')
+      .update({
+        name: userData.name,
+        email: userData.email,
+        profile: userData.profile,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', userId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return this.transformUserDBToUser(data);
+  }
+
+  static async createConnection(fromUserId: string, toUserId: string): Promise<void> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+    const safeSupabase = supabase!;
+
+    const { error } = await (safeSupabase as any)
+      .from('connections')
+      .insert([{
+        requester_id: fromUserId,
+        addressee_id: toUserId,
+        status: 'pending',
+        created_at: new Date().toISOString()
+      }]);
+
+    if (error) throw error;
+  }
+
+  static async getUserConnections(userId: string): Promise<string[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    const safeSupabase = supabase!;
+
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('connections')
+        .select('requester_id, addressee_id')
+        .eq('status', 'accepted')
+        .or(`requester_id.eq.${userId},addressee_id.eq.${userId}`);
+
+      if (error) throw error;
+
+      return (data || []).map((conn: any) =>
+        conn.requester_id === userId ? conn.addressee_id : conn.requester_id
+      );
+    } catch (error) {
+      console.error('Error fetching user connections:', error);
+      return [];
+    }
+  }
+
+  static async getUserFavorites(userId: string): Promise<string[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    const safeSupabase = supabase!;
+
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('favorites')
+        .select('favorited_id')
+        .eq('user_id', userId);
+
+      if (error) throw error;
+      return (data || []).map((fav: any) => fav.favorited_id);
+    } catch (error) {
+      console.error('Error fetching user favorites:', error);
+      return [];
+    }
+  }
+
+  static async addFavorite(userId: string, favoritedId: string): Promise<void> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+    const safeSupabase = supabase!;
+
+    const { error } = await (safeSupabase as any)
+      .from('favorites')
+      .insert([{
+        user_id: userId,
+        favorited_id: favoritedId,
+        created_at: new Date().toISOString()
+      }]);
+
+    if (error) throw error;
+  }
+
+  static async removeFavorite(userId: string, favoritedId: string): Promise<void> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+    const safeSupabase = supabase!;
+
+    const { error } = await (safeSupabase as any)
+      .from('favorites')
+      .delete()
+      .eq('user_id', userId)
+      .eq('favorited_id', favoritedId);
+
+    if (error) throw error;
+  }
+
+  static async getPendingConnections(userId: string): Promise<any[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    const safeSupabase = supabase!;
+
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('connections')
+        .select('*, requester:users!connections_requester_id_fkey(*)')
+        .eq('addressee_id', userId)
+        .eq('status', 'pending');
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error fetching pending connections:', error);
+      return [];
+    }
+  }
+
+  static async getDailyQuotas(userId: string): Promise<{
+    connections: number;
+    messages: number;
+    meetings: number;
+  }> {
+    if (!this.checkSupabaseConnection()) {
+      return { connections: 0, messages: 0, meetings: 0 };
+    }
+    const safeSupabase = supabase!;
+
+    try {
+      const today = new Date().toISOString().split('T')[0];
+
+      // Count today's connections
+      const { count: connectionsCount } = await (safeSupabase as any)
+        .from('connections')
+        .select('*', { count: 'exact', head: true })
+        .eq('requester_id', userId)
+        .gte('created_at', today);
+
+      // Count today's messages
+      const { count: messagesCount } = await (safeSupabase as any)
+        .from('chat_messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('sender_id', userId)
+        .gte('created_at', today);
+
+      // Count today's meetings
+      const { count: meetingsCount } = await (safeSupabase as any)
+        .from('appointments')
+        .select('*', { count: 'exact', head: true })
+        .eq('visitor_id', userId)
+        .gte('created_at', today);
+
+      return {
+        connections: connectionsCount || 0,
+        messages: messagesCount || 0,
+        meetings: meetingsCount || 0
+      };
+    } catch (error) {
+      console.error('Error fetching daily quotas:', error);
+      return { connections: 0, messages: 0, meetings: 0 };
+    }
+  }
+
+  static async registerForEvent(userId: string, eventId: string): Promise<void> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+    const safeSupabase = supabase!;
+
+    const { error } = await (safeSupabase as any)
+      .from('event_registrations')
+      .insert([{
+        user_id: userId,
+        event_id: eventId,
+        status: 'registered',
+        registration_date: new Date().toISOString()
+      }]);
+
+    if (error) throw error;
+  }
+
+  static async unregisterFromEvent(userId: string, eventId: string): Promise<void> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+    const safeSupabase = supabase!;
+
+    const { error } = await (safeSupabase as any)
+      .from('event_registrations')
+      .delete()
+      .eq('user_id', userId)
+      .eq('event_id', eventId);
+
+    if (error) throw error;
+  }
+
+  static async getUserEventRegistrations(userId: string): Promise<any[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    const safeSupabase = supabase!;
+
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('event_registrations')
+        .select('*, event:events(*)')
+        .eq('user_id', userId);
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error fetching event registrations:', error);
+      return [];
+    }
+  }
+
+  static async checkVisitorQuota(visitorId: string): Promise<{
+    quota: number;
+    used: number;
+    remaining: number;
+  }> {
+    if (!this.checkSupabaseConnection()) {
+      return { quota: 0, used: 0, remaining: 0 };
+    }
+    const safeSupabase = supabase!;
+
+    try {
+      // Get user to find visitor level
+      const { data: user, error: userError } = await (safeSupabase as any)
+        .from('users')
+        .select('visitor_level, profile')
+        .eq('id', visitorId)
+        .single();
+
+      if (userError) throw userError;
+
+      // Get quota based on visitor level
+      const quotaMap: Record<string, number> = {
+        free: 0,
+        basic: 2,
+        premium: 5,
+        vip: 99
+      };
+
+      const visitorLevel = user?.visitor_level || user?.profile?.passType || 'free';
+      const quota = quotaMap[visitorLevel] || 0;
+
+      // Count confirmed appointments
+      const { count, error: countError } = await (safeSupabase as any)
+        .from('appointments')
+        .select('*', { count: 'exact', head: true })
+        .eq('visitor_id', visitorId)
+        .eq('status', 'confirmed');
+
+      if (countError) throw countError;
+
+      const used = count || 0;
+      const remaining = Math.max(0, quota - used);
+
+      return { quota, used, remaining };
+    } catch (error) {
+      console.error('Error checking visitor quota:', error);
+      return { quota: 0, used: 0, remaining: 0 };
+    }
+  }
+
+  static async sendValidationEmail(emailData: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    companyName: string;
+    status: 'approved' | 'rejected';
+  }): Promise<void> {
+    // This would typically call a Supabase Edge Function
+    // For now, we'll log it - implement actual email sending via Edge Function
+    console.log('Sending validation email:', emailData);
+
+    if (!this.checkSupabaseConnection()) {
+      console.warn('Supabase not connected - cannot send email');
+      return;
+    }
+
+    try {
+      // Call Supabase Edge Function for email
+      const response = await fetch(`${process.env.VITE_SUPABASE_URL}/functions/v1/send-validation-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.VITE_SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify(emailData)
+      });
+
+      if (!response.ok) {
+        console.warn('Email sending failed:', await response.text());
+      }
+    } catch (error) {
+      console.warn('Failed to send validation email:', error);
+      // Don't throw - email failure shouldn't block the main operation
+    }
+  }
+
+  static async sendRegistrationEmail(emailData: {
+    userType: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    companyName?: string;
+  }): Promise<void> {
+    console.log('Sending registration email:', emailData);
+
+    if (!this.checkSupabaseConnection()) {
+      console.warn('Supabase not connected - cannot send email');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${process.env.VITE_SUPABASE_URL}/functions/v1/send-registration-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.VITE_SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify(emailData)
+      });
+
+      if (!response.ok) {
+        console.warn('Email sending failed:', await response.text());
+      }
+    } catch (error) {
+      console.warn('Failed to send registration email:', error);
+      // Don't throw - email failure shouldn't block registration
     }
   }
 
