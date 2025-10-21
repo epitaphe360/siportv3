@@ -23,8 +23,72 @@ if (!JWT_SECRET && NODE_ENV !== 'production') {
 const EFFECTIVE_JWT_SECRET = JWT_SECRET || 'dev-only-secret-change-in-production';
 
 const app = express();
-app.use(cors());
-app.use(express.json());
+
+// SECURITY: Strict CORS configuration
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['http://localhost:5173', 'http://localhost:3000'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(express.json({ limit: '1mb' })); // Limit payload size
+
+// Simple rate limiting middleware (in-memory)
+const rateLimitMap = new Map();
+const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
+const MAX_REQUESTS = 5; // 5 attempts per window for auth endpoints
+
+function rateLimit(req, res, next) {
+  const ip = req.ip || req.connection.remoteAddress;
+  const key = `${ip}-${req.path}`;
+  const now = Date.now();
+
+  if (!rateLimitMap.has(key)) {
+    rateLimitMap.set(key, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+    return next();
+  }
+
+  const data = rateLimitMap.get(key);
+
+  if (now > data.resetTime) {
+    // Reset window
+    rateLimitMap.set(key, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+    return next();
+  }
+
+  if (data.count >= MAX_REQUESTS) {
+    return res.status(429).json({
+      error: 'Trop de tentatives. Veuillez réessayer dans 15 minutes.'
+    });
+  }
+
+  data.count++;
+  next();
+}
+
+// Cleanup old entries every hour
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, data] of rateLimitMap.entries()) {
+    if (now > data.resetTime) {
+      rateLimitMap.delete(key);
+    }
+  }
+}, 60 * 60 * 1000);
 
 // Configuration de la base de données locale (PostgreSQL)
 const pool = new Pool({
@@ -72,7 +136,7 @@ function transformUserDBToUser(userData) {
 }
 
 // Endpoint: POST /api/auth/login
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', rateLimit, async (req, res) => {
   const { email, password } = req.body;
   
   if (!email || !password) {
@@ -96,20 +160,12 @@ app.post('/api/auth/login', async (req, res) => {
       const userData = result.rows[0];
       
       // Vérifier le mot de passe
-      // SECURITY: Les comptes de démo sont seulement disponibles en mode développement
-      const testAccounts = [
-        'admin@siports.com',
-        'exposant@siports.com',
-        'partenaire@siports.com',
-        'visiteur@siports.com'
-      ];
-      
+      // SECURITY: Test accounts removed for production security
+      // Use proper database seeding with hashed passwords instead
+
       let isPasswordValid = false;
-      
-      if (testAccounts.includes(email) && NODE_ENV === 'development') {
-        // Comptes de démo - seulement en développement
-        isPasswordValid = (password === 'demo123');
-      } else if (userData.password_hash) {
+
+      if (userData.password_hash) {
         // Production : comparer avec le hash bcrypt stocké dans la base
         isPasswordValid = await bcrypt.compare(password, userData.password_hash);
       } else {
@@ -153,7 +209,12 @@ app.post('/api/auth/login', async (req, res) => {
       });
       
       if (error) {
-        console.error('❌ Erreur Supabase:', error);
+        // SECURITY: Don't log detailed errors in production
+        if (NODE_ENV === 'development') {
+          console.error('❌ Erreur Supabase:', error);
+        } else {
+          console.error('❌ Authentication failed');
+        }
         return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
       }
       
@@ -188,8 +249,17 @@ app.post('/api/auth/login', async (req, res) => {
     }
     
   } catch (error) {
-    console.error('❌ Erreur d\'authentification:', error);
-    return res.status(500).json({ error: 'Erreur serveur lors de l\'authentification' });
+    // SECURITY: Generic error messages in production
+    if (NODE_ENV === 'development') {
+      console.error('❌ Erreur d\'authentification:', error);
+      return res.status(500).json({
+        error: 'Erreur serveur lors de l\'authentification',
+        details: error.message
+      });
+    } else {
+      console.error('❌ Authentication error occurred');
+      return res.status(500).json({ error: 'Erreur serveur lors de l\'authentification' });
+    }
   }
 });
 
