@@ -163,86 +163,89 @@ export const useNewsStore = create<NewsState>((set, get) => ({
 
   createNewsArticle: async (articleData: Partial<NewsArticle>) => {
     set({ isLoading: true });
-    
+
     try {
-      // Simulation de création
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const newArticle: NewsArticle = {
-        id: Date.now().toString(),
-        title: articleData.title || 'Sans titre',
-        excerpt: articleData.excerpt || '',
-        content: articleData.content || '',
-        author: articleData.author || 'Anonyme',
-        publishedAt: new Date(),
-        category: articleData.category || 'Général',
-        tags: articleData.tags || [],
-        featured: articleData.featured || false,
-        image: articleData.image,
-        readTime: articleData.readTime || 1,
-        source: 'siports',
-        views: 0
-      };
-      
-      const { articles } = get();
-      const updatedArticles = [newArticle, ...articles];
-      const featuredArticles = updatedArticles.filter((article: NewsArticle) => article.featured);
-      const categories = [...new Set(updatedArticles.map((article: NewsArticle) => article.category))];
-      
-      set({ 
-        articles: updatedArticles,
-        featuredArticles,
-        categories,
-        isLoading: false 
-      });
-    } catch (_error) {
-      console.error('Erreur création article:', _error);
+      // BUGFIX: Utiliser Supabase au lieu de simulation
+      const { data, error } = await supabase
+        .from('news_articles')
+        .insert([{
+          title: articleData.title || 'Sans titre',
+          excerpt: articleData.excerpt || '',
+          content: articleData.content || '',
+          category: articleData.category || 'Général',
+          tags: articleData.tags || [],
+          image_url: articleData.image,
+          published: true,
+          published_at: new Date().toISOString(),
+          views: 0
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Recharger tous les articles pour avoir les données à jour
+      await get().fetchNews();
+
       set({ isLoading: false });
-      throw _error;
+    } catch (error) {
+      console.error('Erreur création article:', error);
+      set({ isLoading: false });
+      throw error;
     }
   },
 
   updateNewsArticle: async (id: string, updates: Partial<NewsArticle>) => {
     try {
-      // Simulation de mise à jour
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
+      // BUGFIX: Utiliser Supabase au lieu de simulation
+      const { error } = await supabase
+        .from('news_articles')
+        .update({
+          title: updates.title,
+          excerpt: updates.excerpt,
+          content: updates.content,
+          category: updates.category,
+          tags: updates.tags,
+          image_url: updates.image,
+          published_at: updates.publishedAt?.toISOString()
+        })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      // Mettre à jour localement
       const { articles } = get();
-      const updatedArticle = articles.find(article => article.id === id);
-      if (!updatedArticle) throw new Error('Article non trouvé');
-      
-      const finalArticle = { ...updatedArticle, ...updates };
-      const updatedArticles = articles.map(article => 
-        article.id === id ? finalArticle : article
+      const updatedArticles = articles.map(article =>
+        article.id === id ? { ...article, ...updates } : article
       );
-      const featuredArticles = updatedArticles.filter((article: NewsArticle) => article.featured);
-      
-      set({ 
-        articles: updatedArticles,
-        featuredArticles
-      });
-    } catch (_error) {
-      console.error('Erreur mise à jour article:', _error);
-      throw _error;
+      const featuredArticles = updatedArticles.slice(0, 3);
+
+      set({ articles: updatedArticles, featuredArticles });
+    } catch (error) {
+      console.error('Erreur mise à jour article:', error);
+      throw error;
     }
   },
 
   deleteNewsArticle: async (id: string) => {
     try {
-      // Simulation de suppression
-      await new Promise(resolve => setTimeout(resolve, 600));
-      
+      // BUGFIX: Utiliser Supabase au lieu de simulation
+      const { error } = await supabase
+        .from('news_articles')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      // Mettre à jour localement
       const { articles } = get();
       const updatedArticles = articles.filter(article => article.id !== id);
-      const featuredArticles = updatedArticles.filter((article: NewsArticle) => article.featured);
-      
-      set({ 
-        articles: updatedArticles,
-        featuredArticles
-      });
-    } catch (_error) {
-      console.error('Erreur suppression article:', _error);
-      throw _error;
+      const featuredArticles = updatedArticles.slice(0, 3);
+
+      set({ articles: updatedArticles, featuredArticles });
+    } catch (error) {
+      console.error('Erreur suppression article:', error);
+      throw error;
     }
   }
 }));
