@@ -101,18 +101,74 @@ const useAuthStore = create<AuthState>((set, get) => ({
 
   signUp: async (credentials, profileData) => {
     try {
-      // Ici, vous appelleriez votre service Supabase pour créer l'utilisateur
-      // const { data, error } = await supabase.auth.signUp(credentials);
-      // if (error) throw error;
+      console.log('🔄 Inscription utilisateur:', credentials.email);
 
-      // Puis, insérer le profil dans votre table 'profiles'
-      // await supabase.from('profiles').insert([{ id: data.user.id, ...profileData }]);
-      
-      console.log("Simulating sign up for:", credentials.email, "with data:", profileData);
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simule l'appel réseau
+      // Valider les données
+      if (!credentials.email || !credentials.password) {
+        throw new Error('Email et mot de passe requis');
+      }
+
+      if (credentials.password.length < 8) {
+        throw new Error('Le mot de passe doit contenir au moins 8 caractères');
+      }
+
+      // Créer l'utilisateur via SupabaseService
+      const newUser = await SupabaseService.signUp(
+        credentials.email,
+        credentials.password,
+        {
+          name: profileData.firstName && profileData.lastName
+            ? `${profileData.firstName} ${profileData.lastName}`.trim()
+            : profileData.name || '',
+          type: profileData.role || 'visitor',
+          status: profileData.status || 'pending',
+          profile: {
+            firstName: profileData.firstName || '',
+            lastName: profileData.lastName || '',
+            company: profileData.company || '',
+            position: profileData.position || '',
+            phone: profileData.phone || '',
+            ...profileData
+          }
+        }
+      );
+
+      if (!newUser) {
+        throw new Error('Échec de la création de l\'utilisateur');
+      }
+
+      console.log('✅ Utilisateur créé:', newUser.email);
+
+      // Créer demande d'inscription pour exposants et partenaires
+      if (profileData.role === 'exhibitor' || profileData.role === 'partner') {
+        console.log('📝 Création demande d\'inscription...');
+
+        await SupabaseService.createRegistrationRequest({
+          userType: profileData.role,
+          email: credentials.email,
+          name: `${profileData.firstName || ''} ${profileData.lastName || ''}`.trim(),
+          company: profileData.company,
+          phone: profileData.phone,
+          metadata: profileData
+        });
+
+        // Envoyer email de notification
+        try {
+          await SupabaseService.sendRegistrationEmail({
+            to: credentials.email,
+            name: `${profileData.firstName || ''} ${profileData.lastName || ''}`.trim(),
+            userType: profileData.role
+          });
+          console.log('✅ Email de confirmation envoyé');
+        } catch (emailError) {
+          console.warn('⚠️ Erreur envoi email:', emailError);
+          // Ne pas bloquer l'inscription si l'email échoue
+        }
+      }
 
       return { error: null };
     } catch (error) {
+      console.error('❌ Erreur inscription:', error);
       return { error: error as Error };
     }
   },

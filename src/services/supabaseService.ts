@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase';
 import { isSupabaseReady } from '../lib/supabase';
-import { User, Exhibitor, Product, Appointment, Event, ChatMessage, ChatConversation, MiniSiteSection, MessageAttachment, ExhibitorCategory, ContactInfo, TimeSlot } from '../types';
+import { User, Exhibitor, Partner, Product, Appointment, Event, ChatMessage, ChatConversation, MiniSiteSection, MessageAttachment, ExhibitorCategory, ContactInfo, TimeSlot } from '../types';
 
 // Production: All data from Supabase only
 function getDemoExhibitors(): Exhibitor[] {
@@ -1260,6 +1260,69 @@ export class SupabaseService {
 
     if (error) throw error;
     return this.mapExhibitorFromDB(data);
+  }
+
+  // ==================== PARTNERS ====================
+
+  static async createPartner(partnerData: Partial<Partner>): Promise<Partner> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
+    }
+
+    const safeSupabase = supabase!;
+    const { data, error } = await (safeSupabase as any)
+      .from('partners')
+      .insert([{
+        user_id: partnerData.userId,
+        organization_name: partnerData.organizationName,
+        partner_type: partnerData.partnerType,
+        sector: partnerData.sector,
+        country: partnerData.country,
+        website: partnerData.website,
+        description: partnerData.description,
+        contact_name: partnerData.contactName,
+        contact_email: partnerData.contactEmail,
+        contact_phone: partnerData.contactPhone,
+        contact_position: partnerData.contactPosition,
+        sponsorship_level: partnerData.sponsorshipLevel,
+        contract_value: partnerData.contractValue,
+        contributions: partnerData.contributions || [],
+        established_year: partnerData.establishedYear,
+        employees: partnerData.employees,
+        logo_url: partnerData.logo,
+        featured: partnerData.featured || false,
+        verified: partnerData.verified || false
+      }])
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    // Mapper les données de la DB au format Partner
+    return {
+      id: data.id,
+      userId: data.user_id,
+      organizationName: data.organization_name,
+      partnerType: data.partner_type,
+      sector: data.sector,
+      country: data.country,
+      website: data.website,
+      description: data.description,
+      contactName: data.contact_name,
+      contactEmail: data.contact_email,
+      contactPhone: data.contact_phone,
+      contactPosition: data.contact_position,
+      sponsorshipLevel: data.sponsorship_level,
+      contractValue: data.contract_value,
+      contributions: data.contributions || [],
+      establishedYear: data.established_year,
+      employees: data.employees,
+      logo: data.logo_url,
+      featured: data.featured || false,
+      verified: data.verified || false,
+      createdAt: new Date(data.created_at),
+      updatedAt: new Date(data.updated_at)
+    };
   }
 
   // ==================== PRODUCTS ====================

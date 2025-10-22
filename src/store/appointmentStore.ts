@@ -251,8 +251,12 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
         set({ appointments: [persisted, ...appointments] });
         return persisted;
       } catch (err: any) {
-        // Revert optimistic change
-        const revertedSlots = timeSlots.map(s => s.id === timeSlotId ? { ...s, currentBookings: Math.max(0, (s.currentBookings || 0)), available: (s.currentBookings || 0) < (s.maxBookings || 1) } : s);
+        // Revert optimistic change - décrementer currentBookings
+        const revertedSlots = timeSlots.map(s => s.id === timeSlotId ? {
+          ...s,
+          currentBookings: Math.max(0, (s.currentBookings || 0) - 1),
+          available: ((s.currentBookings || 0) - 1) < (s.maxBookings || 1)
+        } : s);
         set({ timeSlots: revertedSlots });
 
         const msg = String(err?.message || err || '').toLowerCase();
