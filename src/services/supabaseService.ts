@@ -1148,25 +1148,6 @@ export class SupabaseService {
 
 
   // ==================== APPOINTMENTS ====================
-  static async createAppointment(appointmentData: Omit<Appointment, 'id' | 'createdAt' | 'visitor' | 'exhibitor'>): Promise<Appointment> {
-    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
-    const safeSupabase = supabase!;
-    try {
-      const { data, error } = await (safeSupabase as any)
-        .from('appointments')
-        .insert([appointmentData])
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
-    } catch (error) {
-      console.error('Erreur lors de la création du rendez-vous:', error);
-      throw error;
-    }
-  }
-
-
-
 
   static async createAppointment(appointmentData: {
     exhibitorId: string;
@@ -1227,6 +1208,190 @@ export class SupabaseService {
     } catch (error) {
       console.error("Erreur lors de la création du rendez-vous ou de la mise à jour du créneau:", error);
       return null;
+    }
+  }
+
+  // ==================== USERS ====================
+
+  static async createUser(userData: Partial<User>): Promise<User> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
+    }
+    const safeSupabase = supabase!;
+    const { data, error } = await (safeSupabase as any)
+      .from('users')
+      .insert([{
+        email: userData.email,
+        name: userData.name,
+        type: userData.type || 'visitor',
+        status: userData.status || 'pending',
+        profile: userData.profile || {}
+      }])
+      .select()
+      .single();
+    if (error) throw error;
+    return this.mapUserFromDB(data);
+  }
+
+  // ==================== EXHIBITORS ====================
+
+  static async createExhibitor(exhibitorData: Partial<Exhibitor>): Promise<Exhibitor> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
+    }
+
+    const safeSupabase = supabase!;
+    const { data, error } = await (safeSupabase as any)
+      .from('exhibitors')
+      .insert([{
+        user_id: exhibitorData.userId,
+        company_name: exhibitorData.companyName,
+        category: exhibitorData.category,
+        sector: exhibitorData.sector,
+        description: exhibitorData.description,
+        logo_url: exhibitorData.logo,
+        website: exhibitorData.website,
+        contact_info: exhibitorData.contactInfo || {},
+        verified: exhibitorData.verified || false,
+        featured: exhibitorData.featured || false
+      }])
+      .select(`*, user:users!exhibitors_user_id_fkey(*), products:products!fk_products_exhibitor(*), mini_site:mini_sites!mini_sites_exhibitor_id_fkey(*)`)
+      .single();
+
+    if (error) throw error;
+    return this.mapExhibitorFromDB(data);
+  }
+
+  // ==================== PRODUCTS ====================
+
+  static async createProduct(productData: Partial<Product> & { exhibitorId?: string }): Promise<Product> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
+    }
+    const safeSupabase = supabase!;
+    const { data, error } = await (safeSupabase as any)
+      .from('products')
+      .insert([{
+        exhibitor_id: productData.exhibitorId,
+        name: productData.name,
+        description: productData.description,
+        category: productData.category,
+        images: productData.images || [],
+        specifications: productData.specifications,
+        price: productData.price,
+        featured: productData.featured || false
+      }])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return this.mapProductFromDB(data);
+  }
+
+  // ==================== MINI SITES ====================
+
+  static async updateMiniSite(exhibitorId: string, siteData: Partial<MiniSiteDB>): Promise<MiniSiteDB> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
+    }
+
+    const safeSupabase = supabase!;
+    const { data, error } = await (safeSupabase as any)
+      .from('mini_sites')
+      .upsert({
+        exhibitor_id: exhibitorId,
+        theme: siteData.theme,
+        custom_colors: siteData.custom_colors,
+        sections: siteData.sections,
+        published: siteData.published,
+        last_updated: new Date().toISOString()
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  // ==================== REGISTRATION REQUESTS ====================
+
+  static async getRegistrationRequests(status?: 'pending' | 'approved' | 'rejected'): Promise<any[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    const safeSupabase = supabase!;
+    try {
+      let query = (safeSupabase as any).from('registration_requests').select('*');
+      if (status) {
+        query = query.eq('status', status);
+      }
+      const { data, error } = await query.order('created_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error fetching registration requests:', error);
+      return [];
+    }
+  }
+
+  static async updateRegistrationRequestStatus(
+    requestId: string,
+    status: 'approved' | 'rejected',
+    reviewedBy: string,
+    rejectionReason?: string
+  ): Promise<void> {
+    if (!this.checkSupabaseConnection()) return;
+    const safeSupabase = supabase!;
+    try {
+      const updateData: any = {
+        status,
+        reviewed_by: reviewedBy,
+        reviewed_at: new Date().toISOString()
+      };
+      if (rejectionReason) {
+        updateData.rejection_reason = rejectionReason;
+      }
+      const { error } = await (safeSupabase as any)
+        .from('registration_requests')
+        .update(updateData)
+        .eq('id', requestId);
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error updating registration request status:', error);
+      throw error;
+    }
+  }
+
+  static async createRegistrationRequest(requestData: {
+    userType: string;
+    email: string;
+    name: string;
+    company?: string;
+    phone?: string;
+    metadata?: any;
+  }): Promise<any> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré.');
+    }
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('registration_requests')
+        .insert([{
+          user_type: requestData.userType,
+          email: requestData.email,
+          name: requestData.name,
+          company: requestData.company,
+          phone: requestData.phone,
+          status: 'pending',
+          metadata: requestData.metadata || {},
+          created_at: new Date().toISOString()
+        }])
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error creating registration request:', error);
+      throw error;
     }
   }
 
