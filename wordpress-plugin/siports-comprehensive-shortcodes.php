@@ -120,6 +120,9 @@ class SIPORTS_Comprehensive_Shortcodes {
         if (is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'siports_')) {
             $this->load_react_app_assets();
         }
+
+        // Load page-specific assets for custom templates
+        $this->load_template_assets();
     }
 
     /**
@@ -164,6 +167,39 @@ class SIPORTS_Comprehensive_Shortcodes {
             return array('url' => $file_url, 'ver' => $version);
         }
         return null;
+    }
+
+    /**
+     * Load template-specific assets
+     */
+    private function load_template_assets() {
+        global $post;
+
+        // Déterminer le template utilisé
+        $template = get_page_template_slug($post);
+
+        // Page Exposants
+        if ($template === 'templates/page-exposants.php' || is_page_template('templates/page-exposants.php')) {
+            // CSS de la page exposants
+            wp_enqueue_style(
+                'siports-page-exposants',
+                SIPORTS_SHORTCODES_URL . 'assets/css/page-exposants.css',
+                array(),
+                filemtime(SIPORTS_SHORTCODES_PATH . 'assets/css/page-exposants.css')
+            );
+
+            // JavaScript de la page exposants
+            wp_enqueue_script(
+                'siports-page-exposants-js',
+                SIPORTS_SHORTCODES_URL . 'assets/js/page-exposants.js',
+                array(),
+                filemtime(SIPORTS_SHORTCODES_PATH . 'assets/js/page-exposants.js'),
+                true
+            );
+
+            // Charger aussi l'app React pour les shortcodes
+            $this->load_react_app_assets();
+        }
     }
 
     // ========================================
