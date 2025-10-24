@@ -178,27 +178,61 @@ class SIPORTS_Comprehensive_Shortcodes {
         // Déterminer le template utilisé
         $template = get_page_template_slug($post);
 
-        // Page Exposants
-        if ($template === 'templates/page-exposants.php' || is_page_template('templates/page-exposants.php')) {
-            // CSS de la page exposants
-            wp_enqueue_style(
-                'siports-page-exposants',
-                SIPORTS_SHORTCODES_URL . 'assets/css/page-exposants.css',
-                array(),
-                filemtime(SIPORTS_SHORTCODES_PATH . 'assets/css/page-exposants.css')
-            );
+        // Charger le CSS global pour toutes les pages SIPORTS
+        if (strpos($template, 'page-') !== false || strpos($template, 'siports') !== false) {
+            $global_css = SIPORTS_SHORTCODES_PATH . 'assets/css/siports-global.css';
+            if (file_exists($global_css)) {
+                wp_enqueue_style(
+                    'siports-global',
+                    SIPORTS_SHORTCODES_URL . 'assets/css/siports-global.css',
+                    array(),
+                    filemtime($global_css)
+                );
+            }
+        }
 
-            // JavaScript de la page exposants
-            wp_enqueue_script(
-                'siports-page-exposants-js',
-                SIPORTS_SHORTCODES_URL . 'assets/js/page-exposants.js',
-                array(),
-                filemtime(SIPORTS_SHORTCODES_PATH . 'assets/js/page-exposants.js'),
-                true
-            );
+        // Assets spécifiques à chaque page
+        $page_specific = array(
+            'templates/page-exposants.php' => array(
+                'css' => 'page-exposants.css',
+                'js' => 'page-exposants.js'
+            ),
+            // Ajouter d'autres pages spécifiques si nécessaire
+        );
 
-            // Charger aussi l'app React pour les shortcodes
-            $this->load_react_app_assets();
+        foreach ($page_specific as $tpl => $assets) {
+            if ($template === $tpl || is_page_template($tpl)) {
+                // CSS spécifique
+                if (isset($assets['css'])) {
+                    $css_file = SIPORTS_SHORTCODES_PATH . 'assets/css/' . $assets['css'];
+                    if (file_exists($css_file)) {
+                        wp_enqueue_style(
+                            'siports-' . str_replace('.css', '', $assets['css']),
+                            SIPORTS_SHORTCODES_URL . 'assets/css/' . $assets['css'],
+                            array('siports-global'),
+                            filemtime($css_file)
+                        );
+                    }
+                }
+
+                // JavaScript spécifique
+                if (isset($assets['js'])) {
+                    $js_file = SIPORTS_SHORTCODES_PATH . 'assets/js/' . $assets['js'];
+                    if (file_exists($js_file)) {
+                        wp_enqueue_script(
+                            'siports-' . str_replace('.js', '', $assets['js']),
+                            SIPORTS_SHORTCODES_URL . 'assets/js/' . $assets['js'],
+                            array(),
+                            filemtime($js_file),
+                            true
+                        );
+                    }
+                }
+
+                // Charger aussi l'app React pour les shortcodes
+                $this->load_react_app_assets();
+                break;
+            }
         }
     }
 
