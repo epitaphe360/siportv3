@@ -36,7 +36,10 @@ export default defineConfig({
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react/jsx-runtime'],
+          'router-vendor': ['react-router-dom'],
           'supabase-vendor': ['@supabase/supabase-js'],
+          'form-vendor': ['react-hook-form', '@hookform/resolvers', 'zod'],
+          'ui-vendor': ['@headlessui/react', '@heroicons/react', 'framer-motion'],
           'icons-vendor': ['lucide-react'],
           'radix-vendor': [
             '@radix-ui/react-avatar',
@@ -44,11 +47,23 @@ export default defineConfig({
             '@radix-ui/react-select',
             '@radix-ui/react-slot'
           ],
+          'charts-vendor': ['recharts'],
+          'utils-vendor': ['zustand', 'clsx', 'tailwind-merge']
         },
       },
     },
-    chunkSizeWarningLimit: 600,
-    sourcemap: false,
+    chunkSizeWarningLimit: 500,
+    sourcemap: true,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug']
+      }
+    },
+    reportCompressedSize: false,
+    cssCodeSplit: true
   },
   optimizeDeps: {
     exclude: ['lucide-react'],
