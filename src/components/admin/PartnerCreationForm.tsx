@@ -188,9 +188,37 @@ export default function PartnerCreationForm() {
         } as UserProfile
       };
 
-  await SupabaseService.createUser(userData);
-  toast.success(`Partenaire créé : ${formData.organizationName} (${formData.contactName})`);
-      
+      // Créer l'utilisateur
+      const newUser = await SupabaseService.createUser(userData);
+      console.log('✅ Utilisateur créé:', newUser.id);
+
+      // Créer l'entité Partner
+      const partnerData = {
+        userId: newUser.id,
+        organizationName: formData.organizationName,
+        partnerType: formData.partnerType,
+        sector: formData.sector,
+        country: formData.country,
+        website: formData.website,
+        description: formData.description,
+        contactName: formData.contactName,
+        contactEmail: formData.email,
+        contactPhone: formData.phone,
+        contactPosition: formData.position,
+        sponsorshipLevel: formData.sponsorshipLevel,
+        contractValue: formData.contractValue,
+        contributions: formData.contributions,
+        establishedYear: formData.establishedYear,
+        employees: formData.employees,
+        verified: false,
+        featured: false
+      };
+
+      await SupabaseService.createPartner(partnerData);
+      console.log('✅ Partenaire créé');
+
+      toast.success(`Partenaire créé : ${formData.organizationName} (${formData.contactName})`);
+
       // Reset form et redirection
       setFormData({
         organizationName: '',

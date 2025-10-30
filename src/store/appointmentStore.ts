@@ -256,15 +256,11 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
         return persisted;
       } catch (err: unknown) {
         // Revert optimistic change - décrémenter correctement le compteur
-        const revertedSlots = timeSlots.map(s =>
-          s.id === timeSlotId
-            ? {
-                ...s,
-                currentBookings: Math.max(0, (s.currentBookings || 0) - 1),
-                available: ((s.currentBookings || 0) - 1) < (s.maxBookings || 1)
-              }
-            : s
-        );
+        const revertedSlots = timeSlots.map(s => s.id === timeSlotId ? {
+          ...s,
+          currentBookings: Math.max(0, (s.currentBookings || 0) - 1),
+          available: ((s.currentBookings || 0) - 1) < (s.maxBookings || 1)
+        } : s);
         set({ timeSlots: revertedSlots });
 
         const msg = String(err?.message || err || '').toLowerCase();

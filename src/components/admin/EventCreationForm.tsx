@@ -5,7 +5,7 @@ import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Textarea } from '../ui/Textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/Select';
-import { useToast } from '../ui/use-toast';
+import { toast } from 'sonner';
 import useAuthStore from '../../store/authStore';
 import { SupabaseService } from '../../services/supabaseService';
 import { Event, Speaker } from '../../types/index';
@@ -47,7 +47,6 @@ interface EventCreationFormProps {
 
 export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: EventCreationFormProps) {
   const { user } = useAuthStore();
-  const { toast } = useToast();
   const navigate = useNavigate();
   const [formData, setFormData] = useState<EventFormState>(eventToEdit ? {
     title: eventToEdit.title,
@@ -151,11 +150,7 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
     try {
       // Validation simple
       if (!formData.title || !formData.description || !formData.type || !formData.date || !formData.startTime || !formData.endTime) {
-        toast({
-          title: 'Erreur de validation',
-          description: 'Veuillez remplir tous les champs obligatoires.',
-          variant: 'error',
-        });
+        toast.error('Veuillez remplir tous les champs obligatoires.');
         setIsLoading(false);
         return;
       }
@@ -184,89 +179,18 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
       if (eventToEdit) {
         // Modification
         await SupabaseService.updateEvent(eventToEdit.id, eventData);
-        toast({
-          title: 'Succès',
-          description: `L'événement "${formData.title}" a été mis à jour.`,
-          variant: 'success',
-        });
+        toast.success(`L'événement "${formData.title}" a été mis à jour.`);
         onSuccess && onSuccess();
       } else {
         // Création
         await SupabaseService.createEvent(eventData);
-        toast({
-          title: 'Succès',
-          description: `L'événement "${formData.title}" a été créé et publié.`,
-          variant: 'success',
-        });
+        toast.success(`L'événement "${formData.title}" a été créé et publié.`);
         navigate(ROUTES.ADMIN_DASHBOARD);
       }
 
     } catch (error) {
       console.error('Erreur lors de la gestion de l\'événement:', error);
-      toast({
-        title: 'Erreur',
-        description: error instanceof Error ? error.message : 'Une erreur inattendue est survenue lors de la gestion de l\'événement.',
-        variant: 'error',
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      // Validation simple
-      if (!formData.title || !formData.description || !formData.type || !formData.date || !formData.startTime || !formData.endTime) {
-        toast({
-          title: 'Erreur de validation',
-          description: 'Veuillez remplir tous les champs obligatoires.',
-          variant: 'error',
-        });
-        setIsLoading(false);
-        return;
-      }
-
-      // Préparation des données pour l'API
-      const eventData: Omit<Event, 'id' | 'registered'> = {
-        title: formData.title,
-        description: formData.description,
-        type: formData.type as Event['type'],
-        date: new Date(formData.date),
-        startTime: formData.startTime,
-        endTime: formData.endTime,
-        capacity: formData.capacity,
-        category: formData.category,
-        virtual: formData.virtual,
-        featured: formData.featured,
-        location: formData.location,
-        meetingLink: formData.meetingLink,
-        tags: formData.tags.split(',').map(t => t.trim()).filter(t => t.length > 0),
-        speakers: formData.speakers.filter(s => s.name.length > 0).map(s => ({
-          ...s,
-          id: s.id.startsWith('temp-') ? crypto.randomUUID() : s.id, // Générer un ID pour les nouveaux speakers
-        })),
-      };
-
-      // Appel à la nouvelle fonction de création d'événement
-      await SupabaseService.createEvent(eventData);
-
-      toast({
-        title: 'Succès',
-        description: `L'événement "${formData.title}" a été créé et publié.`,
-        variant: 'success',
-      });
-
-      // Redirection vers le tableau de bord admin
-      navigate(ROUTES.ADMIN_DASHBOARD);
-
-    } catch (error) {
-      console.error('Erreur lors de la création de l\'événement:', error);
-      toast({
-        title: 'Erreur',
-        description: error instanceof Error ? error.message : 'Une erreur inattendue est survenue lors de la création de l\'événement.',
-        variant: 'error',
-      });
+      toast.error(error instanceof Error ? error.message : 'Une erreur inattendue est survenue lors de la gestion de l\'événement.');
     } finally {
       setIsLoading(false);
     }

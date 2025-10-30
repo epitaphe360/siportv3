@@ -52,7 +52,8 @@ export default function ExhibitorSignUpPage() {
     }
 
     if (formData.password.length < 8) {
-      setError(\'Le mot de passe doit contenir au moins 8 caractères.\');     return;
+      setError('Le mot de passe doit contenir au moins 8 caractères.');
+      return;
     }
     setShowConfirmation(true);
   };

@@ -34,10 +34,17 @@ export default function LoginPage() {
     }
 
     try {
-      await login(email, password);
-  navigate(ROUTES.DASHBOARD);
-    } catch {
-      setError('Email ou mot de passe incorrect');
+      const result = await login(email, password);
+
+      // BUGFIX: Only navigate if login successful and user exists
+      if (result && result.user) {
+        navigate(ROUTES.DASHBOARD);
+      } else {
+        setError('Email ou mot de passe incorrect');
+      }
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Email ou mot de passe incorrect';
+      setError(errorMessage);
     }
   };
 

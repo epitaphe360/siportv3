@@ -70,18 +70,20 @@ import { ChatBot } from './components/chatbot/ChatBot';
 import { ChatBotToggle } from './components/chatbot/ChatBotToggle';
 import { useLanguageStore } from './store/languageStore';
 import { ROUTES } from './lib/routes';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 
 const App = () => {
   const [isChatBotOpen, setIsChatBotOpen] = React.useState(false);
   const { currentLanguage, getCurrentLanguage } = useLanguageStore();
 
+  // BUGFIX: Removed getCurrentLanguage from deps to prevent unnecessary re-renders
   // Appliquer la direction du texte selon la langue
   React.useEffect(() => {
-    const currentLang = getCurrentLanguage();
+    const currentLang = useLanguageStore.getState().getCurrentLanguage();
     document.documentElement.dir = currentLang.rtl ? 'rtl' : 'ltr';
     document.documentElement.lang = currentLang.code;
-  }, [currentLanguage, getCurrentLanguage]);
+  }, [currentLanguage]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -105,41 +107,44 @@ const App = () => {
             <Route path={ROUTES.REGISTER_PARTNER} element={<PartnerSignUpPage />} />
             <Route path={ROUTES.SIGNUP_SUCCESS} element={<SignUpSuccessPage />} />
             <Route path={ROUTES.PENDING_ACCOUNT} element={<PendingAccountPage />} />
-            <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
-            <Route path={ROUTES.PROFILE_DETAILED} element={<DetailedProfilePage />} />
-            <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
-            <Route path={ROUTES.EXHIBITOR_PROFILE} element={<ProfilePage />} />
-            <Route path={`${ROUTES.EXHIBITOR_PROFILE}/edit`} element={<ProfileEdit />} />
-            <Route path={ROUTES.EXHIBITOR_DASHBOARD} element={<ExhibitorDashboard />} />
-            <Route path={ROUTES.VISITOR_DASHBOARD} element={<VisitorDashboard />} />
+            {/* Protected routes - require authentication */}
+            <Route path={ROUTES.PROFILE} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path={ROUTES.PROFILE_DETAILED} element={<ProtectedRoute><DetailedProfilePage /></ProtectedRoute>} />
+            <Route path={ROUTES.DASHBOARD} element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+            <Route path={ROUTES.EXHIBITOR_PROFILE} element={<ProtectedRoute requiredRole="exhibitor"><ProfilePage /></ProtectedRoute>} />
+            <Route path={`${ROUTES.EXHIBITOR_PROFILE}/edit`} element={<ProtectedRoute requiredRole="exhibitor"><ProfileEdit /></ProtectedRoute>} />
+            <Route path={ROUTES.EXHIBITOR_DASHBOARD} element={<ProtectedRoute requiredRole="exhibitor"><ExhibitorDashboard /></ProtectedRoute>} />
+            <Route path={ROUTES.VISITOR_DASHBOARD} element={<ProtectedRoute requiredRole="visitor"><VisitorDashboard /></ProtectedRoute>} />
             <Route path="/dev/test-flow" element={<TestFlowPage />} />
-            <Route path={ROUTES.VISITOR_SETTINGS} element={<VisitorProfileSettings />} />
-            <Route path={ROUTES.MESSAGES} element={<ChatInterface />} />
-            <Route path={ROUTES.CHAT} element={<ChatInterface />} />
-            <Route path={ROUTES.APPOINTMENTS} element={<AppointmentCalendar />} />
-            <Route path={ROUTES.CALENDAR} element={<AppointmentCalendar />} />
-            <Route path={ROUTES.MINISITE_CREATION} element={<MiniSiteCreationPage />} />
-            <Route path={ROUTES.MINISITE_EDITOR} element={<MiniSiteEditor />} />
+            <Route path={ROUTES.VISITOR_SETTINGS} element={<ProtectedRoute requiredRole="visitor"><VisitorProfileSettings /></ProtectedRoute>} />
+            <Route path={ROUTES.MESSAGES} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
+            <Route path={ROUTES.CHAT} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
+            <Route path={ROUTES.APPOINTMENTS} element={<ProtectedRoute><AppointmentCalendar /></ProtectedRoute>} />
+            <Route path={ROUTES.CALENDAR} element={<ProtectedRoute><AppointmentCalendar /></ProtectedRoute>} />
+            <Route path={ROUTES.MINISITE_CREATION} element={<ProtectedRoute requiredRole="exhibitor"><MiniSiteCreationPage /></ProtectedRoute>} />
+            <Route path={ROUTES.MINISITE_EDITOR} element={<ProtectedRoute requiredRole="exhibitor"><MiniSiteEditor /></ProtectedRoute>} />
             <Route path={ROUTES.MINISITE_PREVIEW} element={<MiniSitePreview />} />
             <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
-            <Route path={ROUTES.ADMIN_CREATE_EXHIBITOR} element={<ExhibitorCreationSimulator />} />
-            <Route path={ROUTES.ADMIN_CREATE_PARTNER} element={<PartnerCreationForm />} />
-            <Route path={ROUTES.ADMIN_CREATE_NEWS} element={<NewsArticleCreationForm />} />
-            <Route path={ROUTES.ADMIN_CREATE_EVENT} element={<EventCreationForm />} />
-            <Route path={ROUTES.ADMIN_EVENTS} element={<EventManagementPage />} />
-            <Route path={ROUTES.ADMIN_ACTIVITY} element={<ActivityPage />} />
-            <Route path={ROUTES.ADMIN_VALIDATION} element={<ExhibitorValidation />} />
-            <Route path={ROUTES.ADMIN_MODERATION} element={<ModerationPanel />} />
+
+            {/* Admin routes - require admin role */}
+            <Route path={ROUTES.ADMIN_CREATE_EXHIBITOR} element={<ProtectedRoute requiredRole="admin"><ExhibitorCreationSimulator /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_CREATE_PARTNER} element={<ProtectedRoute requiredRole="admin"><PartnerCreationForm /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_CREATE_NEWS} element={<ProtectedRoute requiredRole="admin"><NewsArticleCreationForm /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_CREATE_EVENT} element={<ProtectedRoute requiredRole="admin"><EventCreationForm /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_EVENTS} element={<ProtectedRoute requiredRole="admin"><EventManagementPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_ACTIVITY} element={<ProtectedRoute requiredRole="admin"><ActivityPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_VALIDATION} element={<ProtectedRoute requiredRole="admin"><ExhibitorValidation /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_MODERATION} element={<ProtectedRoute requiredRole="admin"><ModerationPanel /></ProtectedRoute>} />
             <Route path={ROUTES.NEWS} element={<NewsPage />} />
             <Route path={ROUTES.NEWS_DETAIL} element={<ArticleDetailPage />} />
-            <Route path={ROUTES.ADMIN_DASHBOARD} element={<AdminDashboard />} />
-            <Route path={ROUTES.ADMIN_USERS} element={<UserManagementPage />} />
-            <Route path={ROUTES.ADMIN_CREATE_USER} element={<CreateUserPage />} />
-            <Route path="/admin/partners" element={<AdminPartnersPage />} />
-            <Route path={ROUTES.ADMIN_PAVILIONS} element={<PavillonsAdminPage />} />
-            <Route path={ROUTES.ADMIN_CREATE_PAVILION} element={<CreatePavilionPage />} />
-            <Route path={ROUTES.ADMIN_PAVILION_ADD_DEMO} element={<AddDemoProgramPage />} />
-            <Route path={ROUTES.ADMIN_CONTENT} element={<ContentManagementPage />} />
+            <Route path={ROUTES.ADMIN_DASHBOARD} element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_USERS} element={<ProtectedRoute requiredRole="admin"><UserManagementPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_CREATE_USER} element={<ProtectedRoute requiredRole="admin"><CreateUserPage /></ProtectedRoute>} />
+            <Route path="/admin/partners" element={<ProtectedRoute requiredRole="admin"><AdminPartnersPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_PAVILIONS} element={<ProtectedRoute requiredRole="admin"><PavillonsAdminPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_CREATE_PAVILION} element={<ProtectedRoute requiredRole="admin"><CreatePavilionPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_PAVILION_ADD_DEMO} element={<ProtectedRoute requiredRole="admin"><AddDemoProgramPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_CONTENT} element={<ProtectedRoute requiredRole="admin"><ContentManagementPage /></ProtectedRoute>} />
 
             {/* New routes for footer links */}
             <Route path={ROUTES.CONTACT} element={<ContactPage />} />
@@ -151,6 +156,15 @@ const App = () => {
             <Route path={ROUTES.COOKIES} element={<CookiesPage />} />
             <Route path={ROUTES.AVAILABILITY_SETTINGS} element={<AvailabilitySettingsPage />} />
             <Route path={ROUTES.VENUE} element={<VenuePage />} />
+
+            {/* 404 catch-all route - must be last */}
+            <Route path="*" element={<div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">404</h1>
+              <p className="text-xl text-gray-600 mb-8">Page non trouvée</p>
+              <a href={ROUTES.HOME} className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                Retour à l'accueil
+              </a>
+            </div>} />
           </Routes>
         </Suspense>
       </main>

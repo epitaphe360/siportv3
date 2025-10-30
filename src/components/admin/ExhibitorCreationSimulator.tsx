@@ -190,6 +190,7 @@ export default function ExhibitorCreationSimulator() {
       for (const product of formData.products) {
         if (product.name && product.category && product.description) {
           await SupabaseService.createProduct({
+            exhibitorId: newExhibitor.id,
             name: product.name,
             description: product.description,
             category: product.category,
