@@ -69,6 +69,31 @@ export interface Exhibitor {
   standNumber?: string; // Numéro de stand pour la carte interactive
 }
 
+export interface Partner {
+  id: string;
+  userId: string;
+  organizationName: string;
+  partnerType: 'institutional' | 'platinum' | 'gold' | 'silver' | 'bronze';
+  sector: string;
+  country: string;
+  website?: string;
+  description: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
+  contactPosition: string;
+  sponsorshipLevel: string;
+  contractValue?: string;
+  contributions: string[];
+  establishedYear?: number;
+  employees?: string;
+  logo?: string;
+  featured: boolean;
+  verified: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface ContactInfo {
   email: string;
   phone: string;

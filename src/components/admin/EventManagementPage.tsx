@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Calendar, Edit, Trash2, Loader2, Plus, AlertTriangle } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
-import { useToast } from '../ui/use-toast';
+import { toast } from 'sonner';
 import { SupabaseService } from '../../services/supabaseService';
 import { Event } from '../../types';
 import { Link } from 'react-router-dom';
@@ -11,7 +11,6 @@ import { motion } from 'framer-motion';
 import EventCreationForm from './EventCreationForm'; // Réutiliser le formulaire pour la modification
 
 export default function EventManagementPage() {
-  const { toast } = useToast();
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
@@ -29,11 +28,7 @@ export default function EventManagementPage() {
       setEvents(processedEvents.sort((a, b) => a.date.getTime() - b.date.getTime()));
     } catch (error) {
       console.error('Erreur lors du chargement des événements:', error);
-      toast({
-        title: 'Erreur de chargement',
-        description: 'Impossible de récupérer la liste des événements.',
-        variant: 'error',
-      });
+      toast.error('Impossible de récupérer la liste des événements.');
     } finally {
       setIsLoading(false);
     }
@@ -52,18 +47,10 @@ export default function EventManagementPage() {
     try {
       await SupabaseService.deleteEvent(eventId);
       setEvents(prev => prev.filter(event => event.id !== eventId));
-      toast({
-        title: 'Succès',
-        description: `L'événement "${eventTitle}" a été supprimé.`,
-        variant: 'success',
-      });
+      toast.success(`L'événement "${eventTitle}" a été supprimé.`);
     } catch (error) {
       console.error('Erreur lors de la suppression:', error);
-      toast({
-        title: 'Erreur de suppression',
-        description: 'Impossible de supprimer l\'événement.',
-        variant: 'error',
-      });
+      toast.error('Impossible de supprimer l\'événement.');
     } finally {
       setIsDeleting(null);
     }
@@ -72,11 +59,7 @@ export default function EventManagementPage() {
   const handleEditSuccess = () => {
     setEditingEvent(null);
     fetchEvents(); // Recharger la liste après modification
-    toast({
-      title: 'Succès',
-      description: `L'événement a été mis à jour.`,
-      variant: 'success',
-    });
+    toast.success(`L'événement a été mis à jour.`);
   };
 
   const EventItem = ({ event }: { event: Event }) => (

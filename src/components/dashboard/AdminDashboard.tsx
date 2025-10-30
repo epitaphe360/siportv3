@@ -14,20 +14,26 @@ import {
   FileText,
   AlertTriangle,
   Plus,
-  ClipboardList
+  ClipboardList,
+  Download
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
+import { ROUTES } from '../../lib/routes';
 import { Button } from '../ui/Button';
 import useAuthStore from '../../store/authStore';
 import { useAdminDashboardStore } from '../../store/adminDashboardStore';
 import { motion } from 'framer-motion';
 import RegistrationRequests from '../admin/RegistrationRequests';
+import { useNewsStore } from '../../store/newsStore';
+import { toast } from 'sonner';
 
 export default function AdminDashboard() {
   const { metrics, isLoading, error, fetchMetrics } = useAdminDashboardStore();
   const { user } = useAuthStore();
+  const { fetchFromOfficialSite } = useNewsStore();
   const [showRegistrationRequests, setShowRegistrationRequests] = useState(false);
+  const [isImportingArticles, setIsImportingArticles] = useState(false);
 
   useEffect(() => {
     fetchMetrics();
@@ -111,6 +117,20 @@ export default function AdminDashboard() {
       case 'error': return 'text-red-600';
       case 'info': return 'text-blue-600';
       default: return 'text-gray-600';
+    }
+  };
+
+  const handleImportArticles = async () => {
+    setIsImportingArticles(true);
+    try {
+      toast.loading('Importation des articles depuis siportevent.com...', { id: 'import-articles' });
+      await fetchFromOfficialSite();
+      toast.success('Articles importés avec succès!', { id: 'import-articles' });
+    } catch (error) {
+      console.error('Erreur importation articles:', error);
+      toast.error('Erreur lors de l\'importation des articles', { id: 'import-articles' });
+    } finally {
+      setIsImportingArticles(false);
     }
   };
 
@@ -564,7 +584,7 @@ export default function AdminDashboard() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <div className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center">
+                    <div className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
                       <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
                         <FileText className="h-5 w-5" />
                       </div>
@@ -578,6 +598,29 @@ export default function AdminDashboard() {
                     </div>
                   </motion.div>
                 </Link>
+
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleImportArticles}
+                >
+                  <div className={`bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center ${isImportingArticles ? 'opacity-70 cursor-wait' : ''}`}>
+                    <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
+                      <Download className={`h-5 w-5 ${isImportingArticles ? 'animate-bounce' : ''}`} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold">
+                        {isImportingArticles ? 'Importation en cours...' : 'Importer Articles'}
+                      </div>
+                      <div className="text-xs text-indigo-100">Synchroniser depuis siportevent.com</div>
+                    </div>
+                    {!isImportingArticles && (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    )}
+                  </div>
+                </motion.div>
               </div>
             </div>
           </motion.div>

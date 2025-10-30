@@ -17,7 +17,9 @@ export default function PersonalAppointmentsCalendar({ userType }: PersonalAppoi
   const { user } = useAuthStore();
   const {
     appointments,
+    timeSlots,
     fetchAppointments,
+    fetchTimeSlots,
     updateAppointmentStatus,
     cancelAppointment,
     isLoading
@@ -28,7 +30,10 @@ export default function PersonalAppointmentsCalendar({ userType }: PersonalAppoi
 
   useEffect(() => {
     fetchAppointments();
-  }, [fetchAppointments]);
+    if (user?.id) {
+      fetchTimeSlots(user.id);
+    }
+  }, [fetchAppointments, fetchTimeSlots, user?.id]);
 
   // Filtrer les rendez-vous selon le type d'utilisateur
   const getFilteredAppointments = () => {
@@ -206,10 +211,15 @@ export default function PersonalAppointmentsCalendar({ userType }: PersonalAppoi
       {/* Grille hebdomadaire */}
       <div className="grid grid-cols-7 gap-2 mb-6">
         {weekDays.map((day, index) => {
-          // Pour une démonstration, on simule des appointments pour aujourd'hui
-          const dayAppointments = index === new Date().getDay() - 1 ? weekAppointments.slice(0, 2) : [];
+          // Filtrer les rendez-vous pour ce jour spécifique
+          const dayAppointments = weekAppointments.filter(appointment => {
+            const slot = timeSlots.find(s => s.id === appointment.timeSlotId);
+            if (!slot) return false;
+            const slotDate = new Date(slot.date);
+            return slotDate.toDateString() === day.toDateString();
+          });
           const isToday = day.toDateString() === new Date().toDateString();
-          
+
           return (
             <div key={index} className="border rounded-lg p-3 min-h-[200px]">
               <div className={`text-center mb-2 pb-2 border-b ${isToday ? 'bg-blue-50' : ''}`}>
@@ -220,10 +230,13 @@ export default function PersonalAppointmentsCalendar({ userType }: PersonalAppoi
                   {day.getDate()}
                 </div>
               </div>
-              
+
               <div className="space-y-2">
-                {/* Pour une démonstration complète, il faudrait joindre avec les TimeSlots */}
-                {weekAppointments.slice(0, 2).map((appointment) => (
+                {dayAppointments.length > 0 ? dayAppointments.map((appointment) => {
+                  const slot = timeSlots.find(s => s.id === appointment.timeSlotId);
+                  const displayTime = slot ? slot.startTime : 'TBD';
+
+                  return (
                   <motion.div
                     key={appointment.id}
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -235,7 +248,7 @@ export default function PersonalAppointmentsCalendar({ userType }: PersonalAppoi
                       <div className="flex items-center space-x-1">
                         {getTypeIcon(appointment.meetingType)}
                         <span className="font-medium text-gray-900">
-                          09:30
+                          {displayTime}
                         </span>
                       </div>
                       <div className="flex items-center space-x-1">
@@ -301,11 +314,12 @@ export default function PersonalAppointmentsCalendar({ userType }: PersonalAppoi
                       )}
                     </div>
                   </motion.div>
-                ))}
-                
+                  );
+                }) : (
                 <div className="text-center text-gray-400 text-xs py-4">
                   Aucun RDV
                 </div>
+                )}
               </div>
             </div>
           );

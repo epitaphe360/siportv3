@@ -65,23 +65,60 @@ export default function VisitorSubscription() {
 
   async function handleSubscribe(level: string) {
     setLoading(true);
-    // Ici, intégrer la logique de paiement si nécessaire
-    // Après paiement, mettre à jour visitor_level
+
     if (!userId) {
       setMessage('Utilisateur non connecté');
       setLoading(false);
       return;
     }
 
-    const { error } = await supabase
-      .from('users')
-      .update({ visitor_level: level })
-      .eq('id', userId);
-    setLoading(false);
-    if (error) {
-      setMessage('Erreur lors de la souscription.');
-    } else {
-      setMessage('Souscription réussie ! Votre niveau : ' + level);
+    // Le niveau gratuit ne nécessite pas de paiement
+    if (level === 'free') {
+      const { error } = await supabase
+        .from('users')
+        .update({ visitor_level: 'free' })
+        .eq('id', userId);
+
+      setLoading(false);
+      if (error) {
+        setMessage('Erreur lors de l\'inscription gratuite.');
+      } else {
+        setMessage('Inscription gratuite réussie !');
+      }
+      return;
+    }
+
+    try {
+      // Appeler l'Edge Function pour créer une session Stripe Checkout
+      const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
+        body: {
+          userId: userId,
+          level: level,
+          successUrl: `${window.location.origin}/subscription/success?level=${level}`,
+          cancelUrl: `${window.location.origin}/subscription/cancel`
+        }
+      });
+
+      if (error) {
+        console.error('Erreur création session Stripe:', error);
+        setMessage(`Erreur lors de la création de la session de paiement: ${error.message}`);
+        setLoading(false);
+        return;
+      }
+
+      console.log('Session Stripe créée:', data);
+
+      // Rediriger vers Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setMessage('Erreur: URL de paiement manquante');
+        setLoading(false);
+      }
+    } catch (err: any) {
+      console.error('Erreur paiement:', err);
+      setMessage(`Erreur: ${err.message || 'Erreur inconnue'}`);
+      setLoading(false);
     }
   }
 
