@@ -53,19 +53,26 @@ export default function AppointmentCalendar() {
   });
   
   // Récupérer l'ID de l'exposant depuis l'URL ou les paramètres
-  const exhibitorId = searchParams.get('exhibitor') || 
-                     location.pathname.split('/').pop() || 
-                     '1'; // Fallback
+  const exhibitorId = searchParams.get('exhibitor') ||
+                     location.pathname.split('/').pop() ||
+                     '';
 
   // Vérification d'authentification
   useEffect(() => {
     if (!isAuthenticated) {
       // Rediriger vers la page de connexion avec un paramètre de redirection
       const currentPath = `/appointments${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
-  navigate(`${ROUTES.LOGIN}?redirect=${encodeURIComponent(currentPath)}`);
+      navigate(`${ROUTES.LOGIN}?redirect=${encodeURIComponent(currentPath)}`);
       return;
     }
-  }, [isAuthenticated, navigate, searchParams]);
+
+    // Vérifier qu'un exhibitorId est fourni
+    if (!exhibitorId) {
+      toast.error('ID exposant manquant');
+      navigate('/'); // Rediriger vers la page d'accueil
+      return;
+    }
+  }, [isAuthenticated, navigate, searchParams, exhibitorId]);
 
   useEffect(() => {
     if (isAuthenticated) {

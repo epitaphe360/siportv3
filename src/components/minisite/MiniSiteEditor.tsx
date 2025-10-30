@@ -1,6 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
+import { SupabaseService } from '../../services/supabaseService';
+import useAuthStore from '../../store/authStore';
 import {
   Layout,
   Image,
@@ -71,6 +73,9 @@ interface Section {
 }
 
 export default function MiniSiteEditor() {
+  const { user } = useAuthStore();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [previewMode, setPreviewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [editingField, setEditingField] = useState<string | null>(null);
@@ -342,20 +347,77 @@ export default function MiniSiteEditor() {
     }
   }, []);
 
+  // Charger le mini-site existant au montage
+  useEffect(() => {
+    const loadMiniSite = async () => {
+      if (!user?.id) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const miniSite = await SupabaseService.getMiniSite(user.id);
+        if (miniSite && miniSite.sections) {
+          // Convertir les sections de la DB au format du composant
+          const loadedSections = miniSite.sections.map((s: any, index: number) => ({
+            id: String(index + 1),
+            type: s.type || 'about',
+            title: s.title || '',
+            content: s.content || {},
+            visible: s.visible !== false,
+            order: s.order || index
+          }));
+          setSections(loadedSections as Section[]);
+        }
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Erreur chargement mini-site:', error);
+        toast.error('Impossible de charger le mini-site');
+        setIsLoading(false);
+      }
+    };
+
+    loadMiniSite();
+  }, [user?.id]);
+
   const handleSave = useCallback(async () => {
-    try {
-      // Simulation de sauvegarde
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      toast.success('💾 Mini-site sauvegardé. Toutes les modifications enregistrées.');
-    } catch {
-      toast.error('❌ Erreur lors de la sauvegarde');
+    if (!user?.id) {
+      toast.error('Vous devez être connecté pour sauvegarder');
+      return;
     }
-  }, []);
+
+    setIsSaving(true);
+    try {
+      // Préparer les données pour la sauvegarde
+      const miniSiteData = {
+        sections: sections.map(s => ({
+          type: s.type,
+          title: s.title,
+          content: s.content,
+          visible: s.visible,
+          order: s.order
+        })),
+        published: true
+      };
+
+      await SupabaseService.updateMiniSite(user.id, miniSiteData);
+      toast.success('💾 Mini-site sauvegardé avec succès');
+    } catch (error) {
+      console.error('Erreur sauvegarde:', error);
+      toast.error('❌ Erreur lors de la sauvegarde');
+    } finally {
+      setIsSaving(false);
+    }
+  }, [user?.id, sections]);
 
   const handlePreview = useCallback(() => {
+    if (!user?.id) {
+      toast.error('Vous devez être connecté');
+      return;
+    }
     toast(`👁️ Aperçu — Mode: ${previewMode}`, { icon: '👁️' });
-    window.open('/minisite/1', '_blank');
-  }, [previewMode]);
+    window.open(`/minisite/${user.id}`, '_blank');
+  }, [previewMode, user?.id]);
 
   const getPreviewWidth = () => {
     switch (previewMode) {
@@ -495,9 +557,9 @@ export default function MiniSiteEditor() {
               Prévisualiser
             </Button>
             
-            <Button variant="default" onClick={handleSave}>
+            <Button variant="default" onClick={handleSave} disabled={isSaving}>
               <Save className="h-4 w-4 mr-2" />
-              Sauvegarder
+              {isSaving ? 'Sauvegarde...' : 'Sauvegarder'}
             </Button>
           </div>
         </div>

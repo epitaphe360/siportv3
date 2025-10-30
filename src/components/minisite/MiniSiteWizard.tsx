@@ -8,6 +8,7 @@ import AiAgentService from '../../services/aiAgentService';
 import { validateUrl, extractDomain } from '../../utils/urlValidator';
 import { MiniSitePreviewModal } from './MiniSitePreviewModal';
 import { AlertCircle, Loader } from 'lucide-react';
+import useAuthStore from '../../store/authStore';
 
 interface MiniSiteWizardProps {
   onSuccess?: () => void;
@@ -23,6 +24,7 @@ const steps = [
 ];
 
 export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
+  const { user } = useAuthStore();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<any>({});
   const [loading, setLoading] = useState(false);
@@ -132,22 +134,22 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
       };
 
       console.log('🔄 Création du mini-site avec les données:', miniSiteData);
-      
+
+      // Vérifier que l'utilisateur est connecté
+      if (!user?.id) {
+        throw new Error('Vous devez être connecté pour créer un mini-site');
+      }
+
       // Création du mini-site
-      const created = await SupabaseService.createMiniSite(miniSiteData);
+      const created = await SupabaseService.createMiniSite(user.id, miniSiteData);
       console.log('✅ Mini-site créé:', created);
 
       // Publication automatique
       try {
-        const miniSite = Array.isArray(created) ? created[0] : created;
-        if (miniSite && (miniSite.id || miniSite.exhibitor_id)) {
-          const exhibitorId = miniSite.exhibitor_id || miniSite.id;
-          await SupabaseService.updateMiniSite(exhibitorId, { 
-            ...miniSite, 
-            published: true 
-          });
-          console.log('✅ Mini-site publié automatiquement');
-        }
+        await SupabaseService.updateMiniSite(user.id, {
+          published: true
+        });
+        console.log('✅ Mini-site publié automatiquement');
       } catch (pubErr) {
         console.warn('⚠️ Impossible de publier automatiquement:', pubErr);
       }
@@ -200,20 +202,20 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
       };
 
       console.log('🔄 Création manuelle du mini-site:', miniSiteData);
-      
-      const created = await SupabaseService.createMiniSite(miniSiteData);
+
+      // Vérifier que l'utilisateur est connecté
+      if (!user?.id) {
+        throw new Error('Vous devez être connecté pour créer un mini-site');
+      }
+
+      const created = await SupabaseService.createMiniSite(user.id, miniSiteData);
       console.log('✅ Mini-site créé:', created);
 
       // Publication automatique
       try {
-        const miniSite = Array.isArray(created) ? created[0] : created;
-        if (miniSite && (miniSite.id || miniSite.exhibitor_id)) {
-          const exhibitorId = miniSite.exhibitor_id || miniSite.id;
-          await SupabaseService.updateMiniSite(exhibitorId, { 
-            ...miniSite, 
-            published: true 
-          });
-        }
+        await SupabaseService.updateMiniSite(user.id, {
+          published: true
+        });
       } catch (pubErr) {
         console.warn('⚠️ Publication automatique échouée:', pubErr);
       }
