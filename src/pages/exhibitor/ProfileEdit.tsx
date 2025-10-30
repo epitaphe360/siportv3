@@ -65,7 +65,7 @@ const ProfileEdit: React.FC = () => {
       }
 
       navigate(ROUTES.EXHIBITOR_DASHBOARD);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err?.message || String(err));
     } finally {
       setLoading(false);

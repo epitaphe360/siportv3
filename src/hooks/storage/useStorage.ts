@@ -84,7 +84,7 @@ export const useStorage = (options: UseStorageOptions = {}): UseStorageReturn =>
       setProgress(100);
 
       return url;
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || 'Erreur lors du téléchargement du fichier');
       throw err;
     } finally {
@@ -128,7 +128,7 @@ export const useStorage = (options: UseStorageOptions = {}): UseStorageReturn =>
       });
 
       return Promise.all(uploadPromises);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || 'Erreur lors du téléchargement des fichiers');
       throw err;
     } finally {
@@ -147,7 +147,7 @@ export const useStorage = (options: UseStorageOptions = {}): UseStorageReturn =>
     try {
       const result = await StorageService.deleteImage(url, bucket);
       return result;
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || 'Erreur lors de la suppression du fichier');
       throw err;
     } finally {
@@ -162,7 +162,7 @@ export const useStorage = (options: UseStorageOptions = {}): UseStorageReturn =>
     try {
       const files = await StorageService.listFiles(bucket, folder);
       return files;
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || 'Erreur lors de la récupération des fichiers');
       throw err;
     } finally {

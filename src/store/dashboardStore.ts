@@ -143,11 +143,11 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       };
 
       set({ dashboard, isLoading: false, error: null });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Erreur lors de la récupération du dashboard:', error);
       set({ 
         isLoading: false, 
-        error: error?.message || 'Erreur lors du chargement du tableau de bord',
+        error: error instanceof Error ? error.message : String(error) || 'Erreur lors du chargement du tableau de bord',
         dashboard: null 
       });
       throw error;

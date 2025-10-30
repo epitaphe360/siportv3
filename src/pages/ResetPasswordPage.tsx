@@ -64,7 +64,7 @@ export default function ResetPasswordPage() {
         // Clear URL fragment for security
         try { history.replaceState({}, '', window.location.pathname); } catch (e) { console.warn(e) }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err?.message || String(err));
     }
     setLoading(false);

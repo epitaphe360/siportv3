@@ -2,7 +2,27 @@ import { create } from 'zustand';
 import { SupabaseService } from '../services/supabaseService';
 import GoogleAuthService from '../services/googleAuth';
 import LinkedInAuthService from '../services/linkedinAuth';
-import { User } from '../types';
+import { User, UserProfile } from '../types';
+
+/**
+ * Interface pour les données d'inscription
+ */
+interface RegistrationData {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  accountType?: 'admin' | 'exhibitor' | 'partner' | 'visitor';
+  companyName?: string;
+  position?: string;
+  country?: string;
+  phone?: string;
+  linkedin?: string;
+  website?: string;
+  description?: string;
+  objectives?: string[];
+  [key: string]: unknown; // Pour les champs additionnels
+}
 
 interface AuthState {
   user: User | null;
@@ -11,16 +31,16 @@ interface AuthState {
   isLoading: boolean;
   isGoogleLoading: boolean;
   isLinkedInLoading: boolean;
-  
+
   // Actions
   login: (email: string, password: string) => Promise<void>;
-  signUp: (credentials: { email: string, password: string }, profileData: Record<string, unknown>) => Promise<{ error: Error | null }>;
-  register: (userData: Record<string, unknown>) => Promise<void>;
+  signUp: (credentials: { email: string, password: string }, profileData: Partial<UserProfile>) => Promise<{ error: Error | null }>;
+  register: (userData: RegistrationData) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   loginWithLinkedIn: () => Promise<void>;
   logout: () => void;
   setUser: (user: User) => void;
-  updateProfile: (profileData: Record<string, unknown>) => Promise<void>;
+  updateProfile: (profileData: Partial<UserProfile>) => Promise<void>;
 }
 
 // Helper: profile minimal par défaut pour satisfaire l'interface UserProfile
@@ -92,10 +112,11 @@ const useAuthStore = create<AuthState>((set, get) => ({
         isLoading: false
       });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erreur de connexion';
       console.error('❌ Erreur de connexion:', error);
       set({ isLoading: false });
-      throw new Error(error?.message || 'Erreur de connexion');
+      throw new Error(errorMessage);
     }
   },
 
@@ -117,39 +138,37 @@ const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  register: async (userData: Record<string, unknown>) => {
+  register: async (userData: RegistrationData) => {
     set({ isLoading: true });
 
     try {
-      const ud = userData as Record<string, unknown>;
-
       // Validation des données requises
-      if (!ud.email || !ud.firstName || !ud.lastName || !ud.password) {
+      if (!userData.email || !userData.firstName || !userData.lastName || !userData.password) {
         throw new Error('Email, prénom, nom et mot de passe sont requis');
       }
 
       console.log('🔄 Création d\'utilisateur avec Supabase Auth...');
 
-      const userType = (['admin','exhibitor','partner','visitor'].includes(String(ud.accountType)) ? String(ud.accountType) : 'visitor') as User['type'];
+      const userType = (['admin','exhibitor','partner','visitor'].includes(userData.accountType ?? '') ? userData.accountType! : 'visitor') as User['type'];
 
       // Appeler la fonction signUp de SupabaseService qui gère Auth + profil
       const newUser = await SupabaseService.signUp(
-        String(ud.email),
-        String(ud.password),
+        userData.email,
+        userData.password,
         {
-          name: `${String(ud.firstName)} ${String(ud.lastName)}`.trim(),
+          name: `${userData.firstName} ${userData.lastName}`.trim(),
           type: userType,
           profile: minimalUserProfile({
-            firstName: String(ud.firstName ?? ''),
-            lastName: String(ud.lastName ?? ''),
-            company: String(ud.companyName ?? ''),
-            position: String(ud.position ?? ''),
-            country: String(ud.country ?? ''),
-            phone: String(ud.phone ?? ''),
-            linkedin: String(ud.linkedin ?? ''),
-            website: String(ud.website ?? ''),
-            bio: String(ud.description ?? ''),
-            objectives: (Array.isArray(ud.objectives) ? (ud.objectives as string[]) : [])
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            company: userData.companyName ?? '',
+            position: userData.position ?? '',
+            country: userData.country ?? '',
+            phone: userData.phone,
+            linkedin: userData.linkedin,
+            website: userData.website,
+            bio: userData.description ?? '',
+            objectives: userData.objectives ?? []
           })
         }
       );
@@ -165,23 +184,23 @@ const useAuthStore = create<AuthState>((set, get) => ({
         console.log('📝 Création de la demande d\'inscription...');
         await SupabaseService.createRegistrationRequest(newUser.id, {
           type: userType,
-          email: String(ud.email),
-          firstName: String(ud.firstName),
-          lastName: String(ud.lastName),
-          company: String(ud.companyName ?? ''),
-          position: String(ud.position ?? ''),
-          phone: String(ud.phone ?? ''),
-          ...ud
+          email: userData.email,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          company: userData.companyName ?? '',
+          position: userData.position ?? '',
+          phone: userData.phone ?? '',
+          ...userData
         });
 
         // Envoyer l'email de confirmation
         console.log('📧 Envoi de l\'email de confirmation...');
         await SupabaseService.sendRegistrationEmail({
           userType: userType as 'exhibitor' | 'partner',
-          email: String(ud.email),
-          firstName: String(ud.firstName),
-          lastName: String(ud.lastName),
-          companyName: String(ud.companyName ?? '')
+          email: userData.email,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          companyName: userData.companyName ?? ''
         });
 
         console.log('✅ Email de confirmation envoyé');
@@ -189,10 +208,11 @@ const useAuthStore = create<AuthState>((set, get) => ({
 
       set({ isLoading: false });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erreur lors de l\'inscription';
       console.error('❌ Erreur lors de l\'inscription:', error);
       set({ isLoading: false });
-      throw new Error(error?.message || 'Erreur lors de l\'inscription');
+      throw new Error(errorMessage);
     }
   },
 
@@ -240,23 +260,22 @@ const useAuthStore = create<AuthState>((set, get) => ({
     user
   }),
 
-  updateProfile: async (profileData: Record<string, unknown>) => {
+  updateProfile: async (profileData: Partial<UserProfile>) => {
     const { user } = get();
     if (!user) throw new Error('Utilisateur non connecté');
-    
+
     set({ isLoading: true });
-    
+
     try {
-      const pd = profileData as Record<string, unknown>;
       const updatedUser = await SupabaseService.updateUser(user.id, {
         ...user,
-        profile: { ...user.profile, ...pd }
+        profile: { ...user.profile, ...profileData }
       });
-      
+
       set({ user: updatedUser, isLoading: false });
-    } catch (error) {
+    } catch (error: unknown) {
       set({ isLoading: false });
-      throw error;
+      throw error instanceof Error ? error : new Error('Erreur lors de la mise à jour du profil');
     }
   }
 }));

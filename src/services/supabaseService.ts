@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase';
 import { isSupabaseReady } from '../lib/supabase';
-import { User, Exhibitor, Product, Appointment, Event, ChatMessage, ChatConversation, MiniSiteSection, MessageAttachment, ExhibitorCategory, ContactInfo, TimeSlot } from '../types';
+import { User, Exhibitor, Product, Appointment, Event, ChatMessage, ChatConversation, MiniSiteSection, MessageAttachment, ExhibitorCategory, ContactInfo, TimeSlot, UserProfile } from '../types';
 
 // Production: All data from Supabase only
 function getDemoExhibitors(): Exhibitor[] {
@@ -13,10 +13,29 @@ interface UserDB {
   email: string;
   name: string;
   type: 'exhibitor' | 'partner' | 'visitor' | 'admin';
-  profile: Record<string, unknown>;
+  profile: UserProfile;
   status?: 'active' | 'pending' | 'suspended' | 'rejected';
   created_at: string;
   updated_at: string;
+}
+
+interface ProductDB {
+  id: string;
+  exhibitor_id: string;
+  name: string;
+  description: string;
+  category: string;
+  images: string[];
+  specifications?: string;
+  price?: number;
+  featured: boolean;
+}
+
+interface MiniSiteData {
+  theme: string;
+  custom_colors?: Record<string, string>;
+  sections?: MiniSiteSection[];
+  published?: boolean;
 }
 
 interface ExhibitorDB {
@@ -30,9 +49,9 @@ interface ExhibitorDB {
   website?: string;
   verified: boolean;
   featured: boolean;
-  contact_info: Record<string, unknown>;
-  products?: Record<string, unknown>[];
-  mini_site?: Record<string, unknown>;
+  contact_info: ContactInfo;
+  products?: ProductDB[];
+  mini_site?: MiniSiteData;
   user?: { profile: { standNumber?: string } }; // Ajout du champ user pour le standNumber
 }
 
@@ -40,8 +59,8 @@ interface MiniSiteDB {
   id: string;
   exhibitor_id: string;
   theme: string;
-  custom_colors: Record<string, unknown>;
-  sections: Record<string, unknown>[];
+  custom_colors: Record<string, string>;
+  sections: MiniSiteSection[];
   published: boolean;
   views: number;
   last_updated: string;
@@ -121,7 +140,7 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('users')
         .select('*')
         .eq('email', email)
@@ -153,7 +172,7 @@ export class SupabaseService {
 
       updateData.updated_at = new Date().toISOString();
 
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('users')
         .update(updateData)
         .eq('id', userId)
@@ -175,7 +194,7 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('registration_requests')
         .insert([{
           user_id: userId,
@@ -204,7 +223,7 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      const { data: exhibitorsData, error: exhibitorsError } = await (safeSupabase as any)
+      const { data: exhibitorsData, error: exhibitorsError } = await safeSupabase
         .from('exhibitors')
         .select(`
           id,
@@ -241,7 +260,7 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('partners')
         .select(
           `id, name, type, category, description, logo_url, website, country, sector, verified, featured, sponsorship_level, contributions, established_year, employees`
@@ -282,7 +301,7 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .rpc("get_recommendations_for_user", { p_user_id: userId, p_limit: limit });
 
       if (error) throw error;
@@ -305,7 +324,7 @@ export class SupabaseService {
       email: userDB.email,
       name: userDB.name,
       type: userDB.type,
-      profile: userDB.profile as any,
+      profile: userDB.profile,
       status: userDB.status || 'active',
       createdAt: new Date(userDB.created_at),
       updatedAt: new Date(userDB.updated_at)
@@ -313,7 +332,7 @@ export class SupabaseService {
   }
 
   private static transformExhibitorDBToExhibitor(exhibitorDB: ExhibitorDB): Exhibitor {
-    const products = (exhibitorDB.products || []).map((p: any) => ({
+    const products = (exhibitorDB.products || []).map((p: ProductDB) => ({
       id: p.id,
       exhibitorId: p.exhibitor_id,
       name: p.name,
@@ -328,10 +347,10 @@ export class SupabaseService {
     const miniSite = exhibitorDB.mini_site ? {
       theme: exhibitorDB.mini_site.theme || 'default',
       customColors: exhibitorDB.mini_site.custom_colors || {},
-      sections: (exhibitorDB.mini_site.sections || []) as MiniSiteSection[],
+      sections: exhibitorDB.mini_site.sections || [],
       published: exhibitorDB.mini_site.published || false,
-      views: exhibitorDB.mini_site.views || 0,
-      lastUpdated: new Date(exhibitorDB.mini_site.last_updated || Date.now())
+      views: 0,
+      lastUpdated: new Date()
     } : null;
 
     return {
@@ -344,7 +363,7 @@ export class SupabaseService {
       website: exhibitorDB.website,
       verified: exhibitorDB.verified,
       featured: exhibitorDB.featured,
-      contactInfo: exhibitorDB.contact_info as ContactInfo,
+      contactInfo: exhibitorDB.contact_info,
       products,
       miniSite,
       standNumber: exhibitorDB.user?.profile?.standNumber || undefined
@@ -378,7 +397,7 @@ export class SupabaseService {
       console.log('📝 Création du profil utilisateur dans la table users...');
 
       // 2. Créer le profil utilisateur
-      const { data: userProfile, error: userError } = await (safeSupabase as any)
+      const { data: userProfile, error: userError } = await safeSupabase
         .from('users')
         .insert([{
           id: authData.user.id,
@@ -446,7 +465,7 @@ export class SupabaseService {
     
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('mini_sites')
         .insert([{
           exhibitor_id: exhibitorId,
@@ -471,7 +490,7 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('events')
         .update({
           title: eventData.title,
@@ -527,7 +546,7 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      const { error } = await (safeSupabase as any)
+      const { error } = await safeSupabase
         .from('events')
         .delete()
         .eq('id', eventId);
@@ -545,7 +564,7 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('events')
         .insert([{
           title: eventData.title,
@@ -601,7 +620,7 @@ export class SupabaseService {
     
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('events')
         .select('*')
         .order('start_time', { ascending: true });
@@ -637,7 +656,7 @@ export class SupabaseService {
     
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('conversations')
         .select(`
           id,
@@ -689,7 +708,7 @@ export class SupabaseService {
     
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('messages')
         .select('*')
         .eq('conversation_id', conversationId)
@@ -717,7 +736,7 @@ export class SupabaseService {
     
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('messages')
         .insert([{
           conversation_id: conversationId,
@@ -751,7 +770,7 @@ export class SupabaseService {
     
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('mini_sites')
         .select('*')
         .eq('exhibitor_id', exhibitorId)
@@ -774,7 +793,7 @@ export class SupabaseService {
     
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('products')
         .select('*')
         .eq('exhibitor_id', exhibitorId);
@@ -803,7 +822,7 @@ export class SupabaseService {
     
     const safeSupabase = supabase!;
     try {
-      await (safeSupabase as any).rpc('increment_view_count', { exhibitor_id_param: exhibitorId });
+      await safeSupabase.rpc('increment_view_count', { exhibitor_id_param: exhibitorId });
     } catch (error) {
       console.error('Erreur incrémentation vues:', error);
     }
@@ -814,7 +833,7 @@ export class SupabaseService {
     
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('exhibitors')
         .select('id, company_name, logo_url, description, website, contact_info')
         .eq('id', exhibitorId)
@@ -841,7 +860,7 @@ export class SupabaseService {
 	      if (data.logo !== undefined) updateData.logo_url = data.logo;
 	      // Ajoutez d'autres champs à mettre à jour si nécessaire
 	
-	      const { error } = await (safeSupabase as any)
+	      const { error } = await safeSupabase
 	        .from('exhibitors')
 	        .update(updateData)
 	        .eq('id', exhibitorId);
@@ -859,7 +878,7 @@ export class SupabaseService {
 
 	    const safeSupabase = supabase!;
 	    try {
-	      const { error } = await (safeSupabase as any)
+	      const { error } = await safeSupabase
 	        .from('users')
 	        .update({ status })
 	        .eq('id', userId);
@@ -886,7 +905,7 @@ export class SupabaseService {
 
 	    const safeSupabase = supabase!;
 	    try {
-	      const { data, error } = await (safeSupabase as any)
+	      const { data, error } = await safeSupabase
 	        .rpc('validate_exhibitor_atomic', {
 	          p_exhibitor_id: exhibitorId,
 	          p_new_status: newStatus
@@ -928,7 +947,7 @@ export class SupabaseService {
 
 	    const safeSupabase = supabase!;
 	    try {
-	      const { data, error } = await (safeSupabase as any)
+	      const { data, error } = await safeSupabase
 	        .rpc('validate_partner_atomic', {
 	          p_partner_id: partnerId,
 	          p_new_status: newStatus
@@ -961,7 +980,7 @@ export class SupabaseService {
     
     const safeSupabase = supabase!;
     try {
-      const { error } = await (safeSupabase as any)
+      const { error } = await safeSupabase
         .from('exhibitors')
         .insert([{
           id: userId, // Utilise l'ID utilisateur comme ID exposant
@@ -989,7 +1008,7 @@ export class SupabaseService {
     
     const safeSupabase = supabase!;
     try {
-      const { error } = await (safeSupabase as any)
+      const { error } = await safeSupabase
         .from('partners')
         .insert([{
           id: userId, // Utilise l'ID utilisateur comme ID partenaire
@@ -1066,7 +1085,7 @@ export class SupabaseService {
     
     const safeSupabase = supabase!;
     try {
-      let query = (safeSupabase as any).from('users').select('*');
+      let query = safeSupabase.from('users').select('*');
 
       // Filtre par terme de recherche (nom, entreprise, poste)
       if (filters.searchTerm && filters.searchTerm.trim()) {
@@ -1113,7 +1132,7 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('recommendations')
         .select('recommended_user:recommended_user_id(*)')
         .eq('user_id', userId)
@@ -1136,7 +1155,7 @@ export class SupabaseService {
 	
 	    const safeSupabase = supabase!;
 	    try {
-	      await (safeSupabase as any).from('notifications').insert([{
+	      await safeSupabase.from('notifications').insert([{
 	        user_id: userId,
 	        message: message,
 	        type: type,
@@ -1152,7 +1171,7 @@ export class SupabaseService {
 	
 	    const safeSupabase = supabase!;
 	    try {
-	      const { error } = await (safeSupabase as any).from('connections').insert([{
+	      const { error } = await safeSupabase.from('connections').insert([{
 	        requester_id: fromUserId,
 	        addressee_id: toUserId,
 	        status: 'pending'
@@ -1178,7 +1197,7 @@ export class SupabaseService {
 	
 	    const safeSupabase = supabase!;
 	    try {
-	      const { data, error } = await (safeSupabase as any)
+	      const { data, error } = await safeSupabase
 	        .from('connections')
 	        .update({ status: 'accepted' })
 	        .eq('id', connectionId)
@@ -1207,7 +1226,7 @@ export class SupabaseService {
     const safeSupabase = supabase!;
     try {
       // On récupère les IDs des utilisateurs connectés
-      const { data: connections, error } = await (safeSupabase as any)
+      const { data: connections, error } = await safeSupabase
         .from('connections')
         .select('requester_id, addressee_id')
         .eq('status', 'accepted')
@@ -1222,7 +1241,7 @@ export class SupabaseService {
       if (connectedUserIds.length === 0) return [];
 
       // On récupère les profils de ces utilisateurs
-      const { data: users, error: usersError } = await (safeSupabase as any)
+      const { data: users, error: usersError } = await safeSupabase
         .from('users')
         .select('*')
         .in('id', connectedUserIds);
@@ -1241,7 +1260,7 @@ export class SupabaseService {
     if (!this.checkSupabaseConnection()) return [];
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('time_slots')
         .select('*')
         .eq('user_id', userId);
@@ -1257,7 +1276,7 @@ export class SupabaseService {
     if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('time_slots')
         .insert([slotData])
         .select()
@@ -1274,7 +1293,7 @@ export class SupabaseService {
     if (!this.checkSupabaseConnection()) return;
     const safeSupabase = supabase!;
     try {
-      const { error } = await (safeSupabase as any)
+      const { error } = await safeSupabase
         .from('time_slots')
         .delete()
         .eq('id', slotId);
@@ -1292,7 +1311,7 @@ export class SupabaseService {
     if (!this.checkSupabaseConnection()) return [];
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .from('appointments')
         .select(`
           *,
@@ -1313,7 +1332,7 @@ export class SupabaseService {
     if (!this.checkSupabaseConnection()) return;
     const safeSupabase = supabase!;
     try {
-      const { error } = await (safeSupabase as any)
+      const { error } = await safeSupabase
         .from('appointments')
         .update({
           status,
@@ -1341,7 +1360,7 @@ export class SupabaseService {
     const safeSupabase = supabase!;
     try {
       // Utiliser la fonction atomique pour éviter les race conditions
-      const { data, error } = await (safeSupabase as any)
+      const { data, error } = await safeSupabase
         .rpc('book_appointment_atomic', {
           p_time_slot_id: appointmentData.timeSlotId,
           p_visitor_id: appointmentData.visitorId,
@@ -1360,7 +1379,7 @@ export class SupabaseService {
       }
 
       // Récupérer le rendez-vous créé
-      const { data: appointment, error: fetchError } = await (safeSupabase as any)
+      const { data: appointment, error: fetchError } = await safeSupabase
         .from('appointments')
         .select(`
           *,

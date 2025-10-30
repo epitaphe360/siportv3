@@ -51,9 +51,16 @@ interface GalleryContent {
   images: string[];
 }
 
+interface NewsArticle {
+  id: string;
+  title: string;
+  excerpt: string;
+  date: string;
+}
+
 interface NewsContent {
   title: string;
-  articles: unknown[];
+  articles: NewsArticle[];
 }
 
 type SectionContent = HeroContent | AboutContent | ProductsContent | GalleryContent | NewsContent | Record<string, unknown>;

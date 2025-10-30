@@ -48,11 +48,11 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
         filteredExhibitors: exhibitors,
         isLoading: false 
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Erreur lors du chargement des exposants:', error);
       
       // Message d'erreur simple et clair
-      const errorMessage = error?.message || 'Erreur de connexion à la base de données';
+      const errorMessage = error instanceof Error ? error.message : String(error) || 'Erreur de connexion à la base de données';
       
       set({ 
         exhibitors: [],
@@ -103,7 +103,7 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
         };
       });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to update status';
+      const errorMessage = error instanceof Error ? error instanceof Error ? error.message : String(error) : 'Failed to update status';
       set({ isUpdating: null, error: errorMessage });
       // Optionnel: Revert state on error
     }

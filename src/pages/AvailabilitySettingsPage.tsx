@@ -38,7 +38,7 @@ export default function AvailabilitySettingsPage() {
     );
   }
 
-  const handleAvailabilityUpdate = (timeSlots: any[]) => {
+  const handleAvailabilityUpdate = (timeSlots: TimeSlot[]) => {
     // In a real app, this would save to the backend
     toast.success(`${timeSlots.length} créneau${timeSlots.length !== 1 ? 'x' : ''} mis à jour`);
   };
