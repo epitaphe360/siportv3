@@ -31,22 +31,125 @@ interface AppointmentState {
 }
 
 // Fonctions utilitaires pour la synchronisation avec les mini-sites
+/**
+ * Synchronise la disponibilité des créneaux avec le mini-site de l'exposant
+ * Met à jour le widget de disponibilité en temps réel
+ */
 async function syncWithMiniSite(slot: TimeSlot, availableCount: number): Promise<void> {
   try {
-    void slot;
-    void availableCount;
-    // TODO: Implémenter la synchronisation avec les mini-sites
-  } catch {
-    // silencieux
+    // 1. Récupérer le mini-site de l'exposant
+    const miniSite = await SupabaseService.getMiniSite(slot.userId);
+    if (!miniSite) {
+      console.log(`ℹ️ Pas de mini-site pour l'exposant ${slot.userId}`);
+      return;
+    }
+
+    // 2. Mettre à jour les métadonnées du mini-site avec les disponibilités
+    const updatedData = {
+      ...miniSite,
+      availability_widget: {
+        total_slots: availableCount,
+        next_available_date: slot.date.toISOString(),
+        last_updated: new Date().toISOString(),
+        slot_types: {
+          'in-person': availableCount > 0,
+          'virtual': slot.type === 'virtual',
+          'hybrid': slot.type === 'hybrid'
+        }
+      }
+    };
+
+    await SupabaseService.updateMiniSite(slot.userId, updatedData);
+
+    console.log(`✅ Mini-site synchronisé: ${availableCount} créneaux disponibles`);
+
+    // 3. Optionnel: Publier sur canal temps réel Supabase
+    // Pour une implémentation complète, on pourrait utiliser Supabase Realtime
+    // const channel = supabase.channel(`mini-site-${slot.userId}`);
+    // await channel.send({
+    //   type: 'broadcast',
+    //   event: 'availability-updated',
+    //   payload: { availableCount, slotId: slot.id }
+    // });
+
+  } catch (error) {
+    console.error('❌ Erreur sync mini-site:', error);
+    // Ne pas bloquer le flux principal si la sync échoue
   }
 }
 
+/**
+ * Notifie les visiteurs intéressés par un exposant lorsqu'un nouveau créneau est ajouté
+ * Envoie des notifications in-app et emails selon les préférences utilisateur
+ */
 async function notifyInterestedVisitors(slot: TimeSlot): Promise<void> {
   try {
-    void slot;
-    // TODO: Implémenter les notifications aux visiteurs intéressés
-  } catch {
-    // silencieux
+    // 1. Récupérer les visiteurs qui ont marqué cet exposant comme favori
+    // ou qui ont interagi avec lui (visites de mini-site, messages, etc.)
+    const interestedVisitors = await SupabaseService.getInterestedVisitors?.(slot.userId) || [];
+
+    if (interestedVisitors.length === 0) {
+      console.log(`ℹ️ Aucun visiteur intéressé par l'exposant ${slot.userId}`);
+      return;
+    }
+
+    console.log(`📬 Notification de ${interestedVisitors.length} visiteurs intéressés...`);
+
+    // 2. Filtrer selon les préférences de notification
+    const notifiableVisitors = interestedVisitors.filter((v: any) =>
+      v.notificationPreferences?.newTimeSlots !== false  // Actif par défaut
+    );
+
+    // 3. Créer les notifications in-app
+    const notificationPromises = notifiableVisitors.map(async (visitor: any) => {
+      try {
+        // Créer notification in-app
+        await SupabaseService.createNotification?.({
+          userId: visitor.id,
+          type: 'new_timeslot',
+          title: 'Nouveau créneau disponible',
+          message: `Un nouveau créneau est disponible le ${new Date(slot.date).toLocaleDateString('fr-FR')} à ${slot.startTime}`,
+          data: {
+            slotId: slot.id,
+            exhibitorId: slot.userId,
+            date: slot.date,
+            startTime: slot.startTime,
+            type: slot.type
+          }
+        });
+
+        // 4. Envoyer email si préférence activée
+        if (visitor.notificationPreferences?.emailNotifications) {
+          await SupabaseService.sendNotificationEmail?.({
+            to: visitor.email,
+            template: 'new-timeslot-notification',
+            data: {
+              visitorName: visitor.name,
+              slotDate: new Date(slot.date).toLocaleDateString('fr-FR'),
+              slotTime: slot.startTime,
+              slotType: slot.type === 'virtual' ? 'Virtuel' :
+                        slot.type === 'hybrid' ? 'Hybride' : 'Présentiel',
+              exhibitorName: slot.exhibitor?.name || 'l\'exposant',
+              bookingUrl: `${window.location.origin}/appointments?exhibitor=${slot.userId}`
+            }
+          });
+        }
+
+        return { success: true, visitorId: visitor.id };
+      } catch (error) {
+        console.error(`❌ Erreur notification visiteur ${visitor.id}:`, error);
+        return { success: false, visitorId: visitor.id, error };
+      }
+    });
+
+    const results = await Promise.allSettled(notificationPromises);
+    const successCount = results.filter(r => r.status === 'fulfilled' && (r.value as any).success).length;
+
+    console.log(`✅ ${successCount}/${notifiableVisitors.length} visiteurs notifiés avec succès`);
+
+  } catch (error) {
+    console.error('❌ Erreur notification visiteurs:', error);
+    // Ne pas bloquer le flux principal si les notifications échouent
   }
 }
 

@@ -20,6 +20,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true); // ✅ Par défaut activé pour meilleure UX
   const [error, setError] = useState('');
   const { login, loginWithGoogle, isLoading, isGoogleLoading } = useAuthStore();
   const navigate = useNavigate();
@@ -34,7 +35,8 @@ export default function LoginPage() {
     }
 
     try {
-      const result = await login(email, password);
+      // ✅ Passer l'option rememberMe au login
+      const result = await login(email, password, { rememberMe });
 
       // BUGFIX: Only navigate if login successful and user exists
       if (result && result.user) {
@@ -178,6 +180,8 @@ export default function LoginPage() {
                 <input
                   id="remember-me"
                   type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">

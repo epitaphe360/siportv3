@@ -172,8 +172,28 @@ export const useChatStore = create<ChatState>((set, get) => ({
     }
   },
 
-  markAsRead: (conversationId) => {
+  markAsRead: async (conversationId) => {
     const { conversations } = get();
+
+    // Récupérer l'utilisateur connecté
+    const authStoreModule = await import('./authStore');
+    const authStore = authStoreModule.default;
+    const user = authStore.getState ? authStore.getState().user : null;
+
+    if (!user) {
+      console.warn('⚠️ Cannot mark as read: no authenticated user');
+      return;
+    }
+
+    // Marquer comme lus dans la base de données
+    try {
+      await SupabaseService.markMessagesAsRead(conversationId, user.id);
+    } catch (error) {
+      console.error('❌ Erreur lors du marquage des messages comme lus:', error);
+      // Continue quand même avec la mise à jour locale
+    }
+
+    // Mise à jour locale du compteur
     const updatedConversations = conversations.map(conv =>
       conv.id === conversationId
         ? { ...conv, unreadCount: 0 }
