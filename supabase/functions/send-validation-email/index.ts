@@ -15,6 +15,19 @@ interface ValidationEmailRequest {
   status: 'approved' | 'rejected';
 }
 
+/**
+ * Escape HTML to prevent XSS attacks
+ */
+function escapeHtml(text: string | undefined | null): string {
+  if (!text) return '';
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, {
@@ -66,12 +79,12 @@ Deno.serve(async (req: Request) => {
               <h1>SIPORTS 2026 - Mise à Jour</h1>
             </div>
             <div class="content">
-              <h2>Bonjour ${firstName} ${lastName},</h2>
-              
-              <p>Nous avons une mise à jour concernant votre demande d'inscription en tant qu'exposant pour votre entreprise <strong>${companyName}</strong>.</p>
-              
+              <h2>Bonjour ${escapeHtml(firstName)} ${escapeHtml(lastName)},</h2>
+
+              <p>Nous avons une mise à jour concernant votre demande d'inscription en tant qu'exposant pour votre entreprise <strong>${escapeHtml(companyName)}</strong>.</p>
+
               <div class="info-box">
-                <h3>Statut de votre demande : <span style="color: ${statusColor};">${statusLabel}</span></h3>
+                <h3>Statut de votre demande : <span style="color: ${statusColor};">${escapeHtml(statusLabel)}</span></h3>
                 
                 ${isApproved ? `
                   <p>Félicitations ! Votre compte a été examiné et **approuvé** par notre équipe administrative. Vous êtes maintenant un exposant officiel de SIPORTS 2026.</p>

@@ -118,7 +118,7 @@ export class SupabaseService {
       console.warn('⚠️ Supabase non configuré');
       return null;
     }
-    
+
     const safeSupabase = supabase!;
     try {
       const { data, error } = await (safeSupabase as any)
@@ -126,16 +126,72 @@ export class SupabaseService {
         .select('*')
         .eq('email', email)
         .single();
-      
+
       if (error) {
         console.warn('Utilisateur non trouvé:', error.message);
         return null;
       }
-      
+
       return this.transformUserDBToUser(data);
     } catch (error) {
       console.error('Erreur lors de la récupération de l\`utilisateur:', error);
       return null;
+    }
+  }
+
+  static async updateUser(userId: string, userData: Partial<User>): Promise<User | null> {
+    if (!this.checkSupabaseConnection()) return null;
+
+    const safeSupabase = supabase!;
+    try {
+      const updateData: Record<string, any> = {};
+      if (userData.name !== undefined) updateData.name = userData.name;
+      if (userData.email !== undefined) updateData.email = userData.email;
+      if (userData.type !== undefined) updateData.type = userData.type;
+      if (userData.status !== undefined) updateData.status = userData.status;
+      if (userData.profile !== undefined) updateData.profile = userData.profile;
+
+      updateData.updated_at = new Date().toISOString();
+
+      const { data, error } = await (safeSupabase as any)
+        .from('users')
+        .update(updateData)
+        .eq('id', userId)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      console.log(`✅ Utilisateur ${userId} mis à jour`);
+      return this.transformUserDBToUser(data);
+    } catch (error) {
+      console.error(`❌ Erreur mise à jour utilisateur ${userId}:`, error);
+      throw error;
+    }
+  }
+
+  static async createRegistrationRequest(userId: string, requestType: 'exhibitor' | 'partner'): Promise<any> {
+    if (!this.checkSupabaseConnection()) return null;
+
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await (safeSupabase as any)
+        .from('registration_requests')
+        .insert([{
+          user_id: userId,
+          request_type: requestType,
+          status: 'pending'
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      console.log(`✅ Demande d'inscription créée pour l'utilisateur ${userId} (type: ${requestType})`);
+      return data;
+    } catch (error) {
+      console.error(`❌ Erreur création demande d'inscription:`, error);
+      throw error;
     }
   }
 
@@ -800,14 +856,14 @@ export class SupabaseService {
 	
 	  static async updateUserStatus(userId: string, status: User['status']): Promise<void> {
 	    if (!this.checkSupabaseConnection()) return;
-	
+
 	    const safeSupabase = supabase!;
 	    try {
 	      const { error } = await (safeSupabase as any)
 	        .from('users')
 	        .update({ status })
 	        .eq('id', userId);
-	
+
 	      if (error) throw error;
 	      console.log(`✅ Statut utilisateur ${userId} mis à jour à ${status}`);
 	    } catch (error) {
@@ -815,7 +871,91 @@ export class SupabaseService {
 	      throw error;
 	    }
 	  }
-	
+
+	  static async validateExhibitorAtomic(
+	    exhibitorId: string,
+	    newStatus: 'approved' | 'rejected'
+	  ): Promise<{
+	    userId: string;
+	    userEmail: string;
+	    userName: string;
+	    companyName: string;
+	    success: boolean;
+	  } | null> {
+	    if (!this.checkSupabaseConnection()) return null;
+
+	    const safeSupabase = supabase!;
+	    try {
+	      const { data, error } = await (safeSupabase as any)
+	        .rpc('validate_exhibitor_atomic', {
+	          p_exhibitor_id: exhibitorId,
+	          p_new_status: newStatus
+	        });
+
+	      if (error) throw error;
+
+	      const result = data?.[0];
+
+	      if (!result?.success) {
+	        throw new Error('Échec de la validation de l\'exposant');
+	      }
+
+	      console.log(`✅ Exposant ${exhibitorId} validé avec succès (statut: ${newStatus})`);
+	      return {
+	        userId: result.user_id,
+	        userEmail: result.user_email,
+	        userName: result.user_name,
+	        companyName: result.company_name,
+	        success: result.success
+	      };
+	    } catch (error) {
+	      console.error(`❌ Erreur validation exposant ${exhibitorId}:`, error);
+	      throw error;
+	    }
+	  }
+
+	  static async validatePartnerAtomic(
+	    partnerId: string,
+	    newStatus: 'approved' | 'rejected'
+	  ): Promise<{
+	    userId: string;
+	    userEmail: string;
+	    userName: string;
+	    partnerName: string;
+	    success: boolean;
+	  } | null> {
+	    if (!this.checkSupabaseConnection()) return null;
+
+	    const safeSupabase = supabase!;
+	    try {
+	      const { data, error } = await (safeSupabase as any)
+	        .rpc('validate_partner_atomic', {
+	          p_partner_id: partnerId,
+	          p_new_status: newStatus
+	        });
+
+	      if (error) throw error;
+
+	      const result = data?.[0];
+
+	      if (!result?.success) {
+	        throw new Error('Échec de la validation du partenaire');
+	      }
+
+	      console.log(`✅ Partenaire ${partnerId} validé avec succès (statut: ${newStatus})`);
+	      return {
+	        userId: result.user_id,
+	        userEmail: result.user_email,
+	        userName: result.user_name,
+	        partnerName: result.partner_name,
+	        success: result.success
+	      };
+	    } catch (error) {
+	      console.error(`❌ Erreur validation partenaire ${partnerId}:`, error);
+	      throw error;
+	    }
+	  }
+
 	  static async createExhibitorProfile(userId: string, userData: any): Promise<void> {
     if (!this.checkSupabaseConnection()) return;
     
@@ -1148,85 +1288,95 @@ export class SupabaseService {
 
 
   // ==================== APPOINTMENTS ====================
-  static async createAppointment(appointmentData: Omit<Appointment, 'id' | 'createdAt' | 'visitor' | 'exhibitor'>): Promise<Appointment> {
-    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+  static async getAppointments(): Promise<Appointment[]> {
+    if (!this.checkSupabaseConnection()) return [];
     const safeSupabase = supabase!;
     try {
       const { data, error } = await (safeSupabase as any)
         .from('appointments')
-        .insert([appointmentData])
-        .select()
-        .single();
+        .select(`
+          *,
+          exhibitor:exhibitors(id, company_name, logo_url),
+          visitor:users(id, name, email)
+        `)
+        .order('created_at', { ascending: false });
+
       if (error) throw error;
-      return data;
+      return data || [];
     } catch (error) {
-      console.error('Erreur lors de la création du rendez-vous:', error);
+      console.error('Erreur lors de la récupération des rendez-vous:', error);
+      return [];
+    }
+  }
+
+  static async updateAppointmentStatus(appointmentId: string, status: string): Promise<void> {
+    if (!this.checkSupabaseConnection()) return;
+    const safeSupabase = supabase!;
+    try {
+      const { error } = await (safeSupabase as any)
+        .from('appointments')
+        .update({
+          status,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', appointmentId);
+
+      if (error) throw error;
+      console.log(`✅ Statut du rendez-vous ${appointmentId} mis à jour à ${status}`);
+    } catch (error) {
+      console.error(`❌ Erreur mise à jour statut rendez-vous ${appointmentId}:`, error);
       throw error;
     }
   }
 
-
-
-
   static async createAppointment(appointmentData: {
-    exhibitorId: string;
+    exhibitorId?: string;
     visitorId: string;
     timeSlotId: string;
-    status: string;
-    meetingType: string;
+    message?: string;
+    meetingType?: string;
   }): Promise<any> {
     if (!this.checkSupabaseConnection()) return null;
 
     const safeSupabase = supabase!;
     try {
-      // 1. Créer le rendez-vous
-      const { data: appointment, error: appointmentError } = await (safeSupabase as any)
-        .from("appointments")
-        .insert([
-          {
-            exhibitor_id: appointmentData.exhibitorId,
-            visitor_id: appointmentData.visitorId,
-            time_slot_id: appointmentData.timeSlotId,
-            status: appointmentData.status,
-            meeting_type: appointmentData.meetingType,
-          },
-        ])
-        .select()
-        .single();
+      // Utiliser la fonction atomique pour éviter les race conditions
+      const { data, error } = await (safeSupabase as any)
+        .rpc('book_appointment_atomic', {
+          p_time_slot_id: appointmentData.timeSlotId,
+          p_visitor_id: appointmentData.visitorId,
+          p_exhibitor_id: appointmentData.exhibitorId,
+          p_message: appointmentData.message || null,
+          p_meeting_type: appointmentData.meetingType || 'in-person'
+        });
 
-      if (appointmentError) throw appointmentError;
+      if (error) throw error;
 
-      // 2. Récupérer le créneau horaire associé
-      const { data: timeSlot, error: timeSlotError } = await (safeSupabase as any)
-        .from("time_slots")
-        .select("id, max_bookings, current_bookings, available")
-        .eq("id", appointmentData.timeSlotId)
-        .single();
+      // La fonction RPC retourne un tableau avec un seul élément
+      const result = data?.[0];
 
-      if (timeSlotError) throw timeSlotError;
-
-      // 3. Mettre à jour le nombre de réservations et le statut de disponibilité
-      let newCurrentBookings = (timeSlot.current_bookings || 0) + 1;
-      let newAvailableStatus = timeSlot.available;
-
-      if (newCurrentBookings >= timeSlot.max_bookings) {
-        newAvailableStatus = false;
+      if (!result?.success) {
+        throw new Error(result?.error_message || 'Erreur lors de la création du rendez-vous');
       }
 
-      const { error: updateError } = await (safeSupabase as any)
-        .from("time_slots")
-        .update({
-          current_bookings: newCurrentBookings,
-          available: newAvailableStatus,
-        })
-        .eq("id", appointmentData.timeSlotId);
+      // Récupérer le rendez-vous créé
+      const { data: appointment, error: fetchError } = await (safeSupabase as any)
+        .from('appointments')
+        .select(`
+          *,
+          exhibitor:exhibitors(id, company_name, logo_url),
+          visitor:users(id, name, email)
+        `)
+        .eq('id', result.appointment_id)
+        .single();
 
-      if (updateError) throw updateError;
+      if (fetchError) throw fetchError;
 
+      console.log(`✅ Rendez-vous créé avec succès (ID: ${result.appointment_id})`);
       return appointment;
     } catch (error) {
-      console.error("Erreur lors de la création du rendez-vous ou de la mise à jour du créneau:", error);
-      return null;
+      console.error("Erreur lors de la création du rendez-vous:", error);
+      throw error;
     }
   }
 
