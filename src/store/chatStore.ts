@@ -74,9 +74,18 @@ export const useChatStore = create<ChatState>((set, get) => ({
   fetchConversations: async () => {
     set({ isLoading: true });
     try {
-      // Récupérer l'utilisateur actuel (devrait être passé en paramètre dans une vraie app)
-      // Pour l'instant, on utilise 'current-user' - à adapter selon votre authStore
-      const chatData = await loadChatData('current-user');
+      // Récupérer l'utilisateur connecté depuis authStore
+      const authStoreModule = await import('./authStore');
+      const authStore = authStoreModule.default;
+      const user = authStore.getState ? authStore.getState().user : null;
+
+      if (!user) {
+        console.warn('⚠️ No authenticated user found');
+        set({ conversations: [], messages: {}, isLoading: false });
+        return;
+      }
+
+      const chatData = await loadChatData(user.id);
       set({
         conversations: chatData.conversations,
         messages: chatData.messages,
@@ -105,8 +114,17 @@ export const useChatStore = create<ChatState>((set, get) => ({
         throw new Error('Conversation non trouvée');
       }
 
+      // Récupérer l'utilisateur connecté depuis authStore
+      const authStoreModule = await import('./authStore');
+      const authStore = authStoreModule.default;
+      const user = authStore.getState ? authStore.getState().user : null;
+
+      if (!user) {
+        throw new Error('Utilisateur non authentifié');
+      }
+
       // Identifier l'expéditeur et le destinataire
-      const senderId = 'user1'; // TODO: Récupérer depuis authStore
+      const senderId = user.id;
       const receiverId = conversation.participants.find(p => p.id !== senderId)?.id || '';
 
       // Envoyer via Supabase

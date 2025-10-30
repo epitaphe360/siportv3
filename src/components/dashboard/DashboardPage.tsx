@@ -24,8 +24,10 @@ export default function DashboardPage() {
     );
   }
 
-  // Debug: Afficher le type d'utilisateur pour vérification
-  console.log('User type:', user.type, 'Email:', user.email);
+  // Debug: Afficher le type d'utilisateur pour vérification (dev uniquement)
+  if (import.meta.env.DEV) {
+    console.log('User type:', user.type, 'Email:', user.email);
+  }
 
   // Redirection vers le tableau de bord spécifique selon le type d'utilisateur
   switch (user.type) {

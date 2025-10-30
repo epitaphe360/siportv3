@@ -114,13 +114,19 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
   const handleSpeakerChange = (index: number, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     const newSpeakers = [...formData.speakers];
-    
+
     // Gérer les champs simples
     if (name === 'name' || name === 'title' || name === 'company' || name === 'bio' || name === 'linkedin' || name === 'avatar') {
-      (newSpeakers[index] as any)[name] = value;
+      newSpeakers[index] = {
+        ...newSpeakers[index],
+        [name]: value
+      };
     } else if (name === 'expertise') {
       // Gérer le champ expertise (séparé par virgules)
-      (newSpeakers[index] as any)[name] = value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+      newSpeakers[index] = {
+        ...newSpeakers[index],
+        expertise: value.split(',').map(s => s.trim()).filter(s => s.length > 0)
+      };
     }
 
     setFormData(prev => ({
