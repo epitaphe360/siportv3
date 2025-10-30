@@ -199,10 +199,14 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     const { getVisitorQuota } = await import('../config/quotas');
 
     const quota = getVisitorQuota(visitorLevel);
-    const confirmedCount = appointments.filter(a => a.visitorId === visitorId && a.status === 'confirmed').length;
-    
-    if (confirmedCount >= quota) {
-      throw new Error('Quota RDV atteint pour votre niveau');
+    // Compter TOUS les RDV actifs (pending + confirmed) pour éviter le contournement du quota
+    const activeCount = appointments.filter(
+      a => a.visitorId === visitorId &&
+           (a.status === 'confirmed' || a.status === 'pending')
+    ).length;
+
+    if (activeCount >= quota) {
+      throw new Error('Quota de rendez-vous atteint pour votre niveau');
     }
 
     // Prevent duplicate booking of the same time slot by the same visitor
@@ -251,8 +255,16 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
         set({ appointments: [persisted, ...appointments] });
         return persisted;
       } catch (err: any) {
-        // Revert optimistic change
-        const revertedSlots = timeSlots.map(s => s.id === timeSlotId ? { ...s, currentBookings: Math.max(0, (s.currentBookings || 0)), available: (s.currentBookings || 0) < (s.maxBookings || 1) } : s);
+        // Revert optimistic change - décrémenter correctement le compteur
+        const revertedSlots = timeSlots.map(s =>
+          s.id === timeSlotId
+            ? {
+                ...s,
+                currentBookings: Math.max(0, (s.currentBookings || 0) - 1),
+                available: ((s.currentBookings || 0) - 1) < (s.maxBookings || 1)
+              }
+            : s
+        );
         set({ timeSlots: revertedSlots });
 
         const msg = String(err?.message || err || '').toLowerCase();
