@@ -102,7 +102,7 @@ const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
         setSuccess(false);
       }, 3000);
       
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur upload multiple:', err);
       setError(err.message || 'Erreur lors du téléchargement des images');
     } finally {
@@ -136,7 +136,7 @@ const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
             setSuccess(false);
           }, 3000);
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         setError(err.message || 'Erreur lors de la suppression');
       }
     }

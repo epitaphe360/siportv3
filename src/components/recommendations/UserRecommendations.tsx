@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SupabaseService } from '../../services/supabaseService';
-import { useAuth } from '../../hooks/useAuth';
+import useAuthStore from '../../store/authStore';
 import { Exhibitor, Product } from '../../types';
 import { ROUTES } from '../../lib/routes';
 import { Sparkles, TrendingUp, ArrowRight } from 'lucide-react';
@@ -18,7 +18,7 @@ interface RecommendationWithDetails extends Recommendation {
 }
 
 const UserRecommendations: React.FC = () => {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const navigate = useNavigate();
   const [recommendations, setRecommendations] = useState<RecommendationWithDetails[]>([]);
   const [loading, setLoading] = useState(true);

@@ -1,9 +1,9 @@
 import React from 'react';
 import VisitorSubscription from '../pages/VisitorSubscription';
-import { useAuth } from '../lib/useAuth'; // Remplacer par votre hook d'authentification réel
+import useAuthStore from '../store/authStore';
 
 export default function VisitorSubscriptionPage() {
-  const { user } = useAuth(); // user.id doit être l'ID du visiteur connecté
+  const { user } = useAuthStore(); // user.id doit être l'ID du visiteur connecté
 
   if (!user) {
     return <div>Veuillez vous connecter pour souscrire à un pass visiteur.</div>;

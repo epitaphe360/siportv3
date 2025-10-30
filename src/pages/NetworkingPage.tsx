@@ -187,7 +187,7 @@ export default function NetworkingPage() {
         setSelectedTimeSlot('');
         setAppointmentMessage('');
       })
-      .catch((err: any) => {
+      .catch((err: unknown) => {
         console.error('Booking failed', err);
         toast.error(err?.message || 'Échec de la réservation');
       });

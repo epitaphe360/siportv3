@@ -94,7 +94,7 @@ const MediaManager: React.FC<MediaManagerProps> = ({
       });
       
       setFiles(mediaFiles);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors du chargement des fichiers:', err);
       setError(err.message || 'Erreur lors du chargement des fichiers');
     } finally {
@@ -124,7 +124,7 @@ const MediaManager: React.FC<MediaManagerProps> = ({
       
       // Recharger la liste des fichiers
       await loadFiles();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors du téléchargement:', err);
       setError(err.message || 'Erreur lors du téléchargement des fichiers');
     } finally {
@@ -139,7 +139,7 @@ const MediaManager: React.FC<MediaManagerProps> = ({
       try {
         await StorageService.deleteImage(file.url, bucket);
         await loadFiles();
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Erreur lors de la suppression:', err);
         setError(err.message || 'Erreur lors de la suppression du fichier');
       }

@@ -69,7 +69,7 @@ export class ArticleAudioService {
         console.error('Details:', error);
         return {
           success: false,
-          error: `${error.message}${error.context?.body ? ` - ${JSON.stringify(error.context.body)}` : ''}`
+          error: `${error instanceof Error ? error.message : String(error)}${error.context?.body ? ` - ${JSON.stringify(error.context.body)}` : ''}`
         };
       }
 
@@ -97,9 +97,9 @@ export class ArticleAudioService {
         success: true,
         audio: data.audio
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Erreur lors de la conversion audio:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
   }
 
@@ -135,8 +135,8 @@ export class ArticleAudioService {
         };
 
         window.speechSynthesis.speak(utterance);
-      } catch (error: any) {
-        resolve({ success: false, error: error.message });
+      } catch (error: unknown) {
+        resolve({ success: false, error: error instanceof Error ? error.message : String(error) });
       }
     });
   }

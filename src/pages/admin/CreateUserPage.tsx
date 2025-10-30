@@ -52,7 +52,7 @@ export default function CreateUserPage() {
     { value: 'admin', label: 'Administrateur', icon: Shield }
   ];
 
-  const handleChange = (field: string, value: any) => {
+  const handleChange = (field: string, value: string | boolean | undefined) => {
     setUserData(prev => ({ ...prev, [field]: value }));
     if (errors[field as keyof FormErrors]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
@@ -119,10 +119,10 @@ export default function CreateUserPage() {
 
       await apiService.create('users', finalUserData);
       navigate(ROUTES.ADMIN_USERS);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Erreur lors de la création de l\'utilisateur:', error);
       setErrors({ 
-        general: error.message || 'Une erreur est survenue. Veuillez réessayer.' 
+        general: error instanceof Error ? error.message : String(error) || 'Une erreur est survenue. Veuillez réessayer.' 
       });
     } finally {
       setIsLoading(false);

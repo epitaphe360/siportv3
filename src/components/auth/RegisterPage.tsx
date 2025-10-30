@@ -767,7 +767,7 @@ export default function RegisterPage() {
                           }
                         });
                         if (error) throw error;
-                      } catch (err: any) {
+                      } catch (err: unknown) {
                         alert(`Erreur: ${err.message}`);
                       }
                     }}
@@ -793,7 +793,7 @@ export default function RegisterPage() {
                           }
                         });
                         if (error) throw error;
-                      } catch (err: any) {
+                      } catch (err: unknown) {
                         alert(`Erreur: ${err.message}`);
                       }
                     }}

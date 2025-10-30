@@ -30,7 +30,7 @@ export default function TestFlowPage() {
         try {
           await bookAppointment(at.id, at.label);
           entries.push({ attempt: i + 1, timeSlotId: at.id, success: true, message: 'Réservation créée' });
-        } catch (err: any) {
+        } catch (err: unknown) {
           entries.push({ attempt: i + 1, timeSlotId: at.id, success: false, message: err?.message || String(err) });
         }
       }
@@ -45,11 +45,11 @@ export default function TestFlowPage() {
           } else {
             entries.push({ attempt: 0, timeSlotId: '', success: true, message: `Confirm succeeded: ${report.success.length} items` });
           }
-        } catch (err: any) {
+        } catch (err: unknown) {
           entries.push({ attempt: 0, timeSlotId: '', success: false, message: 'Erreur confirm: ' + (err?.message || String(err)) });
         }
       alert('Flow de test exécuté. Consulte le journal sur la page.');
-    } catch (err: any) {
+    } catch (err: unknown) {
       entries.push({ attempt: 0, timeSlotId: '', success: false, message: 'Erreur initiale: ' + (err?.message || String(err)) });
       setLog(entries);
       alert('Erreur lors du flow de test: ' + (err?.message || String(err)));

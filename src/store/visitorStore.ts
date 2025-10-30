@@ -134,7 +134,7 @@ interface VisitorAgenda {
     used: number;
     remaining: number;
   };
-  personalEvents: unknown[];
+  personalEvents: Event[];
 }
 
 interface VisitorState {

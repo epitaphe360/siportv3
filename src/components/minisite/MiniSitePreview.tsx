@@ -119,7 +119,7 @@ export default function MiniSitePreview() {
       // Incrémenter le compteur de vues
       await SupabaseService.incrementMiniSiteViews(exhibitorId);
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors du chargement du mini-site:', err);
       setError('Erreur lors du chargement du mini-site.');
     } finally {

@@ -254,7 +254,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
         set({ appointments: [persisted, ...appointments] });
         return persisted;
-      } catch (err: any) {
+      } catch (err: unknown) {
         // Revert optimistic change - décrémenter correctement le compteur
         const revertedSlots = timeSlots.map(s =>
           s.id === timeSlotId
@@ -430,7 +430,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
             continue;
           }
           success.push(a.id);
-        } catch (err: any) {
+        } catch (err: unknown) {
           failed.push({ id: a.id, error: err?.message || String(err) });
         }
       }

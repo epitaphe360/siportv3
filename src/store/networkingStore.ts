@@ -191,9 +191,9 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
       if (remaining.connections > 0 && remaining.connections < 5) {
         toast.info(`📊 Il vous reste ${remaining.connections} connexion(s) aujourd'hui.`);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Erreur lors de la connexion:', error);
-      toast.error(error.message || 'Erreur lors de l\'envoi de la demande de connexion.');
+      toast.error(error instanceof Error ? error.message : String(error) || 'Erreur lors de l\'envoi de la demande de connexion.');
     }
   },
 

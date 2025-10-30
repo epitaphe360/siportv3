@@ -30,7 +30,7 @@ export default function ForgotPasswordPage() {
       } else {
         setMessage('Un email de réinitialisation a été envoyé si l\'adresse existe dans le système.');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err?.message || String(err));
     }
     setLoading(false);

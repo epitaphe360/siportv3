@@ -85,10 +85,10 @@ export default function NewsPage() {
       } else {
         toast.success('Articles actualisés', { id: 'sync-articles' });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error syncing articles:', error);
       toast.error(
-        `Erreur lors de la synchronisation : ${error.message || 'Erreur inconnue'}`,
+        `Erreur lors de la synchronisation : ${error instanceof Error ? error.message : String(error) || 'Erreur inconnue'}`,
         { id: 'sync-articles' }
       );
     }

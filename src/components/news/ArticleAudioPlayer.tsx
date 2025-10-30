@@ -71,7 +71,7 @@ export default function ArticleAudioPlayer({
       } else {
         toast.error(result.error || 'Erreur lors de la conversion', { id: 'audio-conversion' });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Erreur conversion audio:', error);
       toast.error('Erreur lors de la conversion', { id: 'audio-conversion' });
     } finally {
