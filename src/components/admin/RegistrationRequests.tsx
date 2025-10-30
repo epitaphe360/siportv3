@@ -57,17 +57,28 @@ export default function RegistrationRequests() {
     if (!user) return;
 
     try {
+      // 1. Mettre à jour le statut de la demande
       await SupabaseService.updateRegistrationRequestStatus(
         request.id,
         'approved',
         user.id
       );
-      toast.success(`Demande de ${request.first_name} ${request.last_name} approuvée`);
+
+      // 2. Envoyer l'email de validation à l'utilisateur
+      await SupabaseService.sendValidationEmail({
+        email: request.email,
+        firstName: request.first_name,
+        lastName: request.last_name,
+        companyName: request.company_name || '',
+        status: 'approved'
+      });
+
+      toast.success(`Demande approuvée et email envoyé à ${request.first_name} ${request.last_name}`);
       fetchRequests();
       setSelectedRequest(null);
     } catch (error) {
       console.error('Erreur lors de l\'approbation:', error);
-      toast.error('Erreur lors de l\'approbation');
+      toast.error('Erreur lors de l\'approbation ou de l\'envoi de l\'email');
     }
   };
 
@@ -78,19 +89,30 @@ export default function RegistrationRequests() {
     }
 
     try {
+      // 1. Mettre à jour le statut de la demande
       await SupabaseService.updateRegistrationRequestStatus(
         request.id,
         'rejected',
         user.id,
         rejectionReason
       );
-      toast.success(`Demande de ${request.first_name} ${request.last_name} rejetée`);
+
+      // 2. Envoyer l'email de rejet à l'utilisateur
+      await SupabaseService.sendValidationEmail({
+        email: request.email,
+        firstName: request.first_name,
+        lastName: request.last_name,
+        companyName: request.company_name || '',
+        status: 'rejected'
+      });
+
+      toast.success(`Demande rejetée et email envoyé à ${request.first_name} ${request.last_name}`);
       fetchRequests();
       setSelectedRequest(null);
       setRejectionReason('');
     } catch (error) {
       console.error('Erreur lors du rejet:', error);
-      toast.error('Erreur lors du rejet');
+      toast.error('Erreur lors du rejet ou de l\'envoi de l\'email');
     }
   };
 
