@@ -39,7 +39,12 @@ const registrationSchema = z.object({
   linkedin: z.string().url('URL LinkedIn invalide').optional().or(z.literal('')),
   description: z.string().min(50, 'Description trop courte (minimum 50 caractères)'),
   objectives: z.array(z.string()).min(1, 'Sélectionnez au moins un objectif'),
-  password: z.string().min(8, 'Mot de passe trop court (minimum 8 caractères)'),
+  password: z.string()
+    .min(12, 'Minimum 12 caractères')
+    .regex(/[A-Z]/, 'Doit contenir au moins une majuscule')
+    .regex(/[a-z]/, 'Doit contenir au moins une minuscule')
+    .regex(/[0-9]/, 'Doit contenir au moins un chiffre')
+    .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Doit contenir au moins un caractère spécial (!@#$%^&*...)'),
   confirmPassword: z.string()
 }).refine((data) => {
   // Validation du mot de passe
