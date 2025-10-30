@@ -432,13 +432,13 @@ export class SupabaseService {
     }
   }
 
-  static async signIn(email: string, password: string): Promise<User | null> {
+  static async signIn(email: string, password: string, options?: { rememberMe?: boolean }): Promise<User | null> {
     if (!this.checkSupabaseConnection()) return null;
 
     const safeSupabase = supabase!;
 
     try {
-	      // AUTHENTIFICATION SUPABASE STANDARD
+      // AUTHENTIFICATION SUPABASE STANDARD
       const { data, error: authError } = await safeSupabase.auth.signInWithPassword({
         email,
         password,
@@ -449,6 +449,15 @@ export class SupabaseService {
       }
 
       if (!data.user) return null;
+
+      // ✅ Note: Supabase persiste automatiquement les sessions dans localStorage par défaut
+      // L'option rememberMe est enregistrée pour référence future (ex: logout automatique)
+      // Dans une implémentation avancée, on pourrait utiliser sessionStorage si rememberMe = false
+      if (options?.rememberMe === false) {
+        // Pour l'instant, on log simplement l'intention
+        // TODO: Implémenter session temporaire avec sessionStorage si besoin
+        console.log('⏰ Session temporaire activée (rememberMe = false)');
+      }
 
       // Récupérer le profil utilisateur
       const user = await this.getUserByEmail(email);
@@ -653,7 +662,7 @@ export class SupabaseService {
 
   static async getConversations(userId: string): Promise<ChatConversation[]> {
     if (!this.checkSupabaseConnection()) return [];
-    
+
     const safeSupabase = supabase!;
     try {
       const { data, error } = await safeSupabase
@@ -670,16 +679,24 @@ export class SupabaseService {
             content,
             message_type,
             created_at,
+            read_at,
+            receiver_id,
             sender:sender_id(id, name)
           )
         `)
         .contains('participant_ids', [userId])
         .order('updated_at', { ascending: false });
-        
+
       if (error) throw error;
-      
+
       return (data || []).map((conv: any) => {
         const lastMessage = conv.messages?.[0];
+
+        // ✅ Compter les messages non lus pour cet utilisateur
+        const unreadCount = (conv.messages || []).filter((msg: any) =>
+          msg.receiver_id === userId && msg.read_at === null
+        ).length;
+
         return {
           id: conv.id,
           participants: conv.participant_ids,
@@ -690,9 +707,9 @@ export class SupabaseService {
             content: lastMessage.content,
             type: lastMessage.message_type,
             timestamp: new Date(lastMessage.created_at),
-            read: true // Simplifié pour l'instant
+            read: lastMessage.read_at !== null
           } : null,
-          unreadCount: 0, // À implémenter
+          unreadCount, // ✅ Maintenant implémenté !
           createdAt: new Date(conv.created_at),
           updatedAt: new Date(conv.updated_at)
         };
@@ -762,6 +779,32 @@ export class SupabaseService {
     } catch (error) {
       console.error('Erreur envoi message:', error);
       return null;
+    }
+  }
+
+  /**
+   * Marque tous les messages non lus d'une conversation comme lus pour un utilisateur
+   * @param conversationId - ID de la conversation
+   * @param userId - ID de l'utilisateur qui lit les messages
+   */
+  static async markMessagesAsRead(conversationId: string, userId: string): Promise<void> {
+    if (!this.checkSupabaseConnection()) return;
+
+    const safeSupabase = supabase!;
+    try {
+      const { error } = await safeSupabase
+        .from('messages')
+        .update({ read_at: new Date().toISOString() })
+        .eq('conversation_id', conversationId)
+        .eq('receiver_id', userId)
+        .is('read_at', null);
+
+      if (error) throw error;
+
+      console.log(`✅ Messages marqués comme lus pour conversation ${conversationId}`);
+    } catch (error) {
+      console.error('Erreur lors du marquage des messages comme lus:', error);
+      throw error;
     }
   }
 

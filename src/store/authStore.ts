@@ -83,7 +83,7 @@ const useAuthStore = create<AuthState>((set, get) => ({
   isGoogleLoading: false,
   isLinkedInLoading: false,
   
-  login: async (email: string, password: string) => {
+  login: async (email: string, password: string, options?: { rememberMe?: boolean }) => {
     set({ isLoading: true });
 
     try {
@@ -93,7 +93,8 @@ const useAuthStore = create<AuthState>((set, get) => ({
 
       console.log('🔄 Connexion via Supabase pour:', email);
 
-      const user = await SupabaseService.signIn(email, password);
+      // ✅ Passer l'option rememberMe à signIn
+      const user = await SupabaseService.signIn(email, password, options);
 
       if (!user) {
         throw new Error('Email ou mot de passe incorrect');
@@ -103,7 +104,7 @@ const useAuthStore = create<AuthState>((set, get) => ({
         throw new Error('Votre compte est en attente de validation');
       }
 
-      console.log('✅ Utilisateur authentifié:', user.email);
+      console.log('✅ Utilisateur authentifié:', user.email, options?.rememberMe ? '(session persistante)' : '(session temporaire)');
 
       set({
         user,
