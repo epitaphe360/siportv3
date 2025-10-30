@@ -235,13 +235,14 @@ export default function AppointmentCalendar() {
     try {
       // Pré-vérification du quota côté client
       const auth = await import('../../store/authStore');
+      const { getVisitorQuota } = await import('../../config/quotas');
       const user = auth?.default?.getState ? auth.default.getState().user : null;
       const visitorId = user?.id || 'user1';
       const visitorLevel = user?.visitor_level || user?.profile?.visitor_level || 'free';
-      const quotas: Record<string, number> = { free: 0, basic: 2, premium: 5, vip: 99 };
+      const quota = getVisitorQuota(visitorLevel);
       const confirmedCount = appointments.filter(a => a.visitorId === visitorId && a.status === 'confirmed').length;
-      if (confirmedCount >= (quotas[visitorLevel] || 0)) {
-        toast.error('Quota RDV atteint pour votre niveau');
+      if (confirmedCount >= quota) {
+        toast.error('Quota de rendez-vous atteint pour votre niveau');
         return;
       }
 
