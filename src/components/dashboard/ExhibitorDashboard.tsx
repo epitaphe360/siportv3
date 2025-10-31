@@ -140,10 +140,12 @@ export default function ExhibitorDashboard() {
       const canvas = qrCodeRef.current;
       if (canvas) {
         const link = document.createElement('a');
-        link.download = `qr-code-${user?.profile.company || 'stand'}.png`;
+        // HIGH #2 FIX: Proper optional chaining for profile.company
+        const companyName = user?.profile?.company || user?.profile?.companyName || 'stand';
+        link.download = `qr-code-${companyName}.png`;
         link.href = canvas.toDataURL();
         link.click();
-        
+
         setModal({
           title: 'Téléchargement Réussi',
           content: (
@@ -153,7 +155,7 @@ export default function ExhibitorDashboard() {
                 Le QR code de votre stand a été téléchargé avec succès !
               </p>
               <p className="text-sm text-gray-500 mt-2">
-                Fichier : qr-code-{user?.profile.company || 'stand'}.png
+                Fichier : qr-code-{companyName}.png
               </p>
             </div>
           )

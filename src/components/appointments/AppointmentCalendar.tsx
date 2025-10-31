@@ -135,7 +135,8 @@ export default function AppointmentCalendar() {
       }
 
       // Validation de la date (pas dans le passé)
-      const selectedDate = new Date(newSlotData.date);
+      // MEDIUM FIX: Use timezone-aware date comparison
+      const selectedDate = new Date(newSlotData.date + 'T00:00:00'); // Force local timezone interpretation
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
