@@ -37,23 +37,25 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchMetrics();
-  }, [fetchMetrics]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Intentionally fetch only on mount
 
   // Métriques administrateur récupérées depuis Supabase
+  // Display loading state if metrics not yet fetched
   const adminMetrics = metrics || {
-    totalUsers: 2524, // Real value from database
-    activeUsers: 1247,
-    totalExhibitors: 22, // Real value from database
-    totalPartners: 25,
-    totalVisitors: 2452, // Real value from database
-    totalEvents: 12, // Real value from database
-    systemUptime: 99.8,
-    dataStorage: 2.4,
-    apiCalls: 125000,
-    avgResponseTime: 145,
-    pendingValidations: 12,
-    activeContracts: 285,
-    contentModerations: 8
+    totalUsers: 0,
+    activeUsers: 0,
+    totalExhibitors: 0,
+    totalPartners: 0,
+    totalVisitors: 0,
+    totalEvents: 0,
+    systemUptime: 0,
+    dataStorage: 0,
+    apiCalls: 0,
+    avgResponseTime: 0,
+    pendingValidations: 0,
+    activeContracts: 0,
+    contentModerations: 0
   };
 
   const systemHealth = [
@@ -764,16 +766,16 @@ export default function AdminDashboard() {
               </div>
               
               <div className="space-y-4">
-                {recentAdminActivity.map((activity) => {
+                {recentAdminActivity.map((activity, index) => {
                   const ActivityIcon = getActivityIcon(activity.type);
                   const iconColor = getActivityColor(activity.severity);
-                  
+
                   return (
                     <motion.div
                       key={activity.id}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.9 + 0 * 0.1 }}
+                      transition={{ delay: 0.9 + index * 0.1 }}
                       className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg"
                     >
                       <div className="p-2 rounded-lg bg-white shadow-sm">

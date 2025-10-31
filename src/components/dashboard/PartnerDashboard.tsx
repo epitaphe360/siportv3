@@ -33,6 +33,26 @@ export default function PartnerDashboard() {
   const { appointments, fetchAppointments, updateAppointmentStatus, cancelAppointment, isLoading: isAppointmentsLoading } = useAppointmentStore();
 
   const [error, setError] = useState<string | null>(null);
+
+  // RBAC: Verify user is a partner
+  if (!user || user.type !== 'partner') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center p-4">
+        <Card className="max-w-md w-full p-8 text-center">
+          <div className="text-6xl mb-4">🚫</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Accès Non Autorisé</h2>
+          <p className="text-gray-600 mb-6">
+            Ce tableau de bord est réservé aux partenaires SIPORTS 2026.
+          </p>
+          <Link to="/dashboard">
+            <Button variant="primary" className="w-full">
+              Retour au Tableau de Bord
+            </Button>
+          </Link>
+        </Card>
+      </div>
+    );
+  }
   const [showMediaModal, setShowMediaModal] = useState(false);
   const [showLeadsModal, setShowLeadsModal] = useState(false);
   const [showEventsModal, setShowEventsModal] = useState(false);
@@ -48,7 +68,8 @@ export default function PartnerDashboard() {
       }
     };
     loadData();
-  }, [fetchDashboard]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Intentionally fetch only on mount
 
   useEffect(() => {
     const loadAppointments = async () => {
@@ -60,16 +81,20 @@ export default function PartnerDashboard() {
       }
     };
     loadAppointments();
-  }, [fetchAppointments]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Intentionally fetch only on mount
 
-  const receivedAppointments = appointments.filter(a => user && a.exhibitorId === user.id);
+  // Filter appointments where partner is involved (as partner, not as exhibitor)
+  // Note: Partners typically receive appointments through partnership relationships
+  // This filter may need adjustment based on your data model
+  const receivedAppointments = appointments.filter(a => user && user.id && a.visitorId === user.id);
   const pendingAppointments = receivedAppointments.filter(a => a.status === 'pending');
   const confirmedAppointments = receivedAppointments.filter(a => a.status === 'confirmed');
 
   const handleAccept = async (appointmentId: string) => {
     try {
       await updateAppointmentStatus(appointmentId, 'confirmed');
-      await fetchAppointments();
+      // Note: fetchAppointments() removed - store already updates local state
     } catch (err) {
       console.error('Erreur lors de l\'acceptation:', err);
       setError('Impossible d\'accepter le rendez-vous');
@@ -79,7 +104,7 @@ export default function PartnerDashboard() {
   const handleReject = async (appointmentId: string) => {
     try {
       await cancelAppointment(appointmentId);
-      await fetchAppointments();
+      // Note: fetchAppointments() removed - store already updates local state
     } catch (err) {
       console.error('Erreur lors du refus:', err);
       setError('Impossible de refuser le rendez-vous');
@@ -135,7 +160,7 @@ export default function PartnerDashboard() {
                   Tableau de Bord Partenaire
                 </h1>
                 <p className="text-gray-600">
-                  Bienvenue {user?.profile.firstName}, suivez votre impact SIPORTS 2026
+                  Bienvenue {user?.profile?.firstName || 'Partenaire'}, suivez votre impact SIPORTS 2026
                 </p>
               </div>
             </div>

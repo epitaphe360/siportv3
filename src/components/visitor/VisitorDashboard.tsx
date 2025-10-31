@@ -48,9 +48,10 @@ export default function VisitorDashboard() {
         setError('Impossible de charger les rendez-vous. Veuillez réessayer.');
       }
     };
-    
+
     loadAppointments();
-  }, [fetchAppointments]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Intentionally fetch only on mount
 
   // Filter appointments for current visitor (use user after it's declared)
   const receivedAppointments = appointments?.filter((a) => user && a.visitorId === user.id) || [];
@@ -61,7 +62,7 @@ export default function VisitorDashboard() {
   const handleAccept = async (appointmentId: string) => {
     try {
       await updateAppointmentStatus(appointmentId, 'confirmed');
-      await fetchAppointments();
+      // Note: fetchAppointments() removed - store already updates local state
     } catch (err) {
       console.error('Erreur lors de l\'acceptation du rendez-vous:', err);
       setError('Impossible d\'accepter le rendez-vous. Veuillez réessayer.');
@@ -71,7 +72,7 @@ export default function VisitorDashboard() {
   const handleReject = async (appointmentId: string) => {
     try {
       await cancelAppointment(appointmentId);
-      await fetchAppointments();
+      // Note: fetchAppointments() removed - store already updates local state
     } catch (err) {
       console.error('Erreur lors du refus du rendez-vous:', err);
       setError('Impossible de refuser le rendez-vous. Veuillez réessayer.');
@@ -99,14 +100,15 @@ export default function VisitorDashboard() {
       fetchEvents();
       fetchUserEventRegistrations();
     }
-  }, [isAuthenticated, fetchEvents, fetchUserEventRegistrations]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]); // Refetch when authentication changes
 
   const handleUnregisterFromEvent = async (eventId: string) => {
     try {
       await unregisterFromEvent(eventId);
-      fetchUserEventRegistrations(); // Refresh the list
+      // Note: fetchUserEventRegistrations() removed - unregisterFromEvent already calls it internally
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Erreur lors de la désinscription');
+      setError(error instanceof Error ? error.message : 'Erreur lors de la désinscription');
     }
   };
 
@@ -128,7 +130,7 @@ export default function VisitorDashboard() {
   };
 
   // Fonction helper pour afficher le nom de l'exposant
-  const getExhibitorName = (appointment: any) => {
+  const getExhibitorName = (appointment: { exhibitor?: { companyName?: string; name?: string }; exhibitorId: string }) => {
     if (appointment.exhibitor?.companyName) {
       return appointment.exhibitor.companyName;
     }

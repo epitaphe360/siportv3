@@ -189,7 +189,7 @@ export class SupabaseService {
     }
   }
 
-  static async createRegistrationRequest(userId: string, requestType: 'exhibitor' | 'partner'): Promise<any> {
+  static async createSimpleRegistrationRequest(userId: string, requestType: 'exhibitor' | 'partner'): Promise<any> {
     if (!this.checkSupabaseConnection()) return null;
 
     const safeSupabase = supabase!;
