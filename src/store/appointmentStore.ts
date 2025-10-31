@@ -419,17 +419,36 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
     if (!appointment) return;
 
+    // TODO: HIGH PRIORITY - Add transaction support for slot availability
+    // Current implementation has race condition risk:
+    // 1. Two concurrent cancellations may read stale timeSlots
+    // 2. Local count may diverge from server count
+    // Recommended: Use Supabase RPC with database-level atomicity
+
     // Persist status change to Supabase if possible
     if (SupabaseService && typeof SupabaseService.updateAppointmentStatus === 'function') {
       try {
         await SupabaseService.updateAppointmentStatus(appointmentId, 'cancelled');
+
+        // After server confirmation, refresh slots from server to get authoritative count
+        if (appointment.timeSlotId) {
+          const affectedSlot = timeSlots.find(s => s.id === appointment.timeSlotId);
+          if (affectedSlot?.userId) {
+            try {
+              await get().fetchTimeSlots(affectedSlot.userId);
+              return; // Server state is now authoritative, no need for local updates
+            } catch {
+              // Fall through to local update if refresh fails
+            }
+          }
+        }
       } catch (err) {
         console.warn('Failed to persist cancellation to Supabase', err);
-        // continue to update local state anyway
+        throw err; // Don't update local state if server update failed
       }
     }
 
-    // Update local appointment status
+    // Fallback local update (only if server sync unavailable or refresh failed)
     const updatedAppointments = appointments.map(a => a.id === appointmentId ? { ...a, status: 'cancelled' as const } : a);
 
     // Recompute bookings for the affected time slot by counting confirmed/pending appointments locally
@@ -448,15 +467,35 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
   updateAppointmentStatus: async (appointmentId, status) => {
     const { appointments, timeSlots } = get();
 
+    // TODO: Same transaction concern as cancelAppointment
     // Persist to Supabase if possible
     if (SupabaseService && typeof SupabaseService.updateAppointmentStatus === 'function') {
       try {
         await SupabaseService.updateAppointmentStatus(appointmentId, status as any);
+
+        // Refresh slots from server for authoritative count
+        const appointment = appointments.find(a => a.id === appointmentId);
+        if (appointment?.timeSlotId) {
+          const affectedSlot = timeSlots.find(s => s.id === appointment.timeSlotId);
+          if (affectedSlot?.userId) {
+            try {
+              await get().fetchTimeSlots(affectedSlot.userId);
+              // Update appointments locally and return
+              const updatedAppointments = appointments.map(a => a.id === appointmentId ? { ...a, status } : a);
+              set({ appointments: updatedAppointments });
+              return;
+            } catch {
+              // Fall through to local update if refresh fails
+            }
+          }
+        }
       } catch (err) {
         console.warn('Failed to persist appointment status to Supabase', err);
+        throw err; // Don't update local state if server update failed
       }
     }
 
+    // Fallback local update
     const updatedAppointments = appointments.map(a => a.id === appointmentId ? { ...a, status } : a);
 
     // If the status change affects slot counts, recompute for the related slot
@@ -476,12 +515,47 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
   createTimeSlot: async (slot) => {
     const { timeSlots } = get();
+
+    // MEDIUM SEVERITY FIX: Add validations before creating time slot
+    if (!slot.startTime || !slot.endTime) {
+      throw new Error('Les heures de début et de fin sont obligatoires');
+    }
+
+    if (!slot.duration || slot.duration <= 0) {
+      throw new Error('La durée doit être supérieure à 0 minutes');
+    }
+
+    if (!slot.maxBookings || slot.maxBookings <= 0) {
+      throw new Error('Le nombre maximum de réservations doit être supérieur à 0');
+    }
+
+    const slotUserId = (slot as any).userId;
+    if (!slotUserId || slotUserId === 'unknown') {
+      throw new Error('L\'identifiant de l\'exposant est requis pour créer un créneau');
+    }
+
+    // Validate start time is before end time
+    if (slot.startTime >= slot.endTime) {
+      throw new Error('L\'heure de début doit être avant l\'heure de fin');
+    }
+
+    // Validate date is not in the past (allow today)
+    const slotDate = (slot as any).date;
+    if (slotDate) {
+      const dateObj = slotDate instanceof Date ? slotDate : new Date(slotDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (dateObj < today) {
+        throw new Error('Impossible de créer un créneau dans le passé');
+      }
+    }
+
     // If SupabaseService is available, persist the slot; otherwise create local mock
     try {
       if (SupabaseService && typeof SupabaseService.createTimeSlot === 'function') {
         const created = await SupabaseService.createTimeSlot({
-          userId: (slot as any).userId || 'unknown',
-          date: (slot as any).date instanceof Date ? (slot as any).date.toISOString().split('T')[0] : String((slot as any).date),
+          userId: slotUserId,
+          date: slotDate instanceof Date ? slotDate.toISOString().split('T')[0] : String(slotDate),
           startTime: slot.startTime,
           endTime: slot.endTime,
           duration: slot.duration,
