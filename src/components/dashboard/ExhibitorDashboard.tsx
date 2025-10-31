@@ -23,6 +23,7 @@ export default function ExhibitorDashboard() {
   const [modal, setModal] = useState<{title: string, content: React.ReactNode} | null>(null);
   const [isDownloadingQR, setIsDownloadingQR] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [processingAppointment, setProcessingAppointment] = useState<string | null>(null);
   
   const { user } = useAuthStore();
   const { dashboard, fetchDashboard, error: dashboardError } = useDashboardStore();
@@ -42,28 +43,61 @@ export default function ExhibitorDashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Intentionally fetch only on mount
 
-  // Filtrer les rendez-vous reçus (où l'exposant est le user connecté)
-  const receivedAppointments = appointments.filter(a => user && a.exhibitorId === user.id);
+  // CRITICAL #12 FIX: Proper null check before filtering appointments
+  const receivedAppointments = user?.id
+    ? appointments.filter(a => a.exhibitorId === user.id)
+    : [];
   const pendingAppointments = receivedAppointments.filter(a => a.status === 'pending');
   const confirmedAppointments = receivedAppointments.filter(a => a.status === 'confirmed');
 
   const handleAccept = async (appointmentId: string) => {
+    // Role validation: Verify user owns this appointment
+    const appointment = appointments.find(a => a.id === appointmentId);
+    if (!appointment || !user?.id || appointment.exhibitorId !== user.id) {
+      setError('Vous n\'êtes pas autorisé à confirmer ce rendez-vous');
+      return;
+    }
+
+    setProcessingAppointment(appointmentId);
     try {
       await updateAppointmentStatus(appointmentId, 'confirmed');
       // Note: fetchAppointments() removed - store already updates local state
     } catch (err) {
       console.error('Erreur lors de l\'acceptation:', err);
       setError('Impossible d\'accepter le rendez-vous');
+    } finally {
+      setProcessingAppointment(null);
     }
   };
 
   const handleReject = async (appointmentId: string) => {
+    // Role validation: Verify user owns this appointment
+    const appointment = appointments.find(a => a.id === appointmentId);
+    if (!appointment || !user?.id || appointment.exhibitorId !== user.id) {
+      setError('Vous n\'êtes pas autorisé à refuser ce rendez-vous');
+      return;
+    }
+
+    // Confirmation dialog before rejecting
+    const confirmed = window.confirm(
+      'Êtes-vous sûr de vouloir refuser ce rendez-vous ? Cette action est irréversible.'
+    );
+
+    if (!confirmed) {
+      return; // User cancelled, do nothing
+    }
+
+    setProcessingAppointment(appointmentId);
     try {
+      // TODO: Consider adding 'rejected' status to Appointment type for better semantics
+      // Currently uses 'cancelled' which is acceptable but less precise
       await cancelAppointment(appointmentId);
       // Note: fetchAppointments() removed - store already updates local state
     } catch (err) {
       console.error('Erreur lors du refus:', err);
       setError('Impossible de refuser le rendez-vous');
+    } finally {
+      setProcessingAppointment(null);
     }
   };
 
@@ -520,8 +554,22 @@ export default function ExhibitorDashboard() {
                           <div className="text-xs text-gray-600">{app.message || 'Aucun message'}</div>
                         </div>
                         <div className="flex gap-2">
-                          <Button size="sm" variant="default" onClick={() => handleAccept(app.id)}>Accepter</Button>
-                          <Button size="sm" variant="destructive" onClick={() => handleReject(app.id)}>Refuser</Button>
+                          <Button
+                            size="sm"
+                            variant="default"
+                            onClick={() => handleAccept(app.id)}
+                            disabled={processingAppointment === app.id}
+                          >
+                            {processingAppointment === app.id ? 'Confirmation...' : 'Accepter'}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleReject(app.id)}
+                            disabled={processingAppointment === app.id}
+                          >
+                            {processingAppointment === app.id ? 'Refus...' : 'Refuser'}
+                          </Button>
                         </div>
                       </div>
                     ))}

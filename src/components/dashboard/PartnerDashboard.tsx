@@ -33,6 +33,7 @@ export default function PartnerDashboard() {
   const { appointments, fetchAppointments, updateAppointmentStatus, cancelAppointment, isLoading: isAppointmentsLoading } = useAppointmentStore();
 
   const [error, setError] = useState<string | null>(null);
+  const [processingAppointment, setProcessingAppointment] = useState<string | null>(null);
 
   // RBAC: Verify user is a partner
   if (!user || user.type !== 'partner') {
@@ -92,22 +93,51 @@ export default function PartnerDashboard() {
   const confirmedAppointments = receivedAppointments.filter(a => a.status === 'confirmed');
 
   const handleAccept = async (appointmentId: string) => {
+    // Role validation: Verify user is involved in this appointment
+    const appointment = appointments.find(a => a.id === appointmentId);
+    if (!appointment || !user?.id || appointment.visitorId !== user.id) {
+      setError('Vous n\'êtes pas autorisé à confirmer ce rendez-vous');
+      return;
+    }
+
+    setProcessingAppointment(appointmentId);
     try {
       await updateAppointmentStatus(appointmentId, 'confirmed');
       // Note: fetchAppointments() removed - store already updates local state
     } catch (err) {
       console.error('Erreur lors de l\'acceptation:', err);
       setError('Impossible d\'accepter le rendez-vous');
+    } finally {
+      setProcessingAppointment(null);
     }
   };
 
   const handleReject = async (appointmentId: string) => {
+    // Role validation: Verify user is involved in this appointment
+    const appointment = appointments.find(a => a.id === appointmentId);
+    if (!appointment || !user?.id || appointment.visitorId !== user.id) {
+      setError('Vous n\'êtes pas autorisé à refuser ce rendez-vous');
+      return;
+    }
+
+    // Confirmation dialog before rejecting
+    const confirmed = window.confirm(
+      'Êtes-vous sûr de vouloir refuser ce rendez-vous ? Cette action est irréversible.'
+    );
+
+    if (!confirmed) {
+      return; // User cancelled, do nothing
+    }
+
+    setProcessingAppointment(appointmentId);
     try {
       await cancelAppointment(appointmentId);
       // Note: fetchAppointments() removed - store already updates local state
     } catch (err) {
       console.error('Erreur lors du refus:', err);
       setError('Impossible de refuser le rendez-vous');
+    } finally {
+      setProcessingAppointment(null);
     }
   };
 
@@ -388,8 +418,22 @@ export default function PartnerDashboard() {
                         <div className="text-xs text-gray-600">{app.message || 'Aucun message'}</div>
                       </div>
                       <div className="flex gap-2">
-                        <Button size="sm" variant="default" onClick={() => handleAccept(app.id)}>Accepter</Button>
-                        <Button size="sm" variant="destructive" onClick={() => handleReject(app.id)}>Refuser</Button>
+                        <Button
+                          size="sm"
+                          variant="default"
+                          onClick={() => handleAccept(app.id)}
+                          disabled={processingAppointment === app.id}
+                        >
+                          {processingAppointment === app.id ? 'Confirmation...' : 'Accepter'}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => handleReject(app.id)}
+                          disabled={processingAppointment === app.id}
+                        >
+                          {processingAppointment === app.id ? 'Refus...' : 'Refuser'}
+                        </Button>
                       </div>
                     </div>
                   ))}

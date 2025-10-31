@@ -327,20 +327,23 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       throw new Error('Vous avez déjà réservé ce créneau');
     }
 
-    // Find the timeslot to determine the exhibitor/user owner
+    // CRITICAL #9 FIX: Validate time slot ownership
     const slot = timeSlots.find(s => s.id === timeSlotId);
+
+    if (!slot) {
+      throw new Error('Créneau non trouvé. Veuillez actualiser la page.');
+    }
+
     const exhibitorIdForSlot = slot?.userId || slot?.exhibitorId || null;
 
     if (!exhibitorIdForSlot) {
-      // If we don't have owner info locally, try to fetch the slot from Supabase
-      try {
-        if (SupabaseService && typeof SupabaseService.getTimeSlotsByUser === 'function') {
-          // best-effort: try to fetch by visitor context — but we need owner; bail gracefully
-          // We'll allow DB to resolve exhibitor via appointment create if possible
-        }
-      } catch {
-        // ignore
-      }
+      // Time slot exists but has no owner - data integrity violation
+      throw new Error('Ce créneau n\'a pas de propriétaire valide. Veuillez contacter le support.');
+    }
+
+    // Additional validation: Verify slot is not already fully booked
+    if (!slot.available || (slot.currentBookings || 0) >= (slot.maxBookings || 1)) {
+      throw new Error('Ce créneau est complet. Veuillez en choisir un autre.');
     }
 
     // Optimistic update: increment slot booking locally
@@ -351,7 +354,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     if (SupabaseService && typeof SupabaseService.createAppointment === 'function') {
       try {
         const persisted = await SupabaseService.createAppointment({
-          exhibitorId: exhibitorIdForSlot || undefined,
+          exhibitorId: exhibitorIdForSlot, // Required - validated above
           visitorId,
           timeSlotId,
           message: message || undefined,
@@ -394,7 +397,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
     const newAppointment: Appointment = {
       id: generatedId,
-      exhibitorId: exhibitorIdForSlot || 'unknown',
+      exhibitorId: exhibitorIdForSlot, // Required - validated above, never 'unknown'
       visitorId,
       timeSlotId,
       status: 'pending',
