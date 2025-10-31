@@ -27,6 +27,7 @@ export default function AppointmentCalendar() {
     appointments,
     timeSlots,
     isLoading,
+    isBooking,
     fetchAppointments,
     fetchTimeSlots,
     bookAppointment,
@@ -638,8 +639,12 @@ export default function AppointmentCalendar() {
                   >
                     Annuler
                   </Button>
-                  <Button variant="default" onClick={handleBookSlotImproved}>
-                    Réserver
+                  <Button
+                    variant="default"
+                    onClick={handleBookSlotImproved}
+                    disabled={isBooking}
+                  >
+                    {isBooking ? 'Réservation en cours...' : 'Réserver'}
                   </Button>
                 </div>
               </motion.div>

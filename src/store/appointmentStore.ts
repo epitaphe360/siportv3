@@ -15,7 +15,8 @@ interface AppointmentState {
   appointments: Appointment[];
   timeSlots: TimeSlot[];
   isLoading: boolean;
-  
+  isBooking: boolean; // Prevent concurrent booking requests
+
   // Actions
   fetchAppointments: () => Promise<void>;
   fetchTimeSlots: (exhibitorId: string) => Promise<void>;
@@ -157,6 +158,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
   appointments: [],
   timeSlots: [],
   isLoading: false,
+  isBooking: false,
 
   fetchAppointments: async () => {
     set({ isLoading: true });
@@ -273,11 +275,19 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
   },
 
   bookAppointment: async (timeSlotId, message) => {
-    const { appointments, timeSlots } = get();
+    const { appointments, timeSlots, isBooking } = get();
 
-    // Récupérer l'utilisateur connecté depuis le store global
+    // Prevent concurrent booking requests (race condition protection)
+    if (isBooking) {
+      throw new Error('Une réservation est déjà en cours. Veuillez patienter.');
+    }
 
-    let resolvedUser: any = null;
+    set({ isBooking: true });
+
+    try {
+      // Récupérer l'utilisateur connecté depuis le store global
+
+      let resolvedUser: any = null;
     try {
       // Essayer require (synchrones) — fonctionne dans la plupart des environnements runtime.
        
@@ -394,6 +404,10 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     };
 
     set({ appointments: [newAppointment, ...appointments] });
+    } finally {
+      // Always reset isBooking flag, even if error occurs
+      set({ isBooking: false });
+    }
   },
 
   cancelAppointment: async (appointmentId) => {

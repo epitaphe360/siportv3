@@ -67,6 +67,16 @@ export default function ExhibitorDashboard() {
     }
   };
 
+  // Auto-clear error messages after 5 seconds
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
   useEffect(() => {
     if (user?.status === 'pending') {
       return;
