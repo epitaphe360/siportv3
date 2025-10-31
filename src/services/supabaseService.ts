@@ -153,7 +153,7 @@ export class SupabaseService {
 
       return this.transformUserDBToUser(data);
     } catch (error) {
-      console.error('Erreur lors de la récupération de l\`utilisateur:', error);
+      console.error('Erreur lors de la récupération de l\'utilisateur:', error);
       return null;
     }
   }
@@ -1108,7 +1108,7 @@ export class SupabaseService {
       if (error) throw error;
       console.log('✅ Email de confirmation envoyé:', data);
     } catch (error) {
-      console.error('❌ Erreur lors de l\`envoi de l\`email:', error);
+      console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
       throw error;
     }
   }
@@ -1162,7 +1162,7 @@ export class SupabaseService {
 
       return (data || []).map(this.transformUserDBToUser);
     } catch (error) {
-      console.error('Erreur lors de la recherche d\`utilisateurs:', error);
+      console.error('Erreur lors de la recherche d\'utilisateurs:', error);
       return [];
     }
   }
@@ -1227,7 +1227,7 @@ export class SupabaseService {
 	
 	      return true;
 	    } catch (error) {
-	      console.error('Erreur lors de l\`envoi de la demande de connexion:', error);
+	      console.error('Erreur lors de l\'envoi de la demande de connexion:', error);
 	      return false;
 	    }
 	  }
@@ -1255,7 +1255,7 @@ export class SupabaseService {
 	
 	      return true;
 	    } catch (error) {
-	      console.error('Erreur lors de l\`acceptation de la demande:', error);
+	      console.error('Erreur lors de l\'acceptation de la demande:', error);
 	      return false;
 	    }
 	  }
