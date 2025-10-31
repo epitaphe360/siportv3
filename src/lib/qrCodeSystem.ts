@@ -349,9 +349,9 @@ export function getHighestAccessLevel(
           'Modération des contenus',
         ],
       };
-      
-    case 'partner':
-      const partnerLevel = userLevel === 'platinum' ? 'Partenaire Platinum' : 
+
+    case 'partner': {
+      const partnerLevel = userLevel === 'platinum' ? 'Partenaire Platinum' :
                           userLevel === 'gold' ? 'Partenaire Gold' :
                           userLevel === 'silver' ? 'Partenaire Silver' : 'Partenaire Bronze';
       return {
@@ -365,8 +365,9 @@ export function getHighestAccessLevel(
           ...(userLevel === 'platinum' || userLevel === 'gold' ? ['Dîner de gala'] : []),
         ],
       };
-      
-    case 'exhibitor':
+    }
+
+    case 'exhibitor': {
       const exhibitorLevel = userLevel === 'platinum' ? 'Exposant Platinum' :
                              userLevel === 'premium' ? 'Exposant Premium' : 'Exposant Standard';
       return {
@@ -380,8 +381,9 @@ export function getHighestAccessLevel(
           ...(userLevel === 'platinum' ? ['Événements VIP', 'Dîner de gala'] : []),
         ],
       };
-      
-    case 'visitor':
+    }
+
+    case 'visitor': {
       const visitorLevel = userLevel === 'vip' ? 'Visiteur VIP' :
                           userLevel === 'premium' ? 'Visiteur Premium' :
                           userLevel === 'basic' ? 'Visiteur Basic' : 'Visiteur Gratuit';
@@ -395,7 +397,8 @@ export function getHighestAccessLevel(
           ...(userLevel === 'vip' ? ['Événements VIP', 'Lounge exécutif', 'Dîner de gala'] : []),
         ],
       };
-      
+    }
+
     default:
       return {
         level: 'Non défini',

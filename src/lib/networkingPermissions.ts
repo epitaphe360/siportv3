@@ -77,7 +77,7 @@ export function getNetworkingPermissions(userType: UserType, userLevel?: string)
         canAccessAnalytics: true,
       };
 
-    case 'partner':
+    case 'partner': {
       const partnerTier = (userLevel as PartnerTier) || 'bronze';
       const partnerMultiplier = getPartnerMultiplier(partnerTier);
       return {
@@ -98,8 +98,9 @@ export function getNetworkingPermissions(userType: UserType, userLevel?: string)
         canAccessAIRecommendations: true,
         canAccessAnalytics: partnerTier !== 'bronze',
       };
+    }
 
-    case 'exhibitor':
+    case 'exhibitor': {
       const exhibitorStatus = (userLevel as ExhibitorStatus) || 'basic';
       const exhibitorMultiplier = getExhibitorMultiplier(exhibitorStatus);
       return {
@@ -120,10 +121,12 @@ export function getNetworkingPermissions(userType: UserType, userLevel?: string)
         canAccessAIRecommendations: true,
         canAccessAnalytics: exhibitorStatus !== 'basic',
       };
+    }
 
-    case 'visitor':
+    case 'visitor': {
       const visitorPass = (userLevel as VisitorPassType) || 'free';
       return getVisitorPermissions(visitorPass);
+    }
 
     default:
       return basePermissions;
@@ -246,7 +249,7 @@ export function getEventAccessPermissions(userType: UserType, userLevel?: string
         qrAccessLevel: 'partner',
       };
 
-    case 'partner':
+    case 'partner': {
       const partnerTier = (userLevel as PartnerTier) || 'bronze';
       return {
         ...baseEventPermissions,
@@ -260,8 +263,9 @@ export function getEventAccessPermissions(userType: UserType, userLevel?: string
         hasQRAccess: true,
         qrAccessLevel: 'partner',
       };
+    }
 
-    case 'exhibitor':
+    case 'exhibitor': {
       const exhibitorStatus = (userLevel as ExhibitorStatus) || 'basic';
       return {
         ...baseEventPermissions,
@@ -275,10 +279,12 @@ export function getEventAccessPermissions(userType: UserType, userLevel?: string
         hasQRAccess: true,
         qrAccessLevel: 'exhibitor',
       };
+    }
 
-    case 'visitor':
+    case 'visitor': {
       const visitorPass = (userLevel as VisitorPassType) || 'free';
       return getVisitorEventPermissions(visitorPass);
+    }
 
     default:
       return baseEventPermissions;
