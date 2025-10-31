@@ -15,7 +15,8 @@ interface AppointmentState {
   appointments: Appointment[];
   timeSlots: TimeSlot[];
   isLoading: boolean;
-  
+  isBooking: boolean; // Prevent concurrent booking requests
+
   // Actions
   fetchAppointments: () => Promise<void>;
   fetchTimeSlots: (exhibitorId: string) => Promise<void>;
@@ -157,6 +158,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
   appointments: [],
   timeSlots: [],
   isLoading: false,
+  isBooking: false,
 
   fetchAppointments: async () => {
     set({ isLoading: true });
@@ -273,11 +275,19 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
   },
 
   bookAppointment: async (timeSlotId, message) => {
-    const { appointments, timeSlots } = get();
+    const { appointments, timeSlots, isBooking } = get();
 
-    // Récupérer l'utilisateur connecté depuis le store global
+    // Prevent concurrent booking requests (race condition protection)
+    if (isBooking) {
+      throw new Error('Une réservation est déjà en cours. Veuillez patienter.');
+    }
 
-    let resolvedUser: any = null;
+    set({ isBooking: true });
+
+    try {
+      // Récupérer l'utilisateur connecté depuis le store global
+
+      let resolvedUser: any = null;
     try {
       // Essayer require (synchrones) — fonctionne dans la plupart des environnements runtime.
        
@@ -317,20 +327,23 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       throw new Error('Vous avez déjà réservé ce créneau');
     }
 
-    // Find the timeslot to determine the exhibitor/user owner
+    // CRITICAL #9 FIX: Validate time slot ownership
     const slot = timeSlots.find(s => s.id === timeSlotId);
+
+    if (!slot) {
+      throw new Error('Créneau non trouvé. Veuillez actualiser la page.');
+    }
+
     const exhibitorIdForSlot = slot?.userId || slot?.exhibitorId || null;
 
     if (!exhibitorIdForSlot) {
-      // If we don't have owner info locally, try to fetch the slot from Supabase
-      try {
-        if (SupabaseService && typeof SupabaseService.getTimeSlotsByUser === 'function') {
-          // best-effort: try to fetch by visitor context — but we need owner; bail gracefully
-          // We'll allow DB to resolve exhibitor via appointment create if possible
-        }
-      } catch {
-        // ignore
-      }
+      // Time slot exists but has no owner - data integrity violation
+      throw new Error('Ce créneau n\'a pas de propriétaire valide. Veuillez contacter le support.');
+    }
+
+    // Additional validation: Verify slot is not already fully booked
+    if (!slot.available || (slot.currentBookings || 0) >= (slot.maxBookings || 1)) {
+      throw new Error('Ce créneau est complet. Veuillez en choisir un autre.');
     }
 
     // Optimistic update: increment slot booking locally
@@ -341,7 +354,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     if (SupabaseService && typeof SupabaseService.createAppointment === 'function') {
       try {
         const persisted = await SupabaseService.createAppointment({
-          exhibitorId: exhibitorIdForSlot || undefined,
+          exhibitorId: exhibitorIdForSlot, // Required - validated above
           visitorId,
           timeSlotId,
           message: message || undefined,
@@ -384,7 +397,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
     const newAppointment: Appointment = {
       id: generatedId,
-      exhibitorId: exhibitorIdForSlot || 'unknown',
+      exhibitorId: exhibitorIdForSlot, // Required - validated above, never 'unknown'
       visitorId,
       timeSlotId,
       status: 'pending',
@@ -394,6 +407,10 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     };
 
     set({ appointments: [newAppointment, ...appointments] });
+    } finally {
+      // Always reset isBooking flag, even if error occurs
+      set({ isBooking: false });
+    }
   },
 
   cancelAppointment: async (appointmentId) => {

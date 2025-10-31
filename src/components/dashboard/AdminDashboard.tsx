@@ -136,7 +136,8 @@ export default function AdminDashboard() {
     }
   };
 
-  if (user?.type !== 'admin') {
+  // CRITICAL #1 FIX: Explicit null check for user type validation
+  if (!user || user.type !== 'admin') {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">

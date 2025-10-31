@@ -112,6 +112,16 @@ export default function VisitorDashboard() {
     }
   };
 
+  // Auto-clear error messages after 5 seconds
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('fr-FR', {
       weekday: 'long',
