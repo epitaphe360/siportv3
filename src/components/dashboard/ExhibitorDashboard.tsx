@@ -39,17 +39,18 @@ export default function ExhibitorDashboard() {
       }
     };
     loadAppointments();
-  }, [fetchAppointments]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Intentionally fetch only on mount
 
   // Filtrer les rendez-vous reçus (où l'exposant est le user connecté)
-  const receivedAppointments = appointments.filter((a: any) => user && a.exhibitorId === user.id);
-  const pendingAppointments = receivedAppointments.filter((a: any) => a.status === 'pending');
-  const confirmedAppointments = receivedAppointments.filter((a: any) => a.status === 'confirmed');
+  const receivedAppointments = appointments.filter(a => user && a.exhibitorId === user.id);
+  const pendingAppointments = receivedAppointments.filter(a => a.status === 'pending');
+  const confirmedAppointments = receivedAppointments.filter(a => a.status === 'confirmed');
 
   const handleAccept = async (appointmentId: string) => {
     try {
       await updateAppointmentStatus(appointmentId, 'confirmed');
-      await fetchAppointments();
+      // Note: fetchAppointments() removed - store already updates local state
     } catch (err) {
       console.error('Erreur lors de l\'acceptation:', err);
       setError('Impossible d\'accepter le rendez-vous');
@@ -59,7 +60,7 @@ export default function ExhibitorDashboard() {
   const handleReject = async (appointmentId: string) => {
     try {
       await cancelAppointment(appointmentId);
-      await fetchAppointments();
+      // Note: fetchAppointments() removed - store already updates local state
     } catch (err) {
       console.error('Erreur lors du refus:', err);
       setError('Impossible de refuser le rendez-vous');
@@ -70,7 +71,7 @@ export default function ExhibitorDashboard() {
     if (user?.status === 'pending') {
       return;
     }
-    
+
     const loadDashboard = async () => {
       try {
         await fetchDashboard();
@@ -79,9 +80,10 @@ export default function ExhibitorDashboard() {
         setError('Impossible de charger le tableau de bord');
       }
     };
-    
+
     loadDashboard();
-  }, [fetchDashboard, user?.status]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.status]); // Refetch when user status changes
 
   if (user?.status === 'pending') {
     return <Navigate to="/pending-account" replace />;
@@ -258,34 +260,34 @@ export default function ExhibitorDashboard() {
   const stats = [
     {
       title: 'Vues Mini-Site',
-      value: dashboardStats?.miniSiteViews.value.toLocaleString() || '0',
+      value: dashboardStats?.miniSiteViews?.value?.toLocaleString?.() || '0',
       icon: '👁️',
-      change: dashboardStats?.miniSiteViews.growth || '--',
-      changeType: dashboardStats?.miniSiteViews.growthType || 'neutral',
+      change: dashboardStats?.miniSiteViews?.growth || '--',
+      changeType: dashboardStats?.miniSiteViews?.growthType || 'neutral',
       type: 'miniSiteViews' as const
     },
     {
       title: 'Demandes de RDV',
-      value: dashboardStats?.appointments.value.toString() || '0',
+      value: dashboardStats?.appointments?.value?.toString() || '0',
       icon: '📅',
-      change: dashboardStats?.appointments.growth || '--',
-      changeType: dashboardStats?.appointments.growthType || 'neutral',
+      change: dashboardStats?.appointments?.growth || '--',
+      changeType: dashboardStats?.appointments?.growthType || 'neutral',
       type: 'appointments' as const
     },
     {
       title: 'Téléchargements',
-      value: dashboardStats?.catalogDownloads.value.toString() || '0',
+      value: dashboardStats?.catalogDownloads?.value?.toString() || '0',
       icon: '📥',
-      change: dashboardStats?.catalogDownloads.growth || '--',
-      changeType: dashboardStats?.catalogDownloads.growthType || 'neutral',
+      change: dashboardStats?.catalogDownloads?.growth || '--',
+      changeType: dashboardStats?.catalogDownloads?.growthType || 'neutral',
       type: 'downloads' as const
     },
     {
       title: 'Messages',
-      value: dashboardStats?.messages.value.toString() || '0',
+      value: dashboardStats?.messages?.value?.toString() || '0',
       icon: '💬',
-      change: dashboardStats?.messages.growth || '--',
-      changeType: dashboardStats?.messages.growthType || 'neutral',
+      change: dashboardStats?.messages?.growth || '--',
+      changeType: dashboardStats?.messages?.growthType || 'neutral',
       type: 'messages' as const
     }
   ];
@@ -615,7 +617,7 @@ export default function ExhibitorDashboard() {
               
               <div className="bg-gray-50 p-4 rounded-xl inline-block mb-6">
                   <QRCode
-                    value={`SIPORTS2026-EXHIBITOR-${user?.id}`}
+                    value={user?.id ? `SIPORTS2026-EXHIBITOR-${user.id}` : 'INVALID-USER'}
                     size={200}
                     level="H"
                     includeMargin={true}
