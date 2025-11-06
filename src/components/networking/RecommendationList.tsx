@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback, memo } from 'react';
 import { useNetworkingStore } from '@/store/networkingStore';
 import { Card } from '@/components/ui/Card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/Badge';
 import { Loader2, UserX, WifiOff } from 'lucide-react';
 import useAuthStore from '@/store/authStore';
 
-const RecommendationList: React.FC = () => {
+// OPTIMIZATION: Memoized RecommendationList to prevent unnecessary re-renders
+const RecommendationList: React.FC = memo(() => {
   const { user } = useAuthStore();
   const { recommendations, isLoading, error, fetchRecommendations, markAsContacted } = useNetworkingStore();
 
@@ -16,6 +17,11 @@ const RecommendationList: React.FC = () => {
       fetchRecommendations();
     }
   }, [user, fetchRecommendations]);
+
+  // OPTIMIZATION: Memoized callback
+  const handleMarkAsContacted = useCallback((userId: string) => {
+    markAsContacted(userId);
+  }, [markAsContacted]);
 
   if (isLoading) {
     return (
@@ -81,9 +87,9 @@ const RecommendationList: React.FC = () => {
                 <span className="text-sm font-bold text-primary">Score de compatibilité :</span>
                 <span className="text-lg font-bold text-primary">{rec.score.toFixed(0)}%</span>
               </div>
-              <Button 
-                className="w-full" 
-                onClick={() => markAsContacted(rec.recommendedUserId)}
+              <Button
+                className="w-full"
+                onClick={() => handleMarkAsContacted(rec.recommendedUserId)}
                 disabled={rec.contacted}
               >
                 {rec.contacted ? 'Contacté' : 'Initier le contact'}
@@ -94,6 +100,6 @@ const RecommendationList: React.FC = () => {
       ))}
     </div>
   );
-};
+});
 
 export default RecommendationList;

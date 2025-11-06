@@ -106,11 +106,11 @@ export const ProfileEditor: React.FC = () => {
         <div className="flex-grow">
           {isEditing ? (
             <div className="grid grid-cols-2 gap-4">
-              <input type="text" name="firstName" value={profileData.firstName} onChange={handleInputChange} placeholder="Prénom" className="input input-bordered w-full" />
-              <input type="text" name="lastName" value={profileData.lastName} onChange={handleInputChange} placeholder="Nom" className="input input-bordered w-full" />
-              <input type="text" name="position" value={profileData.position} onChange={handleInputChange} placeholder="Poste" className="input input-bordered w-full" />
-              <input type="text" name="country" value={profileData.country} onChange={handleInputChange} placeholder="Pays" className="input input-bordered w-full" />
-              <input type="text" name="phone" value={profileData.phone} onChange={handleInputChange} placeholder="Téléphone" className="input input-bordered w-full" />
+              <input type="text" name="firstName" value={profileData.firstName} onChange={handleInputChange} placeholder="Prénom" className="input input-bordered w-full"  aria-label="Prénom" />
+              <input type="text" name="lastName" value={profileData.lastName} onChange={handleInputChange} placeholder="Nom" className="input input-bordered w-full"  aria-label="Nom" />
+              <input type="text" name="position" value={profileData.position} onChange={handleInputChange} placeholder="Poste" className="input input-bordered w-full"  aria-label="Poste" />
+              <input type="text" name="country" value={profileData.country} onChange={handleInputChange} placeholder="Pays" className="input input-bordered w-full"  aria-label="Pays" />
+              <input type="text" name="phone" value={profileData.phone} onChange={handleInputChange} placeholder="Téléphone" className="input input-bordered w-full"  aria-label="Téléphone" />
             </div>
           ) : (
             <>

@@ -1,11 +1,12 @@
-
+import { memo } from 'react';
 import useAuthStore from '../../store/authStore';
 import AdminDashboard from './AdminDashboard';
 import ExhibitorDashboard from './ExhibitorDashboard';
 import PartnerDashboard from './PartnerDashboard';
 import VisitorDashboard from '../visitor/VisitorDashboard';
 
-export default function DashboardPage() {
+// OPTIMIZATION: Memoized DashboardPage to prevent re-renders
+export default memo(function DashboardPage() {
   const { user } = useAuthStore();
 
   // Vérification de l'authentification
@@ -53,4 +54,4 @@ export default function DashboardPage() {
         </div>
       );
   }
-};
+});

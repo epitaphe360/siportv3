@@ -645,7 +645,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
               >
                 {isMinimized ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
               </button>
-              <button
+              <button aria-label="Close"
                 onClick={onToggle}
                 className="p-1 hover:bg-white hover:bg-opacity-20 rounded transition-colors"
               >

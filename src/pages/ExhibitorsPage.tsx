@@ -307,7 +307,7 @@ export default function ExhibitorsPage() {
                           RDV
                         </Button>
                         {exhibitor.website && (
-                          <a
+                          <a aria-label="Open in new tab"
                             href={exhibitor.website}
                             target="_blank"
                             rel="noopener noreferrer"

@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { 
-  Users, 
-  MessageCircle, 
-  Calendar, 
+import { useState, useEffect, useCallback, memo } from 'react';
+import {
+  Users,
+  MessageCircle,
+  Calendar,
   Building2,
   Network,
   X
@@ -19,7 +19,8 @@ import { useAppointmentStore } from '../../store/appointmentStore';
 import { useVisitorStats } from '../../hooks/useVisitorStats';
 import { calculateRemainingQuota } from '../../config/quotas';
 
-export default function VisitorDashboard() {
+// OPTIMIZATION: Memoized VisitorDashboard to prevent unnecessary re-renders
+export default memo(function VisitorDashboard() {
   // Auth first so it's available below
   const { user, isAuthenticated } = useAuthStore();
 
@@ -59,7 +60,8 @@ export default function VisitorDashboard() {
   const confirmedAppointments = receivedAppointments.filter((a) => a.status === 'confirmed');
   const refusedAppointments = receivedAppointments.filter((a) => a.status === 'cancelled');
 
-  const handleAccept = async (appointmentId: string) => {
+  // OPTIMIZATION: Memoized event handlers
+  const handleAccept = useCallback(async (appointmentId: string) => {
     try {
       await updateAppointmentStatus(appointmentId, 'confirmed');
       // Note: fetchAppointments() removed - store already updates local state
@@ -67,9 +69,9 @@ export default function VisitorDashboard() {
       console.error('Erreur lors de l\'acceptation du rendez-vous:', err);
       setError('Impossible d\'accepter le rendez-vous. Veuillez réessayer.');
     }
-  };
+  }, [updateAppointmentStatus]);
 
-  const handleReject = async (appointmentId: string) => {
+  const handleReject = useCallback(async (appointmentId: string) => {
     try {
       await cancelAppointment(appointmentId);
       // Note: fetchAppointments() removed - store already updates local state
@@ -77,11 +79,11 @@ export default function VisitorDashboard() {
       console.error('Erreur lors du refus du rendez-vous:', err);
       setError('Impossible de refuser le rendez-vous. Veuillez réessayer.');
     }
-  };
+  }, [cancelAppointment]);
 
-  const handleRequestAnother = (exhibitorId: string) => {
+  const handleRequestAnother = useCallback((exhibitorId: string) => {
     setShowAvailabilityModal({ exhibitorId });
-  };
+  }, []);
 
   // Calcul du quota avec la fonction centralisée
   const userLevel = user?.visitor_level || 'free';
@@ -103,14 +105,14 @@ export default function VisitorDashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]); // Refetch when authentication changes
 
-  const handleUnregisterFromEvent = async (eventId: string) => {
+  const handleUnregisterFromEvent = useCallback(async (eventId: string) => {
     try {
       await unregisterFromEvent(eventId);
       // Note: fetchUserEventRegistrations() removed - unregisterFromEvent already calls it internally
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Erreur lors de la désinscription');
     }
-  };
+  }, [unregisterFromEvent]);
 
   // Auto-clear error messages after 5 seconds
   useEffect(() => {
@@ -447,4 +449,4 @@ export default function VisitorDashboard() {
       </div>
     </div>
   );
-}
+});

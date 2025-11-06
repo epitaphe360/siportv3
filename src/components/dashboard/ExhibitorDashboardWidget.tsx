@@ -1,20 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, memo } from 'react';
 import useAuthStore from '../../store/authStore';
 import { SupabaseService } from '../../services/supabaseService';
 
-const ExhibitorDashboardWidget: React.FC = () => {
+// OPTIMIZATION: Memoized ExhibitorDashboardWidget to prevent re-renders
+const ExhibitorDashboardWidget: React.FC = memo(() => {
   const { user } = useAuthStore();
   const [analytics, setAnalytics] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // OPTIMIZATION: Memoized callbacks
+  const handleSetAnalytics = useCallback((data: any) => setAnalytics(data), []);
+  const handleSetLoading = useCallback((value: boolean) => setLoading(value), []);
+
   useEffect(() => {
     if (!user) return;
-    setLoading(true);
+    handleSetLoading(true);
     SupabaseService.getAnalytics(user.id)
-      .then(setAnalytics)
+      .then(handleSetAnalytics)
       .catch((e) => console.error('getAnalytics failed', e))
-      .finally(() => setLoading(false));
-  }, [user]);
+      .finally(() => handleSetLoading(false));
+  }, [user, handleSetAnalytics, handleSetLoading]);
 
   if (!user) return <div>Connectez-vous pour voir vos statistiques.</div>;
   if (loading) return <div>Chargement...</div>;
@@ -40,6 +45,6 @@ const ExhibitorDashboardWidget: React.FC = () => {
       </div>
     </div>
   );
-};
+});
 
 export default ExhibitorDashboardWidget;

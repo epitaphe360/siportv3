@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { ChevronLeft, ChevronRight, Calendar, MapPin, Video, Clock } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
@@ -10,7 +10,8 @@ interface PersonalCalendarProps {
   compact?: boolean;
 }
 
-export default function PersonalCalendar({ compact = false }: PersonalCalendarProps) {
+// OPTIMIZATION: Memoized PersonalCalendar to prevent unnecessary re-renders
+export default memo(function PersonalCalendar({ compact = false }: PersonalCalendarProps) {
   const { isAuthenticated } = useAuthStore();
   const { events, registeredEvents, fetchEvents } = useEventStore();
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -45,21 +46,22 @@ export default function PersonalCalendar({ compact = false }: PersonalCalendarPr
     return days;
   };
 
-  const getEventsForDate = (date: Date) => {
+  // OPTIMIZATION: Memoized callbacks
+  const getEventsForDate = useCallback((date: Date) => {
     return events.filter(event =>
       registeredEvents.includes(event.id) &&
       event.date.toDateString() === date.toDateString()
     );
-  };
+  }, [events, registeredEvents]);
 
-  const formatMonth = (date: Date) => {
+  const formatMonth = useCallback((date: Date) => {
     return new Intl.DateTimeFormat('fr-FR', {
       month: 'long',
       year: 'numeric'
     }).format(date);
-  };
+  }, []);
 
-  const navigateMonth = (direction: 'prev' | 'next') => {
+  const navigateMonth = useCallback((direction: 'prev' | 'next') => {
     setCurrentDate(prevDate => {
       const newDate = new Date(prevDate);
       if (direction === 'prev') {
@@ -69,7 +71,7 @@ export default function PersonalCalendar({ compact = false }: PersonalCalendarPr
       }
       return newDate;
     });
-  };
+  }, []);
 
   const daysInMonth = getDaysInMonth(currentDate);
   const weekDays = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
@@ -261,4 +263,4 @@ export default function PersonalCalendar({ compact = false }: PersonalCalendarPr
       )}
     </Card>
   );
-}
+});

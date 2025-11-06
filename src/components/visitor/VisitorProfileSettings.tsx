@@ -250,6 +250,7 @@ export default function VisitorProfileSettings() {
                             checked={formData.visitorType === 'individual'}
                             onChange={(e) => setFormData({ ...formData, visitorType: e.target.value as 'individual' | 'freelancer' | 'company' })}
                             className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                            aria-label="Particulier"
                           />
                           <span className="text-sm text-gray-700">Particulier</span>
                         </label>
@@ -261,6 +262,7 @@ export default function VisitorProfileSettings() {
                             checked={formData.visitorType === 'freelancer'}
                             onChange={(e) => setFormData({ ...formData, visitorType: e.target.value as 'individual' | 'freelancer' | 'company' })}
                             className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                            aria-label="Travailleur autonome"
                           />
                           <span className="text-sm text-gray-700">Travailleur autonome</span>
                         </label>
@@ -272,6 +274,7 @@ export default function VisitorProfileSettings() {
                             checked={formData.visitorType === 'company'}
                             onChange={(e) => setFormData({ ...formData, visitorType: e.target.value as 'individual' | 'freelancer' | 'company' })}
                             className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                            aria-label="Entreprise"
                           />
                           <span className="text-sm text-gray-700">Entreprise</span>
                         </label>
@@ -292,7 +295,7 @@ export default function VisitorProfileSettings() {
                             <User className="h-10 w-10 text-gray-600" />
                           )}
                         </div>
-                        <button className="absolute bottom-0 right-0 bg-blue-600 text-white p-1.5 rounded-full shadow-lg hover:bg-blue-700 transition-colors">
+                        <button aria-label="Upload photo" className="absolute bottom-0 right-0 bg-blue-600 text-white p-1.5 rounded-full shadow-lg hover:bg-blue-700 transition-colors">
                           <Camera className="h-3 w-3" />
                         </button>
                       </div>
@@ -516,6 +519,7 @@ export default function VisitorProfileSettings() {
                                 }
                               }}
                               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                              aria-label={sector}
                             />
                             <span className="text-sm text-gray-700">{sector}</span>
                           </label>
@@ -562,6 +566,7 @@ export default function VisitorProfileSettings() {
                                 }
                               }}
                               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                              aria-label={objective}
                             />
                             <span className="text-sm text-gray-700">{objective}</span>
                           </label>
@@ -608,6 +613,7 @@ export default function VisitorProfileSettings() {
                                 }
                               }}
                               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                              aria-label={competency}
                             />
                             <span className="text-sm text-gray-700">{competency}</span>
                           </label>
@@ -653,6 +659,7 @@ export default function VisitorProfileSettings() {
                                 }
                               }}
                               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                              aria-label={thematic}
                             />
                             <span className="text-sm text-gray-700">{thematic}</span>
                           </label>
@@ -697,6 +704,7 @@ export default function VisitorProfileSettings() {
                             checked={visitorProfile.notificationPreferences.email}
                             onChange={(e) => updateNotificationPreferences({ email: e.target.checked })}
                             className="sr-only peer"
+                            aria-label="Notifications Email"
                           />
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
@@ -713,6 +721,7 @@ export default function VisitorProfileSettings() {
                             checked={visitorProfile.notificationPreferences.push}
                             onChange={(e) => updateNotificationPreferences({ push: e.target.checked })}
                             className="sr-only peer"
+                            aria-label="Notifications Push"
                           />
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
@@ -729,6 +738,7 @@ export default function VisitorProfileSettings() {
                             checked={visitorProfile.notificationPreferences.inApp}
                             onChange={(e) => updateNotificationPreferences({ inApp: e.target.checked })}
                             className="sr-only peer"
+                            aria-label="Notifications In-App"
                           />
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
@@ -764,6 +774,7 @@ export default function VisitorProfileSettings() {
                               name="profileVisibility"
                               value="public"
                               className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                              aria-label="Public - Visible par tous les participants"
                             />
                             <span className="text-sm text-gray-700">Public - Visible par tous les participants</span>
                           </label>
@@ -774,6 +785,7 @@ export default function VisitorProfileSettings() {
                               value="connections"
                               defaultChecked
                               className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                              aria-label="Connexions uniquement - Visible par mes connexions"
                             />
                             <span className="text-sm text-gray-700">Connexions uniquement - Visible par mes connexions</span>
                           </label>
@@ -783,6 +795,7 @@ export default function VisitorProfileSettings() {
                               name="profileVisibility"
                               value="private"
                               className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                              aria-label="Privé - Non visible dans les recherches"
                             />
                             <span className="text-sm text-gray-700">Privé - Non visible dans les recherches</span>
                           </label>
@@ -797,7 +810,7 @@ export default function VisitorProfileSettings() {
                           <div className="flex items-center justify-between">
                             <span className="text-sm text-gray-700">Permettre aux exposants de me contacter</span>
                             <label className="relative inline-flex items-center cursor-pointer">
-                              <input type="checkbox" defaultChecked className="sr-only peer" />
+                              <input type="checkbox" defaultChecked className="sr-only peer" aria-label="Permettre aux exposants de me contacter" />
                               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                             </label>
                           </div>
@@ -805,7 +818,7 @@ export default function VisitorProfileSettings() {
                           <div className="flex items-center justify-between">
                             <span className="text-sm text-gray-700">Inclure dans les recommandations IA</span>
                             <label className="relative inline-flex items-center cursor-pointer">
-                              <input type="checkbox" defaultChecked className="sr-only peer" />
+                              <input type="checkbox" defaultChecked className="sr-only peer" aria-label="Inclure dans les recommandations IA" />
                               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                             </label>
                           </div>

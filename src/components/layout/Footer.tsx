@@ -1,18 +1,19 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
-import { 
-  Anchor, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Facebook, 
-  Twitter, 
-  Linkedin, 
-  Youtube 
+import {
+  Anchor,
+  Mail,
+  Phone,
+  MapPin,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Youtube
 } from 'lucide-react';
 
-export const Footer: React.FC = () => {
+// OPTIMIZATION: Memoized Footer component to prevent unnecessary re-renders
+export const Footer: React.FC = memo(() => {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -34,7 +35,7 @@ export const Footer: React.FC = () => {
               Salon International des Ports - La plateforme de référence pour l'écosystème portuaire mondial.
             </p>
             <div className="flex space-x-4">
-              <a 
+              <a aria-label="Facebook" 
                 href="https://facebook.com/siports2026" 
                 target="_blank" 
                 rel="noopener noreferrer"
@@ -43,7 +44,7 @@ export const Footer: React.FC = () => {
               >
                 <Facebook className="h-5 w-5" />
               </a>
-              <a 
+              <a aria-label="Twitter" 
                 href="https://twitter.com/siports2026" 
                 target="_blank" 
                 rel="noopener noreferrer"
@@ -52,7 +53,7 @@ export const Footer: React.FC = () => {
               >
                 <Twitter className="h-5 w-5" />
               </a>
-              <a 
+              <a aria-label="Linkedin" 
                 href="https://linkedin.com/company/siports2026" 
                 target="_blank" 
                 rel="noopener noreferrer"
@@ -61,7 +62,7 @@ export const Footer: React.FC = () => {
               >
                 <Linkedin className="h-5 w-5" />
               </a>
-              <a 
+              <a aria-label="Youtube" 
                 href="https://youtube.com/@siports2026" 
                 target="_blank" 
                 rel="noopener noreferrer"
@@ -185,4 +186,4 @@ export const Footer: React.FC = () => {
       </div>
     </footer>
   );
-};
+});

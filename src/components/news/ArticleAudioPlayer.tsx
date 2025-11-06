@@ -208,14 +208,13 @@ export default function ArticleAudioPlayer({
         {/* Barre de progression */}
         {audio && audio.audio_url && !useClientSide && duration > 0 && (
           <div className="space-y-1">
-            <input
-              type="range"
+            <input type="range"
               min="0"
               max={duration || 0}
               value={currentTime}
               onChange={handleSeek}
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-            />
+             aria-label="Range" />
             <div className="flex justify-between text-xs text-gray-600">
               <span>{formatTime(currentTime)}</span>
               <span>{formatTime(duration)}</span>
@@ -265,19 +264,18 @@ export default function ArticleAudioPlayer({
               </button>
 
               <div className="hidden sm:flex items-center gap-2">
-                <input
-                  type="range"
+                <input type="range"
                   min="0"
                   max="1"
                   step="0.1"
                   value={volume}
                   onChange={handleVolumeChange}
                   className="w-20 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-                />
+                 aria-label="Range" />
               </div>
 
               {/* Bouton de téléchargement */}
-              <button
+              <button aria-label="Download"
                 onClick={handleDownload}
                 className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
                 title="Télécharger l'audio"

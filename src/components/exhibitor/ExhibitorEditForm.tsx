@@ -246,14 +246,13 @@ export default function ExhibitorEditForm() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Nom de l'entreprise *
                     </label>
-                    <input
-                      type="text"
+                    <input type="text"
                       name="companyName"
                       value={formData.companyName}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
-                    />
+                     aria-label="Company Name" />
                   </div>
 
                   <div>
@@ -293,15 +292,14 @@ export default function ExhibitorEditForm() {
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Secteur d'activité *
                       </label>
-                      <input
-                        type="text"
+                      <input type="text"
                         name="sector"
                         value={formData.sector}
                         onChange={handleInputChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="ex: Maritime, Transport, Énergie..."
                         required
-                      />
+                       aria-label="ex: Maritime, Transport, Énergie..." />
                     </div>
                   </div>
 
@@ -313,14 +311,13 @@ export default function ExhibitorEditForm() {
                       <div className="bg-gray-100 px-3 py-2 rounded-l-lg border border-gray-300 border-r-0">
                         <Globe className="h-5 w-5 text-gray-500" />
                       </div>
-                      <input
-                        type="url"
+                      <input type="url"
                         name="website"
                         value={formData.website}
                         onChange={handleInputChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="https://www.exemple.com"
-                      />
+                       aria-label="https://www.exemple.com" />
                     </div>
                   </div>
                 </div>
@@ -342,14 +339,13 @@ export default function ExhibitorEditForm() {
                         <div className="bg-gray-100 px-3 py-2 rounded-l-lg border border-gray-300 border-r-0">
                           <Mail className="h-5 w-5 text-gray-500" />
                         </div>
-                        <input
-                          type="email"
+                        <input type="email"
                           name="contactInfo.email"
                           value={formData.contactInfo.email}
                           onChange={handleInputChange}
                           className="w-full px-3 py-2 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="contact@exemple.com"
-                        />
+                         aria-label="contact@exemple.com" />
                       </div>
                     </div>
 
@@ -361,14 +357,13 @@ export default function ExhibitorEditForm() {
                         <div className="bg-gray-100 px-3 py-2 rounded-l-lg border border-gray-300 border-r-0">
                           <Phone className="h-5 w-5 text-gray-500" />
                         </div>
-                        <input
-                          type="tel"
+                        <input type="tel"
                           name="contactInfo.phone"
                           value={formData.contactInfo.phone}
                           onChange={handleInputChange}
                           className="w-full px-3 py-2 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="+33 1 23 45 67 89"
-                        />
+                         aria-label="+33 1 23 45 67 89" />
                       </div>
                     </div>
                   </div>
@@ -377,14 +372,13 @@ export default function ExhibitorEditForm() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Adresse
                     </label>
-                    <input
-                      type="text"
+                    <input type="text"
                       name="contactInfo.address"
                       value={formData.contactInfo.address}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="123 Rue Exemple, 75000 Paris, France"
-                    />
+                     aria-label="123 Rue Exemple, 75000 Paris, France" />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -392,27 +386,25 @@ export default function ExhibitorEditForm() {
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Ville
                       </label>
-                      <input
-                        type="text"
+                      <input type="text"
                         name="contactInfo.city"
                         value={formData.contactInfo.city}
                         onChange={handleInputChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Paris"
-                      />
+                       aria-label="Paris" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Pays
                       </label>
-                      <input
-                        type="text"
+                      <input type="text"
                         name="contactInfo.country"
                         value={formData.contactInfo.country}
                         onChange={handleInputChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="France"
-                      />
+                       aria-label="France" />
                     </div>
                   </div>
 
@@ -420,14 +412,13 @@ export default function ExhibitorEditForm() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Personne de contact
                     </label>
-                    <input
-                      type="text"
+                    <input type="text"
                       name="contactInfo.contactPerson"
                       value={formData.contactInfo.contactPerson}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Jean Dupont"
-                    />
+                     aria-label="Jean Dupont" />
                   </div>
                 </div>
               </Card>
@@ -448,8 +439,7 @@ export default function ExhibitorEditForm() {
                         <div className="bg-gray-100 px-3 py-2 rounded-l-lg border border-gray-300 border-r-0">
                           <Calendar className="h-5 w-5 text-gray-500" />
                         </div>
-                        <input
-                          type="number"
+                        <input type="number"
                           name="establishedYear"
                           value={formData.establishedYear}
                           onChange={handleInputChange}
@@ -457,7 +447,7 @@ export default function ExhibitorEditForm() {
                           placeholder="ex: 2010"
                           min="1800"
                           max={new Date().getFullYear()}
-                        />
+                         aria-label="ex: 2010" />
                       </div>
                     </div>
 
@@ -469,15 +459,14 @@ export default function ExhibitorEditForm() {
                         <div className="bg-gray-100 px-3 py-2 rounded-l-lg border border-gray-300 border-r-0">
                           <Users className="h-5 w-5 text-gray-500" />
                         </div>
-                        <input
-                          type="number"
+                        <input type="number"
                           name="employeeCount"
                           value={formData.employeeCount}
                           onChange={handleInputChange}
                           className="w-full px-3 py-2 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="ex: 250"
                           min="1"
-                        />
+                         aria-label="ex: 250" />
                       </div>
                     </div>
 
@@ -489,8 +478,7 @@ export default function ExhibitorEditForm() {
                         <div className="bg-gray-100 px-3 py-2 rounded-l-lg border border-gray-300 border-r-0">
                           <DollarSign className="h-5 w-5 text-gray-500" />
                         </div>
-                        <input
-                          type="number"
+                        <input type="number"
                           name="revenue"
                           value={formData.revenue}
                           onChange={handleInputChange}
@@ -498,7 +486,7 @@ export default function ExhibitorEditForm() {
                           placeholder="ex: 42"
                           min="0"
                           step="0.1"
-                        />
+                         aria-label="ex: 42" />
                       </div>
                     </div>
                   </div>

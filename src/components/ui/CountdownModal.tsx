@@ -92,7 +92,7 @@ export const CountdownModal: React.FC<CountdownModalProps> = ({ isOpen, onClose 
                 <h2 className="text-2xl font-bold">{salonInfo.name}</h2>
                 <p className="text-blue-100">{salonInfo.fullName}</p>
               </div>
-              <button
+              <button aria-label="Close"
                 onClick={onClose}
                 className="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors"
               >

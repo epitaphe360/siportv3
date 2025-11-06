@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { 
-  Calendar, 
-  Clock, 
-  MapPin, 
-  Users, 
+import { useState, useEffect, useCallback, memo } from 'react';
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Users,
   Video,
   Filter,
   Search,
@@ -19,7 +19,8 @@ import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import { motion } from 'framer-motion';
 
-export default function EventsPage() {
+// OPTIMIZATION: Memoized EventsPage to prevent unnecessary re-renders
+export default memo(function EventsPage() {
   const {
     events,
     featuredEvents,
@@ -482,4 +483,4 @@ export default function EventsPage() {
       </div>
     </div>
   );
-};
+});

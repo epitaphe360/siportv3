@@ -808,33 +808,30 @@ export default function PartnerDetailPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Votre nom
                   </label>
-                  <input
-                    type="text"
+                  <input type="text"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Votre nom complet"
-                  />
+                   aria-label="Votre nom complet" />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Email
                   </label>
-                  <input
-                    type="email"
+                  <input type="email"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="votre@email.com"
-                  />
+                   aria-label="votre@email.com" />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Sujet
                   </label>
-                  <input
-                    type="text"
+                  <input type="text"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Objet de votre message"
-                  />
+                   aria-label="Objet de votre message" />
                 </div>
 
                 <div>

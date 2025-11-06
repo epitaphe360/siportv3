@@ -357,12 +357,11 @@ export default function RegisterPage() {
                       </label>
                       <div className="relative">
                         <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type="text"
+                        <input type="text"
                           {...register('companyName')}
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="Nom de votre entreprise"
-                        />
+                         aria-label="Nom de votre entreprise" />
                       </div>
                       {errors.companyName && (
                         <p className="text-red-600 text-sm mt-1">{errors.companyName.message}</p>
@@ -393,12 +392,11 @@ export default function RegisterPage() {
                       </label>
                       <div className="relative">
                         <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type="text"
+                        <input type="text"
                           {...register('country')}
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="Pays de votre organisation"
-                        />
+                         aria-label="Pays de votre organisation" />
                       </div>
                       {errors.country && (
                         <p className="text-red-600 text-sm mt-1">{errors.country.message}</p>
@@ -411,12 +409,11 @@ export default function RegisterPage() {
                       </label>
                       <div className="relative">
                         <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type="url"
+                        <input type="url"
                           {...register('website')}
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="https://votre-site.com"
-                        />
+                         aria-label="https://votre-site.com" />
                       </div>
                       {errors.website && (
                         <p className="text-red-600 text-sm mt-1">{errors.website.message}</p>
@@ -449,12 +446,11 @@ export default function RegisterPage() {
                       </label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type="text"
+                        <input type="text"
                           {...register('firstName')}
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="Votre prénom"
-                        />
+                         aria-label="Votre prénom" />
                       </div>
                       {errors.firstName && (
                         <p className="text-red-600 text-sm mt-1">{errors.firstName.message}</p>
@@ -467,12 +463,11 @@ export default function RegisterPage() {
                       </label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type="text"
+                        <input type="text"
                           {...register('lastName')}
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="Votre nom"
-                        />
+                         aria-label="Votre nom" />
                       </div>
                       {errors.lastName && (
                         <p className="text-red-600 text-sm mt-1">{errors.lastName.message}</p>
@@ -483,12 +478,11 @@ export default function RegisterPage() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Poste/Fonction *
                       </label>
-                      <input
-                        type="text"
+                      <input type="text"
                         {...register('position')}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Votre fonction dans l'organisation"
-                      />
+                       aria-label="Votre fonction dans l" />
                       {errors.position && (
                         <p className="text-red-600 text-sm mt-1">{errors.position.message}</p>
                       )}
@@ -500,12 +494,11 @@ export default function RegisterPage() {
                       </label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type="email"
+                        <input type="email"
                           {...register('email')}
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="votre@email.com"
-                        />
+                         aria-label="votre@email.com" />
                       </div>
                       {errors.email && (
                         <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>
@@ -518,12 +511,11 @@ export default function RegisterPage() {
                       </label>
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type="tel"
+                        <input type="tel"
                           {...register('phone')}
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="+33 1 23 45 67 89"
-                        />
+                         aria-label="+33 1 23 45 67 89" />
                       </div>
                       {errors.phone && (
                         <p className="text-red-600 text-sm mt-1">{errors.phone.message}</p>
@@ -534,12 +526,11 @@ export default function RegisterPage() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         LinkedIn
                       </label>
-                      <input
-                        type="url"
+                      <input type="url"
                         {...register('linkedin')}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="https://linkedin.com/in/votre-profil"
-                      />
+                       aria-label="https://linkedin.com/in/votre-profil" />
                       {errors.linkedin && (
                         <p className="text-red-600 text-sm mt-1">{errors.linkedin.message}</p>
                       )}
@@ -629,12 +620,11 @@ export default function RegisterPage() {
                       </label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type={showPassword ? 'text' : 'password'}
+                        <input type={showPassword ? 'text' : 'password'}
                           {...register('password')}
                           className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="••••••••"
-                        />
+                         aria-label="••••••••" />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
@@ -654,12 +644,11 @@ export default function RegisterPage() {
                       </label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type={showConfirmPassword ? 'text' : 'password'}
+                        <input type={showConfirmPassword ? 'text' : 'password'}
                           {...register('confirmPassword')}
                           className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="••••••••"
-                        />
+                         aria-label="••••••••" />
                         <button
                           type="button"
                           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
