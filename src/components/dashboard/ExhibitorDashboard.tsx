@@ -253,7 +253,7 @@ export default function ExhibitorDashboard() {
                 </p>
               </div>
               <div className="space-y-2">
-                <Link aria-label="Navigate to appointments" to="/appointments">
+                <Link to="/appointments">
                   <Button variant="outline" className="w-full">
                     Voir tous les rendez-vous
                   </Button>
@@ -290,7 +290,7 @@ export default function ExhibitorDashboard() {
                 </p>
               </div>
               <div className="space-y-2">
-                <Link aria-label="Navigate to chat" to="/chat">
+                <Link to="/chat">
                   <Button variant="outline" className="w-full">
                     Ouvrir le chat
                   </Button>
@@ -399,7 +399,7 @@ export default function ExhibitorDashboard() {
 
       {/* Bouton d'accès rapide mini-site */}
       <div className="max-w-7xl mx-auto px-4 mt-4 flex justify-end">
-        <Link aria-label="Navigate to minisite-creation" to="/minisite-creation">
+        <Link to="/minisite-creation">
           <Button variant="default" size="lg">
             🎨 Créer / Modifier mon mini-site exposant
           </Button>
@@ -421,21 +421,7 @@ export default function ExhibitorDashboard() {
             <div 
               key={index} 
               className="cursor-pointer"
-              role="button"
-        tabIndex={0}
-        onClick={() => handleStatClick(stat.type)}
-                    onKeyDown={(e: React.KeyboardEvent) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        (() => handleStatClick(stat.type))();
-                      }
-                    }}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleStatClick(stat.type);
-          }
-        }}
+              onClick={() => handleStatClick(stat.type)}
             >
               <Card className="siports-glass-card hover:shadow-siports-lg transition-all duration-300">
                 <div className="p-6">
@@ -515,7 +501,7 @@ export default function ExhibitorDashboard() {
                       transition={{ duration: 0.2 }}
                     >
                       {action.link ? (
-                        <Link aria-label="Link" to={action.link}>
+                        <Link to={action.link}>
                           <Button variant={action.variant} className="w-full h-auto py-4 justify-start">
                             <div className="flex items-start space-x-3">
                               <span className="text-2xl">{action.icon}</span>

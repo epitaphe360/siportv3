@@ -172,10 +172,10 @@ export default function NewsArticleCreationForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Titre de l'article *
                   </label>
-                  <input type="text"
+                  <input
+                    type="text"
                     value={formData.title}
-                    onChange={(e) =
-                      aria-label="Title"> setFormData({ ...formData, title: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Titre accrocheur de votre article"
                   />
@@ -186,9 +186,9 @@ export default function NewsArticleCreationForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Extrait/Résumé *
                   </label>
-                  <textarea value={formData.excerpt}
-                    onChange={(e) =
-                  aria-label="Text area"> setFormData({ ...formData, excerpt: e.target.value })}
+                  <textarea
+                    value={formData.excerpt}
+                    onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
                     rows={3}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Résumé de l'article qui apparaîtra dans la liste..."
@@ -200,9 +200,9 @@ export default function NewsArticleCreationForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Contenu de l'article *
                   </label>
-                  <textarea value={formData.content}
-                    onChange={(e) =
-                  aria-label="Text area"> handleContentChange(e.target.value)}
+                  <textarea
+                    value={formData.content}
+                    onChange={(e) => handleContentChange(e.target.value)}
                     rows={12}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Rédigez le contenu complet de votre article..."
@@ -217,10 +217,10 @@ export default function NewsArticleCreationForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Image de couverture
                   </label>
-                  <input type="url"
+                  <input
+                    type="url"
                     value={formData.image}
-                    onChange={(e) =
-                      aria-label="Image"> setFormData({ ...formData, image: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="https://example.com/image.jpg"
                   />
@@ -243,10 +243,10 @@ export default function NewsArticleCreationForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     URL source (optionnel)
                   </label>
-                  <input type="url"
+                  <input
+                    type="url"
                     value={formData.sourceUrl}
-                    onChange={(e) =
-                      aria-label="Source Url"> setFormData({ ...formData, sourceUrl: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, sourceUrl: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="https://source-originale.com/article"
                   />
@@ -266,10 +266,10 @@ export default function NewsArticleCreationForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Auteur
                   </label>
-                  <input type="text"
+                  <input
+                    type="text"
                     value={formData.author}
-                    onChange={(e) =
-                      aria-label="Author"> setFormData({ ...formData, author: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, author: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -278,9 +278,9 @@ export default function NewsArticleCreationForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Catégorie *
                   </label>
-                  <select value={formData.category}
-                    onChange={(e) =
-                aria-label="Category"> setFormData({ ...formData, category: e.target.value })}
+                  <select
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Sélectionnez une catégorie</option>
@@ -292,10 +292,10 @@ export default function NewsArticleCreationForm() {
 
                 <div>
                   <label className="flex items-center space-x-2">
-                    <input type="checkbox"
+                    <input
+                      type="checkbox"
                       checked={formData.featured}
-                      onChange={(e) =
-                      aria-label="Checkbox"> setFormData({ ...formData, featured: e.target.checked })}
+                      onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                     />
                     <span className="text-sm text-gray-700">Article à la une</span>
@@ -310,10 +310,10 @@ export default function NewsArticleCreationForm() {
               
               <div className="space-y-3">
                 <div className="flex space-x-2">
-                  <input type="text"
+                  <input
+                    type="text"
                     value={newTag}
-                    onChange={(e) =
-                      aria-label="Text"> setNewTag(e.target.value)}
+                    onChange={(e) => setNewTag(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Ajouter un tag"

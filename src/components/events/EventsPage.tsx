@@ -143,11 +143,11 @@ export default memo(function EventsPage() {
           <div className="flex flex-col lg:flex-row gap-4 items-center">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input type="text"
+              <input
+                type="text"
                 placeholder="Rechercher un événement..."
                 value={searchTerm}
-                onChange={(e) =
-                      aria-label="Rechercher un événement..."> setSearchTerm(e.target.value)}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -173,9 +173,9 @@ export default memo(function EventsPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Catégorie
                   </label>
-                  <select value={selectedCategory}
-                    onChange={(e) =
-                aria-label="Select option"> setSelectedCategory(e.target.value)}
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Toutes les catégories</option>
@@ -191,9 +191,9 @@ export default memo(function EventsPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Type d'événement
                   </label>
-                  <select value={selectedType}
-                    onChange={(e) =
-                aria-label="Select option"> setSelectedType(e.target.value)}
+                  <select
+                    value={selectedType}
+                    onChange={(e) => setSelectedType(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Tous les types</option>

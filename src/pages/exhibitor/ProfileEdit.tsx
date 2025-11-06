@@ -79,22 +79,19 @@ const ProfileEdit: React.FC = () => {
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium">Nom de la société</label>
-          <input value={companyName} onChange={e =
-                      aria-label="Input field"> setCompanyName(e.target.value)} className="mt-1 block w-full" />
+          <input value={companyName} onChange={e => setCompanyName(e.target.value)} className="mt-1 block w-full" />
         </div>
         <div>
           <label className="block text-sm font-medium">Description</label>
-          <textarea value={description} onChange={e =
-                  aria-label="Text area"> setDescription(e.target.value)} className="mt-1 block w-full" />
+          <textarea value={description} onChange={e => setDescription(e.target.value)} className="mt-1 block w-full" />
         </div>
         <div>
           <label className="block text-sm font-medium">Site web</label>
-          <input value={website} onChange={e =
-                      aria-label="Input field"> setWebsite(e.target.value)} className="mt-1 block w-full" />
+          <input value={website} onChange={e => setWebsite(e.target.value)} className="mt-1 block w-full" />
         </div>
         <div>
           <label className="block text-sm font-medium">Logo</label>
-          <input type="file" accept="image/*" onChange={onFileChange}  aria-label="File" />
+          <input type="file" accept="image/*" onChange={onFileChange} />
         </div>
 
         <div>

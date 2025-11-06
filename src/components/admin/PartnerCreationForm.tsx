@@ -268,7 +268,7 @@ export default function PartnerCreationForm() {
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4">
-            <Link aria-label="Navigate to dashboard" to="/dashboard">
+            <Link to="/dashboard">
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour au Tableau de Bord Admin
@@ -353,10 +353,10 @@ export default function PartnerCreationForm() {
                   </label>
                   <div className="relative">
                     <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="text"
+                    <input
+                      type="text"
                       value={formData.organizationName}
-                      onChange={(e) =
-                      aria-label="Organization Name"> setFormData({ ...formData, organizationName: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, organizationName: e.target.value })}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="Nom de l'organisation partenaire"
                       aria-label="Nom de l'organisation partenaire"
@@ -368,9 +368,9 @@ export default function PartnerCreationForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Secteur d'activité *
                   </label>
-                  <select value={formData.sector}
-                    onChange={(e) =
-                aria-label="Sector"> setFormData({ ...formData, sector: e.target.value })}
+                  <select
+                    value={formData.sector}
+                    onChange={(e) => setFormData({ ...formData, sector: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   >
                     <option value="">Sélectionnez un secteur</option>
@@ -386,10 +386,10 @@ export default function PartnerCreationForm() {
                   </label>
                   <div className="relative">
                     <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="text"
+                    <input
+                      type="text"
                       value={formData.country}
-                      onChange={(e) =
-                      aria-label="Country"> setFormData({ ...formData, country: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="Pays de l'organisation"
                       aria-label="Pays de l'organisation"
@@ -403,10 +403,10 @@ export default function PartnerCreationForm() {
                   </label>
                   <div className="relative">
                     <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="url"
+                    <input
+                      type="url"
                       value={formData.website}
-                      onChange={(e) =
-                      aria-label="Website"> setFormData({ ...formData, website: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, website: e.target.value })}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="https://organisation.com"
                       aria-label="Site web de l'organisation"
@@ -418,12 +418,12 @@ export default function PartnerCreationForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Année de création
                   </label>
-                  <input type="number"
+                  <input
+                    type="number"
                     min="1800"
                     max={new Date().getFullYear()}
                     value={formData.establishedYear}
-                    onChange={(e) =
-                      aria-label="Established Year"> setFormData({ ...formData, establishedYear: parseInt(e.target.value) })}
+                    onChange={(e) => setFormData({ ...formData, establishedYear: parseInt(e.target.value) })}
                     aria-label="Année de création"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
@@ -433,9 +433,9 @@ export default function PartnerCreationForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Nombre d'employés
                   </label>
-                  <select value={formData.employees}
-                    onChange={(e) =
-                aria-label="Employees"> setFormData({ ...formData, employees: e.target.value })}
+                  <select
+                    value={formData.employees}
+                    onChange={(e) => setFormData({ ...formData, employees: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   >
                     <option value="">Sélectionnez une taille</option>
@@ -452,9 +452,9 @@ export default function PartnerCreationForm() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Description de l'organisation *
                 </label>
-                <textarea value={formData.description}
-                  onChange={(e) =
-                  aria-label="Text area"> setFormData({ ...formData, description: e.target.value })}
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={4}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   placeholder="Décrivez l'activité principale de l'organisation, son expertise et sa mission..."
@@ -486,10 +486,10 @@ export default function PartnerCreationForm() {
                   </label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="text"
+                    <input
+                      type="text"
                       value={formData.contactName}
-                      onChange={(e) =
-                      aria-label="Contact Name"> setFormData({ ...formData, contactName: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
                       aria-label="Nom complet du contact"
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="Prénom et nom du contact"
@@ -501,10 +501,10 @@ export default function PartnerCreationForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Poste/Fonction *
                   </label>
-                  <input type="text"
+                  <input
+                    type="text"
                     value={formData.position}
-                    onChange={(e) =
-                      aria-label="Position"> setFormData({ ...formData, position: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                     aria-label="Poste/Fonction"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="Directeur Partenariats, CEO, etc."
@@ -517,10 +517,10 @@ export default function PartnerCreationForm() {
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="email"
+                    <input
+                      type="email"
                       value={formData.email}
-                      onChange={(e) =
-                      aria-label="Email"> setFormData({ ...formData, email: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       aria-label="Email professionnel"
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="contact@organisation.com"
@@ -534,10 +534,10 @@ export default function PartnerCreationForm() {
                   </label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="tel"
+                    <input
+                      type="tel"
                       value={formData.phone}
-                      onChange={(e) =
-                      aria-label="Phone"> setFormData({ ...formData, phone: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       aria-label="Téléphone"
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="+33 1 23 45 67 89"
@@ -573,27 +573,13 @@ export default function PartnerCreationForm() {
                         ? 'border-purple-500 bg-purple-50'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
-                    role="button"
-        tabIndex={0}
-        onClick={() => {
+                    onClick={() => {
                       setFormData({ 
                         ...formData, 
                         partnerType: type.type as 'institutional' | 'platinum' | 'gold' | 'silver' | 'bronze',
                         sponsorshipLevel: type.name,
                         contractValue: type.price
-                      }
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            {
-                      setFormData({ 
-                        ...formData, 
-                        partnerType: type.type as 'institutional' | 'platinum' | 'gold' | 'silver' | 'bronze',
-                        sponsorshipLevel: type.name,
-                        contractValue: type.price
-                      ;
-          }
-        }});
+                      });
                     }}
                   >
                     <div className="text-center">
@@ -613,10 +599,10 @@ export default function PartnerCreationForm() {
                   </label>
                   <div className="relative">
                     <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="text"
+                    <input
+                      type="text"
                       value={formData.contractValue}
-                      onChange={(e) =
-                      aria-label="Contract Value"> setFormData({ ...formData, contractValue: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, contractValue: e.target.value })}
                       aria-label="Valeur du contrat"
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="Montant du partenariat"
@@ -635,10 +621,10 @@ export default function PartnerCreationForm() {
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {availableContributions.map((contribution) => (
                     <label key={contribution} className="flex items-center space-x-2 cursor-pointer">
-                      <input type="checkbox"
+                      <input
+                        type="checkbox"
                         checked={formData.contributions.includes(contribution)}
-                        onChange={() =
-                      aria-label="Checkbox"> toggleContribution(contribution)}
+                        onChange={() => toggleContribution(contribution)}
                         aria-label={contribution}
                         className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
                       />

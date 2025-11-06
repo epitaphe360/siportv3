@@ -123,15 +123,7 @@ const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
           {/* Bouton d'ajout */}
           {images.length < maxImages && (
             <div
-              role="button"
-        tabIndex={0}
-        onClick={handleAddClick}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleAddClick;
-          }
-        }}
+              onClick={handleAddClick}
               className="border-2 border-dashed border-gray-300 rounded flex items-center justify-center 
                          bg-gray-50 hover:bg-gray-100 cursor-pointer aspect-square transition-colors"
             >
@@ -164,8 +156,7 @@ const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
           accept="image/*"
           multiple
           className="hidden"
-        /
-                      aria-label="Input">
+        />
       </div>
     </div>
   );

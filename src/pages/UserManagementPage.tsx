@@ -423,11 +423,11 @@ export default function UserManagementPage() {
               {/* Recherche */}
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input type="text"
+                <input
+                  type="text"
                   placeholder="Rechercher par nom, email ou entreprise..."
                   value={searchTerm}
-                  onChange={(e) =
-                      aria-label="Rechercher par nom, email ou entreprise..."> setSearchTerm(e.target.value)}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -466,9 +466,9 @@ export default function UserManagementPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Type d'utilisateur
                     </label>
-                    <select value={selectedType}
-                      onChange={(e) =
-                aria-label="Select option"> setSelectedType(e.target.value)}
+                    <select
+                      value={selectedType}
+                      onChange={(e) => setSelectedType(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">Tous les types</option>
@@ -483,9 +483,9 @@ export default function UserManagementPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Statut
                     </label>
-                    <select value={selectedStatus}
-                      onChange={(e) =
-                aria-label="Select option"> setSelectedStatus(e.target.value)}
+                    <select
+                      value={selectedStatus}
+                      onChange={(e) => setSelectedStatus(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">Tous les statuts</option>
@@ -567,9 +567,9 @@ export default function UserManagementPage() {
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
                   <th className="px-6 py-3 text-left">
-                    <input type="checkbox"
-                      checked={selectedUsers.length === filteredUsers.length && filteredUsers.length 
-                      aria-label="Checkbox"> 0}
+                    <input
+                      type="checkbox"
+                      checked={selectedUsers.length === filteredUsers.length && filteredUsers.length > 0}
                       onChange={(e) => {
                         if (e.target.checked) {
                           setSelectedUsers(filteredUsers.map(u => u.id));
@@ -613,10 +613,10 @@ export default function UserManagementPage() {
                       className="hover:bg-gray-50"
                     >
                       <td className="px-6 py-4">
-                        <input type="checkbox"
+                        <input
+                          type="checkbox"
                           checked={selectedUsers.includes(user.id)}
-                          onChange={(e) =
-                      aria-label="Checkbox"> {
+                          onChange={(e) => {
                             if (e.target.checked) {
                               setSelectedUsers([...selectedUsers, user.id]);
                             } else {

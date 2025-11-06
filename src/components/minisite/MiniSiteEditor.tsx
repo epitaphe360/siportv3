@@ -442,19 +442,19 @@ export default function MiniSiteEditor() {
       return (
         <div className="relative">
           {multiline ? (
-            <textarea value={editingValue}
-              onChange={(e) =
-                  aria-label="Text area"> setEditingValue(e.target.value)}
+            <textarea
+              value={editingValue}
+              onChange={(e) => setEditingValue(e.target.value)}
               placeholder={placeholder}
               className={`w-full px-3 py-2 border-2 border-blue-500 rounded-lg focus:outline-none bg-white ${className}`}
               rows={3}
               autoFocus
             />
           ) : (
-            <input type="text"
+            <input
+              type="text"
               value={editingValue}
-              onChange={(e) =
-                      aria-label="Text"> setEditingValue(e.target.value)}
+              onChange={(e) => setEditingValue(e.target.value)}
               placeholder={placeholder}
               aria-label={placeholder || "Edit field"}
               className={`w-full px-3 py-2 border-2 border-blue-500 rounded-lg focus:outline-none bg-white ${className}`}
@@ -512,7 +512,7 @@ export default function MiniSiteEditor() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-6">
-          <Link aria-label="Navigate to dashboard" to="/dashboard">
+          <Link to="/dashboard">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Retour au Tableau de Bord Exposant
@@ -591,20 +591,20 @@ export default function MiniSiteEditor() {
                       Couleur principale
                     </label>
                     <div className="flex items-center space-x-2">
-                      <input type="color"
+                      <input
+                        type="color"
                         value={siteSettings.primaryColor}
-                        onChange={(e) =
-                      aria-label="Color"> {
+                        onChange={(e) => {
                           setSiteSettings({...siteSettings, primaryColor: e.target.value});
                           toast.success(`Couleur principale mise à jour: ${e.target.value}`);
                         }}
                         aria-label="Sélecteur de couleur principale"
                         className="w-8 h-8 rounded border border-gray-300 cursor-pointer"
                       />
-                      <input type="text"
+                      <input
+                        type="text"
                         value={siteSettings.primaryColor}
-                        onChange={(e) =
-                      aria-label="Text"> setSiteSettings({...siteSettings, primaryColor: e.target.value})}
+                        onChange={(e) => setSiteSettings({...siteSettings, primaryColor: e.target.value})}
                         aria-label="Code couleur principale (hex)"
                         className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded"
                       />
@@ -615,9 +615,9 @@ export default function MiniSiteEditor() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Police
                     </label>
-                    <select value={siteSettings.fontFamily}
-                      onChange={(e) =
-                aria-label="Font Family"> {
+                    <select
+                      value={siteSettings.fontFamily}
+                      onChange={(e) => {
                         setSiteSettings({...siteSettings, fontFamily: e.target.value});
                         toast.success(`Police mise à jour: ${e.target.value}`);
                       }}
@@ -947,8 +947,6 @@ export default function MiniSiteEditor() {
                                         src={product.image}
                                         alt={product.name}
                                         className="w-full h-32 object-cover rounded-lg mb-4 cursor-pointer hover:opacity-80"
-                                        role="button"
-                                        tabIndex={0}
                                         onClick={() => {
                                           const input = document.createElement('input');
                                           input.type = 'file';
@@ -960,24 +958,7 @@ export default function MiniSiteEditor() {
                                               reader.onload = (event) => {
                                                 const result = event.target?.result as string;
                                                 updateProductField(section.id, index, 'image', result);
-                                                toast.success(`Image produit mise à jour: ${file.name}
-                                        onKeyDown={(e: React.KeyboardEvent) => {
-                                          if (e.key === 'Enter' || e.key === ' ') {
-                                            e.preventDefault();
-                                            {
-                                          const input = document.createElement('input');
-                                          input.type = 'file';
-                                          input.accept = 'image/*';
-                                          input.onchange = (e) => {
-                                            const file = (e.target as HTMLInputElement).files?.[0];
-                                            if (file) {
-                                              const reader = new FileReader();
-                                              reader.onload = (event) => {
-                                                const result = event.target?.result as string;
-                                                updateProductField(section.id, index, 'image', result);
-                                                toast.success(`Image produit mise à jour: ${file.name;
-                                          }
-                                        }}`);
+                                                toast.success(`Image produit mise à jour: ${file.name}`);
                                               };
                                               reader.readAsDataURL(file);
                                             }
@@ -1097,9 +1078,7 @@ export default function MiniSiteEditor() {
                                           src={article.image}
                                           alt={article.title}
                                           className="w-full h-32 object-cover rounded-lg mb-4 cursor-pointer hover:opacity-80"
-                                          role="button"
-                                        tabIndex={0}
-                                        onClick={() => {
+                                          onClick={() => {
                                             const input = document.createElement('input');
                                             input.type = 'file';
                                             input.accept = 'image/*';
@@ -1111,25 +1090,7 @@ export default function MiniSiteEditor() {
                                                   const result = event.target?.result as string;
                                                   const currentArticles = section.content.articles ?? [];
                                                   const updatedArticles = [...currentArticles];
-                                                  updatedArticles[index] = { ...updatedArticles[index], image: result }
-                                        onKeyDown={(e: React.KeyboardEvent) => {
-                                          if (e.key === 'Enter' || e.key === ' ') {
-                                            e.preventDefault();
-                                            {
-                                            const input = document.createElement('input');
-                                            input.type = 'file';
-                                            input.accept = 'image/*';
-                                            input.onchange = (e) => {
-                                              const file = (e.target as HTMLInputElement).files?.[0];
-                                              if (file) {
-                                                const reader = new FileReader();
-                                                reader.onload = (event) => {
-                                                  const result = event.target?.result as string;
-                                                  const currentArticles = section.content.articles ?? [];
-                                                  const updatedArticles = [...currentArticles];
-                                                  updatedArticles[index] = { ...updatedArticles[index], image: result ;
-                                          }
-                                        }};
+                                                  updatedArticles[index] = { ...updatedArticles[index], image: result };
                                                   updateSectionContent(section.id, 'articles', updatedArticles);
                                                   toast.success(`Image article mise à jour: ${file.name}`);
                                                 };
@@ -1294,10 +1255,10 @@ export default function MiniSiteEditor() {
                                       <div className="flex items-center justify-between">
                                         <span className="text-sm text-gray-700">Champ Nom</span>
                                         <label className="relative inline-flex items-center cursor-pointer">
-                                          <input type="checkbox"
+                                          <input
+                                            type="checkbox"
                                             defaultChecked
-                                            onChange={(e) =
-                      aria-label="Checkbox"> {
+                                            onChange={(e) => {
                                               const checked = e.target.checked;
                                               updateSectionContent(section.id, 'nameFieldEnabled', checked);
                                               toast.success(`Champ Nom ${checked ? 'activé' : 'désactivé'}`);
@@ -1312,9 +1273,9 @@ export default function MiniSiteEditor() {
                                       <div className="flex items-center justify-between">
                                         <span className="text-sm text-gray-700">Champ Téléphone</span>
                                         <label className="relative inline-flex items-center cursor-pointer">
-                                          <input type="checkbox"
-                                            onChange={(e) =
-                      aria-label="Checkbox"> {
+                                          <input
+                                            type="checkbox"
+                                            onChange={(e) => {
                                               const checked = e.target.checked;
                                               updateSectionContent(section.id, 'phoneFieldEnabled', checked);
                                               toast.success(`Champ Téléphone ${checked ? 'activé' : 'désactivé'}`);
@@ -1329,10 +1290,10 @@ export default function MiniSiteEditor() {
                                       <div className="flex items-center justify-between">
                                         <span className="text-sm text-gray-700">Champ Entreprise</span>
                                         <label className="relative inline-flex items-center cursor-pointer">
-                                          <input type="checkbox"
+                                          <input
+                                            type="checkbox"
                                             defaultChecked
-                                            onChange={(e) =
-                      aria-label="Checkbox"> {
+                                            onChange={(e) => {
                                               const checked = e.target.checked;
                                               updateSectionContent(section.id, 'companyFieldEnabled', checked);
                                               toast.success(`Champ Entreprise ${checked ? 'activé' : 'désactivé'}`);
@@ -1347,10 +1308,10 @@ export default function MiniSiteEditor() {
                                       <div className="flex items-center justify-between">
                                         <span className="text-sm text-gray-700">Anti-spam (reCAPTCHA)</span>
                                         <label className="relative inline-flex items-center cursor-pointer">
-                                          <input type="checkbox"
+                                          <input
+                                            type="checkbox"
                                             defaultChecked
-                                            onChange={(e) =
-                      aria-label="Checkbox"> {
+                                            onChange={(e) => {
                                               const checked = e.target.checked;
                                               updateSectionContent(section.id, 'recaptchaEnabled', checked);
                                               toast.success(`Anti-spam (reCAPTCHA) ${checked ? 'activé' : 'désactivé'}`);
@@ -1366,10 +1327,10 @@ export default function MiniSiteEditor() {
                                         <div className="flex items-center justify-between mb-2">
                                           <span className="text-sm font-medium text-gray-700">Email de notification</span>
                                         </div>
-                                        <input type="email"
+                                        <input
+                                          type="email"
                                           value={section.content.notificationEmail ?? section.content.email ?? ''}
-                                          onChange={(e) =
-                      aria-label="Email"> {
+                                          onChange={(e) => {
                                             updateSectionContent(section.id, 'notificationEmail', e.target.value);
                                           }}
                                           placeholder="email@entreprise.com"

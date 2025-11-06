@@ -192,7 +192,7 @@ export default function PartnersPage() {
                 Administration complète des partenaires et sponsors SIPORTS
               </p>
             </div>
-            <Link aria-label="Link" to={ROUTES.ADMIN_CREATE_PARTNER}>
+            <Link to={ROUTES.ADMIN_CREATE_PARTNER}>
               <Button variant="default">
                 <Plus className="h-4 w-4 mr-2" />
                 Créer Partenaire
@@ -280,11 +280,11 @@ export default function PartnersPage() {
               <div className="md:col-span-2">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <input type="text"
+                  <input
+                    type="text"
                     placeholder="Rechercher un partenaire..."
                     value={searchTerm}
-                    onChange={(e) =
-                      aria-label="Rechercher un partenaire..."> setSearchTerm(e.target.value)}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -294,9 +294,9 @@ export default function PartnersPage() {
               <div>
                 <div className="relative">
                   <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <select value={filters.partner_type || ''}
-                    onChange={(e) =
-                aria-label="Select option"> updateFilter('partner_type', e.target.value)}
+                  <select
+                    value={filters.partner_type || ''}
+                    onChange={(e) => updateFilter('partner_type', e.target.value)}
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
                   >
                     <option value="">Tous les types</option>
@@ -313,9 +313,9 @@ export default function PartnersPage() {
               <div>
                 <div className="relative">
                   <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <select value={filters.status || ''}
-                    onChange={(e) =
-                aria-label="Select option"> updateFilter('status', e.target.value)}
+                  <select
+                    value={filters.status || ''}
+                    onChange={(e) => updateFilter('status', e.target.value)}
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
                   >
                     <option value="">Tous les statuts</option>
@@ -475,7 +475,8 @@ export default function PartnersPage() {
                         <Globe className="h-5 w-5 text-gray-400 mt-0.5" />
                         <div>
                           <p className="text-xs text-gray-600">Site Web</p>
-                          <a aria-label="Link" href={selectedPartner.website || '#'}
+                          <a
+                            href={selectedPartner.website || '#'}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-sm font-medium text-blue-600 hover:underline"

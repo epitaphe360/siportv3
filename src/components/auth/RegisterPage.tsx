@@ -305,11 +305,12 @@ export default function RegisterPage() {
                       const Icon = type.icon;
                       return (
                         <label key={type.value} className="cursor-pointer">
-                          <input type="radio"
+                          <input
+                            type="radio"
                             value={type.value}
                             {...register('accountType')}
                             className="sr-only"
-                           aria-label="Radio" />
+                          />
                           <div className={`p-6 border-2 rounded-lg transition-all ${
                             watchedAccountType === type.value
                               ? type.color
@@ -371,10 +372,10 @@ export default function RegisterPage() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Secteur d'activité *
                       </label>
-                      <select {...register('sector')}
+                      <select
+                        {...register('sector')}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      
-                aria-label="Select option">
+                      >
                         <option value="">Sélectionnez un secteur</option>
                         {sectors.map((sector) => (
                           <option key={sector} value={sector}>{sector}</option>
@@ -558,12 +559,12 @@ export default function RegisterPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Description de votre organisation *
                     </label>
-                    <textarea {...register('description')}
+                    <textarea
+                      {...register('description')}
                       rows={4}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Décrivez votre organisation, vos activités principales, vos spécialités..."
-                    /
-                  aria-label="Décrivez votre organisation, vos activités principales, vos spécialités...">
+                    />
                     {errors.description && (
                       <p className="text-red-600 text-sm mt-1">{errors.description.message}</p>
                     )}
@@ -579,11 +580,12 @@ export default function RegisterPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {objectives.map((objective) => (
                         <label key={objective} className="flex items-center space-x-3 cursor-pointer">
-                          <input type="checkbox"
+                          <input
+                            type="checkbox"
                             value={objective}
                             {...register('objectives')}
                             className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                           aria-label="Checkbox" />
+                          />
                           <span className="text-sm text-gray-700">{objective}</span>
                         </label>
                       ))}

@@ -317,21 +317,7 @@ export default function MediaManager() {
                   key={bucket.id}
                   className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition-colors
                     ${selectedBucket === bucket.name ? 'bg-blue-100' : 'hover:bg-gray-100'}`}
-                  role="button"
-        tabIndex={0}
-        onClick={() => setSelectedBucket(bucket.name)}
-                        onKeyDown={(e: React.KeyboardEvent) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            (() => setSelectedBucket(bucket.name))();
-                          }
-                        }}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            setSelectedBucket(bucket.name);
-          }
-        }}
+                  onClick={() => setSelectedBucket(bucket.name)}
                 >
                   <div className="flex items-center space-x-2">
                     {getBucketIcon(bucket.name)}
@@ -364,20 +350,20 @@ export default function MediaManager() {
                 Créer un nouveau bucket
               </h3>
               <div className="space-y-2">
-                <input type="text"
+                <input
+                  type="text"
                   value={newBucketName}
-                  onChange={e =
-                      aria-label="Text"> setNewBucketName(e.target.value)}
+                  onChange={e => setNewBucketName(e.target.value)}
                   placeholder="Nom du bucket"
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 
                 <div className="flex items-center">
-                  <input type="checkbox"
+                  <input
+                    type="checkbox"
                     id="public-bucket"
                     checked={isPublicBucket}
-                    onChange={e =
-                      aria-label="Checkbox"> setIsPublicBucket(e.target.checked)}
+                    onChange={e => setIsPublicBucket(e.target.checked)}
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <label htmlFor="public-bucket" className="ml-2 block text-sm text-gray-700">
@@ -443,8 +429,7 @@ export default function MediaManager() {
                       multiple
                       className="hidden"
                       onChange={handleFileUpload}
-                    /
-                      aria-label="Input">
+                    />
                     
                     <Button 
                       variant="ghost" 
@@ -524,7 +509,8 @@ export default function MediaManager() {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               <div className="flex items-center justify-end space-x-2">
-                                <a aria-label="Link" href={(file as any).publicUrl}
+                                <a
+                                  href={(file as any).publicUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="text-blue-600 hover:text-blue-900"

@@ -190,8 +190,7 @@ export default function MiniSiteGalleryManager({
           accept="image/*"
           className="hidden"
           onChange={handleFileChange}
-        /
-                      aria-label="Input">
+        />
         
         {/* Barre de progression */}
         {isLoading && (
@@ -217,21 +216,7 @@ export default function MiniSiteGalleryManager({
                 key={index}
                 className={`relative aspect-square rounded-lg overflow-hidden border-2 cursor-pointer
                   ${selectedImageIndex === index ? 'border-blue-500 ring-2 ring-blue-300' : 'border-gray-200 hover:border-gray-300'}`}
-                role="button"
-        tabIndex={0}
-        onClick={() => handleSelectImage(index)}
-                      onKeyDown={(e: React.KeyboardEvent) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          (() => handleSelectImage(index))();
-                        }
-                      }}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleSelectImage(index);
-          }
-        }}
+                onClick={() => handleSelectImage(index)}
               >
                 <img
                   src={imageUrl}

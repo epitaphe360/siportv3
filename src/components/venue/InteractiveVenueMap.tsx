@@ -249,7 +249,8 @@ const InteractiveVenueMap: React.FC = () => {
                     <span>Catégorie: {exhibitor.category}</span>
                     <span>Secteur: {exhibitor.sector}</span>
                     {exhibitor.website && (
-                      <a aria-label="Link" href={exhibitor.website}
+                      <a
+                        href={exhibitor.website}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:underline"

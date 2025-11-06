@@ -167,11 +167,11 @@ export default function PartnersPage() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input type="text"
+              <input
+                type="text"
                 placeholder="Rechercher un partenaire..."
                 value={searchTerm}
-                onChange={(e) =
-                      aria-label="Rechercher un partenaire..."> setSearchTerm(e.target.value)}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
@@ -215,9 +215,9 @@ export default function PartnersPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Type de partenaire
                   </label>
-                  <select value={selectedType}
-                    onChange={(e) =
-                aria-label="Select option"> setSelectedType(e.target.value)}
+                  <select
+                    value={selectedType}
+                    onChange={(e) => setSelectedType(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {partnerTypes.map((type) => (
@@ -232,9 +232,9 @@ export default function PartnersPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Pays
                   </label>
-                  <select value={selectedCountry}
-                    onChange={(e) =
-                aria-label="Select option"> setSelectedCountry(e.target.value)}
+                  <select
+                    value={selectedCountry}
+                    onChange={(e) => setSelectedCountry(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Tous les pays</option>

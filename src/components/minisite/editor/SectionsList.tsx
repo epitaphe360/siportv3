@@ -85,15 +85,7 @@ export const SectionsList: React.FC<SectionsListProps> = memo(({
                       }
                       ${!section.visible ? 'opacity-50' : ''}
                     `}
-                    role="button"
-        tabIndex={0}
-        onClick={() => onSelectSection(section.id)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            onSelectSection(section.id);
-          }
-        }}
+                    onClick={() => onSelectSection(section.id)}
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex items-center space-x-2 flex-1">

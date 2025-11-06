@@ -259,14 +259,14 @@ export default function ExhibitorEditForm() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Description *
                     </label>
-                    <textarea name="description"
+                    <textarea
+                      name="description"
                       value={formData.description}
                       onChange={handleInputChange}
                       rows={4}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
-                    /
-                  aria-label="Description">
+                    />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -274,13 +274,13 @@ export default function ExhibitorEditForm() {
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Catégorie *
                       </label>
-                      <select name="category"
+                      <select
+                        name="category"
                         value={formData.category}
                         onChange={handleInputChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
-                      
-                aria-label="Category">
+                      >
                         <option value="port-industry">Industrie Portuaire</option>
                         <option value="port-operations">Opérations Portuaires</option>
                         <option value="institutional">Institutionnel</option>
@@ -499,10 +499,10 @@ export default function ExhibitorEditForm() {
                       <div className="bg-gray-100 px-3 py-2 rounded-l-lg border border-gray-300 border-r-0">
                         <AwardIcon className="h-5 w-5 text-gray-500" />
                       </div>
-                      <input type="text"
+                      <input
+                        type="text"
                         value={formData.certifications.join(', ')}
-                        onChange={(e) =
-                      aria-label="Text"> handleArrayChange(e, 'certifications')}
+                        onChange={(e) => handleArrayChange(e, 'certifications')}
                         className="w-full px-3 py-2 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="ISO 9001, ISO 14001, OHSAS 18001..."
                       />
@@ -517,10 +517,10 @@ export default function ExhibitorEditForm() {
                       <div className="bg-gray-100 px-3 py-2 rounded-l-lg border border-gray-300 border-r-0">
                         <Tag className="h-5 w-5 text-gray-500" />
                       </div>
-                      <input type="text"
+                      <input
+                        type="text"
                         value={formData.markets.join(', ')}
-                        onChange={(e) =
-                      aria-label="Text"> handleArrayChange(e, 'markets')}
+                        onChange={(e) => handleArrayChange(e, 'markets')}
                         className="w-full px-3 py-2 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Europe, Afrique, Asie..."
                       />

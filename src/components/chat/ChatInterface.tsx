@@ -119,15 +119,7 @@ export default function ChatInterface() {
                         <motion.div
                           key={conversation.id}
                           whileHover={{ backgroundColor: '#f9fafb' }}
-                          role="button"
-            tabIndex={0}
-            onClick={() => setActiveConversation(conversation.id)}
-            onKeyDown={(e: React.KeyboardEvent) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                setActiveConversation(conversation.id);
-              }
-            }}
+                          onClick={() => setActiveConversation(conversation.id)}
                           className={`p-4 cursor-pointer border-b border-gray-100 ${
                             activeConversation === conversation.id ? 'bg-blue-50 border-blue-200' : ''
                           }`}
@@ -286,10 +278,10 @@ export default function ChatInterface() {
                       </Button>
                       
                       <div className="flex-1 relative">
-                        <input type="text"
+                        <input
+                          type="text"
                           value={messageInput}
-                          onChange={(e) =
-                      aria-label="Text"> setMessageInput(e.target.value)}
+                          onChange={(e) => setMessageInput(e.target.value)}
                           onKeyPress={handleKeyPress}
                           placeholder="Tapez votre message..."
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

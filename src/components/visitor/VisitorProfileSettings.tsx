@@ -243,36 +243,36 @@ export default function VisitorProfileSettings() {
                       </label>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         <label className="flex items-center space-x-2">
-                          <input type="radio"
+                          <input
+                            type="radio"
                             name="visitorType"
                             value="individual"
                             checked={formData.visitorType === 'individual'}
-                            onChange={(e) =
-                      aria-label="Visitor Type"> setFormData({ ...formData, visitorType: e.target.value as 'individual' | 'freelancer' | 'company' })}
+                            onChange={(e) => setFormData({ ...formData, visitorType: e.target.value as 'individual' | 'freelancer' | 'company' })}
                             className="h-4 w-4 text-blue-600 focus:ring-blue-500"
                             aria-label="Particulier"
                           />
                           <span className="text-sm text-gray-700">Particulier</span>
                         </label>
                         <label className="flex items-center space-x-2">
-                          <input type="radio"
+                          <input
+                            type="radio"
                             name="visitorType"
                             value="freelancer"
                             checked={formData.visitorType === 'freelancer'}
-                            onChange={(e) =
-                      aria-label="Visitor Type"> setFormData({ ...formData, visitorType: e.target.value as 'individual' | 'freelancer' | 'company' })}
+                            onChange={(e) => setFormData({ ...formData, visitorType: e.target.value as 'individual' | 'freelancer' | 'company' })}
                             className="h-4 w-4 text-blue-600 focus:ring-blue-500"
                             aria-label="Travailleur autonome"
                           />
                           <span className="text-sm text-gray-700">Travailleur autonome</span>
                         </label>
                         <label className="flex items-center space-x-2">
-                          <input type="radio"
+                          <input
+                            type="radio"
                             name="visitorType"
                             value="company"
                             checked={formData.visitorType === 'company'}
-                            onChange={(e) =
-                      aria-label="Visitor Type"> setFormData({ ...formData, visitorType: e.target.value as 'individual' | 'freelancer' | 'company' })}
+                            onChange={(e) => setFormData({ ...formData, visitorType: e.target.value as 'individual' | 'freelancer' | 'company' })}
                             className="h-4 w-4 text-blue-600 focus:ring-blue-500"
                             aria-label="Entreprise"
                           />
@@ -315,10 +315,10 @@ export default function VisitorProfileSettings() {
                           Prénom
                         </label>
                         {isEditing ? (
-                          <input type="text"
+                          <input
+                            type="text"
                             value={formData.firstName}
-                            onChange={(e) =
-                      aria-label="First Name"> setFormData({ ...formData, firstName: e.target.value })}
+                            onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
                         ) : (
@@ -331,10 +331,10 @@ export default function VisitorProfileSettings() {
                           Nom
                         </label>
                         {isEditing ? (
-                          <input type="text"
+                          <input
+                            type="text"
                             value={formData.lastName}
-                            onChange={(e) =
-                      aria-label="Last Name"> setFormData({ ...formData, lastName: e.target.value })}
+                            onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
                         ) : (
@@ -350,10 +350,10 @@ export default function VisitorProfileSettings() {
                               Entreprise
                             </label>
                             {isEditing ? (
-                              <input type="text"
+                              <input
+                                type="text"
                                 value={formData.company}
-                                onChange={(e) =
-                      aria-label="Company"> setFormData({ ...formData, company: e.target.value })}
+                                onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                               />
                             ) : (
@@ -369,10 +369,10 @@ export default function VisitorProfileSettings() {
                               Poste
                             </label>
                             {isEditing ? (
-                              <input type="text"
+                              <input
+                                type="text"
                                 value={formData.position}
-                                onChange={(e) =
-                      aria-label="Position"> setFormData({ ...formData, position: e.target.value })}
+                                onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                               />
                             ) : (
@@ -389,10 +389,10 @@ export default function VisitorProfileSettings() {
                               Statut professionnel
                             </label>
                             {isEditing ? (
-                              <input type="text"
+                              <input
+                                type="text"
                                 value={formData.professionalStatus}
-                                onChange={(e) =
-                      aria-label="Professional Status"> setFormData({ ...formData, professionalStatus: e.target.value })}
+                                onChange={(e) => setFormData({ ...formData, professionalStatus: e.target.value })}
                                 placeholder="Ex: Consultant indépendant"
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                               />
@@ -406,10 +406,10 @@ export default function VisitorProfileSettings() {
                               Secteur d'activité
                             </label>
                             {isEditing ? (
-                              <input type="text"
+                              <input
+                                type="text"
                                 value={formData.businessSector}
-                                onChange={(e) =
-                      aria-label="Business Sector"> setFormData({ ...formData, businessSector: e.target.value })}
+                                onChange={(e) => setFormData({ ...formData, businessSector: e.target.value })}
                                 placeholder="Ex: Consulting maritime"
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                               />
@@ -435,10 +435,10 @@ export default function VisitorProfileSettings() {
                           Téléphone
                         </label>
                         {isEditing ? (
-                          <input type="tel"
+                          <input
+                            type="tel"
                             value={formData.phone}
-                            onChange={(e) =
-                      aria-label="Phone"> setFormData({ ...formData, phone: e.target.value })}
+                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
                         ) : (
@@ -502,10 +502,10 @@ export default function VisitorProfileSettings() {
                       <div className="grid grid-cols-2 gap-2">
                         {availableSectors.map((sector) => (
                           <label key={sector} className="flex items-center space-x-2">
-                            <input type="checkbox"
+                            <input
+                              type="checkbox"
                               checked={formData.sectorsOfInterest.includes(sector)}
-                              onChange={(e) =
-                      aria-label="Checkbox"> {
+                              onChange={(e) => {
                                 if (e.target.checked) {
                                   setFormData({
                                     ...formData,
@@ -549,10 +549,10 @@ export default function VisitorProfileSettings() {
                       <div className="grid grid-cols-1 gap-2">
                         {availableObjectives.map((objective) => (
                           <label key={objective} className="flex items-center space-x-2">
-                            <input type="checkbox"
+                            <input
+                              type="checkbox"
                               checked={formData.visitObjectives.includes(objective)}
-                              onChange={(e) =
-                      aria-label="Checkbox"> {
+                              onChange={(e) => {
                                 if (e.target.checked) {
                                   setFormData({
                                     ...formData,
@@ -596,10 +596,10 @@ export default function VisitorProfileSettings() {
                       <div className="grid grid-cols-1 gap-2">
                         {availableCompetencies.map((competency) => (
                           <label key={competency} className="flex items-center space-x-2">
-                            <input type="checkbox"
+                            <input
+                              type="checkbox"
                               checked={formData.competencies.includes(competency)}
-                              onChange={(e) =
-                      aria-label="Checkbox"> {
+                              onChange={(e) => {
                                 if (e.target.checked) {
                                   setFormData({
                                     ...formData,
@@ -642,10 +642,10 @@ export default function VisitorProfileSettings() {
                       <div className="grid grid-cols-2 gap-2">
                         {availableThematics.map((thematic) => (
                           <label key={thematic} className="flex items-center space-x-2">
-                            <input type="checkbox"
+                            <input
+                              type="checkbox"
                               checked={formData.thematicInterests.includes(thematic)}
-                              onChange={(e) =
-                      aria-label="Checkbox"> {
+                              onChange={(e) => {
                                 if (e.target.checked) {
                                   setFormData({
                                     ...formData,
@@ -699,10 +699,10 @@ export default function VisitorProfileSettings() {
                           <p className="text-sm text-gray-600">Recevez les notifications par email</p>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
-                          <input type="checkbox"
+                          <input
+                            type="checkbox"
                             checked={visitorProfile.notificationPreferences.email}
-                            onChange={(e) =
-                      aria-label="Checkbox"> updateNotificationPreferences({ email: e.target.checked })}
+                            onChange={(e) => updateNotificationPreferences({ email: e.target.checked })}
                             className="sr-only peer"
                             aria-label="Notifications Email"
                           />
@@ -716,10 +716,10 @@ export default function VisitorProfileSettings() {
                           <p className="text-sm text-gray-600">Notifications sur votre appareil</p>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
-                          <input type="checkbox"
+                          <input
+                            type="checkbox"
                             checked={visitorProfile.notificationPreferences.push}
-                            onChange={(e) =
-                      aria-label="Checkbox"> updateNotificationPreferences({ push: e.target.checked })}
+                            onChange={(e) => updateNotificationPreferences({ push: e.target.checked })}
                             className="sr-only peer"
                             aria-label="Notifications Push"
                           />
@@ -733,10 +733,10 @@ export default function VisitorProfileSettings() {
                           <p className="text-sm text-gray-600">Notifications dans l'application</p>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
-                          <input type="checkbox"
+                          <input
+                            type="checkbox"
                             checked={visitorProfile.notificationPreferences.inApp}
-                            onChange={(e) =
-                      aria-label="Checkbox"> updateNotificationPreferences({ inApp: e.target.checked })}
+                            onChange={(e) => updateNotificationPreferences({ inApp: e.target.checked })}
                             className="sr-only peer"
                             aria-label="Notifications In-App"
                           />

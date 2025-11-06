@@ -263,7 +263,7 @@ export default function ExhibitorSignUpPage() {
               <div className="text-center text-sm text-gray-600">
                 <p>
                   Déjà un compte ?{' '}
-                   <Link aria-label="Connectez-vous" to={ROUTES.LOGIN} className="font-medium text-blue-600 hover:underline">
+                   <Link to={ROUTES.LOGIN} className="font-medium text-blue-600 hover:underline">
                     Connectez-vous
                   </Link>
                 </p>

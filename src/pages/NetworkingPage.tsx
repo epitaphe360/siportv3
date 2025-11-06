@@ -241,13 +241,13 @@ export default function NetworkingPage() {
               </p>
             </motion.div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link aria-label="Navigate to login" to="/login">
+              <Link to="/login">
                 <Button size="lg" className="bg-blue-700 hover:bg-blue-800 text-white">
                   <UserIcon className="h-4 w-4 mr-2" />
                   Se connecter
                 </Button>
               </Link>
-              <Link aria-label="Navigate to register" to="/register">
+              <Link to="/register">
                 <Button variant="outline" size="lg" className="border-blue-700 text-blue-700 hover:bg-blue-50">
                   <Plus className="h-4 w-4 mr-2" />
                   Créer un compte
@@ -290,11 +290,11 @@ export default function NetworkingPage() {
         <footer className="bg-blue-900 text-white py-6 mt-8 text-center text-sm opacity-90">
           <div className="mb-2">© 2026 - SIPORTS : Salon International des Ports et de leur Écosystème – Tous droits réservés.</div>
           <div className="flex justify-center gap-4 mb-2">
-            <a aria-label="Conditions Générales" href="https://siportevent.com/conditions-generales-2/" className="hover:underline">Conditions Générales</a>
-            <a aria-label="Confidentialité" href="https://siportevent.com/politique-de-confidentialite/" className="hover:underline">Confidentialité</a>
-            <a aria-label="Mentions Légales" href="https://siportevent.com/mentions-legales/" className="hover:underline">Mentions Légales</a>
+            <a href="https://siportevent.com/conditions-generales-2/" className="hover:underline">Conditions Générales</a>
+            <a href="https://siportevent.com/politique-de-confidentialite/" className="hover:underline">Confidentialité</a>
+            <a href="https://siportevent.com/mentions-legales/" className="hover:underline">Mentions Légales</a>
           </div>
-          <div>Contact : <a aria-label="Envoyer un email à contact@siportevent.com" href="mailto:contact@siportevent.com" className="underline">contact@siportevent.com</a></div>
+          <div>Contact : <a href="mailto:contact@siportevent.com" className="underline">contact@siportevent.com</a></div>
         </footer>
       </div>
     );
@@ -746,10 +746,10 @@ export default function NetworkingPage() {
                     <Search className="h-4 w-4 mr-2 text-blue-500" />
                     Mots-clés
                   </label>
-                  <input type="text"
+                  <input
+                    type="text"
                     value={searchTerm}
-                    onChange={(e) =
-                      aria-label="Text"> setSearchTerm(e.target.value)}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Technologies, secteurs, compétences..."
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   />
@@ -759,9 +759,9 @@ export default function NetworkingPage() {
                     <Building2 className="h-4 w-4 mr-2 text-green-500" />
                     Secteur d'activité
                   </label>
-                  <select value={searchFilters.sector}
-                    onChange={(e) =
-                aria-label="Sector"> setSearchFilters({...searchFilters, sector: e.target.value})}
+                  <select 
+                    value={searchFilters.sector}
+                    onChange={(e) => setSearchFilters({...searchFilters, sector: e.target.value})}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   >
                     <option value="">Tous les secteurs</option>
@@ -777,9 +777,9 @@ export default function NetworkingPage() {
                     <UserIcon className="h-4 w-4 mr-2 text-purple-500" />
                     Type de profil
                   </label>
-                  <select value={searchFilters.userType}
-                    onChange={(e) =
-                aria-label="User Type"> setSearchFilters({...searchFilters, userType: e.target.value})}
+                  <select 
+                    value={searchFilters.userType}
+                    onChange={(e) => setSearchFilters({...searchFilters, userType: e.target.value})}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   >
                     <option value="">Tous types</option>
@@ -793,9 +793,9 @@ export default function NetworkingPage() {
                     <MapPin className="h-4 w-4 mr-2 text-orange-500" />
                     Localisation
                   </label>
-                  <select value={searchFilters.location}
-                    onChange={(e) =
-                aria-label="Location"> setSearchFilters({...searchFilters, location: e.target.value})}
+                  <select 
+                    value={searchFilters.location}
+                    onChange={(e) => setSearchFilters({...searchFilters, location: e.target.value})}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   >
                     <option value="">Toutes régions</option>
@@ -1504,9 +1504,9 @@ export default function NetworkingPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Choisir un créneau horaire
               </label>
-              <select value={selectedTimeSlot}
-                onChange={(e) =
-                aria-label="Select option"> setSelectedTimeSlot(e.target.value)}
+              <select
+                value={selectedTimeSlot}
+                onChange={(e) => setSelectedTimeSlot(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Sélectionner un créneau</option>
@@ -1534,9 +1534,9 @@ export default function NetworkingPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Message (optionnel)
               </label>
-              <textarea value={appointmentMessage}
-                onChange={(e) =
-                  aria-label="Text area"> setAppointmentMessage(e.target.value)}
+              <textarea
+                value={appointmentMessage}
+                onChange={(e) => setAppointmentMessage(e.target.value)}
                 placeholder="Décrivez brièvement l'objet de votre rendez-vous..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 rows={3}

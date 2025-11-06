@@ -171,11 +171,11 @@ export default function CreateUserPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Nom Complet *
                   </label>
-                  <input type="text"
+                  <input
+                    type="text"
                     required
                     value={userData.name}
-                    onChange={(e) =
-                      aria-label="Text"> handleChange('name', e.target.value)}
+                    onChange={(e) => handleChange('name', e.target.value)}
                     className={`w-full px-3 py-2 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 ${errors.name ? 'focus:ring-red-500' : 'focus:ring-blue-500'}`}
                     placeholder="Ex: Jean Dupont"
                   />
@@ -188,11 +188,11 @@ export default function CreateUserPage() {
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="email"
+                    <input
+                      type="email"
                       required
                       value={userData.email}
-                      onChange={(e) =
-                      aria-label="Email"> handleChange('email', e.target.value)}
+                      onChange={(e) => handleChange('email', e.target.value)}
                       className={`w-full pl-10 pr-3 py-2 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 ${errors.email ? 'focus:ring-red-500' : 'focus:ring-blue-500'}`}
                       placeholder="exemple@email.com"
                     />
@@ -204,11 +204,11 @@ export default function CreateUserPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Mot de Passe *
                   </label>
-                  <input type="password"
+                  <input
+                    type="password"
                     required
                     value={userData.password}
-                    onChange={(e) =
-                      aria-label="Password"> handleChange('password', e.target.value)}
+                    onChange={(e) => handleChange('password', e.target.value)}
                     className={`w-full px-3 py-2 border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 ${errors.password ? 'focus:ring-red-500' : 'focus:ring-blue-500'}`}
                     placeholder="Minimum 8 caractères"
                   />
@@ -260,10 +260,10 @@ export default function CreateUserPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Entreprise
                   </label>
-                  <input type="text"
+                  <input
+                    type="text"
                     value={userData.company}
-                    onChange={(e) =
-                      aria-label="Text"> handleChange('company', e.target.value)}
+                    onChange={(e) => handleChange('company', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Nom de l'entreprise"
                   />
@@ -273,10 +273,10 @@ export default function CreateUserPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Téléphone
                   </label>
-                  <input type="tel"
+                  <input
+                    type="tel"
                     value={userData.phone}
-                    onChange={(e) =
-                      aria-label="Tel"> handleChange('phone', e.target.value)}
+                    onChange={(e) => handleChange('phone', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="+33 6 12 34 56 78"
                   />
@@ -287,9 +287,9 @@ export default function CreateUserPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Statut
                 </label>
-                <select value={userData.status}
-                  onChange={(e) =
-                aria-label="Status"> handleChange('status', e.target.value)}
+                <select
+                  value={userData.status}
+                  onChange={(e) => handleChange('status', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="active">Actif</option>

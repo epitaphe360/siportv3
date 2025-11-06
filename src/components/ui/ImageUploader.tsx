@@ -120,15 +120,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       {label && <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>}
       
       <div
-        role="button"
-        tabIndex={0}
         onClick={handleClick}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleClick;
-          }
-        }}
         className={`
           border-2 border-dashed rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer
           transition-colors duration-200 
@@ -144,8 +136,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           onChange={handleFileChange}
           accept="image/*"
           className="hidden"
-        /
-                      aria-label="Input">
+        />
         
         {previewUrl ? (
           // Aperçu de l'image

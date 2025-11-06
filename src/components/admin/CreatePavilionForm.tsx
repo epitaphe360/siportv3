@@ -229,11 +229,11 @@ export default function CreatePavilionForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Nom du Pavillon *
                   </label>
-                  <input type="text"
+                  <input
+                    type="text"
                     required
                     value={pavilionData.name}
-                    onChange={(e) =
-                      aria-label="Text"> handlePavilionChange('name', e.target.value)}
+                    onChange={(e) => handlePavilionChange('name', e.target.value)}
                     className={`w-full px-3 py-2 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 ${errors.name ? 'focus:ring-red-500' : 'focus:ring-blue-500'}`}
                     placeholder="Ex: Pavillon Digitalisation"
                   />
@@ -244,10 +244,10 @@ export default function CreatePavilionForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Thème *
                   </label>
-                  <select required
+                  <select
+                    required
                     value={pavilionData.theme}
-                    onChange={(e) =
-                aria-label="Theme"> handlePavilionChange('theme', e.target.value)}
+                    onChange={(e) => handlePavilionChange('theme', e.target.value)}
                     className={`w-full px-3 py-2 border ${errors.theme ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 ${errors.theme ? 'focus:ring-red-500' : 'focus:ring-blue-500'}`}
                   >
                     <option value="">Sélectionner un thème</option>
@@ -263,11 +263,11 @@ export default function CreatePavilionForm() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Description *
                 </label>
-                <textarea required
+                <textarea
+                  required
                   rows={3}
                   value={pavilionData.description}
-                  onChange={(e) =
-                  aria-label="Text area"> handlePavilionChange('description', e.target.value)}
+                  onChange={(e) => handlePavilionChange('description', e.target.value)}
                   className={`w-full px-3 py-2 border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 ${errors.description ? 'focus:ring-red-500' : 'focus:ring-blue-500'}`}
                   placeholder="Décrivez le pavillon et ses objectifs principaux..."
                 />
@@ -310,11 +310,11 @@ export default function CreatePavilionForm() {
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Titre *
                         </label>
-                        <input type="text"
+                        <input
+                          type="text"
                           required
                           value={program.title}
-                          onChange={(e) =
-                      aria-label="Text"> updateDemoProgram(index, 'title', e.target.value)}
+                          onChange={(e) => updateDemoProgram(index, 'title', e.target.value)}
                           className={`w-full px-3 py-2 border ${errors.demoPrograms?.[index]?.title ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 ${errors.demoPrograms?.[index]?.title ? 'focus:ring-red-500' : 'focus:ring-blue-500'}`}
                         />
                         {errors.demoPrograms?.[index]?.title && <p className="text-red-500 text-xs mt-1">{errors.demoPrograms[index].title}</p>}
