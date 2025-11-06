@@ -277,7 +277,8 @@ const MediaManager: React.FC<MediaManagerProps> = ({
                 className="hidden"
                 onChange={handleFileUpload}
                 disabled={uploading}
-              />
+              /
+                      aria-label="Input">
             </label>
           )}
           

@@ -466,9 +466,9 @@ export default function UserManagementPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Type d'utilisateur
                     </label>
-                    <select
-                      value={selectedType}
-                      onChange={(e) => setSelectedType(e.target.value)}
+                    <select value={selectedType}
+                      onChange={(e) =
+                aria-label="Select option"> setSelectedType(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">Tous les types</option>
@@ -483,9 +483,9 @@ export default function UserManagementPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Statut
                     </label>
-                    <select
-                      value={selectedStatus}
-                      onChange={(e) => setSelectedStatus(e.target.value)}
+                    <select value={selectedStatus}
+                      onChange={(e) =
+                aria-label="Select option"> setSelectedStatus(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">Tous les statuts</option>

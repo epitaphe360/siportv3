@@ -564,9 +564,9 @@ export const EnhancedChatInterface: React.FC = () => {
                 </Button>
                 
                 <div className="flex-1 relative">
-                  <textarea
-                    value={messageInput}
-                    onChange={(e) => setMessageInput(e.target.value)}
+                  <textarea value={messageInput}
+                    onChange={(e) =
+                  aria-label="Text area"> setMessageInput(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Tapez votre message..."
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"

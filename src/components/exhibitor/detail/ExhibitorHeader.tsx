@@ -48,12 +48,12 @@ export const ExhibitorHeader: React.FC<ExhibitorHeaderProps> = memo(({
 
           {/* Navigation Links - Hidden on mobile */}
           <div className="hidden md:flex items-center space-x-8">
-            <a href="#accueil" className="text-gray-700 hover:text-blue-600 transition-colors">Accueil</a>
-            <a href="#apropos" className="text-gray-700 hover:text-blue-600 transition-colors">À propos</a>
-            <a href="#produits" className="text-gray-700 hover:text-blue-600 transition-colors">Produits</a>
-            <a href="#actualites" className="text-gray-700 hover:text-blue-600 transition-colors">Actualités</a>
-            <a href="#galerie" className="text-gray-700 hover:text-blue-600 transition-colors">Galerie</a>
-            <a href="#disponibilites" className="text-gray-700 hover:text-blue-600 transition-colors">Disponibilités</a>
+            <a aria-label="Accueil" href="#accueil" className="text-gray-700 hover:text-blue-600 transition-colors">Accueil</a>
+            <a aria-label="À propos" href="#apropos" className="text-gray-700 hover:text-blue-600 transition-colors">À propos</a>
+            <a aria-label="Produits" href="#produits" className="text-gray-700 hover:text-blue-600 transition-colors">Produits</a>
+            <a aria-label="Actualités" href="#actualites" className="text-gray-700 hover:text-blue-600 transition-colors">Actualités</a>
+            <a aria-label="Galerie" href="#galerie" className="text-gray-700 hover:text-blue-600 transition-colors">Galerie</a>
+            <a aria-label="Disponibilités" href="#disponibilites" className="text-gray-700 hover:text-blue-600 transition-colors">Disponibilités</a>
           </div>
 
           {/* Action Buttons */}

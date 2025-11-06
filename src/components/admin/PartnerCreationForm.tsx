@@ -368,9 +368,9 @@ export default function PartnerCreationForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Secteur d'activité *
                   </label>
-                  <select
-                    value={formData.sector}
-                    onChange={(e) => setFormData({ ...formData, sector: e.target.value })}
+                  <select value={formData.sector}
+                    onChange={(e) =
+                aria-label="Sector"> setFormData({ ...formData, sector: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   >
                     <option value="">Sélectionnez un secteur</option>
@@ -433,9 +433,9 @@ export default function PartnerCreationForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Nombre d'employés
                   </label>
-                  <select
-                    value={formData.employees}
-                    onChange={(e) => setFormData({ ...formData, employees: e.target.value })}
+                  <select value={formData.employees}
+                    onChange={(e) =
+                aria-label="Employees"> setFormData({ ...formData, employees: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   >
                     <option value="">Sélectionnez une taille</option>
@@ -452,9 +452,9 @@ export default function PartnerCreationForm() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Description de l'organisation *
                 </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                <textarea value={formData.description}
+                  onChange={(e) =
+                  aria-label="Text area"> setFormData({ ...formData, description: e.target.value })}
                   rows={4}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   placeholder="Décrivez l'activité principale de l'organisation, son expertise et sa mission..."

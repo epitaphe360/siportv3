@@ -173,9 +173,9 @@ export default memo(function EventsPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Catégorie
                   </label>
-                  <select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
+                  <select value={selectedCategory}
+                    onChange={(e) =
+                aria-label="Select option"> setSelectedCategory(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Toutes les catégories</option>
@@ -191,9 +191,9 @@ export default memo(function EventsPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Type d'événement
                   </label>
-                  <select
-                    value={selectedType}
-                    onChange={(e) => setSelectedType(e.target.value)}
+                  <select value={selectedType}
+                    onChange={(e) =
+                aria-label="Select option"> setSelectedType(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Tous les types</option>

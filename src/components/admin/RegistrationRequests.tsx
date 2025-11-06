@@ -233,7 +233,7 @@ export default function RegistrationRequests() {
                         )}
                         <div className="flex items-center gap-2">
                           <Mail className="w-4 h-4" />
-                          <a href={`mailto:${request.email}`} className="text-siports-primary hover:underline">
+                          <a aria-label="{request.email}" href={`mailto:${request.email}`} className="text-siports-primary hover:underline">
                             {request.email}
                           </a>
                         </div>
@@ -304,11 +304,11 @@ export default function RegistrationRequests() {
             <p className="text-gray-600 mb-4">
               Veuillez indiquer la raison du rejet :
             </p>
-            <textarea
-              className="w-full border border-gray-300 rounded-lg p-3 min-h-[120px] focus:ring-2 focus:ring-siports-primary focus:border-transparent"
+            <textarea className="w-full border border-gray-300 rounded-lg p-3 min-h-[120px] focus:ring-2 focus:ring-siports-primary focus:border-transparent"
               placeholder="Raison du rejet..."
               value={rejectionReason}
-              onChange={(e) => setRejectionReason(e.target.value)}
+              onChange={(e) =
+                  aria-label="Raison du rejet..."> setRejectionReason(e.target.value)}
             />
             <div className="flex gap-2 mt-4">
               <Button

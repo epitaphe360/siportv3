@@ -303,9 +303,9 @@ export default function PublicAvailabilityCalendar({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Type de rencontre
               </label>
-              <select
-                value={newSlot.type}
-                onChange={(e) => setNewSlot({ ...newSlot, type: e.target.value as any })}
+              <select value={newSlot.type}
+                onChange={(e) =
+                aria-label="Type"> setNewSlot({ ...newSlot, type: e.target.value as any })}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 data-testid="select-slot-type"
               >
@@ -377,9 +377,9 @@ export default function PublicAvailabilityCalendar({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Description (optionnel)
             </label>
-            <textarea
-              value={newSlot.description}
-              onChange={(e) => setNewSlot({ ...newSlot, description: e.target.value })}
+            <textarea value={newSlot.description}
+              onChange={(e) =
+                  aria-label="Text area"> setNewSlot({ ...newSlot, description: e.target.value })}
               placeholder="Présentation produit, démonstration, discussion technique..."
               rows={3}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"

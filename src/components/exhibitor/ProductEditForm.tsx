@@ -160,14 +160,14 @@ export default function ProductEditForm({
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Description *
                   </label>
-                  <textarea
-                    name="description"
+                  <textarea name="description"
                     value={formData.description}
                     onChange={handleInputChange}
                     rows={4}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
-                  />
+                  /
+                  aria-label="Description">
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -210,14 +210,14 @@ export default function ProductEditForm({
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Spécifications techniques
                   </label>
-                  <textarea
-                    name="specifications"
+                  <textarea name="specifications"
                     value={formData.specifications}
                     onChange={handleInputChange}
                     rows={3}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Dimensions, matériaux, caractéristiques techniques..."
-                  />
+                  /
+                  aria-label="Dimensions, matériaux, caractéristiques techniques...">
                 </div>
                 
                 <div className="flex items-center">

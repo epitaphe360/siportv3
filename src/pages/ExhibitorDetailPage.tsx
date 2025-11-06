@@ -529,7 +529,7 @@ export default function ExhibitorDetailPage() {
                     {exhibitor.website && (
                       <div className="flex items-center space-x-3">
                         <Globe className="h-5 w-5 text-gray-400" />
-                        <a href={exhibitor.website} className="text-blue-600 hover:text-blue-700">
+                        <a aria-label="{exhibitor.website}" href={exhibitor.website} className="text-blue-600 hover:text-blue-700">
                           {exhibitor.website}
                         </a>
                       </div>

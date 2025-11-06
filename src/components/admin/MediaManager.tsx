@@ -437,7 +437,8 @@ export default function MediaManager() {
                       multiple
                       className="hidden"
                       onChange={handleFileUpload}
-                    />
+                    /
+                      aria-label="Input">
                     
                     <Button 
                       variant="ghost" 

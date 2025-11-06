@@ -442,9 +442,9 @@ export default function MiniSiteEditor() {
       return (
         <div className="relative">
           {multiline ? (
-            <textarea
-              value={editingValue}
-              onChange={(e) => setEditingValue(e.target.value)}
+            <textarea value={editingValue}
+              onChange={(e) =
+                  aria-label="Text area"> setEditingValue(e.target.value)}
               placeholder={placeholder}
               className={`w-full px-3 py-2 border-2 border-blue-500 rounded-lg focus:outline-none bg-white ${className}`}
               rows={3}
@@ -615,9 +615,9 @@ export default function MiniSiteEditor() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Police
                     </label>
-                    <select
-                      value={siteSettings.fontFamily}
-                      onChange={(e) => {
+                    <select value={siteSettings.fontFamily}
+                      onChange={(e) =
+                aria-label="Font Family"> {
                         setSiteSettings({...siteSettings, fontFamily: e.target.value});
                         toast.success(`Police mise à jour: ${e.target.value}`);
                       }}
@@ -947,6 +947,8 @@ export default function MiniSiteEditor() {
                                         src={product.image}
                                         alt={product.name}
                                         className="w-full h-32 object-cover rounded-lg mb-4 cursor-pointer hover:opacity-80"
+                                        role="button"
+                                        tabIndex={0}
                                         onClick={() => {
                                           const input = document.createElement('input');
                                           input.type = 'file';
@@ -958,7 +960,24 @@ export default function MiniSiteEditor() {
                                               reader.onload = (event) => {
                                                 const result = event.target?.result as string;
                                                 updateProductField(section.id, index, 'image', result);
-                                                toast.success(`Image produit mise à jour: ${file.name}`);
+                                                toast.success(`Image produit mise à jour: ${file.name}
+                                        onKeyDown={(e: React.KeyboardEvent) => {
+                                          if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            {
+                                          const input = document.createElement('input');
+                                          input.type = 'file';
+                                          input.accept = 'image/*';
+                                          input.onchange = (e) => {
+                                            const file = (e.target as HTMLInputElement).files?.[0];
+                                            if (file) {
+                                              const reader = new FileReader();
+                                              reader.onload = (event) => {
+                                                const result = event.target?.result as string;
+                                                updateProductField(section.id, index, 'image', result);
+                                                toast.success(`Image produit mise à jour: ${file.name;
+                                          }
+                                        }}`);
                                               };
                                               reader.readAsDataURL(file);
                                             }
@@ -1078,7 +1097,9 @@ export default function MiniSiteEditor() {
                                           src={article.image}
                                           alt={article.title}
                                           className="w-full h-32 object-cover rounded-lg mb-4 cursor-pointer hover:opacity-80"
-                                          onClick={() => {
+                                          role="button"
+                                        tabIndex={0}
+                                        onClick={() => {
                                             const input = document.createElement('input');
                                             input.type = 'file';
                                             input.accept = 'image/*';
@@ -1090,7 +1111,25 @@ export default function MiniSiteEditor() {
                                                   const result = event.target?.result as string;
                                                   const currentArticles = section.content.articles ?? [];
                                                   const updatedArticles = [...currentArticles];
-                                                  updatedArticles[index] = { ...updatedArticles[index], image: result };
+                                                  updatedArticles[index] = { ...updatedArticles[index], image: result }
+                                        onKeyDown={(e: React.KeyboardEvent) => {
+                                          if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            {
+                                            const input = document.createElement('input');
+                                            input.type = 'file';
+                                            input.accept = 'image/*';
+                                            input.onchange = (e) => {
+                                              const file = (e.target as HTMLInputElement).files?.[0];
+                                              if (file) {
+                                                const reader = new FileReader();
+                                                reader.onload = (event) => {
+                                                  const result = event.target?.result as string;
+                                                  const currentArticles = section.content.articles ?? [];
+                                                  const updatedArticles = [...currentArticles];
+                                                  updatedArticles[index] = { ...updatedArticles[index], image: result ;
+                                          }
+                                        }};
                                                   updateSectionContent(section.id, 'articles', updatedArticles);
                                                   toast.success(`Image article mise à jour: ${file.name}`);
                                                 };

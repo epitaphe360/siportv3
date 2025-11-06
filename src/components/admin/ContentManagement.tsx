@@ -303,11 +303,11 @@ export default function ContentManagement() {
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             Description
                           </label>
-                          <textarea
-                            rows={4}
+                          <textarea rows={4}
                             disabled={!isEditing}
                             value={currentContentData.descriptionText || ''}
-                            onChange={(e) => handleContentChange('descriptionText', e.target.value)}
+                            onChange={(e) =
+                  aria-label="Text area"> handleContentChange('descriptionText', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
                           />
                         </div>

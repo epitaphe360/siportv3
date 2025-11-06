@@ -237,9 +237,9 @@ export default function DetailedProfilePage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Bio</label>
                     {isEditing ? (
-                      <textarea
-                        value={editedProfile.bio || ''}
-                        onChange={(e) => handleInputChange('bio', e.target.value)}
+                      <textarea value={editedProfile.bio || ''}
+                        onChange={(e) =
+                  aria-label="Text area"> handleInputChange('bio', e.target.value)}
                         rows={4}
                         className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />

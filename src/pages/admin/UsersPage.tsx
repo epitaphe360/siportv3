@@ -255,9 +255,9 @@ export default function UsersPage() {
                 />
               </div>
 
-              <select
-                value={selectedRole}
-                onChange={(e) => setSelectedRole(e.target.value)}
+              <select value={selectedRole}
+                onChange={(e) =
+                aria-label="Select option"> setSelectedRole(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Tous les rôles</option>
@@ -267,9 +267,9 @@ export default function UsersPage() {
                 <option value="visitor">Visiteur</option>
               </select>
 
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
+              <select value={selectedStatus}
+                onChange={(e) =
+                aria-label="Select option"> setSelectedStatus(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Tous les statuts</option>

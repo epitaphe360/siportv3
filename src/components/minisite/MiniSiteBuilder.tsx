@@ -336,9 +336,9 @@ export default function MiniSiteBuilder() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Police</label>
-                    <select
-                      value={siteSettings.fontFamily}
-                      onChange={(e) => setSiteSettings({ ...siteSettings, fontFamily: e.target.value })}
+                    <select value={siteSettings.fontFamily}
+                      onChange={(e) =
+                aria-label="Font Family"> setSiteSettings({ ...siteSettings, fontFamily: e.target.value })}
                       className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="Inter">Inter</option>

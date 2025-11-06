@@ -84,7 +84,8 @@ const ProfileEdit: React.FC = () => {
         </div>
         <div>
           <label className="block text-sm font-medium">Description</label>
-          <textarea value={description} onChange={e => setDescription(e.target.value)} className="mt-1 block w-full" />
+          <textarea value={description} onChange={e =
+                  aria-label="Text area"> setDescription(e.target.value)} className="mt-1 block w-full" />
         </div>
         <div>
           <label className="block text-sm font-medium">Site web</label>

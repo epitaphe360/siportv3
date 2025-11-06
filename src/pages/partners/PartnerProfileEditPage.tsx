@@ -175,9 +175,9 @@ export const PartnerProfileEditPage: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Description de l'entreprise *
                 </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => handleInputChange('description', e.target.value)}
+                <textarea value={formData.description}
+                  onChange={(e) =
+                  aria-label="Text area"> handleInputChange('description', e.target.value)}
                   rows={4}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -247,9 +247,9 @@ export const PartnerProfileEditPage: React.FC = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Services proposés
                   </label>
-                  <textarea
-                    value={formData.services.join('\n')}
-                    onChange={(e) => handleInputChange('services', e.target.value.split('\n'))}
+                  <textarea value={formData.services.join('\n')}
+                    onChange={(e) =
+                  aria-label="Text area"> handleInputChange('services', e.target.value.split('\n'))}
                     rows={6}
                     placeholder="Un service par ligne"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -301,9 +301,9 @@ export default function ActivityPage() {
                 />
               </div>
 
-              <select
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
+              <select value={selectedType}
+                onChange={(e) =
+                aria-label="Select option"> setSelectedType(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Tous les types</option>
@@ -312,9 +312,9 @@ export default function ActivityPage() {
                 ))}
               </select>
 
-              <select
-                value={selectedSeverity}
-                onChange={(e) => setSelectedSeverity(e.target.value)}
+              <select value={selectedSeverity}
+                onChange={(e) =
+                aria-label="Select option"> setSelectedSeverity(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Toutes les sévérités</option>

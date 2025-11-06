@@ -245,9 +245,9 @@ export default function ExhibitorsPage() {
                 />
               </div>
 
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
+              <select value={selectedCategory}
+                onChange={(e) =
+                aria-label="Select option"> setSelectedCategory(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Toutes les catégories</option>
@@ -256,9 +256,9 @@ export default function ExhibitorsPage() {
                 ))}
               </select>
 
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
+              <select value={selectedStatus}
+                onChange={(e) =
+                aria-label="Select option"> setSelectedStatus(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Tous les statuts</option>

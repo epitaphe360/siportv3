@@ -215,9 +215,9 @@ export default function PartnersPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Type de partenaire
                   </label>
-                  <select
-                    value={selectedType}
-                    onChange={(e) => setSelectedType(e.target.value)}
+                  <select value={selectedType}
+                    onChange={(e) =
+                aria-label="Select option"> setSelectedType(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {partnerTypes.map((type) => (
@@ -232,9 +232,9 @@ export default function PartnersPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Pays
                   </label>
-                  <select
-                    value={selectedCountry}
-                    onChange={(e) => setSelectedCountry(e.target.value)}
+                  <select value={selectedCountry}
+                    onChange={(e) =
+                aria-label="Select option"> setSelectedCountry(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Tous les pays</option>

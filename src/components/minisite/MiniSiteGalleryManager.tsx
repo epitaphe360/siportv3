@@ -190,7 +190,8 @@ export default function MiniSiteGalleryManager({
           accept="image/*"
           className="hidden"
           onChange={handleFileChange}
-        />
+        /
+                      aria-label="Input">
         
         {/* Barre de progression */}
         {isLoading && (

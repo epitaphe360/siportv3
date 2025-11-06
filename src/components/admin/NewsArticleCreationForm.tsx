@@ -186,9 +186,9 @@ export default function NewsArticleCreationForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Extrait/Résumé *
                   </label>
-                  <textarea
-                    value={formData.excerpt}
-                    onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                  <textarea value={formData.excerpt}
+                    onChange={(e) =
+                  aria-label="Text area"> setFormData({ ...formData, excerpt: e.target.value })}
                     rows={3}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Résumé de l'article qui apparaîtra dans la liste..."
@@ -200,9 +200,9 @@ export default function NewsArticleCreationForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Contenu de l'article *
                   </label>
-                  <textarea
-                    value={formData.content}
-                    onChange={(e) => handleContentChange(e.target.value)}
+                  <textarea value={formData.content}
+                    onChange={(e) =
+                  aria-label="Text area"> handleContentChange(e.target.value)}
                     rows={12}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Rédigez le contenu complet de votre article..."
@@ -278,9 +278,9 @@ export default function NewsArticleCreationForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Catégorie *
                   </label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  <select value={formData.category}
+                    onChange={(e) =
+                aria-label="Category"> setFormData({ ...formData, category: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Sélectionnez une catégorie</option>

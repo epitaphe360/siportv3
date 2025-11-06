@@ -404,9 +404,9 @@ export default function ModerationPanel() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Motif du refus et corrections demandées :
               </label>
-              <textarea
-                value={moderationComment}
-                onChange={(e) => setModerationComment(e.target.value)}
+              <textarea value={moderationComment}
+                onChange={(e) =
+                  aria-label="Text area"> setModerationComment(e.target.value)}
                 placeholder="Expliquez les raisons du refus et les corrections à apporter..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                 rows={4}

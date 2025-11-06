@@ -138,12 +138,12 @@ export default function ExhibitorDetailPage() {
             </div>
             
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#accueil" className="text-gray-700 hover:text-blue-600 transition-colors">Accueil</a>
-              <a href="#apropos" className="text-gray-700 hover:text-blue-600 transition-colors">À propos</a>
-              <a href="#produits" className="text-gray-700 hover:text-blue-600 transition-colors">Produits</a>
-              <a href="#actualites" className="text-gray-700 hover:text-blue-600 transition-colors">Actualités</a>
-              <a href="#galerie" className="text-gray-700 hover:text-blue-600 transition-colors">Galerie</a>
-              <a href="#disponibilites" className="text-gray-700 hover:text-blue-600 transition-colors">Disponibilités</a>
+              <a aria-label="Accueil" href="#accueil" className="text-gray-700 hover:text-blue-600 transition-colors">Accueil</a>
+              <a aria-label="À propos" href="#apropos" className="text-gray-700 hover:text-blue-600 transition-colors">À propos</a>
+              <a aria-label="Produits" href="#produits" className="text-gray-700 hover:text-blue-600 transition-colors">Produits</a>
+              <a aria-label="Actualités" href="#actualites" className="text-gray-700 hover:text-blue-600 transition-colors">Actualités</a>
+              <a aria-label="Galerie" href="#galerie" className="text-gray-700 hover:text-blue-600 transition-colors">Galerie</a>
+              <a aria-label="Disponibilités" href="#disponibilites" className="text-gray-700 hover:text-blue-600 transition-colors">Disponibilités</a>
             </div>
 
             <div className="flex items-center space-x-3">
@@ -776,11 +776,11 @@ export default function ExhibitorDetailPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Objet *
                     </label>
-                    <select
-                      name="subject"
+                    <select name="subject"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
-                    >
+                    
+                aria-label="Subject">
                       <option value="">Sélectionnez un sujet</option>
                       <option value="quote">Demande de devis</option>
                       <option value="information">Demande d'informations</option>
@@ -794,13 +794,13 @@ export default function ExhibitorDetailPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Message *
                     </label>
-                    <textarea
-                      name="message"
+                    <textarea name="message"
                       rows={4}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Décrivez votre projet et vos besoins..."
                       required
-                    />
+                    /
+                  aria-label="Décrivez votre projet et vos besoins...">
                   </div>
 
                   <Button
@@ -910,9 +910,9 @@ export default function ExhibitorDetailPage() {
             <div>
               <h4 className="font-semibold text-white mb-4">Liens rapides</h4>
               <ul className="space-y-2">
-                <li><a href="#apropos" className="text-gray-400 hover:text-white transition-colors">À propos</a></li>
-                <li><a href="#produits" className="text-gray-400 hover:text-white transition-colors">Produits</a></li>
-                <li><a href="#actualites" className="text-gray-400 hover:text-white transition-colors">Actualités</a></li>
+                <li><a aria-label="À propos" href="#apropos" className="text-gray-400 hover:text-white transition-colors">À propos</a></li>
+                <li><a aria-label="Produits" href="#produits" className="text-gray-400 hover:text-white transition-colors">Produits</a></li>
+                <li><a aria-label="Actualités" href="#actualites" className="text-gray-400 hover:text-white transition-colors">Actualités</a></li>
               </ul>
             </div>
 
