@@ -115,7 +115,8 @@ const App = () => {
             <Route path={`${ROUTES.EXHIBITOR_PROFILE}/edit`} element={<ProtectedRoute requiredRole="exhibitor"><ProfileEdit /></ProtectedRoute>} />
             <Route path={ROUTES.EXHIBITOR_DASHBOARD} element={<ProtectedRoute requiredRole="exhibitor"><ExhibitorDashboard /></ProtectedRoute>} />
             <Route path={ROUTES.VISITOR_DASHBOARD} element={<ProtectedRoute requiredRole="visitor"><VisitorDashboard /></ProtectedRoute>} />
-            <Route path="/dev/test-flow" element={<TestFlowPage />} />
+            {/* SECURED: Dev route now requires admin role */}
+            <Route path="/dev/test-flow" element={<ProtectedRoute requiredRole="admin"><TestFlowPage /></ProtectedRoute>} />
             <Route path={ROUTES.VISITOR_SETTINGS} element={<ProtectedRoute requiredRole="visitor"><VisitorProfileSettings /></ProtectedRoute>} />
             <Route path={ROUTES.MESSAGES} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path={ROUTES.CHAT} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
