@@ -32,12 +32,11 @@ const MediaManagerPage: React.FC = () => {
             <div className="flex-1">
               <p className="text-sm font-medium mb-1">URL de l'image :</p>
               <div className="flex">
-                <input
-                  type="text"
+                <input type="text"
                   value={selectedImage}
                   readOnly
                   className="flex-1 p-2 border rounded-l-md text-sm bg-white"
-                />
+                 aria-label="Text" />
                 <button
                   type="button"
                   onClick={() => {

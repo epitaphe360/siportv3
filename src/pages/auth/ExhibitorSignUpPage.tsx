@@ -119,14 +119,13 @@ export default function ExhibitorSignUpPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Prénom</label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input
-                      type="text"
+                    <input type="text"
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleInputChange}
                       required
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                     aria-label="First Name" />
                   </div>
                 </div>
 
@@ -135,14 +134,13 @@ export default function ExhibitorSignUpPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Nom</label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input
-                      type="text"
+                    <input type="text"
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleInputChange}
                       required
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                     aria-label="Last Name" />
                   </div>
                 </div>
               </div>
@@ -152,14 +150,13 @@ export default function ExhibitorSignUpPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">Nom de l'entreprise</label>
                 <div className="relative">
                   <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <input
-                    type="text"
+                  <input type="text"
                     name="companyName"
                     value={formData.companyName}
                     onChange={handleInputChange}
                     required
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                   aria-label="Company Name" />
                 </div>
               </div>
 
@@ -169,14 +166,13 @@ export default function ExhibitorSignUpPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Votre poste</label>
                   <div className="relative">
                     <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input
-                      type="text"
+                    <input type="text"
                       name="position"
                       value={formData.position}
                       onChange={handleInputChange}
                       required
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                     aria-label="Position" />
                   </div>
                 </div>
 
@@ -185,14 +181,13 @@ export default function ExhibitorSignUpPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Téléphone</label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input
-                      type="tel"
+                    <input type="tel"
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
                       required
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                     aria-label="Phone" />
                   </div>
                 </div>
               </div>
@@ -202,14 +197,13 @@ export default function ExhibitorSignUpPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">Email professionnel</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <input
-                    type="email"
+                  <input type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
                     required
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                   aria-label="Email" />
                 </div>
               </div>
 
@@ -219,15 +213,14 @@ export default function ExhibitorSignUpPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Mot de passe</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input
-                      type="password"
+                    <input type="password"
                       name="password"
                       value={formData.password}
                       onChange={handleInputChange}
                       required
                       minLength={8}
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                     aria-label="Password" />
                     {passwordError && <p className="text-red-500 text-xs mt-1">{passwordError}</p>}
                   </div>
                 </div>
@@ -237,15 +230,14 @@ export default function ExhibitorSignUpPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Confirmer le mot de passe</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input
-                      type="password"
+                    <input type="password"
                       name="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
                       required
                       minLength={8}
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                     aria-label="Confirm Password" />
                     {error && name === 'confirmPassword' && <p className="text-red-500 text-xs mt-1">{error}</p>}
                   </div>
                 </div>

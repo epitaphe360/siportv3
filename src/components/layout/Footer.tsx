@@ -35,7 +35,7 @@ export const Footer: React.FC = memo(() => {
               Salon International des Ports - La plateforme de référence pour l'écosystème portuaire mondial.
             </p>
             <div className="flex space-x-4">
-              <a 
+              <a aria-label="Facebook" 
                 href="https://facebook.com/siports2026" 
                 target="_blank" 
                 rel="noopener noreferrer"
@@ -44,7 +44,7 @@ export const Footer: React.FC = memo(() => {
               >
                 <Facebook className="h-5 w-5" />
               </a>
-              <a 
+              <a aria-label="Twitter" 
                 href="https://twitter.com/siports2026" 
                 target="_blank" 
                 rel="noopener noreferrer"
@@ -53,7 +53,7 @@ export const Footer: React.FC = memo(() => {
               >
                 <Twitter className="h-5 w-5" />
               </a>
-              <a 
+              <a aria-label="Linkedin" 
                 href="https://linkedin.com/company/siports2026" 
                 target="_blank" 
                 rel="noopener noreferrer"
@@ -62,7 +62,7 @@ export const Footer: React.FC = memo(() => {
               >
                 <Linkedin className="h-5 w-5" />
               </a>
-              <a 
+              <a aria-label="Youtube" 
                 href="https://youtube.com/@siports2026" 
                 target="_blank" 
                 rel="noopener noreferrer"

@@ -461,7 +461,7 @@ export default function MiniSitePreview() {
             {Object.values(socialLinks).some(link => link) && (
               <div className="flex justify-center gap-4 mt-12">
                 {socialLinks.linkedin && (
-                  <a
+                  <a aria-label="Linkedin"
                     href={socialLinks.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -472,7 +472,7 @@ export default function MiniSitePreview() {
                   </a>
                 )}
                 {socialLinks.facebook && (
-                  <a
+                  <a aria-label="Facebook"
                     href={socialLinks.facebook}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -483,7 +483,7 @@ export default function MiniSitePreview() {
                   </a>
                 )}
                 {socialLinks.twitter && (
-                  <a
+                  <a aria-label="Twitter"
                     href={socialLinks.twitter}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -494,7 +494,7 @@ export default function MiniSitePreview() {
                   </a>
                 )}
                 {socialLinks.instagram && (
-                  <a
+                  <a aria-label="Instagram"
                     href={socialLinks.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -505,7 +505,7 @@ export default function MiniSitePreview() {
                   </a>
                 )}
                 {socialLinks.youtube && (
-                  <a
+                  <a aria-label="Youtube"
                     href={socialLinks.youtube}
                     target="_blank"
                     rel="noopener noreferrer"

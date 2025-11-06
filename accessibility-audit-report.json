@@ -1,17 +1,17 @@
 {
-  "timestamp": "2025-11-06T19:28:58.501Z",
+  "timestamp": "2025-11-06T19:50:13.006Z",
   "stats": {
-    "filesScanned": 158,
-    "components": 267,
-    "critical": 222,
+    "filesScanned": 160,
+    "components": 269,
+    "critical": 160,
     "serious": 70,
     "moderate": 0,
     "minor": 0
   },
   "summary": {
-    "totalIssues": 292,
-    "passRate": "89.1%",
-    "score": 0.4
+    "totalIssues": 230,
+    "passRate": "91.4%",
+    "score": 2.8
   },
   "issuesByFile": {
     "App.tsx": [
@@ -515,95 +515,7 @@
         "description": "Form input missing associated label",
         "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type=\"text\"\n                          {...register('companyName')}\n                          className=\"w-full pl-10 "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type=\"text\"\n                          {...register('country')}\n                          className=\"w-full pl-10 pr-4"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type=\"url\"\n                          {...register('website')}\n                          className=\"w-full pl-10 pr-4 "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type=\"text\"\n                          {...register('firstName')}\n                          className=\"w-full pl-10 pr"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type=\"text\"\n                          {...register('lastName')}\n                          className=\"w-full pl-10 pr-"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                        type=\"text\"\n                        {...register('position')}\n                        className=\"w-full px-4 py-3 borde"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type=\"email\"\n                          {...register('email')}\n                          className=\"w-full pl-10 pr-4 "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type=\"tel\"\n                          {...register('phone')}\n                          className=\"w-full pl-10 pr-4 py"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                        type=\"url\"\n                        {...register('linkedin')}\n                        className=\"w-full px-4 py-3 border"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
         "element": "<input\n                            type=\"checkbox\"\n                            value={objective}\n                            {...register('objectives'"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type={showPassword ? 'text' : 'password'}\n                          {...register('password')}\n                       "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type={showConfirmPassword ? 'text' : 'password'}\n                          {...register('confirmPassword')}\n         "
       }
     ],
     "components/availability/AvailabilityManager.tsx": [
@@ -691,14 +603,6 @@
       }
     ],
     "components/chat/ChatInterface.tsx": [
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/chat/ChatInterface.tsx",
-        "element": "<input\n                    type=\"text\"\n                    placeholder=\"Rechercher une conversation...\"\n                    className=\"w-full pl-3 pr-"
-      },
       {
         "ruleId": "MISSING_LABEL",
         "severity": "critical",
@@ -810,46 +714,6 @@
     ],
     "components/exhibitor/ExhibitorDetailPage.tsx": [
       {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorDetailPage.tsx",
-        "element": "<input\n                        type=\"text\"\n                        name=\"firstName\"\n                        className=\"w-full px-3 py-2 border border-"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorDetailPage.tsx",
-        "element": "<input\n                        type=\"text\"\n                        name=\"lastName\"\n                        className=\"w-full px-3 py-2 border border-g"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorDetailPage.tsx",
-        "element": "<input\n                      type=\"email\"\n                      name=\"email\"\n                      className=\"w-full px-3 py-2 border border-gray-300 "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorDetailPage.tsx",
-        "element": "<input\n                      type=\"text\"\n                      name=\"company\"\n                      className=\"w-full px-3 py-2 border border-gray-300"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorDetailPage.tsx",
-        "element": "<input\n                      type=\"tel\"\n                      name=\"phone\"\n                      className=\"w-full px-3 py-2 border border-gray-300 ro"
-      },
-      {
         "ruleId": "LINK_NO_TEXT",
         "severity": "serious",
         "description": "Link has no accessible text",
@@ -873,102 +737,6 @@
         "description": "Form input missing associated label",
         "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                      type=\"text\"\n                      name=\"companyName\"\n                      value={formData.companyName}\n                 "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                        type=\"text\"\n                        name=\"sector\"\n                        value={formData.sector}\n                     "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                        type=\"url\"\n                        name=\"website\"\n                        value={formData.website}\n                    "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                          type=\"email\"\n                          name=\"contactInfo.email\"\n                          value={formData.contactInfo"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                          type=\"tel\"\n                          name=\"contactInfo.phone\"\n                          value={formData.contactInfo.p"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                      type=\"text\"\n                      name=\"contactInfo.address\"\n                      value={formData.contactInfo.address}\n "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                        type=\"text\"\n                        name=\"contactInfo.city\"\n                        value={formData.contactInfo.city}\n "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                        type=\"text\"\n                        name=\"contactInfo.country\"\n                        value={formData.contactInfo.coun"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                      type=\"text\"\n                      name=\"contactInfo.contactPerson\"\n                      value={formData.contactInfo.cont"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                          type=\"number\"\n                          name=\"establishedYear\"\n                          value={formData.establishedY"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                          type=\"number\"\n                          name=\"employeeCount\"\n                          value={formData.employeeCount}"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                          type=\"number\"\n                          name=\"revenue\"\n                          value={formData.revenue}\n           "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
         "element": "<input\n                        type=\"text\"\n                        value={formData.certifications.join(', ')}\n                        onChange={(e) =>"
       },
       {
@@ -978,32 +746,6 @@
         "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "components/exhibitor/ExhibitorEditForm.tsx",
         "element": "<input\n                        type=\"text\"\n                        value={formData.markets.join(', ')}\n                        onChange={(e) =>"
-      }
-    ],
-    "components/exhibitor/ProductEditForm.tsx": [
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ProductEditForm.tsx",
-        "element": "<input\n                    type=\"text\"\n                    name=\"name\"\n                    value={formData.name}\n                    onChange={handleI"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ProductEditForm.tsx",
-        "element": "<input\n                      type=\"text\"\n                      name=\"category\"\n                      value={formData.category}\n                      o"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ProductEditForm.tsx",
-        "element": "<input\n                        type=\"number\"\n                        name=\"price\"\n                        value={formData.price}\n                     "
       }
     ],
     "components/exhibitor/detail/ExhibitorHeader.tsx": [
@@ -1224,40 +966,6 @@
         "element": "<div \n                key={index}\n                className={`relative aspect-square rounded-lg over"
       }
     ],
-    "components/minisite/MiniSiteHeroEditor.tsx": [
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/minisite/MiniSiteHeroEditor.tsx",
-        "element": "<input\n              type=\"text\"\n              name=\"title\"\n              value={formData.title}\n              onChange={handleInputChange}\n          "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/minisite/MiniSiteHeroEditor.tsx",
-        "element": "<input\n              type=\"text\"\n              name=\"subtitle\"\n              value={formData.subtitle}\n              onChange={handleInputChange}\n    "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/minisite/MiniSiteHeroEditor.tsx",
-        "element": "<input\n                  type=\"text\"\n                  name=\"ctaText\"\n                  value={formData.ctaText}\n                  onChange={handleInp"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/minisite/MiniSiteHeroEditor.tsx",
-        "element": "<input\n                  type=\"text\"\n                  name=\"ctaLink\"\n                  value={formData.ctaLink}\n                  onChange={handleInp"
-      }
-    ],
     "components/minisite/MiniSitePreview.tsx": [
       {
         "ruleId": "LINK_NO_TEXT",
@@ -1358,24 +1066,6 @@
         "element": "<input\n                type=\"text\"\n                value={settings.primaryColor}\n                onChange={(e) =>"
       }
     ],
-    "components/news/ArticleAudioPlayer.tsx": [
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/news/ArticleAudioPlayer.tsx",
-        "element": "<input\n              type=\"range\"\n              min=\"0\"\n              max={duration || 0}\n              value={currentTime}\n              onChange={ha"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/news/ArticleAudioPlayer.tsx",
-        "element": "<input\n                  type=\"range\"\n                  min=\"0\"\n                  max=\"1\"\n                  step=\"0.1\"\n                  value={volume"
-      }
-    ],
     "components/pavilions/PavillonsPage.tsx": [
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
@@ -1434,48 +1124,6 @@
         "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "components/profile/DetailedProfilePage.tsx",
         "element": "<input\n                        type=\"text\"\n                        value={editedProfile.position || ''}\n                        onChange={(e) =>"
-      }
-    ],
-    "components/profile/ProfileEditor.tsx": [
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/profile/ProfileEditor.tsx",
-        "element": "<input type=\"text\" name=\"firstName\" value={profileData.firstName} onChange={handleInputChange} placeholder=\"Prénom\" className=\"input input-bordered w-"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/profile/ProfileEditor.tsx",
-        "element": "<input type=\"text\" name=\"lastName\" value={profileData.lastName} onChange={handleInputChange} placeholder=\"Nom\" className=\"input input-bordered w-full\""
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/profile/ProfileEditor.tsx",
-        "element": "<input type=\"text\" name=\"position\" value={profileData.position} onChange={handleInputChange} placeholder=\"Poste\" className=\"input input-bordered w-ful"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/profile/ProfileEditor.tsx",
-        "element": "<input type=\"text\" name=\"country\" value={profileData.country} onChange={handleInputChange} placeholder=\"Pays\" className=\"input input-bordered w-full\" "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/profile/ProfileEditor.tsx",
-        "element": "<input type=\"text\" name=\"phone\" value={profileData.phone} onChange={handleInputChange} placeholder=\"Téléphone\" className=\"input input-bordered w-full\""
       }
     ],
     "components/profile/ProfilePage.tsx": [
@@ -1892,56 +1540,6 @@
         "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "components/visitor/VisitorProfileSettings.tsx",
         "element": "<input\n                            type=\"checkbox\"\n                            checked={visitorProfile.notificationPreferences.inApp}\n                "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/visitor/VisitorProfileSettings.tsx",
-        "element": "<input\n                              type=\"radio\"\n                              name=\"profileVisibility\"\n                              value=\"public\"\n"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/visitor/VisitorProfileSettings.tsx",
-        "element": "<input\n                              type=\"radio\"\n                              name=\"profileVisibility\"\n                              value=\"connecti"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/visitor/VisitorProfileSettings.tsx",
-        "element": "<input\n                              type=\"radio\"\n                              name=\"profileVisibility\"\n                              value=\"private\""
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/visitor/VisitorProfileSettings.tsx",
-        "element": "<input type=\"checkbox\" defaultChecked className=\"sr-only peer\" />"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/visitor/VisitorProfileSettings.tsx",
-        "element": "<input type=\"checkbox\" defaultChecked className=\"sr-only peer\" />"
-      }
-    ],
-    "pages/ArticleDetailPage.tsx": [
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/ArticleDetailPage.tsx",
-        "element": "<input\n                  type=\"email\"\n                  placeholder=\"votre@email.com\"\n                  className=\"flex-1 px-4 py-3 rounded-lg text-gr"
       }
     ],
     "pages/ContactPage.tsx": [
@@ -2100,41 +1698,9 @@
         "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "pages/NewsPage.tsx",
         "element": "<input\n                type=\"text\"\n                placeholder=\"Rechercher dans les actualités...\"\n                value={searchTerm}\n                "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/NewsPage.tsx",
-        "element": "<input\n                  type=\"email\"\n                  placeholder=\"votre@email.com\"\n                  className=\"flex-1 px-4 py-3 rounded-lg text-gr"
       }
     ],
     "pages/PartnerDetailPage.tsx": [
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/PartnerDetailPage.tsx",
-        "element": "<input\n                    type=\"text\"\n                    className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/PartnerDetailPage.tsx",
-        "element": "<input\n                    type=\"email\"\n                    className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:rin"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/PartnerDetailPage.tsx",
-        "element": "<input\n                    type=\"text\"\n                    className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring"
-      },
       {
         "ruleId": "LINK_NO_TEXT",
         "severity": "serious",
@@ -2262,16 +1828,6 @@
         "element": "<input\n                  type=\"text\"\n                  placeholder=\"Rechercher par nom, description ou contact...\"\n                  value={searchTerm"
       }
     ],
-    "pages/admin/MediaManagerPage.tsx": [
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/admin/MediaManagerPage.tsx",
-        "element": "<input\n                  type=\"text\"\n                  value={selectedImage}\n                  readOnly\n                  className=\"flex-1 p-2 border"
-      }
-    ],
     "pages/admin/PartnersPage.tsx": [
       {
         "ruleId": "MISSING_LABEL",
@@ -2308,72 +1864,6 @@
         "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "pages/admin/UsersPage.tsx",
         "element": "<input\n                  type=\"text\"\n                  placeholder=\"Rechercher par nom, email ou entreprise...\"\n                  value={searchTerm}\n "
-      }
-    ],
-    "pages/auth/ExhibitorSignUpPage.tsx": [
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/auth/ExhibitorSignUpPage.tsx",
-        "element": "<input\n                      type=\"text\"\n                      name=\"firstName\"\n                      value={formData.firstName}\n                     "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/auth/ExhibitorSignUpPage.tsx",
-        "element": "<input\n                      type=\"text\"\n                      name=\"lastName\"\n                      value={formData.lastName}\n                      o"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/auth/ExhibitorSignUpPage.tsx",
-        "element": "<input\n                    type=\"text\"\n                    name=\"companyName\"\n                    value={formData.companyName}\n                    onC"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/auth/ExhibitorSignUpPage.tsx",
-        "element": "<input\n                      type=\"text\"\n                      name=\"position\"\n                      value={formData.position}\n                      o"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/auth/ExhibitorSignUpPage.tsx",
-        "element": "<input\n                      type=\"tel\"\n                      name=\"phone\"\n                      value={formData.phone}\n                      onChange"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/auth/ExhibitorSignUpPage.tsx",
-        "element": "<input\n                    type=\"email\"\n                    name=\"email\"\n                    value={formData.email}\n                    onChange={hand"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/auth/ExhibitorSignUpPage.tsx",
-        "element": "<input\n                      type=\"password\"\n                      name=\"password\"\n                      value={formData.password}\n                   "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/auth/ExhibitorSignUpPage.tsx",
-        "element": "<input\n                      type=\"password\"\n                      name=\"confirmPassword\"\n                      value={formData.confirmPassword}\n     "
       }
     ],
     "pages/exhibitor/ProfileEdit.tsx": [
@@ -2895,95 +2385,7 @@
         "description": "Form input missing associated label",
         "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type=\"text\"\n                          {...register('companyName')}\n                          className=\"w-full pl-10 "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type=\"text\"\n                          {...register('country')}\n                          className=\"w-full pl-10 pr-4"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type=\"url\"\n                          {...register('website')}\n                          className=\"w-full pl-10 pr-4 "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type=\"text\"\n                          {...register('firstName')}\n                          className=\"w-full pl-10 pr"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type=\"text\"\n                          {...register('lastName')}\n                          className=\"w-full pl-10 pr-"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                        type=\"text\"\n                        {...register('position')}\n                        className=\"w-full px-4 py-3 borde"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type=\"email\"\n                          {...register('email')}\n                          className=\"w-full pl-10 pr-4 "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type=\"tel\"\n                          {...register('phone')}\n                          className=\"w-full pl-10 pr-4 py"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                        type=\"url\"\n                        {...register('linkedin')}\n                        className=\"w-full px-4 py-3 border"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
         "element": "<input\n                            type=\"checkbox\"\n                            value={objective}\n                            {...register('objectives'"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type={showPassword ? 'text' : 'password'}\n                          {...register('password')}\n                       "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/auth/RegisterPage.tsx",
-        "element": "<input\n                          type={showConfirmPassword ? 'text' : 'password'}\n                          {...register('confirmPassword')}\n         "
       },
       {
         "ruleId": "MISSING_LABEL",
@@ -3071,14 +2473,6 @@
         "description": "Form input missing associated label",
         "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "components/chat/ChatInterface.tsx",
-        "element": "<input\n                    type=\"text\"\n                    placeholder=\"Rechercher une conversation...\"\n                    className=\"w-full pl-3 pr-"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/chat/ChatInterface.tsx",
         "element": "<input\n                          type=\"text\"\n                          value={messageInput}\n                          onChange={(e) =>"
       },
       {
@@ -3118,142 +2512,6 @@
         "severity": "critical",
         "description": "Form input missing associated label",
         "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorDetailPage.tsx",
-        "element": "<input\n                        type=\"text\"\n                        name=\"firstName\"\n                        className=\"w-full px-3 py-2 border border-"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorDetailPage.tsx",
-        "element": "<input\n                        type=\"text\"\n                        name=\"lastName\"\n                        className=\"w-full px-3 py-2 border border-g"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorDetailPage.tsx",
-        "element": "<input\n                      type=\"email\"\n                      name=\"email\"\n                      className=\"w-full px-3 py-2 border border-gray-300 "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorDetailPage.tsx",
-        "element": "<input\n                      type=\"text\"\n                      name=\"company\"\n                      className=\"w-full px-3 py-2 border border-gray-300"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorDetailPage.tsx",
-        "element": "<input\n                      type=\"tel\"\n                      name=\"phone\"\n                      className=\"w-full px-3 py-2 border border-gray-300 ro"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                      type=\"text\"\n                      name=\"companyName\"\n                      value={formData.companyName}\n                 "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                        type=\"text\"\n                        name=\"sector\"\n                        value={formData.sector}\n                     "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                        type=\"url\"\n                        name=\"website\"\n                        value={formData.website}\n                    "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                          type=\"email\"\n                          name=\"contactInfo.email\"\n                          value={formData.contactInfo"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                          type=\"tel\"\n                          name=\"contactInfo.phone\"\n                          value={formData.contactInfo.p"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                      type=\"text\"\n                      name=\"contactInfo.address\"\n                      value={formData.contactInfo.address}\n "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                        type=\"text\"\n                        name=\"contactInfo.city\"\n                        value={formData.contactInfo.city}\n "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                        type=\"text\"\n                        name=\"contactInfo.country\"\n                        value={formData.contactInfo.coun"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                      type=\"text\"\n                      name=\"contactInfo.contactPerson\"\n                      value={formData.contactInfo.cont"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                          type=\"number\"\n                          name=\"establishedYear\"\n                          value={formData.establishedY"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                          type=\"number\"\n                          name=\"employeeCount\"\n                          value={formData.employeeCount}"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ExhibitorEditForm.tsx",
-        "element": "<input\n                          type=\"number\"\n                          name=\"revenue\"\n                          value={formData.revenue}\n           "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "components/exhibitor/ExhibitorEditForm.tsx",
         "element": "<input\n                        type=\"text\"\n                        value={formData.certifications.join(', ')}\n                        onChange={(e) =>"
       },
@@ -3264,30 +2522,6 @@
         "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "components/exhibitor/ExhibitorEditForm.tsx",
         "element": "<input\n                        type=\"text\"\n                        value={formData.markets.join(', ')}\n                        onChange={(e) =>"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ProductEditForm.tsx",
-        "element": "<input\n                    type=\"text\"\n                    name=\"name\"\n                    value={formData.name}\n                    onChange={handleI"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ProductEditForm.tsx",
-        "element": "<input\n                      type=\"text\"\n                      name=\"category\"\n                      value={formData.category}\n                      o"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/exhibitor/ProductEditForm.tsx",
-        "element": "<input\n                        type=\"number\"\n                        name=\"price\"\n                        value={formData.price}\n                     "
       },
       {
         "ruleId": "MISSING_LABEL",
@@ -3382,38 +2616,6 @@
         "severity": "critical",
         "description": "Form input missing associated label",
         "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/minisite/MiniSiteHeroEditor.tsx",
-        "element": "<input\n              type=\"text\"\n              name=\"title\"\n              value={formData.title}\n              onChange={handleInputChange}\n          "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/minisite/MiniSiteHeroEditor.tsx",
-        "element": "<input\n              type=\"text\"\n              name=\"subtitle\"\n              value={formData.subtitle}\n              onChange={handleInputChange}\n    "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/minisite/MiniSiteHeroEditor.tsx",
-        "element": "<input\n                  type=\"text\"\n                  name=\"ctaText\"\n                  value={formData.ctaText}\n                  onChange={handleInp"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/minisite/MiniSiteHeroEditor.tsx",
-        "element": "<input\n                  type=\"text\"\n                  name=\"ctaLink\"\n                  value={formData.ctaLink}\n                  onChange={handleInp"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "components/minisite/MiniSiteWizard.tsx",
         "element": "<input \n            type=\"url\" \n            className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-200 ${\n              urlError ? 'bor"
       },
@@ -3440,22 +2642,6 @@
         "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "components/minisite/editor/SiteSettingsPanel.tsx",
         "element": "<input\n                type=\"text\"\n                value={settings.primaryColor}\n                onChange={(e) =>"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/news/ArticleAudioPlayer.tsx",
-        "element": "<input\n              type=\"range\"\n              min=\"0\"\n              max={duration || 0}\n              value={currentTime}\n              onChange={ha"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/news/ArticleAudioPlayer.tsx",
-        "element": "<input\n                  type=\"range\"\n                  min=\"0\"\n                  max=\"1\"\n                  step=\"0.1\"\n                  value={volume"
       },
       {
         "ruleId": "MISSING_LABEL",
@@ -3496,46 +2682,6 @@
         "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "components/profile/DetailedProfilePage.tsx",
         "element": "<input\n                        type=\"text\"\n                        value={editedProfile.position || ''}\n                        onChange={(e) =>"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/profile/ProfileEditor.tsx",
-        "element": "<input type=\"text\" name=\"firstName\" value={profileData.firstName} onChange={handleInputChange} placeholder=\"Prénom\" className=\"input input-bordered w-"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/profile/ProfileEditor.tsx",
-        "element": "<input type=\"text\" name=\"lastName\" value={profileData.lastName} onChange={handleInputChange} placeholder=\"Nom\" className=\"input input-bordered w-full\""
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/profile/ProfileEditor.tsx",
-        "element": "<input type=\"text\" name=\"position\" value={profileData.position} onChange={handleInputChange} placeholder=\"Poste\" className=\"input input-bordered w-ful"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/profile/ProfileEditor.tsx",
-        "element": "<input type=\"text\" name=\"country\" value={profileData.country} onChange={handleInputChange} placeholder=\"Pays\" className=\"input input-bordered w-full\" "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/profile/ProfileEditor.tsx",
-        "element": "<input type=\"text\" name=\"phone\" value={profileData.phone} onChange={handleInputChange} placeholder=\"Téléphone\" className=\"input input-bordered w-full\""
       },
       {
         "ruleId": "MISSING_LABEL",
@@ -3814,54 +2960,6 @@
         "severity": "critical",
         "description": "Form input missing associated label",
         "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/visitor/VisitorProfileSettings.tsx",
-        "element": "<input\n                              type=\"radio\"\n                              name=\"profileVisibility\"\n                              value=\"public\"\n"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/visitor/VisitorProfileSettings.tsx",
-        "element": "<input\n                              type=\"radio\"\n                              name=\"profileVisibility\"\n                              value=\"connecti"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/visitor/VisitorProfileSettings.tsx",
-        "element": "<input\n                              type=\"radio\"\n                              name=\"profileVisibility\"\n                              value=\"private\""
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/visitor/VisitorProfileSettings.tsx",
-        "element": "<input type=\"checkbox\" defaultChecked className=\"sr-only peer\" />"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/visitor/VisitorProfileSettings.tsx",
-        "element": "<input type=\"checkbox\" defaultChecked className=\"sr-only peer\" />"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/ArticleDetailPage.tsx",
-        "element": "<input\n                  type=\"email\"\n                  placeholder=\"votre@email.com\"\n                  className=\"flex-1 px-4 py-3 rounded-lg text-gr"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "pages/CookiesPage.tsx",
         "element": "<input type=\"checkbox\" className=\"sr-only peer\" defaultChecked />"
       },
@@ -3928,38 +3026,6 @@
         "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "pages/NewsPage.tsx",
         "element": "<input\n                type=\"text\"\n                placeholder=\"Rechercher dans les actualités...\"\n                value={searchTerm}\n                "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/NewsPage.tsx",
-        "element": "<input\n                  type=\"email\"\n                  placeholder=\"votre@email.com\"\n                  className=\"flex-1 px-4 py-3 rounded-lg text-gr"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/PartnerDetailPage.tsx",
-        "element": "<input\n                    type=\"text\"\n                    className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/PartnerDetailPage.tsx",
-        "element": "<input\n                    type=\"email\"\n                    className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:rin"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/PartnerDetailPage.tsx",
-        "element": "<input\n                    type=\"text\"\n                    className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring"
       },
       {
         "ruleId": "MISSING_LABEL",
@@ -4070,14 +3136,6 @@
         "severity": "critical",
         "description": "Form input missing associated label",
         "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/admin/MediaManagerPage.tsx",
-        "element": "<input\n                  type=\"text\"\n                  value={selectedImage}\n                  readOnly\n                  className=\"flex-1 p-2 border"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "pages/admin/PartnersPage.tsx",
         "element": "<input\n                    type=\"text\"\n                    placeholder=\"Rechercher un partenaire...\"\n                    value={searchTerm}\n          "
       },
@@ -4096,70 +3154,6 @@
         "wcag": "3.3.2 Labels or Instructions (Level A)",
         "file": "pages/admin/UsersPage.tsx",
         "element": "<input\n                  type=\"text\"\n                  placeholder=\"Rechercher par nom, email ou entreprise...\"\n                  value={searchTerm}\n "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/auth/ExhibitorSignUpPage.tsx",
-        "element": "<input\n                      type=\"text\"\n                      name=\"firstName\"\n                      value={formData.firstName}\n                     "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/auth/ExhibitorSignUpPage.tsx",
-        "element": "<input\n                      type=\"text\"\n                      name=\"lastName\"\n                      value={formData.lastName}\n                      o"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/auth/ExhibitorSignUpPage.tsx",
-        "element": "<input\n                    type=\"text\"\n                    name=\"companyName\"\n                    value={formData.companyName}\n                    onC"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/auth/ExhibitorSignUpPage.tsx",
-        "element": "<input\n                      type=\"text\"\n                      name=\"position\"\n                      value={formData.position}\n                      o"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/auth/ExhibitorSignUpPage.tsx",
-        "element": "<input\n                      type=\"tel\"\n                      name=\"phone\"\n                      value={formData.phone}\n                      onChange"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/auth/ExhibitorSignUpPage.tsx",
-        "element": "<input\n                    type=\"email\"\n                    name=\"email\"\n                    value={formData.email}\n                    onChange={hand"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/auth/ExhibitorSignUpPage.tsx",
-        "element": "<input\n                      type=\"password\"\n                      name=\"password\"\n                      value={formData.password}\n                   "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "pages/auth/ExhibitorSignUpPage.tsx",
-        "element": "<input\n                      type=\"password\"\n                      name=\"confirmPassword\"\n                      value={formData.confirmPassword}\n     "
       },
       {
         "ruleId": "MISSING_LABEL",
@@ -4851,7 +3845,7 @@
     {
       "priority": "HIGH",
       "title": "Fix Critical Accessibility Issues",
-      "description": "222 critical issues found that prevent users from accessing content.",
+      "description": "160 critical issues found that prevent users from accessing content.",
       "action": "Address all critical issues immediately before deployment."
     },
     {

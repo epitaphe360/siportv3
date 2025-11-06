@@ -148,7 +148,7 @@ export const Header: React.FC = memo(() => {
                 </Link>
 
                 {/* Calendar */}
-                <Link 
+                <Link aria-label="Calendar" 
                   to={ROUTES.APPOINTMENTS} 
                   className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
                 >

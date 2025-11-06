@@ -80,28 +80,26 @@ export default function MiniSiteHeroEditor({
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Titre principal
             </label>
-            <input
-              type="text"
+            <input type="text"
               name="title"
               value={formData.title}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="ex: Solutions innovantes pour les ports"
-            />
+             aria-label="ex: Solutions innovantes pour les ports" />
           </div>
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Sous-titre
             </label>
-            <input
-              type="text"
+            <input type="text"
               name="subtitle"
               value={formData.subtitle}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="ex: Leader dans l'optimisation des opérations portuaires"
-            />
+             aria-label="ex: Leader dans l" />
           </div>
           
           <div>
@@ -127,14 +125,13 @@ export default function MiniSiteHeroEditor({
                 <div className="bg-gray-100 px-3 py-2 rounded-l-lg border border-gray-300 border-r-0">
                   <File className="h-5 w-5 text-gray-500" />
                 </div>
-                <input
-                  type="text"
+                <input type="text"
                   name="ctaText"
                   value={formData.ctaText}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="ex: Découvrir nos solutions"
-                />
+                 aria-label="ex: Découvrir nos solutions" />
               </div>
             </div>
             
@@ -146,14 +143,13 @@ export default function MiniSiteHeroEditor({
                 <div className="bg-gray-100 px-3 py-2 rounded-l-lg border border-gray-300 border-r-0">
                   <LinkIcon className="h-5 w-5 text-gray-500" />
                 </div>
-                <input
-                  type="text"
+                <input type="text"
                   name="ctaLink"
                   value={formData.ctaLink}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="ex: #produits ou URL externe"
-                />
+                 aria-label="ex: #produits ou URL externe" />
               </div>
             </div>
           </div>

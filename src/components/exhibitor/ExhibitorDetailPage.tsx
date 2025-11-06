@@ -718,25 +718,23 @@ export default function ExhibitorDetailPage() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Prénom *
                       </label>
-                      <input
-                        type="text"
+                      <input type="text"
                         name="firstName"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Votre prénom"
                         required
-                      />
+                       aria-label="Votre prénom" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Nom *
                       </label>
-                      <input
-                        type="text"
+                      <input type="text"
                         name="lastName"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Votre nom"
                         required
-                      />
+                       aria-label="Votre nom" />
                     </div>
                   </div>
 
@@ -744,37 +742,34 @@ export default function ExhibitorDetailPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Email *
                     </label>
-                    <input
-                      type="email"
+                    <input type="email"
                       name="email"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="votre.email@entreprise.com"
                       required
-                    />
+                     aria-label="votre.email@entreprise.com" />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Société
                     </label>
-                    <input
-                      type="text"
+                    <input type="text"
                       name="company"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Nom de votre société"
-                    />
+                     aria-label="Nom de votre société" />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Téléphone
                     </label>
-                    <input
-                      type="tel"
+                    <input type="tel"
                       name="phone"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="+33 1 23 45 67 89"
-                    />
+                     aria-label="+33 1 23 45 67 89" />
                   </div>
 
                   <div>

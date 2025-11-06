@@ -86,11 +86,10 @@ export default function ChatInterface() {
               <div className="p-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Messages</h3>
                 <div className="relative">
-                  <input
-                    type="text"
+                  <input type="text"
                     placeholder="Rechercher une conversation..."
                     className="w-full pl-3 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                   aria-label="Rechercher une conversation..." />
                 </div>
               </div>
 

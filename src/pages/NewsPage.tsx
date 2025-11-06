@@ -443,7 +443,7 @@ export default function NewsPage() {
                             <Share2 className="h-4 w-4" />
                           </Button>
                           {article.sourceUrl && (
-                            <a
+                            <a aria-label="Open in new tab"
                               href={article.sourceUrl}
                               target="_blank"
                               rel="noopener noreferrer"
@@ -480,11 +480,10 @@ export default function NewsPage() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                <input
-                  type="email"
+                <input type="email"
                   placeholder="votre@email.com"
                   className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-white"
-                />
+                 aria-label="votre@email.com" />
                 <Button 
                   variant="default"
                   size="lg" 

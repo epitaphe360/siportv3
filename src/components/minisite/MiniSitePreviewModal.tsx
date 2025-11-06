@@ -33,7 +33,7 @@ export const MiniSitePreviewModal: React.FC<MiniSitePreviewModalProps> = ({
               <h2 className="text-2xl font-bold mb-2">Prévisualisation de votre mini-site</h2>
               <p className="text-blue-100">Vérifiez les informations avant de créer votre mini-site</p>
             </div>
-            <button
+            <button aria-label="Close"
               onClick={onCancel}
               className="text-white hover:bg-white/20 p-2 rounded-full transition"
               disabled={isCreating}

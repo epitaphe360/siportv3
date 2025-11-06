@@ -419,7 +419,7 @@ export default function PartnersPage() {
                             </Button>
                           </Link>
                           {partner.website && (
-                            <a
+                            <a aria-label="Open in new tab"
                               href={partner.website}
                               target="_blank"
                               rel="noopener noreferrer"
@@ -480,7 +480,7 @@ export default function PartnersPage() {
                                 </Button>
                               </Link>
                               {partner.website && (
-                                <a
+                                <a aria-label="Open in new tab"
                                   href={partner.website}
                                   target="_blank"
                                   rel="noopener noreferrer"

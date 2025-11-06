@@ -165,7 +165,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                   {isUploading ? <RefreshCw className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
                 </button>
                 {!disableDelete && (
-                  <button
+                  <button aria-label="Close"
                     type="button"
                     className="bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-colors"
                     onClick={removeImage}
