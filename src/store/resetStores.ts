@@ -8,7 +8,7 @@ import { useEventStore } from './eventStore';
 import { useAppointmentStore } from './appointmentStore';
 import { useVisitorStore } from './visitorStore';
 import { useChatStore } from './chatStore';
-import { useChatbotStore } from './chatbotStore';
+import { useChatBotStore } from './chatbotStore';
 import { useNetworkingStore } from './networkingStore';
 import { useDashboardStore } from './dashboardStore';
 import { useAdminDashboardStore } from './adminDashboardStore';
@@ -73,7 +73,7 @@ export const resetAllStores = () => {
     });
 
     // Chatbot Store
-    useChatbotStore.setState({
+    useChatBotStore.setState({
       messages: [],
       isOpen: false,
       isLoading: false
