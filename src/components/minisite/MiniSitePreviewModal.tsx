@@ -175,8 +175,7 @@ export const MiniSitePreviewModal: React.FC<MiniSitePreviewModalProps> = ({
                 </h3>
                 <div className="space-y-2">
                   {socials.map((social: string, index: number) => (
-                    <a
-                      key={index}
+                    <a aria-label="Link" key={index}
                       href={social}
                       target="_blank"
                       rel="noopener noreferrer"

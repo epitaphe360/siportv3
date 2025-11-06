@@ -259,7 +259,7 @@ export default function ExhibitorCreationSimulator() {
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4">
-            <Link to="/dashboard">
+            <Link aria-label="Navigate to dashboard" to="/dashboard">
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour au Tableau de Bord Admin

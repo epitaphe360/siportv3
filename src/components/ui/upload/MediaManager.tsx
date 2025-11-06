@@ -341,10 +341,18 @@ const MediaManager: React.FC<MediaManagerProps> = ({
       ) : viewType === 'grid' ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {filteredFiles.map(file => (
-            <div 
+            <div
               key={file.url}
+              role="button"
+              tabIndex={0}
               className={`border rounded-md overflow-hidden hover:shadow-md transition-shadow relative group ${selectedFiles.includes(file.url) ? 'ring-2 ring-blue-500' : ''}`}
               onClick={() => handleFileSelect(file)}
+              onKeyDown={(e: React.KeyboardEvent) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleFileSelect(file);
+                }
+              }}
             >
               {file.type === 'image' ? (
                 <div className="aspect-square bg-gray-100">
@@ -363,12 +371,17 @@ const MediaManager: React.FC<MediaManagerProps> = ({
               <div className="p-2 text-xs truncate">{file.name}</div>
               
               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
-                <a 
-                  href={file.url} 
+                <a aria-label="Link" href={file.url} 
                   download 
                   target="_blank" 
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e: React.KeyboardEvent) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            ((e) => e.stopPropagation())();
+                          }
+                        }}
                   className="bg-blue-500 text-white p-1 rounded-md hover:bg-blue-600"
                 >
                   <Download className="h-3 w-3" />
@@ -414,10 +427,18 @@ const MediaManager: React.FC<MediaManagerProps> = ({
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredFiles.map(file => (
-                <tr 
+                <tr
                   key={file.url}
+                  role="button"
+                  tabIndex={0}
                   className={`hover:bg-gray-50 cursor-pointer ${selectedFiles.includes(file.url) ? 'bg-blue-50' : ''}`}
                   onClick={() => handleFileSelect(file)}
+                  onKeyDown={(e: React.KeyboardEvent) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleFileSelect(file);
+                    }
+                  }}
                 >
                   <td className="px-4 py-2 whitespace-nowrap text-sm">
                     <div className="flex items-center gap-2">
@@ -436,12 +457,17 @@ const MediaManager: React.FC<MediaManagerProps> = ({
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm text-right">
                     <div className="flex justify-end gap-1">
-                      <a 
-                        href={file.url} 
+                      <a aria-label="Link" href={file.url} 
                         download 
                         target="_blank" 
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
+                              onKeyDown={(e: React.KeyboardEvent) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault();
+                                  ((e) => e.stopPropagation())();
+                                }
+                              }}
                         className="bg-blue-500 text-white p-1 rounded-md hover:bg-blue-600"
                       >
                         <Download className="h-3 w-3" />

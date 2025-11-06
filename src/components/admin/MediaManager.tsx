@@ -320,6 +320,12 @@ export default function MediaManager() {
                   role="button"
         tabIndex={0}
         onClick={() => setSelectedBucket(bucket.name)}
+                        onKeyDown={(e: React.KeyboardEvent) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            (() => setSelectedBucket(bucket.name))();
+                          }
+                        }}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
@@ -518,8 +524,7 @@ export default function MediaManager() {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               <div className="flex items-center justify-end space-x-2">
-                                <a
-                                  href={(file as any).publicUrl}
+                                <a aria-label="Link" href={(file as any).publicUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="text-blue-600 hover:text-blue-900"
