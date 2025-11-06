@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
+import { testUsers, login, register } from './helpers';
 
 /**
  * ============================================================================
@@ -17,85 +18,6 @@ import { test, expect, Page } from '@playwright/test';
  * 9. MiniSite Builder
  * 10. Événements & Pavillons
  */
-
-// ============================================================================
-// HELPERS & FIXTURES
-// ============================================================================
-
-class TestUser {
-  constructor(
-    public email: string,
-    public password: string,
-    public firstName: string,
-    public lastName: string,
-    public role: 'visitor' | 'exhibitor' | 'partner' | 'admin'
-  ) {}
-}
-
-// Utilisateurs de test
-const testUsers = {
-  visitor: new TestUser(
-    `visitor_${Date.now()}@test.com`,
-    'Test123!@#',
-    'Jean',
-    'Dupont',
-    'visitor'
-  ),
-  exhibitor: new TestUser(
-    `exhibitor_${Date.now()}@test.com`,
-    'Test123!@#',
-    'Marie',
-    'Martin',
-    'exhibitor'
-  ),
-  partner: new TestUser(
-    `partner_${Date.now()}@test.com`,
-    'Test123!@#',
-    'Pierre',
-    'Bernard',
-    'partner'
-  ),
-  admin: new TestUser(
-    'admin@siports.com',
-    'Admin123!@#',
-    'Admin',
-    'SIPORTS',
-    'admin'
-  )
-};
-
-// Helper: Inscription
-async function register(page: Page, user: TestUser, userType: string) {
-  await page.goto('/register');
-
-  // Remplir le formulaire
-  await page.fill('input[name="email"]', user.email);
-  await page.fill('input[name="password"]', user.password);
-  await page.fill('input[name="confirmPassword"]', user.password);
-  await page.fill('input[name="firstName"]', user.firstName);
-  await page.fill('input[name="lastName"]', user.lastName);
-
-  // Sélectionner le type d'utilisateur
-  await page.click(`[data-testid="user-type-${userType}"]`);
-
-  // Accepter les CGU
-  await page.check('input[name="acceptTerms"]');
-
-  // Soumettre
-  await page.click('button[type="submit"]');
-
-  // Attendre la redirection
-  await page.waitForURL('**/dashboard', { timeout: 10000 });
-}
-
-// Helper: Connexion
-async function login(page: Page, email: string, password: string) {
-  await page.goto('/login');
-  await page.fill('input[name="email"]', email);
-  await page.fill('input[name="password"]', password);
-  await page.click('button[type="submit"]');
-  await page.waitForURL('**/dashboard', { timeout: 10000 });
-}
 
 // Helper: Déconnexion
 async function logout(page: Page) {

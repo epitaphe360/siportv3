@@ -7,10 +7,89 @@ import { createClient } from '@supabase/supabase-js';
  * ============================================================================
  */
 
-// Supabase client for database operations
+// Supabase client for database operations (optional - only used in DatabaseHelper)
 const supabaseUrl = process.env.VITE_SUPABASE_URL || 'http://localhost:54321';
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key-for-tests';
+let supabase: any = null;
+
+// Only create Supabase client if we have a real key
+if (supabaseKey && supabaseKey !== 'placeholder-key-for-tests') {
+  supabase = createClient(supabaseUrl, supabaseKey);
+}
+
+/**
+ * Test User Class
+ */
+export class TestUser {
+  constructor(
+    public email: string,
+    public password: string,
+    public firstName: string,
+    public lastName: string,
+    public role: 'visitor' | 'exhibitor' | 'partner' | 'admin'
+  ) {}
+}
+
+/**
+ * Test Users Fixtures
+ */
+export const testUsers = {
+  visitor: new TestUser(
+    `visitor_${Date.now()}@test.com`,
+    'Test123!@#',
+    'Jean',
+    'Dupont',
+    'visitor'
+  ),
+  exhibitor: new TestUser(
+    `exhibitor_${Date.now()}@test.com`,
+    'Test123!@#',
+    'Marie',
+    'Martin',
+    'exhibitor'
+  ),
+  partner: new TestUser(
+    `partner_${Date.now()}@test.com`,
+    'Test123!@#',
+    'Pierre',
+    'Bernard',
+    'partner'
+  ),
+  admin: new TestUser(
+    'admin@siports.com',
+    'Admin123!@#',
+    'Admin',
+    'SIPORTS',
+    'admin'
+  )
+};
+
+/**
+ * Login Helper
+ */
+export async function login(page: Page, email: string, password: string) {
+  await page.goto('/login');
+  await page.fill('input[name="email"]', email);
+  await page.fill('input[name="password"]', password);
+  await page.click('button[type="submit"]');
+  await page.waitForURL('**/dashboard', { timeout: 10000 });
+}
+
+/**
+ * Register Helper
+ */
+export async function register(page: Page, user: TestUser, userType: string) {
+  await page.goto('/register');
+  await page.fill('input[name="email"]', user.email);
+  await page.fill('input[name="password"]', user.password);
+  await page.fill('input[name="confirmPassword"]', user.password);
+  await page.fill('input[name="firstName"]', user.firstName);
+  await page.fill('input[name="lastName"]', user.lastName);
+  await page.click(`[data-testid="user-type-${userType}"]`);
+  await page.check('input[name="acceptTerms"]');
+  await page.click('button[type="submit"]');
+  await page.waitForURL('**/dashboard', { timeout: 10000 });
+}
 
 /**
  * Database Cleanup Helpers

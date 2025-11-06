@@ -1,5 +1,5 @@
 import { test, expect, devices } from '@playwright/test';
-import { testUsers, login } from './complete-user-journeys.spec';
+import { testUsers, login } from './helpers';
 
 /**
  * ============================================================================
