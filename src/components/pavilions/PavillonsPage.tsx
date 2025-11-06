@@ -481,7 +481,21 @@ export default function PavillonsPage() {
             return (
               <motion.div key={pavilion.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} className={`${isSelected ? 'lg:col-span-2 xl:col-span-3' : ''}`}>
                 <Card className={`h-full transition-all duration-300 ${isSelected ? 'ring-2 ring-blue-500 shadow-xl' : ''}`}>
-                  <div className="p-6" onClick={() => setSelectedPavilion(isSelected ? null : pavilion.id)} style={{ cursor: 'pointer' }}>
+                  <div role="button"
+                          tabIndex={0}
+                          className="p-6" onClick={() => setSelectedPavilion(isSelected ? null : pavilion.id)}
+                          onKeyDown={(e: React.KeyboardEvent) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              (() => setSelectedPavilion(isSelected ? null : pavilion.id))();
+                            }
+                          }}
+                          onKeyDown={(e: React.KeyboardEvent) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              setSelectedPavilion(isSelected ? null : pavilion.id);
+                            }
+                          }} style={{ cursor: 'pointer' }}>
                     <div className="flex items-start space-x-4 mb-4">
                       <div className={`${pavilion.bgColor} p-3 rounded-lg`}><Icon className={`h-6 w-6 ${pavilion.color}`} /></div>
                       <div className="flex-1">

@@ -192,7 +192,7 @@ export default function PartnersPage() {
                 Administration complète des partenaires et sponsors SIPORTS
               </p>
             </div>
-            <Link to={ROUTES.ADMIN_CREATE_PARTNER}>
+            <Link aria-label="Link" to={ROUTES.ADMIN_CREATE_PARTNER}>
               <Button variant="default">
                 <Plus className="h-4 w-4 mr-2" />
                 Créer Partenaire
@@ -475,8 +475,7 @@ export default function PartnersPage() {
                         <Globe className="h-5 w-5 text-gray-400 mt-0.5" />
                         <div>
                           <p className="text-xs text-gray-600">Site Web</p>
-                          <a
-                            href={selectedPartner.website || '#'}
+                          <a aria-label="Link" href={selectedPartner.website || '#'}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-sm font-medium text-blue-600 hover:underline"

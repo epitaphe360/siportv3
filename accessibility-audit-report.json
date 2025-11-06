@@ -1,17 +1,17 @@
 {
-  "timestamp": "2025-11-06T20:33:23.237Z",
+  "timestamp": "2025-11-06T21:25:55.159Z",
   "stats": {
     "filesScanned": 160,
     "components": 269,
     "critical": 0,
-    "serious": 27,
+    "serious": 16,
     "moderate": 0,
     "minor": 0
   },
   "summary": {
-    "totalIssues": 27,
-    "passRate": "99.0%",
-    "score": 9.5
+    "totalIssues": 16,
+    "passRate": "99.4%",
+    "score": 9.7
   },
   "issuesByFile": {
     "components/admin/ExhibitorCreationSimulator.tsx": [
@@ -25,14 +25,6 @@
       }
     ],
     "components/admin/MediaManager.tsx": [
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/admin/MediaManager.tsx",
-        "element": "<a\n                                  href={(file as any).publicUrl}\n                                "
-      },
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
         "severity": "serious",
@@ -50,16 +42,6 @@
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "components/admin/PartnerCreationForm.tsx",
         "element": "<div\n                    key={type.type}\n                    className={`p-4 border-2 rounded-lg cur"
-      }
-    ],
-    "components/common/SkipToContent.tsx": [
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/common/SkipToContent.tsx",
-        "element": "<a\n      href=\"#main-content\"\n      className=\"sr-only focus:not-sr-only focus:absolute focus:top-4 "
       }
     ],
     "components/dashboard/AdminDashboard.tsx": [
@@ -120,34 +102,6 @@
         "element": "<div \n                key={index}\n                className={`relative aspect-square rounded-lg over"
       }
     ],
-    "components/minisite/MiniSitePreview.tsx": [
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/minisite/MiniSitePreview.tsx",
-        "element": "<a\n                    href={`tel:${exhibitorData.contact_info.phone}`}\n                    classNam"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/minisite/MiniSitePreview.tsx",
-        "element": "<a\n                    href={exhibitorData.website}\n                    target=\"_blank\"\n            "
-      }
-    ],
-    "components/minisite/MiniSitePreviewModal.tsx": [
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/minisite/MiniSitePreviewModal.tsx",
-        "element": "<a\n                      key={index}\n                      href={social}\n                      targe"
-      }
-    ],
     "components/minisite/editor/EditableText.tsx": [
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
@@ -175,25 +129,7 @@
         "description": "Element not keyboard accessible",
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "components/pavilions/PavillonsPage.tsx",
-        "element": "<div className=\"p-6\" onClick"
-      },
-      {
-        "ruleId": "NO_KEYBOARD_ACCESS",
-        "severity": "serious",
-        "description": "Element not keyboard accessible",
-        "wcag": "2.1.1 Keyboard (Level A)",
-        "file": "components/pavilions/PavillonsPage.tsx",
-        "element": "<div className=\"p-6\" onClick={() =>"
-      }
-    ],
-    "components/profile/UserProfileView.tsx": [
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/profile/UserProfileView.tsx",
-        "element": "<a\n                        href={user.profile.website}\n                        target=\"_blank\"\n     "
+        "element": "<div role=\"button\"\n                          tabIndex={0}\n                          className=\"p-6\" "
       }
     ],
     "components/recommendations/UserRecommendations.tsx": [
@@ -213,33 +149,7 @@
         "description": "Element not keyboard accessible",
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "components/ui/upload/MediaManager.tsx",
-        "element": "<div \n              key={file.url}\n              className={`border rounded-md overflow-hidden hover:shadow-md transition-shadow relative group ${sele"
-      },
-      {
-        "ruleId": "NO_KEYBOARD_ACCESS",
-        "severity": "serious",
-        "description": "Element not keyboard accessible",
-        "wcag": "2.1.1 Keyboard (Level A)",
-        "file": "components/ui/upload/MediaManager.tsx",
-        "element": "<tr \n                  key={file.url}\n                  className={`hover:bg-gray-50 cursor-pointer ${selectedFiles.includes(file.url) ? 'bg-blue-50' "
-      },
-      {
-        "ruleId": "NO_KEYBOARD_ACCESS",
-        "severity": "serious",
-        "description": "Element not keyboard accessible",
-        "wcag": "2.1.1 Keyboard (Level A)",
-        "file": "components/ui/upload/MediaManager.tsx",
-        "element": "<div \n              key={file.url}\n              className={`border rounded-md overflow-hidden hover"
-      }
-    ],
-    "components/venue/InteractiveVenueMap.tsx": [
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/venue/InteractiveVenueMap.tsx",
-        "element": "<a\n                        href={exhibitor.website}\n                        target=\"_blank\"\n        "
+        "element": "<div\n              key={file.url}\n              role=\"button\"\n              tabIndex={0}\n           "
       }
     ],
     "components/visitor/PersonalCalendar.tsx": [
@@ -261,16 +171,6 @@
         "file": "pages/NetworkingPage.tsx",
         "element": "<motion.button\n                  key={tab.id}\n                  onClick"
       }
-    ],
-    "pages/admin/PartnersPage.tsx": [
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/admin/PartnersPage.tsx",
-        "element": "<a\n                            href={selectedPartner.website || '#'}\n                            tar"
-      }
     ]
   },
   "issuesBySeverity": {
@@ -283,14 +183,6 @@
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "components/admin/ExhibitorCreationSimulator.tsx",
         "element": "<div\n                    key={pkg.type}\n                    className={`p-6 border-2 rounded-lg curs"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/admin/MediaManager.tsx",
-        "element": "<a\n                                  href={(file as any).publicUrl}\n                                "
       },
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
@@ -307,14 +199,6 @@
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "components/admin/PartnerCreationForm.tsx",
         "element": "<div\n                    key={type.type}\n                    className={`p-4 border-2 rounded-lg cur"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/common/SkipToContent.tsx",
-        "element": "<a\n      href=\"#main-content\"\n      className=\"sr-only focus:not-sr-only focus:absolute focus:top-4 "
       },
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
@@ -365,30 +249,6 @@
         "element": "<div \n                key={index}\n                className={`relative aspect-square rounded-lg over"
       },
       {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/minisite/MiniSitePreview.tsx",
-        "element": "<a\n                    href={`tel:${exhibitorData.contact_info.phone}`}\n                    classNam"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/minisite/MiniSitePreview.tsx",
-        "element": "<a\n                    href={exhibitorData.website}\n                    target=\"_blank\"\n            "
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/minisite/MiniSitePreviewModal.tsx",
-        "element": "<a\n                      key={index}\n                      href={social}\n                      targe"
-      },
-      {
         "ruleId": "NO_KEYBOARD_ACCESS",
         "severity": "serious",
         "description": "Element not keyboard accessible",
@@ -410,23 +270,7 @@
         "description": "Element not keyboard accessible",
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "components/pavilions/PavillonsPage.tsx",
-        "element": "<div className=\"p-6\" onClick"
-      },
-      {
-        "ruleId": "NO_KEYBOARD_ACCESS",
-        "severity": "serious",
-        "description": "Element not keyboard accessible",
-        "wcag": "2.1.1 Keyboard (Level A)",
-        "file": "components/pavilions/PavillonsPage.tsx",
-        "element": "<div className=\"p-6\" onClick={() =>"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/profile/UserProfileView.tsx",
-        "element": "<a\n                        href={user.profile.website}\n                        target=\"_blank\"\n     "
+        "element": "<div role=\"button\"\n                          tabIndex={0}\n                          className=\"p-6\" "
       },
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
@@ -442,31 +286,7 @@
         "description": "Element not keyboard accessible",
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "components/ui/upload/MediaManager.tsx",
-        "element": "<div \n              key={file.url}\n              className={`border rounded-md overflow-hidden hover:shadow-md transition-shadow relative group ${sele"
-      },
-      {
-        "ruleId": "NO_KEYBOARD_ACCESS",
-        "severity": "serious",
-        "description": "Element not keyboard accessible",
-        "wcag": "2.1.1 Keyboard (Level A)",
-        "file": "components/ui/upload/MediaManager.tsx",
-        "element": "<tr \n                  key={file.url}\n                  className={`hover:bg-gray-50 cursor-pointer ${selectedFiles.includes(file.url) ? 'bg-blue-50' "
-      },
-      {
-        "ruleId": "NO_KEYBOARD_ACCESS",
-        "severity": "serious",
-        "description": "Element not keyboard accessible",
-        "wcag": "2.1.1 Keyboard (Level A)",
-        "file": "components/ui/upload/MediaManager.tsx",
-        "element": "<div \n              key={file.url}\n              className={`border rounded-md overflow-hidden hover"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/venue/InteractiveVenueMap.tsx",
-        "element": "<a\n                        href={exhibitor.website}\n                        target=\"_blank\"\n        "
+        "element": "<div\n              key={file.url}\n              role=\"button\"\n              tabIndex={0}\n           "
       },
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
@@ -483,14 +303,6 @@
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "pages/NetworkingPage.tsx",
         "element": "<motion.button\n                  key={tab.id}\n                  onClick"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/admin/PartnersPage.tsx",
-        "element": "<a\n                            href={selectedPartner.website || '#'}\n                            tar"
       }
     ],
     "moderate": [],
@@ -500,7 +312,7 @@
     {
       "priority": "MEDIUM",
       "title": "Fix Serious Accessibility Issues",
-      "description": "27 serious issues found that significantly impact user experience.",
+      "description": "16 serious issues found that significantly impact user experience.",
       "action": "Address serious issues in the next sprint."
     },
     {

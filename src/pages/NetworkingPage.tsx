@@ -241,13 +241,13 @@ export default function NetworkingPage() {
               </p>
             </motion.div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/login">
+              <Link aria-label="Navigate to login" to="/login">
                 <Button size="lg" className="bg-blue-700 hover:bg-blue-800 text-white">
                   <UserIcon className="h-4 w-4 mr-2" />
                   Se connecter
                 </Button>
               </Link>
-              <Link to="/register">
+              <Link aria-label="Navigate to register" to="/register">
                 <Button variant="outline" size="lg" className="border-blue-700 text-blue-700 hover:bg-blue-50">
                   <Plus className="h-4 w-4 mr-2" />
                   Créer un compte

@@ -148,7 +148,7 @@ export default function AdminDashboard() {
           <p className="text-gray-600 mb-4">
             Cette section est réservée aux administrateurs SIPORTS
           </p>
-          <Link to="/dashboard">
+          <Link aria-label="Navigate to dashboard" to="/dashboard">
             <Button variant="default">
               Retour au Tableau de Bord
             </Button>
@@ -522,7 +522,7 @@ export default function AdminDashboard() {
               </div>
 
               <div className="space-y-3">
-                <Link to="/admin/create-exhibitor" className="block">
+                <Link aria-label="Navigate to admin" to="/admin/create-exhibitor" className="block">
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -542,7 +542,7 @@ export default function AdminDashboard() {
                   </motion.div>
                 </Link>
 
-                <Link to="/admin/create-partner" className="block">
+                <Link aria-label="Navigate to admin" to="/admin/create-partner" className="block">
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -562,7 +562,7 @@ export default function AdminDashboard() {
                   </motion.div>
                 </Link>
 
-	                <Link to="/admin/create-event" className="block">
+	                <Link aria-label="Navigate to admin" to="/admin/create-event" className="block">
 	                  <motion.div
 	                    whileHover={{ scale: 1.02 }}
 	                    whileTap={{ scale: 0.98 }}
@@ -582,7 +582,7 @@ export default function AdminDashboard() {
 	                  </motion.div>
 	                </Link>
 	
-	                <Link to="/admin/create-news" className="block">
+	                <Link aria-label="Navigate to admin" to="/admin/create-news" className="block">
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -653,7 +653,7 @@ export default function AdminDashboard() {
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <Link to="/metrics">
+                <Link aria-label="Navigate to metrics" to="/metrics">
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     className="bg-gradient-to-br from-slate-50 to-gray-100 p-4 rounded-lg border-2 border-slate-200 hover:border-slate-400 transition-all cursor-pointer"
@@ -664,7 +664,7 @@ export default function AdminDashboard() {
                   </motion.div>
                 </Link>
 
-                <Link to="/admin/users">
+                <Link aria-label="Navigate to admin" to="/admin/users">
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-all cursor-pointer"
@@ -675,7 +675,7 @@ export default function AdminDashboard() {
                   </motion.div>
                 </Link>
 
-                <Link to="/admin/pavilions">
+                <Link aria-label="Navigate to admin" to="/admin/pavilions">
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border-2 border-green-200 hover:border-green-400 transition-all cursor-pointer"
@@ -686,7 +686,7 @@ export default function AdminDashboard() {
                   </motion.div>
                 </Link>
 
-	                <Link to={ROUTES.ADMIN_EVENTS}>
+	                <Link aria-label="Link" to={ROUTES.ADMIN_EVENTS}>
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer"
@@ -767,7 +767,7 @@ export default function AdminDashboard() {
                 <h3 className="text-lg font-semibold text-gray-900">
                   Activité Système Récente
                 </h3>
-                <Link to="/admin/activity" className="block">
+                <Link aria-label="Navigate to admin" to="/admin/activity" className="block">
                   <Button variant="ghost" size="sm">
                     Voir tout
                   </Button>
@@ -910,7 +910,7 @@ export default function AdminDashboard() {
                 Accédez aux analyses complètes de performance du salon SIPORTS 2026
               </p>
               <div className="flex items-center justify-center space-x-4">
-                <Link to="/metrics">
+                <Link aria-label="Navigate to metrics" to="/metrics">
                   <Button variant="default" size="lg" className="bg-red-600 hover:bg-red-700">
                     <BarChart3 className="h-5 w-5 mr-2" />
                     Voir les Métriques Complètes

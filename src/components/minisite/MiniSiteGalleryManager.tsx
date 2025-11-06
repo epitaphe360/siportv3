@@ -220,6 +220,12 @@ export default function MiniSiteGalleryManager({
                 role="button"
         tabIndex={0}
         onClick={() => handleSelectImage(index)}
+                      onKeyDown={(e: React.KeyboardEvent) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          (() => handleSelectImage(index))();
+                        }
+                      }}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
