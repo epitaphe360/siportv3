@@ -1,18 +1,19 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
-import { 
-  Anchor, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Facebook, 
-  Twitter, 
-  Linkedin, 
-  Youtube 
+import {
+  Anchor,
+  Mail,
+  Phone,
+  MapPin,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Youtube
 } from 'lucide-react';
 
-export const Footer: React.FC = () => {
+// OPTIMIZATION: Memoized Footer component to prevent unnecessary re-renders
+export const Footer: React.FC = memo(() => {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -185,4 +186,4 @@ export const Footer: React.FC = () => {
       </div>
     </footer>
   );
-};
+});

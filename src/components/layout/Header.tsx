@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Menu, 
-  X, 
-  User, 
-  Calendar, 
-  MessageCircle, 
+import {
+  Menu,
+  X,
+  User,
+  Calendar,
+  MessageCircle,
   Bell,
 } from 'lucide-react';
 import { ROUTES } from '../../lib/routes';
@@ -14,12 +14,26 @@ import useAuthStore from '../../store/authStore';
 import { LanguageSelector } from '../ui/LanguageSelector';
 import { useTranslation } from '../../hooks/useTranslation';
 
-export const Header: React.FC = () => {
+// OPTIMIZATION: Memoized Header component to prevent unnecessary re-renders
+export const Header: React.FC = memo(() => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isInfoMenuOpen, setIsInfoMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuthStore();
   const { t } = useTranslation();
+
+  // OPTIMIZATION: Memoized callbacks to prevent re-creating functions on every render
+  const toggleMenu = useCallback(() => setIsMenuOpen(prev => !prev), []);
+  const toggleProfile = useCallback(() => setIsProfileOpen(prev => !prev), []);
+  const toggleInfoMenu = useCallback(() => setIsInfoMenuOpen(prev => !prev), []);
+  const closeMenu = useCallback(() => setIsMenuOpen(false), []);
+  const closeProfile = useCallback(() => setIsProfileOpen(false), []);
+  const closeInfoMenu = useCallback(() => setIsInfoMenuOpen(false), []);
+
+  const handleLogout = useCallback(() => {
+    logout();
+    setIsProfileOpen(false);
+  }, [logout]);
 
   const navigation = [
     { name: t('nav.home'), href: ROUTES.HOME },
@@ -69,7 +83,7 @@ export const Header: React.FC = () => {
             {/* Info Menu Dropdown */}
             <div className="relative">
               <button
-                onClick={() => setIsInfoMenuOpen(!isInfoMenuOpen)}
+                onClick={toggleInfoMenu}
                 className="text-siports-gray-700 hover:text-siports-primary px-4 py-2 text-sm font-medium transition-colors flex items-center space-x-1 relative group"
               >
                 <span>{t('nav.information')}</span>
@@ -85,7 +99,7 @@ export const Header: React.FC = () => {
                     <Link
                       key={item.name}
                       to={item.href}
-                      onClick={() => setIsInfoMenuOpen(false)}
+                      onClick={closeInfoMenu}
                       className="block px-6 py-3 text-sm text-siports-gray-700 hover:bg-siports-gray-50 hover:text-siports-primary transition-colors border-l-4 border-transparent hover:border-siports-primary"
                     >
                       <div className="font-semibold">{item.name}</div>
@@ -144,7 +158,7 @@ export const Header: React.FC = () => {
                 {/* Profile Dropdown */}
                 <div className="relative">
                   <button
-                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                    onClick={toggleProfile}
                     className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                   >
                     <div className="h-8 w-8 bg-blue-600 rounded-full flex items-center justify-center">
@@ -163,21 +177,21 @@ export const Header: React.FC = () => {
                           <Link
                             to={ROUTES.PROFILE}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            onClick={() => setIsProfileOpen(false)}
+                            onClick={closeProfile}
                           >
                             Mon Profil Admin
                           </Link>
                           <Link
                             to={ROUTES.DASHBOARD}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            onClick={() => setIsProfileOpen(false)}
+                            onClick={closeProfile}
                           >
                             Tableau de Bord Admin
                           </Link>
                           <Link
                             to={ROUTES.METRICS}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            onClick={() => setIsProfileOpen(false)}
+                            onClick={closeProfile}
                           >
                             Métriques & Performance
                           </Link>
@@ -194,35 +208,35 @@ export const Header: React.FC = () => {
                           <Link
                             to={ROUTES.PROFILE}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            onClick={() => setIsProfileOpen(false)}
+                            onClick={closeProfile}
                           >
                             Mon Profil
                           </Link>
                           <Link
                             to={ROUTES.DASHBOARD}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            onClick={() => setIsProfileOpen(false)}
+                            onClick={closeProfile}
                           >
                             Tableau de Bord Exposant
                           </Link>
                           <Link
                             to={ROUTES.MINISITE_EDITOR}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            onClick={() => setIsProfileOpen(false)}
+                            onClick={closeProfile}
                           >
                             Éditeur de Mini-Site
                           </Link>
                           <Link
                             to={ROUTES.CALENDAR}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            onClick={() => setIsProfileOpen(false)}
+                            onClick={closeProfile}
                           >
                             Mes Créneaux RDV
                           </Link>
                           <Link
                             to={ROUTES.CHAT}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            onClick={() => setIsProfileOpen(false)}
+                            onClick={closeProfile}
                           >
                             Messages & Contact
                           </Link>
@@ -235,21 +249,21 @@ export const Header: React.FC = () => {
                           <Link
                             to={ROUTES.PROFILE}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            onClick={() => setIsProfileOpen(false)}
+                            onClick={closeProfile}
                           >
                             Mon Profil
                           </Link>
                           <Link
                             to={ROUTES.DASHBOARD}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            onClick={() => setIsProfileOpen(false)}
+                            onClick={closeProfile}
                           >
                             Tableau de Bord Partenaire
                           </Link>
                           <Link
                             to={ROUTES.NETWORKING}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            onClick={() => setIsProfileOpen(false)}
+                            onClick={closeProfile}
                           >
                             Networking VIP
                           </Link>
@@ -262,28 +276,28 @@ export const Header: React.FC = () => {
                           <Link
                             to={ROUTES.PROFILE}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            onClick={() => setIsProfileOpen(false)}
+                            onClick={closeProfile}
                           >
                             Mon Profil
                           </Link>
                           <Link
                             to={ROUTES.VISITOR_DASHBOARD}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            onClick={() => setIsProfileOpen(false)}
+                            onClick={closeProfile}
                           >
                             Tableau de Bord Visiteur
                           </Link>
                           <Link
                             to={ROUTES.VISITOR_SETTINGS}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            onClick={() => setIsProfileOpen(false)}
+                            onClick={closeProfile}
                           >
                             Paramètres Visiteur
                           </Link>
                           <Link
                             to={ROUTES.APPOINTMENTS}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            onClick={() => setIsProfileOpen(false)}
+                            onClick={closeProfile}
                           >
                             Mes Rendez-vous
                           </Link>
@@ -292,10 +306,7 @@ export const Header: React.FC = () => {
 
                       <hr className="my-1" />
                       <button
-                        onClick={() => {
-                          logout();
-                          setIsProfileOpen(false);
-                        }}
+                        onClick={handleLogout}
                         className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
                       >
                         {t('nav.logout')}
@@ -321,7 +332,7 @@ export const Header: React.FC = () => {
 
             {/* Mobile menu button */}
             <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={toggleMenu}
               className="md:hidden p-2 text-gray-400 hover:text-gray-600"
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -338,12 +349,12 @@ export const Header: React.FC = () => {
                   key={item.name}
                   to={item.href}
                   className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={closeMenu}
                 >
                   {item.name}
                 </Link>
               ))}
-              
+
               {/* Mobile Info Menu */}
               <div className="border-t border-gray-200 pt-2 mt-2">
                 <div className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -354,7 +365,7 @@ export const Header: React.FC = () => {
                     key={item.name}
                     to={item.href}
                     className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={closeMenu}
                   >
                     <div>{item.name}</div>
                     <div className="text-xs text-gray-500">{item.description}</div>
@@ -367,4 +378,4 @@ export const Header: React.FC = () => {
       </div>
     </header>
   );
-};
+});
