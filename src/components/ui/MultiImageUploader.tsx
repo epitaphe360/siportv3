@@ -123,7 +123,15 @@ const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
           {/* Bouton d'ajout */}
           {images.length < maxImages && (
             <div
-              onClick={handleAddClick}
+              role="button"
+        tabIndex={0}
+        onClick={handleAddClick}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleAddClick;
+          }
+        }}
               className="border-2 border-dashed border-gray-300 rounded flex items-center justify-center 
                          bg-gray-50 hover:bg-gray-100 cursor-pointer aspect-square transition-colors"
             >

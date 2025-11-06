@@ -384,12 +384,12 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
               {/* Options */}
               <div className="flex items-center space-x-6">
                 <div className="flex items-center">
-                  <input
-                    id="virtual"
+                  <input id="virtual"
                     name="virtual"
                     type="checkbox"
                     checked={formData.virtual}
-                    onChange={(e) => setFormData(prev => ({ ...prev, virtual: e.target.checked }))}
+                    onChange={(e) =
+                      aria-label="Virtual"> setFormData(prev => ({ ...prev, virtual: e.target.checked }))}
                     className="h-4 w-4 text-blue-600 border-gray-300 rounded"
                   />
                   <label htmlFor="virtual" className="ml-2 block text-sm text-gray-900">
@@ -397,12 +397,12 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
                   </label>
                 </div>
                 <div className="flex items-center">
-                  <input
-                    id="featured"
+                  <input id="featured"
                     name="featured"
                     type="checkbox"
                     checked={formData.featured}
-                    onChange={(e) => setFormData(prev => ({ ...prev, featured: e.target.checked }))}
+                    onChange={(e) =
+                      aria-label="Featured"> setFormData(prev => ({ ...prev, featured: e.target.checked }))}
                     className="h-4 w-4 text-blue-600 border-gray-300 rounded"
                   />
                   <label htmlFor="featured" className="ml-2 block text-sm text-gray-900">

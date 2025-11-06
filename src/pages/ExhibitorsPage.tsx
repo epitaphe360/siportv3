@@ -98,11 +98,11 @@ export default function ExhibitorsPage() {
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1 sm:w-80">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
+                <input type="text"
                   placeholder="Rechercher un exposant..."
                   value={filters.search}
-                  onChange={(e) => setFilters({ search: e.target.value })}
+                  onChange={(e) =
+                      aria-label="Rechercher un exposant..."> setFilters({ search: e.target.value })}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
@@ -166,11 +166,11 @@ export default function ExhibitorsPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Secteur
                   </label>
-                  <input
-                    type="text"
+                  <input type="text"
                     placeholder="Ex: Port Management"
                     value={filters.sector}
-                    onChange={(e) => setFilters({ sector: e.target.value })}
+                    onChange={(e) =
+                      aria-label="Ex: Port Management"> setFilters({ sector: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -179,11 +179,11 @@ export default function ExhibitorsPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Pays
                   </label>
-                  <input
-                    type="text"
+                  <input type="text"
                     placeholder="Ex: Morocco"
                     value={filters.country}
-                    onChange={(e) => setFilters({ country: e.target.value })}
+                    onChange={(e) =
+                      aria-label="Ex: Morocco"> setFilters({ country: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>

@@ -137,10 +137,10 @@ export default function DetailedProfilePage() {
                     <div className="flex-1">
                       <label className="block text-sm font-medium text-gray-700">Email</label>
                       {isEditing ? (
-                        <input
-                          type="email"
+                        <input type="email"
                           value={editedProfile.email || ''}
-                          onChange={(e) => handleInputChange('email', e.target.value)}
+                          onChange={(e) =
+                      aria-label="Email"> handleInputChange('email', e.target.value)}
                           className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       ) : (
@@ -154,10 +154,10 @@ export default function DetailedProfilePage() {
                     <div className="flex-1">
                       <label className="block text-sm font-medium text-gray-700">Phone</label>
                       {isEditing ? (
-                        <input
-                          type="tel"
+                        <input type="tel"
                           value={editedProfile.phone || ''}
-                          onChange={(e) => handleInputChange('phone', e.target.value)}
+                          onChange={(e) =
+                      aria-label="Tel"> handleInputChange('phone', e.target.value)}
                           className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       ) : (
@@ -171,10 +171,10 @@ export default function DetailedProfilePage() {
                     <div className="flex-1">
                       <label className="block text-sm font-medium text-gray-700">Location</label>
                       {isEditing ? (
-                        <input
-                          type="text"
+                        <input type="text"
                           value={editedProfile.location || ''}
-                          onChange={(e) => handleInputChange('location', e.target.value)}
+                          onChange={(e) =
+                      aria-label="Text"> handleInputChange('location', e.target.value)}
                           className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       ) : (
@@ -209,10 +209,10 @@ export default function DetailedProfilePage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Company</label>
                     {isEditing ? (
-                      <input
-                        type="text"
+                      <input type="text"
                         value={editedProfile.company || ''}
-                        onChange={(e) => handleInputChange('company', e.target.value)}
+                        onChange={(e) =
+                      aria-label="Text"> handleInputChange('company', e.target.value)}
                         className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     ) : (
@@ -223,10 +223,10 @@ export default function DetailedProfilePage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Position</label>
                     {isEditing ? (
-                      <input
-                        type="text"
+                      <input type="text"
                         value={editedProfile.position || ''}
-                        onChange={(e) => handleInputChange('position', e.target.value)}
+                        onChange={(e) =
+                      aria-label="Text"> handleInputChange('position', e.target.value)}
                         className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     ) : (

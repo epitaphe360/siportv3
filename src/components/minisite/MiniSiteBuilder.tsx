@@ -319,16 +319,16 @@ export default function MiniSiteBuilder() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Couleur principale</label>
                     <div className="flex items-center space-x-2">
-                      <input
-                        type="color"
+                      <input type="color"
                         value={siteSettings.primaryColor}
-                        onChange={(e) => setSiteSettings({ ...siteSettings, primaryColor: e.target.value })}
+                        onChange={(e) =
+                      aria-label="Color"> setSiteSettings({ ...siteSettings, primaryColor: e.target.value })}
                         className="w-8 h-8 rounded border border-gray-300"
                       />
-                      <input
-                        type="text"
+                      <input type="text"
                         value={siteSettings.primaryColor}
-                        onChange={(e) => setSiteSettings({ ...siteSettings, primaryColor: e.target.value })}
+                        onChange={(e) =
+                      aria-label="Text"> setSiteSettings({ ...siteSettings, primaryColor: e.target.value })}
                         className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded"
                       />
                     </div>
@@ -388,7 +388,15 @@ export default function MiniSiteBuilder() {
                       className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                         activeSection === section.id ? 'border-blue-300 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
-                      onClick={() => setActiveSection(section.id)}
+                      role="button"
+        tabIndex={0}
+        onClick={() => setActiveSection(section.id)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setActiveSection(section.id);
+          }
+        }}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
@@ -459,7 +467,15 @@ export default function MiniSiteBuilder() {
                             className={`border-2 border-transparent hover:border-blue-300 transition-colors ${
                               activeSection === section.id ? 'border-blue-500' : ''
                             }`}
-                            onClick={() => setActiveSection(section.id)}
+                            role="button"
+            tabIndex={0}
+            onClick={() => setActiveSection(section.id)}
+            onKeyDown={(e: React.KeyboardEvent) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setActiveSection(section.id);
+              }
+            }}
                           >
                             {section.type === 'hero' && (
                               <div

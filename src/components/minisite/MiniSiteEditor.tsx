@@ -451,10 +451,10 @@ export default function MiniSiteEditor() {
               autoFocus
             />
           ) : (
-            <input
-              type="text"
+            <input type="text"
               value={editingValue}
-              onChange={(e) => setEditingValue(e.target.value)}
+              onChange={(e) =
+                      aria-label="Text"> setEditingValue(e.target.value)}
               placeholder={placeholder}
               aria-label={placeholder || "Edit field"}
               className={`w-full px-3 py-2 border-2 border-blue-500 rounded-lg focus:outline-none bg-white ${className}`}
@@ -591,20 +591,20 @@ export default function MiniSiteEditor() {
                       Couleur principale
                     </label>
                     <div className="flex items-center space-x-2">
-                      <input
-                        type="color"
+                      <input type="color"
                         value={siteSettings.primaryColor}
-                        onChange={(e) => {
+                        onChange={(e) =
+                      aria-label="Color"> {
                           setSiteSettings({...siteSettings, primaryColor: e.target.value});
                           toast.success(`Couleur principale mise à jour: ${e.target.value}`);
                         }}
                         aria-label="Sélecteur de couleur principale"
                         className="w-8 h-8 rounded border border-gray-300 cursor-pointer"
                       />
-                      <input
-                        type="text"
+                      <input type="text"
                         value={siteSettings.primaryColor}
-                        onChange={(e) => setSiteSettings({...siteSettings, primaryColor: e.target.value})}
+                        onChange={(e) =
+                      aria-label="Text"> setSiteSettings({...siteSettings, primaryColor: e.target.value})}
                         aria-label="Code couleur principale (hex)"
                         className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded"
                       />
@@ -1255,10 +1255,10 @@ export default function MiniSiteEditor() {
                                       <div className="flex items-center justify-between">
                                         <span className="text-sm text-gray-700">Champ Nom</span>
                                         <label className="relative inline-flex items-center cursor-pointer">
-                                          <input
-                                            type="checkbox"
+                                          <input type="checkbox"
                                             defaultChecked
-                                            onChange={(e) => {
+                                            onChange={(e) =
+                      aria-label="Checkbox"> {
                                               const checked = e.target.checked;
                                               updateSectionContent(section.id, 'nameFieldEnabled', checked);
                                               toast.success(`Champ Nom ${checked ? 'activé' : 'désactivé'}`);
@@ -1273,9 +1273,9 @@ export default function MiniSiteEditor() {
                                       <div className="flex items-center justify-between">
                                         <span className="text-sm text-gray-700">Champ Téléphone</span>
                                         <label className="relative inline-flex items-center cursor-pointer">
-                                          <input
-                                            type="checkbox"
-                                            onChange={(e) => {
+                                          <input type="checkbox"
+                                            onChange={(e) =
+                      aria-label="Checkbox"> {
                                               const checked = e.target.checked;
                                               updateSectionContent(section.id, 'phoneFieldEnabled', checked);
                                               toast.success(`Champ Téléphone ${checked ? 'activé' : 'désactivé'}`);
@@ -1290,10 +1290,10 @@ export default function MiniSiteEditor() {
                                       <div className="flex items-center justify-between">
                                         <span className="text-sm text-gray-700">Champ Entreprise</span>
                                         <label className="relative inline-flex items-center cursor-pointer">
-                                          <input
-                                            type="checkbox"
+                                          <input type="checkbox"
                                             defaultChecked
-                                            onChange={(e) => {
+                                            onChange={(e) =
+                      aria-label="Checkbox"> {
                                               const checked = e.target.checked;
                                               updateSectionContent(section.id, 'companyFieldEnabled', checked);
                                               toast.success(`Champ Entreprise ${checked ? 'activé' : 'désactivé'}`);
@@ -1308,10 +1308,10 @@ export default function MiniSiteEditor() {
                                       <div className="flex items-center justify-between">
                                         <span className="text-sm text-gray-700">Anti-spam (reCAPTCHA)</span>
                                         <label className="relative inline-flex items-center cursor-pointer">
-                                          <input
-                                            type="checkbox"
+                                          <input type="checkbox"
                                             defaultChecked
-                                            onChange={(e) => {
+                                            onChange={(e) =
+                      aria-label="Checkbox"> {
                                               const checked = e.target.checked;
                                               updateSectionContent(section.id, 'recaptchaEnabled', checked);
                                               toast.success(`Anti-spam (reCAPTCHA) ${checked ? 'activé' : 'désactivé'}`);
@@ -1327,10 +1327,10 @@ export default function MiniSiteEditor() {
                                         <div className="flex items-center justify-between mb-2">
                                           <span className="text-sm font-medium text-gray-700">Email de notification</span>
                                         </div>
-                                        <input
-                                          type="email"
+                                        <input type="email"
                                           value={section.content.notificationEmail ?? section.content.email ?? ''}
-                                          onChange={(e) => {
+                                          onChange={(e) =
+                      aria-label="Email"> {
                                             updateSectionContent(section.id, 'notificationEmail', e.target.value);
                                           }}
                                           placeholder="email@entreprise.com"

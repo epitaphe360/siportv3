@@ -35,25 +35,23 @@ export default function ContactPage() {
                   <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
                     Prénom *
                   </label>
-                  <input
-                    type="text"
+                  <input type="text"
                     id="firstName"
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Votre prénom"
-                  />
+                   aria-label="Votre prénom" />
                 </div>
                 <div>
                   <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
                     Nom *
                   </label>
-                  <input
-                    type="text"
+                  <input type="text"
                     id="lastName"
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Votre nom"
-                  />
+                   aria-label="Votre nom" />
                 </div>
               </div>
 
@@ -61,25 +59,23 @@ export default function ContactPage() {
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                   Email *
                 </label>
-                <input
-                  type="email"
+                <input type="email"
                   id="email"
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="votre.email@exemple.com"
-                />
+                 aria-label="votre.email@exemple.com" />
               </div>
 
               <div>
                 <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
                   Société
                 </label>
-                <input
-                  type="text"
+                <input type="text"
                   id="company"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Nom de votre société"
-                />
+                 aria-label="Nom de votre société" />
               </div>
 
               <div>

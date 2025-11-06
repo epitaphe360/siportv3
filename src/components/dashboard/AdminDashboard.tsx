@@ -605,7 +605,15 @@ export default function AdminDashboard() {
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={handleImportArticles}
+                  role="button"
+            tabIndex={0}
+            onClick={handleImportArticles}
+            onKeyDown={(e: React.KeyboardEvent) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleImportArticles;
+              }
+            }}
                 >
                   <div className={`bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center ${isImportingArticles ? 'opacity-70 cursor-wait' : ''}`}>
                     <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">

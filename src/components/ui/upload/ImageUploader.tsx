@@ -180,7 +180,15 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         </div>
       ) : (
         <div
-          onClick={triggerFileInput}
+          role="button"
+        tabIndex={0}
+        onClick={triggerFileInput}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            triggerFileInput;
+          }
+        }}
           className={`border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:bg-gray-50 transition-colors ${getAspectRatioClass()}`}
         >
           <div className="flex flex-col items-center justify-center h-full">
