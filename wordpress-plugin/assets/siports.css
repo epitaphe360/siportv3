@@ -340,7 +340,7 @@
 .stat-number {
     font-size: 36px;
     font-weight: bold;
-    color: #1e40af;
+    color: #1B365D;
     margin-bottom: 10px;
     display: block;
 }
@@ -353,7 +353,7 @@
 
 /* Compte à rebours */
 .siports-countdown {
-    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, #1B365D 0%, #2E5984 100%);
     color: white;
     padding: 40px 20px;
     border-radius: 16px;
@@ -428,24 +428,24 @@
 }
 
 .siports-btn-primary {
-    background: #1e40af;
+    background: #1B365D;
     color: white;
 }
 
 .siports-btn-primary:hover {
-    background: #1d4ed8;
+    background: #0F2A44;
     color: white;
     text-decoration: none;
 }
 
 .siports-btn-outline {
     background: transparent;
-    color: #1e40af;
-    border: 1px solid #1e40af;
+    color: #1B365D;
+    border: 1px solid #1B365D;
 }
 
 .siports-btn-outline:hover {
-    background: #1e40af;
+    background: #1B365D;
     color: white;
     text-decoration: none;
 }
@@ -465,7 +465,7 @@
 }
 
 .siports-auth-link {
-    color: #1e40af;
+    color: #1B365D;
     text-decoration: none;
     font-weight: 500;
     padding: 8px 12px;
@@ -492,7 +492,7 @@
 }
 
 .siports-auth-banner {
-    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, #1B365D 0%, #2E5984 100%);
     color: white;
     padding: 30px 20px;
     border-radius: 12px;
@@ -531,12 +531,12 @@
 
 .auth-banner-actions .siports-btn-primary {
     background: white;
-    color: #1e40af;
+    color: #1B365D;
 }
 
 .auth-banner-actions .siports-btn-primary:hover {
     background: #f8fafc;
-    color: #1e40af;
+    color: #1B365D;
 }
 
 .auth-banner-actions .siports-btn-outline {
@@ -546,7 +546,7 @@
 
 .auth-banner-actions .siports-btn-outline:hover {
     background: white;
-    color: #1e40af;
+    color: #1B365D;
 }
 
 @media (max-width: 768px) {
@@ -593,7 +593,7 @@
     width: 20px;
     height: 20px;
     border: 2px solid #e5e7eb;
-    border-top: 2px solid #1e40af;
+    border-top: 2px solid #1B365D;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-left: 10px;
@@ -763,7 +763,7 @@
     display: block;
     font-size: 24px;
     font-weight: bold;
-    color: #1e40af;
+    color: #1B365D;
     margin-bottom: 5px;
 }
 
