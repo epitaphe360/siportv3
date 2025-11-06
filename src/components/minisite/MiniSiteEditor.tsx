@@ -456,6 +456,7 @@ export default function MiniSiteEditor() {
               value={editingValue}
               onChange={(e) => setEditingValue(e.target.value)}
               placeholder={placeholder}
+              aria-label={placeholder || "Edit field"}
               className={`w-full px-3 py-2 border-2 border-blue-500 rounded-lg focus:outline-none bg-white ${className}`}
               autoFocus
             />
@@ -485,9 +486,18 @@ export default function MiniSiteEditor() {
 
     return (
       <div
+        role="button"
+        tabIndex={0}
         onClick={() => startEditing(fieldKey, value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            startEditing(fieldKey, value);
+          }
+        }}
         className={`cursor-pointer hover:bg-blue-50 hover:border-blue-200 border-2 border-transparent rounded-lg p-2 transition-colors group ${className}`}
         title="Cliquer pour modifier"
+        aria-label="Modifier ce champ"
       >
         {value || (
           <span className="text-gray-400 italic">{placeholder || 'Cliquer pour modifier'}</span>
@@ -588,12 +598,14 @@ export default function MiniSiteEditor() {
                           setSiteSettings({...siteSettings, primaryColor: e.target.value});
                           toast.success(`Couleur principale mise à jour: ${e.target.value}`);
                         }}
+                        aria-label="Sélecteur de couleur principale"
                         className="w-8 h-8 rounded border border-gray-300 cursor-pointer"
                       />
                       <input
                         type="text"
                         value={siteSettings.primaryColor}
                         onChange={(e) => setSiteSettings({...siteSettings, primaryColor: e.target.value})}
+                        aria-label="Code couleur principale (hex)"
                         className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded"
                       />
                     </div>
@@ -698,12 +710,21 @@ export default function MiniSiteEditor() {
                   {sections.map((section) => (
                     <div
                       key={section.id}
+                      role="button"
+                      tabIndex={0}
                       className={`p-3 border rounded-lg cursor-pointer transition-colors group ${
-                        activeSection === section.id 
-                          ? 'border-blue-300 bg-blue-50' 
+                        activeSection === section.id
+                          ? 'border-blue-300 bg-blue-50'
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={() => setActiveSection(section.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setActiveSection(section.id);
+                        }
+                      }}
+                      aria-label={`Sélectionner la section ${section.title}`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
@@ -780,10 +801,19 @@ export default function MiniSiteEditor() {
                         .map((section) => (
                           <motion.div
                             key={section.id}
+                            role="button"
+                            tabIndex={0}
                             className={`border-2 border-transparent hover:border-blue-300 transition-colors group ${
                               activeSection === section.id ? 'border-blue-500' : ''
                             }`}
                             onClick={() => setActiveSection(section.id)}
+                            onKeyDown={(e: React.KeyboardEvent) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                setActiveSection(section.id);
+                              }
+                            }}
+                            aria-label={`Prévisualiser la section ${section.title}`}
                           >
                             {/* Section Hero */}
                             {section.type === 'hero' && (
@@ -1233,6 +1263,7 @@ export default function MiniSiteEditor() {
                                               updateSectionContent(section.id, 'nameFieldEnabled', checked);
                                               toast.success(`Champ Nom ${checked ? 'activé' : 'désactivé'}`);
                                             }}
+                                            aria-label="Activer le champ Nom"
                                             className="sr-only peer"
                                           />
                                           <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
@@ -1249,6 +1280,7 @@ export default function MiniSiteEditor() {
                                               updateSectionContent(section.id, 'phoneFieldEnabled', checked);
                                               toast.success(`Champ Téléphone ${checked ? 'activé' : 'désactivé'}`);
                                             }}
+                                            aria-label="Activer le champ Téléphone"
                                             className="sr-only peer"
                                           />
                                           <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
@@ -1266,6 +1298,7 @@ export default function MiniSiteEditor() {
                                               updateSectionContent(section.id, 'companyFieldEnabled', checked);
                                               toast.success(`Champ Entreprise ${checked ? 'activé' : 'désactivé'}`);
                                             }}
+                                            aria-label="Activer le champ Entreprise"
                                             className="sr-only peer"
                                           />
                                           <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
@@ -1283,6 +1316,7 @@ export default function MiniSiteEditor() {
                                               updateSectionContent(section.id, 'recaptchaEnabled', checked);
                                               toast.success(`Anti-spam (reCAPTCHA) ${checked ? 'activé' : 'désactivé'}`);
                                             }}
+                                            aria-label="Activer Anti-spam (reCAPTCHA)"
                                             className="sr-only peer"
                                           />
                                           <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
@@ -1300,6 +1334,7 @@ export default function MiniSiteEditor() {
                                             updateSectionContent(section.id, 'notificationEmail', e.target.value);
                                           }}
                                           placeholder="email@entreprise.com"
+                                          aria-label="Email de notification"
                                           className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         />
                                       </div>
