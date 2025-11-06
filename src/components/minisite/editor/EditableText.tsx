@@ -37,9 +37,9 @@ export const EditableText: React.FC<EditableTextProps> = memo(({
     return (
       <div className="relative">
         {multiline ? (
-          <textarea
-            value={editingValue}
-            onChange={(e) => onSetEditingValue(e.target.value)}
+          <textarea value={editingValue}
+            onChange={(e) =
+                  aria-label="Text area"> onSetEditingValue(e.target.value)}
             placeholder={placeholder}
             className={`w-full px-3 py-2 border-2 border-blue-500 rounded-lg focus:outline-none bg-white ${className}`}
             rows={3}

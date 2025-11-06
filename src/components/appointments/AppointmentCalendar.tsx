@@ -560,7 +560,7 @@ export default function AppointmentCalendar() {
                               )}
                               
                               {appointment.meetingLink && (
-                                <a 
+                                <a aria-label="Rejoindre la réunion" 
                                   href={appointment.meetingLink}
                                   target="_blank"
                                   rel="noopener noreferrer"
@@ -631,9 +631,9 @@ export default function AppointmentCalendar() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Message (optionnel)
                     </label>
-                    <textarea
-                      value={bookingMessage}
-                      onChange={(e) => setBookingMessage(e.target.value)}
+                    <textarea value={bookingMessage}
+                      onChange={(e) =
+                  aria-label="Text area"> setBookingMessage(e.target.value)}
                       placeholder="Décrivez brièvement l'objet de votre rendez-vous..."
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       rows={3}
@@ -719,9 +719,9 @@ export default function AppointmentCalendar() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Type de rendez-vous
                     </label>
-                    <select
-                      value={newSlotData.type}
-                      onChange={(e) => setNewSlotData({...newSlotData, type: e.target.value as 'in-person' | 'virtual' | 'hybrid'})}
+                    <select value={newSlotData.type}
+                      onChange={(e) =
+                aria-label="Type"> setNewSlotData({...newSlotData, type: e.target.value as 'in-person' | 'virtual' | 'hybrid'})}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="in-person">Présentiel</option>

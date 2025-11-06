@@ -417,9 +417,9 @@ export default function ProfilePage() {
                     Biographie
                   </label>
                   {isEditing ? (
-                    <textarea
-                      value={formData.bio}
-                      onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                    <textarea value={formData.bio}
+                      onChange={(e) =
+                  aria-label="Text area"> setFormData({ ...formData, bio: e.target.value })}
                       rows={4}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Parlez-nous de vous et de votre expertise..."

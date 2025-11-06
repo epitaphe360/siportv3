@@ -49,9 +49,9 @@ const AdminMediaManager: React.FC<AdminMediaManagerProps> = ({
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Sélectionner un bucket
           </label>
-          <select
-            value={selectedBucket}
-            onChange={(e) => setSelectedBucket(e.target.value)}
+          <select value={selectedBucket}
+            onChange={(e) =
+                aria-label="Select option"> setSelectedBucket(e.target.value)}
             className="block w-full p-2 border border-gray-300 rounded-md"
           >
             {buckets.map(bucket => (

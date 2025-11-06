@@ -1,29 +1,19 @@
 {
-  "timestamp": "2025-11-06T20:11:31.004Z",
+  "timestamp": "2025-11-06T20:33:23.237Z",
   "stats": {
     "filesScanned": 160,
     "components": 269,
-    "critical": 8,
-    "serious": 46,
+    "critical": 0,
+    "serious": 27,
     "moderate": 0,
     "minor": 0
   },
   "summary": {
-    "totalIssues": 54,
-    "passRate": "98.0%",
-    "score": 8.8
+    "totalIssues": 27,
+    "passRate": "99.0%",
+    "score": 9.5
   },
   "issuesByFile": {
-    "App.tsx": [
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "App.tsx",
-        "element": "<a href={ROUTES.HOME} className=\"px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700\">\n   "
-      }
-    ],
     "components/admin/ExhibitorCreationSimulator.tsx": [
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
@@ -35,14 +25,6 @@
       }
     ],
     "components/admin/MediaManager.tsx": [
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/admin/MediaManager.tsx",
-        "element": "<input\n                      type=\"file\"\n                      id=\"file-upload\"\n                      multiple\n                      className=\"hidden"
-      },
       {
         "ruleId": "LINK_NO_TEXT",
         "severity": "serious",
@@ -68,26 +50,6 @@
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "components/admin/PartnerCreationForm.tsx",
         "element": "<div\n                    key={type.type}\n                    className={`p-4 border-2 rounded-lg cur"
-      }
-    ],
-    "components/admin/RegistrationRequests.tsx": [
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/admin/RegistrationRequests.tsx",
-        "element": "<a href={`mailto:${request.email}`} className=\"text-siports-primary hover:underline\">\n              "
-      }
-    ],
-    "components/appointments/AppointmentCalendar.tsx": [
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/appointments/AppointmentCalendar.tsx",
-        "element": "<a \n                                  href={appointment.meetingLink}\n                               "
       }
     ],
     "components/common/SkipToContent.tsx": [
@@ -120,52 +82,6 @@
         "element": "<div \n              key={index} \n              className=\"cursor-pointer\"\n              role=\"button"
       }
     ],
-    "components/exhibitor/ExhibitorDetailPage.tsx": [
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/exhibitor/ExhibitorDetailPage.tsx",
-        "element": "<a href=\"#apropos\" className=\"text-gray-700 hover:text-blue-600 transition-colors\">À propos</a>"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/exhibitor/ExhibitorDetailPage.tsx",
-        "element": "<a href=\"#apropos\" className=\"text-gray-400 hover:text-white transition-colors\">À propos</a>"
-      }
-    ],
-    "components/exhibitor/detail/ExhibitorHeader.tsx": [
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/exhibitor/detail/ExhibitorHeader.tsx",
-        "element": "<a href=\"#apropos\" className=\"text-gray-700 hover:text-blue-600 transition-colors\">À propos</a>"
-      }
-    ],
-    "components/layout/Footer.tsx": [
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/layout/Footer.tsx",
-        "element": "<a \n                  href=\"mailto:contact@siportevent.com\" \n                  className=\"text-gray-"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/layout/Footer.tsx",
-        "element": "<a \n                  href=\"tel:+212123456789\" \n                  className=\"text-gray-400 hover:tex"
-      }
-    ],
     "components/minisite/MiniSiteBuilder.tsx": [
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
@@ -177,22 +93,6 @@
       }
     ],
     "components/minisite/MiniSiteEditor.tsx": [
-      {
-        "ruleId": "NO_KEYBOARD_ACCESS",
-        "severity": "serious",
-        "description": "Element not keyboard accessible",
-        "wcag": "2.1.1 Keyboard (Level A)",
-        "file": "components/minisite/MiniSiteEditor.tsx",
-        "element": "<img\n                                        src={product.image}\n                                        alt={product.name}\n                          "
-      },
-      {
-        "ruleId": "NO_KEYBOARD_ACCESS",
-        "severity": "serious",
-        "description": "Element not keyboard accessible",
-        "wcag": "2.1.1 Keyboard (Level A)",
-        "file": "components/minisite/MiniSiteEditor.tsx",
-        "element": "<img\n                                          src={article.image}\n                                          alt={article.title}\n                     "
-      },
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
         "severity": "serious",
@@ -211,14 +111,6 @@
       }
     ],
     "components/minisite/MiniSiteGalleryManager.tsx": [
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/minisite/MiniSiteGalleryManager.tsx",
-        "element": "<input\n          type=\"file\"\n          id=\"gallery-file-input\"\n          multiple\n          accept=\"image/*\"\n          className=\"hidden\"\n          on"
-      },
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
         "severity": "serious",
@@ -314,45 +206,7 @@
         "element": "<div\n              key={rec.itemId}\n              role=\"button\"\n        tabIndex={0}\n        onClick"
       }
     ],
-    "components/ui/ImageUploader.tsx": [
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/ui/ImageUploader.tsx",
-        "element": "<input\n          type=\"file\"\n          ref={fileInputRef}\n          onChange={handleFileChange}\n          accept=\"image/*\"\n          className=\"hidden"
-      }
-    ],
-    "components/ui/MultiImageUploader.tsx": [
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/ui/MultiImageUploader.tsx",
-        "element": "<input\n          type=\"file\"\n          ref={fileInputRef}\n          onChange={handleFileChange}\n          accept=\"image/*\"\n          multiple\n        "
-      }
-    ],
-    "components/ui/upload/ImageUploader.tsx": [
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/ui/upload/ImageUploader.tsx",
-        "element": "<input\n        type=\"file\"\n        accept={acceptedTypes}\n        ref={fileInputRef}\n        onChange={handleFileChange}\n        className=\"hidden\"\n  "
-      }
-    ],
     "components/ui/upload/MediaManager.tsx": [
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/ui/upload/MediaManager.tsx",
-        "element": "<input\n                type=\"file\"\n                multiple\n                className=\"hidden\"\n                onChange={handleFileUpload}\n           "
-      },
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
         "severity": "serious",
@@ -378,24 +232,6 @@
         "element": "<div \n              key={file.url}\n              className={`border rounded-md overflow-hidden hover"
       }
     ],
-    "components/ui/upload/MultiImageUploader.tsx": [
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/ui/upload/MultiImageUploader.tsx",
-        "element": "<input\n                type=\"file\"\n                accept=\"image/*\"\n                className=\"hidden\"\n                multiple\n                onChan"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/ui/upload/MultiImageUploader.tsx",
-        "element": "<input\n                type=\"file\"\n                accept=\"image/*\"\n                className=\"hidden\"\n                multiple\n                onChan"
-      }
-    ],
     "components/venue/InteractiveVenueMap.tsx": [
       {
         "ruleId": "LINK_NO_TEXT",
@@ -416,58 +252,6 @@
         "element": "<div\n              key={date.toISOString()}\n              className={`p-2 min-h-[60px] border cursor"
       }
     ],
-    "pages/ContactPage.tsx": [
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/ContactPage.tsx",
-        "element": "<a\n                      href=\"mailto:contact@siportevent.com\"\n                      className=\"text"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/ContactPage.tsx",
-        "element": "<a\n                      href=\"tel:+212123456789\"\n                      className=\"text-blue-600 hov"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/ContactPage.tsx",
-        "element": "<a\n                  href=\"https://facebook.com/siports2026\"\n                  target=\"_blank\"\n     "
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/ContactPage.tsx",
-        "element": "<a\n                  href=\"https://linkedin.com/company/siports2026\"\n                  target=\"_blan"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/ContactPage.tsx",
-        "element": "<a\n                  href=\"https://twitter.com/siports2026\"\n                  target=\"_blank\"\n      "
-      }
-    ],
-    "pages/ExhibitorDetailPage.tsx": [
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/ExhibitorDetailPage.tsx",
-        "element": "<a href={exhibitor.website} className=\"text-blue-600 hover:text-blue-700\">\n                         "
-      }
-    ],
     "pages/NetworkingPage.tsx": [
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
@@ -476,32 +260,6 @@
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "pages/NetworkingPage.tsx",
         "element": "<motion.button\n                  key={tab.id}\n                  onClick"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/NetworkingPage.tsx",
-        "element": "<a href=\"https://siportevent.com/conditions-generales-2/\" className=\"hover:underline\">Conditions Gén"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/NetworkingPage.tsx",
-        "element": "<a href=\"https://siportevent.com/mentions-legales/\" className=\"hover:underline\">Mentions Légales</a>"
-      }
-    ],
-    "pages/PartnerDetailPage.tsx": [
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/PartnerDetailPage.tsx",
-        "element": "<a href={partner.website} className=\"text-blue-600 hover:text-blue-700\">\n                          {"
       }
     ],
     "pages/admin/PartnersPage.tsx": [
@@ -516,81 +274,8 @@
     ]
   },
   "issuesBySeverity": {
-    "critical": [
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/admin/MediaManager.tsx",
-        "element": "<input\n                      type=\"file\"\n                      id=\"file-upload\"\n                      multiple\n                      className=\"hidden"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/minisite/MiniSiteGalleryManager.tsx",
-        "element": "<input\n          type=\"file\"\n          id=\"gallery-file-input\"\n          multiple\n          accept=\"image/*\"\n          className=\"hidden\"\n          on"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/ui/ImageUploader.tsx",
-        "element": "<input\n          type=\"file\"\n          ref={fileInputRef}\n          onChange={handleFileChange}\n          accept=\"image/*\"\n          className=\"hidden"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/ui/MultiImageUploader.tsx",
-        "element": "<input\n          type=\"file\"\n          ref={fileInputRef}\n          onChange={handleFileChange}\n          accept=\"image/*\"\n          multiple\n        "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/ui/upload/ImageUploader.tsx",
-        "element": "<input\n        type=\"file\"\n        accept={acceptedTypes}\n        ref={fileInputRef}\n        onChange={handleFileChange}\n        className=\"hidden\"\n  "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/ui/upload/MediaManager.tsx",
-        "element": "<input\n                type=\"file\"\n                multiple\n                className=\"hidden\"\n                onChange={handleFileUpload}\n           "
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/ui/upload/MultiImageUploader.tsx",
-        "element": "<input\n                type=\"file\"\n                accept=\"image/*\"\n                className=\"hidden\"\n                multiple\n                onChan"
-      },
-      {
-        "ruleId": "MISSING_LABEL",
-        "severity": "critical",
-        "description": "Form input missing associated label",
-        "wcag": "3.3.2 Labels or Instructions (Level A)",
-        "file": "components/ui/upload/MultiImageUploader.tsx",
-        "element": "<input\n                type=\"file\"\n                accept=\"image/*\"\n                className=\"hidden\"\n                multiple\n                onChan"
-      }
-    ],
+    "critical": [],
     "serious": [
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "App.tsx",
-        "element": "<a href={ROUTES.HOME} className=\"px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700\">\n   "
-      },
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
         "severity": "serious",
@@ -628,22 +313,6 @@
         "severity": "serious",
         "description": "Link has no accessible text",
         "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/admin/RegistrationRequests.tsx",
-        "element": "<a href={`mailto:${request.email}`} className=\"text-siports-primary hover:underline\">\n              "
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/appointments/AppointmentCalendar.tsx",
-        "element": "<a \n                                  href={appointment.meetingLink}\n                               "
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
         "file": "components/common/SkipToContent.tsx",
         "element": "<a\n      href=\"#main-content\"\n      className=\"sr-only focus:not-sr-only focus:absolute focus:top-4 "
       },
@@ -664,68 +333,12 @@
         "element": "<div \n              key={index} \n              className=\"cursor-pointer\"\n              role=\"button"
       },
       {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/exhibitor/ExhibitorDetailPage.tsx",
-        "element": "<a href=\"#apropos\" className=\"text-gray-700 hover:text-blue-600 transition-colors\">À propos</a>"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/exhibitor/ExhibitorDetailPage.tsx",
-        "element": "<a href=\"#apropos\" className=\"text-gray-400 hover:text-white transition-colors\">À propos</a>"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/exhibitor/detail/ExhibitorHeader.tsx",
-        "element": "<a href=\"#apropos\" className=\"text-gray-700 hover:text-blue-600 transition-colors\">À propos</a>"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/layout/Footer.tsx",
-        "element": "<a \n                  href=\"mailto:contact@siportevent.com\" \n                  className=\"text-gray-"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "components/layout/Footer.tsx",
-        "element": "<a \n                  href=\"tel:+212123456789\" \n                  className=\"text-gray-400 hover:tex"
-      },
-      {
         "ruleId": "NO_KEYBOARD_ACCESS",
         "severity": "serious",
         "description": "Element not keyboard accessible",
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "components/minisite/MiniSiteBuilder.tsx",
         "element": "<div\n                      key={section.id}\n                      className={`p-3 border rounded-lg "
-      },
-      {
-        "ruleId": "NO_KEYBOARD_ACCESS",
-        "severity": "serious",
-        "description": "Element not keyboard accessible",
-        "wcag": "2.1.1 Keyboard (Level A)",
-        "file": "components/minisite/MiniSiteEditor.tsx",
-        "element": "<img\n                                        src={product.image}\n                                        alt={product.name}\n                          "
-      },
-      {
-        "ruleId": "NO_KEYBOARD_ACCESS",
-        "severity": "serious",
-        "description": "Element not keyboard accessible",
-        "wcag": "2.1.1 Keyboard (Level A)",
-        "file": "components/minisite/MiniSiteEditor.tsx",
-        "element": "<img\n                                          src={article.image}\n                                          alt={article.title}\n                     "
       },
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
@@ -864,84 +477,12 @@
         "element": "<div\n              key={date.toISOString()}\n              className={`p-2 min-h-[60px] border cursor"
       },
       {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/ContactPage.tsx",
-        "element": "<a\n                      href=\"mailto:contact@siportevent.com\"\n                      className=\"text"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/ContactPage.tsx",
-        "element": "<a\n                      href=\"tel:+212123456789\"\n                      className=\"text-blue-600 hov"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/ContactPage.tsx",
-        "element": "<a\n                  href=\"https://facebook.com/siports2026\"\n                  target=\"_blank\"\n     "
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/ContactPage.tsx",
-        "element": "<a\n                  href=\"https://linkedin.com/company/siports2026\"\n                  target=\"_blan"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/ContactPage.tsx",
-        "element": "<a\n                  href=\"https://twitter.com/siports2026\"\n                  target=\"_blank\"\n      "
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/ExhibitorDetailPage.tsx",
-        "element": "<a href={exhibitor.website} className=\"text-blue-600 hover:text-blue-700\">\n                         "
-      },
-      {
         "ruleId": "NO_KEYBOARD_ACCESS",
         "severity": "serious",
         "description": "Element not keyboard accessible",
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "pages/NetworkingPage.tsx",
         "element": "<motion.button\n                  key={tab.id}\n                  onClick"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/NetworkingPage.tsx",
-        "element": "<a href=\"https://siportevent.com/conditions-generales-2/\" className=\"hover:underline\">Conditions Gén"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/NetworkingPage.tsx",
-        "element": "<a href=\"https://siportevent.com/mentions-legales/\" className=\"hover:underline\">Mentions Légales</a>"
-      },
-      {
-        "ruleId": "LINK_NO_TEXT",
-        "severity": "serious",
-        "description": "Link has no accessible text",
-        "wcag": "2.4.4 Link Purpose (Level A)",
-        "file": "pages/PartnerDetailPage.tsx",
-        "element": "<a href={partner.website} className=\"text-blue-600 hover:text-blue-700\">\n                          {"
       },
       {
         "ruleId": "LINK_NO_TEXT",
@@ -957,15 +498,9 @@
   },
   "recommendations": [
     {
-      "priority": "HIGH",
-      "title": "Fix Critical Accessibility Issues",
-      "description": "8 critical issues found that prevent users from accessing content.",
-      "action": "Address all critical issues immediately before deployment."
-    },
-    {
       "priority": "MEDIUM",
       "title": "Fix Serious Accessibility Issues",
-      "description": "46 serious issues found that significantly impact user experience.",
+      "description": "27 serious issues found that significantly impact user experience.",
       "action": "Address serious issues in the next sprint."
     },
     {

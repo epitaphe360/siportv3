@@ -266,9 +266,9 @@ export default function ActivityPage() {
               <div>
                 <div className="relative">
                   <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <select
-                    value={filters.activity_type || ''}
-                    onChange={(e) => updateFilter('activity_type', e.target.value)}
+                  <select value={filters.activity_type || ''}
+                    onChange={(e) =
+                aria-label="Select option"> updateFilter('activity_type', e.target.value)}
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
                   >
                     <option value="">Tous les types</option>
@@ -285,9 +285,9 @@ export default function ActivityPage() {
               <div>
                 <div className="relative">
                   <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <select
-                    value={filters.severity || ''}
-                    onChange={(e) => updateFilter('severity', e.target.value)}
+                  <select value={filters.severity || ''}
+                    onChange={(e) =
+                aria-label="Select option"> updateFilter('severity', e.target.value)}
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
                   >
                     <option value="">Toutes les sévérités</option>

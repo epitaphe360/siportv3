@@ -145,6 +145,7 @@ export default function ContactPage() {
                     <a
                       href="mailto:contact@siportevent.com"
                       className="text-blue-600 hover:text-blue-800"
+                      aria-label="Envoyer un email à contact@siportevent.com"
                     >
                       contact@siportevent.com
                     </a>
@@ -160,6 +161,7 @@ export default function ContactPage() {
                     <a
                       href="tel:+212123456789"
                       className="text-blue-600 hover:text-blue-800"
+                      aria-label="Appeler le +212 1 23 45 67 89"
                     >
                       +212 1 23 45 67 89
                     </a>
@@ -201,6 +203,7 @@ export default function ContactPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors"
+                  aria-label="Visiter notre page Facebook"
                 >
                   Facebook
                 </a>
@@ -209,6 +212,7 @@ export default function ContactPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-blue-700 text-white p-3 rounded-lg hover:bg-blue-800 transition-colors"
+                  aria-label="Visiter notre page LinkedIn"
                 >
                   LinkedIn
                 </a>
@@ -217,6 +221,7 @@ export default function ContactPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-blue-400 text-white p-3 rounded-lg hover:bg-blue-500 transition-colors"
+                  aria-label="Visiter notre page Twitter"
                 >
                   Twitter
                 </a>

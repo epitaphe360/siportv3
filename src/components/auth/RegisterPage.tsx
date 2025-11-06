@@ -371,10 +371,10 @@ export default function RegisterPage() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Secteur d'activité *
                       </label>
-                      <select
-                        {...register('sector')}
+                      <select {...register('sector')}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
+                      
+                aria-label="Select option">
                         <option value="">Sélectionnez un secteur</option>
                         {sectors.map((sector) => (
                           <option key={sector} value={sector}>{sector}</option>
@@ -558,12 +558,12 @@ export default function RegisterPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Description de votre organisation *
                     </label>
-                    <textarea
-                      {...register('description')}
+                    <textarea {...register('description')}
                       rows={4}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Décrivez votre organisation, vos activités principales, vos spécialités..."
-                    />
+                    /
+                  aria-label="Décrivez votre organisation, vos activités principales, vos spécialités...">
                     {errors.description && (
                       <p className="text-red-600 text-sm mt-1">{errors.description.message}</p>
                     )}

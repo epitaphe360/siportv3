@@ -164,7 +164,8 @@ const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
           accept="image/*"
           multiple
           className="hidden"
-        />
+        /
+                      aria-label="Input">
       </div>
     </div>
   );

@@ -60,7 +60,7 @@ export default function ProductDetailPage() {
       <div className="min-h-screen flex flex-col items-center justify-center text-center p-6">
         <p className="text-red-600 mb-4">{error || 'Produit non trouvé'}</p>
         {exhibitorId && (
-          <Link to={`/exhibitors/${exhibitorId}`} className="text-blue-600 underline">Retour à l'exposant</Link>
+          <Link aria-label="Retour à l'exposant" to={`/exhibitors/${exhibitorId}`} className="text-blue-600 underline">Retour à l'exposant</Link>
         )}
       </div>
     );

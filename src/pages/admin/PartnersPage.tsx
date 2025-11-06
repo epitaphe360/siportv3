@@ -294,9 +294,9 @@ export default function PartnersPage() {
               <div>
                 <div className="relative">
                   <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <select
-                    value={filters.partner_type || ''}
-                    onChange={(e) => updateFilter('partner_type', e.target.value)}
+                  <select value={filters.partner_type || ''}
+                    onChange={(e) =
+                aria-label="Select option"> updateFilter('partner_type', e.target.value)}
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
                   >
                     <option value="">Tous les types</option>
@@ -313,9 +313,9 @@ export default function PartnersPage() {
               <div>
                 <div className="relative">
                   <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <select
-                    value={filters.status || ''}
-                    onChange={(e) => updateFilter('status', e.target.value)}
+                  <select value={filters.status || ''}
+                    onChange={(e) =
+                aria-label="Select option"> updateFilter('status', e.target.value)}
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
                   >
                     <option value="">Tous les statuts</option>

@@ -212,7 +212,8 @@ const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
                 multiple
                 onChange={handleFileSelect}
                 disabled={isUploading || disabled}
-              />
+              /
+                      aria-label="Input">
               <div className="text-center">
                 {isUploading ? (
                   <div className="flex flex-col items-center">
@@ -273,7 +274,8 @@ const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
                 multiple
                 onChange={handleFileSelect}
                 disabled={isUploading || disabled}
-              />
+              /
+                      aria-label="Input">
               <div className="text-center">
                 {isUploading ? (
                   <div className="flex flex-col items-center">

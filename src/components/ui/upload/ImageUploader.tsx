@@ -144,7 +144,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         ref={fileInputRef}
         onChange={handleFileChange}
         className="hidden"
-      />
+      /
+                      aria-label="Input">
       
       {imageUrl && showPreview ? (
         <div className={`relative group ${getAspectRatioClass()}`}>

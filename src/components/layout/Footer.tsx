@@ -79,27 +79,27 @@ export const Footer: React.FC = memo(() => {
             <h3 className="text-lg font-semibold mb-6 font-heading">Navigation</h3>
             <ul className="space-y-2">
               <li>
-                <Link to={ROUTES.HOME} className="text-gray-400 hover:text-white transition-colors">
+                <Link aria-label="Accueil" to={ROUTES.HOME} className="text-gray-400 hover:text-white transition-colors">
                   Accueil
                 </Link>
               </li>
               <li>
-                <Link to={ROUTES.EXHIBITORS} className="text-gray-400 hover:text-white transition-colors">
+                <Link aria-label="Exposants" to={ROUTES.EXHIBITORS} className="text-gray-400 hover:text-white transition-colors">
                   Exposants
                 </Link>
               </li>
               <li>
-                <Link to={ROUTES.NETWORKING} className="text-gray-400 hover:text-white transition-colors">
+                <Link aria-label="Réseautage" to={ROUTES.NETWORKING} className="text-gray-400 hover:text-white transition-colors">
                   Réseautage
                 </Link>
               </li>
               <li>
-                <Link to={ROUTES.EVENTS} className="text-gray-400 hover:text-white transition-colors">
+                <Link aria-label="Événements" to={ROUTES.EVENTS} className="text-gray-400 hover:text-white transition-colors">
                   Événements
                 </Link>
               </li>
               <li>
-                <Link to={ROUTES.NEWS} className="text-gray-400 hover:text-white transition-colors">
+                <Link aria-label="Actualités" to={ROUTES.NEWS} className="text-gray-400 hover:text-white transition-colors">
                   Actualités
                 </Link>
               </li>
@@ -111,22 +111,22 @@ export const Footer: React.FC = memo(() => {
             <h3 className="text-lg font-semibold mb-6 font-heading">Services</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/register" className="text-gray-400 hover:text-white transition-colors">
+                <Link aria-label="Devenir Exposant" to="/register" className="text-gray-400 hover:text-white transition-colors">
                   Devenir Exposant
                 </Link>
               </li>
               <li>
-                <Link to="/partnership" className="text-gray-400 hover:text-white transition-colors">
+                <Link aria-label="Partenariat" to="/partnership" className="text-gray-400 hover:text-white transition-colors">
                   Partenariat
                 </Link>
               </li>
               <li>
-                <Link to="/support" className="text-gray-400 hover:text-white transition-colors">
+                <Link aria-label="Support" to="/support" className="text-gray-400 hover:text-white transition-colors">
                   Support
                 </Link>
               </li>
               <li>
-                <Link to="/api" className="text-gray-400 hover:text-white transition-colors">
+                <Link aria-label="API Documentation" to="/api" className="text-gray-400 hover:text-white transition-colors">
                   API Documentation
                 </Link>
               </li>
@@ -146,7 +146,7 @@ export const Footer: React.FC = memo(() => {
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-gray-400" />
-                <a 
+                <a aria-label="Envoyer un email à contact@siportevent.com" 
                   href="mailto:contact@siportevent.com" 
                   className="text-gray-400 hover:text-white transition-colors text-sm"
                 >
@@ -155,7 +155,7 @@ export const Footer: React.FC = memo(() => {
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-gray-400" />
-                <a 
+                <a aria-label="Appeler le +212 1 23 45 67 89" 
                   href="tel:+212123456789" 
                   className="text-gray-400 hover:text-white transition-colors text-sm"
                 >
@@ -172,13 +172,13 @@ export const Footer: React.FC = memo(() => {
             © {currentYear} SIPORTS. Tous droits réservés.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link to="/privacy" className="text-white/60 hover:text-white text-sm transition-colors">
+            <Link aria-label="Politique de Confidentialité" to="/privacy" className="text-white/60 hover:text-white text-sm transition-colors">
               Politique de Confidentialité
             </Link>
-            <Link to="/terms" className="text-white/60 hover:text-white text-sm transition-colors">
+            <Link aria-label="Conditions d'Utilisation" to="/terms" className="text-white/60 hover:text-white text-sm transition-colors">
               Conditions d'Utilisation
             </Link>
-            <Link to="/cookies" className="text-white/60 hover:text-white text-sm transition-colors">
+            <Link aria-label="Cookies" to="/cookies" className="text-white/60 hover:text-white text-sm transition-colors">
               Cookies
             </Link>
           </div>

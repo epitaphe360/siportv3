@@ -51,13 +51,14 @@ export default function VisitorRegistration() {
                       aria-label="Email"> setEmail(e.target.value)}
         required
       />
-      <textarea
-        placeholder="Bio"
+      <textarea placeholder="Bio"
         value={bio}
-        onChange={e => setBio(e.target.value)}
+        onChange={e =
+                  aria-label="Bio"> setBio(e.target.value)}
       />
       <label>Niveau d'accès :</label>
-      <select value={level} onChange={e => setLevel(e.target.value)} required>
+      <select value={level} onChange={e =
+                aria-label="Select option"> setLevel(e.target.value)} required>
         <option value="free">Free Pass</option>
         <option value="basic">Basic Pass</option>
         <option value="premium">Premium Pass</option>

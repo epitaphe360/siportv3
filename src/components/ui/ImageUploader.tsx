@@ -144,7 +144,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           onChange={handleFileChange}
           accept="image/*"
           className="hidden"
-        />
+        /
+                      aria-label="Input">
         
         {previewUrl ? (
           // Aperçu de l'image

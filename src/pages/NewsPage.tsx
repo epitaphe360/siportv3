@@ -268,7 +268,7 @@ export default function NewsPage() {
                         <div className="flex space-x-2">
                           <Button variant="default" size="sm">
                             <BookOpen className="h-4 w-4 mr-2" />
-                            <Link to={`/news/${article.id}`} className="flex items-center">
+                            <Link aria-label="Lire l'article" to={`/news/${article.id}`} className="flex items-center">
                               Lire l'article
                             </Link>
                           </Button>
@@ -435,7 +435,7 @@ export default function NewsPage() {
                         <div className="flex space-x-2">
                           <Button variant="default" size="sm" className="flex-1">
                             <BookOpen className="h-4 w-4 mr-2" />
-                            <Link to={`/news/${article.id}`} className="flex items-center">
+                            <Link aria-label="Lire l'article" to={`/news/${article.id}`} className="flex items-center">
                               Lire l'article
                             </Link>
                           </Button>

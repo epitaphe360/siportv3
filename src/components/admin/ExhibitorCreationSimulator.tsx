@@ -358,9 +358,9 @@ export default function ExhibitorCreationSimulator() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Secteur d'activité *
                   </label>
-                  <select
-                    value={formData.sector}
-                    onChange={(e) => setFormData({ ...formData, sector: e.target.value })}
+                  <select value={formData.sector}
+                    onChange={(e) =
+                aria-label="Sector"> setFormData({ ...formData, sector: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Sélectionnez un secteur</option>
@@ -407,9 +407,9 @@ export default function ExhibitorCreationSimulator() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Description de l'entreprise *
                 </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                <textarea value={formData.description}
+                  onChange={(e) =
+                  aria-label="Text area"> setFormData({ ...formData, description: e.target.value })}
                   rows={4}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Décrivez l'activité principale de l'entreprise, ses spécialités et son expertise..."
@@ -571,9 +571,9 @@ export default function ExhibitorCreationSimulator() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Statut du paiement
                   </label>
-                  <select
-                    value={formData.paymentStatus}
-                    onChange={(e) => setFormData({ ...formData, paymentStatus: e.target.value as 'pending' | 'partial' | 'completed' })}
+                  <select value={formData.paymentStatus}
+                    onChange={(e) =
+                aria-label="Payment Status"> setFormData({ ...formData, paymentStatus: e.target.value as 'pending' | 'partial' | 'completed' })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="pending">En attente</option>
@@ -649,9 +649,9 @@ export default function ExhibitorCreationSimulator() {
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Catégorie
                         </label>
-                        <select
-                          value={product.category}
-                          onChange={(e) => updateProduct(index, 'category', e.target.value)}
+                        <select value={product.category}
+                          onChange={(e) =
+                aria-label="Category"> updateProduct(index, 'category', e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                           <option value="">Sélectionnez une catégorie</option>
@@ -667,9 +667,9 @@ export default function ExhibitorCreationSimulator() {
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Description
                       </label>
-                      <textarea
-                        value={product.description}
-                        onChange={(e) => updateProduct(index, 'description', e.target.value)}
+                      <textarea value={product.description}
+                        onChange={(e) =
+                  aria-label="Text area"> updateProduct(index, 'description', e.target.value)}
                         rows={2}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Description du produit/service"
