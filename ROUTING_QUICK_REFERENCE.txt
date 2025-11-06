@@ -1,0 +1,165 @@
+================================================================================
+ANALYSE ROUTING SIPORTV3 - REFERENCE RAPIDE
+================================================================================
+
+SCORE: 6.5/10 | Criticité: HAUTE | Délai correction: 2-3 jours
+
+================================================================================
+3 PROBLÈMES CRITIQUES (À corriger d'urgence)
+================================================================================
+
+1. /dev/test-flow PUBLIC
+   ├─ Où: src/App.tsx:118
+   ├─ Risque: Fuite infos + accès non autorisé
+   └─ Fix: Supprimer ou protéger (admin only)
+
+2. Rôle PARTNER: Zéro route
+   ├─ Où: src/lib/routes.ts
+   ├─ Risque: Partenaires inaccessibles
+   └─ Fix: Créer 4 routes partner
+
+3. Status pas vérifié
+   ├─ Où: src/components/auth/ProtectedRoute.tsx
+   ├─ Risque: Comptes 'pending' actifs
+   └─ Fix: Ajouter check user.status
+
+================================================================================
+ROUTES PAR RÔLE
+================================================================================
+
+ADMIN:     15 routes ✓
+EXHIBITOR: 5 routes ✓
+VISITOR:   2 routes ✓
+PARTNER:   0 routes ❌ CRITIQUE
+PUBLIC:    28 routes ✓
+
+Total: 61 routes (31 protégées, 28 publiques, 2 hardcodées)
+
+================================================================================
+PAGES ORPHELINES (8 fichiers sans route)
+================================================================================
+
+À SUPPRIMER:
+- VisitorUpgrade.tsx
+- VisitorSubscriptionPage.tsx
+- EnhancedNetworkingPage.tsx
+- ActivityPage_refactored.tsx
+
+À CORRIGER:
+- ForbiddenPage.tsx → Créer route /403
+- UnauthorizedPage.tsx → Créer route /401
+- ProductDetailPage.tsx → Créer route /products/:id/:productId
+- VisitorSubscription.tsx → Créer route /visitor/subscription
+
+================================================================================
+PROBLÈMES MAJEURS (5)
+================================================================================
+
+1. Route hardcodée /admin/partners (devrait être ROUTES.ADMIN_PARTNERS)
+2. Pas de page 403 (ForbiddenPage existe mais orpheline)
+3. Pas de validation paramètres URL (UUIDs, etc.)
+4. Routes doublons (/chat=/messages, /calendar=/appointments)
+5. Pas de redirection post-login
+
+================================================================================
+FAILLES DE SÉCURITÉ
+================================================================================
+
+Exploit #1: Accès test flow
+  GET /dev/test-flow → Accessible sans authentification
+
+Exploit #2: Bypass status
+  Register (status=pending) → Accès routes protégées → FAIL
+
+Exploit #3: Confusion rôles
+  Partner → /exhibitor/dashboard → Redirige /dashboard (sans erreur)
+
+================================================================================
+PLAN DE CORRECTION
+================================================================================
+
+JOUR 1 (2-3h) - CRITIQUE:
+  [ ] Fix #1: Supprimer /dev/test-flow (10 min)
+  [ ] Fix #2: Ajouter user.status check (15 min)
+  [ ] Fix #3: Ajouter ROUTES.FORBIDDEN/UNAUTHORIZED (5 min)
+  [ ] Fix #4: Connecter pages 403/401 (5 min)
+  [ ] Fix #5: ADMIN_PARTNERS dans ROUTES (5 min)
+
+JOUR 2 (4-5h) - IMPORTANT:
+  [ ] Fix #6: Créer routes PARTNER + pages (3-4h)
+  [ ] Fix #7: Supprimer routes doublons (10 min)
+  [ ] Fix #8: Nettoyer pages orphelines (30 min)
+
+JOUR 3+ (4-5h) - OPTIMIZATION:
+  [ ] Fix #9: Validation paramètres (2-3h)
+  [ ] Fix #10: Redirection post-login (20 min)
+
+================================================================================
+FICHIERS À MODIFIER
+================================================================================
+
+CRITIQUE:
+- src/App.tsx (61 routes)
+- src/lib/routes.ts (configuration)
+- src/components/auth/ProtectedRoute.tsx (logique protection)
+
+À SUPPRIMER:
+- src/pages/VisitorUpgrade.tsx
+- src/pages/VisitorSubscriptionPage.tsx
+- src/pages/EnhancedNetworkingPage.tsx
+- src/pages/admin/ActivityPage_refactored.tsx
+
+À CRÉER:
+- src/pages/admin/PartnerDashboard.tsx
+- src/pages/admin/PartnerContractsPage.tsx
+- src/hooks/useValidatedParams.ts
+
+================================================================================
+TESTS À FAIRE
+================================================================================
+
+✓ /dev/test-flow → 404
+✓ Pending user → /pending-account
+✓ Visitor on /exhibitor/dashboard → /403
+✓ Invalid UUID → HOME
+✓ Login + redirect → Original page
+
+================================================================================
+RECOMMANDATIONS PRIORITAIRES
+================================================================================
+
+1. Supprimer immédiatement /dev/test-flow (30 min)
+2. Ajouter vérification status (30 min)
+3. Créer routes PARTNER (3-4h)
+
+Total urgent: 4-5h de travail
+
+================================================================================
+DOCUMENTS GÉNÉRÉS
+================================================================================
+
+1. ROUTING_ANALYSIS_REPORT.md (33KB - rapport complet)
+2. ROUTING_EXECUTIVE_SUMMARY.md (4KB - executive summary)
+3. ROUTING_FIXES_IMPLEMENTATION.md (8KB - guide code)
+4. ROUTING_QUICK_REFERENCE.txt (this file)
+
+================================================================================
+QUESTIONS FRÉQUENTES
+================================================================================
+
+Q: Est-ce un problème urgent?
+A: OUI. Trois failles critiques de sécurité.
+
+Q: Ça bloque le déploiement?
+A: OUI. Doivent être fixées avant production.
+
+Q: Combien de temps pour tout corriger?
+A: 2-3 jours pour critiques + majeurs.
+
+Q: Qui doit faire?
+A: Lead Frontend / Tech Lead
+
+Q: Les utilisateurs sont affectés?
+A: OUI. Partners inaccessibles, pending users actifs.
+
+================================================================================
