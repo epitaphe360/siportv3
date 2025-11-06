@@ -8,7 +8,7 @@ interface CardProps {
   hover?: boolean;
 }
 
-export const Card: React.FC<CardProps> = ({
+const CardComponent: React.FC<CardProps> = ({
   children,
   className,
   padding = 'md',
@@ -34,3 +34,6 @@ export const Card: React.FC<CardProps> = ({
     </div>
   );
 };
+
+// OPTIMIZATION: Memo to prevent re-renders when props don't change
+export const Card = React.memo(CardComponent);
