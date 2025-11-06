@@ -31,6 +31,7 @@ const TestFlowPage = React.lazy(() => import('./pages/dev/TestFlowPage'));
 const VisitorProfileSettings = React.lazy(() => import('./components/visitor/VisitorProfileSettings'));
 const AdminDashboard = React.lazy(() => import('./components/dashboard/AdminDashboard'));
 const ExhibitorDashboard = React.lazy(() => import('./components/dashboard/ExhibitorDashboard'));
+const PartnerDashboard = React.lazy(() => import('./components/dashboard/PartnerDashboard'));
 const ExhibitorValidation = React.lazy(() => import('./components/admin/ExhibitorValidation'));
 const ModerationPanel = React.lazy(() => import('./components/admin/ModerationPanel'));
 const MiniSiteEditor = React.lazy(() => import('./components/minisite/MiniSiteEditor'));
@@ -115,7 +116,12 @@ const App = () => {
             <Route path={`${ROUTES.EXHIBITOR_PROFILE}/edit`} element={<ProtectedRoute requiredRole="exhibitor"><ProfileEdit /></ProtectedRoute>} />
             <Route path={ROUTES.EXHIBITOR_DASHBOARD} element={<ProtectedRoute requiredRole="exhibitor"><ExhibitorDashboard /></ProtectedRoute>} />
             <Route path={ROUTES.VISITOR_DASHBOARD} element={<ProtectedRoute requiredRole="visitor"><VisitorDashboard /></ProtectedRoute>} />
-            <Route path="/dev/test-flow" element={<TestFlowPage />} />
+            {/* Partner routes - NEW */}
+            <Route path={ROUTES.PARTNER_DASHBOARD} element={<ProtectedRoute requiredRole="partner"><PartnerDashboard /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_PROFILE} element={<ProtectedRoute requiredRole="partner"><ProfilePage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_SETTINGS} element={<ProtectedRoute requiredRole="partner"><VisitorProfileSettings /></ProtectedRoute>} />
+            {/* SECURED: Dev route now requires admin role */}
+            <Route path="/dev/test-flow" element={<ProtectedRoute requiredRole="admin"><TestFlowPage /></ProtectedRoute>} />
             <Route path={ROUTES.VISITOR_SETTINGS} element={<ProtectedRoute requiredRole="visitor"><VisitorProfileSettings /></ProtectedRoute>} />
             <Route path={ROUTES.MESSAGES} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path={ROUTES.CHAT} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
