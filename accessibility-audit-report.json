@@ -1,16 +1,16 @@
 {
-  "timestamp": "2025-11-06T19:50:13.006Z",
+  "timestamp": "2025-11-06T20:05:02.315Z",
   "stats": {
     "filesScanned": 160,
     "components": 269,
     "critical": 160,
-    "serious": 70,
+    "serious": 67,
     "moderate": 0,
     "minor": 0
   },
   "summary": {
-    "totalIssues": 230,
-    "passRate": "91.4%",
+    "totalIssues": 227,
+    "passRate": "91.6%",
     "score": 2.8
   },
   "issuesByFile": {
@@ -889,30 +889,6 @@
         "description": "Element not keyboard accessible",
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "components/minisite/MiniSiteEditor.tsx",
-        "element": "<div\n        onClick"
-      },
-      {
-        "ruleId": "NO_KEYBOARD_ACCESS",
-        "severity": "serious",
-        "description": "Element not keyboard accessible",
-        "wcag": "2.1.1 Keyboard (Level A)",
-        "file": "components/minisite/MiniSiteEditor.tsx",
-        "element": "<div\n                      key={section.id}\n                      className={`p-3 border rounded-lg cursor-pointer transition-colors group ${\n        "
-      },
-      {
-        "ruleId": "NO_KEYBOARD_ACCESS",
-        "severity": "serious",
-        "description": "Element not keyboard accessible",
-        "wcag": "2.1.1 Keyboard (Level A)",
-        "file": "components/minisite/MiniSiteEditor.tsx",
-        "element": "<motion.div\n                            key={section.id}\n                            className={`border-2 border-transparent hover:border-blue-300 tra"
-      },
-      {
-        "ruleId": "NO_KEYBOARD_ACCESS",
-        "severity": "serious",
-        "description": "Element not keyboard accessible",
-        "wcag": "2.1.1 Keyboard (Level A)",
-        "file": "components/minisite/MiniSiteEditor.tsx",
         "element": "<img\n                                        src={product.image}\n                                        alt={product.name}\n                          "
       },
       {
@@ -929,7 +905,7 @@
         "description": "Element not keyboard accessible",
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "components/minisite/MiniSiteEditor.tsx",
-        "element": "<div\n        onClick={() =>"
+        "element": "<div\n        role=\"button\"\n        tabIndex={0}\n        onClick={() =>"
       },
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
@@ -937,7 +913,7 @@
         "description": "Element not keyboard accessible",
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "components/minisite/MiniSiteEditor.tsx",
-        "element": "<div\n                      key={section.id}\n                      className={`p-3 border rounded-lg "
+        "element": "<div\n                      key={section.id}\n                      role=\"button\"\n                    "
       }
     ],
     "components/minisite/MiniSiteGalleryManager.tsx": [
@@ -3491,30 +3467,6 @@
         "description": "Element not keyboard accessible",
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "components/minisite/MiniSiteEditor.tsx",
-        "element": "<div\n        onClick"
-      },
-      {
-        "ruleId": "NO_KEYBOARD_ACCESS",
-        "severity": "serious",
-        "description": "Element not keyboard accessible",
-        "wcag": "2.1.1 Keyboard (Level A)",
-        "file": "components/minisite/MiniSiteEditor.tsx",
-        "element": "<div\n                      key={section.id}\n                      className={`p-3 border rounded-lg cursor-pointer transition-colors group ${\n        "
-      },
-      {
-        "ruleId": "NO_KEYBOARD_ACCESS",
-        "severity": "serious",
-        "description": "Element not keyboard accessible",
-        "wcag": "2.1.1 Keyboard (Level A)",
-        "file": "components/minisite/MiniSiteEditor.tsx",
-        "element": "<motion.div\n                            key={section.id}\n                            className={`border-2 border-transparent hover:border-blue-300 tra"
-      },
-      {
-        "ruleId": "NO_KEYBOARD_ACCESS",
-        "severity": "serious",
-        "description": "Element not keyboard accessible",
-        "wcag": "2.1.1 Keyboard (Level A)",
-        "file": "components/minisite/MiniSiteEditor.tsx",
         "element": "<img\n                                        src={product.image}\n                                        alt={product.name}\n                          "
       },
       {
@@ -3531,7 +3483,7 @@
         "description": "Element not keyboard accessible",
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "components/minisite/MiniSiteEditor.tsx",
-        "element": "<div\n        onClick={() =>"
+        "element": "<div\n        role=\"button\"\n        tabIndex={0}\n        onClick={() =>"
       },
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
@@ -3539,7 +3491,7 @@
         "description": "Element not keyboard accessible",
         "wcag": "2.1.1 Keyboard (Level A)",
         "file": "components/minisite/MiniSiteEditor.tsx",
-        "element": "<div\n                      key={section.id}\n                      className={`p-3 border rounded-lg "
+        "element": "<div\n                      key={section.id}\n                      role=\"button\"\n                    "
       },
       {
         "ruleId": "NO_KEYBOARD_ACCESS",
@@ -3851,7 +3803,7 @@
     {
       "priority": "MEDIUM",
       "title": "Fix Serious Accessibility Issues",
-      "description": "70 serious issues found that significantly impact user experience.",
+      "description": "67 serious issues found that significantly impact user experience.",
       "action": "Address serious issues in the next sprint."
     },
     {
