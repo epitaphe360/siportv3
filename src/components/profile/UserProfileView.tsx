@@ -193,7 +193,8 @@ export default function UserProfileView({
                     <Globe className="h-5 w-5 text-gray-400" />
                     <div>
                       <p className="text-sm text-gray-600">Site web</p>
-                      <a aria-label="Link" href={user.profile.website}
+                      <a
+                        href={user.profile.website}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="font-medium text-blue-600 hover:underline"

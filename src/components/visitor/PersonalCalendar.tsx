@@ -185,15 +185,7 @@ export default memo(function PersonalCalendar({ compact = false }: PersonalCalen
               className={`p-2 min-h-[60px] border cursor-pointer hover:bg-gray-50 ${
                 isToday ? 'bg-blue-50 border-blue-200' : 'border-gray-200'
               } ${isSelected ? 'ring-2 ring-indigo-500' : ''}`}
-              role="button"
-        tabIndex={0}
-        onClick={() => setSelectedDate(date)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            setSelectedDate(date);
-          }
-        }}
+              onClick={() => setSelectedDate(date)}
             >
               <div className={`text-sm font-medium ${isToday ? 'text-blue-600' : 'text-gray-900'}`}>
                 {date.getDate()}

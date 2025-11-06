@@ -292,18 +292,18 @@ export default function ActivityPage() {
             <div className="flex flex-col lg:flex-row gap-4 items-center">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input type="text"
+                <input
+                  type="text"
                   placeholder="Rechercher dans les activités..."
                   value={searchTerm}
-                  onChange={(e) =
-                      aria-label="Rechercher dans les activités..."> setSearchTerm(e.target.value)}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
-              <select value={selectedType}
-                onChange={(e) =
-                aria-label="Select option"> setSelectedType(e.target.value)}
+              <select
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Tous les types</option>
@@ -312,9 +312,9 @@ export default function ActivityPage() {
                 ))}
               </select>
 
-              <select value={selectedSeverity}
-                onChange={(e) =
-                aria-label="Select option"> setSelectedSeverity(e.target.value)}
+              <select
+                value={selectedSeverity}
+                onChange={(e) => setSelectedSeverity(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Toutes les sévérités</option>

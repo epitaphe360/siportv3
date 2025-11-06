@@ -37,19 +37,19 @@ export const EditableText: React.FC<EditableTextProps> = memo(({
     return (
       <div className="relative">
         {multiline ? (
-          <textarea value={editingValue}
-            onChange={(e) =
-                  aria-label="Text area"> onSetEditingValue(e.target.value)}
+          <textarea
+            value={editingValue}
+            onChange={(e) => onSetEditingValue(e.target.value)}
             placeholder={placeholder}
             className={`w-full px-3 py-2 border-2 border-blue-500 rounded-lg focus:outline-none bg-white ${className}`}
             rows={3}
             autoFocus
           />
         ) : (
-          <input type="text"
+          <input
+            type="text"
             value={editingValue}
-            onChange={(e) =
-                      aria-label="Text"> onSetEditingValue(e.target.value)}
+            onChange={(e) => onSetEditingValue(e.target.value)}
             placeholder={placeholder}
             className={`w-full px-3 py-2 border-2 border-blue-500 rounded-lg focus:outline-none bg-white ${className}`}
             autoFocus
@@ -79,15 +79,7 @@ export const EditableText: React.FC<EditableTextProps> = memo(({
 
   return (
     <div
-      role="button"
-        tabIndex={0}
-        onClick={() => onStartEdit(fieldKey, value)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            onStartEdit(fieldKey, value);
-          }
-        }}
+      onClick={() => onStartEdit(fieldKey, value)}
       className={`cursor-pointer hover:bg-blue-50 hover:border-blue-200 border-2 border-transparent rounded-lg p-2 transition-colors group ${className}`}
       title="Cliquer pour modifier"
     >

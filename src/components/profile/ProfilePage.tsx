@@ -146,12 +146,12 @@ export default function ProfilePage() {
                   <div className="relative">
                     <div className="h-24 w-24 bg-white rounded-full flex items-center justify-center shadow-lg">
                       <User className="h-12 w-12 text-gray-400" />
-                      <input type="file"
+                      <input
+                        type="file"
                         accept="image/*"
                         style={{ display: 'none' }}
                         ref={fileInputRef}
-                        onChange={(e) =
-                      aria-label="File"> {
+                        onChange={(e) => {
                           const file = (e.target as HTMLInputElement).files?.[0];
                           if (file) {
                             toast.success(`Photo sélectionnée : ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
@@ -291,10 +291,10 @@ export default function ProfilePage() {
                       Prénom
                     </label>
                     {isEditing ? (
-                      <input type="text"
+                      <input
+                        type="text"
                         value={formData.firstName}
-                        onChange={(e) =
-                      aria-label="First Name"> setFormData({ ...formData, firstName: e.target.value })}
+                        onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     ) : (
@@ -307,10 +307,10 @@ export default function ProfilePage() {
                       Nom
                     </label>
                     {isEditing ? (
-                      <input type="text"
+                      <input
+                        type="text"
                         value={formData.lastName}
-                        onChange={(e) =
-                      aria-label="Last Name"> setFormData({ ...formData, lastName: e.target.value })}
+                        onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     ) : (
@@ -333,10 +333,10 @@ export default function ProfilePage() {
                       Téléphone
                     </label>
                     {isEditing ? (
-                      <input type="tel"
+                      <input
+                        type="tel"
                         value={formData.phone}
-                        onChange={(e) =
-                      aria-label="Phone"> setFormData({ ...formData, phone: e.target.value })}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     ) : (
@@ -352,10 +352,10 @@ export default function ProfilePage() {
                       Entreprise
                     </label>
                     {isEditing ? (
-                      <input type="text"
+                      <input
+                        type="text"
                         value={formData.company}
-                        onChange={(e) =
-                      aria-label="Company"> setFormData({ ...formData, company: e.target.value })}
+                        onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     ) : (
@@ -371,10 +371,10 @@ export default function ProfilePage() {
                       Poste
                     </label>
                     {isEditing ? (
-                      <input type="text"
+                      <input
+                        type="text"
                         value={formData.position}
-                        onChange={(e) =
-                      aria-label="Position"> setFormData({ ...formData, position: e.target.value })}
+                        onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     ) : (
@@ -397,10 +397,10 @@ export default function ProfilePage() {
                       LinkedIn
                     </label>
                     {isEditing ? (
-                      <input type="url"
+                      <input
+                        type="url"
                         value={formData.linkedin}
-                        onChange={(e) =
-                      aria-label="Linkedin"> setFormData({ ...formData, linkedin: e.target.value })}
+                        onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     ) : (
@@ -417,9 +417,9 @@ export default function ProfilePage() {
                     Biographie
                   </label>
                   {isEditing ? (
-                    <textarea value={formData.bio}
-                      onChange={(e) =
-                  aria-label="Text area"> setFormData({ ...formData, bio: e.target.value })}
+                    <textarea
+                      value={formData.bio}
+                      onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                       rows={4}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Parlez-nous de vous et de votre expertise..."
@@ -443,10 +443,10 @@ export default function ProfilePage() {
                   <div className="space-y-2">
                     {availableInterests.map((interest) => (
                       <label key={interest} className="flex items-center space-x-2">
-                        <input type="checkbox"
+                        <input
+                          type="checkbox"
                           checked={formData.interests.includes(interest)}
-                          onChange={(e) =
-                      aria-label="Checkbox"> {
+                          onChange={(e) => {
                             if (e.target.checked) {
                               setFormData({
                                 ...formData,
@@ -492,10 +492,10 @@ export default function ProfilePage() {
                   <div className="space-y-2">
                     {availableObjectives.map((objective) => (
                       <label key={objective} className="flex items-center space-x-2">
-                        <input type="checkbox"
+                        <input
+                          type="checkbox"
                           checked={formData.objectives.includes(objective)}
-                          onChange={(e) =
-                      aria-label="Checkbox"> {
+                          onChange={(e) => {
                             if (e.target.checked) {
                               setFormData({
                                 ...formData,

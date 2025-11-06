@@ -116,9 +116,9 @@ export const PartnerAnalyticsPage: React.FC = () => {
             </div>
 
             <div className="flex items-center space-x-3">
-              <select value={selectedPeriod}
-                onChange={(e) =
-                aria-label="Select option"> setSelectedPeriod(e.target.value)}
+              <select
+                value={selectedPeriod}
+                onChange={(e) => setSelectedPeriod(e.target.value)}
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="7d">7 jours</option>

@@ -256,7 +256,8 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
           <label className="block font-medium mb-2 text-blue-800">
             ✨ Création automatique depuis votre site web
           </label>
-          <input type="url" 
+          <input 
+            type="url" 
             className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-200 ${
               urlError ? 'border-red-500' : 'border-blue-300'
             }`}
@@ -265,7 +266,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
             onChange={handleUrlChange}
             disabled={loading}
             data-testid="input-website-url"
-           aria-label="https://votresite.com" />
+          />
           {urlError && (
             <div className="flex items-start space-x-2 mt-2 text-red-600 text-sm">
               <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />

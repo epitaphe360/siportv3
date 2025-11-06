@@ -149,15 +149,7 @@ const UserRecommendations: React.FC = () => {
           return (
             <div
               key={rec.itemId}
-              role="button"
-        tabIndex={0}
-        onClick={() => handleItemClick(rec)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleItemClick(rec);
-          }
-        }}
+              onClick={() => handleItemClick(rec)}
               className="border rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer group"
             >
               {logo && (

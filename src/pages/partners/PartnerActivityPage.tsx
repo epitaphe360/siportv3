@@ -187,9 +187,9 @@ export const PartnerActivityPage: React.FC = () => {
             </div>
 
             <div className="flex items-center space-x-3">
-              <select value={selectedFilter}
-                onChange={(e) =
-                aria-label="Select option"> setSelectedFilter(e.target.value)}
+              <select
+                value={selectedFilter}
+                onChange={(e) => setSelectedFilter(e.target.value)}
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">Toutes les activités</option>

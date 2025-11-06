@@ -259,7 +259,7 @@ export default function ExhibitorCreationSimulator() {
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4">
-            <Link aria-label="Navigate to dashboard" to="/dashboard">
+            <Link to="/dashboard">
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour au Tableau de Bord Admin
@@ -344,10 +344,10 @@ export default function ExhibitorCreationSimulator() {
                   </label>
                   <div className="relative">
                     <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="text"
+                    <input
+                      type="text"
                       value={formData.companyName}
-                      onChange={(e) =
-                      aria-label="Company Name"> setFormData({ ...formData, companyName: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Nom de l'entreprise exposante"
                     />
@@ -358,9 +358,9 @@ export default function ExhibitorCreationSimulator() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Secteur d'activité *
                   </label>
-                  <select value={formData.sector}
-                    onChange={(e) =
-                aria-label="Sector"> setFormData({ ...formData, sector: e.target.value })}
+                  <select
+                    value={formData.sector}
+                    onChange={(e) => setFormData({ ...formData, sector: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Sélectionnez un secteur</option>
@@ -376,10 +376,10 @@ export default function ExhibitorCreationSimulator() {
                   </label>
                   <div className="relative">
                     <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="text"
+                    <input
+                      type="text"
                       value={formData.country}
-                      onChange={(e) =
-                      aria-label="Country"> setFormData({ ...formData, country: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Pays de l'entreprise"
                     />
@@ -392,10 +392,10 @@ export default function ExhibitorCreationSimulator() {
                   </label>
                   <div className="relative">
                     <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="url"
+                    <input
+                      type="url"
                       value={formData.website}
-                      onChange={(e) =
-                      aria-label="Website"> setFormData({ ...formData, website: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, website: e.target.value })}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="https://entreprise.com"
                     />
@@ -407,9 +407,9 @@ export default function ExhibitorCreationSimulator() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Description de l'entreprise *
                 </label>
-                <textarea value={formData.description}
-                  onChange={(e) =
-                  aria-label="Text area"> setFormData({ ...formData, description: e.target.value })}
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={4}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Décrivez l'activité principale de l'entreprise, ses spécialités et son expertise..."
@@ -441,10 +441,10 @@ export default function ExhibitorCreationSimulator() {
                   </label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="text"
+                    <input
+                      type="text"
                       value={formData.contactName}
-                      onChange={(e) =
-                      aria-label="Contact Name"> setFormData({ ...formData, contactName: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Prénom et nom du contact"
                     />
@@ -455,10 +455,10 @@ export default function ExhibitorCreationSimulator() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Poste/Fonction *
                   </label>
-                  <input type="text"
+                  <input
+                    type="text"
                     value={formData.position}
-                    onChange={(e) =
-                      aria-label="Position"> setFormData({ ...formData, position: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Directeur Commercial, CEO, etc."
                   />
@@ -470,10 +470,10 @@ export default function ExhibitorCreationSimulator() {
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="email"
+                    <input
+                      type="email"
                       value={formData.email}
-                      onChange={(e) =
-                      aria-label="Email"> setFormData({ ...formData, email: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="contact@entreprise.com"
                     />
@@ -486,10 +486,10 @@ export default function ExhibitorCreationSimulator() {
                   </label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="tel"
+                    <input
+                      type="tel"
                       value={formData.phone}
-                      onChange={(e) =
-                      aria-label="Phone"> setFormData({ ...formData, phone: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="+33 1 23 45 67 89"
                     />
@@ -524,27 +524,13 @@ export default function ExhibitorCreationSimulator() {
                         ? 'border-blue-500 bg-blue-50'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
-                    role="button"
-        tabIndex={0}
-        onClick={() => {
+                    onClick={() => {
                       setFormData({
                         ...formData,
                         packageType: pkg.type as 'basic' | 'premium' | 'vip',
                         standSize: pkg.standSize,
                         contractValue: pkg.price
-                      }
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            {
-                      setFormData({
-                        ...formData,
-                        packageType: pkg.type as 'basic' | 'premium' | 'vip',
-                        standSize: pkg.standSize,
-                        contractValue: pkg.price
-                      ;
-          }
-        }});
+                      });
                     }}
                   >
                     <div className="text-center mb-4">
@@ -571,9 +557,9 @@ export default function ExhibitorCreationSimulator() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Statut du paiement
                   </label>
-                  <select value={formData.paymentStatus}
-                    onChange={(e) =
-                aria-label="Payment Status"> setFormData({ ...formData, paymentStatus: e.target.value as 'pending' | 'partial' | 'completed' })}
+                  <select
+                    value={formData.paymentStatus}
+                    onChange={(e) => setFormData({ ...formData, paymentStatus: e.target.value as 'pending' | 'partial' | 'completed' })}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="pending">En attente</option>
@@ -588,10 +574,10 @@ export default function ExhibitorCreationSimulator() {
                   </label>
                   <div className="relative">
                     <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="text"
+                    <input
+                      type="text"
                       value={formData.contractValue}
-                      onChange={(e) =
-                      aria-label="Contract Value"> setFormData({ ...formData, contractValue: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, contractValue: e.target.value })}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Montant du contrat"
                     />
@@ -636,10 +622,10 @@ export default function ExhibitorCreationSimulator() {
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Nom du produit
                         </label>
-                        <input type="text"
+                        <input
+                          type="text"
                           value={product.name}
-                          onChange={(e) =
-                      aria-label="Text"> updateProduct(index, 'name', e.target.value)}
+                          onChange={(e) => updateProduct(index, 'name', e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="Nom du produit/service"
                         />
@@ -649,9 +635,9 @@ export default function ExhibitorCreationSimulator() {
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Catégorie
                         </label>
-                        <select value={product.category}
-                          onChange={(e) =
-                aria-label="Category"> updateProduct(index, 'category', e.target.value)}
+                        <select
+                          value={product.category}
+                          onChange={(e) => updateProduct(index, 'category', e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                           <option value="">Sélectionnez une catégorie</option>
@@ -667,9 +653,9 @@ export default function ExhibitorCreationSimulator() {
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Description
                       </label>
-                      <textarea value={product.description}
-                        onChange={(e) =
-                  aria-label="Text area"> updateProduct(index, 'description', e.target.value)}
+                      <textarea
+                        value={product.description}
+                        onChange={(e) => updateProduct(index, 'description', e.target.value)}
                         rows={2}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Description du produit/service"

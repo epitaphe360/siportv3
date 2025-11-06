@@ -290,11 +290,11 @@ export default function ContentManagement() {
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             Titre Principal
                           </label>
-                          <input type="text"
+                          <input
+                            type="text"
                             disabled={!isEditing}
                             value={currentContentData.mainTitle || ''}
-                            onChange={(e) =
-                      aria-label="Text"> handleContentChange('mainTitle', e.target.value)}
+                            onChange={(e) => handleContentChange('mainTitle', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
                           />
                         </div>
@@ -303,11 +303,11 @@ export default function ContentManagement() {
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             Description
                           </label>
-                          <textarea rows={4}
+                          <textarea
+                            rows={4}
                             disabled={!isEditing}
                             value={currentContentData.descriptionText || ''}
-                            onChange={(e) =
-                  aria-label="Text area"> handleContentChange('descriptionText', e.target.value)}
+                            onChange={(e) => handleContentChange('descriptionText', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
                           />
                         </div>
@@ -316,11 +316,11 @@ export default function ContentManagement() {
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             Statistiques Clés (séparées par des virgules)
                           </label>
-                          <input type="text"
+                          <input
+                            type="text"
                             disabled={!isEditing}
                             value={currentContentData.keyStats ? currentContentData.keyStats.join(', ') : ''}
-                            onChange={(e) =
-                      aria-label="Text"> handleContentChange('keyStats', e.target.value.split(',').map((s: string) => s.trim()))}
+                            onChange={(e) => handleContentChange('keyStats', e.target.value.split(',').map((s: string) => s.trim()))}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
                           />
                         </div>

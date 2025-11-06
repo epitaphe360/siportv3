@@ -144,8 +144,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         ref={fileInputRef}
         onChange={handleFileChange}
         className="hidden"
-      /
-                      aria-label="Input">
+      />
       
       {imageUrl && showPreview ? (
         <div className={`relative group ${getAspectRatioClass()}`}>
@@ -181,15 +180,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         </div>
       ) : (
         <div
-          role="button"
-        tabIndex={0}
-        onClick={triggerFileInput}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            triggerFileInput;
-          }
-        }}
+          onClick={triggerFileInput}
           className={`border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:bg-gray-50 transition-colors ${getAspectRatioClass()}`}
         >
           <div className="flex flex-col items-center justify-center h-full">

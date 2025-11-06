@@ -259,7 +259,7 @@ export default function MiniSiteBuilder() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
-          <Link aria-label="Navigate to dashboard" to="/dashboard">
+          <Link to="/dashboard">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Retour au Tableau de Bord Exposant
@@ -319,16 +319,16 @@ export default function MiniSiteBuilder() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Couleur principale</label>
                     <div className="flex items-center space-x-2">
-                      <input type="color"
+                      <input
+                        type="color"
                         value={siteSettings.primaryColor}
-                        onChange={(e) =
-                      aria-label="Color"> setSiteSettings({ ...siteSettings, primaryColor: e.target.value })}
+                        onChange={(e) => setSiteSettings({ ...siteSettings, primaryColor: e.target.value })}
                         className="w-8 h-8 rounded border border-gray-300"
                       />
-                      <input type="text"
+                      <input
+                        type="text"
                         value={siteSettings.primaryColor}
-                        onChange={(e) =
-                      aria-label="Text"> setSiteSettings({ ...siteSettings, primaryColor: e.target.value })}
+                        onChange={(e) => setSiteSettings({ ...siteSettings, primaryColor: e.target.value })}
                         className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded"
                       />
                     </div>
@@ -336,9 +336,9 @@ export default function MiniSiteBuilder() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Police</label>
-                    <select value={siteSettings.fontFamily}
-                      onChange={(e) =
-                aria-label="Font Family"> setSiteSettings({ ...siteSettings, fontFamily: e.target.value })}
+                    <select
+                      value={siteSettings.fontFamily}
+                      onChange={(e) => setSiteSettings({ ...siteSettings, fontFamily: e.target.value })}
                       className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="Inter">Inter</option>
@@ -388,15 +388,7 @@ export default function MiniSiteBuilder() {
                       className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                         activeSection === section.id ? 'border-blue-300 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                       }`}
-                      role="button"
-        tabIndex={0}
-        onClick={() => setActiveSection(section.id)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            setActiveSection(section.id);
-          }
-        }}
+                      onClick={() => setActiveSection(section.id)}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
@@ -467,15 +459,7 @@ export default function MiniSiteBuilder() {
                             className={`border-2 border-transparent hover:border-blue-300 transition-colors ${
                               activeSection === section.id ? 'border-blue-500' : ''
                             }`}
-                            role="button"
-            tabIndex={0}
-            onClick={() => setActiveSection(section.id)}
-            onKeyDown={(e: React.KeyboardEvent) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                setActiveSection(section.id);
-              }
-            }}
+                            onClick={() => setActiveSection(section.id)}
                           >
                             {section.type === 'hero' && (
                               <div

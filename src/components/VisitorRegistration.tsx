@@ -37,28 +37,27 @@ export default function VisitorRegistration() {
   return (
     <form onSubmit={handleSubmit}>
       <h2>Inscription Visiteur</h2>
-      <input type="text"
+      <input
+        type="text"
         placeholder="Nom"
         value={name}
-        onChange={e =
-                      aria-label="Nom"> setName(e.target.value)}
+        onChange={e => setName(e.target.value)}
         required
       />
-      <input type="email"
+      <input
+        type="email"
         placeholder="Email"
         value={email}
-        onChange={e =
-                      aria-label="Email"> setEmail(e.target.value)}
+        onChange={e => setEmail(e.target.value)}
         required
       />
-      <textarea placeholder="Bio"
+      <textarea
+        placeholder="Bio"
         value={bio}
-        onChange={e =
-                  aria-label="Bio"> setBio(e.target.value)}
+        onChange={e => setBio(e.target.value)}
       />
       <label>Niveau d'accès :</label>
-      <select value={level} onChange={e =
-                aria-label="Select option"> setLevel(e.target.value)} required>
+      <select value={level} onChange={e => setLevel(e.target.value)} required>
         <option value="free">Free Pass</option>
         <option value="basic">Basic Pass</option>
         <option value="premium">Premium Pass</option>

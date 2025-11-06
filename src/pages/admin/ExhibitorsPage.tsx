@@ -236,18 +236,18 @@ export default function ExhibitorsPage() {
             <div className="flex flex-col lg:flex-row gap-4 items-center">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input type="text"
+                <input
+                  type="text"
                   placeholder="Rechercher par nom, description ou contact..."
                   value={searchTerm}
-                  onChange={(e) =
-                      aria-label="Rechercher par nom, description ou contact..."> setSearchTerm(e.target.value)}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
-              <select value={selectedCategory}
-                onChange={(e) =
-                aria-label="Select option"> setSelectedCategory(e.target.value)}
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Toutes les catégories</option>
@@ -256,9 +256,9 @@ export default function ExhibitorsPage() {
                 ))}
               </select>
 
-              <select value={selectedStatus}
-                onChange={(e) =
-                aria-label="Select option"> setSelectedStatus(e.target.value)}
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Tous les statuts</option>

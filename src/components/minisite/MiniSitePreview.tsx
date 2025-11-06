@@ -411,7 +411,8 @@ export default function MiniSitePreview() {
                 <Card className="p-6 text-center hover:shadow-lg transition-shadow">
                   <Mail className="h-8 w-8 mx-auto mb-3" style={{ color: theme.accentColor }} />
                   <h3 className="font-semibold text-gray-900 mb-2">Email</h3>
-                  <a aria-label="Link" href={`mailto:${exhibitorData.contact_info.email}`}
+                  <a
+                    href={`mailto:${exhibitorData.contact_info.email}`}
                     className="text-gray-600 hover:underline"
                   >
                     {exhibitorData.contact_info.email}
@@ -423,7 +424,8 @@ export default function MiniSitePreview() {
                 <Card className="p-6 text-center hover:shadow-lg transition-shadow">
                   <Phone className="h-8 w-8 mx-auto mb-3" style={{ color: theme.accentColor }} />
                   <h3 className="font-semibold text-gray-900 mb-2">Téléphone</h3>
-                  <a aria-label="Link" href={`tel:${exhibitorData.contact_info.phone}`}
+                  <a
+                    href={`tel:${exhibitorData.contact_info.phone}`}
                     className="text-gray-600 hover:underline"
                   >
                     {exhibitorData.contact_info.phone}
@@ -435,7 +437,8 @@ export default function MiniSitePreview() {
                 <Card className="p-6 text-center hover:shadow-lg transition-shadow">
                   <Globe className="h-8 w-8 mx-auto mb-3" style={{ color: theme.accentColor }} />
                   <h3 className="font-semibold text-gray-900 mb-2">Site Web</h3>
-                  <a aria-label="Link" href={exhibitorData.website}
+                  <a
+                    href={exhibitorData.website}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-600 hover:underline"
