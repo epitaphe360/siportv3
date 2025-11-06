@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase';
 import { v4 as uuidv4 } from 'uuid';
+import { validateImage, validateFile, FileValidationError } from './fileValidator';
 
 /**
  * Service pour gérer le stockage des fichiers dans Supabase Storage
@@ -21,13 +22,18 @@ export class StorageService {
       throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
     }
 
-    // Vérifier le type de fichier
-    if (!file.type.startsWith('image/')) {
-      throw new Error('Le fichier doit être une image.');
+    // VALIDATION ROBUSTE: Vérifier type, taille, magic bytes, extension
+    try {
+      await validateImage(file, 10); // Max 10MB
+    } catch (error) {
+      if (error instanceof FileValidationError) {
+        throw new Error(`Validation du fichier échouée : ${error.message}`);
+      }
+      throw error;
     }
 
-    // Générer un nom de fichier unique
-    const fileExt = file.name.split('.').pop();
+    // Générer un nom de fichier unique avec l'extension validée
+    const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
     const fileName = `${uuidv4()}.${fileExt}`;
     const filePath = folder ? `${folder}/${fileName}` : fileName;
 
@@ -131,6 +137,49 @@ export class StorageService {
       .getPublicUrl(filePath);
 
     return data.publicUrl;
+  }
+
+  /**
+   * Télécharge plusieurs images en une seule fois
+   * @param files Les fichiers à télécharger
+   * @param bucket Le nom du bucket (par défaut 'images')
+   * @param folder Le dossier de destination (optionnel)
+   * @returns Les URLs publiques des images téléchargées
+   */
+  static async uploadMultipleImages(
+    files: File[],
+    bucket: string = 'images',
+    folder: string = ''
+  ): Promise<string[]> {
+    if (!files || files.length === 0) {
+      throw new Error('Aucun fichier fourni');
+    }
+
+    // Limite de fichiers pour éviter DoS
+    if (files.length > 20) {
+      throw new Error('Maximum 20 fichiers autorisés par upload');
+    }
+
+    // Valider tous les fichiers AVANT de commencer l'upload
+    for (const file of files) {
+      try {
+        await validateImage(file, 10);
+      } catch (error) {
+        if (error instanceof FileValidationError) {
+          throw new Error(`Fichier "${file.name}" invalide : ${error.message}`);
+        }
+        throw error;
+      }
+    }
+
+    // Uploader tous les fichiers validés
+    const urls: string[] = [];
+    for (const file of files) {
+      const url = await this.uploadImage(file, bucket, folder);
+      urls.push(url);
+    }
+
+    return urls;
   }
 
   /**
