@@ -746,10 +746,10 @@ export default function NetworkingPage() {
                     <Search className="h-4 w-4 mr-2 text-blue-500" />
                     Mots-clés
                   </label>
-                  <input
-                    type="text"
+                  <input type="text"
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e) =
+                      aria-label="Text"> setSearchTerm(e.target.value)}
                     placeholder="Technologies, secteurs, compétences..."
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   />

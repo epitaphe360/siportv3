@@ -290,10 +290,10 @@ export default function PublicAvailabilityCalendar({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Date
               </label>
-              <input
-                type="date"
+              <input type="date"
                 value={newSlot.date}
-                onChange={(e) => setNewSlot({ ...newSlot, date: e.target.value })}
+                onChange={(e) =
+                      aria-label="Date"> setNewSlot({ ...newSlot, date: e.target.value })}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 data-testid="input-slot-date"
               />
@@ -321,10 +321,10 @@ export default function PublicAvailabilityCalendar({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Heure de début
               </label>
-              <input
-                type="time"
+              <input type="time"
                 value={newSlot.startTime}
-                onChange={(e) => setNewSlot({ ...newSlot, startTime: e.target.value })}
+                onChange={(e) =
+                      aria-label="Time"> setNewSlot({ ...newSlot, startTime: e.target.value })}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 data-testid="input-start-time"
               />
@@ -334,10 +334,10 @@ export default function PublicAvailabilityCalendar({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Heure de fin
               </label>
-              <input
-                type="time"
+              <input type="time"
                 value={newSlot.endTime}
-                onChange={(e) => setNewSlot({ ...newSlot, endTime: e.target.value })}
+                onChange={(e) =
+                      aria-label="Time"> setNewSlot({ ...newSlot, endTime: e.target.value })}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 data-testid="input-end-time"
               />
@@ -347,12 +347,12 @@ export default function PublicAvailabilityCalendar({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Places disponibles
               </label>
-              <input
-                type="number"
+              <input type="number"
                 min="1"
                 max="20"
                 value={newSlot.maxBookings}
-                onChange={(e) => setNewSlot({ ...newSlot, maxBookings: parseInt(e.target.value) })}
+                onChange={(e) =
+                      aria-label="Number"> setNewSlot({ ...newSlot, maxBookings: parseInt(e.target.value) })}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 data-testid="input-max-bookings"
               />
@@ -363,10 +363,10 @@ export default function PublicAvailabilityCalendar({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Lieu / Lien (optionnel)
             </label>
-            <input
-              type="text"
+            <input type="text"
               value={newSlot.location}
-              onChange={(e) => setNewSlot({ ...newSlot, location: e.target.value })}
+              onChange={(e) =
+                      aria-label="Text"> setNewSlot({ ...newSlot, location: e.target.value })}
               placeholder="Stand A12, Salle de réunion B, https://zoom.us/..."
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               data-testid="input-location"

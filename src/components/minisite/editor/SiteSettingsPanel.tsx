@@ -68,16 +68,16 @@ export const SiteSettingsPanel: React.FC<SiteSettingsPanelProps> = memo(({
               Couleur principale
             </label>
             <div className="flex items-center space-x-2">
-              <input
-                type="color"
+              <input type="color"
                 value={settings.primaryColor}
-                onChange={(e) => handleColorChange('primaryColor', e.target.value)}
+                onChange={(e) =
+                      aria-label="Color"> handleColorChange('primaryColor', e.target.value)}
                 className="w-8 h-8 rounded border border-gray-300 cursor-pointer"
               />
-              <input
-                type="text"
+              <input type="text"
                 value={settings.primaryColor}
-                onChange={(e) => handleColorChange('primaryColor', e.target.value)}
+                onChange={(e) =
+                      aria-label="Text"> handleColorChange('primaryColor', e.target.value)}
                 className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded"
               />
             </div>

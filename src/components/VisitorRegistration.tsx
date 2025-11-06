@@ -37,18 +37,18 @@ export default function VisitorRegistration() {
   return (
     <form onSubmit={handleSubmit}>
       <h2>Inscription Visiteur</h2>
-      <input
-        type="text"
+      <input type="text"
         placeholder="Nom"
         value={name}
-        onChange={e => setName(e.target.value)}
+        onChange={e =
+                      aria-label="Nom"> setName(e.target.value)}
         required
       />
-      <input
-        type="email"
+      <input type="email"
         placeholder="Email"
         value={email}
-        onChange={e => setEmail(e.target.value)}
+        onChange={e =
+                      aria-label="Email"> setEmail(e.target.value)}
         required
       />
       <textarea

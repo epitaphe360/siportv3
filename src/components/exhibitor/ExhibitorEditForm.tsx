@@ -499,10 +499,10 @@ export default function ExhibitorEditForm() {
                       <div className="bg-gray-100 px-3 py-2 rounded-l-lg border border-gray-300 border-r-0">
                         <AwardIcon className="h-5 w-5 text-gray-500" />
                       </div>
-                      <input
-                        type="text"
+                      <input type="text"
                         value={formData.certifications.join(', ')}
-                        onChange={(e) => handleArrayChange(e, 'certifications')}
+                        onChange={(e) =
+                      aria-label="Text"> handleArrayChange(e, 'certifications')}
                         className="w-full px-3 py-2 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="ISO 9001, ISO 14001, OHSAS 18001..."
                       />
@@ -517,10 +517,10 @@ export default function ExhibitorEditForm() {
                       <div className="bg-gray-100 px-3 py-2 rounded-l-lg border border-gray-300 border-r-0">
                         <Tag className="h-5 w-5 text-gray-500" />
                       </div>
-                      <input
-                        type="text"
+                      <input type="text"
                         value={formData.markets.join(', ')}
-                        onChange={(e) => handleArrayChange(e, 'markets')}
+                        onChange={(e) =
+                      aria-label="Text"> handleArrayChange(e, 'markets')}
                         className="w-full px-3 py-2 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Europe, Afrique, Asie..."
                       />

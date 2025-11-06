@@ -421,7 +421,15 @@ export default function ExhibitorDashboard() {
             <div 
               key={index} 
               className="cursor-pointer"
-              onClick={() => handleStatClick(stat.type)}
+              role="button"
+        tabIndex={0}
+        onClick={() => handleStatClick(stat.type)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleStatClick(stat.type);
+          }
+        }}
             >
               <Card className="siports-glass-card hover:shadow-siports-lg transition-all duration-300">
                 <div className="p-6">

@@ -221,14 +221,13 @@ export default function ProductEditForm({
                 </div>
                 
                 <div className="flex items-center">
-                  <input
-                    type="checkbox"
+                  <input type="checkbox"
                     name="featured"
                     id="featured"
                     checked={formData.featured}
                     onChange={handleInputChange}
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
+                   aria-label="Featured" />
                   <label htmlFor="featured" className="ml-2 block text-sm text-gray-700">
                     Produit vedette (mis en avant sur la page d'accueil)
                   </label>

@@ -305,12 +305,11 @@ export default function RegisterPage() {
                       const Icon = type.icon;
                       return (
                         <label key={type.value} className="cursor-pointer">
-                          <input
-                            type="radio"
+                          <input type="radio"
                             value={type.value}
                             {...register('accountType')}
                             className="sr-only"
-                          />
+                           aria-label="Radio" />
                           <div className={`p-6 border-2 rounded-lg transition-all ${
                             watchedAccountType === type.value
                               ? type.color
@@ -580,12 +579,11 @@ export default function RegisterPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {objectives.map((objective) => (
                         <label key={objective} className="flex items-center space-x-3 cursor-pointer">
-                          <input
-                            type="checkbox"
+                          <input type="checkbox"
                             value={objective}
                             {...register('objectives')}
                             className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                          />
+                           aria-label="Checkbox" />
                           <span className="text-sm text-gray-700">{objective}</span>
                         </label>
                       ))}

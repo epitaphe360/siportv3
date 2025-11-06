@@ -119,11 +119,11 @@ export default function AddDemoProgramPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Titre du Programme *
                   </label>
-                  <input
-                    type="text"
+                  <input type="text"
                     required
                     value={programData.title}
-                    onChange={(e) => handleChange('title', e.target.value)}
+                    onChange={(e) =
+                      aria-label="Text"> handleChange('title', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Ex: Démonstration IA Portuaire"
                   />
@@ -173,11 +173,11 @@ export default function AddDemoProgramPage() {
                     <Calendar className="h-4 w-4 inline mr-1" />
                     Date *
                   </label>
-                  <input
-                    type="date"
+                  <input type="date"
                     required
                     value={programData.date}
-                    onChange={(e) => handleChange('date', e.target.value)}
+                    onChange={(e) =
+                      aria-label="Date"> handleChange('date', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -187,11 +187,11 @@ export default function AddDemoProgramPage() {
                     <Clock className="h-4 w-4 inline mr-1" />
                     Heure *
                   </label>
-                  <input
-                    type="time"
+                  <input type="time"
                     required
                     value={programData.time}
-                    onChange={(e) => handleChange('time', e.target.value)}
+                    onChange={(e) =
+                      aria-label="Time"> handleChange('time', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -200,11 +200,11 @@ export default function AddDemoProgramPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Durée *
                   </label>
-                  <input
-                    type="text"
+                  <input type="text"
                     required
                     value={programData.duration}
-                    onChange={(e) => handleChange('duration', e.target.value)}
+                    onChange={(e) =
+                      aria-label="Text"> handleChange('duration', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Ex: 1h30"
                   />
@@ -215,12 +215,12 @@ export default function AddDemoProgramPage() {
                     <Users className="h-4 w-4 inline mr-1" />
                     Capacité *
                   </label>
-                  <input
-                    type="number"
+                  <input type="number"
                     required
                     min="1"
                     value={programData.capacity}
-                    onChange={(e) => handleChange('capacity', parseInt(e.target.value))}
+                    onChange={(e) =
+                      aria-label="Number"> handleChange('capacity', parseInt(e.target.value))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -231,11 +231,11 @@ export default function AddDemoProgramPage() {
                   <MapPin className="h-4 w-4 inline mr-1" />
                   Lieu *
                 </label>
-                <input
-                  type="text"
+                <input type="text"
                   required
                   value={programData.location}
-                  onChange={(e) => handleChange('location', e.target.value)}
+                  onChange={(e) =
+                      aria-label="Text"> handleChange('location', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Ex: Salle principale pavillon"
                 />
@@ -253,11 +253,11 @@ export default function AddDemoProgramPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Nom de l'Intervenant *
                   </label>
-                  <input
-                    type="text"
+                  <input type="text"
                     required
                     value={programData.speaker}
-                    onChange={(e) => handleChange('speaker', e.target.value)}
+                    onChange={(e) =
+                      aria-label="Text"> handleChange('speaker', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Ex: Dr. Marie Dubois"
                   />
@@ -267,11 +267,11 @@ export default function AddDemoProgramPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Entreprise *
                   </label>
-                  <input
-                    type="text"
+                  <input type="text"
                     required
                     value={programData.company}
-                    onChange={(e) => handleChange('company', e.target.value)}
+                    onChange={(e) =
+                      aria-label="Text"> handleChange('company', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Ex: Port Tech Institute"
                   />
@@ -308,10 +308,10 @@ export default function AddDemoProgramPage() {
                     ))}
                   </div>
                   <div className="flex space-x-2">
-                    <input
-                      type="text"
+                    <input type="text"
                       placeholder="Ajouter un tag..."
-                      onKeyPress={(e) => {
+                      onKeyPress={(e) =
+                      aria-label="Ajouter un tag..."> {
                         if (e.key === 'Enter') {
                           e.preventDefault();
                           addTag((e.target as HTMLInputElement).value);

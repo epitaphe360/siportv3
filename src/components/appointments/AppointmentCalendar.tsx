@@ -427,11 +427,23 @@ export default function AppointmentCalendar() {
                               ? 'border-gray-200 bg-gray-50' 
                               : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer'
                           }`}
-                          onClick={() => {
+                          role="button"
+            tabIndex={0}
+            onClick={() => {
                             if (!isBooked) {
                               setSelectedSlot(slot.id);
                               setShowBookingModal(true);
                             }
+            onKeyDown={(e: React.KeyboardEvent) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                {
+                            if (!isBooked) {
+                              setSelectedSlot(slot.id);
+                              setShowBookingModal(true);
+                            ;
+              }
+            }}
                           }}
                         >
                           <div className="flex items-center justify-between">
@@ -669,10 +681,10 @@ export default function AppointmentCalendar() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Date
                     </label>
-                    <input
-                      type="date"
+                    <input type="date"
                       value={newSlotData.date}
-                      onChange={(e) => setNewSlotData({...newSlotData, date: e.target.value})}
+                      onChange={(e) =
+                      aria-label="Date"> setNewSlotData({...newSlotData, date: e.target.value})}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
@@ -682,10 +694,10 @@ export default function AppointmentCalendar() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Heure début
                       </label>
-                      <input
-                        type="time"
+                      <input type="time"
                         value={newSlotData.startTime}
-                        onChange={(e) => setNewSlotData({...newSlotData, startTime: e.target.value})}
+                        onChange={(e) =
+                      aria-label="Time"> setNewSlotData({...newSlotData, startTime: e.target.value})}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
@@ -694,10 +706,10 @@ export default function AppointmentCalendar() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Heure fin
                       </label>
-                      <input
-                        type="time"
+                      <input type="time"
                         value={newSlotData.endTime}
-                        onChange={(e) => setNewSlotData({...newSlotData, endTime: e.target.value})}
+                        onChange={(e) =
+                      aria-label="Time"> setNewSlotData({...newSlotData, endTime: e.target.value})}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
@@ -727,10 +739,10 @@ export default function AppointmentCalendar() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Lieu (optionnel)
                     </label>
-                    <input
-                      type="text"
+                    <input type="text"
                       value={newSlotData.location}
-                      onChange={(e) => setNewSlotData({...newSlotData, location: e.target.value})}
+                      onChange={(e) =
+                      aria-label="Text"> setNewSlotData({...newSlotData, location: e.target.value})}
                       placeholder={
                         newSlotData.type === 'virtual' ? 'Lien de visioconférence' :
                         newSlotData.type === 'hybrid' ? 'Stand A-12 + Lien visio' :
@@ -749,12 +761,12 @@ export default function AppointmentCalendar() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Nombre max de réservations
                     </label>
-                    <input
-                      type="number"
+                    <input type="number"
                       min="1"
                       max="10"
                       value={newSlotData.maxBookings}
-                      onChange={(e) => setNewSlotData({...newSlotData, maxBookings: parseInt(e.target.value)})}
+                      onChange={(e) =
+                      aria-label="Number"> setNewSlotData({...newSlotData, maxBookings: parseInt(e.target.value)})}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <p className="mt-1 text-xs text-gray-500">
