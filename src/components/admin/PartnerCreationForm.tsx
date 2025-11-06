@@ -359,6 +359,7 @@ export default function PartnerCreationForm() {
                       onChange={(e) => setFormData({ ...formData, organizationName: e.target.value })}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="Nom de l'organisation partenaire"
+                      aria-label="Nom de l'organisation partenaire"
                     />
                   </div>
                 </div>
@@ -391,6 +392,7 @@ export default function PartnerCreationForm() {
                       onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="Pays de l'organisation"
+                      aria-label="Pays de l'organisation"
                     />
                   </div>
                 </div>
@@ -407,6 +409,7 @@ export default function PartnerCreationForm() {
                       onChange={(e) => setFormData({ ...formData, website: e.target.value })}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="https://organisation.com"
+                      aria-label="Site web de l'organisation"
                     />
                   </div>
                 </div>
@@ -421,6 +424,7 @@ export default function PartnerCreationForm() {
                     max={new Date().getFullYear()}
                     value={formData.establishedYear}
                     onChange={(e) => setFormData({ ...formData, establishedYear: parseInt(e.target.value) })}
+                    aria-label="Année de création"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
@@ -486,6 +490,7 @@ export default function PartnerCreationForm() {
                       type="text"
                       value={formData.contactName}
                       onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
+                      aria-label="Nom complet du contact"
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="Prénom et nom du contact"
                     />
@@ -500,6 +505,7 @@ export default function PartnerCreationForm() {
                     type="text"
                     value={formData.position}
                     onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                    aria-label="Poste/Fonction"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="Directeur Partenariats, CEO, etc."
                   />
@@ -515,6 +521,7 @@ export default function PartnerCreationForm() {
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      aria-label="Email professionnel"
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="contact@organisation.com"
                     />
@@ -531,6 +538,7 @@ export default function PartnerCreationForm() {
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      aria-label="Téléphone"
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="+33 1 23 45 67 89"
                     />
@@ -595,6 +603,7 @@ export default function PartnerCreationForm() {
                       type="text"
                       value={formData.contractValue}
                       onChange={(e) => setFormData({ ...formData, contractValue: e.target.value })}
+                      aria-label="Valeur du contrat"
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="Montant du partenariat"
                     />
@@ -616,6 +625,7 @@ export default function PartnerCreationForm() {
                         type="checkbox"
                         checked={formData.contributions.includes(contribution)}
                         onChange={() => toggleContribution(contribution)}
+                        aria-label={contribution}
                         className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
                       />
                       <span className="text-sm text-gray-700">{contribution}</span>
