@@ -8,14 +8,14 @@ interface BadgeProps {
   className?: string;
 }
 
-export const Badge: React.FC<BadgeProps> = ({
+const BadgeComponent: React.FC<BadgeProps> = ({
   children,
   variant = 'default',
   size = 'md',
   className
 }) => {
   const baseClasses = 'inline-flex items-center font-medium rounded-full';
-  
+
   const variants = {
     default: 'bg-siports-gray-100 text-siports-gray-800',
     success: 'bg-green-100 text-green-800 border border-green-200',
@@ -42,3 +42,6 @@ export const Badge: React.FC<BadgeProps> = ({
     </span>
   );
 };
+
+// OPTIMIZATION: Memo for Badge prevents unnecessary re-renders
+export const Badge = React.memo(BadgeComponent);

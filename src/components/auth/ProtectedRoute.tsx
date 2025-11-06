@@ -33,6 +33,19 @@ export default function ProtectedRoute({
     return <Navigate to={redirectTo} replace />;
   }
 
+  // CRITICAL: Check user status (prevents pending/suspended users from accessing)
+  if (user.status && user.status !== 'active') {
+    // User is authenticated but account is not active
+    if (user.status === 'pending') {
+      return <Navigate to={ROUTES.PENDING_ACCOUNT} replace />;
+    }
+    if (user.status === 'suspended' || user.status === 'rejected') {
+      return <Navigate to={ROUTES.LOGIN} replace state={{ error: 'Votre compte a été suspendu ou rejeté' }} />;
+    }
+    // For any other non-active status, redirect to login
+    return <Navigate to={ROUTES.LOGIN} replace state={{ error: 'Votre compte n\'est pas actif' }} />;
+  }
+
   // Check role authorization if required
   if (requiredRole) {
     const allowedRoles = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
@@ -44,6 +57,6 @@ export default function ProtectedRoute({
     }
   }
 
-  // User is authenticated and authorized
+  // User is authenticated, active, and authorized
   return <>{children}</>;
 }

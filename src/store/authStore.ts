@@ -1,8 +1,10 @@
 import { create } from 'zustand';
 import { SupabaseService } from '../services/supabaseService';
+import { supabase } from '../lib/supabase';
 import GoogleAuthService from '../services/googleAuth';
 import LinkedInAuthService from '../services/linkedinAuth';
 import { User, UserProfile } from '../types';
+import { resetAllStores } from './resetStores';
 
 /**
  * Interface pour les données d'inscription
@@ -275,14 +277,21 @@ const useAuthStore = create<AuthState>((set, get) => ({
 
   loginWithGoogle: async () => {
     set({ isGoogleLoading: true });
-    
+
     try {
       const user = await GoogleAuthService.signInWithGoogle();
-      set({ 
-        user, 
-        token: 'google-token', 
+      // Récupérer le VRAI token Firebase
+      const token = await GoogleAuthService.getAuthToken();
+
+      if (!token) {
+        throw new Error('Impossible de récupérer le token d\'authentification');
+      }
+
+      set({
+        user,
+        token,
         isAuthenticated: true,
-        isGoogleLoading: false 
+        isGoogleLoading: false
       });
     } catch (error) {
       set({ isGoogleLoading: false });
@@ -292,26 +301,55 @@ const useAuthStore = create<AuthState>((set, get) => ({
 
   loginWithLinkedIn: async () => {
     set({ isLinkedInLoading: true });
-    
+
     try {
-      const user = await LinkedInAuthService.signInWithLinkedIn();
-      set({ 
-        user, 
-        token: 'linkedin-token', 
+      // LinkedIn OAuth redirige vers Supabase
+      await LinkedInAuthService.signInWithLinkedIn();
+      // La redirection se produit ici, le reste sera géré après callback
+
+      // Après le retour OAuth, récupérer la session
+      const { data: { session }, error } = await supabase.auth.getSession();
+
+      if (error || !session) {
+        throw new Error('Impossible de récupérer la session LinkedIn');
+      }
+
+      const user = await LinkedInAuthService.getUserFromSession();
+      if (!user) {
+        throw new Error('Impossible de récupérer les données utilisateur');
+      }
+
+      set({
+        user,
+        token: session.access_token,
         isAuthenticated: true,
-        isLinkedInLoading: false 
+        isLinkedInLoading: false
       });
-    } catch (error) {
-      set({ isLinkedInLoading: false });
-      throw error;
+    } catch (error: any) {
+      // Si c'est la redirection OAuth, ne pas le traiter comme une erreur
+      if (error.message !== 'OAUTH_REDIRECT') {
+        set({ isLinkedInLoading: false });
+        throw error;
+      }
+      // Pour OAUTH_REDIRECT, garder isLinkedInLoading true pendant la redirection
     }
   },
   
-  logout: () => set({ 
-    user: null,
-    token: null,
-    isAuthenticated: false
-  }),
+  logout: () => {
+    // CRITIQUE: Nettoyer TOUS les stores avant de déconnecter
+    // Empêche les fuites de données sur ordinateurs partagés
+    resetAllStores();
+
+    // Ensuite, réinitialiser authStore
+    set({
+      user: null,
+      token: null,
+      isAuthenticated: false,
+      isLoading: false,
+      isGoogleLoading: false,
+      isLinkedInLoading: false
+    });
+  },
   
   setUser: (user) => set({ 
     user

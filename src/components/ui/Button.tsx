@@ -39,7 +39,7 @@ export interface ButtonProps
   asChild?: boolean;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+const ButtonComponent = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
     return (
@@ -51,7 +51,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
   }
 );
-Button.displayName = "Button";
+ButtonComponent.displayName = "Button";
+
+// OPTIMIZATION: Wrap with React.memo to prevent unnecessary re-renders
+// Button is used everywhere, this improves performance significantly
+const Button = React.memo(ButtonComponent);
 
 // eslint-disable-next-line react-refresh/only-export-components
 export { Button, buttonVariants };
