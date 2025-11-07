@@ -218,8 +218,8 @@ export default function MiniSitePreview() {
         <section
           className="relative h-[500px] flex items-center justify-center text-white"
           style={{
-            backgroundImage: heroSection.data?.backgroundImage
-              ? `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${heroSection.data.backgroundImage})`
+            backgroundImage: heroSection.content?.backgroundImage
+              ? `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${heroSection.content.backgroundImage})`
               : `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
@@ -242,7 +242,7 @@ export default function MiniSitePreview() {
               transition={{ delay: 0.2, duration: 0.5 }}
               className="text-5xl md:text-6xl font-bold mb-4"
             >
-              {heroSection.data?.title || exhibitorData.company_name}
+              {heroSection.content?.title || exhibitorData.company_name}
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -250,9 +250,9 @@ export default function MiniSitePreview() {
               transition={{ delay: 0.4, duration: 0.5 }}
               className="text-xl md:text-2xl mb-8"
             >
-              {heroSection.data?.subtitle || exhibitorData.description}
+              {heroSection.content?.subtitle || exhibitorData.description}
             </motion.p>
-            {heroSection.data?.ctaText && (
+            {heroSection.content?.ctaText && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -262,11 +262,11 @@ export default function MiniSitePreview() {
                   size="lg"
                   style={{ backgroundColor: theme.accentColor }}
                   onClick={() => {
-                    const element = document.querySelector(heroSection.data.ctaLink || '#products');
+                    const element = document.querySelector(heroSection.content.ctaLink || '#products');
                     element?.scrollIntoView({ behavior: 'smooth' });
                   }}
                 >
-                  {heroSection.data.ctaText}
+                  {heroSection.content.ctaText}
                 </Button>
               </motion.div>
             )}
@@ -285,16 +285,16 @@ export default function MiniSitePreview() {
               viewport={{ once: true }}
             >
               <h2 className="text-4xl font-bold text-center mb-4" style={{ color: theme.primaryColor }}>
-                {aboutSection.data?.title || 'À propos'}
+                {aboutSection.content?.title || 'À propos'}
               </h2>
               <p className="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-12">
-                {aboutSection.data?.description || exhibitorData.description}
+                {aboutSection.content?.description || exhibitorData.description}
               </p>
 
               {/* Features */}
-              {aboutSection.data?.features && aboutSection.data.features.length > 0 && (
+              {aboutSection.content?.features && aboutSection.content.features.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                  {aboutSection.data.features.map((feature: string, index: number) => (
+                  {aboutSection.content.features.map((feature: string, index: number) => (
                     <Card key={index} className="p-6 text-center hover:shadow-lg transition-shadow">
                       <Award className="h-8 w-8 mx-auto mb-3" style={{ color: theme.accentColor }} />
                       <h3 className="font-semibold text-gray-900">{feature}</h3>
@@ -304,9 +304,9 @@ export default function MiniSitePreview() {
               )}
 
               {/* Stats */}
-              {aboutSection.data?.stats && aboutSection.data.stats.length > 0 && (
+              {aboutSection.content?.stats && aboutSection.content.stats.length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                  {aboutSection.data.stats.map((stat: any, index: number) => (
+                  {aboutSection.content.stats.map((stat: any, index: number) => (
                     <div key={index} className="text-center">
                       <div className="text-4xl font-bold mb-2" style={{ color: theme.primaryColor }}>
                         {stat.number}

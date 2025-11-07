@@ -814,7 +814,7 @@ export class SupabaseService {
 
   static async getMiniSite(exhibitorId: string): Promise<any | null> {
     if (!this.checkSupabaseConnection()) return null;
-    
+
     const safeSupabase = supabase!;
     try {
       const { data, error } = await safeSupabase
@@ -822,12 +822,31 @@ export class SupabaseService {
         .select('*')
         .eq('exhibitor_id', exhibitorId)
         .single();
-        
+
       if (error) {
         console.warn('Mini-site non trouvé:', error.message);
         return null;
       }
-      
+
+      // Transformer la structure pour le frontend
+      // Unifier theme et custom_colors en un seul objet theme
+      if (data && data.custom_colors && typeof data.custom_colors === 'object') {
+        data.theme = {
+          primaryColor: data.custom_colors.primary || data.custom_colors.primaryColor || '#1e40af',
+          secondaryColor: data.custom_colors.secondary || data.custom_colors.secondaryColor || '#3b82f6',
+          accentColor: data.custom_colors.accent || data.custom_colors.accentColor || '#60a5fa',
+          fontFamily: data.custom_colors.fontFamily || 'Inter'
+        };
+      } else if (!data.theme || typeof data.theme === 'string') {
+        // Si theme n'existe pas ou est une string, créer un theme par défaut
+        data.theme = {
+          primaryColor: '#1e40af',
+          secondaryColor: '#3b82f6',
+          accentColor: '#60a5fa',
+          fontFamily: 'Inter'
+        };
+      }
+
       return data;
     } catch (error) {
       console.error('Erreur récupération mini-site:', error);
@@ -866,10 +885,23 @@ export class SupabaseService {
 
   static async incrementMiniSiteViews(exhibitorId: string): Promise<void> {
     if (!this.checkSupabaseConnection()) return;
-    
+
     const safeSupabase = supabase!;
     try {
-      await safeSupabase.rpc('increment_view_count', { exhibitor_id_param: exhibitorId });
+      // Récupérer le nombre de vues actuel
+      const { data: currentData } = await safeSupabase
+        .from('mini_sites')
+        .select('views')
+        .eq('exhibitor_id', exhibitorId)
+        .single();
+
+      if (currentData) {
+        // Incrémenter les vues
+        await safeSupabase
+          .from('mini_sites')
+          .update({ views: (currentData.views || 0) + 1 })
+          .eq('exhibitor_id', exhibitorId);
+      }
     } catch (error) {
       console.error('Erreur incrémentation vues:', error);
     }
@@ -877,7 +909,7 @@ export class SupabaseService {
 
   static async getExhibitorForMiniSite(exhibitorId: string): Promise<any | null> {
     if (!this.checkSupabaseConnection()) return null;
-    
+
     const safeSupabase = supabase!;
     try {
       const { data, error } = await safeSupabase
@@ -885,16 +917,36 @@ export class SupabaseService {
         .select('id, company_name, logo_url, description, website, contact_info')
         .eq('id', exhibitorId)
         .single();
-        
+
       if (error) throw error;
-      
+
       return data;
     } catch (error) {
       console.error('Erreur récupération exposant pour mini-site:', error);
       return null;
 	    }
 	  }
-	
+
+  static async getExhibitorByUserId(userId: string): Promise<any | null> {
+    if (!this.checkSupabaseConnection()) return null;
+
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await safeSupabase
+        .from('exhibitors')
+        .select('id, company_name, logo_url, description, website, contact_info, user_id')
+        .eq('user_id', userId)
+        .single();
+
+      if (error) throw error;
+
+      return data;
+    } catch (error) {
+      console.error('Erreur récupération exposant par user_id:', error);
+      return null;
+    }
+  }
+
 	  static async updateExhibitor(exhibitorId: string, data: Partial<Exhibitor>): Promise<void> {
 	    if (!this.checkSupabaseConnection()) return;
 	
