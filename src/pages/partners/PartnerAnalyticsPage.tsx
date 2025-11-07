@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
+import { toast } from 'sonner';
 import {
   ArrowLeft,
   BarChart3,
@@ -87,7 +88,7 @@ export const PartnerAnalyticsPage: React.FC = () => {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
 
-    alert('📊 Rapport d\'analyse exporté avec succès !');
+    toast.success('Rapport d\'analyse exporté avec succès !');
   };
 
   return (

@@ -5,6 +5,7 @@ import { VariantProps } from 'class-variance-authority';
 import useAuthStore from '../../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
+import { toast } from 'sonner';
 
 interface LinkedInAuthButtonProps extends Omit<VariantProps<typeof buttonVariants>, 'variant'> {
   className?: string;
@@ -32,11 +33,12 @@ export const LinkedInAuthButton: React.FC<LinkedInAuthButtonProps> = ({
       }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Erreur lors de la connexion LinkedIn';
-      
+      console.error('Erreur OAuth LinkedIn:', error);
+
       if (onError) {
         onError(errorMessage);
       } else {
-        alert(`❌ ${errorMessage}`);
+        toast.error(errorMessage);
       }
     }
   };

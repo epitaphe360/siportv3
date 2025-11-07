@@ -111,22 +111,22 @@ export const Footer: React.FC = memo(() => {
             <h3 className="text-lg font-semibold mb-6 font-heading">Services</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/register" className="text-gray-400 hover:text-white transition-colors">
+                <Link to={ROUTES.REGISTER} className="text-gray-400 hover:text-white transition-colors">
                   Devenir Exposant
                 </Link>
               </li>
               <li>
-                <Link to="/partnership" className="text-gray-400 hover:text-white transition-colors">
+                <Link to={ROUTES.PARTNERSHIP} className="text-gray-400 hover:text-white transition-colors">
                   Partenariat
                 </Link>
               </li>
               <li>
-                <Link to="/support" className="text-gray-400 hover:text-white transition-colors">
+                <Link to={ROUTES.SUPPORT} className="text-gray-400 hover:text-white transition-colors">
                   Support
                 </Link>
               </li>
               <li>
-                <Link to="/api" className="text-gray-400 hover:text-white transition-colors">
+                <Link to={ROUTES.API} className="text-gray-400 hover:text-white transition-colors">
                   API Documentation
                 </Link>
               </li>
@@ -172,13 +172,13 @@ export const Footer: React.FC = memo(() => {
             © {currentYear} SIPORTS. Tous droits réservés.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link to="/privacy" className="text-white/60 hover:text-white text-sm transition-colors">
+            <Link to={ROUTES.PRIVACY} className="text-white/60 hover:text-white text-sm transition-colors">
               Politique de Confidentialité
             </Link>
-            <Link to="/terms" className="text-white/60 hover:text-white text-sm transition-colors">
+            <Link to={ROUTES.TERMS} className="text-white/60 hover:text-white text-sm transition-colors">
               Conditions d'Utilisation
             </Link>
-            <Link to="/cookies" className="text-white/60 hover:text-white text-sm transition-colors">
+            <Link to={ROUTES.COOKIES} className="text-white/60 hover:text-white text-sm transition-colors">
               Cookies
             </Link>
           </div>

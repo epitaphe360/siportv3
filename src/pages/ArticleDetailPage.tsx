@@ -1,4 +1,4 @@
-import { toast } from 'react-hot-toast';
+import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock, User, Eye, Share2, Bookmark, MessageCircle, Tag, ExternalLink, Download, Printer as Print, Globe, TrendingUp, BookOpen, Heart, Facebook, Twitter, Linkedin } from 'lucide-react';
@@ -440,7 +440,7 @@ export default function ArticleDetailPage() {
                 commentsSection.scrollIntoView({ behavior: 'smooth' });
               } else {
                 // Si pas de section commentaires, ouvrir un modal simple
-                alert('Section commentaires - Fonctionnalité en développement');
+                toast.info('Section commentaires - Fonctionnalité en développement');
               }
             }}> 
               <MessageCircle className="h-4 w-4 mr-2" />

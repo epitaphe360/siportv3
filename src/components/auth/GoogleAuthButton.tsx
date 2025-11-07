@@ -5,6 +5,7 @@ import useAuthStore from '../../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import { VariantProps } from 'class-variance-authority';
+import { toast } from 'sonner';
 
 interface GoogleAuthButtonProps extends VariantProps<typeof buttonVariants> {
   className?: string;
@@ -38,11 +39,12 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
       }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Erreur lors de la connexion Google';
-      
+      console.error('Erreur OAuth Google:', error);
+
       if (onError) {
         onError(errorMessage);
       } else {
-        alert(`❌ ${errorMessage}`);
+        toast.error(errorMessage);
       }
     }
   };

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-// import { toast } from 'react-hot-toast';
+import { toast } from 'sonner';
 import {
   Building2,
   Users,
@@ -325,15 +325,15 @@ export default function PavillonsPage() {
   // Handler functions for pavilion actions
   const handleVirtualTour = (pavilion: Pavilion) => {
     // TODO: Implement real virtual tour navigation or modal
-    alert(`Visite virtuelle lancée pour le pavillon ${pavilion.name}.`);
+    toast.info(`Visite virtuelle lancée pour le pavillon ${pavilion.name}`);
   };
   const handleNetworking = (pavilion: Pavilion) => {
     // TODO: Implement real networking navigation or modal
-    alert(`Networking ouvert pour le pavillon ${pavilion.name}.`);
+    toast.info(`Networking ouvert pour le pavillon ${pavilion.name}`);
   };
   const handleShowProgram = (pavilion: Pavilion) => {
     // TODO: Implement real program navigation or modal
-    alert(`Programme du pavillon ${pavilion.name} affiché.`);
+    toast.info(`Programme du pavillon ${pavilion.name} affiché`);
   };
 
   const [selectedPavilion, setSelectedPavilion] = useState<string | null>(null);
