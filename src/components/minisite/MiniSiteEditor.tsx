@@ -74,6 +74,7 @@ interface Section {
 
 export default function MiniSiteEditor() {
   const { user } = useAuthStore();
+  const [exhibitorId, setExhibitorId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [previewMode, setPreviewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
@@ -356,7 +357,18 @@ export default function MiniSiteEditor() {
       }
 
       try {
-        const miniSite = await SupabaseService.getMiniSite(user.id);
+        // D'abord récupérer l'exhibitor correspondant à l'utilisateur
+        const exhibitor = await SupabaseService.getExhibitorByUserId(user.id);
+        if (!exhibitor) {
+          console.warn('Aucun exposant trouvé pour cet utilisateur');
+          setIsLoading(false);
+          return;
+        }
+
+        setExhibitorId(exhibitor.id);
+
+        // Puis charger le mini-site avec l'exhibitor ID
+        const miniSite = await SupabaseService.getMiniSite(exhibitor.id);
         if (miniSite && miniSite.sections) {
           // Convertir les sections de la DB au format du composant
           const loadedSections = miniSite.sections.map((s: any, index: number) => ({
@@ -381,8 +393,8 @@ export default function MiniSiteEditor() {
   }, [user?.id]);
 
   const handleSave = useCallback(async () => {
-    if (!user?.id) {
-      toast.error('Vous devez être connecté pour sauvegarder');
+    if (!exhibitorId) {
+      toast.error('Vous devez être connecté en tant qu\'exposant pour sauvegarder');
       return;
     }
 
@@ -400,7 +412,7 @@ export default function MiniSiteEditor() {
         published: true
       };
 
-      await SupabaseService.updateMiniSite(user.id, miniSiteData);
+      await SupabaseService.updateMiniSite(exhibitorId, miniSiteData);
       toast.success('💾 Mini-site sauvegardé avec succès');
     } catch (error) {
       console.error('Erreur sauvegarde:', error);
@@ -408,7 +420,7 @@ export default function MiniSiteEditor() {
     } finally {
       setIsSaving(false);
     }
-  }, [user?.id, sections]);
+  }, [exhibitorId, sections]);
 
   const handlePreview = useCallback(() => {
     if (!user?.id) {

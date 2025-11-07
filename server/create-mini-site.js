@@ -149,7 +149,7 @@ app.post('/create-mini-site', authenticate, rateLimit, validateMiniSiteInput, as
     }
 
     const sections = [
-      { type: 'hero', content: { company, description, logo: logoUrl } },
+      { type: 'hero', content: { title: company, subtitle: description, backgroundImage: logoUrl } },
       { type: 'products', content: { products } },
       { type: 'socials', content: { socials } },
       { type: 'documents', content: { documents } },
@@ -158,7 +158,12 @@ app.post('/create-mini-site', authenticate, rateLimit, validateMiniSiteInput, as
     const miniSiteInsert = {
       exhibitor_id: finalExhibitorId,
       theme: 'default',
-      custom_colors: {},
+      custom_colors: {
+        primary: '#1e40af',
+        secondary: '#3b82f6',
+        accent: '#60a5fa',
+        fontFamily: 'Inter'
+      },
       sections,
       published: false,
       views: 0,
