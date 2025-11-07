@@ -2,20 +2,21 @@
 -- À exécuter dans le SQL Editor de Supabase Dashboard
 -- OU via: psql -h db.xxx.supabase.co -U postgres -d postgres -f apply_rls_fix.sql
 
--- Ce script applique la migration: 20251107000001_fix_rls_policies_complete.sql
+-- VERSION 2.0 - Inclut création des tables manquantes
 
-\i migrations/20251107000001_fix_rls_policies_complete.sql
+-- Ce script applique la migration complète: 20251107000002_complete_fix_with_tables.sql
+-- Il crée les tables manquantes ET applique les politiques RLS
 
--- Vérification post-migration
+\i migrations/20251107000002_complete_fix_with_tables.sql
+
+-- Vérification que les tables existent
 SELECT
-    schemaname,
-    tablename,
-    policyname,
-    permissive,
-    roles,
-    cmd,
-    qual,
-    with_check
-FROM pg_policies
-WHERE tablename IN ('registration_requests', 'users', 'mini_sites', 'time_slots', 'news_articles', 'exhibitors', 'products', 'partners')
-ORDER BY tablename, policyname;
+    table_name,
+    CASE
+      WHEN table_type = 'BASE TABLE' THEN '✅ Table exists'
+      ELSE '❌ Missing'
+    END as status
+FROM information_schema.tables
+WHERE table_schema = 'public'
+AND table_name IN ('registration_requests', 'users', 'mini_sites', 'time_slots', 'news_articles', 'exhibitors', 'products', 'partners')
+ORDER BY table_name;
