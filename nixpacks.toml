@@ -1,14 +1,16 @@
 # Nixpacks Configuration for SIPORTS Web Application
 # Force Node.js build only, ignore Deno/mobile apps detection
 
-# Use Node.js 20 (Vite v6 compatible with Node.js 18+)
-# Vite v6.0.0 works perfectly with Node.js 20.6.1+
+# Use Node.js 20 latest (required for eslint, cheerio, jsdom >=20.18.1)
+# Railway default 20.6.1 causes EBADENGINE warnings
 [phases.setup]
-nixPkgs = ["nodejs_20"]
+nixPkgs = ["nodejs-20_x"]
 
-# Install dependencies (use npm install to regenerate lock file after Vite downgrade)
+# Install dependencies with optimizations
 [phases.install]
-cmds = ["npm install --prefer-offline --no-audit"]
+cmds = [
+  "npm ci --prefer-offline --no-audit --loglevel=error || npm install --prefer-offline --no-audit"
+]
 
 # Build the web application with Vite
 [phases.build]
