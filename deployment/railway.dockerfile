@@ -1,5 +1,6 @@
 # Railway Dockerfile pour SIPORTS 2026
-FROM node:18-alpine AS builder
+# Vite v7 requires Node.js 20.19+ or 22.12+
+FROM node:20-alpine AS builder
 
 # Définir le répertoire de travail
 WORKDIR /app

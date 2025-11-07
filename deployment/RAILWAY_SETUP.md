@@ -33,7 +33,7 @@ Railway utilisera automatiquement :
 - ✅ **Build Command**: `npm run build` (automatique)
 - ✅ **Start Command**: `npm run preview`
 - ✅ **Port**: Dynamique via `process.env.PORT`
-- ✅ **Node Version**: 18
+- ✅ **Node Version**: 20 LTS (requis par Vite v7)
 - ✅ **Restart Policy**: ON_FAILURE (10 retries)
 
 ### 3. Configurer les Variables d'Environnement
