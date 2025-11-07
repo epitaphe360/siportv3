@@ -1,0 +1,19 @@
+# Nixpacks Configuration for SIPORTS Web Application
+# Force Node.js build only, ignore Deno/mobile apps detection
+
+# Use Node.js 18 (npm is included with Node.js)
+[phases.setup]
+nixPkgs = ["nodejs_18"]
+
+# Install dependencies (use npm ci for production)
+[phases.install]
+cmds = ["npm ci"]
+
+# Build the web application with Vite
+[phases.build]
+cmds = ["npm run build"]
+
+# Start command for production preview server
+[start]
+cmd = "npm run preview"
+
