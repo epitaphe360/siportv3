@@ -53,22 +53,10 @@ export const useNewsStore = create<NewsState>((set, get) => ({
   fetchNews: async () => {
     set({ isLoading: true });
     try {
+      // Note: Ne plus filtrer par published car la politique RLS le fait déjà
       const { data, error } = await supabase
         .from('news_articles')
-        .select(`
-          id,
-          title,
-          content,
-          excerpt,
-          category,
-          tags,
-          image_url,
-          published,
-          published_at,
-          views,
-          author_id
-        `)
-        .eq('published', true)
+        .select('id, title, content, excerpt, category, tags, image_url, published, published_at, views, author_id')
         .order('published_at', { ascending: false });
 
       if (error) {

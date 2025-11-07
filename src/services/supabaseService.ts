@@ -263,28 +263,28 @@ export class SupabaseService {
       const { data, error } = await safeSupabase
         .from('partners')
         .select(
-          `id, company_name, partner_type, sector, description, logo_url, website, verified, featured, contact_info, partnership_level, contract_value, benefits`
+          `id, name, type, category, sector, description, logo_url, website, country, verified, featured, sponsorship_level, contributions, established_year, employees`
         )
-        .order('partner_type');
+        .order('type');
 
       if (error) throw error;
 
       return (data || []).map((partner: any) => ({
         id: partner.id,
-        name: partner.company_name,
-        type: partner.partner_type,
-        category: partner.sector,
+        name: partner.name,
+        type: partner.type,
+        category: partner.category,
         description: partner.description,
         logo: partner.logo_url,
         website: partner.website,
-        country: partner.contact_info?.country || '',
+        country: partner.country || '',
         sector: partner.sector,
         verified: partner.verified,
         featured: partner.featured,
-        sponsorshipLevel: partner.partnership_level,
-        contributions: partner.benefits || [],
-        establishedYear: null,
-        employees: null
+        sponsorshipLevel: partner.sponsorship_level,
+        contributions: partner.contributions || [],
+        establishedYear: partner.established_year,
+        employees: partner.employees
       }));
     } catch (error) {
       console.error('Erreur lors de la récupération des partenaires:', error);
@@ -499,6 +499,7 @@ export class SupabaseService {
   }
 
   static async updateEvent(eventId: string, eventData: Omit<Event, 'id' | 'registered'>): Promise<Event> {
+    throw new Error('updateEvent temporairement désactivé - schéma incompatible');
     if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
 
     const safeSupabase = supabase!;
@@ -573,6 +574,7 @@ export class SupabaseService {
   }
 
   static async createEvent(eventData: Omit<Event, 'id' | 'registered'>): Promise<Event> {
+    throw new Error('createEvent temporairement désactivé - schéma incompatible');
     if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
 
     const safeSupabase = supabase!;
@@ -629,8 +631,9 @@ export class SupabaseService {
   }
 
   static async getEvents(): Promise<Event[]> {
+    throw new Error('getEvents temporairement désactivé - schéma incompatible');
     if (!this.checkSupabaseConnection()) return [];
-    
+
     const safeSupabase = supabase!;
     try {
       const { data, error } = await safeSupabase
@@ -673,9 +676,14 @@ export class SupabaseService {
         .from('conversations')
         .select(`
           id,
-          participant_ids,
-          conversation_type,
+          participants,
+          type,
           title,
+          description,
+          created_by,
+          last_message_at,
+          is_active,
+          metadata,
           created_at,
           updated_at,
           messages:messages(
@@ -688,7 +696,7 @@ export class SupabaseService {
             sender:sender_id(id, name)
           )
         `)
-        .contains('participant_ids', [userId])
+        .contains('participants', [userId])
         .order('updated_at', { ascending: false });
 
       if (error) throw error;
@@ -703,11 +711,11 @@ export class SupabaseService {
 
         return {
           id: conv.id,
-          participants: conv.participant_ids,
+          participants: conv.participants,
           lastMessage: lastMessage ? {
             id: lastMessage.id,
             senderId: lastMessage.sender.id,
-            receiverId: conv.participant_ids.find((id: string) => id !== lastMessage.sender.id),
+            receiverId: conv.participants.find((id: string) => id !== lastMessage.sender.id),
             content: lastMessage.content,
             type: lastMessage.message_type,
             timestamp: new Date(lastMessage.created_at),
@@ -1355,14 +1363,14 @@ export class SupabaseService {
   }
 
   // ==================== TIME SLOTS ====================
-  static async getTimeSlotsByUser(userId: string): Promise<TimeSlot[]> {
+  static async getTimeSlotsByExhibitor(exhibitorId: string): Promise<TimeSlot[]> {
     if (!this.checkSupabaseConnection()) return [];
     const safeSupabase = supabase!;
     try {
       const { data, error } = await safeSupabase
         .from('time_slots')
         .select('*')
-        .eq('user_id', userId);
+        .eq('exhibitor_id', exhibitorId);
       if (error) throw error;
       return data || [];
     } catch (error) {
@@ -1498,7 +1506,56 @@ export class SupabaseService {
     }
   }
 
+  // ==================== MAPPING HELPERS ====================
+  private static mapUserFromDB(data: any): User {
+    return this.transformUserDBToUser(data);
+  }
+
+  private static mapExhibitorFromDB(data: any): Exhibitor {
+    return this.transformExhibitorDBToExhibitor(data);
+  }
+
+  private static mapProductFromDB(data: any): Product {
+    return {
+      id: data.id,
+      exhibitorId: data.exhibitor_id,
+      name: data.name,
+      description: data.description,
+      category: data.category,
+      images: data.images || [],
+      specifications: data.specifications,
+      price: data.price,
+      featured: data.featured || false
+    };
+  }
+
   // ==================== USERS ====================
+
+  static async getUsers(): Promise<User[]> {
+    if (!this.checkSupabaseConnection()) {
+      console.warn('⚠️ Supabase non configuré');
+      return [];
+    }
+
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await safeSupabase
+        .from('users')
+        .select('*')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.warn('Erreur lors de la récupération des utilisateurs:', error.message);
+        return [];
+      }
+
+      return (data || []).map(this.transformUserDBToUser);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des utilisateurs:', error);
+      return [];
+    }
+  }
 
   static async createUser(userData: Partial<User>): Promise<User> {
     if (!this.checkSupabaseConnection()) {
@@ -1560,25 +1617,20 @@ export class SupabaseService {
     const { data, error } = await (safeSupabase as any)
       .from('partners')
       .insert([{
-        user_id: partnerData.userId,
-        organization_name: partnerData.organizationName,
-        partner_type: partnerData.partnerType,
+        name: partnerData.name,
+        type: partnerData.type,
+        category: partnerData.category,
         sector: partnerData.sector,
-        country: partnerData.country,
-        website: partnerData.website,
         description: partnerData.description,
-        contact_name: partnerData.contactName,
-        contact_email: partnerData.contactEmail,
-        contact_phone: partnerData.contactPhone,
-        contact_position: partnerData.contactPosition,
+        website: partnerData.website,
+        country: partnerData.country,
         sponsorship_level: partnerData.sponsorshipLevel,
-        contract_value: partnerData.contractValue,
         contributions: partnerData.contributions || [],
+        logo_url: partnerData.logo,
         established_year: partnerData.establishedYear,
         employees: partnerData.employees,
-        logo_url: partnerData.logo,
-        featured: partnerData.featured || false,
-        verified: partnerData.verified || false
+        verified: partnerData.verified || false,
+        featured: partnerData.featured || false
       }])
       .select()
       .single();
@@ -1588,27 +1640,20 @@ export class SupabaseService {
     // Mapper les données de la DB au format Partner
     return {
       id: data.id,
-      userId: data.user_id,
-      organizationName: data.organization_name,
-      partnerType: data.partner_type,
+      name: data.name,
+      type: data.type,
+      category: data.category,
       sector: data.sector,
-      country: data.country,
-      website: data.website,
       description: data.description,
-      contactName: data.contact_name,
-      contactEmail: data.contact_email,
-      contactPhone: data.contact_phone,
-      contactPosition: data.contact_position,
+      website: data.website,
+      country: data.country,
       sponsorshipLevel: data.sponsorship_level,
-      contractValue: data.contract_value,
       contributions: data.contributions || [],
+      logo: data.logo_url,
       establishedYear: data.established_year,
       employees: data.employees,
-      logo: data.logo_url,
-      featured: data.featured || false,
       verified: data.verified || false,
-      createdAt: new Date(data.created_at),
-      updatedAt: new Date(data.updated_at)
+      featured: data.featured || false
     };
   }
 

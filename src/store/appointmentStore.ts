@@ -39,9 +39,9 @@ interface AppointmentState {
 async function syncWithMiniSite(slot: TimeSlot, availableCount: number): Promise<void> {
   try {
     // 1. Récupérer le mini-site de l'exposant
-    const miniSite = await SupabaseService.getMiniSite(slot.userId);
+    const miniSite = await SupabaseService.getMiniSite(slot.exhibitorId);
     if (!miniSite) {
-      console.log(`ℹ️ Pas de mini-site pour l'exposant ${slot.userId}`);
+      console.log(`ℹ️ Pas de mini-site pour l'exposant ${slot.exhibitorId}`);
       return;
     }
 
@@ -60,7 +60,7 @@ async function syncWithMiniSite(slot: TimeSlot, availableCount: number): Promise
       }
     };
 
-    await SupabaseService.updateMiniSite(slot.userId, updatedData);
+    await SupabaseService.updateMiniSite(slot.exhibitorId, updatedData);
 
     console.log(`✅ Mini-site synchronisé: ${availableCount} créneaux disponibles`);
 
@@ -239,8 +239,8 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
         const { data, error } = await supabaseClient
           .from('time_slots')
           .select('*')
-          .eq('user_id', exhibitorId)
-          .order('date', { ascending: true })
+          .eq('exhibitor_id', exhibitorId)
+          .order('slot_date', { ascending: true })
           .order('start_time', { ascending: true });
 
         if (error) throw error;
