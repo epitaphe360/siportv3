@@ -307,7 +307,7 @@ Votre projet contient déjà :
 
 ```
 ✅ railway.json       → Configuration Railway
-✅ nixpacks.toml      → Build avec Node.js 20
+✅ nixpacks.toml      → Build avec Node.js 22
 ✅ .nixpacksignore    → Exclusions de fichiers
 ✅ .dockerignore      → Optimisations Docker
 ✅ package.json       → engines: Node 20+
@@ -329,7 +329,7 @@ Railway détectera automatiquement :
 
 Railway va **automatiquement** :
 1. Cloner votre repo GitHub
-2. Installer Node.js 20
+2. Installer Node.js 22
 3. Exécuter `npm ci`
 4. Exécuter `npm run build`
 5. Démarrer `npm run preview`
@@ -344,7 +344,7 @@ Dans Railway Dashboard :
 **Build attendu (environ 2-3 minutes) :**
 
 ```
-✅ Installing Node.js 20.x
+✅ Installing Node.js 22.x
 ✅ npm ci (45s)
 ✅ npm run build (1m 30s)
    → Vite v7.1.7 building for production...
@@ -557,7 +557,7 @@ Upgrader quand :
 **Solution :**
 ```bash
 # Vérifier nixpacks.toml
-# Doit contenir: nixPkgs = ["nodejs_20"]
+# Doit contenir: nixPkgs = ["nodejs_22"]
 ```
 
 ### 3. "502 Bad Gateway"

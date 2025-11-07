@@ -1,10 +1,11 @@
 # Nixpacks Configuration for SIPORTS Web Application
 # Force Node.js build only, ignore Deno/mobile apps detection
 
-# Use Node.js 20 LTS (required by Vite v7.1.7+)
+# Use Node.js 22 (required by Vite v7.1.7+)
 # Vite v7 requires Node.js 20.19+ or 22.12+
+# Using Node.js 22 to ensure we get a recent enough version
 [phases.setup]
-nixPkgs = ["nodejs_20"]
+nixPkgs = ["nodejs_22"]
 
 # Install dependencies (use npm ci for production)
 [phases.install]
