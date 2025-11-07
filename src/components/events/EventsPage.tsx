@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback, memo } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { toast } from 'sonner';
 import {
   Calendar,
   Clock,
@@ -15,12 +17,12 @@ import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { useEventStore } from '../../store/eventStore';
 import useAuthStore from '../../store/authStore';
-import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import { motion } from 'framer-motion';
 
 // OPTIMIZATION: Memoized EventsPage to prevent unnecessary re-renders
 export default memo(function EventsPage() {
+  const navigate = useNavigate();
   const {
     events,
     featuredEvents,
@@ -109,18 +111,22 @@ export default memo(function EventsPage() {
 
   const handleEventRegistration = async (eventId: string) => {
     if (!isAuthenticated || !user) {
-      alert('Vous devez être connecté pour vous inscrire à un événement.');
+      toast.error('Vous devez être connecté pour vous inscrire à un événement');
+      navigate(`${ROUTES.LOGIN}?redirect=${encodeURIComponent(ROUTES.EVENTS)}`);
       return;
     }
 
     try {
       if (registeredEvents.includes(eventId)) {
         await unregisterFromEvent(eventId);
+        toast.success('Désinscription réussie');
       } else {
         await registerForEvent(eventId);
+        toast.success('Inscription à l\'événement réussie !');
       }
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Une erreur est survenue lors de l\'inscription.');
+      console.error('Erreur inscription événement:', error);
+      toast.error(error instanceof Error ? error.message : 'Une erreur est survenue lors de l\'inscription');
     }
   };
 

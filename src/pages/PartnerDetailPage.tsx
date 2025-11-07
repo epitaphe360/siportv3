@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { toast } from 'sonner';
 import { ROUTES } from '../lib/routes';
 import { 
   ArrowLeft,
@@ -857,7 +858,7 @@ export default function PartnerDetailPage() {
                     variant="default"
                     className="flex-1"
                     onClick={() => {
-                      alert('Message envoyé avec succès !');
+                      toast.success('Message envoyé avec succès !');
                       setShowContactModal(false);
                     }}
                   >
