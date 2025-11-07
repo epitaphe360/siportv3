@@ -15,7 +15,7 @@
 
 ### Étape 3 : Copier-Coller la Migration
 
-1. Ouvrir le fichier : `supabase/migrations/20251107000004_fix_rls_policies_only.sql` ⭐ **VERSION FINALE v4**
+1. Ouvrir le fichier : `supabase/migrations/20251107000005_fix_rls_policies_type_column.sql` ⭐ **VERSION FINALE v5**
 2. **Sélectionner TOUT le contenu** (Ctrl+A)
 3. **Copier** (Ctrl+C)
 4. Retourner dans le SQL Editor de Supabase
@@ -85,7 +85,8 @@ Après l'application de la migration :
 
 Pour plus de détails sur les corrections apportées, consulter :
 - `CORRECTION_API_ERRORS.md` - Documentation complète
-- `supabase/migrations/20251107000004_fix_rls_policies_only.sql` - Script SQL v4 (VERSION FINALE - corrige l'erreur v3)
+- `supabase/migrations/20251107000005_fix_rls_policies_type_column.sql` - Script SQL v5 (VERSION FINALE - corrige users.type)
+- `NOTICE_MIGRATION_V5.md` - Explication des erreurs v3/v4
 
 ---
 
