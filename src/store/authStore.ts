@@ -35,7 +35,7 @@ interface AuthState {
   isLinkedInLoading: boolean;
 
   // Actions
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, options?: { rememberMe?: boolean }) => Promise<void>;
   signUp: (credentials: { email: string, password: string }, profileData: Partial<UserProfile>) => Promise<{ error: Error | null }>;
   register: (userData: RegistrationData) => Promise<void>;
   loginWithGoogle: () => Promise<void>;

@@ -36,14 +36,10 @@ export default function LoginPage() {
 
     try {
       // ✅ Passer l'option rememberMe au login
-      const result = await login(email, password, { rememberMe });
+      await login(email, password, { rememberMe });
 
-      // BUGFIX: Only navigate if login successful and user exists
-      if (result && result.user) {
-        navigate(ROUTES.DASHBOARD);
-      } else {
-        setError('Email ou mot de passe incorrect');
-      }
+      // Si on arrive ici, la connexion a réussi (pas d'exception levée)
+      navigate(ROUTES.DASHBOARD);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Email ou mot de passe incorrect';
       setError(errorMessage);
@@ -238,7 +234,7 @@ export default function LoginPage() {
                 size="sm"
                 onClick={() => {
                   setEmail('admin@siports.com');
-                  setPassword('demo123');
+                  setPassword('Admin123!');
                 }}
                 className="text-xs"
               >
@@ -250,7 +246,7 @@ export default function LoginPage() {
                 size="sm"
                 onClick={() => {
                   setEmail('exposant@siports.com');
-                  setPassword('demo123');
+                  setPassword('Expo123!');
                 }}
                 className="text-xs"
               >
@@ -262,7 +258,7 @@ export default function LoginPage() {
                 size="sm"
                 onClick={() => {
                   setEmail('visiteur@siports.com');
-                  setPassword('demo123');
+                  setPassword('Visit123!');
                 }}
                 className="text-xs"
               >
@@ -274,7 +270,7 @@ export default function LoginPage() {
                 size="sm"
                 onClick={() => {
                   setEmail('partenaire@siports.com');
-                  setPassword('demo123');
+                  setPassword('Partner123!');
                 }}
                 className="text-xs"
               >
