@@ -55,7 +55,7 @@ export const Header: React.FC = memo(() => {
           <Link to={ROUTES.HOME} className="flex items-center">
             <div className="h-12 w-auto">
               <img
-                src="./assets/logo.jpeg"
+                src="/salon-logo01.png"
                 alt="SIPORTS Logo"
                 className="h-full w-full object-contain"
                 onError={(e) => {
