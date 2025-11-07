@@ -263,28 +263,28 @@ export class SupabaseService {
       const { data, error } = await safeSupabase
         .from('partners')
         .select(
-          `id, name, type, category, description, logo_url, website, country, sector, verified, featured, sponsorship_level, contributions, established_year, employees`
+          `id, company_name, partner_type, sector, description, logo_url, website, verified, featured, contact_info, partnership_level, contract_value, benefits`
         )
-        .order('type');
+        .order('partner_type');
 
       if (error) throw error;
 
       return (data || []).map((partner: any) => ({
         id: partner.id,
-        name: partner.name,
-        type: partner.type,
-        category: partner.category,
+        name: partner.company_name,
+        type: partner.partner_type,
+        category: partner.sector,
         description: partner.description,
         logo: partner.logo_url,
         website: partner.website,
-        country: partner.country,
+        country: partner.contact_info?.country || '',
         sector: partner.sector,
         verified: partner.verified,
         featured: partner.featured,
-        sponsorshipLevel: partner.sponsorship_level,
-        contributions: partner.contributions || [],
-        establishedYear: partner.established_year,
-        employees: partner.employees
+        sponsorshipLevel: partner.partnership_level,
+        contributions: partner.benefits || [],
+        establishedYear: null,
+        employees: null
       }));
     } catch (error) {
       console.error('Erreur lors de la récupération des partenaires:', error);
