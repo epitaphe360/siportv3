@@ -28,6 +28,7 @@ import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { motion } from 'framer-motion';
 import { CONFIG } from '../lib/config';
+import { ROUTES } from '../lib/routes';
 import { useExhibitorStore } from '../store/exhibitorStore';
 import useAuthStore from '../store/authStore';
 import { toast } from 'sonner';
@@ -143,7 +144,7 @@ export default function ExhibitorDetailPage() {
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-4">
-            <Link to="/exhibitors">
+            <Link to={ROUTES.EXHIBITORS}>
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour aux exposants

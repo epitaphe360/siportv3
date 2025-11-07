@@ -9,6 +9,7 @@ import { useNewsStore } from '../store/newsStore';
 import type { NewsArticle } from '../store/newsStore';
 import { motion } from 'framer-motion';
 import ArticleAudioPlayer from '../components/news/ArticleAudioPlayer';
+import { ROUTES } from '../lib/routes';
 
 // Fonction pour construire le texte complet de l'article pour l'audio
 const getFullArticleText = (article: NewsArticle): string => {
@@ -187,8 +188,8 @@ export default function ArticleDetailPage() {
       <div className="bg-gray-50 border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between mb-4">
-            <Link to="/news">
-              <Button variant="ghost" size="sm"> 
+            <Link to={ROUTES.NEWS}>
+              <Button variant="ghost" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour aux actualités
               </Button>

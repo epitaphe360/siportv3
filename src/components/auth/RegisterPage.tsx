@@ -938,7 +938,7 @@ export default function RegisterPage() {
               <p className="text-sm text-gray-600">
                 Vous avez déjà un compte ?{' '}
                 <Link
-                  to="/login"
+                  to={ROUTES.LOGIN}
                   className="font-medium text-blue-600 hover:text-blue-500"
                 >
                   Se connecter

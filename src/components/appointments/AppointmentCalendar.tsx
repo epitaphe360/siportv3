@@ -323,7 +323,7 @@ export default function AppointmentCalendar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Bouton de retour */}
         <div className="mb-6">
-          <Link to="/dashboard">
+          <Link to={ROUTES.DASHBOARD}>
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Retour au Tableau de Bord

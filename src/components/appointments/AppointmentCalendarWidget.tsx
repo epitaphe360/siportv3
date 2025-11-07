@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { ROUTES } from '../../lib/routes';
 import { Calendar, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAppointmentStore } from '../../store/appointmentStore';
 import { Button } from '../ui/Button';
@@ -60,7 +61,7 @@ export const AppointmentCalendarWidget: React.FC = () => {
             <Calendar className="mr-2 h-5 w-5" />
             Calendrier des Rendez-vous
           </h3>
-          <Link to="/appointments">
+          <Link to={ROUTES.APPOINTMENTS}>
             <Button variant="ghost" size="sm" className="text-siports-primary">
               Voir tout
             </Button>

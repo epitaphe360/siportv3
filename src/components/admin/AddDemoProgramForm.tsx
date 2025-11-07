@@ -90,7 +90,7 @@ export default function AddDemoProgramPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center space-x-4 mb-4">
-            <Link to="/admin/pavilions">
+            <Link to={ROUTES.ADMIN_PAVILIONS}>
               <Button variant="outline" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour aux Pavillons
@@ -339,7 +339,7 @@ export default function AddDemoProgramPage() {
 
           {/* Actions */}
           <div className="flex justify-end space-x-4">
-            <Link to="/admin/pavilions">
+            <Link to={ROUTES.ADMIN_PAVILIONS}>
               <Button variant="outline" type="button">
                 Annuler
               </Button>

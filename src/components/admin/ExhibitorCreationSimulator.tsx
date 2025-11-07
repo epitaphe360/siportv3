@@ -22,6 +22,7 @@ import { SupabaseService } from '../../services/supabaseService';
 import useAuthStore from '../../store/authStore';
 import { useExhibitorStore } from '../../store/exhibitorStore';
 import { motion } from 'framer-motion';
+import { ROUTES } from '../../lib/routes';
 
 interface NewExhibitorForm {
   // Informations entreprise
@@ -259,7 +260,7 @@ export default function ExhibitorCreationSimulator() {
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4">
-            <Link to="/dashboard">
+            <Link to={ROUTES.DASHBOARD}>
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour au Tableau de Bord Admin

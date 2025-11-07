@@ -4,6 +4,7 @@ import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { Link, Navigate } from 'react-router-dom';
 import useAuthStore from '../../store/authStore';
+import { ROUTES } from '../../lib/routes';
 import { useDashboardStore } from '../../store/dashboardStore';
 import { useRef } from 'react';
 import { QRCodeCanvas as QRCode } from 'qrcode.react';
@@ -130,7 +131,7 @@ export default function ExhibitorDashboard() {
   }, [user?.status]); // Refetch when user status changes
 
   if (user?.status === 'pending') {
-    return <Navigate to="/pending-account" replace />;
+    return <Navigate to={ROUTES.PENDING_ACCOUNT} replace />;
   }
 
   // Fonction pour télécharger le QR code
@@ -253,7 +254,7 @@ export default function ExhibitorDashboard() {
                 </p>
               </div>
               <div className="space-y-2">
-                <Link to="/appointments">
+                <Link to={ROUTES.APPOINTMENTS}>
                   <Button variant="outline" className="w-full">
                     Voir tous les rendez-vous
                   </Button>
@@ -290,7 +291,7 @@ export default function ExhibitorDashboard() {
                 </p>
               </div>
               <div className="space-y-2">
-                <Link to="/chat">
+                <Link to={ROUTES.CHAT}>
                   <Button variant="outline" className="w-full">
                     Ouvrir le chat
                   </Button>
@@ -399,7 +400,7 @@ export default function ExhibitorDashboard() {
 
       {/* Bouton d'accès rapide mini-site */}
       <div className="max-w-7xl mx-auto px-4 mt-4 flex justify-end">
-        <Link to="/minisite-creation">
+        <Link to={ROUTES.MINISITE_CREATION}>
           <Button variant="default" size="lg">
             🎨 Créer / Modifier mon mini-site exposant
           </Button>

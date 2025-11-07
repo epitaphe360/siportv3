@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
+import { ROUTES } from '../../../lib/routes';
 import { ArrowLeft, MessageCircle, Calendar } from 'lucide-react';
 import { Button } from '../../ui/Button';
 
@@ -26,7 +27,7 @@ export const ExhibitorHeader: React.FC<ExhibitorHeaderProps> = memo(({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Back Button */}
-          <Link to="/exhibitors">
+          <Link to={ROUTES.EXHIBITORS}>
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Retour aux exposants

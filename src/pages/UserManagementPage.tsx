@@ -27,6 +27,7 @@ import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { motion } from 'framer-motion';
 import { CONFIG, getUserActionMessage } from '../lib/config';
+import { ROUTES } from '../lib/routes';
 
 interface User {
   id: string;
@@ -294,7 +295,7 @@ export default function UserManagementPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4">
-            <Link to="/dashboard">
+            <Link to={ROUTES.DASHBOARD}>
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour au Tableau de Bord Admin

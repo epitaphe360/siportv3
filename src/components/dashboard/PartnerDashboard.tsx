@@ -20,6 +20,7 @@ import { useDashboardStore } from '../../store/dashboardStore';
 import useAuthStore from '../../store/authStore';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { ROUTES } from '../../lib/routes';
 import { CreditCard as Edit } from 'lucide-react';
 import { getVisitorDisplayName } from '../../utils/visitorHelpers';
 import { useDashboardStats } from '../../hooks/useDashboardStats';
@@ -45,7 +46,7 @@ export default function PartnerDashboard() {
           <p className="text-gray-600 mb-6">
             Ce tableau de bord est réservé aux partenaires SIPORTS 2026.
           </p>
-          <Link to="/dashboard">
+          <Link to={ROUTES.DASHBOARD}>
             <Button variant="primary" className="w-full">
               Retour au Tableau de Bord
             </Button>

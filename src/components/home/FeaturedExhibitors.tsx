@@ -224,7 +224,7 @@ export const FeaturedExhibitors: React.FC = () => {
           viewport={{ once: true }}
           className="text-center"
         >
-          <Link to="/exhibitors">
+          <Link to={ROUTES.EXHIBITORS}>
             <Button size="lg">
               Voir Tous les Exposants
               <ArrowRight className="ml-2 h-5 w-5" />

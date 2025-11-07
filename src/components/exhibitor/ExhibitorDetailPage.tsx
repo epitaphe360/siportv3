@@ -89,7 +89,7 @@ export default function ExhibitorDetailPage() {
           <p className="text-gray-600 mb-4">
             L'exposant avec l'ID "{id}" n'existe pas ou a été supprimé.
           </p>
-          <Link to="/exhibitors">
+          <Link to={ROUTES.EXHIBITORS}>
             <Button>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Retour aux exposants
@@ -121,7 +121,7 @@ export default function ExhibitorDetailPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Bouton de retour */}
-            <Link to="/exhibitors">
+            <Link to={ROUTES.EXHIBITORS}>
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour aux exposants
