@@ -101,13 +101,26 @@ export default function LoginPage() {
         <Card className="p-8">
           {/* Logo and Title */}
           <div className="text-center mb-8">
-            <div className="flex items-center justify-center space-x-2 mb-4">
-              <div className="bg-blue-600 p-3 rounded-lg">
-                <Anchor className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <span className="text-2xl font-bold text-gray-900">SIPORTS</span>
-                <span className="text-sm text-gray-500 block leading-none">2026</span>
+            <div className="flex items-center justify-center mb-4">
+              <img 
+                src="/salon-logo01.png" 
+                alt="SIPORTS Logo" 
+                className="h-20 w-auto object-contain"
+                onError={(e) => {
+                  // Fallback to icon if image fails to load
+                  e.currentTarget.style.display = 'none';
+                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.style.display = 'flex';
+                }}
+              />
+              <div className="items-center justify-center space-x-2 hidden">
+                <div className="bg-blue-600 p-3 rounded-lg">
+                  <Anchor className="h-8 w-8 text-white" />
+                </div>
+                <div>
+                  <span className="text-2xl font-bold text-gray-900">SIPORTS</span>
+                  <span className="text-sm text-gray-500 block leading-none">2026</span>
+                </div>
               </div>
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
