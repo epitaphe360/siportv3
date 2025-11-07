@@ -8,9 +8,10 @@ interface ChatState {
   activeConversation: string | null;
   messages: Record<string, ChatMessage[]>;
   isLoading: boolean;
+  error: string | null;
   chatBot: ChatBot;
   onlineUsers: string[];
-  
+
   // Actions
   fetchConversations: () => Promise<void>;
   setActiveConversation: (conversationId: string) => void;
@@ -69,11 +70,12 @@ export const useChatStore = create<ChatState>((set, get) => ({
   activeConversation: null,
   messages: {},
   isLoading: false,
+  error: null,
   chatBot: mockChatBot,
   onlineUsers: [],
 
   fetchConversations: async () => {
-    set({ isLoading: true });
+    set({ isLoading: true, error: null });
     try {
       // Récupérer l'utilisateur connecté depuis authStore
       const authStoreModule = await import('./authStore');
@@ -94,7 +96,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
       });
     } catch (error) {
       console.error('❌ Error fetching conversations:', error);
-      set({ isLoading: false });
+      set({ isLoading: false, error: error instanceof Error ? error.message : 'Erreur lors du chargement des conversations' });
     }
   },
 

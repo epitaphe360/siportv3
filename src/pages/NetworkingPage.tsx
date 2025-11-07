@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import {
@@ -15,11 +15,13 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
 import { CONFIG } from '@/lib/config';
+import { ROUTES } from '@/lib/routes';
 import UserProfileView from '@/components/profile/UserProfileView';
 import { useAppointmentStore } from '@/store/appointmentStore';
 import { SupabaseService } from '@/services/supabaseService';
 
 export default function NetworkingPage() {
+  const navigate = useNavigate();
   const { user, isAuthenticated } = useAuthStore();
   const {
     recommendations,
@@ -123,7 +125,7 @@ export default function NetworkingPage() {
   const handleBookAppointment = (profile: User) => {
     if (!isAuthenticated) {
       toast.error('Connexion requise pour prendre rendez-vous');
-      window.location.href = '/login?redirect=/networking?action=book_appointment';
+      navigate(`${ROUTES.LOGIN}?redirect=${encodeURIComponent('/networking?action=book_appointment')}`);
       return;
     }
     setSelectedExhibitorForRDV(profile);

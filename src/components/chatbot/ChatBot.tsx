@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  MessageCircle, 
-  Send, 
-  X, 
-  Bot, 
+import { useNavigate } from 'react-router-dom';
+import {
+  MessageCircle,
+  Send,
+  X,
+  Bot,
   User,
   Minimize2,
   Maximize2,
@@ -22,6 +23,7 @@ import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
 import useAuthStore from '../../store/authStore';
+import { ROUTES } from '../../lib/routes';
 import toast from 'react-hot-toast';
 
 interface ChatMessage {
@@ -45,6 +47,7 @@ interface ChatBotProps {
 }
 
 export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
+  const navigate = useNavigate();
   const { user, isAuthenticated } = useAuthStore();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -583,13 +586,12 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
       // Vérifier l'authentification pour les pages protégées
       if (action === '/appointments' && !isAuthenticated) {
         // Rediriger vers la page de connexion avec retour vers les RDV
-        window.location.href = '/login?redirect=/appointments';
+        navigate(`${ROUTES.LOGIN}?redirect=${encodeURIComponent(ROUTES.APPOINTMENTS)}`);
         return;
       }
-      
+
       // Navigation interne
-      window.location.hash = action;
-      window.location.pathname = action;
+      navigate(action);
     } else {
       // Action personnalisée
       const actionMessages = {
