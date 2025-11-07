@@ -475,7 +475,7 @@ export default function PartnersPage() {
                             
                             <div className="flex items-center space-x-3">
                               <Link to={`/partners/${partner.id}`}>
-                                <Button variant="outline" size="sm" onClick={() => window.location.href = `/partners/${partner.id}`}>
+                                <Button variant="outline" size="sm">
                                   En savoir plus
                                 </Button>
                               </Link>
