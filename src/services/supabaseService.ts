@@ -239,7 +239,7 @@ export class SupabaseService {
           contact_info,
           products:products(id, exhibitor_id, name, description, category, images, specifications, price, featured),
           mini_site:mini_sites(theme, custom_colors, sections, published, views, last_updated),
-          user:users(profile->>standNumber) // Joindre la table users pour récupérer le standNumber
+          user:users!exhibitors_user_id_fkey(profile)
         `);
 
       if (exhibitorsError) throw exhibitorsError;
@@ -265,7 +265,7 @@ export class SupabaseService {
         .select(
           `id, name, type, category, description, logo_url, website, country, sector, verified, featured, sponsorship_level, contributions, established_year, employees`
         )
-        .order('type', { ascending: true });
+        .order('type');
 
       if (error) throw error;
 
