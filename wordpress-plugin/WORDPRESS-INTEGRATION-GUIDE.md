@@ -457,10 +457,114 @@ echo "✅ Déploiement terminé!"
 
 ---
 
+## 🎨 DESIGN SYSTEM ET PERSONNALISATION
+
+### Palette de Couleurs
+
+Le plugin WordPress utilise les **mêmes couleurs que l'application React** pour assurer une cohérence visuelle parfaite :
+
+#### Couleurs Principales
+
+```css
+--siports-primary: #1B365D;       /* Bleu marine profond */
+--siports-primary-dark: #0F2A44;  /* Bleu nuit */
+--siports-primary-light: #2E5984; /* Bleu océan */
+--siports-secondary: #FF6B35;     /* Orange énergique */
+--siports-accent: #4A90A4;        /* Bleu turquoise */
+--siports-gold: #D4AF37;          /* Or maritime */
+```
+
+#### Couleurs Complémentaires
+
+```css
+--siports-light: #87CEEB;         /* Bleu ciel */
+--siports-dark: #0F2A44;          /* Bleu nuit */
+--siports-teal: #006D77;          /* Bleu-vert océan */
+--siports-coral: #FF7F50;         /* Corail pour accents */
+```
+
+#### Nuances de Gris
+
+```css
+--siports-gray-50: #F9FAFB;
+--siports-gray-100: #F8F9FA;
+--siports-gray-200: #E9ECEF;
+--siports-gray-300: #DEE2E6;
+--siports-gray-600: #6C757D;
+--siports-gray-800: #343A40;
+```
+
+### Personnalisation des Couleurs
+
+Pour personnaliser les couleurs dans votre thème WordPress, ajoutez ce CSS :
+
+```css
+/* Dans votre fichier CSS de thème */
+:root {
+    /* Remplacer la couleur primaire */
+    --siports-primary: #VOTRE_COULEUR !important;
+    --siports-primary-dark: #VOTRE_COULEUR_FONCÉE !important;
+}
+```
+
+### Synchronisation avec React
+
+Les couleurs CSS WordPress sont **automatiquement synchronisées** avec `tailwind.config.js` de l'application React. Toute mise à jour dans le fichier de configuration Tailwind sera reflétée dans les shortcodes WordPress après un rebuild.
+
+**Fichiers CSS à connaître :**
+
+- `assets/css/siports-global.css` - Variables CSS globales
+- `assets/css/page-exposants.css` - Styles page exposants
+- `assets/siports.css` - Styles des shortcodes
+
+### Typographie
+
+```css
+--siports-font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+--siports-font-serif: Georgia, Cambria, 'Times New Roman', Times, serif;
+```
+
+**Correspondance avec React :**
+- React utilise : `'Inter', 'Poppins'` (Google Fonts)
+- WordPress utilise : System fonts par défaut
+
+### Ombres et Effets
+
+```css
+--siports-shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.06);
+--siports-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+--siports-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+--siports-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+--siports-shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.20);
+```
+
+### Rayons de Bordure
+
+```css
+--siports-radius-sm: 6px;
+--siports-radius: 12px;
+--siports-radius-lg: 16px;
+--siports-radius-xl: 24px;
+--siports-radius-full: 9999px;
+```
+
+### Classes Utilitaires
+
+Le plugin fournit des classes CSS prêtes à l'emploi :
+
+- `.siports-btn-primary` - Bouton primaire bleu marine
+- `.siports-btn-secondary` - Bouton secondaire orange
+- `.siports-card` - Carte avec ombre et bordures arrondies
+- `.siports-grid-2` / `.siports-grid-3` / `.siports-grid-4` - Grilles responsive
+- `.siports-hero` - Section hero avec dégradé
+
+---
+
 ## 📚 RESSOURCES
 
 - **Documentation React** : `/home/user/siportv3/README.md`
 - **Documentation Supabase** : https://supabase.com/docs
+- **Tailwind Config** : `/home/user/siportv3/tailwind.config.js`
 - **Support** : support@siportevent.com
 - **GitHub** : https://github.com/siports/siportv3
 

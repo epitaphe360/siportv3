@@ -7,17 +7,20 @@
    VARIABLES CSS GLOBALES
    ============================================ */
 :root {
-    /* Couleurs principales */
-    --siports-primary: #0066CC;
-    --siports-primary-dark: #004B99;
-    --siports-primary-light: #3385D6;
-    --siports-secondary: #FF6B35;
-    --siports-accent: #00D4AA;
-    --siports-accent-light: #33DEBF;
+    /* Couleurs principales - Synchronisées avec tailwind.config.js */
+    --siports-primary: #1B365D;       /* Bleu marine profond (siports-primary) */
+    --siports-primary-dark: #0F2A44;  /* Bleu nuit (siports-dark) */
+    --siports-primary-light: #2E5984; /* Bleu océan (siports-secondary) */
+    --siports-secondary: #FF6B35;     /* Orange énergique (conservé) */
+    --siports-accent: #4A90A4;        /* Bleu turquoise (siports-accent) */
+    --siports-accent-light: #87CEEB;  /* Bleu ciel (siports-light) */
+    --siports-gold: #D4AF37;          /* Or maritime (nouveau) */
+    --siports-teal: #006D77;          /* Bleu-vert océan (nouveau) */
+    --siports-coral: #FF7F50;         /* Corail pour accents (nouveau) */
 
     /* Couleurs neutres */
-    --siports-dark: #1A2332;
-    --siports-dark-light: #2C3E50;
+    --siports-dark: #0F2A44;          /* Bleu nuit */
+    --siports-dark-light: #1B365D;    /* Bleu marine */
     --siports-white: #FFFFFF;
     --siports-black: #000000;
 

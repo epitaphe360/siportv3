@@ -21,7 +21,7 @@
 
 .siports-admin-card h3 {
     margin: 0 0 10px 0;
-    color: #1e40af;
+    color: #1B365D;
     font-size: 18px;
 }
 
@@ -39,7 +39,7 @@
 
 .siports-admin-preview h2 {
     margin-top: 0;
-    color: #1e40af;
+    color: #1B365D;
 }
 
 .shortcode-preview {
@@ -73,7 +73,7 @@
 }
 
 .shortcode-item h3 {
-    color: #1e40af;
+    color: #1B365D;
     margin-bottom: 10px;
 }
 
@@ -100,7 +100,7 @@
 
 .shortcode-examples h2 {
     margin-top: 0;
-    color: #1e40af;
+    color: #1B365D;
 }
 
 .shortcode-examples textarea {
@@ -122,7 +122,7 @@
 
 .siports-admin-actions h2 {
     margin-top: 0;
-    color: #1e40af;
+    color: #1B365D;
 }
 
 .siports-admin-actions .button {
