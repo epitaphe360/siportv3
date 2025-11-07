@@ -1,493 +1,567 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { useAuthStore } from '../../store/authStore';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { Label } from '../../components/ui/Label';
+import { Textarea } from '../../components/ui/Textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/Select';
 import { ROUTES } from '../../lib/routes';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Building, Mail, Lock, User, Phone, Briefcase, CheckCircle, XCircle, Globe, AlertCircle, FileText } from 'lucide-react';
-import { COUNTRIES, JOB_POSITIONS } from '../../data/countries';
+import { motion } from 'framer-motion';
+import { Building, Mail, Lock, Phone, Briefcase, Globe, AlertCircle, Languages, Save } from 'lucide-react';
+import { countries } from '../../utils/countries';
+import { PasswordStrengthIndicator } from '../../components/ui/PasswordStrengthIndicator';
+import { ProgressSteps } from '../../components/ui/ProgressSteps';
+import { MultiSelect } from '../../components/ui/MultiSelect';
+import { PreviewModal } from '../../components/ui/PreviewModal';
+import { useFormAutoSave } from '../../hooks/useFormAutoSave';
+import { useEmailValidation } from '../../hooks/useEmailValidation';
+import { translations, Language } from '../../utils/translations';
+import { toast } from 'react-hot-toast';
+
 
 const MAX_DESCRIPTION_LENGTH = 500;
 
+// Schéma de validation Zod
+const exhibitorSignUpSchema = z.object({
+  firstName: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
+  lastName: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
+  companyName: z.string().min(2, "Le nom de l'entreprise est requis"),
+  email: z.string().email("Adresse email invalide"),
+  phone: z.string().regex(/^[\d\s\-\+\(\)]+$/, "Numéro de téléphone invalide"),
+  country: z.string().min(2, "Veuillez sélectionner un pays"),
+  position: z.string().min(2, "Le poste est requis"),
+  sectors: z.array(z.string()).min(1, "Sélectionnez au moins un secteur"),
+  companyDescription: z.string().min(20, "La description doit contenir au moins 20 caractères").max(MAX_DESCRIPTION_LENGTH),
+  website: z.string().url("URL invalide").optional().or(z.literal('')),
+  password: z.string()
+    .min(8, "Le mot de passe doit contenir au moins 8 caractères")
+    .regex(/[A-Z]/, "Le mot de passe doit contenir au moins une majuscule")
+    .regex(/[a-z]/, "Le mot de passe doit contenir au moins une minuscule")
+    .regex(/[0-9]/, "Le mot de passe doit contenir au moins un chiffre")
+    .regex(/[!@#$%^&*]/, "Le mot de passe doit contenir au moins un caractère spécial (!@#$%^&*)"),
+  confirmPassword: z.string(),
+  acceptTerms: z.boolean().refine((val) => val === true, {
+    message: "Vous devez accepter les conditions générales d'utilisation",
+  }),
+  acceptPrivacy: z.boolean().refine((val) => val === true, {
+    message: "Vous devez accepter la politique de confidentialité",
+  }),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Les mots de passe ne correspondent pas",
+  path: ["confirmPassword"],
+});
+
+type ExhibitorSignUpFormValues = z.infer<typeof exhibitorSignUpSchema>;
+
 export default function ExhibitorSignUpPage() {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    companyName: '',
-    email: '',
-    phone: '',
-    country: '',
-    position: '',
-    customPosition: '',
-    description: '',
-    password: '',
-    confirmPassword: ''
-  });
-  const [error, setError] = useState<string | null>(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [passwordTouched, setPasswordTouched] = useState(false);
-  const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
   const navigate = useNavigate();
   const { signUp } = useAuthStore();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [language, setLanguage] = useState<Language>('fr');
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+  const t = translations[language];
 
-    // Limit description to MAX_DESCRIPTION_LENGTH
-    if (name === 'description' && value.length > MAX_DESCRIPTION_LENGTH) {
-      return;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setValue,
+  } = useForm<ExhibitorSignUpFormValues>({
+    resolver: zodResolver(exhibitorSignUpSchema),
+    mode: 'onChange',
+  });
+
+  const watchedFields = watch();
+  
+  // Auto-save functionality
+  const { loadFromLocalStorage, clearLocalStorage } = useFormAutoSave<ExhibitorSignUpFormValues>({ 
+    key: 'exhibitor-signup-draft',
+    data: watchedFields,
+    delay: 2000
+  });
+  
+  // Email validation
+  const { suggestion: emailSuggestion } = useEmailValidation(watchedFields.email || '');
+
+  // Options pour les secteurs d'activité
+  const sectorsOptions = [
+    { value: 'technologie', label: 'Technologie' },
+    { value: 'logistique', label: 'Logistique' },
+    { value: 'media', label: 'Média' },
+    { value: 'finance', label: 'Finance' },
+    { value: 'sante', label: 'Santé' },
+    { value: 'education', label: 'Éducation' },
+    { value: 'tourisme', label: 'Tourisme' },
+    { value: 'agriculture', label: 'Agriculture' },
+    { value: 'industrie', label: 'Industrie' },
+    { value: 'commerce', label: 'Commerce' },
+    { value: 'services', label: 'Services' },
+    { value: 'institutionnel', label: 'Institutionnel' },
+  ];
+
+  // Charger le brouillon au montage
+  useEffect(() => {
+    const draft = loadFromLocalStorage();
+    if (draft && Object.keys(draft).length > 0) {
+      const loadDraft = window.confirm('Un brouillon a été trouvé. Voulez-vous le restaurer ?');
+      if (loadDraft) {
+        Object.entries(draft).forEach(([key, value]) => {
+          setValue(key as keyof ExhibitorSignUpFormValues, value);
+        });
+      } else {
+        clearLocalStorage();
+      }
     }
+  }, [loadFromLocalStorage, clearLocalStorage, setValue]);
 
-    setFormData(prev => ({ ...prev, [name]: value }));
+  // Fonction pour calculer les étapes de progression
+  const getProgressSteps = () => {
+    const steps = [
+      {
+        id: '1',
+        label: 'Informations Entreprise',
+        completed: !!(watchedFields.companyName && watchedFields.sectors?.length > 0 && watchedFields.country),
+      },
+      {
+        id: '2',
+        label: 'Informations Personnelles',
+        completed: !!(watchedFields.firstName && watchedFields.lastName && watchedFields.position),
+      },
+      {
+        id: '3',
+        label: 'Contact',
+        completed: !!(watchedFields.email && watchedFields.phone),
+      },
+      {
+        id: '4',
+        label: 'Sécurité',
+        completed: !!(watchedFields.password && watchedFields.confirmPassword && watchedFields.password === watchedFields.confirmPassword),
+      },
+      {
+        id: '5',
+        label: 'Conditions',
+        completed: !!(watchedFields.acceptTerms && watchedFields.acceptPrivacy),
+      },
+    ];
+
+    const completedCount = steps.filter(step => step.completed).length;
+    const percentage = Math.round((completedCount / steps.length) * 100);
+
+    return { steps, percentage };
   };
 
-  const handlePasswordBlur = () => {
-    setPasswordTouched(true);
-    if (formData.password.length > 0 && formData.password.length < 12) {
-      setPasswordError('Le mot de passe doit contenir au moins 12 caractères.');
-    } else {
-      setPasswordError(null);
-    }
+  const handlePreviewSubmit = () => {
+    setShowPreview(true);
   };
 
-  const handleConfirmPasswordBlur = () => {
-    setConfirmPasswordTouched(true);
-    if (formData.confirmPassword && formData.password !== formData.confirmPassword) {
-      setConfirmPasswordError('Les mots de passe ne correspondent pas.');
-    } else {
-      setConfirmPasswordError(null);
-    }
-  };
-
-  const handleConfirmation = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-
-    if (formData.password !== formData.confirmPassword) {
-      setError('Les mots de passe ne correspondent pas.');
-      return;
-    }
-
-    if (formData.password.length < 12) {
-      setError('Le mot de passe doit contenir au moins 12 caractères.');
-      return;
-    }
-    setShowConfirmation(true);
-  };
-
-  const handleSubmit = async () => {
-    setShowConfirmation(false);
+  const onSubmit: SubmitHandler<ExhibitorSignUpFormValues> = async (data) => {
     setIsLoading(true);
-    try {
-      const finalPosition = formData.position === 'Autre' ? formData.customPosition : formData.position;
+    const { email, password, confirmPassword, acceptTerms, acceptPrivacy, sectors, ...profileData } = data;
 
-      const { error } = await signUp(
-        {
-          email: formData.email,
-          password: formData.password
-        },
-        {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          company: formData.companyName,
-          phone: formData.phone,
-          country: formData.country,
-          position: finalPosition,
-          description: formData.description,
-          role: 'exhibitor',
-          status: 'pending' // Statut initial en attente
-        }
-      );
+    const finalProfileData = {
+      ...profileData,
+      sector: sectors.join(', '), // Convertir le tableau en string
+      role: 'exhibitor' as const,
+      status: 'pending' as const,
+    };
+
+    try {
+      const { error } = await signUp({ email, password }, finalProfileData);
 
       if (error) {
-        setError(error.message);
-        console.error("Erreur d'inscription:", error.message); // Log l'erreur pour le débogage
-       } else {
-        // Afficher la modale de succès
-        setShowSuccess(true);
-
-        // Rediriger après 3 secondes
-        setTimeout(() => {
-          navigate('/signup-success');
-        }, 3000);
+        throw error;
       }
-    } catch (err) {
-      console.error("Erreur inattendue lors de l'inscription:", err); // Log l'erreur inattendue
-      setError('Une erreur inattendue est survenue. Veuillez réessayer.');
+
+      // Supprimer le brouillon après succès
+      clearLocalStorage();
+      
+      toast.success(t.title || 'Inscription réussie ! Votre compte est en attente de validation.');
+      navigate(ROUTES.SIGNUP_SUCCESS);
+    } catch (error) {
+      console.error("Sign up error:", error);
+      toast.error((error as Error).message || "Une erreur s'est produite lors de l'inscription.");
     } finally {
       setIsLoading(false);
+      setShowPreview(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <motion.div 
+        className="max-w-4xl w-full space-y-8"
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-2xl"
       >
-        <Card>
-          <div className="p-8">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900">Inscription Exposant</h1>
-              <p className="text-gray-600 mt-2">
-                Rejoignez la communauté SIPORTS 2026 et développez votre réseau.
-              </p>
+        {/* Sélecteur de langue */}
+        <div className="flex justify-end gap-2">
+          {(['fr', 'en', 'ar'] as Language[]).map((lang) => (
+            <button
+              key={lang}
+              type="button"
+              onClick={() => setLanguage(lang)}
+              className={`flex items-center gap-1 px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                language === lang
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+              }`}
+            >
+              <Languages className="h-4 w-4" />
+              {lang.toUpperCase()}
+            </button>
+          ))}
+        </div>
+
+        <div className="text-center">
+          <h2 className="text-3xl font-extrabold text-gray-900">
+            Inscription Exposant SIPORTS 2026
+          </h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Rejoignez notre écosystème et présentez vos produits et services.
+          </p>
+        </div>
+
+        {/* Indicateur de progression */}
+        <Card className="p-6">
+          <ProgressSteps steps={getProgressSteps().steps} />
+        </Card>
+
+        <Card className="p-8">
+          <form onSubmit={handleSubmit(handlePreviewSubmit)} className="space-y-8">
+            {/* Section 1: Informations sur l'entreprise */}
+            <div className="space-y-6">
+              <h3 className="text-xl font-semibold text-gray-900 border-b pb-3">
+                Informations sur votre entreprise
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label htmlFor="companyName">Nom de l'entreprise *</Label>
+                  <div className="relative">
+                    <Building className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Input 
+                      id="companyName" 
+                      {...register('companyName')} 
+                      placeholder="Votre entreprise" 
+                      className="pl-10"
+                      autoComplete="organization"
+                    />
+                  </div>
+                  {errors.companyName && <p className="text-red-500 text-xs mt-1">{errors.companyName.message}</p>}
+                </div>
+
+                <div>
+                  <Label htmlFor="sectors">Secteur(s) d'activité *</Label>
+                  <MultiSelect
+                    label="Secteurs d'activité"
+                    options={sectorsOptions}
+                    selectedValues={watchedFields.sectors || []}
+                    onChange={(values) => setValue('sectors', values)}
+                    placeholder="Sélectionnez vos secteurs d'activité"
+                    maxSelections={3}
+                  />
+                  {errors.sectors && <p className="text-red-500 text-xs mt-1">{errors.sectors.message}</p>}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label htmlFor="country">Pays *</Label>
+                  <div className="relative">
+                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 z-10 pointer-events-none" />
+                    <Select onValueChange={(value: string) => setValue('country', value)} defaultValue="">
+                      <SelectTrigger id="country" className="pl-10">
+                        <SelectValue placeholder="Sélectionnez votre pays" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {countries.map((country) => (
+                          <SelectItem key={country.code} value={country.code}>
+                            {country.name} (+{country.dial})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {errors.country && <p className="text-red-500 text-xs mt-1">{errors.country.message}</p>}
+                </div>
+
+                <div>
+                  <Label htmlFor="website">Site web (optionnel)</Label>
+                  <div className="relative">
+                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Input 
+                      id="website" 
+                      type="url"
+                      {...register('website')} 
+                      placeholder="https://www.example.com" 
+                      className="pl-10"
+                      autoComplete="url"
+                    />
+                  </div>
+                  {errors.website && <p className="text-red-500 text-xs mt-1">{errors.website.message}</p>}
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="companyDescription">Description de votre organisation *</Label>
+                <Textarea 
+                  id="companyDescription" 
+                  {...register('companyDescription')} 
+                  rows={4}
+                  maxLength={MAX_DESCRIPTION_LENGTH}
+                  placeholder="Décrivez votre organisation, vos activités et vos objectifs pour SIPORTS 2026." 
+                />
+                {errors.companyDescription && <p className="text-red-500 text-xs mt-1">{errors.companyDescription.message}</p>}
+                <p className="text-xs text-gray-500 mt-1">
+                  {watchedFields.companyDescription?.length || 0} / {MAX_DESCRIPTION_LENGTH} caractères
+                </p>
+              </div>
             </div>
 
-            <form onSubmit={handleConfirmation} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Prénom */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Prénom</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="text"
-                      name="firstName"
-                      value={formData.firstName}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                     aria-label="First Name" />
-                  </div>
-                </div>
-
-                {/* Nom */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Nom</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="text"
-                      name="lastName"
-                      value={formData.lastName}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                     aria-label="Last Name" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Nom de l'entreprise */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Nom de l'entreprise</label>
-                <div className="relative">
-                  <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <input type="text"
-                    name="companyName"
-                    value={formData.companyName}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                   aria-label="Company Name" />
-                </div>
-              </div>
+            {/* Section 2: Informations personnelles */}
+            <div className="space-y-6 border-t pt-6">
+              <h3 className="text-xl font-semibold text-gray-900 pb-3">
+                Vos informations personnelles
+              </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Pays */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Pays *</label>
-                  <div className="relative">
-                    <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
-                    <select
-                      name="country"
-                      value={formData.country}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white"
-                      aria-label="Country"
-                    >
-                      <option value="">Sélectionnez un pays</option>
-                      {COUNTRIES.map(country => (
-                        <option key={country.code} value={country.code}>
-                          {country.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                {/* Téléphone */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Téléphone</label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                     aria-label="Phone" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Poste/Fonction */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Poste/Fonction *</label>
-                <div className="relative">
-                  <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
-                  <select
-                    name="position"
-                    value={formData.position}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white"
-                    aria-label="Position"
-                  >
-                    <option value="">Sélectionnez votre fonction</option>
-                    {JOB_POSITIONS.map(position => (
-                      <option key={position} value={position}>
-                        {position}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Custom Position - Appears when "Autre" is selected */}
-              <AnimatePresence>
-                {formData.position === 'Autre' && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Précisez votre fonction *</label>
-                    <div className="relative">
-                      <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <input
-                        type="text"
-                        name="customPosition"
-                        value={formData.customPosition}
-                        onChange={handleInputChange}
-                        required={formData.position === 'Autre'}
-                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Entrez votre fonction"
-                        aria-label="Custom Position"
-                      />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Description de l'organisation */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description de votre organisation *
-                </label>
-                <div className="relative">
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    required
-                    rows={4}
-                    maxLength={MAX_DESCRIPTION_LENGTH}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                    placeholder="Décrivez brièvement votre organisation, vos activités principales..."
-                    aria-label="Organization Description"
+                  <Label htmlFor="firstName">Prénom *</Label>
+                  <Input 
+                    id="firstName" 
+                    {...register('firstName')} 
+                    placeholder="Votre prénom"
+                    autoComplete="given-name"
                   />
-                  <div className="flex justify-between items-center mt-1">
-                    <p className="text-xs text-gray-500">Décrivez vos activités principales</p>
-                    <p className={`text-xs font-medium ${formData.description.length >= MAX_DESCRIPTION_LENGTH ? 'text-red-600' : 'text-gray-500'}`}>
-                      {formData.description.length}/{MAX_DESCRIPTION_LENGTH}
+                  {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName.message}</p>}
+                </div>
+                <div>
+                  <Label htmlFor="lastName">Nom *</Label>
+                  <Input 
+                    id="lastName" 
+                    {...register('lastName')} 
+                    placeholder="Votre nom"
+                    autoComplete="family-name"
+                  />
+                  {errors.lastName && <p className="text-red-500 text-xs mt-1">{errors.lastName.message}</p>}
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="position">Poste / Fonction *</Label>
+                <div className="relative">
+                  <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Input 
+                    id="position" 
+                    {...register('position')} 
+                    placeholder="Votre poste" 
+                    className="pl-10"
+                  />
+                </div>
+                {errors.position && <p className="text-red-500 text-xs mt-1">{errors.position.message}</p>}
+              </div>
+            </div>
+
+            {/* Section 3: Coordonnées de contact */}
+            <div className="space-y-6 border-t pt-6">
+              <h3 className="text-xl font-semibold text-gray-900 pb-3">
+                Coordonnées de contact
+              </h3>
+
+              <div>
+                <Label htmlFor="email">Adresse e-mail professionnelle *</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Input 
+                    id="email" 
+                    type="email" 
+                    {...register('email')} 
+                    placeholder="contact@votre-entreprise.com" 
+                    className="pl-10"
+                    autoComplete="email"
+                  />
+                </div>
+                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+                {emailSuggestion && (
+                  <div className="flex items-center gap-2 mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-md">
+                    <AlertCircle className="h-4 w-4 text-yellow-600 flex-shrink-0" />
+                    <p className="text-xs text-yellow-700">
+                      Voulez-vous dire{' '}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (emailSuggestion) {
+                            setValue('email', emailSuggestion.suggestion);
+                          }
+                        }}
+                        className="font-semibold underline hover:text-yellow-900"
+                      >
+                        {emailSuggestion.suggestion}
+                      </button>
+                      ?
                     </p>
                   </div>
-                </div>
+                )}
+                <p className="text-xs text-gray-500 mt-1">Utilisez votre email professionnel</p>
               </div>
 
-              {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email professionnel</label>
+                <Label htmlFor="phone">Téléphone professionnel *</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <input type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                   aria-label="Email" />
+                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Input 
+                    id="phone" 
+                    type="tel" 
+                    {...register('phone')} 
+                    placeholder="+33 1 23 45 67 89" 
+                    className="pl-10"
+                    autoComplete="tel"
+                  />
                 </div>
+                {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>}
               </div>
+            </div>
+
+            {/* Section 4: Sécurité */}
+            <div className="space-y-6 border-t pt-6">
+              <h3 className="text-xl font-semibold text-gray-900 pb-3">
+                Informations de sécurité
+              </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Mot de passe */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Mot de passe *
-                    <span className="text-xs text-gray-500 font-normal ml-2">(Minimum 12 caractères)</span>
-                  </label>
+                  <Label htmlFor="password">Mot de passe *</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input
-                      type="password"
-                      name="password"
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      onBlur={handlePasswordBlur}
-                      required
-                      minLength={12}
-                      className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                        passwordTouched && passwordError
-                          ? 'border-red-500 focus:ring-red-500'
-                          : 'border-gray-300 focus:ring-blue-500'
-                      }`}
-                      aria-label="Password"
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Input 
+                      id="password" 
+                      type="password" 
+                      {...register('password')} 
+                      placeholder="Créez un mot de passe sécurisé" 
+                      className="pl-10"
+                      autoComplete="new-password"
                     />
-                    {passwordTouched && passwordError && (
-                      <div className="flex items-center mt-1 text-red-600 text-xs">
-                        <AlertCircle className="h-3 w-3 mr-1" />
-                        {passwordError}
-                      </div>
-                    )}
+                  </div>
+                  {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
+                  {watchedFields.password && <PasswordStrengthIndicator password={watchedFields.password} />}
+                </div>
+                <div>
+                  <Label htmlFor="confirmPassword">Confirmer le mot de passe *</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Input 
+                      id="confirmPassword" 
+                      type="password" 
+                      {...register('confirmPassword')} 
+                      placeholder="Confirmez votre mot de passe" 
+                      className="pl-10"
+                      autoComplete="new-password"
+                    />
+                  </div>
+                  {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword.message}</p>}
+                </div>
+              </div>
+            </div>
+
+            {/* CGU et RGPD */}
+            <div className="space-y-4 border-t pt-6">
+              <h3 className="text-lg font-medium text-gray-900">Conditions Générales</h3>
+              
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="acceptTerms"
+                    {...register('acceptTerms')}
+                    className="mt-1 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                  />
+                  <div className="flex-1">
+                    <label htmlFor="acceptTerms" className="text-sm text-gray-700 cursor-pointer">
+                      J'accepte les{' '}
+                      <Link to={ROUTES.TERMS} target="_blank" className="text-primary-600 hover:text-primary-700 underline">
+                        Conditions Générales d'Utilisation
+                      </Link>
+                      {' '}de SIPORTS 2026 *
+                    </label>
+                    {errors.acceptTerms && <p className="text-red-500 text-xs mt-1">{errors.acceptTerms.message}</p>}
                   </div>
                 </div>
 
-                {/* Confirmer le mot de passe */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Confirmer le mot de passe *</label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input
-                      type="password"
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleInputChange}
-                      onBlur={handleConfirmPasswordBlur}
-                      required
-                      minLength={12}
-                      className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                        confirmPasswordTouched && confirmPasswordError
-                          ? 'border-red-500 focus:ring-red-500'
-                          : 'border-gray-300 focus:ring-blue-500'
-                      }`}
-                      aria-label="Confirm Password"
-                    />
-                    {confirmPasswordTouched && confirmPasswordError && (
-                      <div className="flex items-center mt-1 text-red-600 text-xs">
-                        <AlertCircle className="h-3 w-3 mr-1" />
-                        {confirmPasswordError}
-                      </div>
-                    )}
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="acceptPrivacy"
+                    {...register('acceptPrivacy')}
+                    className="mt-1 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                  />
+                  <div className="flex-1">
+                    <label htmlFor="acceptPrivacy" className="text-sm text-gray-700 cursor-pointer">
+                      J'accepte la{' '}
+                      <Link to={ROUTES.PRIVACY} target="_blank" className="text-primary-600 hover:text-primary-700 underline">
+                        Politique de Confidentialité
+                      </Link>
+                      {' '}et consent au traitement de mes données personnelles conformément au RGPD *
+                    </label>
+                    {errors.acceptPrivacy && <p className="text-red-500 text-xs mt-1">{errors.acceptPrivacy.message}</p>}
                   </div>
                 </div>
               </div>
 
-              {error && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center">
-                  {error}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="text-xs text-blue-900">
+                  <strong>Protection de vos données :</strong> Vos informations personnelles sont sécurisées et ne seront jamais partagées avec des tiers sans votre consentement. Vous pouvez exercer vos droits d'accès, de rectification et de suppression à tout moment.
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <Button 
+                type="submit" 
+                className="w-full" 
+                disabled={isLoading}
+                variant="default"
+              >
+                {isLoading ? 'Envoi en cours...' : "Prévisualiser et soumettre"}
+              </Button>
+              
+              {watchedFields && Object.keys(watchedFields).length > 0 && (
+                <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
+                  <Save className="h-3 w-3" />
+                  <span>Brouillon enregistré automatiquement</span>
                 </div>
               )}
 
-              <div>
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={isLoading}
-                  variant="default"
-                >
-                  {isLoading ? 'Création du compte...' : 'Créer mon compte Exposant'}
-                </Button>
-              </div>
-
-              <div className="text-center text-sm text-gray-600">
-                <p>
-                  Déjà un compte ?{' '}
-                   <Link to={ROUTES.LOGIN} className="font-medium text-blue-600 hover:underline">
-                    Connectez-vous
-                  </Link>
-                </p>
-              </div>
-            </form>
-          </div>
-        </Card>
-        {showConfirmation && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-lg shadow-2xl p-8 w-full max-w-lg"
-            >
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Confirmer votre inscription</h2>
-              <p className="text-gray-600 mb-6">Veuillez vérifier les informations avant de finaliser votre inscription.</p>
-
-              <div className="space-y-3 text-sm bg-gray-50 p-4 rounded-lg">
-                <div className="flex justify-between"><span className="font-medium text-gray-500">Nom complet:</span> <span className="font-semibold">{formData.firstName} {formData.lastName}</span></div>
-                <div className="flex justify-between"><span className="font-medium text-gray-500">Entreprise:</span> <span className="font-semibold">{formData.companyName}</span></div>
-                <div className="flex justify-between"><span className="font-medium text-gray-500">Pays:</span> <span className="font-semibold">{COUNTRIES.find(c => c.code === formData.country)?.name || formData.country}</span></div>
-                <div className="flex justify-between"><span className="font-medium text-gray-500">Poste:</span> <span className="font-semibold">{formData.position === 'Autre' ? formData.customPosition : formData.position}</span></div>
-                <div className="flex justify-between"><span className="font-medium text-gray-500">Email:</span> <span className="font-semibold">{formData.email}</span></div>
-                <div className="flex justify-between"><span className="font-medium text-gray-500">Téléphone:</span> <span className="font-semibold">{formData.phone}</span></div>
-              </div>
-
-              <div className="mt-8 flex justify-end space-x-4">
-                <Button variant="outline" onClick={() => setShowConfirmation(false)}>
-                  <XCircle className="h-4 w-4 mr-2" />
-                  Annuler
-                </Button>
-                <Button onClick={handleSubmit} disabled={isLoading} variant="default">
-                  <CheckCircle className="h-4 w-4 mr-2" />
-                  {isLoading ? 'Confirmation...' : 'Confirmer la création'}
-                </Button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-
-        {/* Success Modal */}
-        <AnimatePresence>
-          {showSuccess && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.3 }}
-                className="bg-white rounded-lg shadow-2xl p-8 w-full max-w-md text-center"
-              >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-                  className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6"
-                >
-                  <CheckCircle className="h-12 w-12 text-green-600" />
-                </motion.div>
-
-                <h2 className="text-2xl font-bold text-gray-900 mb-3">
-                  Compte créé avec succès!
-                </h2>
-                <p className="text-gray-600 mb-2">
-                  Votre demande d'inscription a été envoyée.
-                </p>
-                <p className="text-sm text-gray-500">
-                  Votre compte est en attente d'approbation par notre équipe.
-                </p>
-
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: '100%' }}
-                  transition={{ duration: 3 }}
-                  className="mt-6 h-1 bg-green-600 rounded-full"
-                />
-
-                <p className="text-xs text-gray-400 mt-3">
-                  Redirection automatique...
-                </p>
-              </motion.div>
+              <p className="text-center text-xs text-gray-500">
+                * Champs obligatoires
+              </p>
             </div>
-          )}
-        </AnimatePresence>
+          </form>
+
+          {/* Modal de prévisualisation */}
+          <PreviewModal
+            isOpen={showPreview}
+            onClose={() => setShowPreview(false)}
+            onConfirm={handleSubmit(onSubmit)}
+            data={watchedFields}
+          />
+        </Card>
+
+        <div className="text-center">
+          <p className="text-sm text-gray-600">
+            Déjà un compte ?{' '}
+            <Link to={ROUTES.LOGIN} className="font-medium text-primary-600 hover:text-primary-700 underline">
+              Connectez-vous
+            </Link>
+          </p>
+        </div>
       </motion.div>
     </div>
   );
