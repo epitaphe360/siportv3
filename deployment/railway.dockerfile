@@ -1,7 +1,6 @@
 # Railway Dockerfile pour SIPORTS 2026
-# Vite v7 requires Node.js 20.19+ or 22.12+
-# Using Node.js 22 for guaranteed compatibility
-FROM node:22-alpine AS builder
+# Vite v6 is compatible with Node.js 18+
+FROM node:20-alpine AS builder
 
 # Définir le répertoire de travail
 WORKDIR /app
