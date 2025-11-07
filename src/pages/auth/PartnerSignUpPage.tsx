@@ -14,10 +14,15 @@ import { Textarea } from '@/components/ui/Textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
 import { PasswordStrengthIndicator } from '@/components/ui/PasswordStrengthIndicator';
 import { ProgressSteps } from '@/components/ui/ProgressSteps';
+import { PreviewModal } from '@/components/ui/PreviewModal';
+import { MultiSelect } from '@/components/ui/MultiSelect';
 import { countries } from '@/utils/countries';
+import { useFormAutoSave } from '@/hooks/useFormAutoSave';
+import { useEmailValidation } from '@/hooks/useEmailValidation';
+import { useTranslation, Language } from '@/utils/translations';
 import useAuthStore from '../../store/authStore';
 import { motion } from 'framer-motion';
-import { Building, Mail, Lock, User, Phone, Globe, Briefcase, MapPin } from 'lucide-react';
+import { Building, Mail, Lock, User, Phone, Globe, Briefcase, MapPin, Languages, AlertCircle, Save } from 'lucide-react';
 
 // Validation renforcée du mot de passe
 const passwordSchema = z.string()
@@ -34,7 +39,7 @@ const phoneSchema = z.string()
 
 const partnerSignUpSchema = z.object({
   companyName: z.string().min(2, "Le nom de l'organisation est requis"),
-  sector: z.string().min(2, "Le secteur d'activité est requis"),
+  sectors: z.array(z.string()).min(1, "Sélectionnez au moins un secteur d'activité"),
   country: z.string().min(2, "Le pays est requis"),
   website: z.string().url("L'URL du site web est invalide").optional().or(z.literal('')),
   firstName: z.string().min(2, "Le prénom est requis"),
@@ -63,32 +68,80 @@ export default function PartnerSignUpPage() {
   const navigate = useNavigate();
   const { signUp } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [language, setLanguage] = useState<Language>('fr');
+  
+  const t = useTranslation(language);
 
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<PartnerSignUpFormValues>({
     resolver: zodResolver(partnerSignUpSchema),
     defaultValues: {
       acceptTerms: false,
       acceptPrivacy: false,
+      sectors: [],
     }
   });
 
   // Watch les valeurs pour la progression
   const watchedFields = watch();
+  
+  // Validation email en temps réel
+  const { suggestion: emailSuggestion } = useEmailValidation(watchedFields.email || '');
+
+  // Sauvegarde automatique
+  const { loadFromLocalStorage, clearLocalStorage } = useFormAutoSave({
+    key: 'partner-signup-draft',
+    data: watchedFields,
+    delay: 2000,
+  });
+
+  // Charger le brouillon au montage
+  useEffect(() => {
+    const draft = loadFromLocalStorage();
+    if (draft) {
+      const confirmed = window.confirm(
+        'Un brouillon de formulaire a été trouvé. Voulez-vous le reprendre ?'
+      );
+      if (confirmed) {
+        Object.keys(draft).forEach((key) => {
+          setValue(key as any, (draft as any)[key]);
+        });
+        toast.success('Brouillon chargé !');
+      } else {
+        clearLocalStorage();
+      }
+    }
+  }, []);
+
+  const sectorsOptions = [
+    { value: 'logistique', label: 'Logistique et Transport' },
+    { value: 'technologie', label: 'Technologie et Innovation' },
+    { value: 'finance', label: 'Finance et Banque' },
+    { value: 'institutionnel', label: 'Institutionnel et Gouvernemental' },
+    { value: 'media', label: 'Médias et Communication' },
+    { value: 'energie', label: 'Énergie et Ressources' },
+    { value: 'agriculture', label: 'Agriculture et Agroalimentaire' },
+    { value: 'sante', label: 'Santé et Bien-être' },
+    { value: 'education', label: 'Éducation et Formation' },
+    { value: 'immobilier', label: 'Immobilier et Construction' },
+    { value: 'tourisme', label: 'Tourisme et Hôtellerie' },
+    { value: 'industrie', label: 'Industrie et Manufacturing' },
+  ];
 
   // Calculer la progression
   const getProgressSteps = () => {
-    const orgComplete = !!(watchedFields.companyName && watchedFields.sector && watchedFields.country);
+    const orgComplete = !!(watchedFields.companyName && watchedFields.sectors?.length > 0 && watchedFields.country);
     const contactComplete = !!(watchedFields.firstName && watchedFields.lastName && watchedFields.email && watchedFields.phone);
     const authComplete = !!(watchedFields.password && watchedFields.confirmPassword && watchedFields.password === watchedFields.confirmPassword);
     const detailsComplete = !!(watchedFields.companyDescription && watchedFields.partnershipType);
     const termsComplete = !!(watchedFields.acceptTerms && watchedFields.acceptPrivacy);
 
     return [
-      { id: 'org', label: 'Organisation', completed: orgComplete },
-      { id: 'contact', label: 'Contact', completed: contactComplete },
-      { id: 'auth', label: 'Sécurité', completed: authComplete },
-      { id: 'details', label: 'Détails', completed: detailsComplete },
-      { id: 'terms', label: 'CGU', completed: termsComplete },
+      { id: 'org', label: t.stepOrganization, completed: orgComplete },
+      { id: 'contact', label: t.stepContact, completed: contactComplete },
+      { id: 'auth', label: t.stepSecurity, completed: authComplete },
+      { id: 'details', label: t.stepDetails, completed: detailsComplete },
+      { id: 'terms', label: t.stepTerms, completed: termsComplete },
     ];
   };
 
@@ -97,14 +150,20 @@ export default function PartnerSignUpPage() {
     register('country');
     register('acceptTerms');
     register('acceptPrivacy');
+    register('sectors');
   }, [register]);
+
+  const handlePreviewSubmit = () => {
+    setShowPreview(true);
+  };
 
   const onSubmit: SubmitHandler<PartnerSignUpFormValues> = async (data) => {
     setIsLoading(true);
-    const { email, password, confirmPassword, acceptTerms, acceptPrivacy, ...profileData } = data;
+    const { email, password, confirmPassword, acceptTerms, acceptPrivacy, sectors, ...profileData } = data;
 
     const finalProfileData = {
       ...profileData,
+      sector: sectors.join(', '), // Convertir le tableau en string
       role: 'partner' as const,
       status: 'pending' as const,
     };
@@ -116,13 +175,17 @@ export default function PartnerSignUpPage() {
         throw error;
       }
 
-      toast.success('Inscription réussie ! Votre compte est en attente de validation.');
+      // Supprimer le brouillon après succès
+      clearLocalStorage();
+      
+      toast.success(t.title || 'Inscription réussie ! Votre compte est en attente de validation.');
       navigate(ROUTES.SIGNUP_SUCCESS);
     } catch (error) {
       console.error("Sign up error:", error);
       toast.error((error as Error).message || "Une erreur s'est produite lors de l'inscription.");
     } finally {
       setIsLoading(false);
+      setShowPreview(false);
     }
   };
 
@@ -134,10 +197,31 @@ export default function PartnerSignUpPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
+        {/* Sélecteur de langue */}
+        <div className="flex justify-end gap-2">
+          {(['fr', 'en', 'ar'] as Language[]).map((lang) => (
+            <button
+              key={lang}
+              type="button"
+              onClick={() => setLanguage(lang)}
+              className={`flex items-center gap-1 px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                language === lang
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+              }`}
+            >
+              <Languages className="h-4 w-4" />
+              {lang.toUpperCase()}
+            </button>
+          ))}
+        </div>
+
         <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900">Devenir Partenaire SIPORTS 2026</h2>
+          <h2 className="text-3xl font-extrabold text-gray-900">
+            {t.title}
+          </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Rejoignez notre écosystème et contribuez au succès de l'événement.
+            {t.subtitle}
           </p>
         </div>
 
@@ -161,12 +245,16 @@ export default function PartnerSignUpPage() {
                   {errors.companyName && <p className="text-red-500 text-xs mt-1">{errors.companyName.message}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="sector">Secteur d'activité *</Label>
-                  <div className="relative">
-                    <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <Input id="sector" {...register('sector')} placeholder="Ex: Logistique, Technologie, Institutionnel" className="pl-10" />
-                  </div>
-                  {errors.sector && <p className="text-red-500 text-xs mt-1">{errors.sector.message}</p>}
+                  <Label htmlFor="sectors">Secteur(s) d'activité *</Label>
+                  <MultiSelect
+                    label="Secteurs d'activité"
+                    options={sectorsOptions}
+                    selectedValues={watchedFields.sectors || []}
+                    onChange={(values) => setValue('sectors', values)}
+                    placeholder="Sélectionnez vos secteurs d'activité"
+                    maxSelections={3}
+                  />
+                  {errors.sectors && <p className="text-red-500 text-xs mt-1">{errors.sectors.message}</p>}
                 </div>
                 <div>
                   <Label htmlFor="country">Pays *</Label>
@@ -254,6 +342,24 @@ export default function PartnerSignUpPage() {
                     />
                   </div>
                   {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+                  {emailSuggestion && (
+                    <div className="flex items-center gap-2 mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-md">
+                      <AlertCircle className="h-4 w-4 text-yellow-600 flex-shrink-0" />
+                      <p className="text-xs text-yellow-700">
+                        Voulez-vous dire{' '}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setValue('email', emailSuggestion.suggestion);
+                          }}
+                          className="font-semibold underline hover:text-yellow-900"
+                        >
+                          {emailSuggestion.suggestion}
+                        </button>
+                        ?
+                      </p>
+                    </div>
+                  )}
                   <p className="text-xs text-gray-500 mt-1">Utilisez votre email professionnel</p>
                 </div>
                 <div>
@@ -371,15 +477,37 @@ export default function PartnerSignUpPage() {
               </div>
             </div>
 
-            <div>
-              <Button type="submit" className="w-full" disabled={isLoading} variant="default">
-                {isLoading ? 'Envoi en cours...' : "Demander à devenir partenaire"}
+            <div className="space-y-3">
+              <Button 
+                type="button" 
+                onClick={handlePreviewSubmit} 
+                className="w-full" 
+                disabled={isLoading}
+                variant="default"
+              >
+                {isLoading ? 'Envoi en cours...' : "Prévisualiser et soumettre"}
               </Button>
-              <p className="text-center text-xs text-gray-500 mt-2">
+              
+              {watchedFields && Object.keys(watchedFields).length > 0 && (
+                <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
+                  <Save className="h-3 w-3" />
+                  <span>Brouillon enregistré automatiquement</span>
+                </div>
+              )}
+
+              <p className="text-center text-xs text-gray-500">
                 * Champs obligatoires
               </p>
             </div>
           </form>
+
+          {/* Modal de prévisualisation */}
+          <PreviewModal
+            isOpen={showPreview}
+            onClose={() => setShowPreview(false)}
+            onConfirm={handleSubmit(onSubmit)}
+            data={watchedFields}
+          />
         </Card>
 
         <div className="text-center">
