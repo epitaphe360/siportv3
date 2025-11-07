@@ -134,7 +134,7 @@ static async getUsers(): Promise<User[]> {
 
 ### Étape 1 : Appliquer la Migration RLS Complète
 
-**⚠️ IMPORTANT : Utilisez la migration v2.0 qui crée les tables ET les politiques**
+**⚠️ IMPORTANT : Utilisez la migration v3.0 FINALE qui corrige toutes les erreurs**
 
 **Option A : Via le Supabase Dashboard** (Recommandé)
 
@@ -142,7 +142,7 @@ static async getUsers(): Promise<User[]> {
 2. Sélectionner votre projet `eqjoqgpbxhsfgcovipgu`
 3. Aller dans **SQL Editor** (icône de base de données dans la sidebar)
 4. Créer une nouvelle requête
-5. Copier **TOUT** le contenu de `supabase/migrations/20251107000002_complete_fix_with_tables.sql`
+5. Copier **TOUT** le contenu de `supabase/migrations/20251107000003_fix_rls_final.sql` ⭐
 6. Coller dans l'éditeur SQL
 7. Cliquer sur **Run** (ou Ctrl+Enter)
 8. Vérifier que la requête s'exécute sans erreur
@@ -150,7 +150,7 @@ static async getUsers(): Promise<User[]> {
 **Option B : Via psql** (si vous avez accès direct à la base)
 
 ```bash
-psql -h db.eqjoqgpbxhsfgcovipgu.supabase.co -U postgres -d postgres -f supabase/migrations/20251107000002_complete_fix_with_tables.sql
+psql -h db.eqjoqgpbxhsfgcovipgu.supabase.co -U postgres -d postgres -f supabase/migrations/20251107000003_fix_rls_final.sql
 ```
 
 **Option C : Via Script d'Application Automatique**

@@ -2,12 +2,12 @@
 -- À exécuter dans le SQL Editor de Supabase Dashboard
 -- OU via: psql -h db.xxx.supabase.co -U postgres -d postgres -f apply_rls_fix.sql
 
--- VERSION 2.0 - Inclut création des tables manquantes
+-- VERSION 3.0 - FINAL - Correction des colonnes time_slots (exhibitor_id)
 
--- Ce script applique la migration complète: 20251107000002_complete_fix_with_tables.sql
--- Il crée les tables manquantes ET applique les politiques RLS
+-- Ce script applique la migration complète: 20251107000003_fix_rls_final.sql
+-- Il crée les tables manquantes ET applique les politiques RLS avec les bonnes colonnes
 
-\i migrations/20251107000002_complete_fix_with_tables.sql
+\i migrations/20251107000003_fix_rls_final.sql
 
 -- Vérification que les tables existent
 SELECT

@@ -15,7 +15,7 @@
 
 ### Étape 3 : Copier-Coller la Migration
 
-1. Ouvrir le fichier : `supabase/migrations/20251107000002_complete_fix_with_tables.sql`
+1. Ouvrir le fichier : `supabase/migrations/20251107000003_fix_rls_final.sql` ⭐ **VERSION FINALE**
 2. **Sélectionner TOUT le contenu** (Ctrl+A)
 3. **Copier** (Ctrl+C)
 4. Retourner dans le SQL Editor de Supabase
@@ -85,7 +85,7 @@ Après l'application de la migration :
 
 Pour plus de détails sur les corrections apportées, consulter :
 - `CORRECTION_API_ERRORS.md` - Documentation complète
-- `supabase/migrations/20251107000002_complete_fix_with_tables.sql` - Script SQL complet
+- `supabase/migrations/20251107000003_fix_rls_final.sql` - Script SQL complet (VERSION FINALE)
 
 ---
 
