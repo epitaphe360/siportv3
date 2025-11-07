@@ -184,7 +184,7 @@ export default function PartnerDetailPage() {
     } else {
       // Fallback: copier le lien dans le presse-papiers
       navigator.clipboard.writeText(shareData.url);
-      alert('Lien copié dans le presse-papiers !');
+      toast.success('Lien copié dans le presse-papiers !');
     }
   };
 

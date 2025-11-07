@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
+import { toast } from 'sonner';
 import {
   ArrowLeft,
   Save,
@@ -41,7 +42,7 @@ export const PartnerProfileEditPage: React.FC = () => {
     // Simulation de sauvegarde
     await new Promise(resolve => setTimeout(resolve, 2000));
     setIsSaving(false);
-    alert('Profil mis à jour avec succès !');
+    toast.success('Profil mis à jour avec succès !');
   };
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {

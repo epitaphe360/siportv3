@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import AdminMediaManager from '../../components/admin/media/AdminMediaManager';
+import { toast } from 'sonner';
 
 const MediaManagerPage: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -41,7 +42,7 @@ const MediaManagerPage: React.FC = () => {
                   type="button"
                   onClick={() => {
                     navigator.clipboard.writeText(selectedImage);
-                    alert('URL copiée dans le presse-papier');
+                    toast.success('URL copiée dans le presse-papier');
                   }}
                   className="bg-blue-500 text-white px-3 py-2 rounded-r-md text-sm"
                 >

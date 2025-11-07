@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
+import { toast } from 'sonner';
 import { 
   Send,
   Paperclip,
@@ -267,7 +268,7 @@ export default function ChatInterface() {
                               
                               // Afficher un message de confirmation
                               const fileNames = Array.from(files).map(f => f.name).join(', ');
-                              alert(`📎 ${files.length} fichier(s) sélectionné(s):\n${fileNames}\n\n🚀 Upload en cours...`);
+                              toast.success(`${files.length} fichier(s) sélectionné(s): ${fileNames}\n\nUpload en cours...`);
                             }
                           };
                           input.click();

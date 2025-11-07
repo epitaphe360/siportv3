@@ -350,7 +350,7 @@ export default memo(function EventsPage() {
                                   navigator.share(shareData);
                                 } else {
                                   navigator.clipboard.writeText(shareData.url);
-                                  alert("🔗 Lien de l'événement copié !");
+                                  toast.success("Lien de l'événement copié !");
                                 }
                               }}
                               title="Partager cet événement"

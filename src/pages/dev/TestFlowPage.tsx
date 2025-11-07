@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAppointmentStore } from '../../store/appointmentStore';
 import useAuthStore from '../../store/authStore';
+import { toast } from 'sonner';
 
 export default function TestFlowPage() {
   const { bookAppointment, fetchAppointments, appointments, confirmAppointmentsForVisitor, clearMockAppointments } = useAppointmentStore();
@@ -48,11 +49,11 @@ export default function TestFlowPage() {
         } catch (err: unknown) {
           entries.push({ attempt: 0, timeSlotId: '', success: false, message: 'Erreur confirm: ' + (err?.message || String(err)) });
         }
-      alert('Flow de test exécuté. Consulte le journal sur la page.');
+      toast.success('Flow de test exécuté. Consulte le journal sur la page.');
     } catch (err: unknown) {
       entries.push({ attempt: 0, timeSlotId: '', success: false, message: 'Erreur initiale: ' + (err?.message || String(err)) });
       setLog(entries);
-      alert('Erreur lors du flow de test: ' + (err?.message || String(err)));
+      toast.error('Erreur lors du flow de test: ' + (err?.message || String(err)));
     }
   };
 
