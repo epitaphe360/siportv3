@@ -1500,6 +1500,32 @@ export class SupabaseService {
 
   // ==================== USERS ====================
 
+  static async getUsers(): Promise<User[]> {
+    if (!this.checkSupabaseConnection()) {
+      console.warn('⚠️ Supabase non configuré');
+      return [];
+    }
+
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await safeSupabase
+        .from('users')
+        .select('*')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.warn('Erreur lors de la récupération des utilisateurs:', error.message);
+        return [];
+      }
+
+      return (data || []).map(this.transformUserDBToUser);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des utilisateurs:', error);
+      return [];
+    }
+  }
+
   static async createUser(userData: Partial<User>): Promise<User> {
     if (!this.checkSupabaseConnection()) {
       throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
