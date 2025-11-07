@@ -237,8 +237,8 @@ export class SupabaseService {
           verified,
           featured,
           contact_info,
-          products:products(id, exhibitor_id, name, description, category, images, specifications, price, featured),
-          mini_site:mini_sites(theme, custom_colors, sections, published, views, last_updated),
+          products:products!products_exhibitor_id_fkey(id, exhibitor_id, name, description, category, images, specifications, price, featured),
+          mini_site:mini_sites!mini_sites_exhibitor_id_fkey(theme, custom_colors, sections, published, views, last_updated),
           user:users!exhibitors_user_id_fkey(profile)
         `);
 
@@ -344,13 +344,17 @@ export class SupabaseService {
       featured: p.featured || false
     }));
 
-    const miniSite = exhibitorDB.mini_site ? {
-      theme: exhibitorDB.mini_site.theme || 'default',
-      customColors: exhibitorDB.mini_site.custom_colors || {},
-      sections: exhibitorDB.mini_site.sections || [],
-      published: exhibitorDB.mini_site.published || false,
-      views: 0,
-      lastUpdated: new Date()
+    // mini_site est retourné comme un array par Supabase, prenons le premier élément
+    const miniSiteArray = exhibitorDB.mini_site as any;
+    const miniSiteData = Array.isArray(miniSiteArray) && miniSiteArray.length > 0 ? miniSiteArray[0] : miniSiteArray;
+    
+    const miniSite = miniSiteData ? {
+      theme: miniSiteData.theme || 'default',
+      customColors: miniSiteData.custom_colors || {},
+      sections: miniSiteData.sections || [],
+      published: miniSiteData.published || false,
+      views: miniSiteData.views || 0,
+      lastUpdated: new Date(miniSiteData.last_updated || Date.now())
     } : null;
 
     return {
