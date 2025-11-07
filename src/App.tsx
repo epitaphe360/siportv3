@@ -67,6 +67,21 @@ const CookiesPage = React.lazy(() => import('./pages/CookiesPage'));
 const AvailabilitySettingsPage = React.lazy(() => import('./pages/AvailabilitySettingsPage'));
 const VenuePage = React.lazy(() => import('./pages/VenuePage'));
 
+// Partner pages
+const PartnerActivityPage = React.lazy(() => import('./pages/partners/PartnerActivityPage'));
+const PartnerAnalyticsPage = React.lazy(() => import('./pages/partners/PartnerAnalyticsPage'));
+const PartnerEventsPage = React.lazy(() => import('./pages/partners/PartnerEventsPage'));
+const PartnerLeadsPage = React.lazy(() => import('./pages/partners/PartnerLeadsPage'));
+const PartnerMediaPage = React.lazy(() => import('./pages/partners/PartnerMediaPage'));
+const PartnerNetworkingPage = React.lazy(() => import('./pages/partners/PartnerNetworkingPage'));
+const PartnerProfileEditPage = React.lazy(() => import('./pages/partners/PartnerProfileEditPage'));
+const PartnerSatisfactionPage = React.lazy(() => import('./pages/partners/PartnerSatisfactionPage'));
+const PartnerSupportPageComponent = React.lazy(() => import('./pages/partners/PartnerSupportPage'));
+
+// Error pages
+const UnauthorizedPage = React.lazy(() => import('./pages/UnauthorizedPage'));
+const ForbiddenPage = React.lazy(() => import('./pages/ForbiddenPage'));
+
 import { ChatBot } from './components/chatbot/ChatBot';
 import { ChatBotToggle } from './components/chatbot/ChatBotToggle';
 import { useLanguageStore } from './store/languageStore';
@@ -120,6 +135,22 @@ const App = () => {
             <Route path={ROUTES.PARTNER_DASHBOARD} element={<ProtectedRoute requiredRole="partner"><PartnerDashboard /></ProtectedRoute>} />
             <Route path={ROUTES.PARTNER_PROFILE} element={<ProtectedRoute requiredRole="partner"><ProfilePage /></ProtectedRoute>} />
             <Route path={ROUTES.PARTNER_SETTINGS} element={<ProtectedRoute requiredRole="partner"><VisitorProfileSettings /></ProtectedRoute>} />
+
+            {/* Pages partenaires détaillées */}
+            <Route path={ROUTES.PARTNER_ACTIVITY} element={<ProtectedRoute requiredRole="partner"><PartnerActivityPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_ANALYTICS} element={<ProtectedRoute requiredRole="partner"><PartnerAnalyticsPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_EVENTS} element={<ProtectedRoute requiredRole="partner"><PartnerEventsPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_LEADS} element={<ProtectedRoute requiredRole="partner"><PartnerLeadsPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_MEDIA} element={<ProtectedRoute requiredRole="partner"><PartnerMediaPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_NETWORKING} element={<ProtectedRoute requiredRole="partner"><PartnerNetworkingPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_PROFILE_EDIT} element={<ProtectedRoute requiredRole="partner"><PartnerProfileEditPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_SATISFACTION} element={<ProtectedRoute requiredRole="partner"><PartnerSatisfactionPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_SUPPORT_PAGE} element={<ProtectedRoute requiredRole="partner"><PartnerSupportPageComponent /></ProtectedRoute>} />
+
+            {/* Pages erreur */}
+            <Route path={ROUTES.UNAUTHORIZED} element={<UnauthorizedPage />} />
+            <Route path={ROUTES.FORBIDDEN} element={<ForbiddenPage />} />
+
             {/* SECURED: Dev route now requires admin role */}
             <Route path="/dev/test-flow" element={<ProtectedRoute requiredRole="admin"><TestFlowPage /></ProtectedRoute>} />
             <Route path={ROUTES.VISITOR_SETTINGS} element={<ProtectedRoute requiredRole="visitor"><VisitorProfileSettings /></ProtectedRoute>} />

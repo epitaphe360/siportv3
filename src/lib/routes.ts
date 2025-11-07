@@ -60,6 +60,37 @@ export const ROUTES = {
   COOKIES: '/cookies',
   AVAILABILITY_SETTINGS: '/availability/settings',
   VENUE: '/venue',
+
+  // Pages partenaires
+  PARTNER_ACTIVITY: '/partner/activity',
+  PARTNER_ANALYTICS: '/partner/analytics',
+  PARTNER_EVENTS: '/partner/events',
+  PARTNER_LEADS: '/partner/leads',
+  PARTNER_MEDIA: '/partner/media',
+  PARTNER_NETWORKING: '/partner/networking',
+  PARTNER_PROFILE_EDIT: '/partner/profile/edit',
+  PARTNER_SATISFACTION: '/partner/satisfaction',
+  PARTNER_SUPPORT_PAGE: '/partner/support-page',
+
+  // Pages admin manquantes
+  ADMIN_PARTNERS: '/admin/partners',
+  ADMIN_MEDIA: '/admin/media',
+  ADMIN_EXHIBITORS_LIST: '/admin/exhibitors-list',
+  ADMIN_USERS_LIST: '/admin/users-list',
+
+  // Pages erreur
+  UNAUTHORIZED: '/unauthorized',
+  FORBIDDEN: '/forbidden',
+  NOT_FOUND: '/404',
+
+  // Pages visiteur
+  VISITOR_SUBSCRIPTION: '/visitor/subscription',
+  VISITOR_UPGRADE: '/visitor/upgrade',
+
+  // Autres
+  PRODUCT_DETAIL: '/products/:id',
+  EXHIBITOR_PROFILE_EDIT: '/exhibitor/profile/edit',
+  DEV_TEST_FLOW: '/dev/test-flow',
 } as const;
 
 export type RouteKey = keyof typeof ROUTES;

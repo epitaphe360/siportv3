@@ -227,56 +227,58 @@ export default function LoginPage() {
             <h4 className="text-sm font-medium text-blue-900 mb-3">
               Connexion rapide - Comptes de démonstration :
             </h4>
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setEmail('admin@siports.com');
-                  setPassword('Admin123!');
-                }}
-                className="text-xs"
-              >
-                👑 Admin
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setEmail('exposant@siports.com');
-                  setPassword('Expo123!');
-                }}
-                className="text-xs"
-              >
-                🏢 Exposant
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setEmail('visiteur@siports.com');
-                  setPassword('Visit123!');
-                }}
-                className="text-xs"
-              >
-                👥 Visiteur
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setEmail('partenaire@siports.com');
-                  setPassword('Partner123!');
-                }}
-                className="text-xs"
-              >
-                🤝 Partenaire
-              </Button>
-            </div>
+            {!import.meta.env.PROD && (
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setEmail('admin@siports.com');
+                    setPassword('Admin123!');
+                  }}
+                  className="text-xs"
+                >
+                  👑 Admin
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setEmail('exposant@siports.com');
+                    setPassword('Expo123!');
+                  }}
+                  className="text-xs"
+                >
+                  🏢 Exposant
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setEmail('visiteur@siports.com');
+                    setPassword('Visit123!');
+                  }}
+                  className="text-xs"
+                >
+                  👥 Visiteur
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setEmail('partenaire@siports.com');
+                    setPassword('Partner123!');
+                  }}
+                  className="text-xs"
+                >
+                  🤝 Partenaire
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Demo Credentials */}

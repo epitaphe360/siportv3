@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { ChatMessage, ChatConversation, ChatBot } from '../types';
 import { SupabaseService } from '../services/supabaseService';
+import { useAuthStore } from './authStore';
 
 interface ChatState {
   conversations: ChatConversation[];
@@ -69,7 +70,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   messages: {},
   isLoading: false,
   chatBot: mockChatBot,
-  onlineUsers: ['user2', 'siports-bot'],
+  onlineUsers: [],
 
   fetchConversations: async () => {
     set({ isLoading: true });
@@ -203,10 +204,15 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   startConversation: async (userId) => {
+    const currentUserId = useAuthStore.getState().user?.id;
+    if (!currentUserId) {
+      throw new Error('Utilisateur non connecté');
+    }
+
     const newConversationId = Date.now().toString();
     const newConversation: ChatConversation = {
       id: newConversationId,
-      participants: ['user1', userId],
+      participants: [currentUserId, userId],
       unreadCount: 0,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -225,10 +231,15 @@ export const useChatStore = create<ChatState>((set, get) => ({
     const { messages, conversations, activeConversation } = get();
     if (!activeConversation) return;
 
+    const currentUserId = useAuthStore.getState().user?.id;
+    if (!currentUserId) {
+      throw new Error('Utilisateur non connecté');
+    }
+
     const botMessage: ChatMessage = {
       id: Date.now().toString(),
       senderId: 'siports-bot',
-      receiverId: 'user1',
+      receiverId: currentUserId,
       content: message,
       type: 'text',
       timestamp: new Date(),
