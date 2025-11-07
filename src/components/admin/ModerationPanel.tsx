@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { 
+import { ROUTES } from '../../lib/routes';
+import {
   ArrowLeft,
   CheckCircle,
   X,
@@ -163,7 +164,7 @@ export default function ModerationPanel() {
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4">
-            <Link to="/dashboard">
+            <Link to={ROUTES.DASHBOARD}>
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour au Tableau de Bord Admin
@@ -374,7 +375,7 @@ export default function ModerationPanel() {
             <p className="text-gray-600 mb-6">
               Aucun contenu en attente de validation
             </p>
-            <Link to="/dashboard">
+            <Link to={ROUTES.DASHBOARD}>
               <Button>
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour au Tableau de Bord Admin

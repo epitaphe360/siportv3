@@ -148,7 +148,7 @@ export default function AdminDashboard() {
           <p className="text-gray-600 mb-4">
             Cette section est réservée aux administrateurs SIPORTS
           </p>
-          <Link to="/dashboard">
+          <Link to={ROUTES.DASHBOARD}>
             <Button variant="default">
               Retour au Tableau de Bord
             </Button>

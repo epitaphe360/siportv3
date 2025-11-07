@@ -14,6 +14,7 @@ import PublicAvailability from '../availability/PublicAvailability';
 import useAuthStore from '../../store/authStore';
 import { useEventStore } from '../../store/eventStore';
 import { Link } from 'react-router-dom';
+import { ROUTES } from '../../lib/routes';
 import PersonalCalendar from './PersonalCalendar';
 import { useAppointmentStore } from '../../store/appointmentStore';
 import { useVisitorStats } from '../../hooks/useVisitorStats';
@@ -162,7 +163,7 @@ export default memo(function VisitorDashboard() {
           <p className="text-gray-600">
             Veuillez vous connecter pour accéder à votre tableau de bord visiteur
           </p>
-          <Link to="/login" className="mt-4 inline-block">
+          <Link to={ROUTES.LOGIN} className="mt-4 inline-block">
             <Button>Se connecter</Button>
           </Link>
         </div>
@@ -250,7 +251,7 @@ export default memo(function VisitorDashboard() {
             <p className="text-gray-600 mb-4">
               Découvrez des connexions pertinentes grâce à l'intelligence artificielle
             </p>
-            <Link to="/networking">
+            <Link to={ROUTES.NETWORKING}>
               <Button className="w-full">
                 <Network className="h-4 w-4 mr-2" />
                 Explorer le réseau
@@ -267,7 +268,7 @@ export default memo(function VisitorDashboard() {
               Planifiez des rencontres avec les exposants selon leurs disponibilités
             </p>
             <div>
-              <Link to="/networking?action=schedule">
+              <Link to={`${ROUTES.NETWORKING}?action=schedule`}>
                 <Button variant="outline" className="w-full" disabled={remaining <= 0}>
                   <Calendar className="h-4 w-4 mr-2" />
                   Programmer un RDV
@@ -290,7 +291,7 @@ export default memo(function VisitorDashboard() {
             <p className="text-gray-600 mb-4">
               Communiquez directement avec les exposants et partenaires
             </p>
-            <Link to="/chat">
+            <Link to={ROUTES.CHAT}>
               <Button variant="outline" className="w-full">
                 <MessageCircle className="h-4 w-4 mr-2" />
                 Ouvrir la messagerie
@@ -306,7 +307,7 @@ export default memo(function VisitorDashboard() {
             <p className="text-gray-600 mb-4">
               Explorez les stands et trouvez les solutions qui vous intéressent
             </p>
-            <Link to="/exhibitors">
+            <Link to={ROUTES.EXHIBITORS}>
               <Button variant="outline" className="w-full">
                 <Building2 className="h-4 w-4 mr-2" />
                 Voir les exposants
@@ -346,7 +347,7 @@ export default memo(function VisitorDashboard() {
                 <p className="text-sm text-gray-500">Aucun événement à venir</p>
               )}
             </div>
-            <Link to="/events">
+            <Link to={ROUTES.EVENTS}>
               <Button variant="outline" className="w-full">
                 <Calendar className="h-4 w-4 mr-2" />
                 Voir tous les événements

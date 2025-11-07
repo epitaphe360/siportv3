@@ -199,7 +199,7 @@ export default function LoginPage() {
               </div>
 
               <Link
-                to="/forgot-password"
+                to={ROUTES.FORGOT_PASSWORD}
                 className="text-sm text-blue-600 hover:text-blue-500"
               >
                 Mot de passe oublié ?
@@ -288,7 +288,7 @@ export default function LoginPage() {
             <p className="text-sm text-gray-600">
               Pas encore de compte ?{' '}
               <Link
-                to="/register"
+                to={ROUTES.REGISTER}
                 className="font-medium text-blue-600 hover:text-blue-500"
               >
                 Créer un compte
