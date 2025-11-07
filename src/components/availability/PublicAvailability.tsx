@@ -1,5 +1,7 @@
 
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
@@ -7,12 +9,14 @@ import { Calendar, Clock } from 'lucide-react';
 import { TimeSlot } from '../../types';
 import { SupabaseService } from '../../services/supabaseService';
 import useAuthStore from '../../store/authStore';
+import { ROUTES } from '../../lib/routes';
 
 interface PublicAvailabilityProps {
   userId: string;
 }
 
 const PublicAvailability = ({ userId }: PublicAvailabilityProps) => {
+  const navigate = useNavigate();
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [requesting, setRequesting] = useState<string | null>(null);
@@ -36,10 +40,8 @@ const PublicAvailability = ({ userId }: PublicAvailabilityProps) => {
   // Demande de rendez-vous
   const handleRequestAppointment = async (slot: TimeSlot) => {
     if (!user) {
-      // Rediriger vers la page de connexion ou afficher un message
-      alert("Veuillez vous connecter pour prendre un rendez-vous.");
-      // Ou naviguer vers la page de connexion si un hook de navigation est disponible
-      // navigate(`/login?redirect=/exhibitor/${userId}`);
+      toast.error("Veuillez vous connecter pour prendre un rendez-vous");
+      navigate(`${ROUTES.LOGIN}?redirect=${encodeURIComponent(`/exhibitor/${userId}`)}`);
       return;
     }
     setRequesting(slot.id);
@@ -53,8 +55,10 @@ const PublicAvailability = ({ userId }: PublicAvailabilityProps) => {
         meetingType: slot.type
       });
       setSuccessId(slot.id);
-    } catch {
-      alert('Erreur lors de la demande de rendez-vous.');
+      toast.success('Demande de rendez-vous envoyée avec succès !');
+    } catch (error) {
+      console.error('Erreur RDV:', error);
+      toast.error('Erreur lors de la demande de rendez-vous');
     }
     setRequesting(null);
   };

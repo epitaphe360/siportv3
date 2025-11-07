@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { toast } from 'sonner';
 import {
   User,
   Mail,
@@ -974,8 +975,9 @@ export default function RegisterPage() {
                           }
                         });
                         if (error) throw error;
-                      } catch (err: unknown) {
-                        alert(`Erreur: ${err.message}`);
+                      } catch (err: any) {
+                        console.error('Erreur OAuth:', err);
+                        toast.error(`Erreur: ${err?.message || 'Connexion échouée'}`);
                       }
                     }}
                   >
@@ -1000,8 +1002,9 @@ export default function RegisterPage() {
                           }
                         });
                         if (error) throw error;
-                      } catch (err: unknown) {
-                        alert(`Erreur: ${err.message}`);
+                      } catch (err: any) {
+                        console.error('Erreur OAuth:', err);
+                        toast.error(`Erreur: ${err?.message || 'Connexion échouée'}`);
                       }
                     }}
                   >
