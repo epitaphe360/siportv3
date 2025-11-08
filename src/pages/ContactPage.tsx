@@ -1,13 +1,97 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { toast } from 'sonner';
+import { SupabaseService } from '../services/supabaseService';
 
 export default function ContactPage() {
-  const handleSubmit = (e: React.FormEvent) => {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    company: '',
+    subject: '',
+    message: ''
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success('Message envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.');
+
+    // Validation des champs obligatoires
+    if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.email.trim() ||
+        !formData.subject || !formData.message.trim()) {
+      toast.error('Veuillez remplir tous les champs obligatoires');
+      return;
+    }
+
+    // Validation email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error('Veuillez entrer une adresse email valide');
+      return;
+    }
+
+    // Validation longueur minimale du message
+    if (formData.message.trim().length < 10) {
+      toast.error('Le message doit contenir au moins 10 caractères');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Sauvegarde en base de données
+      const result = await SupabaseService.createContactMessage({
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim().toLowerCase(),
+        company: formData.company.trim() || undefined,
+        subject: formData.subject,
+        message: formData.message.trim()
+      });
+
+      console.log('✅ Message de contact sauvegardé:', result.id);
+
+      // Tentative d'envoi d'email (ne bloque pas si Edge Function manquante)
+      try {
+        await SupabaseService.sendContactEmail({
+          firstName: formData.firstName.trim(),
+          lastName: formData.lastName.trim(),
+          email: formData.email.trim(),
+          company: formData.company.trim(),
+          subject: formData.subject,
+          message: formData.message.trim()
+        });
+        console.log('✅ Email de contact envoyé');
+      } catch (emailError) {
+        console.warn('⚠️ Email non envoyé (Edge Function manquante):', emailError);
+        // Ne pas bloquer l'utilisateur si l'email échoue
+      }
+
+      // Navigation vers page de confirmation
+      navigate('/contact/success', {
+        state: {
+          firstName: formData.firstName.trim(),
+          email: formData.email.trim(),
+          messageId: result.id
+        }
+      });
+
+    } catch (error) {
+      console.error('❌ Erreur lors de l\'envoi du message:', error);
+      toast.error('Une erreur est survenue. Veuillez réessayer plus tard.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -38,8 +122,11 @@ export default function ContactPage() {
                   <input
                     type="text"
                     id="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    disabled={isLoading}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                     placeholder="Votre prénom"
                   />
                 </div>
@@ -50,8 +137,11 @@ export default function ContactPage() {
                   <input
                     type="text"
                     id="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    disabled={isLoading}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                     placeholder="Votre nom"
                   />
                 </div>
@@ -64,8 +154,11 @@ export default function ContactPage() {
                 <input
                   type="email"
                   id="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  disabled={isLoading}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                   placeholder="votre.email@exemple.com"
                 />
               </div>
@@ -77,7 +170,10 @@ export default function ContactPage() {
                 <input
                   type="text"
                   id="company"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  value={formData.company}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                   placeholder="Nom de votre société"
                 />
               </div>
@@ -88,8 +184,11 @@ export default function ContactPage() {
                 </label>
                 <select
                   id="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  disabled={isLoading}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                 >
                   <option value="">Sélectionnez un sujet</option>
                   <option value="exhibitor">Devenir exposant</option>
@@ -106,16 +205,38 @@ export default function ContactPage() {
                 </label>
                 <textarea
                   id="message"
+                  value={formData.message}
+                  onChange={handleChange}
                   required
                   rows={6}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Votre message..."
+                  disabled={isLoading}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  placeholder="Votre message (minimum 10 caractères)..."
                 />
+                <p className="mt-1 text-sm text-gray-500">
+                  {formData.message.length} caractères
+                </p>
               </div>
 
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
-                <Send className="h-4 w-4 mr-2" />
-                Envoyer le message
+              <Button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Envoi en cours...
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-4 w-4 mr-2" />
+                    Envoyer le message
+                  </>
+                )}
               </Button>
             </form>
           </Card>

@@ -52,6 +52,7 @@ export const ROUTES = {
   ADMIN_PAVILION_ADD_DEMO: '/admin/pavilion/:pavilionId/add-demo',
   ADMIN_CONTENT: '/admin/content',
   CONTACT: '/contact',
+  CONTACT_SUCCESS: '/contact/success',
   PARTNERSHIP: '/partnership',
   SUPPORT: '/support',
   API: '/api',

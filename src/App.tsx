@@ -58,6 +58,7 @@ const AdminPartnersPage = React.lazy(() => import('./pages/admin/PartnersPage'))
 
 // New pages for footer links
 const ContactPage = React.lazy(() => import('./pages/ContactPage'));
+const ContactSuccessPage = React.lazy(() => import('./pages/ContactSuccessPage'));
 const PartnershipPage = React.lazy(() => import('./pages/PartnershipPage'));
 const SupportPage = React.lazy(() => import('./pages/SupportPage'));
 const APIPage = React.lazy(() => import('./pages/APIPage'));
@@ -185,6 +186,7 @@ const App = () => {
 
             {/* New routes for footer links */}
             <Route path={ROUTES.CONTACT} element={<ContactPage />} />
+            <Route path={ROUTES.CONTACT_SUCCESS} element={<ContactSuccessPage />} />
             <Route path={ROUTES.PARTNERSHIP} element={<PartnershipPage />} />
             <Route path={ROUTES.SUPPORT} element={<SupportPage />} />
             <Route path={ROUTES.API} element={<APIPage />} />
