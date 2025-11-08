@@ -1176,6 +1176,56 @@ export class SupabaseService {
       throw error;
     }
   }
+
+  // ===== CONTACT FUNCTIONS =====
+
+  /**
+   * Créer un message de contact
+   */
+  static async createContactMessage(messageData: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    company?: string;
+    subject: string;
+    message: string;
+  }): Promise<{ id: string }> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Connexion Supabase non disponible');
+    }
+
+    const safeSupabase = supabase!;
+
+    try {
+      const { data, error } = await safeSupabase
+        .from('contact_messages')
+        .insert([
+          {
+            first_name: messageData.firstName,
+            last_name: messageData.lastName,
+            email: messageData.email,
+            company: messageData.company || null,
+            subject: messageData.subject,
+            message: messageData.message,
+            status: 'new'
+          }
+        ])
+        .select('id')
+        .single();
+
+      if (error) {
+        console.error('❌ Erreur création message contact:', error);
+        throw error;
+      }
+
+      console.log('✅ Message de contact créé:', data.id);
+      return data;
+    } catch (error) {
+      console.error('❌ Erreur lors de la création du message:', error);
+      throw error;
+    }
+  }
+
   // ===== NETWORKING FUNCTIONS =====
 
   /**
