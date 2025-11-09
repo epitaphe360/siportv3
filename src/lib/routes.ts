@@ -15,6 +15,7 @@ export const ROUTES = {
   REGISTER_PARTNER: '/register/partner',
   SIGNUP_SUCCESS: '/signup-success',
   PENDING_ACCOUNT: '/pending-account',
+  OAUTH_CALLBACK: '/auth/callback',
   PROFILE: '/profile',
   PROFILE_DETAILED: '/profile/detailed',
   DASHBOARD: '/dashboard',

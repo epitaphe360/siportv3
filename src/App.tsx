@@ -47,6 +47,7 @@ const ExhibitorSignUpPage = React.lazy(() => import('./pages/auth/ExhibitorSignU
 const PartnerSignUpPage = React.lazy(() => import('./pages/auth/PartnerSignUpPage'));
 const SignUpSuccessPage = React.lazy(() => import('./pages/auth/SignUpSuccessPage'));
 const PendingAccountPage = React.lazy(() => import('./pages/auth/PendingAccountPage'));
+const OAuthCallbackPage = React.lazy(() => import('./pages/auth/OAuthCallbackPage'));
 
 // Admin pages
 const PavillonsAdminPage = React.lazy(() => import('./pages/admin/PavillonsPage'));
@@ -124,6 +125,7 @@ const App = () => {
             <Route path={ROUTES.REGISTER_PARTNER} element={<PartnerSignUpPage />} />
             <Route path={ROUTES.SIGNUP_SUCCESS} element={<SignUpSuccessPage />} />
             <Route path={ROUTES.PENDING_ACCOUNT} element={<PendingAccountPage />} />
+            <Route path={ROUTES.OAUTH_CALLBACK} element={<OAuthCallbackPage />} />
             {/* Protected routes - require authentication */}
             <Route path={ROUTES.PROFILE} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path={ROUTES.PROFILE_DETAILED} element={<ProtectedRoute><DetailedProfilePage /></ProtectedRoute>} />

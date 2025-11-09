@@ -26,40 +26,48 @@ export default function SignUpSuccessPage() {
             </motion.div>
 
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              Inscription Réussie !
+              🎉 Inscription Réussie !
             </h1>
 
             <p className="text-gray-600 mb-6">
-              Votre demande d'inscription a bien été prise en compte. Vous allez recevoir un email de confirmation.
+              Félicitations ! Votre demande d'inscription en tant qu'<strong>exposant SIPORTS 2026</strong> a bien été enregistrée dans notre système.
             </p>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left mb-8">
-              <h2 className="font-semibold text-blue-800 mb-2">Prochaines Étapes</h2>
-              <ul className="space-y-2 text-sm text-blue-700">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-left mb-6">
+              <h2 className="font-semibold text-blue-800 mb-3 text-lg">📋 Prochaines Étapes</h2>
+              <ul className="space-y-3 text-sm text-blue-700">
                 <li className="flex items-start">
-                  <Mail className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
+                  <Mail className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
                   <span>
-                    <strong>Email de confirmation :</strong> Un email récapitulatif vous a été envoyé.
+                    <strong>Email de confirmation :</strong> Un email récapitulatif contenant vos informations d'inscription vous a été envoyé. Veuillez vérifier votre boîte de réception (et vos spams).
                   </span>
                 </li>
                 <li className="flex items-start">
-                  <User className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
+                  <User className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
                   <span>
-                    <strong>Validation commerciale :</strong> Un commercial SIPORTS vous contactera sous 48h pour finaliser les aspects contractuels et financiers.
+                    <strong>Validation commerciale :</strong> Notre équipe commerciale SIPORTS vous contactera sous <strong>48 heures ouvrées</strong> pour finaliser les aspects contractuels, commerciaux et financiers de votre participation.
                   </span>
                 </li>
                 <li className="flex items-start">
-                  <Lock className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
+                  <Lock className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
                   <span>
-                    <strong>Activation du compte :</strong> Une fois votre dossier validé, votre compte sera activé et vous recevrez un email pour vous connecter.
+                    <strong>Activation du compte :</strong> Une fois votre dossier validé par nos équipes, votre compte exposant sera <strong>activé</strong> et vous recevrez un email de confirmation avec vos accès complets à la plateforme.
                   </span>
                 </li>
               </ul>
             </div>
 
-            <p className="text-sm text-gray-500 mb-6">
-              En attendant, vous pouvez vous connecter à votre compte, mais l'accès aux fonctionnalités sera limité.
-            </p>
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-left mb-6">
+              <p className="text-sm text-green-800">
+                <strong>✅ Compte créé avec succès !</strong> Votre profil exposant a été enregistré dans notre base de données. Vous pouvez dès maintenant vous connecter pour consulter l'état de votre demande.
+              </p>
+            </div>
+
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-left mb-6">
+              <p className="text-sm text-yellow-800">
+                <strong>⏳ En attente de validation :</strong> L'accès aux fonctionnalités complètes de la plateforme (mini-site, networking, rendez-vous) sera disponible après validation de votre inscription par nos équipes.
+              </p>
+            </div>
 
             <Link to={ROUTES.LOGIN}>
               <Button className="w-full" variant="default">
