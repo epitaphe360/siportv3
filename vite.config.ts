@@ -63,7 +63,9 @@ export default defineConfig({
       }
     },
     reportCompressedSize: false,
-    cssCodeSplit: true
+    cssCodeSplit: true,
+    // Ensure proper cache busting with content-based hashing
+    assetsInlineLimit: 0
   },
   optimizeDeps: {
     exclude: ['lucide-react'],

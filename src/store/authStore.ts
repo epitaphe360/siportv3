@@ -1,8 +1,7 @@
 import { create } from 'zustand';
 import { SupabaseService } from '../services/supabaseService';
 import { supabase } from '../lib/supabase';
-import GoogleAuthService from '../services/googleAuth';
-import LinkedInAuthService from '../services/linkedinAuth';
+import OAuthService from '../services/oauthService';
 import { User, UserProfile } from '../types';
 import { resetAllStores } from './resetStores';
 
@@ -40,6 +39,7 @@ interface AuthState {
   register: (userData: RegistrationData) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   loginWithLinkedIn: () => Promise<void>;
+  handleOAuthCallback: () => Promise<void>;
   logout: () => void;
   setUser: (user: User) => void;
   updateProfile: (profileData: Partial<UserProfile>) => Promise<void>;
@@ -279,23 +279,18 @@ const useAuthStore = create<AuthState>((set, get) => ({
     set({ isGoogleLoading: true });
 
     try {
-      const user = await GoogleAuthService.signInWithGoogle();
-      // Récupérer le VRAI token Firebase
-      const token = await GoogleAuthService.getAuthToken();
+      console.log('🔄 Starting Google OAuth flow...');
 
-      if (!token) {
-        throw new Error('Impossible de récupérer le token d\'authentification');
-      }
+      // Initiate OAuth flow - this will redirect the user
+      await OAuthService.signInWithGoogle();
 
-      set({
-        user,
-        token,
-        isAuthenticated: true,
-        isGoogleLoading: false
-      });
-    } catch (error) {
+      // Note: The OAuth flow redirects, so code after this may not execute
+      // The actual login completion happens after OAuth callback
+
+    } catch (error: any) {
+      console.error('❌ Google OAuth error:', error);
       set({ isGoogleLoading: false });
-      throw error;
+      throw new Error(error.message || 'Erreur lors de la connexion avec Google');
     }
   },
 
@@ -303,38 +298,63 @@ const useAuthStore = create<AuthState>((set, get) => ({
     set({ isLinkedInLoading: true });
 
     try {
-      // LinkedIn OAuth redirige vers Supabase
-      await LinkedInAuthService.signInWithLinkedIn();
-      // La redirection se produit ici, le reste sera géré après callback
+      console.log('🔄 Starting LinkedIn OAuth flow...');
 
-      // Après le retour OAuth, récupérer la session
-      const { data: { session }, error } = await supabase.auth.getSession();
+      // Initiate OAuth flow - this will redirect the user
+      await OAuthService.signInWithLinkedIn();
 
-      if (error || !session) {
-        throw new Error('Impossible de récupérer la session LinkedIn');
-      }
+      // Note: The OAuth flow redirects, so code after this may not execute
+      // The actual login completion happens after OAuth callback
 
-      const user = await LinkedInAuthService.getUserFromSession();
+    } catch (error: any) {
+      console.error('❌ LinkedIn OAuth error:', error);
+      set({ isLinkedInLoading: false });
+      throw new Error(error.message || 'Erreur lors de la connexion avec LinkedIn');
+    }
+  },
+
+  handleOAuthCallback: async () => {
+    set({ isLoading: true });
+
+    try {
+      console.log('🔄 Handling OAuth callback...');
+
+      // Get user from OAuth session
+      const user = await OAuthService.handleOAuthCallback();
+
       if (!user) {
-        throw new Error('Impossible de récupérer les données utilisateur');
+        throw new Error('Impossible de récupérer les informations utilisateur après OAuth');
       }
+
+      // Get session for token
+      const session = await OAuthService.getCurrentSession();
+
+      if (!session) {
+        throw new Error('Impossible de récupérer la session OAuth');
+      }
+
+      console.log('✅ OAuth callback handled successfully:', user.email);
 
       set({
         user,
         token: session.access_token,
         isAuthenticated: true,
+        isLoading: false,
+        isGoogleLoading: false,
         isLinkedInLoading: false
       });
+
     } catch (error: any) {
-      // Si c'est la redirection OAuth, ne pas le traiter comme une erreur
-      if (error.message !== 'OAUTH_REDIRECT') {
-        set({ isLinkedInLoading: false });
-        throw error;
-      }
-      // Pour OAUTH_REDIRECT, garder isLinkedInLoading true pendant la redirection
+      console.error('❌ Error handling OAuth callback:', error);
+      set({
+        isLoading: false,
+        isGoogleLoading: false,
+        isLinkedInLoading: false
+      });
+      throw error;
     }
   },
-  
+
   logout: () => {
     // CRITIQUE: Nettoyer TOUS les stores avant de déconnecter
     // Empêche les fuites de données sur ordinateurs partagés
