@@ -32,6 +32,18 @@ export default tseslint.config(
       ],
       '@typescript-eslint/no-unused-expressions': 'off',
       'prefer-const': 'warn',
+
+      // QUALITY FIX: Additional code quality rules
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'no-debugger': 'error',
+      'no-duplicate-imports': 'error',
+      'no-template-curly-in-string': 'error',
+      'array-callback-return': 'error',
+      'no-eval': 'error',
+      'no-implied-eval': 'error',
+      'eqeqeq': ['error', 'always', { null: 'ignore' }],
+      'curly': ['error', 'all'],
+      'no-trailing-spaces': 'warn',
     },
     },
   // File-specific overrides

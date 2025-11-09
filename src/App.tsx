@@ -107,7 +107,14 @@ const App = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <Suspense fallback={<div className="flex justify-center items-center h-full"><div>Chargement...</div></div>}>
+        <Suspense fallback={
+          <div className="flex items-center justify-center min-h-screen bg-gray-50">
+            <div className="flex flex-col items-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+              <p className="text-gray-600">Chargement...</p>
+            </div>
+          </div>
+        }>
           <Routes>
             <Route path={ROUTES.HOME} element={<HomePage />} />
             <Route path={ROUTES.EXHIBITORS} element={<ExhibitorsPage />} />
