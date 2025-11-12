@@ -42,72 +42,9 @@ interface User {
   verified: boolean;
 }
 
-const mockUsers: User[] = [
-  {
-    id: '1',
-    name: 'Sarah Johnson',
-    email: 'sarah.johnson@portsolutions.com',
-    type: 'exhibitor',
-    company: 'Port Solutions Inc.',
-    country: 'Netherlands',
-    status: 'active',
-    registrationDate: new Date('2024-01-15'),
-    lastActivity: new Date(Date.now() - 3600000),
-    verified: true
-  },
-  {
-    id: '2',
-    name: 'Ahmed El Mansouri',
-    email: 'ahmed@portcasablanca.ma',
-    type: 'partner',
-    company: 'Autorité Portuaire Casablanca',
-    country: 'Morocco',
-    status: 'active',
-    registrationDate: new Date('2024-01-10'),
-    lastActivity: new Date(Date.now() - 7200000),
-    verified: true
-  },
-  {
-    id: '3',
-    name: 'Marie Dubois',
-    email: 'marie.dubois@maritime-consulting.fr',
-    type: 'visitor',
-    company: 'Maritime Consulting France',
-    country: 'France',
-    status: 'pending',
-    registrationDate: new Date('2024-01-20'),
-    lastActivity: new Date(Date.now() - 14400000),
-    verified: false
-  },
-  {
-    id: '4',
-    name: 'Dr. Maria Santos',
-    email: 'maria.santos@maritimeuni.es',
-    type: 'visitor',
-    company: 'Maritime University Barcelona',
-    country: 'Spain',
-    status: 'active',
-    registrationDate: new Date('2024-01-18'),
-    lastActivity: new Date(Date.now() - 1800000),
-    verified: true
-  },
-  {
-    id: '5',
-    name: 'John Smith',
-    email: 'john.smith@techport.com',
-    type: 'exhibitor',
-    company: 'TechPort Solutions',
-    country: 'United Kingdom',
-    status: 'suspended',
-    registrationDate: new Date('2024-01-12'),
-    lastActivity: new Date(Date.now() - 86400000),
-    verified: true
-  }
-];
-
 export default function UserManagementPage() {
-  const [users, setUsers] = useState<User[]>(mockUsers);
-  const [filteredUsers, setFilteredUsers] = useState<User[]>(mockUsers);
+  const [users, setUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
@@ -116,6 +53,59 @@ export default function UserManagementPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [viewUser, setViewUser] = useState<User | null>(null);
+
+  // Charger les utilisateurs depuis Supabase au montage du composant
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setIsLoading(true);
+      try {
+        const { supabase } = await import('../lib/supabase');
+        if (!supabase) {
+          console.warn('⚠️ Supabase non configuré');
+          setUsers([]);
+          return;
+        }
+
+        // Charger tous les utilisateurs avec leur profil
+        const { data, error } = await supabase
+          .from('users')
+          .select('id, email, name, type, profile, status, created_at, updated_at')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('❌ Erreur chargement utilisateurs:', error);
+          toast.error('Erreur lors du chargement des utilisateurs');
+          setUsers([]);
+          return;
+        }
+
+        // Transformer les données Supabase vers le format User
+        const transformedUsers: User[] = (data || []).map((user: any) => ({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          type: user.type,
+          company: user.profile?.company || user.profile?.companyName || '-',
+          country: user.profile?.country || '-',
+          status: user.status || 'active',
+          registrationDate: new Date(user.created_at),
+          lastActivity: new Date(user.updated_at || user.created_at),
+          verified: user.status === 'active'
+        }));
+
+        setUsers(transformedUsers);
+        console.log(`✅ ${transformedUsers.length} utilisateurs chargés depuis Supabase`);
+      } catch (error) {
+        console.error('❌ Erreur chargement utilisateurs:', error);
+        toast.error('Erreur lors du chargement des utilisateurs');
+        setUsers([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   // Handler pour l'export CSV
   const handleExport = () => {

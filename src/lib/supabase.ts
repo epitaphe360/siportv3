@@ -661,6 +661,272 @@ export type Database = {
           created_at?: string;
         };
       };
+      connections: {
+        Row: {
+          id: string;
+          user_id: string;
+          connected_user_id: string;
+          status: 'pending' | 'accepted' | 'rejected';
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          connected_user_id: string;
+          status?: 'pending' | 'accepted' | 'rejected';
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          connected_user_id?: string;
+          status?: 'pending' | 'accepted' | 'rejected';
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      favorites: {
+        Row: {
+          id: string;
+          user_id: string;
+          exhibitor_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          exhibitor_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          exhibitor_id?: string;
+          created_at?: string;
+        };
+      };
+      notifications: {
+        Row: {
+          id: string;
+          user_id: string;
+          type: 'connection' | 'message' | 'appointment' | 'system';
+          title: string;
+          message: string;
+          read: boolean;
+          action_url: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          type: 'connection' | 'message' | 'appointment' | 'system';
+          title: string;
+          message: string;
+          read?: boolean;
+          action_url?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          type?: 'connection' | 'message' | 'appointment' | 'system';
+          title?: string;
+          message?: string;
+          read?: boolean;
+          action_url?: string | null;
+          created_at?: string;
+        };
+      };
+      registration_requests: {
+        Row: {
+          id: string;
+          user_id: string;
+          user_type: 'exhibitor' | 'partner' | 'visitor';
+          company_name: string | null;
+          status: 'pending' | 'approved' | 'rejected';
+          request_data: Record<string, unknown>;
+          created_at: string;
+          reviewed_at: string | null;
+          reviewed_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          user_type: 'exhibitor' | 'partner' | 'visitor';
+          company_name?: string | null;
+          status?: 'pending' | 'approved' | 'rejected';
+          request_data?: Record<string, unknown>;
+          created_at?: string;
+          reviewed_at?: string | null;
+          reviewed_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          user_type?: 'exhibitor' | 'partner' | 'visitor';
+          company_name?: string | null;
+          status?: 'pending' | 'approved' | 'rejected';
+          request_data?: Record<string, unknown>;
+          created_at?: string;
+          reviewed_at?: string | null;
+          reviewed_by?: string | null;
+        };
+      };
+      profile_views: {
+        Row: {
+          id: string;
+          viewer_user_id: string;
+          viewed_user_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          viewer_user_id: string;
+          viewed_user_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          viewer_user_id?: string;
+          viewed_user_id?: string;
+          created_at?: string;
+        };
+      };
+      downloads: {
+        Row: {
+          id: string;
+          user_id: string;
+          resource_type: string;
+          resource_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          resource_type: string;
+          resource_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          resource_type?: string;
+          resource_id?: string;
+          created_at?: string;
+        };
+      };
+      minisite_views: {
+        Row: {
+          id: string;
+          minisite_id: string;
+          exhibitor_id: string;
+          viewer_user_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          minisite_id: string;
+          exhibitor_id: string;
+          viewer_user_id?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          minisite_id?: string;
+          exhibitor_id?: string;
+          viewer_user_id?: string | null;
+          created_at?: string;
+        };
+      };
+      contact_messages: {
+        Row: {
+          id: string;
+          first_name: string;
+          last_name: string;
+          email: string;
+          subject: string;
+          message: string;
+          status: 'pending' | 'read' | 'replied';
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          first_name: string;
+          last_name: string;
+          email: string;
+          subject: string;
+          message: string;
+          status?: 'pending' | 'read' | 'replied';
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          first_name?: string;
+          last_name?: string;
+          email?: string;
+          subject?: string;
+          message?: string;
+          status?: 'pending' | 'read' | 'replied';
+          created_at?: string;
+        };
+      };
+      salon_config: {
+        Row: {
+          id: string;
+          key: string;
+          value: Record<string, unknown>;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          key: string;
+          value: Record<string, unknown>;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          key?: string;
+          value?: Record<string, unknown>;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      pavilions: {
+        Row: {
+          id: string;
+          name: string;
+          description: string;
+          floor: number;
+          section: string;
+          capacity: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          description: string;
+          floor: number;
+          section: string;
+          capacity: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          description?: string;
+          floor?: number;
+          section?: string;
+          capacity?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
     };
   };
 };

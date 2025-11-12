@@ -499,7 +499,6 @@ export class SupabaseService {
   }
 
   static async updateEvent(eventId: string, eventData: Omit<Event, 'id' | 'registered'>): Promise<Event> {
-    throw new Error('updateEvent temporairement désactivé - schéma incompatible');
     if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
 
     const safeSupabase = supabase!;
@@ -509,10 +508,10 @@ export class SupabaseService {
         .update({
           title: eventData.title,
           description: eventData.description,
-          event_type: eventData.type,
+          type: eventData.type, // CORRIGÉ: utilise 'type' au lieu de 'event_type'
           event_date: eventData.date.toISOString().split('T')[0],
-          start_time: `${eventData.date.toISOString().split('T')[0]}T${eventData.startTime}:00Z`,
-          end_time: `${eventData.date.toISOString().split('T')[0]}T${eventData.endTime}:00Z`,
+          start_time: eventData.startTime, // CORRIGÉ: juste le string HH:MM
+          end_time: eventData.endTime, // CORRIGÉ: juste le string HH:MM
           capacity: eventData.capacity,
           category: eventData.category,
           virtual: eventData.virtual,
@@ -520,7 +519,7 @@ export class SupabaseService {
           location: eventData.location,
           meeting_link: eventData.meetingLink,
           tags: eventData.tags,
-          speakers: eventData.speakers,
+          // CORRIGÉ: supprimé speakers car n'existe pas dans le schéma
         })
         .eq('id', eventId)
         .select()
@@ -533,13 +532,13 @@ export class SupabaseService {
         id: data.id,
         title: data.title,
         description: data.description,
-        type: data.event_type,
-	        date: new Date(data.event_date),
-	        startTime: data.start_time.substring(11, 16),
-	        endTime: data.end_time.substring(11, 16),
+        type: data.type, // CORRIGÉ: le champ s'appelle 'type' pas 'event_type'
+        date: new Date(data.event_date),
+        startTime: data.start_time, // CORRIGÉ: déjà au format HH:MM
+        endTime: data.end_time, // CORRIGÉ: déjà au format HH:MM
         capacity: data.capacity,
         registered: data.registered,
-        speakers: data.speakers,
+        speakers: eventData.speakers || [], // Conservé pour compatibilité frontend
         category: data.category,
         virtual: data.virtual,
         featured: data.featured,
@@ -548,11 +547,11 @@ export class SupabaseService {
         tags: data.tags,
       } as Event;
 
-	    } catch (error) {
-	      const errorMessage = error instanceof Error ? error.message : `Erreur inconnue lors de la mise à jour de l'événement ${eventId}`;
-	      console.error(`Erreur lors de la mise à jour de l'événement ${eventId}:`, errorMessage);
-	      throw new Error(errorMessage);
-	    }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : `Erreur inconnue lors de la mise à jour de l'événement ${eventId}`;
+      console.error(`Erreur lors de la mise à jour de l'événement ${eventId}:`, errorMessage);
+      throw new Error(errorMessage);
+    }
   }
 
   static async deleteEvent(eventId: string): Promise<void> {
@@ -574,7 +573,6 @@ export class SupabaseService {
   }
 
   static async createEvent(eventData: Omit<Event, 'id' | 'registered'>): Promise<Event> {
-    throw new Error('createEvent temporairement désactivé - schéma incompatible');
     if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
 
     const safeSupabase = supabase!;
@@ -584,10 +582,10 @@ export class SupabaseService {
         .insert([{
           title: eventData.title,
           description: eventData.description,
-          event_type: eventData.type,
-          event_date: eventData.date.toISOString().split('T')[0], // Stocker la date seule
-          start_time: `${eventData.date.toISOString().split('T')[0]}T${eventData.startTime}:00Z`, // Combiner date et heure pour le timestamp de début
-          end_time: `${eventData.date.toISOString().split('T')[0]}T${eventData.endTime}:00Z`, // Combiner date et heure pour le timestamp de fin
+          type: eventData.type, // CORRIGÉ: utilise 'type' au lieu de 'event_type'
+          event_date: eventData.date.toISOString().split('T')[0],
+          start_time: eventData.startTime, // CORRIGÉ: juste le string HH:MM
+          end_time: eventData.endTime, // CORRIGÉ: juste le string HH:MM
           capacity: eventData.capacity,
           category: eventData.category,
           virtual: eventData.virtual,
@@ -595,7 +593,7 @@ export class SupabaseService {
           location: eventData.location,
           meeting_link: eventData.meetingLink,
           tags: eventData.tags,
-          speakers: eventData.speakers,
+          // CORRIGÉ: supprimé speakers car n'existe pas dans le schéma
           registered: 0, // Initialiser à 0
         }])
         .select()
@@ -608,13 +606,13 @@ export class SupabaseService {
         id: data.id,
         title: data.title,
         description: data.description,
-        type: data.event_type,
-	        date: new Date(data.event_date),
-	        startTime: data.start_time.substring(11, 16), // Extraire HH:MM (position 11 à 15)
-	        endTime: data.end_time.substring(11, 16), // Extraire HH:MM (position 11 à 15)
+        type: data.type, // CORRIGÉ: le champ s'appelle 'type' pas 'event_type'
+        date: new Date(data.event_date),
+        startTime: data.start_time, // CORRIGÉ: déjà au format HH:MM
+        endTime: data.end_time, // CORRIGÉ: déjà au format HH:MM
         capacity: data.capacity,
         registered: data.registered,
-        speakers: data.speakers,
+        speakers: eventData.speakers || [], // Conservé pour compatibilité frontend
         category: data.category,
         virtual: data.virtual,
         featured: data.featured,
@@ -623,15 +621,14 @@ export class SupabaseService {
         tags: data.tags,
       } as Event;
 
-	    } catch (error) {
-	      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue lors de la création de l\'événement';
-	      console.error('Erreur lors de la création de l\'événement:', errorMessage);
-	      throw new Error(errorMessage);
-	    }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue lors de la création de l\'événement';
+      console.error('Erreur lors de la création de l\'événement:', errorMessage);
+      throw new Error(errorMessage);
+    }
   }
 
   static async getEvents(): Promise<Event[]> {
-    throw new Error('getEvents temporairement désactivé - schéma incompatible');
     if (!this.checkSupabaseConnection()) return [];
 
     const safeSupabase = supabase!;
@@ -639,18 +636,19 @@ export class SupabaseService {
       const { data, error } = await safeSupabase
         .from('events')
         .select('*')
+        .order('event_date', { ascending: true })
         .order('start_time', { ascending: true });
-        
+
       if (error) throw error;
-      
+
       return (data || []).map((event: any) => ({
         id: event.id,
         title: event.title,
         description: event.description,
-	        type: event.event_type,
-	        date: new Date(event.event_date),
-	        startTime: event.start_time.substring(11, 16),
-	        endTime: event.end_time.substring(11, 16),
+        type: event.type, // CORRIGÉ: le champ s'appelle 'type' pas 'event_type'
+        date: new Date(event.event_date),
+        startTime: event.start_time, // CORRIGÉ: déjà au format HH:MM
+        endTime: event.end_time, // CORRIGÉ: déjà au format HH:MM
         capacity: event.capacity,
         registered: event.registered || 0,
         speakers: event.speakers || [],
@@ -1420,7 +1418,7 @@ export class SupabaseService {
       const { data, error } = await safeSupabase
         .from('time_slots')
         .select('*')
-        .eq('exhibitor_id', exhibitorId);
+        .eq('user_id', exhibitorId); // CORRIGÉ: utilise user_id au lieu de exhibitor_id selon le schéma Database
       if (error) throw error;
       return data || [];
     } catch (error) {

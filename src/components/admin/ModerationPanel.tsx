@@ -39,52 +39,18 @@ interface PendingContent {
   priority: 'low' | 'medium' | 'high';
 }
 
-const mockPendingContent: PendingContent[] = [
-  {
-    id: 'content-1',
-    exhibitorId: 'exhibitor-1',
-    exhibitorName: 'Ocean Tech Solutions',
-    sectionType: 'about',
-    sectionTitle: 'Section À propos',
-    content: {
-      title: 'Notre expertise IoT maritime',
-      description: 'Avec plus de 15 ans d\'expérience dans l\'IoT maritime, nous développons des solutions innovantes...',
-      features: ['Solutions IoT innovantes', 'Expertise maritime reconnue']
-    },
-    submittedAt: new Date(Date.now() - 3600000),
-    status: 'pending',
-    changes: ['Mise à jour description', 'Ajout nouvelles fonctionnalités'],
-    priority: 'medium'
-  },
-  {
-    id: 'content-2',
-    exhibitorId: 'exhibitor-2',
-    exhibitorName: 'African Ports Development',
-    sectionType: 'products',
-    sectionTitle: 'Catalogue Produits',
-    content: {
-      title: 'Nos services de consulting',
-      products: [
-        {
-          name: 'Port Development Consulting',
-          description: 'Conseil stratégique pour le développement portuaire'
-        }
-      ]
-    },
-    submittedAt: new Date(Date.now() - 7200000),
-    status: 'pending',
-    changes: ['Nouveau produit ajouté', 'Prix mis à jour'],
-    priority: 'high'
-  }
-];
-
 export default function ModerationPanel() {
   const navigate = useNavigate();
-  const [pendingContent, setPendingContent] = useState<PendingContent[]>(mockPendingContent);
+  const [pendingContent, setPendingContent] = useState<PendingContent[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedContent, setSelectedContent] = useState<PendingContent | null>(null);
   const [showModerationModal, setShowModerationModal] = useState(false);
   const [moderationComment, setModerationComment] = useState('');
   const [moderatingContent, setModeratingContent] = useState<string[]>([]);
+
+  // NOTE: Le système de modération de contenu nécessite une table 'content_moderation' ou 'pending_changes'
+  // dans Supabase pour stocker les modifications en attente. Pour l'instant, aucun contenu n'est chargé.
+  // TODO: Créer la table content_moderation et implémenter le chargement des contenus en attente
 
   const handleApproveContent = async (content: PendingContent) => {
     setModeratingContent(prev => [...prev, content.id]);

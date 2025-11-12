@@ -17,59 +17,59 @@ export default function AvailabilityCalendar({ user, showBooking = false, onBook
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isLoading, setIsLoading] = useState(false);
 
-  // Mock data - in real app, this would come from API based on user ID
+  // Charger les créneaux depuis Supabase basé sur l'utilisateur
   useEffect(() => {
-    const mockTimeSlots: TimeSlot[] = [
-      {
-        id: '1',
-        date: new Date('2025-09-15'),
-        startTime: '09:00',
-        endTime: '10:00',
-        duration: 60,
-        type: 'in-person',
-        maxBookings: 3,
-        currentBookings: 1,
-        available: true,
-        location: 'Stand A-12'
-      },
-      {
-        id: '2',
-        date: new Date('2025-09-15'),
-        startTime: '14:00',
-        endTime: '15:00',
-        duration: 60,
-        type: 'virtual',
-        maxBookings: 5,
-        currentBookings: 2,
-        available: true,
-        location: 'Zoom Meeting'
-      },
-      {
-        id: '3',
-        date: new Date('2025-09-16'),
-        startTime: '10:00',
-        endTime: '11:00',
-        duration: 60,
-        type: 'hybrid',
-        maxBookings: 4,
-        currentBookings: 4,
-        available: false,
-        location: 'Stand A-12 + Zoom'
-      },
-      {
-        id: '4',
-        date: new Date('2025-09-16'),
-        startTime: '15:00',
-        endTime: '16:00',
-        duration: 60,
-        type: 'in-person',
-        maxBookings: 3,
-        currentBookings: 0,
-        available: true,
-        location: 'Stand A-12'
+    const fetchTimeSlots = async () => {
+      setIsLoading(true);
+      try {
+        const { supabase } = await import('../../lib/supabase');
+        if (!supabase) {
+          console.warn('⚠️ Supabase non configuré');
+          setTimeSlots([]);
+          return;
+        }
+
+        // Charger les time slots pour cet utilisateur
+        const { data, error } = await supabase
+          .from('time_slots')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('date', { ascending: true })
+          .order('start_time', { ascending: true });
+
+        if (error) {
+          console.error('❌ Erreur chargement time slots:', error);
+          setTimeSlots([]);
+          return;
+        }
+
+        // Transformer les données Supabase vers le format TimeSlot
+        const transformedSlots: TimeSlot[] = (data || []).map((slot: any) => ({
+          id: slot.id,
+          userId: slot.user_id,
+          exhibitorId: slot.user_id, // Alias for compatibility
+          date: new Date(slot.date),
+          startTime: slot.start_time,
+          endTime: slot.end_time,
+          duration: slot.duration,
+          type: slot.type || 'in-person',
+          maxBookings: slot.max_bookings || 1,
+          currentBookings: slot.current_bookings || 0,
+          available: slot.available !== false && (slot.current_bookings || 0) < (slot.max_bookings || 1),
+          location: slot.location || undefined
+        }));
+
+        setTimeSlots(transformedSlots);
+        console.log(`✅ ${transformedSlots.length} créneaux chargés depuis Supabase`);
+      } catch (error) {
+        console.error('❌ Erreur chargement time slots:', error);
+        setTimeSlots([]);
+      } finally {
+        setIsLoading(false);
       }
-    ];
-    setTimeSlots(mockTimeSlots);
+    };
+
+    fetchTimeSlots();
   }, [user.id]);
 
   const formatDate = (date: Date): string => {

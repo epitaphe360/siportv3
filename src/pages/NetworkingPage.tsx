@@ -1028,33 +1028,25 @@ export default function NetworkingPage() {
                     Connexions actives ({connections.length})
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {connections.slice(0, 6).map((connectionId) => {
-                      // Mock data - en réalité, il faudrait récupérer les données des connexions
-                      const mockProfile = {
-                        id: connectionId,
-                        profile: {
-                          firstName: 'Jean',
-                          lastName: 'Dupont',
-                          position: 'Directeur Commercial',
-                          company: 'Port de Marseille',
-                          avatar: null
-                        }
-                      };
-
-                      return (
+                    {/* NOTE: Les détails des connexions doivent être chargés depuis Supabase
+                        via la table 'connections' avec jointure sur 'users' pour récupérer les profils.
+                        Pour l'instant, les connexions sont affichées sans détails. */}
+                    {connections.length === 0 ? (
+                      <p className="text-gray-500 col-span-2">Aucune connexion active. Commencez à développer votre réseau!</p>
+                    ) : (
+                      connections.slice(0, 6).map((connectionId) => (
                         <Card key={connectionId} className="p-4 hover:shadow-md transition-shadow">
                           <div className="flex items-center space-x-3">
                             <Avatar className="h-10 w-10">
                               <AvatarFallback>
-                                {mockProfile.profile.firstName[0]}{mockProfile.profile.lastName[0]}
+                                CN
                               </AvatarFallback>
                             </Avatar>
                             <div className="flex-1">
                               <h4 className="font-medium text-gray-900">
-                                {mockProfile.profile.firstName} {mockProfile.profile.lastName}
+                                Connexion #{connectionId.substring(0, 8)}
                               </h4>
-                              <p className="text-sm text-gray-600">{mockProfile.profile.position}</p>
-                              <p className="text-sm text-gray-500">{mockProfile.profile.company}</p>
+                              <p className="text-sm text-gray-600">Détails à charger depuis Supabase</p>
                             </div>
                             <div className="flex space-x-1">
                               <Button variant="ghost" size="sm">
@@ -1066,8 +1058,8 @@ export default function NetworkingPage() {
                             </div>
                           </div>
                         </Card>
-                      );
-                    })}
+                      ))
+                    )}
                   </div>
                 </div>
 
@@ -1392,21 +1384,16 @@ export default function NetworkingPage() {
               </Card>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* NOTE: Les détails des favoris doivent être chargés depuis Supabase
+                    via la table 'favorites' avec jointure sur 'users' pour récupérer les profils. */}
                 {favorites.map((favoriteId) => {
-                  // Mock data - en réalité, il faudrait récupérer les données des utilisateurs
-                  const mockFavorite = {
-                    id: favoriteId,
-                    name: 'Utilisateur Favori',
-                    title: 'Directeur Commercial',
-                    company: 'Entreprise Example',
-                    avatar: null,
-                    profile: {
-                      interests: ['Technologie', 'Innovation']
-                    }
-                  };
 
                   const isConnected = connections.includes(favoriteId);
                   const isPending = pendingConnections.includes(favoriteId);
+
+                  // TODO: Charger les vraies données utilisateur depuis Supabase
+                  // pour l'instant, afficher un placeholder
+                  const favoriteShortId = favoriteId.substring(0, 8);
 
                   return (
                     <motion.div
@@ -1419,29 +1406,24 @@ export default function NetworkingPage() {
                       <Card className="p-6 hover:shadow-lg transition-shadow duration-200">
                         <div className="flex items-start space-x-4">
                           <Avatar className="h-12 w-12">
-                            <AvatarImage src={mockFavorite.avatar || undefined} alt={mockFavorite.name} />
                             <AvatarFallback>
-                              {mockFavorite.name.split(' ').map((n: string) => n[0]).join('')}
+                              {favoriteShortId.substring(0, 2).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
 
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between mb-2">
                               <h3 className="font-semibold text-gray-900 truncate">
-                                {mockFavorite.name}
+                                Favori #{favoriteShortId}
                               </h3>
                               <Heart className="h-5 w-5 text-red-500 fill-current" />
                             </div>
 
-                            <p className="text-sm text-gray-600 mb-2">{mockFavorite.title}</p>
-                            <p className="text-sm text-gray-500 mb-3">{mockFavorite.company}</p>
+                            <p className="text-sm text-gray-600 mb-2">Détails à charger depuis Supabase</p>
+                            <p className="text-sm text-gray-500 mb-3">Table 'favorites' + jointure 'users'</p>
 
                             <div className="flex flex-wrap gap-1 mb-4">
-                              {mockFavorite.profile?.interests?.slice(0, 2).map((interest, index) => (
-                                <Badge key={index} className="text-xs">
-                                  {interest}
-                                </Badge>
-                              ))}
+                              {/* Intérêts à charger depuis le profil Supabase */}
                             </div>
 
                             <div className="flex items-center justify-between">

@@ -9,7 +9,7 @@ interface ChatState {
   messages: Record<string, ChatMessage[]>;
   isLoading: boolean;
   error: string | null;
-  chatBot: ChatBot;
+  chatBot: ChatBot | null; // Peut être null si non chargé depuis Supabase
   onlineUsers: string[];
 
   // Actions
@@ -22,18 +22,45 @@ interface ChatState {
   setOnlineUsers: (users: string[]) => void;
 }
 
-const mockChatBot: ChatBot = {
-  id: 'siports-bot',
-  name: 'Assistant SIPORTS',
-  avatar: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=100',
-  status: 'online',
-  capabilities: [
-    'Aide à la navigation',
-    'Recommandations de contacts',
-    'Informations sur les exposants',
-    'Planification de rendez-vous',
-    'Support technique'
-  ]
+// Charger le chatbot système depuis Supabase
+// Si le bot n'existe pas en base, il sera null et l'UI doit le gérer
+const loadSystemChatBot = async (): Promise<ChatBot | null> => {
+  try {
+    const { supabase } = await import('../lib/supabase');
+    if (!supabase) {
+      console.warn('⚠️ Supabase non configuré, chatbot indisponible');
+      return null;
+    }
+
+    // Charger le bot système depuis la table users avec type='system' ou id spécifique
+    const { data, error } = await supabase
+      .from('users')
+      .select('id, name, profile')
+      .eq('id', 'siports-bot')
+      .single();
+
+    if (error || !data) {
+      console.warn('⚠️ Bot système non trouvé en base de données');
+      return null;
+    }
+
+    return {
+      id: data.id,
+      name: data.name,
+      avatar: data.profile?.avatar || 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=100',
+      status: 'online',
+      capabilities: data.profile?.capabilities || [
+        'Aide à la navigation',
+        'Recommandations de contacts',
+        'Informations sur les exposants',
+        'Planification de rendez-vous',
+        'Support technique'
+      ]
+    };
+  } catch (error) {
+    console.error('❌ Erreur chargement chatbot système:', error);
+    return null;
+  }
 };
 
 // Chat conversations and messages will be loaded from Supabase
@@ -71,7 +98,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   messages: {},
   isLoading: false,
   error: null,
-  chatBot: mockChatBot,
+  chatBot: null, // Sera chargé depuis Supabase via fetchConversations
   onlineUsers: [],
 
   fetchConversations: async () => {
@@ -88,10 +115,14 @@ export const useChatStore = create<ChatState>((set, get) => ({
         return;
       }
 
+      // Charger le chatbot système depuis Supabase
+      const chatBot = await loadSystemChatBot();
+
       const chatData = await loadChatData(user.id);
       set({
         conversations: chatData.conversations,
         messages: chatData.messages,
+        chatBot,
         isLoading: false
       });
     } catch (error) {
