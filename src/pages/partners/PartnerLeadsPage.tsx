@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -10,20 +10,86 @@ import {
   Phone,
   Crown,
   CheckCircle,
-  Clock
+  Clock,
+  Users
 } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
+import { supabase } from '../../lib/supabase';
+import useAuthStore from '../../store/authStore';
+
+interface Connection {
+  id: string;
+  created_at: string;
+  status: string;
+  connected_user: {
+    id: string;
+    name: string;
+    email: string;
+    type: string;
+    company: string;
+  };
+}
 
 export const PartnerLeadsPage: React.FC = () => {
+  const { user } = useAuthStore();
+  const [connections, setConnections] = useState<Connection[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadConnections();
+  }, []);
+
+  async function loadConnections() {
+    try {
+      // Charger les connexions du partenaire
+      const { data, error } = await supabase
+        .from('connections')
+        .select(`
+          id,
+          created_at,
+          status,
+          connected_user:users!connections_user_id_2_fkey(
+            id,
+            name,
+            email,
+            type,
+            company
+          )
+        `)
+        .eq('user_id_1', user?.id)
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (error) throw error;
+      setConnections(data || []);
+    } catch (error) {
+      console.error('Erreur chargement connexions:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const leadsData = {
     overview: {
-      totalLeads: 89,
-      qualifiedLeads: 67,
-      conversionRate: 12,
-      totalValue: 2850000
+      totalLeads: connections.length,
+      qualifiedLeads: connections.filter(c => c.status === 'accepted').length,
+      conversionRate: connections.length > 0 ? Math.round((connections.filter(c => c.status === 'accepted').length / connections.length) * 100) : 0,
+      totalValue: 0
     },
-    recentLeads: [
+    recentLeads: connections.slice(0, 10).map(conn => ({
+      id: conn.id,
+      company: conn.connected_user?.company || 'N/A',
+      contact: conn.connected_user?.name || 'Utilisateur',
+      position: conn.connected_user?.type || 'N/A',
+      sector: conn.connected_user?.type === 'exhibitor' ? 'Exposant' : conn.connected_user?.type === 'visitor' ? 'Visiteur' : 'Autre',
+      value: 'N/A',
+      status: conn.status === 'accepted' ? 'Connecté' : conn.status === 'pending' ? 'En attente' : 'Rejeté',
+      lastContact: new Date(conn.created_at).toISOString().split('T')[0],
+      nextAction: conn.status === 'accepted' ? 'Suivi actif' : 'En attente de réponse',
+      priority: conn.status === 'accepted' ? 'high' : 'medium'
+    })),
+    leadSources: [
       {
         id: '1',
         company: 'Port Solutions Inc.',
