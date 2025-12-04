@@ -66,41 +66,59 @@ export default function VisitorSubscription() {
       if (error) {
         setMessage('Erreur lors de l\'inscription gratuite.');
       } else {
-        setMessage('Inscription gratuite réussie !');
+        setMessage('✅ Inscription gratuite réussie !');
       }
       return;
     }
 
+    // Pour le niveau premium : créer une demande de paiement par virement bancaire
     try {
-      // Appeler l'Edge Function pour créer une session Stripe Checkout
-      const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
-        body: {
-          userId: userId,
-          level: level,
-          successUrl: `${window.location.origin}/subscription/success?level=${level}`,
-          cancelUrl: `${window.location.origin}/subscription/cancel`
-        }
-      });
+      // Vérifier si une demande pending existe déjà
+      const { data: existingRequest, error: checkError } = await supabase
+        .from('payment_requests')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('status', 'pending')
+        .single();
 
-      if (error) {
-        console.error('Erreur création session Stripe:', error);
-        setMessage(`Erreur lors de la création de la session de paiement: ${error.message}`);
+      if (existingRequest) {
+        setMessage('⚠️ Vous avez déjà une demande de paiement en attente. Consultez votre profil pour les instructions de virement.');
         setLoading(false);
         return;
       }
 
-      console.log('Session Stripe créée:', data);
+      // Créer la demande de paiement
+      const { data: request, error } = await supabase
+        .from('payment_requests')
+        .insert({
+          user_id: userId,
+          requested_level: level,
+          amount: 700.00,
+          currency: 'EUR',
+          status: 'pending',
+          payment_method: 'bank_transfer'
+        })
+        .select()
+        .single();
 
-      // Rediriger vers Stripe Checkout
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        setMessage('Erreur: URL de paiement manquante');
+      if (error) {
+        console.error('Erreur création demande:', error);
+        setMessage(`❌ Erreur lors de la création de la demande: ${error.message}`);
         setLoading(false);
+        return;
       }
+
+      setMessage(`✅ Demande créée avec succès ! Consultez les instructions de virement bancaire ci-dessous.`);
+      setLoading(false);
+
+      // Rediriger vers la page des instructions de paiement après 2 secondes
+      setTimeout(() => {
+        window.location.href = `/visitor/payment-instructions?request_id=${request.id}`;
+      }, 2000);
+
     } catch (err: any) {
-      console.error('Erreur paiement:', err);
-      setMessage(`Erreur: ${err.message || 'Erreur inconnue'}`);
+      console.error('Erreur:', err);
+      setMessage(`❌ Erreur: ${err.message || 'Erreur inconnue'}`);
       setLoading(false);
     }
   }
@@ -119,7 +137,7 @@ export default function VisitorSubscription() {
             </ul>
             <div style={{fontWeight:'bold',fontSize:18,margin:'12px 0'}}>{level.price}</div>
             <button disabled={loading} onClick={()=>{setSelected(level.key);handleSubscribe(level.key);}}>
-              {level.price==='0€'?'S\'inscrire':'Acheter'}
+              {level.price==='0€'?'S\'inscrire':'Demander le Pass Premium'}
             </button>
           </div>
         ))}
