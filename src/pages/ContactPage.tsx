@@ -59,7 +59,6 @@ export default function ContactPage() {
         message: formData.message.trim()
       });
 
-      console.log('✅ Message de contact sauvegardé:', result.id);
 
       // Tentative d'envoi d'email (ne bloque pas si Edge Function manquante)
       try {
@@ -71,7 +70,6 @@ export default function ContactPage() {
           subject: formData.subject,
           message: formData.message.trim()
         });
-        console.log('✅ Email de contact envoyé');
       } catch (emailError) {
         console.warn('⚠️ Email non envoyé (Edge Function manquante):', emailError);
         // Ne pas bloquer l'utilisateur si l'email échoue

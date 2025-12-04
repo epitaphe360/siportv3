@@ -190,7 +190,6 @@ export default function PartnerCreationForm() {
 
       // Créer l'utilisateur
       const newUser = await SupabaseService.createUser(userData);
-      console.log('✅ Utilisateur créé:', newUser.id);
 
       // Créer l'entité Partner
       const partnerData = {
@@ -215,7 +214,6 @@ export default function PartnerCreationForm() {
       };
 
       await SupabaseService.createPartner(partnerData);
-      console.log('✅ Partenaire créé');
 
       toast.success(`Partenaire créé : ${formData.organizationName} (${formData.contactName})`);
 

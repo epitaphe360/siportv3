@@ -97,7 +97,6 @@ export const useNewsStore = create<NewsState>((set, get) => ({
   fetchFromOfficialSite: async () => {
     set({ isLoading: true });
     try {
-      console.log('🔄 Synchronizing articles from official website...');
       
       // Appeler l'Edge Function de synchronisation
       const { data, error } = await supabase.functions.invoke('sync-news-articles', {
@@ -109,7 +108,6 @@ export const useNewsStore = create<NewsState>((set, get) => ({
         throw error;
       }
 
-      console.log('✅ Sync response:', data);
 
       // Recharger les articles depuis la base de données
       await get().fetchNews();
@@ -153,7 +151,6 @@ export const useNewsStore = create<NewsState>((set, get) => ({
     set({ isLoading: true });
 
     try {
-      console.log('📝 Création article:', articleData.title);
 
       // Insérer dans la base de données
       const { data, error } = await supabase
@@ -177,7 +174,6 @@ export const useNewsStore = create<NewsState>((set, get) => ({
         throw error;
       }
 
-      console.log('✅ Article créé:', data.id);
 
       // Recharger les articles
       await get().fetchNews();
@@ -192,7 +188,6 @@ export const useNewsStore = create<NewsState>((set, get) => ({
 
   updateNewsArticle: async (id: string, updates: Partial<NewsArticle>) => {
     try {
-      console.log('🔄 Mise à jour article:', id);
 
       // Mettre à jour dans la base de données
       const { error } = await supabase
@@ -214,7 +209,6 @@ export const useNewsStore = create<NewsState>((set, get) => ({
         throw error;
       }
 
-      console.log('✅ Article mis à jour');
 
       // Recharger les articles
       await get().fetchNews();
@@ -226,7 +220,6 @@ export const useNewsStore = create<NewsState>((set, get) => ({
 
   deleteNewsArticle: async (id: string) => {
     try {
-      console.log('🗑️  Suppression article:', id);
 
       // Supprimer de la base de données
       const { error } = await supabase
@@ -239,7 +232,6 @@ export const useNewsStore = create<NewsState>((set, get) => ({
         throw error;
       }
 
-      console.log('✅ Article supprimé');
 
       // Recharger les articles
       await get().fetchNews();

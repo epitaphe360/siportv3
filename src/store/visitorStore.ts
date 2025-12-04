@@ -462,7 +462,6 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
         if (error) throw error;
 
         // TODO: Récupérer les détails de la session et l'ajouter à registeredSessions
-        console.log('Inscription à la session réussie');
       }
     } catch (error) {
       console.error('Erreur lors de l\'inscription à la session:', error);

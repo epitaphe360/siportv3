@@ -93,7 +93,6 @@ const useAuthStore = create<AuthState>((set, get) => ({
         throw new Error('Email et mot de passe requis');
       }
 
-      console.log('🔄 Connexion via Supabase pour:', email);
 
       // ✅ Passer l'option rememberMe à signIn
       const user = await SupabaseService.signIn(email, password, options);
@@ -106,7 +105,6 @@ const useAuthStore = create<AuthState>((set, get) => ({
         throw new Error('Votre compte est en attente de validation');
       }
 
-      console.log('✅ Utilisateur authentifié:', user.email, options?.rememberMe ? '(session persistante)' : '(session temporaire)');
 
       set({
         user,
@@ -125,7 +123,6 @@ const useAuthStore = create<AuthState>((set, get) => ({
 
   signUp: async (credentials, profileData) => {
     try {
-      console.log('🔄 Inscription utilisateur:', credentials.email);
 
       // Valider les données
       if (!credentials.email || !credentials.password) {
@@ -161,11 +158,9 @@ const useAuthStore = create<AuthState>((set, get) => ({
         throw new Error('Échec de la création de l\'utilisateur');
       }
 
-      console.log('✅ Utilisateur créé:', newUser.email);
 
       // Créer demande d'inscription pour exposants et partenaires
       if (profileData.role === 'exhibitor' || profileData.role === 'partner') {
-        console.log('📝 Création demande d\'inscription...');
 
         await SupabaseService.createRegistrationRequest({
           userType: profileData.role,
@@ -183,7 +178,6 @@ const useAuthStore = create<AuthState>((set, get) => ({
             name: `${profileData.firstName || ''} ${profileData.lastName || ''}`.trim(),
             userType: profileData.role
           });
-          console.log('✅ Email de confirmation envoyé');
         } catch (emailError) {
           console.warn('⚠️ Erreur envoi email:', emailError);
           // Ne pas bloquer l'inscription si l'email échoue
@@ -206,7 +200,6 @@ const useAuthStore = create<AuthState>((set, get) => ({
         throw new Error('Email, prénom, nom et mot de passe sont requis');
       }
 
-      console.log('🔄 Création d\'utilisateur avec Supabase Auth...');
 
       const userType = (['admin','exhibitor','partner','visitor'].includes(userData.accountType ?? '') ? userData.accountType! : 'visitor') as User['type'];
 
@@ -236,11 +229,9 @@ const useAuthStore = create<AuthState>((set, get) => ({
         throw new Error('Échec de la création de l\'utilisateur');
       }
 
-      console.log('✅ Utilisateur créé avec succès:', newUser.email);
 
       // Créer une demande d'inscription pour exposants et partenaires
       if (userType === 'exhibitor' || userType === 'partner') {
-        console.log('📝 Création de la demande d\'inscription...');
         await SupabaseService.createRegistrationRequest(newUser.id, {
           type: userType,
           email: userData.email,
@@ -253,7 +244,6 @@ const useAuthStore = create<AuthState>((set, get) => ({
         });
 
         // Envoyer l'email de confirmation
-        console.log('📧 Envoi de l\'email de confirmation...');
         await SupabaseService.sendRegistrationEmail({
           userType: userType as 'exhibitor' | 'partner',
           email: userData.email,
@@ -262,7 +252,6 @@ const useAuthStore = create<AuthState>((set, get) => ({
           companyName: userData.companyName ?? ''
         });
 
-        console.log('✅ Email de confirmation envoyé');
       }
 
       set({ isLoading: false });
@@ -279,7 +268,6 @@ const useAuthStore = create<AuthState>((set, get) => ({
     set({ isGoogleLoading: true });
 
     try {
-      console.log('🔄 Starting Google OAuth flow...');
 
       // Initiate OAuth flow - this will redirect the user
       await OAuthService.signInWithGoogle();
@@ -298,7 +286,6 @@ const useAuthStore = create<AuthState>((set, get) => ({
     set({ isLinkedInLoading: true });
 
     try {
-      console.log('🔄 Starting LinkedIn OAuth flow...');
 
       // Initiate OAuth flow - this will redirect the user
       await OAuthService.signInWithLinkedIn();
@@ -317,7 +304,6 @@ const useAuthStore = create<AuthState>((set, get) => ({
     set({ isLoading: true });
 
     try {
-      console.log('🔄 Handling OAuth callback...');
 
       // Get user from OAuth session
       const user = await OAuthService.handleOAuthCallback();
@@ -333,7 +319,6 @@ const useAuthStore = create<AuthState>((set, get) => ({
         throw new Error('Impossible de récupérer la session OAuth');
       }
 
-      console.log('✅ OAuth callback handled successfully:', user.email);
 
       set({
         user,

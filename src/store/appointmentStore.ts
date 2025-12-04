@@ -41,7 +41,6 @@ async function syncWithMiniSite(slot: TimeSlot, availableCount: number): Promise
     // 1. Récupérer le mini-site de l'exposant
     const miniSite = await SupabaseService.getMiniSite(slot.exhibitorId);
     if (!miniSite) {
-      console.log(`ℹ️ Pas de mini-site pour l'exposant ${slot.exhibitorId}`);
       return;
     }
 
@@ -62,7 +61,6 @@ async function syncWithMiniSite(slot: TimeSlot, availableCount: number): Promise
 
     await SupabaseService.updateMiniSite(slot.exhibitorId, updatedData);
 
-    console.log(`✅ Mini-site synchronisé: ${availableCount} créneaux disponibles`);
 
     // 3. Optionnel: Publier sur canal temps réel Supabase
     // Pour une implémentation complète, on pourrait utiliser Supabase Realtime
@@ -90,11 +88,9 @@ async function notifyInterestedVisitors(slot: TimeSlot): Promise<void> {
     const interestedVisitors = await SupabaseService.getInterestedVisitors?.(slot.userId) || [];
 
     if (interestedVisitors.length === 0) {
-      console.log(`ℹ️ Aucun visiteur intéressé par l'exposant ${slot.userId}`);
       return;
     }
 
-    console.log(`📬 Notification de ${interestedVisitors.length} visiteurs intéressés...`);
 
     // 2. Filtrer selon les préférences de notification
     const notifiableVisitors = interestedVisitors.filter((v: any) =>
@@ -146,7 +142,6 @@ async function notifyInterestedVisitors(slot: TimeSlot): Promise<void> {
     const results = await Promise.allSettled(notificationPromises);
     const successCount = results.filter(r => r.status === 'fulfilled' && (r.value as any).success).length;
 
-    console.log(`✅ ${successCount}/${notifiableVisitors.length} visiteurs notifiés avec succès`);
 
   } catch (error) {
     console.error('❌ Erreur notification visiteurs:', error);

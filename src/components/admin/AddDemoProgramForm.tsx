@@ -69,8 +69,6 @@ export default function AddDemoProgramPage() {
 
     try {
       // Ici vous pouvez implémenter la logique de sauvegarde
-      console.log('Programme data:', programData);
-      console.log('Pavilion ID:', pavilionId);
 
       // Simulation d'une requête API
       await new Promise(resolve => setTimeout(resolve, 1500));

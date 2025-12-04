@@ -141,12 +141,10 @@ export default function PavillonsPage() {
   };
 
   const handlePavilionAction = (pavilionId: string, action: string) => {
-    console.log(`Action ${action} pour le pavillon ${pavilionId}`);
     // Ici vous pouvez implémenter les actions réelles
   };
 
   const handleDemoAction = (demoId: string, action: string) => {
-    console.log(`Action ${action} pour la démonstration ${demoId}`);
     // Ici vous pouvez implémenter les actions réelles
   };
 

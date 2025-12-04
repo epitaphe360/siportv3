@@ -27,6 +27,7 @@ import { useDashboardStats } from '../../hooks/useDashboardStats';
 import { ErrorMessage, LoadingMessage } from '../common/ErrorMessage';
 
 export default function PartnerDashboard() {
+  // ✅ CORRECTION: Tous les hooks DOIVENT être appelés avant tout return conditionnel
   const { user } = useAuthStore();
   const { dashboard, isLoading, error: dashboardError, fetchDashboard } = useDashboardStore();
   const dashboardStats = useDashboardStats();
@@ -35,8 +36,42 @@ export default function PartnerDashboard() {
 
   const [error, setError] = useState<string | null>(null);
   const [processingAppointment, setProcessingAppointment] = useState<string | null>(null);
+  const [showMediaModal, setShowMediaModal] = useState(false);
+  const [showLeadsModal, setShowLeadsModal] = useState(false);
+  const [showEventsModal, setShowEventsModal] = useState(false);
+  const [showSatisfactionModal, setShowSatisfactionModal] = useState(false);
 
-  // RBAC: Verify user is a partner
+  useEffect(() => {
+    if (!user || user.type !== 'partner') return;
+    
+    const loadData = async () => {
+      try {
+        await fetchDashboard();
+      } catch (err) {
+        console.error('Erreur lors du chargement du dashboard:', err);
+        setError('Impossible de charger le tableau de bord');
+      }
+    };
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]); // Intentionally fetch only on mount
+
+  useEffect(() => {
+    if (!user || user.type !== 'partner') return;
+    
+    const loadAppointments = async () => {
+      try {
+        await fetchAppointments();
+      } catch (err) {
+        console.error('Erreur lors du chargement des rendez-vous:', err);
+        setError('Impossible de charger les rendez-vous');
+      }
+    };
+    loadAppointments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]); // Intentionally fetch only on mount
+
+  // RBAC: Verify user is a partner - APRÈS tous les hooks
   if (!user || user.type !== 'partner') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center p-4">
@@ -55,36 +90,6 @@ export default function PartnerDashboard() {
       </div>
     );
   }
-  const [showMediaModal, setShowMediaModal] = useState(false);
-  const [showLeadsModal, setShowLeadsModal] = useState(false);
-  const [showEventsModal, setShowEventsModal] = useState(false);
-  const [showSatisfactionModal, setShowSatisfactionModal] = useState(false);
-
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        await fetchDashboard();
-      } catch (err) {
-        console.error('Erreur lors du chargement du dashboard:', err);
-        setError('Impossible de charger le tableau de bord');
-      }
-    };
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Intentionally fetch only on mount
-
-  useEffect(() => {
-    const loadAppointments = async () => {
-      try {
-        await fetchAppointments();
-      } catch (err) {
-        console.error('Erreur lors du chargement des rendez-vous:', err);
-        setError('Impossible de charger les rendez-vous');
-      }
-    };
-    loadAppointments();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Intentionally fetch only on mount
 
   // Filter appointments where partner is involved (as partner, not as exhibitor)
   // Note: Partners typically receive appointments through partnership relationships

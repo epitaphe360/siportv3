@@ -129,7 +129,6 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
   selectExhibitor: (id) => {
     const { exhibitors } = get();
     const exhibitor = exhibitors.find(e => e.id === id) || null;
-    console.log('Selecting exhibitor with ID:', id, 'Found:', exhibitor);
     set({ selectedExhibitor: exhibitor });
   },
 

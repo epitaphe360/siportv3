@@ -160,7 +160,6 @@ export default function ActivityPage() {
   };
 
   const handleActivityAction = (activityId: string, action: string) => {
-    console.log(`Action ${action} pour l'activité ${activityId}`);
     // Implement actual actions like viewing details or performing moderation
   };
 

@@ -111,7 +111,6 @@ export default function ExhibitorsPage() {
   };
 
   const handleExhibitorAction = (exhibitorId: string, action: string) => {
-    console.log(`Action ${action} pour l'exposant ${exhibitorId}`);
     // Implement actual actions like viewing details, editing, approving/rejecting
   };
 

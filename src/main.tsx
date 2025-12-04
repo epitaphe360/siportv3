@@ -5,8 +5,6 @@ import './index.css';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 // Version check
-console.log('SIPORTS v2.0 - Build:', new Date().toISOString());
-console.log('React version:', React.version);
 
 // Supporte les deux shortcodes: [siports_networking] et [siports_exhibitor_dashboard]
 

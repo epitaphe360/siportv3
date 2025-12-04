@@ -127,7 +127,6 @@ export default function UsersPage() {
   };
 
   const handleUserAction = (userId: string, action: string) => {
-    console.log(`Action ${action} pour l'utilisateur ${userId}`);
     // Ici vous pouvez implémenter les actions réelles
   };
 

@@ -39,11 +39,9 @@ const mockChatBot: ChatBot = {
 // Chat conversations and messages will be loaded from Supabase
 const loadChatData = async (userId: string) => {
   try {
-    console.log('📬 Chargement conversations pour utilisateur:', userId);
 
     // Charger les conversations depuis Supabase
     const conversations = await SupabaseService.getConversations(userId);
-    console.log('✅ Conversations chargées:', conversations.length);
 
     // Charger les messages pour chaque conversation
     const messages: Record<string, ChatMessage[]> = {};
@@ -108,7 +106,6 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
   sendMessage: async (conversationId, content, type = 'text') => {
     try {
-      console.log('📤 Envoi message:', { conversationId, content: content.substring(0, 50) });
 
       const { messages, conversations } = get();
       const conversation = conversations.find(c => c.id === conversationId);
@@ -143,7 +140,6 @@ export const useChatStore = create<ChatState>((set, get) => ({
         throw new Error('Échec envoi message');
       }
 
-      console.log('✅ Message envoyé:', sentMessage.id);
 
       // Add message to conversation local state
       const updatedMessages = {

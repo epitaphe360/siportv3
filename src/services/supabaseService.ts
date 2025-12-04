@@ -181,7 +181,6 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      console.log(`✅ Utilisateur ${userId} mis à jour`);
       return this.transformUserDBToUser(data);
     } catch (error) {
       console.error(`❌ Erreur mise à jour utilisateur ${userId}:`, error);
@@ -206,7 +205,6 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      console.log(`✅ Demande d'inscription créée pour l'utilisateur ${userId} (type: ${requestType})`);
       return data;
     } catch (error) {
       console.error(`❌ Erreur création demande d'inscription:`, error);
@@ -380,7 +378,6 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      console.log('🔐 Création compte Auth Supabase pour:', email);
 
       // 1. Créer l'utilisateur dans Supabase Auth
       const { data: authData, error: authError } = await safeSupabase.auth.signUp({
@@ -397,8 +394,6 @@ export class SupabaseService {
         return null;
       }
 
-      console.log('✅ Compte Auth créé, ID:', authData.user.id);
-      console.log('📝 Création du profil utilisateur dans la table users...');
 
       // 2. Créer le profil utilisateur
       const { data: userProfile, error: userError } = await safeSupabase
@@ -418,14 +413,11 @@ export class SupabaseService {
         throw userError;
       }
 
-      console.log('✅ Profil utilisateur créé');
 
       // 3. Si c'est un exposant ou partenaire, créer l'entrée correspondante
       if (userData.type === 'exhibitor') {
-        console.log('📋 Création profil exposant...');
         await this.createExhibitorProfile(authData.user.id, userData);
       } else if (userData.type === 'partner') {
-        console.log('📋 Création profil partenaire...');
         await this.createPartnerProfile(authData.user.id, userData);
       }
 
@@ -460,7 +452,6 @@ export class SupabaseService {
       if (options?.rememberMe === false) {
         // Pour l'instant, on log simplement l'intention
         // TODO: Implémenter session temporaire avec sessionStorage si besoin
-        console.log('⏰ Session temporaire activée (rememberMe = false)');
       }
 
       // Récupérer le profil utilisateur
@@ -813,7 +804,6 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      console.log(`✅ Messages marqués comme lus pour conversation ${conversationId}`);
     } catch (error) {
       console.error('Erreur lors du marquage des messages comme lus:', error);
       throw error;
@@ -973,7 +963,6 @@ export class SupabaseService {
 	        .eq('id', exhibitorId);
 	
 	      if (error) throw error;
-	      console.log(`✅ Profil exposant ${exhibitorId} mis à jour`);
 	    } catch (error) {
 	      console.error(`❌ Erreur mise à jour profil exposant ${exhibitorId}:`, error);
 	      throw error;
@@ -991,7 +980,6 @@ export class SupabaseService {
 	        .eq('id', userId);
 
 	      if (error) throw error;
-	      console.log(`✅ Statut utilisateur ${userId} mis à jour à ${status}`);
 	    } catch (error) {
 	      console.error(`❌ Erreur mise à jour statut utilisateur ${userId}:`, error);
 	      throw error;
@@ -1026,7 +1014,6 @@ export class SupabaseService {
 	        throw new Error('Échec de la validation de l\'exposant');
 	      }
 
-	      console.log(`✅ Exposant ${exhibitorId} validé avec succès (statut: ${newStatus})`);
 	      return {
 	        userId: result.user_id,
 	        userEmail: result.user_email,
@@ -1068,7 +1055,6 @@ export class SupabaseService {
 	        throw new Error('Échec de la validation du partenaire');
 	      }
 
-	      console.log(`✅ Partenaire ${partnerId} validé avec succès (statut: ${newStatus})`);
 	      return {
 	        userId: result.user_id,
 	        userEmail: result.user_email,
@@ -1103,7 +1089,6 @@ export class SupabaseService {
         }]);
         
       if (error) throw error;
-      console.log('✅ Profil exposant créé');
     } catch (error) {
       console.error('❌ Erreur création profil exposant:', error);
       throw error;
@@ -1128,7 +1113,6 @@ export class SupabaseService {
         }]);
         
       if (error) throw error;
-      console.log('✅ Profil partenaire créé');
     } catch (error) {
       console.error('❌ Erreur création profil partenaire:', error);
 	      throw error;
@@ -1152,7 +1136,6 @@ export class SupabaseService {
 	      });
 	
 	      if (error) throw error;
-	      console.log(`✅ Email de validation (${userData.status}) envoyé:`, data);
 	    } catch (error) {
 	      console.error(`❌ Erreur lors de l\`envoi de l\`email de validation:`, error);
 	      throw error;
@@ -1170,7 +1153,6 @@ export class SupabaseService {
       });
 
       if (error) throw error;
-      console.log('✅ Email de confirmation envoyé:', data);
     } catch (error) {
       console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
       throw error;
@@ -1218,7 +1200,6 @@ export class SupabaseService {
         throw error;
       }
 
-      console.log('✅ Message de contact créé:', data.id);
       return data;
     } catch (error) {
       console.error('❌ Erreur lors de la création du message:', error);
@@ -1498,7 +1479,6 @@ export class SupabaseService {
         .eq('id', appointmentId);
 
       if (error) throw error;
-      console.log(`✅ Statut du rendez-vous ${appointmentId} mis à jour à ${status}`);
     } catch (error) {
       console.error(`❌ Erreur mise à jour statut rendez-vous ${appointmentId}:`, error);
       throw error;
@@ -1548,7 +1528,6 @@ export class SupabaseService {
 
       if (fetchError) throw fetchError;
 
-      console.log(`✅ Rendez-vous créé avec succès (ID: ${result.appointment_id})`);
       return appointment;
     } catch (error) {
       console.error("Erreur lors de la création du rendez-vous:", error);

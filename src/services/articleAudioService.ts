@@ -53,7 +53,6 @@ export class ArticleAudioService {
     }
 
     try {
-      console.log('📢 Demande de conversion audio pour l\'article:', articleId);
 
       const { data, error } = await supabase.functions.invoke('convert-text-to-speech', {
         body: {
@@ -73,7 +72,6 @@ export class ArticleAudioService {
         };
       }
 
-      console.log('✅ Réponse de la conversion:', data);
 
       // Vérifier si la réponse contient une erreur
       if (data && !data.success) {

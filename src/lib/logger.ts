@@ -30,7 +30,6 @@ class Logger {
       }[level];
 
       const logMessage = `[${timestamp}] ${level.toUpperCase()}: ${message}`;
-      console.log(`%c${logMessage}`, `color: ${color}; font-weight: bold;`, context || '');
     }
 
     // Send to Sentry in production

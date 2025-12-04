@@ -83,11 +83,9 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
     
     try {
       const domain = extractDomain(validation.normalizedUrl || importUrl);
-      console.log(`🚀 Génération automatique depuis: ${validation.normalizedUrl}`);
       
       // Appel au service de scraping
       const generated = await AiAgentService.generate(validation.normalizedUrl || importUrl);
-      console.log('✅ Contenu généré:', generated);
       
       // Stocker les données scrapées
       setScrapedData(generated);
@@ -133,7 +131,6 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
         contact: scrapedData.contact || {}
       };
 
-      console.log('🔄 Création du mini-site avec les données:', miniSiteData);
 
       // Vérifier que l'utilisateur est connecté
       if (!user?.id) {
@@ -142,14 +139,12 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
 
       // Création du mini-site
       const created = await SupabaseService.createMiniSite(user.id, miniSiteData);
-      console.log('✅ Mini-site créé:', created);
 
       // Publication automatique
       try {
         await SupabaseService.updateMiniSite(user.id, {
           published: true
         });
-        console.log('✅ Mini-site publié automatiquement');
       } catch (pubErr) {
         console.warn('⚠️ Impossible de publier automatiquement:', pubErr);
       }
@@ -201,7 +196,6 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
         documents: form.documents || [],
       };
 
-      console.log('🔄 Création manuelle du mini-site:', miniSiteData);
 
       // Vérifier que l'utilisateur est connecté
       if (!user?.id) {
@@ -209,7 +203,6 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
       }
 
       const created = await SupabaseService.createMiniSite(user.id, miniSiteData);
-      console.log('✅ Mini-site créé:', created);
 
       // Publication automatique
       try {

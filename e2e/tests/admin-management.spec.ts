@@ -13,7 +13,7 @@ test.describe('8. ADMINISTRATION COMPLÈTE', () => {
     await login(page, testUsers.admin.email, testUsers.admin.password);
   });
 
-  test('8.1 - Dashboard Admin : Vue d'ensemble', async ({ page }) => {
+  test('8.1 - Dashboard Admin : Vue d\'ensemble', async ({ page }) => {
     await page.goto('/admin/dashboard');
 
     // Vérifier les KPIs

@@ -32,7 +32,7 @@ const exhibitorSignUpSchema = z.object({
   lastName: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
   companyName: z.string().min(2, "Le nom de l'entreprise est requis"),
   email: z.string().email("Adresse email invalide"),
-  phone: z.string().regex(/^[\d\s\-\+\(\)]+$/, "Numéro de téléphone invalide"),
+  phone: z.string().regex(/^[\d\s\-+()]+$/, "Numéro de téléphone invalide"),
   country: z.string().min(2, "Veuillez sélectionner un pays"),
   position: z.string().min(2, "Le poste est requis"),
   sectors: z.array(z.string()).min(1, "Sélectionnez au moins un secteur"),

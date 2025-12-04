@@ -12,7 +12,6 @@ export class OAuthService {
    */
   static async signInWithGoogle(): Promise<void> {
     try {
-      console.log('🔄 Initiating Google OAuth via Supabase...');
 
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -30,7 +29,6 @@ export class OAuthService {
         throw new Error(`Erreur d'authentification Google: ${error.message}`);
       }
 
-      console.log('✅ Google OAuth initiated, redirecting...');
 
       // The OAuth flow will redirect the user
       // The actual user data will be retrieved after OAuth callback
@@ -52,7 +50,6 @@ export class OAuthService {
    */
   static async signInWithLinkedIn(): Promise<void> {
     try {
-      console.log('🔄 Initiating LinkedIn OAuth via Supabase...');
 
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'linkedin_oidc',
@@ -66,7 +63,6 @@ export class OAuthService {
         throw new Error(`Erreur d'authentification LinkedIn: ${error.message}`);
       }
 
-      console.log('✅ LinkedIn OAuth initiated, redirecting...');
 
       // The OAuth flow will redirect the user
       // The actual user data will be retrieved after OAuth callback
@@ -176,7 +172,6 @@ export class OAuthService {
    */
   private static async createUserFromOAuth(oauthUser: any): Promise<User> {
     try {
-      console.log('🔄 Creating user profile from OAuth data...');
 
       const displayName = oauthUser.user_metadata?.full_name || oauthUser.email || '';
       const nameParts = displayName.split(' ');
@@ -239,7 +234,6 @@ export class OAuthService {
         };
       }
 
-      console.log('✅ User profile created successfully');
 
       return {
         ...newUserData,
@@ -266,7 +260,6 @@ export class OAuthService {
         return null;
       }
 
-      console.log('✅ OAuth callback successful, retrieving user profile...');
 
       // Get or create user profile
       const user = await this.getUserFromSession();
@@ -294,7 +287,6 @@ export class OAuthService {
         throw error;
       }
 
-      console.log('✅ Signed out successfully');
     } catch (error) {
       console.error('❌ Error signing out:', error);
       throw error;

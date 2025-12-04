@@ -49,7 +49,6 @@ export const PartnerProfileEditPage: React.FC = () => {
     const file = event.target.files?.[0];
     if (file) {
       // Ici vous pouvez gérer l'upload du fichier
-      console.log('Logo uploaded:', file.name);
     }
   };
 

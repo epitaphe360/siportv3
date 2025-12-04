@@ -106,7 +106,6 @@ export default function ContentManagement() {
   };
 
   const handlePreview = () => {
-    console.log('Prévisualisation de la section:', selectedSectionId, currentContentData);
     // Implement actual preview logic, e.g., open in new tab or modal
   };
 

@@ -123,7 +123,6 @@ export const resetAllStores = () => {
       isLoading: false
     });
 
-    console.log('✅ Tous les stores ont été réinitialisés avec succès');
   } catch (error) {
     console.error('❌ Erreur lors de la réinitialisation des stores:', error);
     // Ne pas throw pour ne pas bloquer le logout

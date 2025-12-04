@@ -113,7 +113,6 @@ export default function EventsPage() {
   };
 
   const handleEventAction = (eventId: string, action: string) => {
-    console.log(`Action ${action} pour l'événement ${eventId}`);
     // Ici vous pouvez implémenter les actions réelles
   };
 

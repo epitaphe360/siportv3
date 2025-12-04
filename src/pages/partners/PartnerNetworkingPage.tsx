@@ -130,7 +130,6 @@ export const PartnerNetworkingPage: React.FC = () => {
   ];
 
   const handleNetworkingAction = (opportunityId: string, action: string) => {
-    console.log(`Action ${action} pour l'opportunité ${opportunityId}`);
     // Ici vous pouvez implémenter les actions réelles
   };
 

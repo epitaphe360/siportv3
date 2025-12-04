@@ -26,9 +26,7 @@ export default memo(function DashboardPage() {
   }
 
   // Debug: Afficher le type d'utilisateur pour vérification (dev uniquement)
-  if (import.meta.env.DEV) {
-    console.log('User type:', user.type, 'Email:', user.email);
-  }
+  // Bloc de debug supprimé
 
   // Redirection vers le tableau de bord spécifique selon le type d'utilisateur
   switch (user.type) {

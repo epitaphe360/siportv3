@@ -18,12 +18,10 @@ export default function OAuthCallbackPage() {
   useEffect(() => {
     const processOAuthCallback = async () => {
       try {
-        console.log('🔄 Processing OAuth callback...');
 
         // Handle the OAuth callback and get user data
         await handleOAuthCallback();
 
-        console.log('✅ OAuth authentication successful');
         toast.success('Connexion réussie !');
 
         // Redirect to dashboard after successful authentication

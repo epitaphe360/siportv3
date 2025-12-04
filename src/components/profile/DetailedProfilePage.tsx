@@ -41,7 +41,6 @@ export default function DetailedProfilePage() {
       setProfile({ ...profile, ...editedProfile });
       setIsEditing(false);
       // Here you would typically save to your backend
-      console.log('Profile updated:', editedProfile);
   toast.success('Profil mis à jour avec succès !');
     }
   };
