@@ -24,8 +24,8 @@ export interface SalonConfig {
 export const DEFAULT_SALON_CONFIG: SalonConfig = {
   name: 'SIPORTS 2026',
   dates: {
-    start: '5 Février 2026',
-    end: '7 Février 2026'
+    start: '1 Avril 2026',
+    end: '3 Avril 2026'
   },
   location: {
     venue: 'Mohammed VI Exhibition Center',

@@ -6,52 +6,35 @@ const LEVELS = [
   {
     key: 'free',
     title: 'Pass Gratuit',
-    description: 'Accès limité à la zone exposition, conférences publiques et networking.',
+    description: 'Accès limité à la zone exposition, conférences publiques et networking de base.',
     price: '0€',
     features: [
       'Zone exposition',
       'Conférences publiques',
-      'Networking',
+      'Networking limité',
       'Application mobile',
-      'Inscription gratuite'
-    ]
-  },
-  {
-    key: 'basic',
-    title: 'Pass Basic',
-    description: 'Accès 1 jour, expositions, keynotes, networking et 2 rendez-vous B2B garantis.',
-    price: '50€',
-    features: [
-      'Accès 1 jour',
-      'Keynote lectures',
-      'Networking coffee break',
-      '2 rendez-vous B2B garantis'
+      'Inscription gratuite',
+      '0 rendez-vous B2B'
     ]
   },
   {
     key: 'premium',
-    title: 'Pass Premium',
-    description: 'Accès 2 jours, ateliers spécialisés, déjeuners networking, lounge VIP.',
-    price: '120€',
+    title: 'Pass Premium VIP',
+    description: 'Accès VIP complet 3 jours All Inclusive - Tout accès illimité au salon.',
+    price: '700€',
     features: [
-      'Accès 2 jours',
+      'Accès VIP 3 jours complets',
+      'Rendez-vous B2B illimités',
+      'Networking illimité',
       'Ateliers spécialisés',
+      'Soirée gala exclusive',
+      'Conférences VIP',
       'Déjeuners networking',
-      '5 rendez-vous B2B garantis',
-      'Accès lounge VIP'
-    ]
-  },
-  {
-    key: 'vip',
-    title: 'Pass VIP',
-    description: 'Accès 3 jours All Inclusive, soirée gala, conférences exclusives, service concierge.',
-    price: '250€',
-    features: [
-      'Accès 3 jours',
-      'Soirée gala',
-      'Conférences exclusives',
-      'Service concierge',
-      'Transferts aéroport inclus'
+      'Accès lounge VIP exécutif',
+      'Service concierge dédié',
+      'Transferts aéroport inclus',
+      'Kit VIP premium',
+      'Recommandations IA avancées'
     ]
   }
 ];

@@ -9,27 +9,17 @@ const corsHeaders = {
 
 interface CheckoutRequest {
   userId: string;
-  level: 'basic' | 'premium' | 'vip';
+  level: 'premium';
   successUrl: string;
   cancelUrl: string;
 }
 
 // Prix par niveau (en centimes)
 const LEVEL_PRICES = {
-  basic: {
-    amount: 5000, // 50€
-    name: 'Pass Basic',
-    description: 'Accès 1 jour, expositions, keynotes, networking et 2 rendez-vous B2B garantis'
-  },
   premium: {
-    amount: 12000, // 120€
-    name: 'Pass Premium',
-    description: 'Accès 2 jours, ateliers spécialisés, déjeuners networking, lounge VIP'
-  },
-  vip: {
-    amount: 25000, // 250€
-    name: 'Pass VIP',
-    description: 'Accès 3 jours All Inclusive, soirée gala, conférences exclusives, service concierge'
+    amount: 70000, // 700€
+    name: 'Pass Premium VIP',
+    description: 'Accès VIP complet 3 jours All Inclusive - Rendez-vous illimités, networking illimité, service concierge, soirée gala, transferts aéroport'
   }
 };
 
@@ -67,9 +57,9 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    if (!['basic', 'premium', 'vip'].includes(level)) {
+    if (level !== 'premium') {
       return new Response(
-        JSON.stringify({ error: 'Niveau d\'abonnement invalide' }),
+        JSON.stringify({ error: 'Niveau d\'abonnement invalide. Seul le niveau premium est disponible.' }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 400,
