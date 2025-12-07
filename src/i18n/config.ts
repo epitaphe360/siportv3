@@ -84,6 +84,46 @@ const resources = {
       }
     }
   },
+  ar: {
+    translation: {
+      nav: {
+        dashboard: 'لوحة القيادة',
+        events: 'الفعاليات',
+        exhibitors: 'العارضون',
+        appointments: 'المواعيد',
+        chat: 'الرسائل',
+        networking: 'التواصل',
+        profile: 'ملفي الشخصي'
+      },
+      auth: {
+        login: 'تسجيل الدخول',
+        register: 'التسجيل',
+        logout: 'تسجيل الخروج',
+        email: 'البريد الإلكتروني',
+        password: 'كلمة المرور',
+        remember_me: 'تذكرني',
+        forgot_password: 'نسيت كلمة المرور؟'
+      },
+      appointments: {
+        book: 'حجز',
+        cancel: 'إلغاء',
+        confirm: 'تأكيد',
+        quota_reached: 'تم الوصول إلى الحد الأقصى ({{current}}/{{max}})',
+        booking_success: 'تم حجز الموعد بنجاح',
+        no_slots: 'لا توجد فترات متاحة'
+      },
+      common: {
+        loading: 'جاري التحميل...',
+        error: 'خطأ',
+        success: 'نجح',
+        save: 'حفظ',
+        cancel: 'إلغاء',
+        delete: 'حذف',
+        edit: 'تعديل',
+        search: 'بحث'
+      }
+    }
+  },
   es: {
     translation: {
       nav: {
@@ -132,7 +172,7 @@ i18n
   .init({
     resources,
     fallbackLng: 'fr',
-    supportedLngs: ['fr', 'en', 'es'],
+    supportedLngs: ['fr', 'en', 'ar', 'es'],
 
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
