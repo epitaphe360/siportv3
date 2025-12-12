@@ -400,11 +400,18 @@ export class SupabaseService {
   }
 
   // ==================== AUTHENTICATION ====================
-  static async signUp(email: string, password: string, userData: any): Promise<User | null> {
+  static async signUp(email: string, password: string, userData: any, recaptchaToken?: string): Promise<User | null> {
     if (!this.checkSupabaseConnection()) return null;
 
     const safeSupabase = supabase!;
     try {
+      // 0. Vérifier reCAPTCHA si token fourni
+      if (recaptchaToken) {
+        const recaptchaValid = await this.verifyRecaptcha(recaptchaToken, `${userData.type}_registration`);
+        if (!recaptchaValid) {
+          throw new Error('Échec de la vérification reCAPTCHA. Veuillez réessayer.');
+        }
+      }
 
       // 1. Créer l'utilisateur dans Supabase Auth
       const { data: authData, error: authError } = await safeSupabase.auth.signUp({
@@ -1883,10 +1890,19 @@ export class SupabaseService {
     company?: string;
     phone?: string;
     metadata?: any;
-  }): Promise<any> {
+  }, recaptchaToken?: string): Promise<any> {
     if (!this.checkSupabaseConnection()) {
       throw new Error('Supabase non configuré.');
     }
+
+    // Vérifier reCAPTCHA si token fourni
+    if (recaptchaToken) {
+      const recaptchaValid = await this.verifyRecaptcha(recaptchaToken, 'contact_form');
+      if (!recaptchaValid) {
+        throw new Error('Échec de la vérification reCAPTCHA. Veuillez réessayer.');
+      }
+    }
+
     const safeSupabase = supabase!;
     try {
       const { data, error } = await (safeSupabase as any)
@@ -1908,6 +1924,40 @@ export class SupabaseService {
     } catch (error) {
       console.error('Error creating registration request:', error);
       throw error;
+    }
+  }
+
+  // ==================== reCAPTCHA VERIFICATION ====================
+  /**
+   * Vérifie un token reCAPTCHA via l'edge function Supabase
+   *
+   * @param token - Token reCAPTCHA obtenu côté client
+   * @param action - Action attendue (ex: 'visitor_registration')
+   * @param minimumScore - Score minimum accepté (0.0 - 1.0, défaut 0.5)
+   * @returns {Promise<boolean>} true si valide, false sinon
+   */
+  private static async verifyRecaptcha(
+    token: string,
+    action?: string,
+    minimumScore: number = 0.5
+  ): Promise<boolean> {
+    if (!this.checkSupabaseConnection()) return false;
+
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await safeSupabase.functions.invoke('verify-recaptcha', {
+        body: { token, action, minimumScore },
+      });
+
+      if (error) {
+        console.error('Erreur vérification reCAPTCHA:', error);
+        return false;
+      }
+
+      return data?.success === true;
+    } catch (error) {
+      console.error('Exception vérification reCAPTCHA:', error);
+      return false;
     }
   }
 
