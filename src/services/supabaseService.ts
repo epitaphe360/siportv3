@@ -1070,7 +1070,7 @@ export class SupabaseService {
 
 	  static async createExhibitorProfile(userId: string, userData: any): Promise<void> {
     if (!this.checkSupabaseConnection()) return;
-    
+
     const safeSupabase = supabase!;
     try {
       const { error } = await safeSupabase
@@ -1079,15 +1079,15 @@ export class SupabaseService {
           id: userId, // Utilise l'ID utilisateur comme ID exposant
           user_id: userId,
           company_name: userData.profile.company,
-          category: userData.profile.category || 'default',
-          sector: userData.profile.sector || 'default',
+          category: userData.profile.category || 'institutional',
+          sector: userData.profile.sector || 'logistics',
           description: userData.profile.description || '',
           contact_info: {
             email: userData.email,
             phone: userData.profile.phone || ''
           }
         }]);
-        
+
       if (error) throw error;
     } catch (error) {
       console.error('❌ Erreur création profil exposant:', error);
