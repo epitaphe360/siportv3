@@ -1097,7 +1097,7 @@ export class SupabaseService {
 
   static async createPartnerProfile(userId: string, userData: any): Promise<void> {
     if (!this.checkSupabaseConnection()) return;
-    
+
     const safeSupabase = supabase!;
     try {
       const { error } = await safeSupabase
@@ -1106,12 +1106,12 @@ export class SupabaseService {
           id: userId, // Utilise l'ID utilisateur comme ID partenaire
           user_id: userId,
           name: userData.profile.company,
-          type: userData.profile.partnerType || 'sponsor',
-          sector: userData.profile.sector || 'default',
+          type: userData.profile.partnerType || 'institutional',
+          sector: userData.profile.sector || 'services',
           description: userData.profile.description || '',
           website: userData.profile.website || ''
         }]);
-        
+
       if (error) throw error;
     } catch (error) {
       console.error('❌ Erreur création profil partenaire:', error);

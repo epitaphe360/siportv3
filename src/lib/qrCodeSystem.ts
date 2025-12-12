@@ -127,19 +127,19 @@ export function generateQRCodeData(
   // Determine permissions based on user type and level
   const permissions = {
     networking: userType !== 'visitor' || (userLevel !== 'free'),
-    premiumWorkshops: userType === 'admin' || userType === 'partner' || userType === 'exhibitor' || 
-                     (userType === 'visitor' && ['premium', 'vip'].includes(userLevel)),
-    vipEvents: userType === 'admin' || userType === 'partner' || 
-               (userType === 'visitor' && userLevel === 'vip') ||
+    premiumWorkshops: userType === 'admin' || userType === 'partner' || userType === 'exhibitor' ||
+                     (userType === 'visitor' && userLevel === 'premium'),
+    vipEvents: userType === 'admin' || userType === 'partner' ||
+               (userType === 'visitor' && userLevel === 'premium') ||
                (userType === 'exhibitor' && userLevel === 'platinum'),
     partnerExclusives: userType === 'admin' || userType === 'partner',
     galaDinner: userType === 'admin' || userType === 'partner' ||
-                (userType === 'visitor' && userLevel === 'vip') ||
+                (userType === 'visitor' && userLevel === 'premium') ||
                 (userType === 'exhibitor' && userLevel === 'platinum'),
-    executiveLounge: userType === 'admin' || 
+    executiveLounge: userType === 'admin' ||
                     (userType === 'partner' && userLevel === 'platinum') ||
                     (userType === 'exhibitor' && userLevel === 'platinum') ||
-                    (userType === 'visitor' && userLevel === 'vip'),
+                    (userType === 'visitor' && userLevel === 'premium'),
   };
 
   // Generate a simple signature (in production, use proper cryptographic signing)
@@ -172,7 +172,9 @@ function mapUserLevelToAccessLevel(
     case 'exhibitor':
       return 'exhibitor';
     case 'visitor':
-      return userLevel as 'basic' | 'premium' | 'vip';
+      // Map visitor levels: 'free' maps to 'basic' access, 'premium' stays 'premium'
+      // Legacy: keep vip return type for backward compatibility with event access levels
+      return userLevel === 'premium' ? 'vip' : 'basic';
     default:
       return 'basic';
   }
@@ -211,11 +213,11 @@ export function canAccessEvent(
       if (userType === 'partner' || userType === 'exhibitor') {
         return { canAccess: true, event };
       }
-      if (userType === 'visitor' && ['premium', 'vip'].includes(userLevel)) {
+      if (userType === 'visitor' && userLevel === 'premium') {
         return { canAccess: true, event };
       }
       return { canAccess: false, reason: 'Accès premium requis.', event };
-      
+
     case 'vip':
       if (userType === 'partner') {
         return { canAccess: true, event };
@@ -223,7 +225,7 @@ export function canAccessEvent(
       if (userType === 'exhibitor' && userLevel === 'platinum') {
         return { canAccess: true, event };
       }
-      if (userType === 'visitor' && userLevel === 'vip') {
+      if (userType === 'visitor' && userLevel === 'premium') {
         return { canAccess: true, event };
       }
       return { canAccess: false, reason: 'Accès VIP requis.', event };
@@ -241,7 +243,7 @@ export function canAccessEvent(
       if (userType === 'exhibitor' && userLevel === 'platinum') {
         return { canAccess: true, event };
       }
-      if (userType === 'visitor' && userLevel === 'vip') {
+      if (userType === 'visitor' && userLevel === 'premium') {
         return { canAccess: true, event };
       }
       return { canAccess: false, reason: 'Invité VIP requis pour le gala.', event };
@@ -384,17 +386,13 @@ export function getHighestAccessLevel(
     }
 
     case 'visitor': {
-      const visitorLevel = userLevel === 'vip' ? 'Visiteur VIP' :
-                          userLevel === 'premium' ? 'Visiteur Premium' :
-                          userLevel === 'basic' ? 'Visiteur Basic' : 'Visiteur Gratuit';
+      const visitorLevel = userLevel === 'premium' ? 'Visiteur Premium' : 'Visiteur Gratuit';
       return {
         level: visitorLevel,
         description: 'Accès visiteur avec fonctionnalités selon le forfait.',
         capabilities: [
           'Accès aux expositions',
-          ...(userLevel !== 'free' ? ['Networking limité'] : []),
-          ...(userLevel === 'premium' || userLevel === 'vip' ? ['Ateliers premium'] : []),
-          ...(userLevel === 'vip' ? ['Événements VIP', 'Lounge exécutif', 'Dîner de gala'] : []),
+          ...(userLevel === 'premium' ? ['Networking illimité', 'Ateliers premium', 'Événements VIP', 'Lounge exécutif', 'Dîner de gala'] : []),
         ],
       };
     }
