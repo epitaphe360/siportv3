@@ -345,7 +345,7 @@ export class SupabaseService {
     // mini_site est retourné comme un array par Supabase, prenons le premier élément
     const miniSiteArray = exhibitorDB.mini_site as any;
     const miniSiteData = Array.isArray(miniSiteArray) && miniSiteArray.length > 0 ? miniSiteArray[0] : miniSiteArray;
-    
+
     const miniSite = miniSiteData ? {
       theme: miniSiteData.theme || 'default',
       customColors: miniSiteData.custom_colors || {},
@@ -369,6 +369,33 @@ export class SupabaseService {
       products,
       miniSite,
       standNumber: exhibitorDB.user?.profile?.standNumber || undefined
+    };
+  }
+
+  private static transformEventDBToEvent(eventDB: any): Event {
+    const startDate = new Date(eventDB.start_date);
+    const endDate = new Date(eventDB.end_date);
+
+    return {
+      id: eventDB.id,
+      title: eventDB.title,
+      description: eventDB.description,
+      type: eventDB.event_type,
+      startDate,
+      endDate,
+      capacity: eventDB.capacity,
+      registered: eventDB.registered || 0,
+      location: eventDB.location,
+      pavilionId: eventDB.pavilion_id,
+      organizerId: eventDB.organizer_id,
+      featured: eventDB.is_featured || false,
+      imageUrl: eventDB.image_url,
+      registrationUrl: eventDB.registration_url,
+      tags: eventDB.tags || [],
+      // Legacy/computed fields for backward compatibility
+      date: startDate,
+      startTime: startDate.toISOString().substring(11, 16),
+      endTime: endDate.toISOString().substring(11, 16),
     };
   }
 
@@ -489,61 +516,44 @@ export class SupabaseService {
     }
   }
 
-  static async updateEvent(eventId: string, eventData: Omit<Event, 'id' | 'registered'>): Promise<Event> {
-    throw new Error('updateEvent temporairement désactivé - schéma incompatible');
+  static async updateEvent(eventId: string, eventData: Partial<Event>): Promise<Event> {
     if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
 
     const safeSupabase = supabase!;
     try {
+      const updateData: any = {};
+
+      if (eventData.title !== undefined) updateData.title = eventData.title;
+      if (eventData.description !== undefined) updateData.description = eventData.description;
+      if (eventData.type !== undefined) updateData.event_type = eventData.type;
+      if (eventData.startDate !== undefined) updateData.start_date = eventData.startDate.toISOString();
+      if (eventData.endDate !== undefined) updateData.end_date = eventData.endDate.toISOString();
+      if (eventData.location !== undefined) updateData.location = eventData.location;
+      if (eventData.pavilionId !== undefined) updateData.pavilion_id = eventData.pavilionId;
+      if (eventData.organizerId !== undefined) updateData.organizer_id = eventData.organizerId;
+      if (eventData.capacity !== undefined) updateData.capacity = eventData.capacity;
+      if (eventData.featured !== undefined) updateData.is_featured = eventData.featured;
+      if (eventData.imageUrl !== undefined) updateData.image_url = eventData.imageUrl;
+      if (eventData.registrationUrl !== undefined) updateData.registration_url = eventData.registrationUrl;
+      if (eventData.tags !== undefined) updateData.tags = eventData.tags;
+
+      updateData.updated_at = new Date().toISOString();
+
       const { data, error } = await safeSupabase
         .from('events')
-        .update({
-          title: eventData.title,
-          description: eventData.description,
-          event_type: eventData.type,
-          event_date: eventData.date.toISOString().split('T')[0],
-          start_time: `${eventData.date.toISOString().split('T')[0]}T${eventData.startTime}:00Z`,
-          end_time: `${eventData.date.toISOString().split('T')[0]}T${eventData.endTime}:00Z`,
-          capacity: eventData.capacity,
-          category: eventData.category,
-          virtual: eventData.virtual,
-          featured: eventData.featured,
-          location: eventData.location,
-          meeting_link: eventData.meetingLink,
-          tags: eventData.tags,
-          speakers: eventData.speakers,
-        })
+        .update(updateData)
         .eq('id', eventId)
         .select()
         .single();
 
       if (error) throw error;
 
-      // Transformer les données de la DB au type Event
-      return {
-        id: data.id,
-        title: data.title,
-        description: data.description,
-        type: data.event_type,
-	        date: new Date(data.event_date),
-	        startTime: data.start_time.substring(11, 16),
-	        endTime: data.end_time.substring(11, 16),
-        capacity: data.capacity,
-        registered: data.registered,
-        speakers: data.speakers,
-        category: data.category,
-        virtual: data.virtual,
-        featured: data.featured,
-        location: data.location,
-        meetingLink: data.meeting_link,
-        tags: data.tags,
-      } as Event;
-
-	    } catch (error) {
-	      const errorMessage = error instanceof Error ? error.message : `Erreur inconnue lors de la mise à jour de l'événement ${eventId}`;
-	      console.error(`Erreur lors de la mise à jour de l'événement ${eventId}:`, errorMessage);
-	      throw new Error(errorMessage);
-	    }
+      return this.transformEventDBToEvent(data);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : `Erreur inconnue lors de la mise à jour de l'événement ${eventId}`;
+      console.error(`Erreur lors de la mise à jour de l'événement ${eventId}:`, errorMessage);
+      throw new Error(errorMessage);
+    }
   }
 
   static async deleteEvent(eventId: string): Promise<void> {
@@ -565,7 +575,6 @@ export class SupabaseService {
   }
 
   static async createEvent(eventData: Omit<Event, 'id' | 'registered'>): Promise<Event> {
-    throw new Error('createEvent temporairement désactivé - schéma incompatible');
     if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
 
     const safeSupabase = supabase!;
@@ -576,53 +585,32 @@ export class SupabaseService {
           title: eventData.title,
           description: eventData.description,
           event_type: eventData.type,
-          event_date: eventData.date.toISOString().split('T')[0], // Stocker la date seule
-          start_time: `${eventData.date.toISOString().split('T')[0]}T${eventData.startTime}:00Z`, // Combiner date et heure pour le timestamp de début
-          end_time: `${eventData.date.toISOString().split('T')[0]}T${eventData.endTime}:00Z`, // Combiner date et heure pour le timestamp de fin
-          capacity: eventData.capacity,
-          category: eventData.category,
-          virtual: eventData.virtual,
-          featured: eventData.featured,
+          start_date: eventData.startDate.toISOString(),
+          end_date: eventData.endDate.toISOString(),
           location: eventData.location,
-          meeting_link: eventData.meetingLink,
-          tags: eventData.tags,
-          speakers: eventData.speakers,
-          registered: 0, // Initialiser à 0
+          pavilion_id: eventData.pavilionId,
+          organizer_id: eventData.organizerId,
+          capacity: eventData.capacity,
+          registered: 0,
+          is_featured: eventData.featured,
+          image_url: eventData.imageUrl,
+          registration_url: eventData.registrationUrl,
+          tags: eventData.tags || [],
         }])
         .select()
         .single();
 
       if (error) throw error;
 
-      // Transformer les données de la DB au type Event
-      return {
-        id: data.id,
-        title: data.title,
-        description: data.description,
-        type: data.event_type,
-	        date: new Date(data.event_date),
-	        startTime: data.start_time.substring(11, 16), // Extraire HH:MM (position 11 à 15)
-	        endTime: data.end_time.substring(11, 16), // Extraire HH:MM (position 11 à 15)
-        capacity: data.capacity,
-        registered: data.registered,
-        speakers: data.speakers,
-        category: data.category,
-        virtual: data.virtual,
-        featured: data.featured,
-        location: data.location,
-        meetingLink: data.meeting_link,
-        tags: data.tags,
-      } as Event;
-
-	    } catch (error) {
-	      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue lors de la création de l\'événement';
-	      console.error('Erreur lors de la création de l\'événement:', errorMessage);
-	      throw new Error(errorMessage);
-	    }
+      return this.transformEventDBToEvent(data);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue lors de la création de l\'événement';
+      console.error('Erreur lors de la création de l\'événement:', errorMessage);
+      throw new Error(errorMessage);
+    }
   }
 
   static async getEvents(): Promise<Event[]> {
-    throw new Error('getEvents temporairement désactivé - schéma incompatible');
     if (!this.checkSupabaseConnection()) return [];
 
     const safeSupabase = supabase!;
@@ -630,31 +618,135 @@ export class SupabaseService {
       const { data, error } = await safeSupabase
         .from('events')
         .select('*')
-        .order('start_time', { ascending: true });
-        
+        .order('start_date', { ascending: true });
+
       if (error) throw error;
-      
-      return (data || []).map((event: any) => ({
-        id: event.id,
-        title: event.title,
-        description: event.description,
-	        type: event.event_type,
-	        date: new Date(event.event_date),
-	        startTime: event.start_time.substring(11, 16),
-	        endTime: event.end_time.substring(11, 16),
-        capacity: event.capacity,
-        registered: event.registered || 0,
-        speakers: event.speakers || [],
-        category: event.category,
-        virtual: event.virtual,
-        featured: event.featured,
-        location: event.location,
-        meetingLink: event.meeting_link,
-        tags: event.tags || [],
-      }));
+
+      return (data || []).map((event: any) => this.transformEventDBToEvent(event));
     } catch (error) {
       console.error('Erreur récupération événements:', error);
       return [];
+    }
+  }
+
+  static async registerForEvent(eventId: string, userId: string): Promise<boolean> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+
+    const safeSupabase = supabase!;
+    try {
+      // Vérifier si déjà inscrit
+      const { data: existing } = await safeSupabase
+        .from('event_registrations')
+        .select('id')
+        .eq('event_id', eventId)
+        .eq('user_id', userId)
+        .single();
+
+      if (existing) {
+        throw new Error('Vous êtes déjà inscrit à cet événement');
+      }
+
+      // Vérifier la capacité de l'événement
+      const { data: event, error: eventError } = await safeSupabase
+        .from('events')
+        .select('capacity, registered')
+        .eq('id', eventId)
+        .single();
+
+      if (eventError) throw eventError;
+
+      if (event.capacity && event.registered >= event.capacity) {
+        throw new Error('Événement complet');
+      }
+
+      // Créer l'inscription
+      const { error: insertError } = await safeSupabase
+        .from('event_registrations')
+        .insert([{
+          event_id: eventId,
+          user_id: userId,
+          status: 'confirmed'
+        }]);
+
+      if (insertError) throw insertError;
+
+      // Incrémenter le compteur
+      const { error: updateError } = await safeSupabase
+        .from('events')
+        .update({ registered: (event.registered || 0) + 1 })
+        .eq('id', eventId);
+
+      if (updateError) throw updateError;
+
+      return true;
+    } catch (error) {
+      console.error('Erreur inscription événement:', error);
+      throw error;
+    }
+  }
+
+  static async unregisterFromEvent(eventId: string, userId: string): Promise<boolean> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+
+    const safeSupabase = supabase!;
+    try {
+      // Vérifier si inscrit
+      const { data: existing } = await safeSupabase
+        .from('event_registrations')
+        .select('id')
+        .eq('event_id', eventId)
+        .eq('user_id', userId)
+        .single();
+
+      if (!existing) {
+        throw new Error('Vous n\'êtes pas inscrit à cet événement');
+      }
+
+      // Supprimer l'inscription
+      const { error: deleteError } = await safeSupabase
+        .from('event_registrations')
+        .delete()
+        .eq('event_id', eventId)
+        .eq('user_id', userId);
+
+      if (deleteError) throw deleteError;
+
+      // Décrémenter le compteur
+      const { data: event } = await safeSupabase
+        .from('events')
+        .select('registered')
+        .eq('id', eventId)
+        .single();
+
+      if (event && event.registered > 0) {
+        await safeSupabase
+          .from('events')
+          .update({ registered: event.registered - 1 })
+          .eq('id', eventId);
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Erreur désinscription événement:', error);
+      throw error;
+    }
+  }
+
+  static async isUserRegisteredForEvent(eventId: string, userId: string): Promise<boolean> {
+    if (!this.checkSupabaseConnection()) return false;
+
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await safeSupabase
+        .from('event_registrations')
+        .select('id')
+        .eq('event_id', eventId)
+        .eq('user_id', userId)
+        .single();
+
+      return !!data && !error;
+    } catch (error) {
+      return false;
     }
   }
 
