@@ -368,6 +368,7 @@ export default function RegisterPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
+          className="relative z-[60]"
         >
           <Card className="p-8">
             <form onSubmit={handleSubmit(onSubmit)}>

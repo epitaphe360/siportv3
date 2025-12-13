@@ -147,14 +147,18 @@ export class SupabaseService {
         .single();
 
       if (error) {
-        console.warn('Utilisateur non trouvé:', error.message);
-        return null;
+        console.error('❌ Erreur DB lors de la récupération utilisateur:', error.message);
+        throw new Error(`Utilisateur non trouvé: ${error.message}`);
+      }
+
+      if (!data) {
+        throw new Error('Aucun profil utilisateur trouvé pour cet email');
       }
 
       return this.transformUserDBToUser(data);
     } catch (error) {
-      console.error('Erreur lors de la récupération de l\'utilisateur:', error);
-      return null;
+      console.error('❌ Erreur lors de la récupération de l\'utilisateur:', error);
+      throw error; // Re-throw au lieu de retourner null
     }
   }
 
@@ -490,10 +494,15 @@ export class SupabaseService {
 
       // Récupérer le profil utilisateur
       const user = await this.getUserByEmail(email);
+
+      if (!user) {
+        throw new Error('Profil utilisateur introuvable. Veuillez contacter le support.');
+      }
+
       return user;
     } catch (error) {
-      console.error('Erreur connexion:', error);
-      return null;
+      console.error('❌ Erreur connexion:', error);
+      throw error; // Re-throw l'erreur au lieu de retourner null
     }
   }
 
