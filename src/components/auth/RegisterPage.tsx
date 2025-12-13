@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
+import { useRecaptcha } from '../../hooks/useRecaptcha';
 import {
   User,
   Mail,
@@ -140,6 +141,7 @@ export default function RegisterPage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const { register: registerUser, isLoading } = useAuthStore();
   const navigate = useNavigate();
+  const { executeRecaptcha, isReady: isRecaptchaReady } = useRecaptcha();
 
   const {
     register,
@@ -266,7 +268,20 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: RegistrationForm) => {
     try {
-      await registerUser(data);
+      // 🔐 Exécuter reCAPTCHA avant inscription
+      let recaptchaToken: string | undefined;
+      if (isRecaptchaReady) {
+        try {
+          const action = `${data.accountType}_registration`;
+          recaptchaToken = await executeRecaptcha(action);
+        } catch (recaptchaError) {
+          console.warn('⚠️ reCAPTCHA failed, proceeding without:', recaptchaError);
+          // Continue sans reCAPTCHA si ça échoue (degraded mode)
+        }
+      }
+
+      // @ts-ignore - recaptchaToken sera ajouté à authStore.register()
+      await registerUser(data, recaptchaToken);
 
       // Afficher la modal de succès
       setShowSuccess(true);
@@ -279,6 +294,7 @@ export default function RegisterPage() {
       }, 3000);
     } catch (error) {
       console.error('Registration error:', error);
+      toast.error((error as Error).message || 'Erreur lors de l\'inscription');
     }
   };
 

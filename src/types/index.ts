@@ -240,19 +240,28 @@ export interface Event {
   id: string;
   title: string;
   description: string;
-  type: 'webinar' | 'roundtable' | 'networking' | 'workshop' | 'conference';
-  date: Date;
-  startTime: string;
-  endTime: string;
-  capacity: number;
+  type: 'conference' | 'workshop' | 'networking' | 'exhibition';
+  // DB uses start_date and end_date (timestamptz)
+  startDate: Date;
+  endDate: Date;
+  capacity?: number;
   registered: number;
-  speakers: Speaker[];
-  category: string;
-  virtual: boolean;
-  featured: boolean;
+  // Optional fields from DB
   location?: string;
-  meetingLink?: string;
+  pavilionId?: string;
+  organizerId?: string;
+  featured: boolean;
+  imageUrl?: string;
+  registrationUrl?: string;
   tags: string[];
+  // Legacy/computed fields for backward compatibility
+  date?: Date;  // Alias for startDate
+  startTime?: string;  // Computed from startDate
+  endTime?: string;  // Computed from endDate
+  speakers?: Speaker[];  // Legacy field
+  category?: string;  // Legacy field
+  virtual?: boolean;  // Legacy field
+  meetingLink?: string;  // Legacy field
 }
 
 export interface Speaker {

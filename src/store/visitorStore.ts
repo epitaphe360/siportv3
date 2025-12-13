@@ -13,7 +13,7 @@ interface VisitorProfile {
   country: string;
   phone: string;
   avatar?: string;
-  passType: 'free' | 'basic' | 'premium' | 'vip';
+  passType: 'free' | 'premium';
   registrationStatus: 'pending' | 'confirmed' | 'cancelled';
   
   // Spécifique aux visiteurs

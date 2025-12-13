@@ -35,8 +35,8 @@ interface AuthState {
 
   // Actions
   login: (email: string, password: string, options?: { rememberMe?: boolean }) => Promise<void>;
-  signUp: (credentials: { email: string, password: string }, profileData: Partial<UserProfile>) => Promise<{ error: Error | null }>;
-  register: (userData: RegistrationData) => Promise<void>;
+  signUp: (credentials: { email: string, password: string }, profileData: Partial<UserProfile>, recaptchaToken?: string) => Promise<{ error: Error | null }>;
+  register: (userData: RegistrationData, recaptchaToken?: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   loginWithLinkedIn: () => Promise<void>;
   handleOAuthCallback: () => Promise<void>;
@@ -121,7 +121,7 @@ const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  signUp: async (credentials, profileData) => {
+  signUp: async (credentials, profileData, recaptchaToken) => {
     try {
 
       // Valider les données
@@ -151,7 +151,8 @@ const useAuthStore = create<AuthState>((set, get) => ({
             phone: profileData.phone || '',
             ...profileData
           }
-        }
+        },
+        recaptchaToken // 🔐 Passer le token reCAPTCHA
       );
 
       if (!newUser) {
@@ -191,7 +192,7 @@ const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  register: async (userData: RegistrationData) => {
+  register: async (userData: RegistrationData, recaptchaToken?: string) => {
     set({ isLoading: true });
 
     try {
@@ -222,7 +223,8 @@ const useAuthStore = create<AuthState>((set, get) => ({
             bio: userData.description ?? '',
             objectives: userData.objectives ?? []
           })
-        }
+        },
+        recaptchaToken // 🔐 Passer le token reCAPTCHA
       );
 
       if (!newUser) {

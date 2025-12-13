@@ -4,6 +4,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuthStore } from '../../store/authStore';
+import { useRecaptcha } from '../../hooks/useRecaptcha';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
@@ -66,6 +67,7 @@ export default function ExhibitorSignUpPage() {
   const [language, setLanguage] = useState<Language>('fr');
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isLinkedInLoading, setIsLinkedInLoading] = useState(false);
+  const { executeRecaptcha, isReady: isRecaptchaReady } = useRecaptcha();
 
   const t = translations[language];
 
@@ -175,7 +177,18 @@ export default function ExhibitorSignUpPage() {
     };
 
     try {
-      const { error } = await signUp({ email, password }, finalProfileData);
+      // 🔐 Exécuter reCAPTCHA avant inscription
+      let recaptchaToken: string | undefined;
+      if (isRecaptchaReady) {
+        try {
+          recaptchaToken = await executeRecaptcha('exhibitor_registration');
+        } catch (recaptchaError) {
+          console.warn('⚠️ reCAPTCHA failed, proceeding without:', recaptchaError);
+        }
+      }
+
+      // @ts-ignore - recaptchaToken sera ajouté à authStore.signUp()
+      const { error } = await signUp({ email, password }, finalProfileData, recaptchaToken);
 
       if (error) {
         throw error;
@@ -183,7 +196,7 @@ export default function ExhibitorSignUpPage() {
 
       // Supprimer le brouillon après succès
       clearLocalStorage();
-      
+
       toast.success(t.title || 'Inscription réussie ! Votre compte est en attente de validation.');
       navigate(ROUTES.SIGNUP_SUCCESS);
     } catch (error) {
