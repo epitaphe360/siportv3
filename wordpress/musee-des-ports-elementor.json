@@ -1,548 +1,216 @@
 {
-  "version": "0.4",
-  "title": "Le Musée des Ports - SIPORTS",
-  "type": "page",
   "content": [
     {
-      "id": "hero-section",
+      "id": "e1a2b3c4",
       "elType": "section",
-      "settings": {
-        "background_background": "classic",
-        "background_image": {
-          "url": "musee-des-ports-hero.jpg"
-        },
-        "background_position": "center center",
-        "background_size": "cover",
-        "background_overlay_background": "classic",
-        "background_overlay_color": "rgba(0, 51, 102, 0.7)",
-        "padding": {
-          "unit": "px",
-          "top": "150",
-          "right": "20",
-          "bottom": "150",
-          "left": "20"
-        }
-      },
+      "settings": [],
       "elements": [
         {
-          "id": "hero-column",
+          "id": "f5d6e7a8",
           "elType": "column",
           "settings": {
-            "width": "100"
+            "_column_size": 100
           },
           "elements": [
             {
-              "id": "hero-title",
+              "id": "g9h0i1j2",
               "elType": "widget",
-              "widgetType": "heading",
               "settings": {
-                "title": "Le Musée des Ports",
-                "header_size": "h1",
-                "align": "center",
-                "title_color": "#FFFFFF",
-                "typography_font_size": {
-                  "unit": "px",
-                  "size": 56
-                },
-                "typography_font_weight": "700",
-                "text_shadow_text_shadow_type": "yes",
-                "text_shadow_text_shadow": {
-                  "horizontal": 0,
-                  "vertical": 4,
-                  "blur": 10,
-                  "color": "rgba(0,0,0,0.5)"
-                }
-              }
-            },
-            {
-              "id": "hero-subtitle",
-              "elType": "widget",
-              "widgetType": "heading",
-              "settings": {
-                "title": "SIPORTS 2026",
-                "header_size": "h2",
-                "align": "center",
-                "title_color": "#D4AF37",
-                "typography_font_size": {
-                  "unit": "px",
-                  "size": 28
-                },
-                "typography_font_weight": "400",
-                "typography_letter_spacing": {
-                  "unit": "px",
-                  "size": 3
-                }
-              }
+                "editor": "<style>\n.musee-hero {\n  background: linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7));\n  padding: 150px 20px;\n  text-align: center;\n  color: #fff;\n}\n.musee-hero h1 {\n  font-size: 56px;\n  font-weight: 700;\n  margin-bottom: 20px;\n  text-shadow: 0 4px 10px rgba(0,0,0,0.5);\n}\n.musee-hero h2 {\n  font-size: 28px;\n  color: #D4AF37;\n  letter-spacing: 3px;\n}\n</style>\n<div class=\"musee-hero\">\n  <h1>Le Musée des Ports</h1>\n  <h2>SIPORTS 2026</h2>\n</div>"
+              },
+              "widgetType": "text-editor"
             }
           ]
         }
       ]
     },
     {
-      "id": "intro-section",
+      "id": "k3l4m5n6",
       "elType": "section",
       "settings": {
-        "background_background": "classic",
-        "background_color": "#FFFFFF",
-        "padding": {
-          "unit": "px",
-          "top": "80",
-          "right": "20",
-          "bottom": "80",
-          "left": "20"
-        }
+        "gap": "no"
       },
       "elements": [
         {
-          "id": "intro-column",
+          "id": "o7p8q9r0",
           "elType": "column",
           "settings": {
-            "width": "100"
+            "_column_size": 100
           },
           "elements": [
             {
-              "id": "intro-title",
+              "id": "s1t2u3v4",
               "elType": "widget",
-              "widgetType": "heading",
               "settings": {
-                "title": "Le sillage Marocain : mémoire et horizons",
-                "header_size": "h2",
-                "align": "center",
-                "title_color": "#003366",
-                "typography_font_size": {
-                  "unit": "px",
-                  "size": 38
-                },
-                "typography_font_weight": "600"
-              }
-            },
-            {
-              "id": "intro-divider",
-              "elType": "widget",
-              "widgetType": "divider",
-              "settings": {
-                "separator_style": "solid",
-                "separator_color": "#D4AF37",
-                "width": {
-                  "unit": "%",
-                  "size": 15
-                },
-                "align": "center",
-                "gap": {
-                  "unit": "px",
-                  "size": 30
-                }
-              }
-            },
-            {
-              "id": "intro-text",
-              "elType": "widget",
-              "widgetType": "text-editor",
-              "settings": {
-                "editor": "<p style='text-align: center; font-size: 18px; color: #666; max-width: 900px; margin: 0 auto; line-height: 1.8;'>Des pirogues ancestrales aux géants des océans, le Maroc poursuit son sillage. Chaque traversée, chaque escale, y grave une empreinte.</p><p style='text-align: center; font-size: 19px; color: #003366; max-width: 900px; margin: 30px auto; line-height: 1.8; font-weight: 500;'>Cette empreinte est le <strong>sillage</strong> : symbole d'une mémoire vive, témoin de la conversation entre le savoir-faire et les flots, lien tangible entre notre passé et notre avenir.</p><p style='text-align: center; font-size: 18px; color: #666; max-width: 900px; margin: 30px auto; line-height: 1.8;'>Écho des ports et des hommes, dialogue entre la technique et les éléments, il relie les époques. Le Musée des Ports vous invite à remonter ce fil bleu, à explorer ses métamorphoses et à en imaginer la suite, dans une perspective ouverte sur les dynamiques et les enjeux du monde.</p>"
-              }
+                "editor": "<style>\n.musee-intro {\n  padding: 80px 20px;\n  text-align: center;\n  background: #fff;\n}\n.musee-intro h2 {\n  font-size: 38px;\n  font-weight: 600;\n  color: #003366;\n  margin-bottom: 30px;\n}\n.musee-divider {\n  width: 150px;\n  height: 3px;\n  background: #D4AF37;\n  margin: 30px auto;\n}\n.musee-intro p {\n  max-width: 900px;\n  margin: 20px auto;\n  font-size: 18px;\n  color: #666;\n  line-height: 1.8;\n}\n.musee-intro .highlight {\n  font-size: 19px;\n  color: #003366;\n  font-weight: 500;\n}\n</style>\n<div class=\"musee-intro\">\n  <h2>Le sillage Marocain : mémoire et horizons</h2>\n  <div class=\"musee-divider\"></div>\n  <p>Des pirogues ancestrales aux géants des océans, le Maroc poursuit son sillage. Chaque traversée, chaque escale, y grave une empreinte.</p>\n  <p class=\"highlight\">Cette empreinte est le <strong>sillage</strong> : symbole d'une mémoire vive, témoin de la conversation entre le savoir-faire et les flots, lien tangible entre notre passé et notre avenir.</p>\n  <p>Écho des ports et des hommes, dialogue entre la technique et les éléments, il relie les époques. Le Musée des Ports vous invite à remonter ce fil bleu, à explorer ses métamorphoses et à en imaginer la suite, dans une perspective ouverte sur les dynamiques et les enjeux du monde.</p>\n</div>"
+              },
+              "widgetType": "text-editor"
             }
           ]
         }
       ]
     },
     {
-      "id": "amenager-section",
+      "id": "w5x6y7z8",
       "elType": "section",
       "settings": {
         "background_background": "classic",
-        "background_color": "#f5f8fc",
-        "padding": {
-          "unit": "px",
-          "top": "80",
-          "right": "20",
-          "bottom": "80",
-          "left": "20"
-        }
+        "background_color": "#f5f8fc"
       },
       "elements": [
         {
-          "id": "amenager-column",
+          "id": "a9b0c1d2",
           "elType": "column",
           "settings": {
-            "width": "100"
+            "_column_size": 100
           },
           "elements": [
             {
-              "id": "amenager-icon",
+              "id": "e3f4g5h6",
               "elType": "widget",
-              "widgetType": "text-editor",
               "settings": {
-                "editor": "<div style='text-align: center; font-size: 72px; margin-bottom: 20px;'>⚓</div>"
-              }
-            },
-            {
-              "id": "amenager-title",
-              "elType": "widget",
-              "widgetType": "heading",
-              "settings": {
-                "title": "Aménager le rivage",
-                "header_size": "h3",
-                "align": "center",
-                "title_color": "#003366",
-                "typography_font_size": {
-                  "unit": "px",
-                  "size": 32
-                },
-                "typography_font_weight": "600"
-              }
-            },
-            {
-              "id": "amenager-subtitle",
-              "elType": "widget",
-              "widgetType": "heading",
-              "settings": {
-                "title": "Construire, connecter, faire circuler",
-                "header_size": "h4",
-                "align": "center",
-                "title_color": "#D4AF37",
-                "typography_font_size": {
-                  "unit": "px",
-                  "size": 20
-                },
-                "typography_font_weight": "400",
-                "typography_font_style": "italic"
-              }
-            },
-            {
-              "id": "amenager-text",
-              "elType": "widget",
-              "widgetType": "text-editor",
-              "settings": {
-                "editor": "<p style='text-align: center; font-size: 18px; color: #666; max-width: 800px; margin: 30px auto; line-height: 1.8;'>Avant d'être un carrefour, le port est une géographie réinventée. Il naît de l'audace qui unit la mer et la terre. Chaque phare, chaque digue, chaque quai raconte cette alchimie où l'ingénierie épouse la nature pour créer un lieu de convergence des continents.</p>"
-              }
+                "editor": "<style>\n.musee-section {\n  padding: 80px 20px;\n  text-align: center;\n}\n.musee-icon {\n  font-size: 72px;\n  margin-bottom: 20px;\n}\n.musee-section h3 {\n  font-size: 32px;\n  font-weight: 600;\n  color: #003366;\n  margin-bottom: 10px;\n}\n.musee-section h4 {\n  font-size: 20px;\n  font-style: italic;\n  color: #D4AF37;\n  margin-bottom: 30px;\n}\n.musee-section p {\n  max-width: 800px;\n  margin: 0 auto;\n  font-size: 18px;\n  color: #666;\n  line-height: 1.8;\n}\n</style>\n<div class=\"musee-section\">\n  <div class=\"musee-icon\">⚓</div>\n  <h3>Aménager le rivage</h3>\n  <h4>Construire, connecter, faire circuler</h4>\n  <p>Avant d'être un carrefour, le port est une géographie réinventée. Il naît de l'audace qui unit la mer et la terre. Chaque phare, chaque digue, chaque quai raconte cette alchimie où l'ingénierie épouse la nature pour créer un lieu de convergence des continents.</p>\n</div>"
+              },
+              "widgetType": "text-editor"
             }
           ]
         }
       ]
     },
     {
-      "id": "habiter-section",
+      "id": "i7j8k9l0",
       "elType": "section",
-      "settings": {
-        "background_background": "classic",
-        "background_color": "#FFFFFF",
-        "padding": {
-          "unit": "px",
-          "top": "80",
-          "right": "20",
-          "bottom": "80",
-          "left": "20"
-        }
-      },
+      "settings": [],
       "elements": [
         {
-          "id": "habiter-column",
+          "id": "m1n2o3p4",
           "elType": "column",
           "settings": {
-            "width": "100"
+            "_column_size": 100
           },
           "elements": [
             {
-              "id": "habiter-icon",
+              "id": "q5r6s7t8",
               "elType": "widget",
-              "widgetType": "text-editor",
               "settings": {
-                "editor": "<div style='text-align: center; font-size: 72px; margin-bottom: 20px;'>🏗️</div>"
-              }
-            },
-            {
-              "id": "habiter-title",
-              "elType": "widget",
-              "widgetType": "heading",
-              "settings": {
-                "title": "Habiter le port",
-                "header_size": "h3",
-                "align": "center",
-                "title_color": "#003366",
-                "typography_font_size": {
-                  "unit": "px",
-                  "size": 32
-                },
-                "typography_font_weight": "600"
-              }
-            },
-            {
-              "id": "habiter-subtitle",
-              "elType": "widget",
-              "widgetType": "heading",
-              "settings": {
-                "title": "Organiser l'espace, synchroniser les flux",
-                "header_size": "h4",
-                "align": "center",
-                "title_color": "#D4AF37",
-                "typography_font_size": {
-                  "unit": "px",
-                  "size": 20
-                },
-                "typography_font_weight": "400",
-                "typography_font_style": "italic"
-              }
-            },
-            {
-              "id": "habiter-text",
-              "elType": "widget",
-              "widgetType": "text-editor",
-              "settings": {
-                "editor": "<p style='text-align: center; font-size: 18px; color: #666; max-width: 800px; margin: 30px auto; line-height: 1.8;'>Le port est un organisme palpitant, un ballet perpétuel d'énergies et d'intelligences. Il orchestre les flux, harmonise les gestes et fait dialoguer l'humain avec la machine. Des conteneurs aux savoir-faire ancestraux, il incarne un écosystème en perpétuelle renaissance, au cœur du souffle des échanges globaux.</p>"
-              }
+                "editor": "<div class=\"musee-section\">\n  <div class=\"musee-icon\">🏗️</div>\n  <h3>Habiter le port</h3>\n  <h4>Organiser l'espace, synchroniser les flux</h4>\n  <p>Le port est un organisme palpitant, un ballet perpétuel d'énergies et d'intelligences. Il orchestre les flux, harmonise les gestes et fait dialoguer l'humain avec la machine. Des conteneurs aux savoir-faire ancestraux, il incarne un écosystème en perpétuelle renaissance, au cœur du souffle des échanges globaux.</p>\n</div>"
+              },
+              "widgetType": "text-editor"
             }
           ]
         }
       ]
     },
     {
-      "id": "rever-section",
+      "id": "u9v0w1x2",
       "elType": "section",
       "settings": {
         "background_background": "classic",
-        "background_color": "#f5f8fc",
-        "padding": {
-          "unit": "px",
-          "top": "80",
-          "right": "20",
-          "bottom": "80",
-          "left": "20"
-        }
+        "background_color": "#f5f8fc"
       },
       "elements": [
         {
-          "id": "rever-column",
+          "id": "y3z4a5b6",
           "elType": "column",
           "settings": {
-            "width": "100"
+            "_column_size": 100
           },
           "elements": [
             {
-              "id": "rever-icon",
+              "id": "c7d8e9f0",
               "elType": "widget",
-              "widgetType": "text-editor",
               "settings": {
-                "editor": "<div style='text-align: center; font-size: 72px; margin-bottom: 20px;'>🌊</div>"
-              }
-            },
-            {
-              "id": "rever-title",
-              "elType": "widget",
-              "widgetType": "heading",
-              "settings": {
-                "title": "Rêver les quais",
-                "header_size": "h3",
-                "align": "center",
-                "title_color": "#003366",
-                "typography_font_size": {
-                  "unit": "px",
-                  "size": 32
-                },
-                "typography_font_weight": "600"
-              }
-            },
-            {
-              "id": "rever-subtitle",
-              "elType": "widget",
-              "widgetType": "heading",
-              "settings": {
-                "title": "Imaginer, expérimenter, créer",
-                "header_size": "h4",
-                "align": "center",
-                "title_color": "#D4AF37",
-                "typography_font_size": {
-                  "unit": "px",
-                  "size": 20
-                },
-                "typography_font_weight": "400",
-                "typography_font_style": "italic"
-              }
-            },
-            {
-              "id": "rever-text",
-              "elType": "widget",
-              "widgetType": "text-editor",
-              "settings": {
-                "editor": "<p style='text-align: center; font-size: 18px; color: #666; max-width: 800px; margin: 30px auto; line-height: 1.8;'>Face à l'océan des possibles et des défis, les quais deviennent des espaces de projection. Ports intelligents, durables et résilients y esquissent les archipels de demain, où le commerce et la coopération redessinent la carte d'un futur partagé.</p>"
-              }
+                "editor": "<div class=\"musee-section\">\n  <div class=\"musee-icon\">🌊</div>\n  <h3>Rêver les quais</h3>\n  <h4>Imaginer, expérimenter, créer</h4>\n  <p>Face à l'océan des possibles et des défis, les quais deviennent des espaces de projection. Ports intelligents, durables et résilients y esquissent les archipels de demain, où le commerce et la coopération redessinent la carte d'un futur partagé.</p>\n</div>"
+              },
+              "widgetType": "text-editor"
             }
           ]
         }
       ]
     },
     {
-      "id": "quote-section",
+      "id": "g1h2i3j4",
       "elType": "section",
       "settings": {
         "background_background": "gradient",
-        "background_gradient_angle": {
-          "unit": "deg",
-          "size": 135
-        },
         "background_color": "#003366",
-        "background_color_b": "#0066cc",
-        "padding": {
-          "unit": "px",
-          "top": "100",
-          "right": "20",
-          "bottom": "100",
-          "left": "20"
-        }
+        "background_color_b": "#0066cc"
       },
       "elements": [
         {
-          "id": "quote-column",
+          "id": "k5l6m7n8",
           "elType": "column",
           "settings": {
-            "width": "100"
+            "_column_size": 100
           },
           "elements": [
             {
-              "id": "quote-icon",
+              "id": "o9p0q1r2",
               "elType": "widget",
-              "widgetType": "text-editor",
               "settings": {
-                "editor": "<div style='text-align: center; font-size: 64px; color: #D4AF37; margin-bottom: 30px;'>"</div>"
-              }
-            },
-            {
-              "id": "quote-text",
-              "elType": "widget",
-              "widgetType": "text-editor",
-              "settings": {
-                "editor": "<p style='text-align: center; font-size: 28px; color: #FFFFFF; max-width: 900px; margin: 0 auto; line-height: 1.6; font-weight: 300; font-style: italic;'>Le Musée des Ports est une traversée temporelle qui vous invite à vivre l'épopée des ports d'hier pour mieux imaginer et construire ceux de demain.</p>"
-              }
-            },
-            {
-              "id": "quote-icon-end",
-              "elType": "widget",
-              "widgetType": "text-editor",
-              "settings": {
-                "editor": "<div style='text-align: center; font-size: 64px; color: #D4AF37; margin-top: 30px;'>"</div>"
-              }
+                "editor": "<style>\n.musee-quote {\n  padding: 100px 20px;\n  text-align: center;\n  color: #fff;\n}\n.musee-quote .icon {\n  font-size: 64px;\n  color: #D4AF37;\n  margin-bottom: 30px;\n}\n.musee-quote p {\n  max-width: 900px;\n  margin: 0 auto;\n  font-size: 28px;\n  font-weight: 300;\n  font-style: italic;\n  line-height: 1.6;\n}\n</style>\n<div class=\"musee-quote\">\n  <div class=\"icon\">"</div>\n  <p>Le Musée des Ports est une traversée temporelle qui vous invite à vivre l'épopée des ports d'hier pour mieux imaginer et construire ceux de demain.</p>\n  <div class=\"icon\">"</div>\n</div>"
+              },
+              "widgetType": "text-editor"
             }
           ]
         }
       ]
     },
     {
-      "id": "experience-section",
+      "id": "s3t4u5v6",
       "elType": "section",
-      "settings": {
-        "background_background": "classic",
-        "background_color": "#FFFFFF",
-        "padding": {
-          "unit": "px",
-          "top": "80",
-          "right": "20",
-          "bottom": "80",
-          "left": "20"
-        }
-      },
+      "settings": [],
       "elements": [
         {
-          "id": "experience-column",
+          "id": "w7x8y9z0",
           "elType": "column",
           "settings": {
-            "width": "100"
+            "_column_size": 100
           },
           "elements": [
             {
-              "id": "experience-title",
+              "id": "a1b2c3d4",
               "elType": "widget",
-              "widgetType": "heading",
               "settings": {
-                "title": "Une Expérience Immersive",
-                "header_size": "h2",
-                "align": "center",
-                "title_color": "#003366",
-                "typography_font_size": {
-                  "unit": "px",
-                  "size": 38
-                },
-                "typography_font_weight": "600"
-              }
-            },
-            {
-              "id": "experience-grid",
-              "elType": "widget",
-              "widgetType": "text-editor",
-              "settings": {
-                "editor": "<div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: 50px auto;'><div style='background: #f5f8fc; border-radius: 15px; padding: 40px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s;'><div style='font-size: 48px; margin-bottom: 20px;'>🚢</div><h3 style='color: #003366; font-size: 22px; font-weight: 600; margin-bottom: 15px;'>Histoire Maritime</h3><p style='color: #666; font-size: 16px; line-height: 1.6;'>Découvrez l'évolution des ports marocains à travers les siècles</p></div><div style='background: #f5f8fc; border-radius: 15px; padding: 40px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><div style='font-size: 48px; margin-bottom: 20px;'>🔧</div><h3 style='color: #003366; font-size: 22px; font-weight: 600; margin-bottom: 15px;'>Innovations Techniques</h3><p style='color: #666; font-size: 16px; line-height: 1.6;'>Explorez les technologies qui façonnent les ports modernes</p></div><div style='background: #f5f8fc; border-radius: 15px; padding: 40px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><div style='font-size: 48px; margin-bottom: 20px;'>🌍</div><h3 style='color: #003366; font-size: 22px; font-weight: 600; margin-bottom: 15px;'>Connexions Mondiales</h3><p style='color: #666; font-size: 16px; line-height: 1.6;'>Comprenez le rôle des ports dans le commerce international</p></div><div style='background: #f5f8fc; border-radius: 15px; padding: 40px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><div style='font-size: 48px; margin-bottom: 20px;'>♻️</div><h3 style='color: #003366; font-size: 22px; font-weight: 600; margin-bottom: 15px;'>Développement Durable</h3><p style='color: #666; font-size: 16px; line-height: 1.6;'>Imaginez les ports écologiques du futur</p></div></div>"
-              }
+                "editor": "<style>\n.musee-experience {\n  padding: 80px 20px;\n}\n.musee-experience h2 {\n  font-size: 38px;\n  font-weight: 600;\n  color: #003366;\n  text-align: center;\n  margin-bottom: 30px;\n}\n.musee-experience .divider {\n  width: 150px;\n  height: 3px;\n  background: #D4AF37;\n  margin: 30px auto 50px;\n}\n.experience-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 30px;\n  max-width: 1200px;\n  margin: 0 auto;\n}\n.experience-card {\n  background: #f5f8fc;\n  border-radius: 15px;\n  padding: 40px;\n  text-align: center;\n  box-shadow: 0 4px 15px rgba(0,0,0,0.1);\n  transition: transform 0.3s;\n}\n.experience-card:hover {\n  transform: translateY(-10px);\n}\n.experience-card .icon {\n  font-size: 48px;\n  margin-bottom: 20px;\n}\n.experience-card h3 {\n  color: #003366;\n  font-size: 22px;\n  font-weight: 600;\n  margin-bottom: 15px;\n}\n.experience-card p {\n  color: #666;\n  font-size: 16px;\n  line-height: 1.6;\n}\n</style>\n<div class=\"musee-experience\">\n  <h2>Une Expérience Immersive</h2>\n  <div class=\"divider\"></div>\n  <div class=\"experience-grid\">\n    <div class=\"experience-card\">\n      <div class=\"icon\">🚢</div>\n      <h3>Histoire Maritime</h3>\n      <p>Découvrez l'évolution des ports marocains à travers les siècles</p>\n    </div>\n    <div class=\"experience-card\">\n      <div class=\"icon\">🔧</div>\n      <h3>Innovations Techniques</h3>\n      <p>Explorez les technologies qui façonnent les ports modernes</p>\n    </div>\n    <div class=\"experience-card\">\n      <div class=\"icon\">🌍</div>\n      <h3>Connexions Mondiales</h3>\n      <p>Comprenez le rôle des ports dans le commerce international</p>\n    </div>\n    <div class=\"experience-card\">\n      <div class=\"icon\">♻️</div>\n      <h3>Développement Durable</h3>\n      <p>Imaginez les ports écologiques du futur</p>\n    </div>\n  </div>\n</div>"
+              },
+              "widgetType": "text-editor"
             }
           ]
         }
       ]
     },
     {
-      "id": "cta-section",
+      "id": "e5f6g7h8",
       "elType": "section",
       "settings": {
         "background_background": "gradient",
-        "background_gradient_angle": {
-          "unit": "deg",
-          "size": 135
-        },
         "background_color": "#003366",
-        "background_color_b": "#0066cc",
-        "padding": {
-          "unit": "px",
-          "top": "80",
-          "right": "20",
-          "bottom": "80",
-          "left": "20"
-        }
+        "background_color_b": "#0066cc"
       },
       "elements": [
         {
-          "id": "cta-column",
+          "id": "i9j0k1l2",
           "elType": "column",
           "settings": {
-            "width": "100"
+            "_column_size": 100
           },
           "elements": [
             {
-              "id": "cta-title",
+              "id": "m3n4o5p6",
               "elType": "widget",
-              "widgetType": "heading",
               "settings": {
-                "title": "Visitez le Musée des Ports",
-                "header_size": "h2",
-                "align": "center",
-                "title_color": "#FFFFFF",
-                "typography_font_size": {
-                  "unit": "px",
-                  "size": 36
-                },
-                "typography_font_weight": "700"
-              }
-            },
-            {
-              "id": "cta-text",
-              "elType": "widget",
-              "widgetType": "text-editor",
-              "settings": {
-                "editor": "<p style='text-align: center; color: rgba(255,255,255,0.9); font-size: 18px; margin-bottom: 30px;'>Ouverture officielle le 2 Avril 2026 dans le cadre de SIPORTS 2026<br>Mohammed VI Exhibition Center, El Jadida, Maroc</p>"
-              }
-            },
-            {
-              "id": "cta-buttons",
-              "elType": "widget",
-              "widgetType": "text-editor",
-              "settings": {
-                "editor": "<div style='text-align: center;'><a href='/visitor/subscription' style='display: inline-block; background: #D4AF37; color: #003366; font-size: 18px; font-weight: 600; padding: 15px 40px; border-radius: 50px; text-decoration: none; margin: 10px; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s;'>Réserver ma visite</a><a href='/programme' style='display: inline-block; background: transparent; border: 2px solid #FFFFFF; color: #FFFFFF; font-size: 18px; font-weight: 600; padding: 15px 40px; border-radius: 50px; text-decoration: none; margin: 10px; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s;'>Voir le programme</a></div>"
-              }
+                "editor": "<style>\n.musee-cta {\n  padding: 80px 20px;\n  text-align: center;\n  color: #fff;\n}\n.musee-cta h2 {\n  font-size: 36px;\n  font-weight: 700;\n  margin-bottom: 20px;\n}\n.musee-cta p {\n  font-size: 18px;\n  margin-bottom: 30px;\n  color: rgba(255,255,255,0.9);\n}\n.musee-cta .buttons {\n  display: flex;\n  justify-content: center;\n  gap: 20px;\n  flex-wrap: wrap;\n}\n.musee-cta a {\n  display: inline-block;\n  font-size: 18px;\n  font-weight: 600;\n  padding: 15px 40px;\n  border-radius: 50px;\n  text-decoration: none;\n  text-transform: uppercase;\n  letter-spacing: 1px;\n  transition: all 0.3s;\n}\n.musee-cta .btn-primary {\n  background: #D4AF37;\n  color: #003366;\n}\n.musee-cta .btn-primary:hover {\n  background: #F4C542;\n  transform: scale(1.05);\n}\n.musee-cta .btn-outline {\n  background: transparent;\n  border: 2px solid #fff;\n  color: #fff;\n}\n.musee-cta .btn-outline:hover {\n  background: #fff;\n  color: #003366;\n}\n</style>\n<div class=\"musee-cta\">\n  <h2>Visitez le Musée des Ports</h2>\n  <p>Ouverture officielle le 2 Avril 2026 dans le cadre de SIPORTS 2026<br>Mohammed VI Exhibition Center, El Jadida, Maroc</p>\n  <div class=\"buttons\">\n    <a href=\"/visitor/subscription\" class=\"btn-primary\">Réserver ma visite</a>\n    <a href=\"/programme\" class=\"btn-outline\">Voir le programme</a>\n  </div>\n</div>"
+              },
+              "widgetType": "text-editor"
             }
           ]
         }
       ]
     }
   ],
-  "page_settings": {
-    "post_status": "publish",
-    "template": "elementor_canvas"
-  },
-  "export_type": "page"
+  "page_settings": [],
+  "version": "0.4",
+  "title": "Le Musée des Ports - SIPORTS",
+  "type": "page"
 }
