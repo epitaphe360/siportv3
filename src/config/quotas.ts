@@ -25,7 +25,7 @@ export const calculateRemainingQuota = (
 
 export const VISITOR_LEVELS: Record<string, { label: string, color: string, icon: string, access: string[] }> = {
   free: { label: 'Free Pass', color: '#6c757d', icon: '🟢', access: ['Accès limité', 'Networking de base'] },
-  premium: { label: 'Premium VIP Pass', color: '#ffd700', icon: '👑', access: ['Accès VIP complet 3 jours', 'Rendez-vous illimités', 'Networking illimité', 'Service concierge'] }
+  premium: { label: 'Premium VIP Pass', color: '#ffd700', icon: '👑', access: ['Invitation inauguration', 'Rendez-vous B2B illimités', 'Networking illimité', 'Ateliers spécialisés', 'Soirée gala exclusive', 'Conférences', 'Déjeuners networking'] }
 };
 
 /**

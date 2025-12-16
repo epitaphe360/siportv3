@@ -23,18 +23,13 @@ const LEVELS = [
     description: 'Accès VIP complet 3 jours All Inclusive - Tout accès illimité au salon.',
     price: '700€',
     features: [
-      'Accès VIP 3 jours complets',
+      'Invitation inauguration',
       'Rendez-vous B2B illimités',
       'Networking illimité',
       'Ateliers spécialisés',
       'Soirée gala exclusive',
-      'Conférences VIP',
-      'Déjeuners networking',
-      'Accès lounge VIP exécutif',
-      'Service concierge dédié',
-      'Transferts aéroport inclus',
-      'Kit VIP premium',
-      'Recommandations IA avancées'
+      'Conférences',
+      'Déjeuners networking'
     ]
   }
 ];
