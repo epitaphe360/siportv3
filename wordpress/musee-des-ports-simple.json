@@ -1,0 +1,238 @@
+{
+  "content": [
+    {
+      "id": "a1b2c3d4",
+      "elType": "section",
+      "settings": [],
+      "elements": [
+        {
+          "id": "e5f6g7h8",
+          "elType": "column",
+          "settings": {
+            "_column_size": 100,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "i9j0k1l2",
+              "elType": "widget",
+              "settings": {
+                "editor": "<div style=\"background: linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7)); padding: 150px 20px; text-align: center; color: #fff;\"><h1 style=\"font-size: 56px; font-weight: 700; margin-bottom: 20px; text-shadow: 0 4px 10px rgba(0,0,0,0.5);\">Le Musée des Ports</h1><h2 style=\"font-size: 28px; color: #D4AF37; letter-spacing: 3px;\">SIPORTS 2026</h2></div>",
+                "_element_id": ""
+              },
+              "widgetType": "text-editor"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m3n4o5p6",
+      "elType": "section",
+      "settings": [],
+      "elements": [
+        {
+          "id": "q7r8s9t0",
+          "elType": "column",
+          "settings": {
+            "_column_size": 100,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "u1v2w3x4",
+              "elType": "widget",
+              "settings": {
+                "editor": "<div style=\"padding: 80px 20px; text-align: center;\"><h2 style=\"font-size: 38px; font-weight: 600; color: #003366; margin-bottom: 30px;\">Le sillage Marocain : mémoire et horizons</h2><div style=\"width: 150px; height: 3px; background: #D4AF37; margin: 30px auto;\"></div><p style=\"max-width: 900px; margin: 20px auto; font-size: 18px; color: #666; line-height: 1.8;\">Des pirogues ancestrales aux géants des océans, le Maroc poursuit son sillage. Chaque traversée, chaque escale, y grave une empreinte.</p><p style=\"max-width: 900px; margin: 20px auto; font-size: 19px; color: #003366; font-weight: 500; line-height: 1.8;\">Cette empreinte est le <strong>sillage</strong> : symbole d'une mémoire vive, témoin de la conversation entre le savoir-faire et les flots, lien tangible entre notre passé et notre avenir.</p><p style=\"max-width: 900px; margin: 20px auto; font-size: 18px; color: #666; line-height: 1.8;\">Écho des ports et des hommes, dialogue entre la technique et les éléments, il relie les époques. Le Musée des Ports vous invite à remonter ce fil bleu, à explorer ses métamorphoses et à en imaginer la suite, dans une perspective ouverte sur les dynamiques et les enjeux du monde.</p></div>",
+                "_element_id": ""
+              },
+              "widgetType": "text-editor"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "y5z6a7b8",
+      "elType": "section",
+      "settings": {
+        "background_background": "classic",
+        "background_color": "#f5f8fc"
+      },
+      "elements": [
+        {
+          "id": "c9d0e1f2",
+          "elType": "column",
+          "settings": {
+            "_column_size": 100,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "g3h4i5j6",
+              "elType": "widget",
+              "settings": {
+                "editor": "<div style=\"padding: 80px 20px; text-align: center;\"><div style=\"font-size: 72px; margin-bottom: 20px;\">⚓</div><h3 style=\"font-size: 32px; font-weight: 600; color: #003366; margin-bottom: 10px;\">Aménager le rivage</h3><h4 style=\"font-size: 20px; font-style: italic; color: #D4AF37; margin-bottom: 30px;\">Construire, connecter, faire circuler</h4><p style=\"max-width: 800px; margin: 0 auto; font-size: 18px; color: #666; line-height: 1.8;\">Avant d'être un carrefour, le port est une géographie réinventée. Il naît de l'audace qui unit la mer et la terre. Chaque phare, chaque digue, chaque quai raconte cette alchimie où l'ingénierie épouse la nature pour créer un lieu de convergence des continents.</p></div>",
+                "_element_id": ""
+              },
+              "widgetType": "text-editor"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "k7l8m9n0",
+      "elType": "section",
+      "settings": [],
+      "elements": [
+        {
+          "id": "o1p2q3r4",
+          "elType": "column",
+          "settings": {
+            "_column_size": 100,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "s5t6u7v8",
+              "elType": "widget",
+              "settings": {
+                "editor": "<div style=\"padding: 80px 20px; text-align: center;\"><div style=\"font-size: 72px; margin-bottom: 20px;\">🏗️</div><h3 style=\"font-size: 32px; font-weight: 600; color: #003366; margin-bottom: 10px;\">Habiter le port</h3><h4 style=\"font-size: 20px; font-style: italic; color: #D4AF37; margin-bottom: 30px;\">Organiser l'espace, synchroniser les flux</h4><p style=\"max-width: 800px; margin: 0 auto; font-size: 18px; color: #666; line-height: 1.8;\">Le port est un organisme palpitant, un ballet perpétuel d'énergies et d'intelligences. Il orchestre les flux, harmonise les gestes et fait dialoguer l'humain avec la machine. Des conteneurs aux savoir-faire ancestraux, il incarne un écosystème en perpétuelle renaissance, au cœur du souffle des échanges globaux.</p></div>",
+                "_element_id": ""
+              },
+              "widgetType": "text-editor"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "w9x0y1z2",
+      "elType": "section",
+      "settings": {
+        "background_background": "classic",
+        "background_color": "#f5f8fc"
+      },
+      "elements": [
+        {
+          "id": "a3b4c5d6",
+          "elType": "column",
+          "settings": {
+            "_column_size": 100,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "e7f8g9h0",
+              "elType": "widget",
+              "settings": {
+                "editor": "<div style=\"padding: 80px 20px; text-align: center;\"><div style=\"font-size: 72px; margin-bottom: 20px;\">🌊</div><h3 style=\"font-size: 32px; font-weight: 600; color: #003366; margin-bottom: 10px;\">Rêver les quais</h3><h4 style=\"font-size: 20px; font-style: italic; color: #D4AF37; margin-bottom: 30px;\">Imaginer, expérimenter, créer</h4><p style=\"max-width: 800px; margin: 0 auto; font-size: 18px; color: #666; line-height: 1.8;\">Face à l'océan des possibles et des défis, les quais deviennent des espaces de projection. Ports intelligents, durables et résilients y esquissent les archipels de demain, où le commerce et la coopération redessinent la carte d'un futur partagé.</p></div>",
+                "_element_id": ""
+              },
+              "widgetType": "text-editor"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "i1j2k3l4",
+      "elType": "section",
+      "settings": {
+        "background_background": "gradient",
+        "background_color": "#003366",
+        "background_color_b": "#0066cc",
+        "background_gradient_angle": {
+          "unit": "deg",
+          "size": 135
+        }
+      },
+      "elements": [
+        {
+          "id": "m5n6o7p8",
+          "elType": "column",
+          "settings": {
+            "_column_size": 100,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "q9r0s1t2",
+              "elType": "widget",
+              "settings": {
+                "editor": "<div style=\"padding: 100px 20px; text-align: center; color: #fff;\"><div style=\"font-size: 64px; color: #D4AF37; margin-bottom: 30px;\">"</div><p style=\"max-width: 900px; margin: 0 auto; font-size: 28px; font-weight: 300; font-style: italic; line-height: 1.6;\">Le Musée des Ports est une traversée temporelle qui vous invite à vivre l'épopée des ports d'hier pour mieux imaginer et construire ceux de demain.</p><div style=\"font-size: 64px; color: #D4AF37; margin-top: 30px;\">"</div></div>",
+                "_element_id": ""
+              },
+              "widgetType": "text-editor"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "u3v4w5x6",
+      "elType": "section",
+      "settings": [],
+      "elements": [
+        {
+          "id": "y7z8a9b0",
+          "elType": "column",
+          "settings": {
+            "_column_size": 100,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "c1d2e3f4",
+              "elType": "widget",
+              "settings": {
+                "editor": "<div style=\"padding: 80px 20px;\"><h2 style=\"font-size: 38px; font-weight: 600; color: #003366; text-align: center; margin-bottom: 30px;\">Une Expérience Immersive</h2><div style=\"width: 150px; height: 3px; background: #D4AF37; margin: 30px auto 50px;\"></div><div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto;\"><div style=\"background: #f5f8fc; border-radius: 15px; padding: 40px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);\"><div style=\"font-size: 48px; margin-bottom: 20px;\">🚢</div><h3 style=\"color: #003366; font-size: 22px; font-weight: 600; margin-bottom: 15px;\">Histoire Maritime</h3><p style=\"color: #666; font-size: 16px; line-height: 1.6;\">Découvrez l'évolution des ports marocains à travers les siècles</p></div><div style=\"background: #f5f8fc; border-radius: 15px; padding: 40px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);\"><div style=\"font-size: 48px; margin-bottom: 20px;\">🔧</div><h3 style=\"color: #003366; font-size: 22px; font-weight: 600; margin-bottom: 15px;\">Innovations Techniques</h3><p style=\"color: #666; font-size: 16px; line-height: 1.6;\">Explorez les technologies qui façonnent les ports modernes</p></div><div style=\"background: #f5f8fc; border-radius: 15px; padding: 40px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);\"><div style=\"font-size: 48px; margin-bottom: 20px;\">🌍</div><h3 style=\"color: #003366; font-size: 22px; font-weight: 600; margin-bottom: 15px;\">Connexions Mondiales</h3><p style=\"color: #666; font-size: 16px; line-height: 1.6;\">Comprenez le rôle des ports dans le commerce international</p></div><div style=\"background: #f5f8fc; border-radius: 15px; padding: 40px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);\"><div style=\"font-size: 48px; margin-bottom: 20px;\">♻️</div><h3 style=\"color: #003366; font-size: 22px; font-weight: 600; margin-bottom: 15px;\">Développement Durable</h3><p style=\"color: #666; font-size: 16px; line-height: 1.6;\">Imaginez les ports écologiques du futur</p></div></div></div>",
+                "_element_id": ""
+              },
+              "widgetType": "text-editor"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "g5h6i7j8",
+      "elType": "section",
+      "settings": {
+        "background_background": "gradient",
+        "background_color": "#003366",
+        "background_color_b": "#0066cc",
+        "background_gradient_angle": {
+          "unit": "deg",
+          "size": 135
+        }
+      },
+      "elements": [
+        {
+          "id": "k9l0m1n2",
+          "elType": "column",
+          "settings": {
+            "_column_size": 100,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "o3p4q5r6",
+              "elType": "widget",
+              "settings": {
+                "editor": "<div style=\"padding: 80px 20px; text-align: center; color: #fff;\"><h2 style=\"font-size: 36px; font-weight: 700; margin-bottom: 20px;\">Visitez le Musée des Ports</h2><p style=\"font-size: 18px; margin-bottom: 30px; color: rgba(255,255,255,0.9);\">Ouverture officielle le 2 Avril 2026 dans le cadre de SIPORTS 2026<br>Mohammed VI Exhibition Center, El Jadida, Maroc</p><div style=\"display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;\"><a href=\"/visitor/subscription\" style=\"display: inline-block; background: #D4AF37; color: #003366; font-size: 18px; font-weight: 600; padding: 15px 40px; border-radius: 50px; text-decoration: none; text-transform: uppercase; letter-spacing: 1px;\">Réserver ma visite</a><a href=\"/programme\" style=\"display: inline-block; background: transparent; border: 2px solid #fff; color: #fff; font-size: 18px; font-weight: 600; padding: 15px 40px; border-radius: 50px; text-decoration: none; text-transform: uppercase; letter-spacing: 1px;\">Voir le programme</a></div></div>",
+                "_element_id": ""
+              },
+              "widgetType": "text-editor"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "page_settings": [],
+  "version": "0.4",
+  "title": "Le Musée des Ports",
+  "type": "page"
+}
