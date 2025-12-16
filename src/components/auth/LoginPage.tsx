@@ -38,8 +38,21 @@ export default function LoginPage() {
       // ✅ Passer l'option rememberMe au login
       await login(email, password, { rememberMe });
 
-      // Si on arrive ici, la connexion a réussi (pas d'exception levée)
-      navigate(ROUTES.DASHBOARD);
+      // ✅ Rediriger vers le dashboard approprié selon le type d'utilisateur
+      const { user } = useAuthStore.getState();
+      
+      if (user?.type === 'admin') {
+        navigate(ROUTES.ADMIN_DASHBOARD);
+      } else if (user?.type === 'partner') {
+        navigate(ROUTES.PARTNER_DASHBOARD);
+      } else if (user?.type === 'exhibitor') {
+        navigate(ROUTES.EXHIBITOR_DASHBOARD);
+      } else if (user?.type === 'visitor') {
+        navigate(ROUTES.VISITOR_DASHBOARD);
+      } else {
+        // Par défaut pour les autres types ou si type non défini
+        navigate(ROUTES.DASHBOARD);
+      }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Email ou mot de passe incorrect';
       setError(errorMessage);

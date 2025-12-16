@@ -52,8 +52,8 @@ export default function ProtectedRoute({
 
     if (!allowedRoles.includes(user.type)) {
       // User is authenticated but doesn't have required role
-      // Redirect to dashboard instead of login
-      return <Navigate to={ROUTES.DASHBOARD} replace />;
+      // Redirect to forbidden page to block unauthorized access
+      return <Navigate to={ROUTES.FORBIDDEN} replace />;
     }
   }
 

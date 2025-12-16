@@ -377,8 +377,64 @@ export class SupabaseService {
   }
 
   private static transformEventDBToEvent(eventDB: any): Event {
-    const startDate = new Date(eventDB.start_date);
-    const endDate = new Date(eventDB.end_date);
+    // Valider les dates avant de les convertir
+    const startTime = eventDB.start_time || eventDB.start_date; // Fallback pour compatibilité
+    const endTime = eventDB.end_time || eventDB.end_date;
+    
+    if (!startTime) {
+      console.warn('Event sans start_time:', eventDB.id);
+      // Utiliser une date par défaut
+      const defaultDate = new Date();
+      return {
+        id: eventDB.id,
+        title: eventDB.title || 'Sans titre',
+        description: eventDB.description || '',
+        type: eventDB.event_type || 'conference',
+        startDate: defaultDate,
+        endDate: defaultDate,
+        capacity: eventDB.capacity,
+        registered: eventDB.registered || 0,
+        location: eventDB.location,
+        pavilionId: eventDB.pavilion_id,
+        organizerId: eventDB.organizer_id,
+        featured: eventDB.is_featured || false,
+        imageUrl: eventDB.image_url,
+        registrationUrl: eventDB.registration_url,
+        tags: eventDB.tags || [],
+        date: defaultDate,
+        startTime: defaultDate.toISOString(),
+        endTime: defaultDate.toISOString()
+      };
+    }
+    
+    const startDate = new Date(startTime);
+    const endDate = new Date(endTime || startTime);
+    
+    // Vérifier que les dates sont valides
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      console.warn('Event avec dates invalides:', eventDB.id, startTime, endTime);
+      const defaultDate = new Date();
+      return {
+        id: eventDB.id,
+        title: eventDB.title || 'Sans titre',
+        description: eventDB.description || '',
+        type: eventDB.event_type || 'conference',
+        startDate: defaultDate,
+        endDate: defaultDate,
+        capacity: eventDB.capacity,
+        registered: eventDB.registered || 0,
+        location: eventDB.location,
+        pavilionId: eventDB.pavilion_id,
+        organizerId: eventDB.organizer_id,
+        featured: eventDB.is_featured || false,
+        imageUrl: eventDB.image_url,
+        registrationUrl: eventDB.registration_url,
+        tags: eventDB.tags || [],
+        date: defaultDate,
+        startTime: '00:00',
+        endTime: '00:00'
+      };
+    }
 
     return {
       id: eventDB.id,
@@ -542,7 +598,7 @@ export class SupabaseService {
       if (eventData.title !== undefined) updateData.title = eventData.title;
       if (eventData.description !== undefined) updateData.description = eventData.description;
       if (eventData.type !== undefined) updateData.event_type = eventData.type;
-      if (eventData.startDate !== undefined) updateData.start_date = eventData.startDate.toISOString();
+      if (eventData.startDate !== undefined) updateData.start_time = eventData.startDate.toISOString();
       if (eventData.endDate !== undefined) updateData.end_date = eventData.endDate.toISOString();
       if (eventData.location !== undefined) updateData.location = eventData.location;
       if (eventData.pavilionId !== undefined) updateData.pavilion_id = eventData.pavilionId;
@@ -601,7 +657,7 @@ export class SupabaseService {
           title: eventData.title,
           description: eventData.description,
           event_type: eventData.type,
-          start_date: eventData.startDate.toISOString(),
+          start_time: eventData.startDate.toISOString(),
           end_date: eventData.endDate.toISOString(),
           location: eventData.location,
           pavilion_id: eventData.pavilionId,
@@ -634,13 +690,16 @@ export class SupabaseService {
       const { data, error } = await safeSupabase
         .from('events')
         .select('*')
-        .order('start_date', { ascending: true });
+        .order('start_time', { ascending: true });
 
       if (error) throw error;
 
       return (data || []).map((event: any) => this.transformEventDBToEvent(event));
     } catch (error) {
-      console.error('Erreur récupération événements:', error);
+      // Ignorer les erreurs réseau silencieusement
+      if (error instanceof Error && !error.message.includes('Failed to fetch')) {
+        console.error('Erreur récupération événements:', error);
+      }
       return [];
     }
   }
@@ -698,6 +757,28 @@ export class SupabaseService {
     } catch (error) {
       console.error('Erreur inscription événement:', error);
       throw error;
+    }
+  }
+
+  static async getUserEventRegistrations(userId: string): Promise<any[]> {
+    if (!this.checkSupabaseConnection()) return [];
+
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await safeSupabase
+        .from('event_registrations')
+        .select('*')
+        .eq('user_id', userId);
+
+      if (error) throw error;
+
+      return data || [];
+    } catch (error) {
+      // Ignorer les erreurs réseau silencieusement
+      if (error instanceof Error && !error.message.includes('Failed to fetch')) {
+        console.error('Erreur récupération inscriptions événements:', error);
+      }
+      return [];
     }
   }
 
@@ -1569,7 +1650,10 @@ export class SupabaseService {
       if (error) throw error;
       return data || [];
     } catch (error) {
-      console.error('Erreur lors de la récupération des rendez-vous:', error);
+      // Ignorer les erreurs réseau silencieusement
+      if (error instanceof Error && !error.message.includes('Failed to fetch')) {
+        console.error('Erreur lors de la récupération des rendez-vous:', error);
+      }
       return [];
     }
   }

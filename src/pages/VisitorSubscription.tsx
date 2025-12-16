@@ -69,14 +69,20 @@ export default function VisitorSubscription() {
     // Pour le niveau premium : créer une demande de paiement par virement bancaire
     try {
       // Vérifier si une demande pending existe déjà
-      const { data: existingRequest, error: checkError } = await supabase
+      const { data: existingRequests, error: checkError } = await supabase
         .from('payment_requests')
         .select('*')
         .eq('user_id', userId)
-        .eq('status', 'pending')
-        .single();
+        .eq('status', 'pending');
 
-      if (existingRequest) {
+      if (checkError) {
+        console.error('Erreur vérification demande:', checkError);
+        setMessage(`❌ Erreur lors de la vérification: ${checkError.message}`);
+        setLoading(false);
+        return;
+      }
+
+      if (existingRequests && existingRequests.length > 0) {
         setMessage('⚠️ Vous avez déjà une demande de paiement en attente. Consultez votre profil pour les instructions de virement.');
         setLoading(false);
         return;

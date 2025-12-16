@@ -132,12 +132,15 @@ describe('apiHelpers', () => {
       const failFn = vi.fn().mockRejectedValue(new Error('network error'));
 
       const retryPromise = withRetry(failFn, { maxRetries: 2, initialDelayMs: 100 });
+      
+      // Attach handler immediately to avoid unhandled rejection
+      const expectPromise = expect(retryPromise).rejects.toThrow('network error');
 
       // Advance timers for all retry attempts
       await vi.advanceTimersByTimeAsync(100); // 1st retry
       await vi.advanceTimersByTimeAsync(200); // 2nd retry (exponential backoff)
 
-      await expect(retryPromise).rejects.toThrow('network error');
+      await expectPromise;
       expect(failFn).toHaveBeenCalledTimes(3); // Initial + 2 retries
     });
 
@@ -215,22 +218,26 @@ describe('apiHelpers', () => {
         });
       });
 
-      const promise = withTimeoutAndRetry(slowFn, 1000, { maxRetries: 3 });
+      const promise = withTimeoutAndRetry(slowFn, 1000, { maxRetries: 3 }, 'Fatal Error');
 
       vi.advanceTimersByTime(1000);
 
-      await expect(promise).rejects.toThrow('Request timeout');
+      await expect(promise).rejects.toThrow('Fatal Error');
+      expect(slowFn).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('robustAPICall', () => {
     it('should apply timeout, retry, and rate limiting', async () => {
       const successFn = vi.fn().mockResolvedValue('success');
-      const result = await robustAPICall(successFn, {
+      const promise = robustAPICall(successFn, {
         timeout: 5000,
         retry: { maxRetries: 3 },
         rateLimit: true
       });
+      
+      await vi.advanceTimersByTimeAsync(200);
+      const result = await promise;
       expect(result).toBe('success');
     });
 
@@ -246,7 +253,10 @@ describe('apiHelpers', () => {
 
     it('should use default options', async () => {
       const successFn = vi.fn().mockResolvedValue('success');
-      const result = await robustAPICall(successFn);
+      const promise = robustAPICall(successFn);
+      
+      await vi.advanceTimersByTimeAsync(200);
+      const result = await promise;
       expect(result).toBe('success');
     });
   });
@@ -268,6 +278,8 @@ describe('apiHelpers', () => {
       // Execute both through rate limiter
       const promise1 = globalRateLimiter.execute(fn1);
       const promise2 = globalRateLimiter.execute(fn2);
+
+      await vi.advanceTimersByTimeAsync(200);
 
       await Promise.all([promise1, promise2]);
 

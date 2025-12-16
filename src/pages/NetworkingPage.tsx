@@ -553,7 +553,7 @@ export default function NetworkingPage() {
                   </Button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                <div data-testid="user-list" className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                   {recommendations.map((rec, index) => {
                     const profile = rec.recommendedUser;
                     const isFavorite = favorites.includes(profile.id);
@@ -563,6 +563,7 @@ export default function NetworkingPage() {
                     return (
                       <motion.div
                         key={profile.id}
+                        data-testid="user-card"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
@@ -841,7 +842,7 @@ export default function NetworkingPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div data-testid="search-results" className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   {searchResults.map((profile, index) => {
                     const isConnected = connections.includes(profile.id);
                     const isFavorite = favorites.includes(profile.id);
@@ -850,6 +851,7 @@ export default function NetworkingPage() {
                     return (
                       <motion.div
                         key={profile.id}
+                        data-testid="user-result"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.05 }}

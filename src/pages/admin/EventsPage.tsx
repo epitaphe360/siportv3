@@ -24,7 +24,7 @@ export default function EventsPage() {
       const data = await EventsService.getAllEvents();
 
       const formattedEvents = data.map((event: Event) => {
-        const startDate = new Date(event.start_date);
+        const startDate = new Date(event.start_time);
         const endDate = new Date(event.end_date);
         const now = new Date();
 

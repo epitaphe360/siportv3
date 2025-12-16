@@ -32,7 +32,7 @@ export const passwordSchema = z
 export const phoneSchema = z
   .string()
   .regex(
-    /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/,
+    /^\+?[0-9\s\-\(\)]{10,20}$/,
     'Format de téléphone invalide'
   )
   .min(10, 'Numéro trop court')
@@ -44,6 +44,7 @@ export const phoneSchema = z
 export const urlSchema = z
   .string()
   .url('URL invalide')
+  .regex(/^https?:\/\//, 'L\'URL doit commencer par http:// ou https://')
   .max(2048, 'URL trop longue');
 
 /**

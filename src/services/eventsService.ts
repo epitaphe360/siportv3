@@ -5,8 +5,8 @@ export interface Event {
   title: string;
   description: string;
   event_type: 'conference' | 'workshop' | 'networking' | 'exhibition';
-  start_date: string;
-  end_date: string;
+  start_time: string;
+  end_time: string;
   location: string | null;
   pavilion_id: string | null;
   organizer_id: string | null;
@@ -25,7 +25,7 @@ export class EventsService {
     const { data, error } = await supabase
       .from('events')
       .select('*')
-      .order('start_date', { ascending: true });
+      .order('start_time', { ascending: false });
 
     if (error) {
       console.error('Error fetching events:', error);
@@ -39,8 +39,8 @@ export class EventsService {
     const { data, error } = await supabase
       .from('events')
       .select('*')
-      .gte('start_date', new Date().toISOString())
-      .order('start_date', { ascending: true });
+      .gte('start_time', new Date().toISOString())
+      .order('start_time', { ascending: true });
 
     if (error) {
       console.error('Error fetching upcoming events:', error);

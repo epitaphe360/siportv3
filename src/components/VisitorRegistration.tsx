@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { ROUTES } from '../lib/routes';
 
 export default function VisitorRegistration() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [bio, setBio] = useState('');
@@ -27,10 +30,8 @@ export default function VisitorRegistration() {
       setMessage('Erreur: ' + error.message);
     } else {
       setMessage('Inscription réussie !');
-      setEmail('');
-      setName('');
-      setBio('');
-      setLevel('free');
+      // Naviguer vers la page de succès
+      navigate(ROUTES.SIGNUP_SUCCESS);
     }
   };
 

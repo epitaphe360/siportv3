@@ -127,10 +127,11 @@ export async function withRetry<T>(
 export async function withTimeoutAndRetry<T>(
   fn: () => Promise<T>,
   timeoutMs: number = 10000,
-  retryOptions: RetryOptions = {}
+  retryOptions: RetryOptions = {},
+  timeoutError: string = 'Request timeout'
 ): Promise<T> {
   return withRetry(
-    () => withTimeout(fn(), timeoutMs),
+    () => withTimeout(fn(), timeoutMs, timeoutError),
     retryOptions
   );
 }

@@ -100,6 +100,7 @@ export default function ExhibitorsPage() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type="text"
+                  data-testid="search-input"
                   placeholder="Rechercher un exposant..."
                   value={filters.search}
                   onChange={(e) => setFilters({ search: e.target.value })}
@@ -224,13 +225,14 @@ export default function ExhibitorsPage() {
             </Button>
           </div>
         ) : (
-          <div className={viewMode === CONFIG.viewModes.grid 
+          <div data-testid="exhibitors-list" className={viewMode === CONFIG.viewModes.grid 
             ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
             : 'space-y-6'
           }>
             {filteredExhibitors.map((exhibitor, index) => (
               <motion.div
                 key={exhibitor.id}
+                data-testid="exhibitor-card"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}

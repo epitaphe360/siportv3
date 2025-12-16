@@ -90,68 +90,6 @@ export const PartnerLeadsPage: React.FC = () => {
       priority: conn.status === 'accepted' ? 'high' : 'medium'
     })),
     leadSources: [
-      {
-        id: '1',
-        company: 'Port Solutions Inc.',
-        contact: 'Marie Dubois',
-        position: 'Directrice Commerciale',
-        sector: 'Port Operations',
-        value: '850K€',
-        status: 'Hot Lead',
-        lastContact: '2024-01-15',
-        nextAction: 'Présentation produit',
-        priority: 'high'
-      },
-      {
-        id: '2',
-        company: 'TechMarine Solutions',
-        contact: 'Pierre Martin',
-        position: 'CTO',
-        sector: 'Technology',
-        value: '1.2M€',
-        status: 'Qualified',
-        lastContact: '2024-01-12',
-        nextAction: 'Démo technique',
-        priority: 'high'
-      },
-      {
-        id: '3',
-        company: 'LogiFlow Systems',
-        contact: 'Sophie Bernard',
-        position: 'VP Sales',
-        sector: 'Logistics',
-        value: '650K€',
-        status: 'Nurturing',
-        lastContact: '2024-01-10',
-        nextAction: 'Suivi email',
-        priority: 'medium'
-      },
-      {
-        id: '4',
-        company: 'Maritime Data Hub',
-        contact: 'Jean-François Moreau',
-        position: 'CEO',
-        sector: 'Data & Analytics',
-        value: '950K€',
-        status: 'Qualified',
-        lastContact: '2024-01-08',
-        nextAction: 'Proposition commerciale',
-        priority: 'high'
-      },
-      {
-        id: '5',
-        company: 'SecurePort Technologies',
-        contact: 'Claire Leroy',
-        position: 'Directrice Sécurité',
-        sector: 'Sécurité',
-        value: '720K€',
-        status: 'Hot Lead',
-        lastContact: '2024-01-05',
-        nextAction: 'Réunion stratégique',
-        priority: 'high'
-      }
-    ],
-    leadSources: [
       { source: 'Événements SIPORTS', count: 34, percentage: 38 },
       { source: 'Networking Partenaires', count: 28, percentage: 31 },
       { source: 'Références Clients', count: 15, percentage: 17 },

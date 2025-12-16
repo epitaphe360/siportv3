@@ -12,8 +12,8 @@ interface Event {
   id: string;
   title: string;
   description: string;
-  start_date: string;
-  end_date: string;
+  start_time: string;
+  end_time: string;
   event_type: string;
   status: string;
   max_participants: number;
@@ -106,7 +106,7 @@ export const PartnerEventsPage: React.FC = () => {
                 Aucun événement disponible pour le moment.
               </div>
             ) : (
-              <div className="space-y-4">
+              <div data-testid="event-list" className="space-y-4">
                 {events.map(evt => {
                   const registrationCount = evt.registrations?.[0]?.count || 0;
                   const reach = registrationCount > 0 ? registrationCount : evt.max_participants || 100;
@@ -117,7 +117,7 @@ export const PartnerEventsPage: React.FC = () => {
                         <div className="font-semibold text-gray-900">{evt.title}</div>
                         <div className="text-sm text-gray-600 mt-1">{evt.description?.substring(0, 100)}...</div>
                         <div className="text-sm text-gray-500 mt-2">
-                          {evt.event_type} • {new Date(evt.start_date).toLocaleDateString('fr-FR')}
+                          {evt.event_type} • {new Date(evt.start_time).toLocaleDateString('fr-FR')}
                         </div>
                       </div>
                       <div className="flex items-center space-x-4">

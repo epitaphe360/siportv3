@@ -48,6 +48,9 @@ const PartnerSignUpPage = React.lazy(() => import('./pages/auth/PartnerSignUpPag
 const SignUpSuccessPage = React.lazy(() => import('./pages/auth/SignUpSuccessPage'));
 const PendingAccountPage = React.lazy(() => import('./pages/auth/PendingAccountPage'));
 const OAuthCallbackPage = React.lazy(() => import('./pages/auth/OAuthCallbackPage'));
+const VisitorSubscriptionPage = React.lazy(() => import('./pages/VisitorSubscriptionPage'));
+const PaymentInstructionsPage = React.lazy(() => import('./pages/visitor/PaymentInstructionsPage'));
+const PaymentValidationPage = React.lazy(() => import('./pages/admin/PaymentValidationPage'));
 
 // Admin pages
 const PavillonsAdminPage = React.lazy(() => import('./pages/admin/PavillonsPage'));
@@ -89,11 +92,20 @@ import { ChatBotToggle } from './components/chatbot/ChatBotToggle';
 import { useLanguageStore } from './store/languageStore';
 import { ROUTES } from './lib/routes';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import { initializeAuth } from './lib/initAuth';
 
 
 const App = () => {
   const [isChatBotOpen, setIsChatBotOpen] = React.useState(false);
   const { currentLanguage, getCurrentLanguage } = useLanguageStore();
+
+  // Initialize auth from Supabase session on app start
+  React.useEffect(() => {
+    // Run async init without blocking
+    initializeAuth().catch(err => {
+      console.error('Erreur initialisation auth:', err);
+    });
+  }, []);
 
   // BUGFIX: Removed getCurrentLanguage from deps to prevent unnecessary re-renders
   // Appliquer la direction du texte selon la langue
@@ -157,6 +169,8 @@ const App = () => {
             {/* SECURED: Dev route now requires admin role */}
             <Route path="/dev/test-flow" element={<ProtectedRoute requiredRole="admin"><TestFlowPage /></ProtectedRoute>} />
             <Route path={ROUTES.VISITOR_SETTINGS} element={<ProtectedRoute requiredRole="visitor"><VisitorProfileSettings /></ProtectedRoute>} />
+            <Route path={ROUTES.VISITOR_SUBSCRIPTION} element={<ProtectedRoute requiredRole="visitor"><VisitorSubscriptionPage /></ProtectedRoute>} />
+            <Route path="/visitor/payment-instructions" element={<ProtectedRoute requiredRole="visitor"><PaymentInstructionsPage /></ProtectedRoute>} />
             <Route path={ROUTES.MESSAGES} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path={ROUTES.CHAT} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path={ROUTES.APPOINTMENTS} element={<ProtectedRoute><AppointmentCalendar /></ProtectedRoute>} />
@@ -178,6 +192,7 @@ const App = () => {
             <Route path={ROUTES.NEWS} element={<NewsPage />} />
             <Route path={ROUTES.NEWS_DETAIL} element={<ArticleDetailPage />} />
             <Route path={ROUTES.ADMIN_DASHBOARD} element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/admin/payment-validation" element={<ProtectedRoute requiredRole="admin"><PaymentValidationPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_USERS} element={<ProtectedRoute requiredRole="admin"><UserManagementPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_CREATE_USER} element={<ProtectedRoute requiredRole="admin"><CreateUserPage /></ProtectedRoute>} />
             <Route path="/admin/partners" element={<ProtectedRoute requiredRole="admin"><AdminPartnersPage /></ProtectedRoute>} />

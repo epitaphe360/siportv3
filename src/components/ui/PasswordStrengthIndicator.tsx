@@ -50,23 +50,23 @@ export const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps>
 
       {/* Critères */}
       <div className="space-y-1 text-xs">
-        <div className={`flex items-center gap-1 ${checks.length ? 'text-green-600' : 'text-gray-500'}`}>
+        <div data-testid="password-length-check" className={`flex items-center gap-1 ${checks.length ? 'text-green-600' : 'text-gray-500'}`}>
           {checks.length ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
           <span>Au moins 8 caractères</span>
         </div>
-        <div className={`flex items-center gap-1 ${checks.uppercase ? 'text-green-600' : 'text-gray-500'}`}>
+        <div data-testid="password-uppercase-check" className={`flex items-center gap-1 ${checks.uppercase ? 'text-green-600' : 'text-gray-500'}`}>
           {checks.uppercase ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
           <span>Une lettre majuscule</span>
         </div>
-        <div className={`flex items-center gap-1 ${checks.lowercase ? 'text-green-600' : 'text-gray-500'}`}>
+        <div data-testid="password-lowercase-check" className={`flex items-center gap-1 ${checks.lowercase ? 'text-green-600' : 'text-gray-500'}`}>
           {checks.lowercase ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
           <span>Une lettre minuscule</span>
         </div>
-        <div className={`flex items-center gap-1 ${checks.number ? 'text-green-600' : 'text-gray-500'}`}>
+        <div data-testid="password-number-check" className={`flex items-center gap-1 ${checks.number ? 'text-green-600' : 'text-gray-500'}`}>
           {checks.number ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
           <span>Un chiffre</span>
         </div>
-        <div className={`flex items-center gap-1 ${checks.special ? 'text-green-600' : 'text-gray-500'}`}>
+        <div data-testid="password-special-check" className={`flex items-center gap-1 ${checks.special ? 'text-green-600' : 'text-gray-500'}`}>
           {checks.special ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
           <span>Un caractère spécial (!@#$%^&*...)</span>
         </div>

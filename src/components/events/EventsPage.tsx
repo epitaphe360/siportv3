@@ -400,7 +400,7 @@ export default memo(function EventsPage() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div data-testid="events-list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredEvents.map((event, index) => {
                 const EventIcon = getEventTypeIcon(event.type);
                 const isRegistered = registeredEvents.includes(event.id);

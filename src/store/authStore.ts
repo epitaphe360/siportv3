@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { SupabaseService } from '../services/supabaseService';
 import { supabase } from '../lib/supabase';
 import OAuthService from '../services/oauthService';
@@ -77,7 +78,9 @@ const minimalUserProfile = (overrides: Partial<User['profile']> = {}): User['pro
 // Production authentication only via Supabase
 
 
-const useAuthStore = create<AuthState>((set, get) => ({
+const useAuthStore = create<AuthState>()(
+  persist(
+    (set, get) => ({
   user: null,
   token: null,
   isAuthenticated: false,
@@ -380,7 +383,18 @@ const useAuthStore = create<AuthState>((set, get) => ({
       throw error instanceof Error ? error : new Error('Erreur lors de la mise à jour du profil');
     }
   }
-}));
+}),
+    {
+      name: 'siport-auth-storage', // localStorage key
+      partialize: (state) => ({
+        user: state.user,
+        token: state.token,
+        isAuthenticated: state.isAuthenticated
+        // Ne PAS persister les états de loading
+      })
+    }
+  )
+);
 
 export { useAuthStore };
 export default useAuthStore;

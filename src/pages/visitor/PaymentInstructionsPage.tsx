@@ -2,14 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import useAuthStore from '../../store/authStore';
-
-interface BankInfo {
-  bank_name: string;
-  account_holder: string;
-  iban: string;
-  bic_swift: string;
-  instructions: string;
-}
+import { BANK_TRANSFER_INFO, generatePaymentReference } from '../../config/bankTransferConfig';
 
 interface PaymentRequest {
   id: string;
@@ -18,6 +11,9 @@ interface PaymentRequest {
   currency: string;
   status: string;
   created_at: string;
+  transfer_reference?: string;
+  transfer_date?: string;
+  validation_notes?: string;
 }
 
 export default function PaymentInstructionsPage() {
@@ -25,7 +21,6 @@ export default function PaymentInstructionsPage() {
   const requestId = searchParams.get('request_id');
   const { user } = useAuthStore();
 
-  const [bankInfo, setBankInfo] = useState<BankInfo | null>(null);
   const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
   const [loading, setLoading] = useState(true);
   const [proofUrl, setProofUrl] = useState('');
@@ -38,15 +33,6 @@ export default function PaymentInstructionsPage() {
 
   async function loadData() {
     try {
-      // Charger les infos bancaires
-      const { data: bank } = await supabase
-        .from('bank_transfer_info')
-        .select('*')
-        .eq('is_active', true)
-        .single();
-
-      if (bank) setBankInfo(bank);
-
       // Charger la demande de paiement
       if (requestId) {
         const { data: request } = await supabase
@@ -99,13 +85,19 @@ export default function PaymentInstructionsPage() {
     return <div style={{ padding: 32, textAlign: 'center' }}>Chargement...</div>;
   }
 
-  const referenceCode = `SIPORTS-PREMIUM-${user?.id?.slice(0, 8).toUpperCase()}`;
+  if (!user || !requestId) {
+    return <div style={{ padding: 32, textAlign: 'center' }}>Erreur : utilisateur ou demande non trouvé</div>;
+  }
+
+  const referenceCode = generatePaymentReference(user.id, requestId);
+  const bankInfo = BANK_TRANSFER_INFO;
+  const amount = paymentRequest?.requested_level === 'premium' ? bankInfo.amounts.premium.amount : 0;
 
   return (
     <div style={{ maxWidth: 800, margin: 'auto', padding: 32 }}>
       <h1>💳 Instructions de Paiement</h1>
       <p style={{ fontSize: 18, color: '#666' }}>
-        Pass Premium VIP - 700€
+        Pass Premium VIP - {amount.toFixed(2)}€
       </p>
 
       {paymentRequest?.status === 'pending' && (
@@ -133,37 +125,30 @@ export default function PaymentInstructionsPage() {
 
       <div style={{ background: '#f8f9fa', padding: 24, borderRadius: 8, marginBottom: 24 }}>
         <h2>📋 Informations Bancaires</h2>
-
-        {bankInfo ? (
-          <>
-            <div style={{ marginBottom: 12 }}>
-              <strong>Banque :</strong> {bankInfo.bank_name}
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <strong>Titulaire du compte :</strong> {bankInfo.account_holder}
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <strong>IBAN :</strong> <code style={{ background: '#fff', padding: '4px 8px', borderRadius: 4 }}>{bankInfo.iban}</code>
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <strong>BIC/SWIFT :</strong> <code style={{ background: '#fff', padding: '4px 8px', borderRadius: 4 }}>{bankInfo.bic_swift}</code>
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <strong>Montant :</strong> <span style={{ fontSize: 20, fontWeight: 'bold', color: '#28a745' }}>700,00 EUR</span>
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <strong>Référence obligatoire :</strong> <code style={{ background: '#fff', padding: '4px 8px', borderRadius: 4, fontSize: 16, fontWeight: 'bold' }}>{referenceCode}</code>
-            </div>
-          </>
-        ) : (
-          <p>Informations bancaires non disponibles. Veuillez contacter le support.</p>
-        )}
+        <div style={{ marginBottom: 12 }}>
+          <strong>Banque :</strong> {bankInfo.bankName}
+        </div>
+        <div style={{ marginBottom: 12 }}>
+          <strong>Titulaire du compte :</strong> {bankInfo.accountHolder}
+        </div>
+        <div style={{ marginBottom: 12 }}>
+          <strong>IBAN :</strong> <code style={{ background: '#fff', padding: '4px 8px', borderRadius: 4 }}>{bankInfo.iban}</code>
+        </div>
+        <div style={{ marginBottom: 12 }}>
+          <strong>BIC/SWIFT :</strong> <code style={{ background: '#fff', padding: '4px 8px', borderRadius: 4 }}>{bankInfo.bic}</code>
+        </div>
+        <div style={{ marginBottom: 12 }}>
+          <strong>Montant :</strong> <span style={{ fontSize: 20, fontWeight: 'bold', color: '#28a745' }}>{amount.toFixed(2)} EUR</span>
+        </div>
+        <div style={{ marginBottom: 12 }}>
+          <strong>Référence obligatoire :</strong> <code style={{ background: '#fff', padding: '4px 8px', borderRadius: 4, fontSize: 16, fontWeight: 'bold' }}>{referenceCode}</code>
+        </div>
       </div>
 
       <div style={{ background: '#e7f3ff', padding: 24, borderRadius: 8, marginBottom: 24 }}>
         <h3>📝 Instructions</h3>
         <ol>
-          <li>Effectuez un virement de <strong>700,00 EUR</strong> sur le compte ci-dessus</li>
+          <li>Effectuez un virement de <strong>{amount.toFixed(2)} EUR</strong> sur le compte ci-dessus</li>
           <li><strong>IMPORTANT :</strong> Indiquez la référence <code>{referenceCode}</code> dans le libellé du virement</li>
           <li>Conservez votre preuve de virement (capture d'écran ou PDF de confirmation)</li>
           <li>Renseignez ci-dessous la référence de votre virement et téléchargez le justificatif (optionnel)</li>
@@ -254,7 +239,7 @@ export default function PaymentInstructionsPage() {
 
       <div style={{ marginTop: 32, padding: 16, background: '#f8f9fa', borderRadius: 8 }}>
         <p style={{ margin: 0, fontSize: 14, color: '#666' }}>
-          <strong>💡 Besoin d'aide ?</strong> Contactez-nous à <a href="mailto:contact@siportevent.com">contact@siportevent.com</a>
+          <strong>💡 Besoin d'aide ?</strong> Contactez-nous à <a href={`mailto:${bankInfo.supportEmail}`}>{bankInfo.supportEmail}</a>
         </p>
       </div>
     </div>

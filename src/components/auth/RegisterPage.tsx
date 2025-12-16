@@ -286,12 +286,12 @@ export default function RegisterPage() {
       // Afficher la modal de succès
       setShowSuccess(true);
 
-      // Rediriger après 3 secondes
+      // Rediriger immédiatement vers le dashboard ou login
       setTimeout(() => {
-        navigate(ROUTES.LOGIN, {
-          state: { message: 'Inscription réussie ! Votre compte est en attente de validation.' }
+        navigate(ROUTES.DASHBOARD, {
+          state: { message: 'Inscription réussie ! Bienvenue sur SIPORTS.' }
         });
-      }, 3000);
+      }, 2000);
     } catch (error) {
       console.error('Registration error:', error);
       toast.error((error as Error).message || 'Erreur lors de l\'inscription');
@@ -462,6 +462,7 @@ export default function RegisterPage() {
                       </label>
                       <select
                         {...register('sector')}
+                        name="sector"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="">Sélectionnez un secteur</option>
@@ -507,6 +508,7 @@ export default function RegisterPage() {
                         <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
                         <select
                           {...register('country')}
+                          name="country"
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white"
                         >
                           <option value="">Sélectionnez un pays</option>
@@ -648,6 +650,7 @@ export default function RegisterPage() {
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <input type="email"
+                          data-testid="email"
                           {...register('email')}
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="votre@email.com"
@@ -713,6 +716,7 @@ export default function RegisterPage() {
                       Description de votre organisation *
                     </label>
                     <textarea
+                      data-testid="description"
                       {...register('description', {
                         onChange: (e) => setDescriptionLength(e.target.value.length)
                       })}
@@ -791,6 +795,7 @@ export default function RegisterPage() {
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <input type={showPassword ? 'text' : 'password'}
+                          data-testid="password"
                           {...register('password')}
                           onBlur={() => setPasswordTouched(true)}
                           className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

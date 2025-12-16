@@ -14,6 +14,7 @@ export default defineConfig({
       exclude: [
         'node_modules/',
         'tests/',
+        'e2e/',
         '**/*.d.ts',
         '**/*.config.*',
         '**/mockData',
@@ -24,7 +25,16 @@ export default defineConfig({
       branches: 75,
       functions: 80,
       lines: 80
-    }
+    },
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/cypress/**',
+      '**/.{idea,git,cache,output,temp}/**',
+      '**/e2e/**',
+      '**/tests/e2e/**',
+      'tests/*.spec.ts'
+    ]
   },
   resolve: {
     alias: {

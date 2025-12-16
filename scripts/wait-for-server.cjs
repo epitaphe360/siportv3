@@ -1,5 +1,5 @@
 const http = require('http');
-const url = process.env.URL || 'http://127.0.0.1:5173';
+const url = process.env.URL || 'http://127.0.0.1:5000';
 const timeout = parseInt(process.env.TIMEOUT || '15000', 10);
 
 function check(cb) {

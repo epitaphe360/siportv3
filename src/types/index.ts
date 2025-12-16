@@ -241,7 +241,7 @@ export interface Event {
   title: string;
   description: string;
   type: 'conference' | 'workshop' | 'networking' | 'exhibition';
-  // DB uses start_date and end_date (timestamptz)
+  // DB uses start_time and end_time (timestamptz)
   startDate: Date;
   endDate: Date;
   capacity?: number;

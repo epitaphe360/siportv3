@@ -128,9 +128,9 @@ export const Header: React.FC = memo(() => {
 
             {isAuthenticated ? (
               <>
-                {/* Notifications */}
-                <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors relative">
-                  <Bell className="h-5 w-5" />
+              {/* Notifications */}
+              <button data-testid="notifications-button" className="p-2 text-gray-400 hover:text-gray-600 transition-colors relative">
+                <Bell className="h-5 w-5" />
                   <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                     3
                   </span>
@@ -159,6 +159,7 @@ export const Header: React.FC = memo(() => {
                 <div className="relative">
                   <button
                     onClick={toggleProfile}
+                    data-testid="user-menu"
                     className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                   >
                     <div className="h-8 w-8 bg-blue-600 rounded-full flex items-center justify-center">
