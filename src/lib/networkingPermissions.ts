@@ -173,14 +173,14 @@ function getVisitorPermissions(passType: VisitorPassType): NetworkingPermissions
         canMakeConnections: true,
         canScheduleMeetings: true,
         canAccessPremiumFeatures: true,
-        canAccessVIPLounge: true,
+        canAccessVIPLounge: false,
         canAccessPartnerEvents: true,
         maxConnectionsPerDay: -1, // Illimité
         maxMessagesPerDay: -1, // Illimité
         maxMeetingsPerDay: -1, // Illimité
         priorityLevel: 10, // Priorité maximale
         canBypassQueue: true,
-        canAccessAIRecommendations: true,
+        canAccessAIRecommendations: false,
         canAccessAnalytics: true,
       };
 
@@ -298,7 +298,7 @@ function getVisitorEventPermissions(passType: VisitorPassType): EventAccessPermi
         canAccessPartnerExclusives: true,
         canAccessNetworkingBreakfast: true,
         canAccessGalaDinner: true,
-        canAccessExecutiveLounge: true,
+        canAccessExecutiveLounge: false,
         maxEventsPerDay: -1, // Illimité
         hasQRAccess: true,
         qrAccessLevel: 'vip',
