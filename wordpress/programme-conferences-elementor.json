@@ -1,0 +1,542 @@
+{
+  "version": "0.4",
+  "title": "Programme des Conférences SIPORTS 2026",
+  "type": "page",
+  "content": [
+    {
+      "id": "hero-section",
+      "elType": "section",
+      "settings": {
+        "background_background": "gradient",
+        "background_gradient_angle": {
+          "unit": "deg",
+          "size": 135
+        },
+        "background_color": "#003366",
+        "background_color_b": "#0066cc",
+        "padding": {
+          "unit": "px",
+          "top": "80",
+          "right": "20",
+          "bottom": "80",
+          "left": "20"
+        }
+      },
+      "elements": [
+        {
+          "id": "hero-column",
+          "elType": "column",
+          "settings": {
+            "width": "100"
+          },
+          "elements": [
+            {
+              "id": "hero-title",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "PROGRAMME DES CONFÉRENCES",
+                "header_size": "h1",
+                "align": "center",
+                "title_color": "#FFFFFF",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 48
+                },
+                "typography_font_weight": "700",
+                "typography_text_transform": "uppercase",
+                "typography_letter_spacing": {
+                  "unit": "px",
+                  "size": 2
+                }
+              }
+            },
+            {
+              "id": "hero-subtitle",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "Salon International des Ports d'Afrique",
+                "header_size": "h2",
+                "align": "center",
+                "title_color": "rgba(255, 255, 255, 0.9)",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 24
+                },
+                "typography_font_weight": "300"
+              }
+            },
+            {
+              "id": "hero-dates",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p style='text-align: center; color: #D4AF37; font-size: 20px; font-weight: 500; margin-top: 10px;'>📅 1 - 3 Avril 2026</p>"
+              }
+            },
+            {
+              "id": "hero-location",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p style='text-align: center; color: rgba(255, 255, 255, 0.85); font-size: 18px; margin-top: 10px;'>📍 Mohammed VI Exhibition Center, El Jadida, Maroc</p>"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "intro-section",
+      "elType": "section",
+      "settings": {
+        "background_background": "classic",
+        "background_color": "#f5f8fc",
+        "padding": {
+          "unit": "px",
+          "top": "60",
+          "right": "20",
+          "bottom": "60",
+          "left": "20"
+        }
+      },
+      "elements": [
+        {
+          "id": "intro-column",
+          "elType": "column",
+          "settings": {
+            "width": "100"
+          },
+          "elements": [
+            {
+              "id": "intro-text",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p style='text-align: center; font-size: 18px; color: #666666; max-width: 800px; margin: 0 auto; line-height: 1.8;'>Découvrez le programme complet des conférences et sessions du SIPORTS 2026. Trois journées d'échanges stratégiques sur l'avenir des ports africains, la transformation digitale, la durabilité et la coopération régionale.</p>"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "jour1-section",
+      "elType": "section",
+      "settings": {
+        "background_background": "classic",
+        "background_color": "#FFFFFF",
+        "padding": {
+          "unit": "px",
+          "top": "60",
+          "right": "20",
+          "bottom": "60",
+          "left": "20"
+        }
+      },
+      "elements": [
+        {
+          "id": "jour1-column",
+          "elType": "column",
+          "settings": {
+            "width": "100"
+          },
+          "elements": [
+            {
+              "id": "jour1-badge",
+              "elType": "widget",
+              "widgetType": "button",
+              "settings": {
+                "text": "JOUR 1",
+                "align": "center",
+                "button_background_color": "#003366",
+                "button_text_color": "#FFFFFF",
+                "border_radius": {
+                  "unit": "px",
+                  "size": 50
+                },
+                "button_padding": {
+                  "unit": "px",
+                  "top": "10",
+                  "right": "30",
+                  "bottom": "10",
+                  "left": "30"
+                },
+                "typography_font_weight": "600"
+              }
+            },
+            {
+              "id": "jour1-date",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "1 Avril 2026",
+                "header_size": "h2",
+                "align": "center",
+                "title_color": "#003366",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 36
+                },
+                "typography_font_weight": "700"
+              }
+            },
+            {
+              "id": "jour1-session1",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<div style='background: #fff; border-left: 5px solid #0066cc; border-radius: 10px; padding: 30px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><span style='display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #0066cc; background: rgba(0,102,204,0.1); padding: 5px 15px; border-radius: 15px; margin-bottom: 10px;'>SESSION</span><div style='display: inline-block; background: #003366; color: #fff; font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 25px; margin: 15px 0;'>⏰ 09:00 – 10:30</div><h3 style='font-size: 22px; font-weight: 600; color: #003366; line-height: 1.4; margin: 10px 0;'>Quelle stratégie pour renforcer l'inclusion et la formation dans le maritime africain ?</h3></div>"
+              }
+            },
+            {
+              "id": "jour1-session2",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<div style='background: #fff; border-left: 5px solid #0066cc; border-radius: 10px; padding: 30px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><span style='display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #0066cc; background: rgba(0,102,204,0.1); padding: 5px 15px; border-radius: 15px; margin-bottom: 10px;'>SESSION</span><div style='display: inline-block; background: #003366; color: #fff; font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 25px; margin: 15px 0;'>⏰ 10:30 – 12:00</div><h3 style='font-size: 22px; font-weight: 600; color: #003366; line-height: 1.4; margin: 10px 0;'>Leadership Féminin au cœur de la transformation maritime en partenariat avec (RFPMP-AOC)</h3></div>"
+              }
+            },
+            {
+              "id": "jour1-ceremony",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<div style='background: #fff; border-left: 5px solid #DC2626; border-radius: 10px; padding: 30px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><span style='display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #DC2626; background: rgba(220,38,38,0.1); padding: 5px 15px; border-radius: 15px; margin-bottom: 10px;'>CÉRÉMONIE</span><div style='display: inline-block; background: #003366; color: #fff; font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 25px; margin: 15px 0;'>⏰ 12:00 – 12:30</div><h3 style='font-size: 22px; font-weight: 600; color: #003366; line-height: 1.4; margin: 10px 0;'>Cérémonie de clôture</h3></div>"
+              }
+            },
+            {
+              "id": "jour1-lunch",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<div style='background: #fff; border-left: 5px solid #059669; border-radius: 10px; padding: 30px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><span style='display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #059669; background: rgba(5,150,105,0.1); padding: 5px 15px; border-radius: 15px; margin-bottom: 10px;'>DÉJEUNER DE RÉSEAUTAGE <span style='display: inline-block; background: linear-gradient(135deg, #D4AF37, #F4C542); color: #003366; font-size: 14px; padding: 8px 20px; border-radius: 20px; margin-left: 10px;'>👑 Premium</span></span><div style='display: inline-block; background: #003366; color: #fff; font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 25px; margin: 15px 0;'>⏰ 12:30 – 15:00</div><h3 style='font-size: 22px; font-weight: 600; color: #003366; line-height: 1.4; margin: 10px 0;'>Déjeuner de réseautage</h3></div>"
+              }
+            },
+            {
+              "id": "jour1-visit",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<div style='background: #fff; border-left: 5px solid #EA580C; border-radius: 10px; padding: 30px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><span style='display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #EA580C; background: rgba(234,88,12,0.1); padding: 5px 15px; border-radius: 15px; margin-bottom: 10px;'>VISITE</span><div style='display: inline-block; background: #003366; color: #fff; font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 25px; margin: 15px 0;'>⏰ 15:00</div><h3 style='font-size: 22px; font-weight: 600; color: #003366; line-height: 1.4; margin: 10px 0;'>Visite au port de Jorf Lasfar</h3></div>"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "jour2-section",
+      "elType": "section",
+      "settings": {
+        "background_background": "classic",
+        "background_color": "#f5f8fc",
+        "padding": {
+          "unit": "px",
+          "top": "60",
+          "right": "20",
+          "bottom": "60",
+          "left": "20"
+        }
+      },
+      "elements": [
+        {
+          "id": "jour2-column",
+          "elType": "column",
+          "settings": {
+            "width": "100"
+          },
+          "elements": [
+            {
+              "id": "jour2-badge",
+              "elType": "widget",
+              "widgetType": "button",
+              "settings": {
+                "text": "JOUR 2",
+                "align": "center",
+                "button_background_color": "#003366",
+                "button_text_color": "#FFFFFF",
+                "border_radius": {
+                  "unit": "px",
+                  "size": 50
+                },
+                "button_padding": {
+                  "unit": "px",
+                  "top": "10",
+                  "right": "30",
+                  "bottom": "10",
+                  "left": "30"
+                }
+              }
+            },
+            {
+              "id": "jour2-date",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "2 Avril 2026",
+                "header_size": "h2",
+                "align": "center",
+                "title_color": "#003366",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 36
+                },
+                "typography_font_weight": "700"
+              }
+            },
+            {
+              "id": "jour2-opening1",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<div style='background: #fff; border-left: 5px solid #9333EA; border-radius: 10px; padding: 30px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><span style='display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #9333EA; background: rgba(147,51,234,0.1); padding: 5px 15px; border-radius: 15px; margin-bottom: 10px;'>OUVERTURE OFFICIELLE</span><div style='display: inline-block; background: #003366; color: #fff; font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 25px; margin: 15px 0;'>⏰ 10:00 - 12:30</div><h3 style='font-size: 22px; font-weight: 600; color: #003366; line-height: 1.4; margin: 10px 0;'>Allocutions institutionnelles (Ministres,...)</h3></div>"
+              }
+            },
+            {
+              "id": "jour2-panel",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<div style='background: #fff; border-left: 5px solid #D4AF37; border-radius: 10px; padding: 30px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><span style='display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #D4AF37; background: rgba(212,175,55,0.1); padding: 5px 15px; border-radius: 15px; margin-bottom: 10px;'>PANEL MINISTÉRIEL</span><div style='display: inline-block; background: #003366; color: #fff; font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 25px; margin: 15px 0;'>⏰ 10:00 - 12:30</div><h3 style='font-size: 22px; font-weight: 600; color: #003366; line-height: 1.4; margin: 10px 0;'>Panel Ministériel : « La coopération régionale et le développement des infrastructures portuaires en Afrique »</h3></div>"
+              }
+            },
+            {
+              "id": "jour2-opening2",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<div style='background: #fff; border-left: 5px solid #9333EA; border-radius: 10px; padding: 30px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><span style='display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #9333EA; background: rgba(147,51,234,0.1); padding: 5px 15px; border-radius: 15px; margin-bottom: 10px;'>OUVERTURE OFFICIELLE</span><div style='display: inline-block; background: #003366; color: #fff; font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 25px; margin: 15px 0;'>⏰ 10:00 - 12:30</div><h3 style='font-size: 22px; font-weight: 600; color: #003366; line-height: 1.4; margin: 10px 0;'>Ouverture officielle de l'exposition</h3></div>"
+              }
+            },
+            {
+              "id": "jour2-opening3",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<div style='background: #fff; border-left: 5px solid #9333EA; border-radius: 10px; padding: 30px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><span style='display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #9333EA; background: rgba(147,51,234,0.1); padding: 5px 15px; border-radius: 15px; margin-bottom: 10px;'>OUVERTURE OFFICIELLE</span><div style='display: inline-block; background: #003366; color: #fff; font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 25px; margin: 15px 0;'>⏰ 10:00 - 12:30</div><h3 style='font-size: 22px; font-weight: 600; color: #003366; line-height: 1.4; margin: 10px 0;'>Ouverture officielle du musée</h3></div>"
+              }
+            },
+            {
+              "id": "jour2-lunch",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<div style='background: #fff; border-left: 5px solid #059669; border-radius: 10px; padding: 30px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><span style='display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #059669; background: rgba(5,150,105,0.1); padding: 5px 15px; border-radius: 15px; margin-bottom: 10px;'>DÉJEUNER DE RÉSEAUTAGE <span style='display: inline-block; background: linear-gradient(135deg, #D4AF37, #F4C542); color: #003366; font-size: 14px; padding: 8px 20px; border-radius: 20px; margin-left: 10px;'>👑 Premium</span></span><div style='display: inline-block; background: #003366; color: #fff; font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 25px; margin: 15px 0;'>⏰ 12:30 – 14:00</div><h3 style='font-size: 22px; font-weight: 600; color: #003366; line-height: 1.4; margin: 10px 0;'>Déjeuner de réseautage</h3></div>"
+              }
+            },
+            {
+              "id": "jour2-session",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<div style='background: #fff; border-left: 5px solid #0066cc; border-radius: 10px; padding: 30px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><span style='display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #0066cc; background: rgba(0,102,204,0.1); padding: 5px 15px; border-radius: 15px; margin-bottom: 10px;'>SESSION</span><div style='display: inline-block; background: #003366; color: #fff; font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 25px; margin: 15px 0;'>⏰ 14:00 – 15:30</div><h3 style='font-size: 22px; font-weight: 600; color: #003366; line-height: 1.4; margin: 10px 0;'>Transformation Financière des Ports Africains : PPP, Climat et Blended Finance</h3></div>"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "jour3-section",
+      "elType": "section",
+      "settings": {
+        "background_background": "classic",
+        "background_color": "#FFFFFF",
+        "padding": {
+          "unit": "px",
+          "top": "60",
+          "right": "20",
+          "bottom": "60",
+          "left": "20"
+        }
+      },
+      "elements": [
+        {
+          "id": "jour3-column",
+          "elType": "column",
+          "settings": {
+            "width": "100"
+          },
+          "elements": [
+            {
+              "id": "jour3-badge",
+              "elType": "widget",
+              "widgetType": "button",
+              "settings": {
+                "text": "JOUR 3",
+                "align": "center",
+                "button_background_color": "#003366",
+                "button_text_color": "#FFFFFF",
+                "border_radius": {
+                  "unit": "px",
+                  "size": 50
+                },
+                "button_padding": {
+                  "unit": "px",
+                  "top": "10",
+                  "right": "30",
+                  "bottom": "10",
+                  "left": "30"
+                }
+              }
+            },
+            {
+              "id": "jour3-date",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "3 Avril 2026",
+                "header_size": "h2",
+                "align": "center",
+                "title_color": "#003366",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 36
+                },
+                "typography_font_weight": "700"
+              }
+            },
+            {
+              "id": "jour3-session1",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<div style='background: #fff; border-left: 5px solid #0066cc; border-radius: 10px; padding: 30px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><span style='display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #0066cc; background: rgba(0,102,204,0.1); padding: 5px 15px; border-radius: 15px; margin-bottom: 10px;'>SESSION</span><div style='display: inline-block; background: #003366; color: #fff; font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 25px; margin: 15px 0;'>⏰ 09:00 – 10:30</div><h3 style='font-size: 22px; font-weight: 600; color: #003366; line-height: 1.4; margin: 10px 0;'>Vers des ports africains durables et résilients face aux changements climatiques</h3></div>"
+              }
+            },
+            {
+              "id": "jour3-break",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<div style='background: #fff; border-left: 5px solid #7C3AED; border-radius: 10px; padding: 30px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><span style='display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #7C3AED; background: rgba(124,58,237,0.1); padding: 5px 15px; border-radius: 15px; margin-bottom: 10px;'>PAUSE</span><div style='display: inline-block; background: #003366; color: #fff; font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 25px; margin: 15px 0;'>⏰ 10:30 – 11:00</div><h3 style='font-size: 22px; font-weight: 600; color: #003366; line-height: 1.4; margin: 10px 0;'>Pause-café</h3></div>"
+              }
+            },
+            {
+              "id": "jour3-session2",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<div style='background: #fff; border-left: 5px solid #0066cc; border-radius: 10px; padding: 30px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><span style='display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #0066cc; background: rgba(0,102,204,0.1); padding: 5px 15px; border-radius: 15px; margin-bottom: 10px;'>SESSION</span><div style='display: inline-block; background: #003366; color: #fff; font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 25px; margin: 15px 0;'>⏰ 11:00 – 12:30</div><h3 style='font-size: 22px; font-weight: 600; color: #003366; line-height: 1.4; margin: 10px 0;'>Transition climatique et réglementaire : une nouvelle ère pour l'industrie navale</h3></div>"
+              }
+            },
+            {
+              "id": "jour3-lunch",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<div style='background: #fff; border-left: 5px solid #059669; border-radius: 10px; padding: 30px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><span style='display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #059669; background: rgba(5,150,105,0.1); padding: 5px 15px; border-radius: 15px; margin-bottom: 10px;'>DÉJEUNER DE RÉSEAUTAGE <span style='display: inline-block; background: linear-gradient(135deg, #D4AF37, #F4C542); color: #003366; font-size: 14px; padding: 8px 20px; border-radius: 20px; margin-left: 10px;'>👑 Premium</span></span><div style='display: inline-block; background: #003366; color: #fff; font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 25px; margin: 15px 0;'>⏰ 12:30 – 14:00</div><h3 style='font-size: 22px; font-weight: 600; color: #003366; line-height: 1.4; margin: 10px 0;'>Déjeuner de réseautage</h3></div>"
+              }
+            },
+            {
+              "id": "jour3-session3",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<div style='background: #fff; border-left: 5px solid #0066cc; border-radius: 10px; padding: 30px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'><span style='display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: #0066cc; background: rgba(0,102,204,0.1); padding: 5px 15px; border-radius: 15px; margin-bottom: 10px;'>SESSION</span><div style='display: inline-block; background: #003366; color: #fff; font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 25px; margin: 15px 0;'>⏰ 14:00 – 15:30</div><h3 style='font-size: 22px; font-weight: 600; color: #003366; line-height: 1.4; margin: 10px 0;'>Ports du futur : entre digitalisation, cybersécurité et compétitivité</h3></div>"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cta-section",
+      "elType": "section",
+      "settings": {
+        "background_background": "gradient",
+        "background_gradient_angle": {
+          "unit": "deg",
+          "size": 135
+        },
+        "background_color": "#003366",
+        "background_color_b": "#0066cc",
+        "padding": {
+          "unit": "px",
+          "top": "80",
+          "right": "20",
+          "bottom": "80",
+          "left": "20"
+        }
+      },
+      "elements": [
+        {
+          "id": "cta-column",
+          "elType": "column",
+          "settings": {
+            "width": "100"
+          },
+          "elements": [
+            {
+              "id": "cta-title",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "Rejoignez-nous au SIPORTS 2026",
+                "header_size": "h2",
+                "align": "center",
+                "title_color": "#FFFFFF",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 36
+                },
+                "typography_font_weight": "700"
+              }
+            },
+            {
+              "id": "cta-text",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "<p style='text-align: center; color: rgba(255,255,255,0.9); font-size: 18px; margin-bottom: 30px;'>Réservez dès maintenant votre Pass Premium VIP pour un accès illimité à toutes les conférences, déjeuners de réseautage et événements exclusifs.</p>"
+              }
+            },
+            {
+              "id": "cta-button",
+              "elType": "widget",
+              "widgetType": "button",
+              "settings": {
+                "text": "OBTENIR MON PASS PREMIUM",
+                "link": {
+                  "url": "/visitor/subscription"
+                },
+                "align": "center",
+                "button_background_color": "#D4AF37",
+                "button_text_color": "#003366",
+                "border_radius": {
+                  "unit": "px",
+                  "size": 50
+                },
+                "button_padding": {
+                  "unit": "px",
+                  "top": "15",
+                  "right": "40",
+                  "bottom": "15",
+                  "left": "40"
+                },
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 18
+                },
+                "typography_font_weight": "600",
+                "typography_text_transform": "uppercase",
+                "typography_letter_spacing": {
+                  "unit": "px",
+                  "size": 1
+                },
+                "hover_animation": "grow"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "page_settings": {
+    "post_status": "publish",
+    "template": "elementor_canvas"
+  },
+  "export_type": "page"
+}
