@@ -950,13 +950,15 @@ export default function RegisterPage() {
                     </ul>
                   </div>
 
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-blue-900 mb-2">Validation de votre compte</h4>
-                    <p className="text-sm text-blue-700">
-                      Après votre inscription, votre compte sera examiné par notre équipe. 
-                      Vous recevrez un email de confirmation une fois votre compte validé.
-                    </p>
-                  </div>
+                  {watchedAccountType !== 'visitor' && (
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h4 className="font-medium text-blue-900 mb-2">Validation de votre compte</h4>
+                      <p className="text-sm text-blue-700">
+                        Après votre inscription, votre compte sera examiné par notre équipe. 
+                        Vous recevrez un email de confirmation une fois votre compte validé.
+                      </p>
+                    </div>
+                  )}
                 </motion.div>
               )}
 
