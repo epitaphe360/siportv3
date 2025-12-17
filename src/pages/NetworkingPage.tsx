@@ -20,6 +20,7 @@ import UserProfileView from '@/components/profile/UserProfileView';
 import { useAppointmentStore } from '@/store/appointmentStore';
 import { SupabaseService } from '@/services/supabaseService';
 import { getVisitorQuota } from '@/config/quotas';
+import { LevelBadge } from '@/components/common/QuotaWidget';
 
 export default function NetworkingPage() {
   const navigate = useNavigate();
@@ -607,16 +608,25 @@ export default function NetworkingPage() {
                                   </div>
                                 </div>
 
-                                {/* Indicateur de compatibilité */}
-                                <div className="flex items-center space-x-2 mb-4">
-                                  <div className={`w-3 h-3 rounded-full ${
-                                    rec.score >= 80 ? 'bg-green-500' :
-                                    rec.score >= 60 ? 'bg-blue-500' :
-                                    rec.score >= 40 ? 'bg-yellow-500' : 'bg-gray-500'
-                                  }`}></div>
-                                  <span className="text-sm font-semibold text-gray-700">
-                                    {getCompatibilityLabel(rec.score)} match
-                                  </span>
+                                {/* Visitor Level & Compatibility */}
+                                <div className="flex items-center space-x-3 mb-4">
+                                  {profile.visitor_level && (
+                                    <LevelBadge
+                                      level={profile.visitor_level}
+                                      type="visitor"
+                                      size="sm"
+                                    />
+                                  )}
+                                  <div className="flex items-center space-x-2">
+                                    <div className={`w-3 h-3 rounded-full ${
+                                      rec.score >= 80 ? 'bg-green-500' :
+                                      rec.score >= 60 ? 'bg-blue-500' :
+                                      rec.score >= 40 ? 'bg-yellow-500' : 'bg-gray-500'
+                                    }`}></div>
+                                    <span className="text-sm font-semibold text-gray-700">
+                                      {getCompatibilityLabel(rec.score)} match
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -870,9 +880,18 @@ export default function NetworkingPage() {
                               </AvatarFallback>
                             </Avatar>
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-semibold text-gray-900 truncate">
-                                {`${profile.profile.firstName} ${profile.profile.lastName}`}
-                              </h4>
+                              <div className="flex items-center space-x-2 mb-1">
+                                <h4 className="font-semibold text-gray-900 truncate">
+                                  {`${profile.profile.firstName} ${profile.profile.lastName}`}
+                                </h4>
+                                {profile.visitor_level && (
+                                  <LevelBadge
+                                    level={profile.visitor_level}
+                                    type="visitor"
+                                    size="sm"
+                                  />
+                                )}
+                              </div>
                               <p className="text-sm text-gray-600 truncate">{profile.profile.position}</p>
                               <p className="text-sm text-gray-500 truncate">{profile.profile.company}</p>
                             </div>
