@@ -17,6 +17,9 @@ import { getVisitorDisplayName } from '../../utils/visitorHelpers';
 import { useDashboardStats } from '../../hooks/useDashboardStats';
 import { DEFAULT_SALON_CONFIG, formatSalonDates, formatSalonLocation, formatSalonHours } from '../../config/salonInfo';
 import { ErrorMessage } from '../common/ErrorMessage';
+import { LevelBadge, QuotaSummaryCard } from '../common/QuotaWidget';
+import { getExhibitorLevelByArea, getExhibitorQuota } from '../../config/exhibitorQuotas';
+import { Users, FileText, Award, Scan } from 'lucide-react';
 
 export default function ExhibitorDashboard() {
   const qrCodeRef = useRef<HTMLCanvasElement>(null);
@@ -388,7 +391,12 @@ export default function ExhibitorDashboard() {
                 </Badge>
               </div>
             </div>
-            <div className="hidden md:block">
+            <div className="hidden md:flex flex-col items-end space-y-3">
+              <LevelBadge
+                level={getExhibitorLevelByArea(user?.profile?.standArea || 9)}
+                type="exhibitor"
+                size="lg"
+              />
               <div className="text-right">
                 <div className="text-2xl font-bold">{new Date().toLocaleDateString('fr-FR')}</div>
                 <div className="text-sm opacity-75">{DEFAULT_SALON_CONFIG.name} - {DEFAULT_SALON_CONFIG.location.city}</div>
@@ -410,11 +418,53 @@ export default function ExhibitorDashboard() {
       <div className="max-w-7xl mx-auto px-4 py-8 -mt-6">
         {/* Messages d'erreur */}
         {(error || dashboardError) && (
-          <ErrorMessage 
-            message={error || dashboardError || 'Une erreur est survenue'} 
+          <ErrorMessage
+            message={error || dashboardError || 'Une erreur est survenue'}
             onDismiss={() => setError(null)}
           />
         )}
+
+        {/* Quota Summary Card */}
+        <div className="mb-8">
+          <QuotaSummaryCard
+            title="Vos Quotas Exposant"
+            level={getExhibitorLevelByArea(user?.profile?.standArea || 9)}
+            type="exhibitor"
+            quotas={[
+              {
+                label: 'Rendez-vous B2B',
+                current: confirmedAppointments.length,
+                limit: getExhibitorQuota(getExhibitorLevelByArea(user?.profile?.standArea || 9), 'appointments'),
+                icon: <Calendar className="h-4 w-4 text-gray-400" />
+              },
+              {
+                label: 'Membres équipe',
+                current: dashboardStats?.teamMembers?.value || 0,
+                limit: getExhibitorQuota(getExhibitorLevelByArea(user?.profile?.standArea || 9), 'teamMembers'),
+                icon: <Users className="h-4 w-4 text-gray-400" />
+              },
+              {
+                label: 'Sessions démo',
+                current: dashboardStats?.demoSessions?.value || 0,
+                limit: getExhibitorQuota(getExhibitorLevelByArea(user?.profile?.standArea || 9), 'demoSessions'),
+                icon: <Award className="h-4 w-4 text-gray-400" />
+              },
+              {
+                label: 'Scans badges/jour',
+                current: dashboardStats?.badgeScansToday?.value || 0,
+                limit: getExhibitorQuota(getExhibitorLevelByArea(user?.profile?.standArea || 9), 'leadScans'),
+                icon: <Scan className="h-4 w-4 text-gray-400" />
+              },
+              {
+                label: 'Fichiers média',
+                current: dashboardStats?.mediaUploads?.value || 0,
+                limit: getExhibitorQuota(getExhibitorLevelByArea(user?.profile?.standArea || 9), 'mediaUploads'),
+                icon: <FileText className="h-4 w-4 text-gray-400" />
+              }
+            ]}
+            upgradeLink={undefined} // Pas d'upgrade pour les exposants (surface fixée)
+          />
+        </div>
 
         {/* Statistiques avec cartes améliorées */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
