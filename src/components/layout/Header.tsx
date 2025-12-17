@@ -40,6 +40,7 @@ export const Header: React.FC = memo(() => {
     { name: t('nav.exhibitors'), href: ROUTES.EXHIBITORS },
     { name: t('nav.partners'), href: ROUTES.PARTNERS },
     { name: t('nav.networking'), href: ROUTES.NETWORKING },
+    { name: t('nav.subscriptions'), href: ROUTES.VISITOR_SUBSCRIPTION },
   ];
 
   const infoMenuItems = [

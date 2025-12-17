@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -161,6 +161,11 @@ export default function RegisterPage() {
   const navigate = useNavigate();
   const { executeRecaptcha, isReady: isRecaptchaReady } = useRecaptcha();
 
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const requestedLevel = params.get('level');
+  const nextPath = params.get('next') || '';
+
   const {
     register,
     handleSubmit,
@@ -169,7 +174,10 @@ export default function RegisterPage() {
     trigger
   } = useForm<RegistrationForm>({
     resolver: zodResolver(registrationSchema),
-    mode: 'onChange'
+    mode: 'onChange',
+    defaultValues: {
+      accountType: requestedLevel ? 'visitor' : undefined
+    }
   });
 
   const watchedAccountType = watch('accountType');
@@ -306,6 +314,12 @@ export default function RegisterPage() {
 
       // Rediriger selon le type de compte
       setTimeout(() => {
+        // Si un chemin de redirection `next` est présent, l'utiliser (ex: /visitor/subscription?level=premium)
+        if (nextPath && nextPath.startsWith('/')) {
+          navigate(nextPath);
+          return;
+        }
+
         if (data.accountType === 'visitor') {
           // Les visiteurs sont immédiatement actifs
           navigate(ROUTES.VISITOR_DASHBOARD, {

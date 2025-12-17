@@ -38,17 +38,18 @@ export default function VisitorSubscription() {
   const [selected, setSelected] = useState<string | null>(null);
   const { user } = useAuthStore();
   const userId = user?.id || '';
+  const isLogged = !!userId;
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function handleSubscribe(level: string) {
-    setLoading(true);
-
+    // Si l'utilisateur n'est pas connecté, rediriger vers l'inscription
     if (!userId) {
-      setMessage('Utilisateur non connecté');
-      setLoading(false);
+      window.location.href = `/register?next=/visitor/subscription&level=${level}`;
       return;
     }
+
+    setLoading(true);
 
     // Le niveau gratuit ne nécessite pas de paiement
     if (level === 'free') {
@@ -137,8 +138,20 @@ export default function VisitorSubscription() {
               {level.features.map((f,i)=>(<li key={i}>{f}</li>))}
             </ul>
             <div style={{fontWeight:'bold',fontSize:18,margin:'12px 0'}}>{level.price}</div>
-            <button disabled={loading} onClick={()=>{setSelected(level.key);handleSubscribe(level.key);}}>
-              {level.price==='0€'?'S\'inscrire':'Demander le Pass Premium'}
+            <button
+              disabled={loading}
+              onClick={() => {
+                if (!isLogged) {
+                  // inviter à créer un compte avant de souscrire
+                  window.location.href = `/register?next=/visitor/subscription&level=${level.key}`;
+                  return;
+                }
+
+                setSelected(level.key);
+                handleSubscribe(level.key);
+              }}
+            >
+              {!isLogged ? 'Créer un compte' : (level.price==='0€' ? 'S\'inscrire' : 'Demander le Pass Premium')}
             </button>
           </div>
         ))}

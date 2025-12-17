@@ -4,15 +4,11 @@ import useAuthStore from '../store/authStore';
 
 export default function VisitorSubscriptionPage() {
   const { user } = useAuthStore(); // user.id doit être l'ID du visiteur connecté
-
-  if (!user) {
-    return <div>Veuillez vous connecter pour souscrire à un pass visiteur.</div>;
-  }
-
-  // On peut passer l'ID visiteur à VisitorSubscription si besoin
+  // Afficher la page des abonnements même si l'utilisateur n'est pas connecté.
+  // Les boutons invitent à créer un compte si nécessaire.
   return (
     <div style={{maxWidth:800,margin:'auto',padding:32}}>
-      <VisitorSubscription userId={user.id} />
+      <VisitorSubscription />
     </div>
   );
 }
