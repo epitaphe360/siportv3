@@ -55,6 +55,8 @@ const PaymentSuccessPage = React.lazy(() => import('./pages/visitor/PaymentSucce
 const PaymentInstructionsPage = React.lazy(() => import('./pages/visitor/PaymentInstructionsPage'));
 const PaymentValidationPage = React.lazy(() => import('./pages/admin/PaymentValidationPage'));
 const BadgePage = React.lazy(() => import('./pages/BadgePage'));
+const PartnerUpgradePage = React.lazy(() => import('./pages/PartnerUpgradePage'));
+const BadgeScannerPage = React.lazy(() => import('./pages/BadgeScannerPage'));
 
 // Admin pages
 const PavillonsAdminPage = React.lazy(() => import('./pages/admin/PavillonsPage'));
@@ -179,6 +181,8 @@ const App = () => {
             <Route path="/visitor/payment-success" element={<ProtectedRoute requiredRole="visitor"><PaymentSuccessPage /></ProtectedRoute>} />
             <Route path="/visitor/payment-instructions" element={<ProtectedRoute requiredRole="visitor"><PaymentInstructionsPage /></ProtectedRoute>} />
             <Route path={ROUTES.BADGE} element={<ProtectedRoute><BadgePage /></ProtectedRoute>} />
+            <Route path="/badge/scanner" element={<ProtectedRoute><BadgeScannerPage /></ProtectedRoute>} />
+            <Route path="/partner/upgrade" element={<ProtectedRoute requiredRole="partner"><PartnerUpgradePage /></ProtectedRoute>} />
             <Route path={ROUTES.MESSAGES} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path={ROUTES.CHAT} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path={ROUTES.APPOINTMENTS} element={<ProtectedRoute><AppointmentCalendar /></ProtectedRoute>} />
