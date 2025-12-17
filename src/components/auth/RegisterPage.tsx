@@ -313,9 +313,11 @@ export default function RegisterPage() {
       if (data.accountType === 'visitor') {
         try {
           await login(data.email, data.password, { rememberMe: true });
+          toast.success('Connexion automatique réussie — redirection vers votre tableau de bord.');
         } catch (loginError) {
           // Ne pas bloquer l'inscription si la connexion automatique échoue
           console.warn('Connexion automatique échouée:', loginError);
+          toast.error('Connexion automatique impossible — veuillez vous connecter manuellement.');
         }
       }
 
