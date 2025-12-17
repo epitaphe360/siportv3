@@ -157,7 +157,7 @@ export default function RegisterPage() {
   const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
   const [descriptionLength, setDescriptionLength] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
-  const { register: registerUser, isLoading } = useAuthStore();
+  const { register: registerUser, isLoading, login } = useAuthStore();
   const navigate = useNavigate();
   const { executeRecaptcha, isReady: isRecaptchaReady } = useRecaptcha();
 
@@ -308,6 +308,16 @@ export default function RegisterPage() {
 
       // @ts-ignore - recaptchaToken sera ajouté à authStore.register()
       await registerUser(data, recaptchaToken);
+
+      // Tenter une connexion automatique pour les visiteurs
+      if (data.accountType === 'visitor') {
+        try {
+          await login(data.email, data.password, { rememberMe: true });
+        } catch (loginError) {
+          // Ne pas bloquer l'inscription si la connexion automatique échoue
+          console.warn('Connexion automatique échouée:', loginError);
+        }
+      }
 
       // Afficher la modal de succès
       setShowSuccess(true);
