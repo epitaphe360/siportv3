@@ -81,14 +81,20 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
 	      // 2. Mettre à jour le statut de l'utilisateur (dans la table 'users')
 	      await SupabaseService.updateUserStatus(exhibitorId, userStatus);
 	
-	      // 3. Envoyer l'email de validation/rejet
-	      await SupabaseService.sendValidationEmail({
-	        email: exhibitorToUpdate.contactInfo?.email || 'contact@siports.com', // Utiliser l'email de contact
-	        firstName: 'Admin', // Placeholder, l'email doit être générique
-	        lastName: 'Admin', // Placeholder
-	        companyName: exhibitorToUpdate.companyName,
-	        status: newStatus,
-	      });
+	      // 3. Envoyer l'email de validation/rejet (ne pas bloquer si échec)
+	      try {
+	        await SupabaseService.sendValidationEmail({
+	          email: exhibitorToUpdate.contactInfo?.email || 'contact@siports.com',
+	          firstName: 'Admin',
+	          lastName: 'Admin',
+	          companyName: exhibitorToUpdate.companyName,
+	          status: newStatus,
+	        });
+	        console.log('✅ Email de validation envoyé');
+	      } catch (emailError) {
+	        console.warn('⚠️ Email de validation non envoyé:', emailError);
+	        // Ne pas bloquer la mise à jour si l'email échoue
+	      }
 	
 	      set(state => {
         const updateExhibitor = (ex: Exhibitor) => 

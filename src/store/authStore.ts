@@ -169,10 +169,11 @@ const useAuthStore = create<AuthState>()(
         await SupabaseService.createRegistrationRequest({
           userType: profileData.role,
           email: credentials.email,
-          name: `${profileData.firstName || ''} ${profileData.lastName || ''}`.trim(),
-          company: profileData.company,
-          phone: profileData.phone,
-          metadata: profileData
+          firstName: profileData.firstName || '',
+          lastName: profileData.lastName || '',
+          companyName: profileData.company,
+          phone: profileData.phone || '',
+          profileData: profileData
         });
 
         // Envoyer email de notification
@@ -237,25 +238,32 @@ const useAuthStore = create<AuthState>()(
 
       // Créer une demande d'inscription pour exposants et partenaires
       if (userType === 'exhibitor' || userType === 'partner') {
-        await SupabaseService.createRegistrationRequest(newUser.id, {
-          type: userType,
+        await SupabaseService.createRegistrationRequest({
+          userType: userType,
           email: userData.email,
           firstName: userData.firstName,
           lastName: userData.lastName,
-          company: userData.companyName ?? '',
+          companyName: userData.companyName ?? '',
           position: userData.position ?? '',
           phone: userData.phone ?? '',
-          ...userData
+          profileData: userData
         });
 
-        // Envoyer l'email de confirmation
-        await SupabaseService.sendRegistrationEmail({
-          userType: userType as 'exhibitor' | 'partner',
-          email: userData.email,
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          companyName: userData.companyName ?? ''
-        });
+        // Envoyer l'email de confirmation (ne pas bloquer si échec)
+        try {
+          await SupabaseService.sendRegistrationEmail({
+            userType: userType as 'exhibitor' | 'partner',
+            email: userData.email,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            companyName: userData.companyName ?? ''
+          });
+          console.log('✅ Email de confirmation envoyé');
+        } catch (emailError) {
+          // L'email a échoué mais l'inscription est valide
+          console.warn('⚠️ Impossible d\'envoyer l\'email de confirmation:', emailError);
+          // Ne pas bloquer l'inscription
+        }
 
       }
 

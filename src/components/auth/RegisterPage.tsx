@@ -64,8 +64,8 @@ const registrationSchema = z.object({
   email: z.string().email('Email invalide'),
   phone: z.string().min(8, 'Numéro de téléphone requis'),
   linkedin: z.string().url('URL LinkedIn invalide').optional().or(z.literal('')),
-  description: z.string().min(50, 'Description trop courte (minimum 50 caractères)').max(MAX_DESCRIPTION_LENGTH, `Maximum ${MAX_DESCRIPTION_LENGTH} caractères`),
-  objectives: z.array(z.string()).min(1, 'Sélectionnez au moins un objectif'),
+  description: z.string().max(MAX_DESCRIPTION_LENGTH, `Maximum ${MAX_DESCRIPTION_LENGTH} caractères`).optional().or(z.literal('')),
+  objectives: z.array(z.string()).optional(),
   password: z.string()
     .min(12, 'Minimum 12 caractères')
     .regex(/[A-Z]/, 'Doit contenir au moins une majuscule')
@@ -109,6 +109,24 @@ const registrationSchema = z.object({
 }, {
   message: "Poste requis pour les exposants et partenaires",
   path: ["position"],
+}).refine((data) => {
+  // Description obligatoire uniquement pour exposants et partenaires
+  if ((data.accountType === 'exhibitor' || data.accountType === 'partner') && (!data.description || data.description.length < 50)) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Description requise (minimum 50 caractères) pour les exposants et partenaires",
+  path: ["description"],
+}).refine((data) => {
+  // Objectifs obligatoires uniquement pour exposants et partenaires
+  if ((data.accountType === 'exhibitor' || data.accountType === 'partner') && (!data.objectives || data.objectives.length < 1)) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Sélectionnez au moins un objectif",
+  path: ["objectives"],
 }).refine((data) => {
   // Validation pour secteur "Autre"
   if (data.sector === 'Autre' && (!data.customSector || data.customSector.length < 2)) {
@@ -286,12 +304,20 @@ export default function RegisterPage() {
       // Afficher la modal de succès
       setShowSuccess(true);
 
-      // Rediriger immédiatement vers le dashboard ou login
+      // Rediriger selon le type de compte
       setTimeout(() => {
-        navigate(ROUTES.DASHBOARD, {
-          state: { message: 'Inscription réussie ! Bienvenue sur SIPORTS.' }
-        });
-      }, 2000);
+        if (data.accountType === 'visitor') {
+          // Les visiteurs sont immédiatement actifs
+          navigate(ROUTES.VISITOR_DASHBOARD, {
+            state: { message: 'Bienvenue sur SIPORTS 2026 !' }
+          });
+        } else {
+          // Exposants et partenaires doivent attendre la validation
+          navigate(ROUTES.LOGIN, {
+            state: { message: 'Inscription réussie ! Votre compte est en attente de validation.' }
+          });
+        }
+      }, 3000);
     } catch (error) {
       console.error('Registration error:', error);
       toast.error((error as Error).message || 'Erreur lors de l\'inscription');
@@ -441,7 +467,8 @@ export default function RegisterPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Nom de l'organisation *
+                        Nom de l'organisation {watchedAccountType !== 'visitor' && '*'}
+                        {watchedAccountType === 'visitor' && <span className="text-gray-400 text-xs ml-1">(optionnel)</span>}
                       </label>
                       <div className="relative">
                         <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -451,7 +478,7 @@ export default function RegisterPage() {
                           placeholder="Nom de votre entreprise"
                          aria-label="Nom de votre entreprise" />
                       </div>
-                      {errors.companyName && (
+                      {errors.companyName && watchedAccountType !== 'visitor' && (
                         <p className="text-red-600 text-sm mt-1">{errors.companyName.message}</p>
                       )}
                     </div>
@@ -597,7 +624,8 @@ export default function RegisterPage() {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Poste/Fonction *
+                        Poste/Fonction {watchedAccountType !== 'visitor' && '*'}
+                        {watchedAccountType === 'visitor' && <span className="text-gray-400 text-xs ml-1">(optionnel)</span>}
                       </label>
                       <div className="relative">
                         <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
@@ -613,7 +641,7 @@ export default function RegisterPage() {
                           ))}
                         </select>
                       </div>
-                      {errors.position && (
+                      {errors.position && watchedAccountType !== 'visitor' && (
                         <p className="text-red-600 text-sm mt-1">{errors.position.message}</p>
                       )}
                     </div>
@@ -713,7 +741,8 @@ export default function RegisterPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Description de votre organisation *
+                      {watchedAccountType === 'visitor' ? 'Présentez-vous' : 'Description de votre organisation'} {watchedAccountType !== 'visitor' && '*'}
+                      {watchedAccountType === 'visitor' && <span className="text-gray-400 text-xs ml-1">(optionnel)</span>}
                     </label>
                     <textarea
                       data-testid="description"
@@ -723,30 +752,33 @@ export default function RegisterPage() {
                       rows={4}
                       maxLength={MAX_DESCRIPTION_LENGTH}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                      placeholder="Décrivez votre organisation, vos activités principales, vos spécialités..."
+                      placeholder={watchedAccountType === 'visitor' ? 'Présentez-vous brièvement, vos intérêts professionnels...' : 'Décrivez votre organisation, vos activités principales, vos spécialités...'}
                     />
                     <div className="flex justify-between items-center mt-1">
                       <div>
-                        {errors.description && (
+                        {errors.description && watchedAccountType !== 'visitor' && (
                           <p className="text-red-600 text-xs">{errors.description.message}</p>
                         )}
                       </div>
                       <p className={`text-xs font-medium ${
                         descriptionLength >= MAX_DESCRIPTION_LENGTH
                           ? 'text-red-600'
+                          : watchedAccountType !== 'visitor' && descriptionLength < 50
+                          ? 'text-gray-500'
                           : descriptionLength >= 50
                           ? 'text-green-600'
                           : 'text-gray-500'
                       }`}>
                         {descriptionLength}/{MAX_DESCRIPTION_LENGTH} caractères
-                        {descriptionLength < 50 && ` (minimum 50)`}
+                        {watchedAccountType !== 'visitor' && descriptionLength < 50 && ` (minimum 50)`}
                       </p>
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Vos objectifs pour SIPORTS 2026 *
+                      Vos objectifs pour SIPORTS 2026 {watchedAccountType !== 'visitor' && '*'}
+                      {watchedAccountType === 'visitor' && <span className="text-gray-400 text-xs ml-1">(optionnel)</span>}
                     </label>
                     <p className="text-sm text-gray-500 mb-3">
                       Sélectionnez tous les objectifs qui correspondent à vos attentes
@@ -764,7 +796,7 @@ export default function RegisterPage() {
                         </label>
                       ))}
                     </div>
-                    {errors.objectives && (
+                    {errors.objectives && watchedAccountType !== 'visitor' && (
                       <p className="text-red-600 text-sm mt-1">{errors.objectives.message}</p>
                     )}
                   </div>
@@ -1062,14 +1094,28 @@ export default function RegisterPage() {
                 </motion.div>
 
                 <h2 className="text-2xl font-bold text-gray-900 mb-3">
-                  Inscription réussie !
+                  {watchedAccountType === 'visitor' ? 'Compte créé avec succès !' : 'Inscription réussie !'}
                 </h2>
-                <p className="text-gray-600 mb-2">
-                  Votre demande d'inscription a été envoyée avec succès.
-                </p>
-                <p className="text-sm text-gray-500 mb-6">
-                  Votre compte sera examiné par notre équipe. Vous recevrez un email de confirmation une fois votre compte validé.
-                </p>
+                
+                {watchedAccountType === 'visitor' ? (
+                  <>
+                    <p className="text-gray-600 mb-2">
+                      🎉 Félicitations ! Votre compte visiteur a été créé.
+                    </p>
+                    <p className="text-sm text-gray-500 mb-6">
+                      Vous pouvez maintenant accéder à toutes les fonctionnalités de SIPORTS 2026.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-gray-600 mb-2">
+                      Votre demande d'inscription a été envoyée avec succès.
+                    </p>
+                    <p className="text-sm text-gray-500 mb-6">
+                      Votre compte sera examiné par notre équipe. Vous recevrez un email de confirmation une fois votre compte validé.
+                    </p>
+                  </>
+                )}
 
                 <motion.div
                   initial={{ width: 0 }}
@@ -1079,7 +1125,9 @@ export default function RegisterPage() {
                 />
 
                 <p className="text-xs text-gray-400 mt-3">
-                  Redirection automatique vers la page de connexion...
+                  {watchedAccountType === 'visitor' 
+                    ? 'Redirection vers votre tableau de bord...' 
+                    : 'Redirection automatique vers la page de connexion...'}
                 </p>
               </motion.div>
             </div>

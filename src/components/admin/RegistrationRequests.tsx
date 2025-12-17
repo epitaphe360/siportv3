@@ -64,21 +64,26 @@ export default function RegistrationRequests() {
         user.id
       );
 
-      // 2. Envoyer l'email de validation à l'utilisateur
-      await SupabaseService.sendValidationEmail({
-        email: request.email,
-        firstName: request.first_name,
-        lastName: request.last_name,
-        companyName: request.company_name || '',
-        status: 'approved'
-      });
+      // 2. Envoyer l'email de validation à l'utilisateur (ne pas bloquer si échec)
+      try {
+        await SupabaseService.sendValidationEmail({
+          email: request.email,
+          firstName: request.first_name,
+          lastName: request.last_name,
+          companyName: request.company_name || '',
+          status: 'approved'
+        });
+        toast.success(`Demande approuvée et email envoyé à ${request.first_name} ${request.last_name}`);
+      } catch (emailError) {
+        console.warn('⚠️ Email non envoyé:', emailError);
+        toast.success(`Demande approuvée pour ${request.first_name} ${request.last_name} (email non envoyé)`);
+      }
 
-      toast.success(`Demande approuvée et email envoyé à ${request.first_name} ${request.last_name}`);
       fetchRequests();
       setSelectedRequest(null);
     } catch (error) {
       console.error('Erreur lors de l\'approbation:', error);
-      toast.error('Erreur lors de l\'approbation ou de l\'envoi de l\'email');
+      toast.error('Erreur lors de l\'approbation');
     }
   };
 
@@ -97,22 +102,27 @@ export default function RegistrationRequests() {
         rejectionReason
       );
 
-      // 2. Envoyer l'email de rejet à l'utilisateur
-      await SupabaseService.sendValidationEmail({
-        email: request.email,
-        firstName: request.first_name,
-        lastName: request.last_name,
-        companyName: request.company_name || '',
-        status: 'rejected'
-      });
+      // 2. Envoyer l'email de rejet à l'utilisateur (ne pas bloquer si échec)
+      try {
+        await SupabaseService.sendValidationEmail({
+          email: request.email,
+          firstName: request.first_name,
+          lastName: request.last_name,
+          companyName: request.company_name || '',
+          status: 'rejected'
+        });
+        toast.success(`Demande rejetée et email envoyé à ${request.first_name} ${request.last_name}`);
+      } catch (emailError) {
+        console.warn('⚠️ Email non envoyé:', emailError);
+        toast.success(`Demande rejetée pour ${request.first_name} ${request.last_name} (email non envoyé)`);
+      }
 
-      toast.success(`Demande rejetée et email envoyé à ${request.first_name} ${request.last_name}`);
       fetchRequests();
       setSelectedRequest(null);
       setRejectionReason('');
     } catch (error) {
       console.error('Erreur lors du rejet:', error);
-      toast.error('Erreur lors du rejet ou de l\'envoi de l\'email');
+      toast.error('Erreur lors du rejet');
     }
   };
 
