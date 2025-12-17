@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { 
-  Search, 
-  Filter, 
-  Grid, 
-  List, 
-  MapPin, 
-  Users, 
+import {
+  Search,
+  Filter,
+  Grid,
+  List,
+  MapPin,
+  Users,
   ExternalLink,
   Star,
   Verified,
@@ -21,6 +21,8 @@ import useAuthStore from '../store/authStore';
 import { motion } from 'framer-motion';
 import { ROUTES } from '../lib/routes';
 import { CONFIG } from '../lib/config';
+import { LevelBadge } from '../components/common/QuotaWidget';
+import { getExhibitorLevelByArea } from '../config/exhibitorQuotas';
 
 export default function ExhibitorsPage() {
   const navigate = useNavigate();
@@ -265,14 +267,21 @@ export default function ExhibitorsPage() {
                         </div>
                       </div>
 
-                      {/* Category */}
-                      <div className="mb-4">
-                        <Badge 
+                      {/* Category & Level Badges */}
+                      <div className="mb-4 flex items-center space-x-2">
+                        <Badge
                           variant={getCategoryColor(exhibitor.category)}
                           size="sm"
                         >
                           {getCategoryLabel(exhibitor.category)}
                         </Badge>
+                        {exhibitor.standArea && (
+                          <LevelBadge
+                            level={getExhibitorLevelByArea(exhibitor.standArea)}
+                            type="exhibitor"
+                            size="sm"
+                          />
+                        )}
                       </div>
 
                       {/* Description */}
@@ -337,12 +346,19 @@ export default function ExhibitorsPage() {
                             <p className="text-sm text-gray-500">{exhibitor.sector}</p>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <Badge 
+                            <Badge
                               variant={getCategoryColor(exhibitor.category)}
                               size="sm"
                             >
                               {getCategoryLabel(exhibitor.category)}
                             </Badge>
+                            {exhibitor.standArea && (
+                              <LevelBadge
+                                level={getExhibitorLevelByArea(exhibitor.standArea)}
+                                type="exhibitor"
+                                size="sm"
+                              />
+                            )}
                             {exhibitor.verified && (
                               <Verified className="h-4 w-4 text-blue-500" />
                             )}

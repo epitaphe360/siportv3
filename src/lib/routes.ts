@@ -88,6 +88,7 @@ export const ROUTES = {
   // Pages visiteur
   VISITOR_SUBSCRIPTION: '/visitor/subscription',
   VISITOR_UPGRADE: '/visitor/upgrade',
+  BADGE: '/badge',
 
   // Autres
   PRODUCT_DETAIL: '/products/:id',

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { 
-  Award, 
-  Users, 
-  Calendar, 
+import {
+  Award,
+  Users,
+  Calendar,
   TrendingUp,
   Star,
   Handshake,
@@ -10,7 +10,8 @@ import {
   Target,
   BarChart3,
   Crown,
-  Zap
+  Zap,
+  FileText
 } from 'lucide-react';
 import { useAppointmentStore } from '../../store/appointmentStore';
 import { Card } from '../ui/Card';
@@ -25,6 +26,9 @@ import { CreditCard as Edit } from 'lucide-react';
 import { getVisitorDisplayName } from '../../utils/visitorHelpers';
 import { useDashboardStats } from '../../hooks/useDashboardStats';
 import { ErrorMessage, LoadingMessage } from '../common/ErrorMessage';
+import { LevelBadge, QuotaSummaryCard } from '../common/QuotaWidget';
+import { getPartnerQuota, getPartnerTierConfig } from '../../config/partnerTiers';
+import type { PartnerTier } from '../../config/partnerTiers';
 
 export default function PartnerDashboard() {
   // ✅ CORRECTION: Tous les hooks DOIVENT être appelés avant tout return conditionnel
@@ -187,29 +191,63 @@ export default function PartnerDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-purple-600 p-3 rounded-lg">
-                <Award className="h-8 w-8 text-white" />
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-3">
+                <div className="bg-purple-600 p-3 rounded-lg">
+                  <Award className="h-8 w-8 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900">
+                    Tableau de Bord Partenaire
+                  </h1>
+                  <p className="text-gray-600">
+                    Bienvenue {user?.profile?.firstName || 'Partenaire'}, suivez votre impact SIPORTS 2026
+                  </p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                  Tableau de Bord Partenaire
-                </h1>
-                <p className="text-gray-600">
-                  Bienvenue {user?.profile?.firstName || 'Partenaire'}, suivez votre impact SIPORTS 2026
-                </p>
-              </div>
-            </div>
-            <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-              <div className="flex items-center space-x-2">
-                <Crown className="h-5 w-5 text-purple-600" />
-                <span className="text-purple-800 font-medium">Espace Partenaire</span>
-                <Badge className="bg-purple-100 text-purple-800" size="sm">
-                  Partenaire Officiel
-                </Badge>
-              </div>
+              <LevelBadge
+                level={(user.partner_tier || user.profile?.partner_tier || 'museum') as string}
+                type="partner"
+                size="lg"
+              />
             </div>
           </motion.div>
+        </div>
+
+        {/* Quota Summary Card */}
+        <div className="mb-8">
+          <QuotaSummaryCard
+            title="Vos Quotas Partenaire"
+            level={(user.partner_tier || user.profile?.partner_tier || 'museum') as string}
+            type="partner"
+            quotas={[
+              {
+                label: 'Rendez-vous B2B',
+                current: confirmedAppointments.length,
+                limit: getPartnerQuota(user.partner_tier || 'museum', 'appointments'),
+                icon: <Calendar className="h-4 w-4 text-gray-400" />
+              },
+              {
+                label: 'Membres équipe',
+                current: dashboardStats?.teamMembers?.value || 0,
+                limit: getPartnerQuota(user.partner_tier || 'museum', 'teamMembers'),
+                icon: <Users className="h-4 w-4 text-gray-400" />
+              },
+              {
+                label: 'Fichiers média',
+                current: dashboardStats?.mediaUploads?.value || 0,
+                limit: getPartnerQuota(user.partner_tier || 'museum', 'mediaUploads'),
+                icon: <FileText className="h-4 w-4 text-gray-400" />
+              },
+              {
+                label: 'Leads exportés ce mois',
+                current: dashboardStats?.leadExports?.value || 0,
+                limit: getPartnerQuota(user.partner_tier || 'museum', 'leadExports'),
+                icon: <TrendingUp className="h-4 w-4 text-gray-400" />
+              }
+            ]}
+            upgradeLink="/partner/upgrade"
+          />
         </div>
 
         {/* Stats Cards Partenaire */}

@@ -18,7 +18,9 @@ import { ROUTES } from '../../lib/routes';
 import PersonalCalendar from './PersonalCalendar';
 import { useAppointmentStore } from '../../store/appointmentStore';
 import { useVisitorStats } from '../../hooks/useVisitorStats';
-import { calculateRemainingQuota } from '../../config/quotas';
+import { calculateRemainingQuota, getVisitorQuota } from '../../config/quotas';
+import { VisitorLevelGuard } from '../guards/VisitorLevelGuard';
+import { LevelBadge, QuotaSummaryCard } from '../common/QuotaWidget';
 
 // OPTIMIZATION: Memoized VisitorDashboard to prevent unnecessary re-renders
 export default memo(function VisitorDashboard() {
@@ -176,16 +178,40 @@ export default memo(function VisitorDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <VisitorLevelGuard requiredLevel="premium">
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Tableau de bord visiteur
-          </h1>
-          <p className="text-gray-600 mt-2">
-            Bienvenue {user.name}, gérez vos activités SIPORTS 2026
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Tableau de bord visiteur
+              </h1>
+              <p className="text-gray-600 mt-2">
+                Bienvenue {user.name}, gérez vos activités SIPORTS 2026
+              </p>
+            </div>
+            <LevelBadge level={userLevel} type="visitor" size="lg" />
+          </div>
+        </div>
+
+        {/* Quota Summary Card */}
+        <div className="mb-8">
+          <QuotaSummaryCard
+            title="Vos Quotas"
+            level={userLevel}
+            type="visitor"
+            quotas={[
+              {
+                label: 'Rendez-vous B2B',
+                current: confirmedAppointments.length,
+                limit: getVisitorQuota(userLevel),
+                icon: <Calendar className="h-4 w-4 text-gray-400" />
+              }
+            ]}
+            upgradeLink={userLevel === 'free' ? ROUTES.VISITOR_UPGRADE : undefined}
+          />
         </div>
 
         {/* Message d'erreur global */}
@@ -451,7 +477,8 @@ export default memo(function VisitorDashboard() {
             </div>
           </div>
         )}
+        </div>
       </div>
-    </div>
+    </VisitorLevelGuard>
   );
 });

@@ -49,8 +49,14 @@ const SignUpSuccessPage = React.lazy(() => import('./pages/auth/SignUpSuccessPag
 const PendingAccountPage = React.lazy(() => import('./pages/auth/PendingAccountPage'));
 const OAuthCallbackPage = React.lazy(() => import('./pages/auth/OAuthCallbackPage'));
 const VisitorSubscriptionPage = React.lazy(() => import('./pages/VisitorSubscriptionPage'));
+const VisitorUpgradePage = React.lazy(() => import('./pages/VisitorUpgradePage'));
+const VisitorPaymentPage = React.lazy(() => import('./pages/VisitorPaymentPage'));
+const PaymentSuccessPage = React.lazy(() => import('./pages/visitor/PaymentSuccessPage'));
 const PaymentInstructionsPage = React.lazy(() => import('./pages/visitor/PaymentInstructionsPage'));
 const PaymentValidationPage = React.lazy(() => import('./pages/admin/PaymentValidationPage'));
+const BadgePage = React.lazy(() => import('./pages/BadgePage'));
+const PartnerUpgradePage = React.lazy(() => import('./pages/PartnerUpgradePage'));
+const BadgeScannerPage = React.lazy(() => import('./pages/BadgeScannerPage'));
 
 // Admin pages
 const PavillonsAdminPage = React.lazy(() => import('./pages/admin/PavillonsPage'));
@@ -170,7 +176,13 @@ const App = () => {
             <Route path="/dev/test-flow" element={<ProtectedRoute requiredRole="admin"><TestFlowPage /></ProtectedRoute>} />
             <Route path={ROUTES.VISITOR_SETTINGS} element={<ProtectedRoute requiredRole="visitor"><VisitorProfileSettings /></ProtectedRoute>} />
             <Route path={ROUTES.VISITOR_SUBSCRIPTION} element={<ProtectedRoute requiredRole="visitor"><VisitorSubscriptionPage /></ProtectedRoute>} />
+            <Route path={ROUTES.VISITOR_UPGRADE} element={<ProtectedRoute requiredRole="visitor"><VisitorUpgradePage /></ProtectedRoute>} />
+            <Route path="/visitor/payment" element={<ProtectedRoute requiredRole="visitor"><VisitorPaymentPage /></ProtectedRoute>} />
+            <Route path="/visitor/payment-success" element={<ProtectedRoute requiredRole="visitor"><PaymentSuccessPage /></ProtectedRoute>} />
             <Route path="/visitor/payment-instructions" element={<ProtectedRoute requiredRole="visitor"><PaymentInstructionsPage /></ProtectedRoute>} />
+            <Route path={ROUTES.BADGE} element={<ProtectedRoute><BadgePage /></ProtectedRoute>} />
+            <Route path="/badge/scanner" element={<ProtectedRoute><BadgeScannerPage /></ProtectedRoute>} />
+            <Route path="/partner/upgrade" element={<ProtectedRoute requiredRole="partner"><PartnerUpgradePage /></ProtectedRoute>} />
             <Route path={ROUTES.MESSAGES} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path={ROUTES.CHAT} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path={ROUTES.APPOINTMENTS} element={<ProtectedRoute><AppointmentCalendar /></ProtectedRoute>} />
