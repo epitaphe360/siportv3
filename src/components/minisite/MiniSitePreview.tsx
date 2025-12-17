@@ -208,10 +208,6 @@ export default function MiniSitePreview() {
       </div>
     );
   }
-        </Card>
-      </div>
-    );
-  }
 
   const theme = miniSiteData.theme || {
     primaryColor: '#1e40af',
