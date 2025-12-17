@@ -17,7 +17,7 @@ const SAFE_COLUMNS: Record<AllowedTable, string> = {
   'exhibitors': 'id, company_name, category, sector, description, logo_url, website, verified, featured, contact_info',
   'products': 'id, exhibitor_id, name, description, category, images, specifications, price, featured',
   'events': 'id, title, description, event_type, start_time, end_time, location, capacity, registered, category, virtual, featured, meeting_link, tags, speakers',
-  'news_articles': 'id, title, content, excerpt, category, tags, image_url, published, published_at, views, author_id',
+  'news_articles': 'id, title, content, excerpt, category, tags, image_url, published, published_at, views',
   'partners': 'id, name, type, category, description, logo_url, website, country, sector, verified, featured, sponsorship_level',
   'mini_sites': 'id, exhibitor_id, theme, custom_colors, sections, published, views, last_updated',
 };
