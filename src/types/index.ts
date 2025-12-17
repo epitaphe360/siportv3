@@ -374,3 +374,33 @@ export interface EventRegistration {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface UserBadge {
+  id: string;
+  userId: string;
+  badgeCode: string; // Code unique pour le QR code
+  userType: 'visitor' | 'exhibitor' | 'partner' | 'admin';
+  userLevel?: string; // 'free', 'premium' pour visiteurs, etc.
+  fullName: string;
+  companyName?: string;
+  position?: string;
+  email: string;
+  phone?: string;
+  avatarUrl?: string;
+  standNumber?: string; // Pour exposants
+  accessLevel: 'standard' | 'vip' | 'exhibitor' | 'partner' | 'admin';
+  validFrom: Date;
+  validUntil: Date;
+  status: 'active' | 'expired' | 'revoked' | 'pending';
+  qrData?: {
+    user_id: string;
+    badge_code: string;
+    user_type: string;
+    access_level: string;
+    generated_at: string;
+  };
+  scanCount: number;
+  lastScannedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}

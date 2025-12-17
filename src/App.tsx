@@ -51,6 +51,7 @@ const OAuthCallbackPage = React.lazy(() => import('./pages/auth/OAuthCallbackPag
 const VisitorSubscriptionPage = React.lazy(() => import('./pages/VisitorSubscriptionPage'));
 const PaymentInstructionsPage = React.lazy(() => import('./pages/visitor/PaymentInstructionsPage'));
 const PaymentValidationPage = React.lazy(() => import('./pages/admin/PaymentValidationPage'));
+const BadgePage = React.lazy(() => import('./pages/BadgePage'));
 
 // Admin pages
 const PavillonsAdminPage = React.lazy(() => import('./pages/admin/PavillonsPage'));
@@ -171,6 +172,7 @@ const App = () => {
             <Route path={ROUTES.VISITOR_SETTINGS} element={<ProtectedRoute requiredRole="visitor"><VisitorProfileSettings /></ProtectedRoute>} />
             <Route path={ROUTES.VISITOR_SUBSCRIPTION} element={<ProtectedRoute requiredRole="visitor"><VisitorSubscriptionPage /></ProtectedRoute>} />
             <Route path="/visitor/payment-instructions" element={<ProtectedRoute requiredRole="visitor"><PaymentInstructionsPage /></ProtectedRoute>} />
+            <Route path={ROUTES.BADGE} element={<ProtectedRoute><BadgePage /></ProtectedRoute>} />
             <Route path={ROUTES.MESSAGES} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path={ROUTES.CHAT} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path={ROUTES.APPOINTMENTS} element={<ProtectedRoute><AppointmentCalendar /></ProtectedRoute>} />

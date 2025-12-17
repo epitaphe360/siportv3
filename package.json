@@ -64,6 +64,7 @@
     "cheerio": "^1.0.0-rc.12",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "html2canvas": "^1.4.1",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "firebase": "^12.2.1",

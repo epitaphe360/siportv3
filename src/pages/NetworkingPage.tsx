@@ -19,6 +19,7 @@ import { ROUTES } from '@/lib/routes';
 import UserProfileView from '@/components/profile/UserProfileView';
 import { useAppointmentStore } from '@/store/appointmentStore';
 import { SupabaseService } from '@/services/supabaseService';
+import { getVisitorQuota } from '@/config/quotas';
 
 export default function NetworkingPage() {
   const navigate = useNavigate();
@@ -160,23 +161,27 @@ export default function NetworkingPage() {
       return;
     }
     
-    // Quotas B2B selon visitor_level
+    // Quotas B2B selon visitor_level - utilise le système centralisé
     const level = user?.visitor_level || 'free';
-    const quotas: Record<string, number> = {
-      free: 0,
-      basic: 2,
-      premium: 5,
-      vip: 99 // VIP illimité
-    };
-    
+    const quota = getVisitorQuota(level); // Depuis quotas.ts
+
     // Récupérer les VRAIS rendez-vous depuis appointmentStore
     const appointmentStore = useAppointmentStore.getState();
     const userAppointments = appointmentStore.appointments.filter(
       (a: any) => a.visitorId === user?.id && a.status === 'confirmed'
     );
-    
-    if (userAppointments.length >= quotas[level]) {
-      toast.error(`Quota atteint : vous avez déjà ${quotas[level]} RDV B2B confirmés pour votre niveau.`);
+
+    // Vérifier le quota (999999 = illimité pour premium)
+    if (quota !== 999999 && userAppointments.length >= quota) {
+      if (quota === 0) {
+        toast.error(
+          `Accès restreint : votre Pass Gratuit ne permet pas de prendre de rendez-vous B2B. ` +
+          `Passez au Pass Premium VIP pour des RDV B2B illimités !`,
+          { duration: 5000 }
+        );
+      } else {
+        toast.error(`Quota atteint : vous avez déjà ${quota} RDV B2B confirmés pour votre niveau.`);
+      }
       return;
     }
     
