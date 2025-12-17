@@ -309,6 +309,12 @@ export default function RegisterPage() {
       // @ts-ignore - recaptchaToken sera ajouté à authStore.register()
       await registerUser(data, recaptchaToken);
 
+      // Si c'est un exposant ou partenaire, afficher un toast indiquant validation admin requise
+      if (data.accountType && data.accountType !== 'visitor') {
+        const label = data.accountType === 'exhibitor' ? 'exposant' : 'partenaire';
+        toast.success(`Inscription réussie — votre compte ${label} sera activé par un administrateur. Vous recevrez un email une fois validé.`);
+      }
+
       // Tenter une connexion automatique pour les visiteurs
       if (data.accountType === 'visitor') {
         try {
