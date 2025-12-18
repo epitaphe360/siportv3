@@ -75,20 +75,16 @@ END $$;
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
   visitor_level,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000001',
   'visitor-free@test.siport.com',
-  'visitor',
+  'Jean Dupont',
   'visitor',
   'free',
-  true,
-  true,
   now()
 );
 
@@ -120,20 +116,16 @@ INSERT INTO visitor_profiles (
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
   visitor_level,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000002',
   'visitor-vip@test.siport.com',
-  'visitor',
+  'Marie Martin',
   'visitor',
   'premium',
-  true,
-  true,
   now()
 );
 
@@ -217,20 +209,16 @@ END $$;
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
   partner_tier,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000003',
   'partner-museum@test.siport.com',
-  'partner',
+  'Pierre Leclerc',
   'partner',
   'museum',
-  true,
-  true,
   now()
 );
 
@@ -284,20 +272,16 @@ END $$;
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
   partner_tier,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000004',
   'partner-silver@test.siport.com',
-  'partner',
+  'Ahmed Benali',
   'partner',
   'silver',
-  true,
-  true,
   now()
 );
 
@@ -351,20 +335,16 @@ END $$;
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
   partner_tier,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000005',
   'partner-gold@test.siport.com',
-  'partner',
+  'Carlos Rodriguez',
   'partner',
   'gold',
-  true,
-  true,
   now()
 );
 
@@ -418,20 +398,16 @@ END $$;
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
   partner_tier,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000006',
   'partner-platinium@test.siport.com',
-  'partner',
+  'Henrik Nielsen',
   'partner',
   'platinium',
-  true,
-  true,
   now()
 );
 
@@ -489,18 +465,14 @@ END $$;
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000007',
   'exhibitor-9m@test.siport.com',
+  'Thomas Dubois',
   'exhibitor',
-  'exhibitor',
-  true,
-  true,
   now()
 );
 
@@ -562,18 +534,14 @@ END $$;
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000008',
   'exhibitor-18m@test.siport.com',
+  'Sophie Lefebvre',
   'exhibitor',
-  'exhibitor',
-  true,
-  true,
   now()
 );
 
@@ -635,18 +603,14 @@ END $$;
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000009',
   'exhibitor-36m@test.siport.com',
+  'David Chen',
   'exhibitor',
-  'exhibitor',
-  true,
-  true,
   now()
 );
 
@@ -708,18 +672,14 @@ END $$;
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000010',
   'exhibitor-54m@test.siport.com',
+  'Lars Svensson',
   'exhibitor',
-  'exhibitor',
-  true,
-  true,
   now()
 );
 
