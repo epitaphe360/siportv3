@@ -2447,36 +2447,5 @@ export class SupabaseService {
     }
   }
 
-  /**
-   * Helper: Create notification for user
-   */
-  private static async createNotification(
-    userId: string,
-    title: string,
-    message: string,
-    type: string,
-    entityType?: string,
-    entityId?: string
-  ): Promise<void> {
-    if (!this.checkSupabaseConnection()) return;
-    const safeSupabase = supabase!;
-
-    try {
-      await safeSupabase
-        .from('notifications')
-        .insert([{
-          user_id: userId,
-          title,
-          message,
-          type,
-          entity_type: entityType || null,
-          entity_id: entityId || null
-        }]);
-    } catch (error) {
-      console.error('Erreur lors de la création de la notification:', error);
-      // Don't throw - notification is not critical
-    }
-  }
-
 }
 
