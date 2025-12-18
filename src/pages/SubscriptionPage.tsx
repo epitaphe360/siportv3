@@ -408,12 +408,13 @@ export default function SubscriptionPage() {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {displayedTiers.map((tier) => (
-            <Card
-              key={tier.id}
-              className={`relative overflow-hidden h-full flex flex-col transition-transform hover:scale-105 ${tier.color}`}
-            >
+        <div className="flex justify-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl w-full">
+            {displayedTiers.map((tier) => (
+              <Card
+                key={tier.id}
+                className={`relative overflow-hidden h-full flex flex-col transition-transform hover:scale-105 ${tier.color}`}
+              >
               {/* Header */}
               <div className="p-6 pb-8 border-b-2 border-gray-200">
                 <div className="flex items-center justify-between mb-4">
@@ -467,7 +468,8 @@ export default function SubscriptionPage() {
                 </Button>
               </div>
             </Card>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Additional Info */}
