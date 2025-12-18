@@ -154,8 +154,8 @@ export interface MiniSiteSection {
 
 export interface TimeSlot {
   id: string;
-  // userId links the timeslot to the owner (exhibitor/partner user id)
-  userId?: string;
+  // exhibitorId links the timeslot to the exhibitor (references exhibitors.id in DB)
+  exhibitorId: string;
   date: Date;
   startTime: string;
   endTime: string;
@@ -165,6 +165,12 @@ export interface TimeSlot {
   currentBookings: number;
   available: boolean;
   location?: string;
+  // Optional: exhibitor details via JOIN
+  exhibitor?: {
+    id: string;
+    userId: string; // The actual users.id
+    companyName: string;
+  };
 }
 
 export interface Appointment {
