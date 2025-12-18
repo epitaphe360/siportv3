@@ -3,7 +3,7 @@ export interface User {
   email: string;
   name: string;
   type: 'exhibitor' | 'partner' | 'visitor' | 'admin';
-  visitor_level?: 'free' | 'basic' | 'premium' | 'vip';
+  visitor_level?: 'free' | 'premium' | 'vip';
   profile: UserProfile;
   status: 'pending' | 'active' | 'suspended' | 'rejected';
   createdAt: Date;
@@ -40,7 +40,7 @@ export interface UserProfile {
   visitObjectives?: string[];
   competencies?: string[];
   // Networking system fields
-  passType?: 'free' | 'basic' | 'premium' | 'vip';
+  passType?: 'free' | 'premium' | 'vip';
   status?: 'active' | 'pending' | 'suspended' | 'rejected';
   // Exhibitor specific fields
   standNumber?: string; // Numéro de stand pour les exposants
