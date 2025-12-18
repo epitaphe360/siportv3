@@ -8,6 +8,22 @@
 -- Exécuter: supabase db push
 -- ========================================
 
+-- Temporarily disable triggers that might cause errors during seed
+-- These triggers try to auto-generate badges but reference tables that might not exist
+DO $$
+BEGIN
+  -- Disable badge auto-generation triggers if they exist
+  IF EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trigger_auto_generate_badge_on_insert') THEN
+    ALTER TABLE users DISABLE TRIGGER trigger_auto_generate_badge_on_insert;
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trigger_auto_generate_badge_on_update') THEN
+    ALTER TABLE users DISABLE TRIGGER trigger_auto_generate_badge_on_update;
+  END IF;
+
+  RAISE NOTICE 'Triggers temporairement désactivés pour le seed';
+END $$;
+
 -- Nettoyer les données de test existantes (seulement les emails de test)
 -- Utiliser DO block pour gérer les tables qui n'existent pas encore
 DO $$
@@ -747,6 +763,21 @@ END $$;
 -- ========================================
 -- RÉSUMÉ DES COMPTES CRÉÉS
 -- ========================================
+
+-- Re-enable triggers that were disabled at the start
+DO $$
+BEGIN
+  -- Re-enable badge auto-generation triggers if they exist
+  IF EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trigger_auto_generate_badge_on_insert') THEN
+    ALTER TABLE users ENABLE TRIGGER trigger_auto_generate_badge_on_insert;
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trigger_auto_generate_badge_on_update') THEN
+    ALTER TABLE users ENABLE TRIGGER trigger_auto_generate_badge_on_update;
+  END IF;
+
+  RAISE NOTICE 'Triggers ré-activés';
+END $$;
 
 -- Afficher le résumé
 DO $$
