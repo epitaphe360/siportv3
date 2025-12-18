@@ -109,7 +109,19 @@ ALTER TABLE IF EXISTS public.users
 UPDATE public.users SET name = '' WHERE name IS NULL;
 
 ALTER TABLE IF EXISTS public.users ALTER COLUMN name SET DEFAULT '';
-ALTER TABLE IF NOT EXISTS public.users ALTER COLUMN name SET NOT NULL;
+
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'name'
+  ) THEN
+    -- Ensure no NULLs remain before applying NOT NULL
+    UPDATE public.users SET name = '' WHERE name IS NULL;
+    EXECUTE 'ALTER TABLE public.users ALTER COLUMN name SET NOT NULL';
+  END IF;
+END
+$$;
 
 CREATE INDEX IF NOT EXISTS idx_users_name ON public.users(name);
 
