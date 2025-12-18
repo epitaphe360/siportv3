@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Check, X, Crown, Zap, Star, Award } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
+import { ROUTES } from '../lib/routes';
+import useAuthStore from '../store/authStore';
 
 // Types
 interface SubscriptionFeature {
@@ -350,6 +353,8 @@ const subscriptionTiers: SubscriptionTier[] = [
 
 export default function SubscriptionPage() {
   const [selectedType, setSelectedType] = useState<'visitor' | 'partner' | 'exhibitor'>('visitor');
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
 
   const visitorTiers = subscriptionTiers.filter(t => t.type === 'visitor');
   const partnerTiers = subscriptionTiers.filter(t => t.type === 'partner');
@@ -358,8 +363,26 @@ export default function SubscriptionPage() {
   const displayedTiers = selectedType === 'visitor' ? visitorTiers : selectedType === 'partner' ? partnerTiers : exhibitorTiers;
 
   const handleSubscribe = (tierId: string) => {
-    // TODO: Handle subscription flow
-    console.log(`Subscribing to ${tierId}`);
+    // Si non authentifié, rediriger vers login
+    if (!isAuthenticated) {
+      navigate(ROUTES.LOGIN, { state: { from: 'subscription', tier: tierId } });
+      return;
+    }
+
+    // Redirection selon le type d'offre
+    if (tierId === 'visitor-free') {
+      // Inscription gratuite - rediriger vers registration visiteur
+      navigate(ROUTES.REGISTER);
+    } else if (tierId === 'visitor-vip') {
+      // Upgrade premium - rediriger vers page paiement
+      navigate(ROUTES.VISITOR_UPGRADE);
+    } else if (tierId.includes('exhibitor')) {
+      // Offre exposant
+      navigate(ROUTES.EXHIBITOR_DASHBOARD);
+    } else if (tierId.includes('partner')) {
+      // Offre partenaire
+      navigate(ROUTES.PARTNER_DASHBOARD);
+    }
   };
 
   return (
