@@ -110,10 +110,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       // Récupérer les activités récentes
       const { data: activities, error: activitiesError } = await supabaseClient
         .from('activities')
-        .select(`
-          *,
-          actor:users!activities_actor_id_fkey(id, name, profile)
-        `)
+        .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(10);
@@ -122,8 +119,30 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
         console.warn('Erreur lors de la récupération des activités:', activitiesError);
       }
 
+      // Récupérer les infos des acteurs si nécessaire
+      let activitiesWithActors = activities || [];
+      if (activities && activities.length > 0) {
+        const actorIds = activities
+          .map(a => a.actor_id)
+          .filter((id): id is string => id !== null);
+
+        if (actorIds.length > 0) {
+          const { data: actors } = await supabaseClient
+            .from('users')
+            .select('id, name, profile')
+            .in('id', actorIds);
+
+          const actorsMap = new Map(actors?.map(a => [a.id, a]) || []);
+
+          activitiesWithActors = activities.map(activity => ({
+            ...activity,
+            actor: activity.actor_id ? actorsMap.get(activity.actor_id) : null
+          }));
+        }
+      }
+
       // Transformer les activités
-      const recentActivity: Activity[] = (activities || []).map((activity: any) => ({
+      const recentActivity: Activity[] = activitiesWithActors.map((activity: any) => ({
         id: activity.id,
         type: activity.type,
         description: activity.description,
