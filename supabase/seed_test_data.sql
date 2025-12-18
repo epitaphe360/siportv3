@@ -4,30 +4,68 @@
 -- Créer des comptes de test pour chaque type de dashboard
 -- Password pour tous les comptes: Test@123456
 -- ========================================
+-- IMPORTANT: Ce fichier nécessite que TOUTES les migrations soient appliquées avant exécution
+-- Exécuter: supabase db push
+-- ========================================
 
 -- Nettoyer les données de test existantes (seulement les emails de test)
-DELETE FROM leads WHERE scanner_id IN (
-  SELECT id FROM users WHERE email LIKE '%@test.siport.com'
-);
-DELETE FROM quota_usage WHERE user_id IN (
-  SELECT id FROM users WHERE email LIKE '%@test.siport.com'
-);
-DELETE FROM user_upgrades WHERE user_id IN (
-  SELECT id FROM users WHERE email LIKE '%@test.siport.com'
-);
-DELETE FROM user_badges WHERE user_id IN (
-  SELECT id FROM users WHERE email LIKE '%@test.siport.com'
-);
-DELETE FROM exhibitor_profiles WHERE user_id IN (
-  SELECT id FROM users WHERE email LIKE '%@test.siport.com'
-);
-DELETE FROM partner_profiles WHERE user_id IN (
-  SELECT id FROM users WHERE email LIKE '%@test.siport.com'
-);
-DELETE FROM visitor_profiles WHERE user_id IN (
-  SELECT id FROM users WHERE email LIKE '%@test.siport.com'
-);
-DELETE FROM users WHERE email LIKE '%@test.siport.com';
+-- Utiliser DO block pour gérer les tables qui n'existent pas encore
+DO $$
+BEGIN
+  -- Nettoyer leads si la table existe
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'leads') THEN
+    DELETE FROM leads WHERE scanner_id IN (
+      SELECT id FROM users WHERE email LIKE '%@test.siport.com'
+    );
+  END IF;
+
+  -- Nettoyer quota_usage si la table existe
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'quota_usage') THEN
+    DELETE FROM quota_usage WHERE user_id IN (
+      SELECT id FROM users WHERE email LIKE '%@test.siport.com'
+    );
+  END IF;
+
+  -- Nettoyer user_upgrades si la table existe
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'user_upgrades') THEN
+    DELETE FROM user_upgrades WHERE user_id IN (
+      SELECT id FROM users WHERE email LIKE '%@test.siport.com'
+    );
+  END IF;
+
+  -- Nettoyer user_badges si la table existe
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'user_badges') THEN
+    DELETE FROM user_badges WHERE user_id IN (
+      SELECT id FROM users WHERE email LIKE '%@test.siport.com'
+    );
+  END IF;
+
+  -- Nettoyer exhibitor_profiles
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'exhibitor_profiles') THEN
+    DELETE FROM exhibitor_profiles WHERE user_id IN (
+      SELECT id FROM users WHERE email LIKE '%@test.siport.com'
+    );
+  END IF;
+
+  -- Nettoyer partner_profiles
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'partner_profiles') THEN
+    DELETE FROM partner_profiles WHERE user_id IN (
+      SELECT id FROM users WHERE email LIKE '%@test.siport.com'
+    );
+  END IF;
+
+  -- Nettoyer visitor_profiles
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'visitor_profiles') THEN
+    DELETE FROM visitor_profiles WHERE user_id IN (
+      SELECT id FROM users WHERE email LIKE '%@test.siport.com'
+    );
+  END IF;
+
+  -- Nettoyer users
+  DELETE FROM users WHERE email LIKE '%@test.siport.com';
+
+  RAISE NOTICE 'Nettoyage des données de test terminé';
+END $$;
 
 -- ========================================
 -- 1. VISITEURS (2 comptes: FREE + VIP)
@@ -37,20 +75,16 @@ DELETE FROM users WHERE email LIKE '%@test.siport.com';
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
   visitor_level,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000001',
   'visitor-free@test.siport.com',
-  'visitor',
+  'Jean Dupont',
   'visitor',
   'free',
-  true,
-  true,
   now()
 );
 
@@ -82,20 +116,16 @@ INSERT INTO visitor_profiles (
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
   visitor_level,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000002',
   'visitor-vip@test.siport.com',
-  'visitor',
+  'Marie Martin',
   'visitor',
   'premium',
-  true,
-  true,
   now()
 );
 
@@ -123,43 +153,53 @@ INSERT INTO visitor_profiles (
   now()
 );
 
--- Historique upgrade VIP
-INSERT INTO user_upgrades (
-  user_id,
-  user_type,
-  previous_level,
-  new_level,
-  payment_amount,
-  payment_currency,
-  payment_method,
-  payment_transaction_id,
-  upgraded_at
-) VALUES (
-  'a0000000-0000-0000-0000-000000000002',
-  'visitor',
-  'free',
-  'premium',
-  700,
-  'EUR',
-  'stripe',
-  'test_ch_visitor_vip_001',
-  now()
-);
+-- Historique upgrade VIP (seulement si la table existe)
+DO $$
+BEGIN
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'user_upgrades') THEN
+    INSERT INTO user_upgrades (
+      user_id,
+      user_type,
+      previous_level,
+      new_level,
+      payment_amount,
+      payment_currency,
+      payment_method,
+      payment_transaction_id,
+      upgraded_at
+    ) VALUES (
+      'a0000000-0000-0000-0000-000000000002',
+      'visitor',
+      'free',
+      'premium',
+      700,
+      'EUR',
+      'stripe',
+      'test_ch_visitor_vip_001',
+      now()
+    );
+  END IF;
+END $$;
 
 -- Quota usage pour VIP (3 RDV utilisés sur 10)
-INSERT INTO quota_usage (
-  user_id,
-  quota_type,
-  current_usage,
-  period,
-  reset_at
-) VALUES (
-  'a0000000-0000-0000-0000-000000000002',
-  'appointments',
-  3,
-  'lifetime',
-  NULL
-);
+DO $$
+BEGIN
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'quota_usage') THEN
+    INSERT INTO quota_usage (
+      user_id,
+      quota_type,
+      current_usage,
+      period,
+      reset_at
+    ) VALUES (
+      'a0000000-0000-0000-0000-000000000002',
+      'appointments',
+      3,
+      'lifetime',
+      NULL
+    );
+  END IF;
+END $$;
 
 -- ========================================
 -- 2. PARTENAIRES (4 comptes: Museum, Silver, Gold, Platinium)
@@ -169,20 +209,16 @@ INSERT INTO quota_usage (
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
   partner_tier,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000003',
   'partner-museum@test.siport.com',
-  'partner',
+  'Pierre Leclerc',
   'partner',
   'museum',
-  true,
-  true,
   now()
 );
 
@@ -213,38 +249,39 @@ INSERT INTO partner_profiles (
 );
 
 -- Quota Museum (5 RDV sur 20)
-INSERT INTO quota_usage (
-  user_id,
-  quota_type,
-  current_usage,
-  period,
-  reset_at
-) VALUES (
-  'a0000000-0000-0000-0000-000000000003',
-  'appointments',
-  5,
-  'monthly',
-  date_trunc('month', now()) + interval '1 month'
-);
+DO $$
+BEGIN
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'quota_usage') THEN
+    INSERT INTO quota_usage (
+      user_id,
+      quota_type,
+      current_usage,
+      period,
+      reset_at
+    ) VALUES (
+      'a0000000-0000-0000-0000-000000000003',
+      'appointments',
+      5,
+      'monthly',
+      date_trunc('month', now()) + interval '1 month'
+    );
+  END IF;
+END $$;
 
 -- Partner Silver ($48k)
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
   partner_tier,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000004',
   'partner-silver@test.siport.com',
-  'partner',
+  'Ahmed Benali',
   'partner',
   'silver',
-  true,
-  true,
   now()
 );
 
@@ -275,38 +312,39 @@ INSERT INTO partner_profiles (
 );
 
 -- Quota Silver (15 RDV sur 50)
-INSERT INTO quota_usage (
-  user_id,
-  quota_type,
-  current_usage,
-  period,
-  reset_at
-) VALUES (
-  'a0000000-0000-0000-0000-000000000004',
-  'appointments',
-  15,
-  'monthly',
-  date_trunc('month', now()) + interval '1 month'
-);
+DO $$
+BEGIN
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'quota_usage') THEN
+    INSERT INTO quota_usage (
+      user_id,
+      quota_type,
+      current_usage,
+      period,
+      reset_at
+    ) VALUES (
+      'a0000000-0000-0000-0000-000000000004',
+      'appointments',
+      15,
+      'monthly',
+      date_trunc('month', now()) + interval '1 month'
+    );
+  END IF;
+END $$;
 
 -- Partner Gold ($68k)
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
   partner_tier,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000005',
   'partner-gold@test.siport.com',
-  'partner',
+  'Carlos Rodriguez',
   'partner',
   'gold',
-  true,
-  true,
   now()
 );
 
@@ -337,38 +375,39 @@ INSERT INTO partner_profiles (
 );
 
 -- Quota Gold (45 RDV sur 100)
-INSERT INTO quota_usage (
-  user_id,
-  quota_type,
-  current_usage,
-  period,
-  reset_at
-) VALUES (
-  'a0000000-0000-0000-0000-000000000005',
-  'appointments',
-  45,
-  'monthly',
-  date_trunc('month', now()) + interval '1 month'
-);
+DO $$
+BEGIN
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'quota_usage') THEN
+    INSERT INTO quota_usage (
+      user_id,
+      quota_type,
+      current_usage,
+      period,
+      reset_at
+    ) VALUES (
+      'a0000000-0000-0000-0000-000000000005',
+      'appointments',
+      45,
+      'monthly',
+      date_trunc('month', now()) + interval '1 month'
+    );
+  END IF;
+END $$;
 
 -- Partner Platinium ($98k - Illimité)
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
   partner_tier,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000006',
   'partner-platinium@test.siport.com',
-  'partner',
+  'Henrik Nielsen',
   'partner',
   'platinium',
-  true,
-  true,
   now()
 );
 
@@ -399,19 +438,24 @@ INSERT INTO partner_profiles (
 );
 
 -- Quota Platinium (250 RDV - Illimité)
-INSERT INTO quota_usage (
-  user_id,
-  quota_type,
-  current_usage,
-  period,
-  reset_at
-) VALUES (
-  'a0000000-0000-0000-0000-000000000006',
-  'appointments',
-  250,
-  'monthly',
-  date_trunc('month', now()) + interval '1 month'
-);
+DO $$
+BEGIN
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'quota_usage') THEN
+    INSERT INTO quota_usage (
+      user_id,
+      quota_type,
+      current_usage,
+      period,
+      reset_at
+    ) VALUES (
+      'a0000000-0000-0000-0000-000000000006',
+      'appointments',
+      250,
+      'monthly',
+      date_trunc('month', now()) + interval '1 month'
+    );
+  END IF;
+END $$;
 
 -- ========================================
 -- 3. EXPOSANTS (4 comptes: 9m², 18m², 36m², 54m²+)
@@ -421,18 +465,14 @@ INSERT INTO quota_usage (
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000007',
   'exhibitor-9m@test.siport.com',
+  'Thomas Dubois',
   'exhibitor',
-  'exhibitor',
-  true,
-  true,
   now()
 );
 
@@ -471,36 +511,37 @@ INSERT INTO exhibitor_profiles (
 );
 
 -- Quota 9m² (7 RDV sur 15)
-INSERT INTO quota_usage (
-  user_id,
-  quota_type,
-  current_usage,
-  period,
-  reset_at
-) VALUES (
-  'a0000000-0000-0000-0000-000000000007',
-  'appointments',
-  7,
-  'lifetime',
-  NULL
-);
+DO $$
+BEGIN
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'quota_usage') THEN
+    INSERT INTO quota_usage (
+      user_id,
+      quota_type,
+      current_usage,
+      period,
+      reset_at
+    ) VALUES (
+      'a0000000-0000-0000-0000-000000000007',
+      'appointments',
+      7,
+      'lifetime',
+      NULL
+    );
+  END IF;
+END $$;
 
 -- Exposant 18m² Standard
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000008',
   'exhibitor-18m@test.siport.com',
+  'Sophie Lefebvre',
   'exhibitor',
-  'exhibitor',
-  true,
-  true,
   now()
 );
 
@@ -539,36 +580,37 @@ INSERT INTO exhibitor_profiles (
 );
 
 -- Quota 18m² (22 RDV sur 40)
-INSERT INTO quota_usage (
-  user_id,
-  quota_type,
-  current_usage,
-  period,
-  reset_at
-) VALUES (
-  'a0000000-0000-0000-0000-000000000008',
-  'appointments',
-  22,
-  'lifetime',
-  NULL
-);
+DO $$
+BEGIN
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'quota_usage') THEN
+    INSERT INTO quota_usage (
+      user_id,
+      quota_type,
+      current_usage,
+      period,
+      reset_at
+    ) VALUES (
+      'a0000000-0000-0000-0000-000000000008',
+      'appointments',
+      22,
+      'lifetime',
+      NULL
+    );
+  END IF;
+END $$;
 
 -- Exposant 36m² Premium
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000009',
   'exhibitor-36m@test.siport.com',
+  'David Chen',
   'exhibitor',
-  'exhibitor',
-  true,
-  true,
   now()
 );
 
@@ -607,36 +649,37 @@ INSERT INTO exhibitor_profiles (
 );
 
 -- Quota 36m² (58 RDV sur 100)
-INSERT INTO quota_usage (
-  user_id,
-  quota_type,
-  current_usage,
-  period,
-  reset_at
-) VALUES (
-  'a0000000-0000-0000-0000-000000000009',
-  'appointments',
-  58,
-  'lifetime',
-  NULL
-);
+DO $$
+BEGIN
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'quota_usage') THEN
+    INSERT INTO quota_usage (
+      user_id,
+      quota_type,
+      current_usage,
+      period,
+      reset_at
+    ) VALUES (
+      'a0000000-0000-0000-0000-000000000009',
+      'appointments',
+      58,
+      'lifetime',
+      NULL
+    );
+  END IF;
+END $$;
 
 -- Exposant 54m²+ Elite (Illimité)
 INSERT INTO users (
   id,
   email,
-  role,
+  name,
   type,
-  is_active,
-  email_verified,
   created_at
 ) VALUES (
   'a0000000-0000-0000-0000-000000000010',
   'exhibitor-54m@test.siport.com',
+  'Lars Svensson',
   'exhibitor',
-  'exhibitor',
-  true,
-  true,
   now()
 );
 
@@ -675,25 +718,31 @@ INSERT INTO exhibitor_profiles (
 );
 
 -- Quota 54m²+ (350 RDV - Illimité)
-INSERT INTO quota_usage (
-  user_id,
-  quota_type,
-  current_usage,
-  period,
-  reset_at
-) VALUES (
-  'a0000000-0000-0000-0000-000000000010',
-  'appointments',
-  350,
-  'lifetime',
-  NULL
-);
+DO $$
+BEGIN
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'quota_usage') THEN
+    INSERT INTO quota_usage (
+      user_id,
+      quota_type,
+      current_usage,
+      period,
+      reset_at
+    ) VALUES (
+      'a0000000-0000-0000-0000-000000000010',
+      'appointments',
+      350,
+      'lifetime',
+      NULL
+    );
+  END IF;
+END $$;
 
 -- ========================================
 -- 4. BADGES POUR TOUS LES COMPTES
 -- ========================================
 
 -- Les badges seront auto-générés par le trigger après insertion des users
+-- Si le trigger n'est pas activé, créer manuellement les badges ici
 
 -- ========================================
 -- RÉSUMÉ DES COMPTES CRÉÉS
