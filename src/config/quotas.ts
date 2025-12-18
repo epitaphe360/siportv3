@@ -5,7 +5,7 @@
 
 export const VISITOR_QUOTAS: Record<string, number> = {
   free: 0,      // FREE: Aucun rendez-vous autorisé
-  premium: 10   // VIP: Maximum 10 rendez-vous actifs (confirmed + pending)
+  premium: -1   // VIP: Rendez-vous B2B ILLIMITÉS (conforme CDC)
 };
 
 export const getVisitorQuota = (level: string | undefined): number => {
@@ -25,7 +25,7 @@ export const calculateRemainingQuota = (
 
 export const VISITOR_LEVELS: Record<string, { label: string, color: string, icon: string, access: string[] }> = {
   free: { label: 'Free Pass', color: '#6c757d', icon: '🟢', access: ['Accès limité', 'Badge uniquement', 'Aucun rendez-vous'] },
-  premium: { label: 'Premium VIP Pass', color: '#ffd700', icon: '👑', access: ['Invitation inauguration', '10 rendez-vous B2B actifs', 'Networking illimité', 'Ateliers spécialisés', 'Soirée gala exclusive', 'Conférences', 'Déjeuners networking'] }
+  premium: { label: 'Premium VIP Pass', color: '#ffd700', icon: '👑', access: ['Invitation inauguration', 'Rendez-vous B2B ILLIMITÉS', 'Networking illimité', 'Ateliers spécialisés', 'Soirée gala exclusive', 'Conférences', 'Déjeuners networking'] }
 };
 
 /**

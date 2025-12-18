@@ -49,7 +49,7 @@ export const EXHIBITOR_QUOTAS: Record<ExhibitorLevel, ExhibitorQuotaConfig> = {
     icon: '📦',
 
     quotas: {
-      appointments: 15,
+      appointments: 0,  // CDC: 0 créneaux B2B (encourage montée gamme)
       teamMembers: 2,
       demoSessions: 3,
       mediaUploads: 5,
@@ -64,7 +64,7 @@ export const EXHIBITOR_QUOTAS: Record<ExhibitorLevel, ExhibitorQuotaConfig> = {
 
     features: [
       'Stand 9m² (3x3m)',
-      '15 rendez-vous B2B max',
+      'Aucun rendez-vous B2B (upgrade requis)',
       '2 badges exposant',
       '3 sessions démo',
       '5 fichiers média',
@@ -93,7 +93,7 @@ export const EXHIBITOR_QUOTAS: Record<ExhibitorLevel, ExhibitorQuotaConfig> = {
     icon: '🏪',
 
     quotas: {
-      appointments: 40,
+      appointments: 15,  // CDC: 15 créneaux B2B
       teamMembers: 4,
       demoSessions: 8,
       mediaUploads: 15,
@@ -108,7 +108,7 @@ export const EXHIBITOR_QUOTAS: Record<ExhibitorLevel, ExhibitorQuotaConfig> = {
 
     features: [
       'Stand 18m² (6x3m ou 4.5x4m)',
-      '40 rendez-vous B2B max',
+      '15 rendez-vous B2B max',
       '4 badges exposant',
       '8 sessions démo',
       '15 fichiers média',
@@ -134,7 +134,7 @@ export const EXHIBITOR_QUOTAS: Record<ExhibitorLevel, ExhibitorQuotaConfig> = {
     icon: '🏬',
 
     quotas: {
-      appointments: 100,
+      appointments: 30,  // CDC: 30 créneaux B2B
       teamMembers: 8,
       demoSessions: 20,
       mediaUploads: 40,
@@ -149,7 +149,7 @@ export const EXHIBITOR_QUOTAS: Record<ExhibitorLevel, ExhibitorQuotaConfig> = {
 
     features: [
       'Stand 36m² (6x6m ou config sur mesure)',
-      '100 rendez-vous B2B max',
+      '30 rendez-vous B2B max',
       '8 badges exposant',
       '20 sessions démo',
       '40 fichiers média',
