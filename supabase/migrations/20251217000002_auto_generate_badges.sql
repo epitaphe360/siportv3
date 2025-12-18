@@ -17,16 +17,16 @@ DECLARE
 BEGIN
   -- Construire le nom complet
   v_full_name := COALESCE(
-    NEW.profile->>'firstName' || ' ' || NEW.profile->>'lastName',
+    (NEW.profile::jsonb)->>'firstName' || ' ' || (NEW.profile::jsonb)->>'lastName',
     NEW.name,
     NEW.email
   );
 
   -- Récupérer les informations du profil
   v_email := NEW.email;
-  v_phone := NEW.profile->>'phone';
-  v_avatar_url := NEW.profile->>'avatar';
-  v_position := NEW.profile->>'position';
+  v_phone := (NEW.profile::jsonb)->>'phone';
+  v_avatar_url := (NEW.profile::jsonb)->>'avatar';
+  v_position := (NEW.profile::jsonb)->>'position';
   v_user_level := NEW.visitor_level;
 
   -- Si c'est un exposant, récupérer les infos de la table exhibitors
@@ -38,7 +38,7 @@ BEGIN
     LIMIT 1;
 
     -- Si pas d'entreprise trouvée dans exhibitors, utiliser le profil
-    v_company_name := COALESCE(v_company_name, NEW.profile->>'company');
+    v_company_name := COALESCE(v_company_name, (NEW.profile::jsonb)->>'company');
   END IF;
 
   -- Si c'est un partenaire, récupérer les infos de la table partners
@@ -50,12 +50,12 @@ BEGIN
     LIMIT 1;
 
     -- Si pas d'entreprise trouvée dans partners, utiliser le profil
-    v_company_name := COALESCE(v_company_name, NEW.profile->>'company');
+    v_company_name := COALESCE(v_company_name, (NEW.profile::jsonb)->>'company');
   END IF;
 
   -- Si c'est un visiteur, utiliser les infos du profil
   IF NEW.type = 'visitor' THEN
-    v_company_name := NEW.profile->>'company';
+    v_company_name := (NEW.profile::jsonb)->>'company';
   END IF;
 
   -- Générer ou mettre à jour le badge
@@ -109,10 +109,10 @@ BEGIN
       p_user_level := NULL,
       p_full_name := (SELECT name FROM users WHERE id = NEW."userId"),
       p_company_name := NEW."companyName",
-      p_position := (SELECT profile->>'position' FROM users WHERE id = NEW."userId"),
+      p_position := (SELECT (profile::jsonb)->>'position' FROM users WHERE id = NEW."userId"),
       p_email := (SELECT email FROM users WHERE id = NEW."userId"),
-      p_phone := (SELECT profile->>'phone' FROM users WHERE id = NEW."userId"),
-      p_avatar_url := (SELECT profile->>'avatar' FROM users WHERE id = NEW."userId"),
+      p_phone := (SELECT (profile::jsonb)->>'phone' FROM users WHERE id = NEW."userId"),
+      p_avatar_url := (SELECT (profile::jsonb)->>'avatar' FROM users WHERE id = NEW."userId"),
       p_stand_number := NEW."standNumber"
     );
   END IF;
@@ -139,10 +139,10 @@ BEGIN
       p_user_level := NULL,
       p_full_name := (SELECT name FROM users WHERE id = NEW."userId"),
       p_company_name := NEW."organizationName",
-      p_position := (SELECT profile->>'position' FROM users WHERE id = NEW."userId"),
+      p_position := (SELECT (profile::jsonb)->>'position' FROM users WHERE id = NEW."userId"),
       p_email := (SELECT email FROM users WHERE id = NEW."userId"),
-      p_phone := (SELECT profile->>'phone' FROM users WHERE id = NEW."userId"),
-      p_avatar_url := (SELECT profile->>'avatar' FROM users WHERE id = NEW."userId"),
+      p_phone := (SELECT (profile::jsonb)->>'phone' FROM users WHERE id = NEW."userId"),
+      p_avatar_url := (SELECT (profile::jsonb)->>'avatar' FROM users WHERE id = NEW."userId"),
       p_stand_number := NULL
     );
   END IF;
