@@ -446,8 +446,14 @@ export default function SubscriptionPage() {
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">{tier.name}</h3>
                 <p className="text-sm text-gray-600 mb-4">{tier.description}</p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-gray-900">{tier.price.toLocaleString()}</span>
-                  <span className="text-lg text-gray-600">{tier.currency}</span>
+                  {tier.price >= 2500 ? (
+                    <span className="text-4xl font-bold text-siports-primary">Sur devis</span>
+                  ) : (
+                    <>
+                      <span className="text-4xl font-bold text-gray-900">{tier.price.toLocaleString()}</span>
+                      <span className="text-lg text-gray-600">{tier.currency}</span>
+                    </>
+                  )}
                 </div>
               </div>
 
