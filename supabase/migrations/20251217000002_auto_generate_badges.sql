@@ -66,7 +66,7 @@ BEGIN
   -- Générer ou mettre à jour le badge
   PERFORM upsert_user_badge(
     p_user_id := NEW.id,
-    p_user_type := NEW.type,
+    p_user_type := NEW.type::text,
     p_user_level := v_user_level,
     p_full_name := v_full_name,
     p_company_name := v_company_name,
