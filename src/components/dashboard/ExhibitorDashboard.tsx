@@ -11,7 +11,7 @@ import { QRCodeCanvas as QRCode } from 'qrcode.react';
 import { useAppointmentStore } from '../../store/appointmentStore';
 import PublicAvailabilityCalendar from '../calendar/PublicAvailabilityCalendar';
 import PersonalAppointmentsCalendar from '../calendar/PersonalAppointmentsCalendar';
-import { Calendar, Zap } from 'lucide-react';
+import { Calendar, Zap, Building2, Eye, MessageSquare, Download, TrendingUp, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getVisitorDisplayName } from '../../utils/visitorHelpers';
 import { useDashboardStats } from '../../hooks/useDashboardStats';
@@ -20,6 +20,26 @@ import { ErrorMessage } from '../common/ErrorMessage';
 import { LevelBadge, QuotaSummaryCard } from '../common/QuotaWidget';
 import { getExhibitorLevelByArea, getExhibitorQuota } from '../../config/exhibitorQuotas';
 import { Users, FileText, Award, Scan } from 'lucide-react';
+
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5 }
+  }
+};
 
 export default function ExhibitorDashboard() {
   const qrCodeRef = useRef<HTMLCanvasElement>(null);
@@ -374,21 +394,39 @@ export default function ExhibitorDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-siports-light via-white to-siports-secondary/20">
-      {/* Header avec gradient SIPORTS */}
-      <div className="bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent text-white">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold mb-2">Tableau de Bord Exposant</h1>
-              <p className="text-xl opacity-90">Bienvenue {user?.profile.firstName}, gérez votre présence SIPORTS 2026</p>
-              <div className="mt-4 flex items-center space-x-3">
-                <Badge variant="info" size="md" className="bg-white/20 text-white border-white/30">
-                  {user?.profile.company}
-                </Badge>
-                <Badge variant="success" size="md" className="bg-green-500/20 text-green-100 border-green-400/30">
-                  Exposant Vérifié
-                </Badge>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
+      {/* Header avec gradient premium et glass morphism */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 rounded-2xl shadow-2xl mx-4 mt-4 mb-6 relative overflow-hidden"
+      >
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
+            backgroundSize: '40px 40px'
+          }}></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-6 py-8">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center space-x-4">
+              <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
+                <Building2 className="h-10 w-10 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-white mb-1">Tableau de Bord Exposant</h1>
+                <p className="text-blue-100">Bienvenue {user?.profile.firstName}, gérez votre présence SIPORTS 2026 ✨</p>
+                <div className="mt-3 flex items-center space-x-3">
+                  <Badge variant="info" size="md" className="bg-white/20 text-white border-white/30">
+                    {user?.profile.company}
+                  </Badge>
+                  <Badge variant="success" size="md" className="bg-green-500/20 text-green-100 border-green-400/30">
+                    Exposant Vérifié ✓
+                  </Badge>
+                </div>
               </div>
             </div>
             <div className="hidden md:flex flex-col items-end space-y-3">
@@ -398,13 +436,84 @@ export default function ExhibitorDashboard() {
                 size="lg"
               />
               <div className="text-right">
-                <div className="text-2xl font-bold">{new Date().toLocaleDateString('fr-FR')}</div>
-                <div className="text-sm opacity-75">{DEFAULT_SALON_CONFIG.name} - {DEFAULT_SALON_CONFIG.location.city}</div>
+                <div className="text-2xl font-bold text-white">{new Date().toLocaleDateString('fr-FR')}</div>
+                <div className="text-sm text-blue-100">{DEFAULT_SALON_CONFIG.name} - {DEFAULT_SALON_CONFIG.location.city}</div>
               </div>
             </div>
           </div>
+
+          {/* Mini Stats dans le header */}
+          <div className="relative mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-white/80 text-sm mb-1">Vues Mini-Site</div>
+                  <div className="text-2xl font-bold text-white">
+                    {dashboardStats?.miniSiteViews?.value?.toLocaleString?.() || '0'}
+                  </div>
+                </div>
+                <Eye className="h-8 w-8 text-white/60" />
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-white/80 text-sm mb-1">RDV</div>
+                  <div className="text-2xl font-bold text-white">
+                    {dashboardStats?.appointments?.value?.toString() || '0'}
+                  </div>
+                </div>
+                <Calendar className="h-8 w-8 text-white/60" />
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4 }}
+              className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-white/80 text-sm mb-1">Téléchargements</div>
+                  <div className="text-2xl font-bold text-white">
+                    {dashboardStats?.catalogDownloads?.value?.toString() || '0'}
+                  </div>
+                </div>
+                <Download className="h-8 w-8 text-white/60" />
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5 }}
+              className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-white/80 text-sm mb-1">Messages</div>
+                  <div className="text-2xl font-bold text-white">
+                    {dashboardStats?.messages?.value?.toString() || '0'}
+                  </div>
+                </div>
+                <MessageSquare className="h-8 w-8 text-white/60" />
+              </div>
+            </motion.div>
+          </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Bouton d'accès rapide mini-site */}
       <div className="max-w-7xl mx-auto px-4 mt-4 flex justify-end">
@@ -466,37 +575,84 @@ export default function ExhibitorDashboard() {
           />
         </div>
 
-        {/* Statistiques avec cartes améliorées */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <div 
-              key={index} 
+        {/* Statistiques avec cartes améliorées et animations */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+        >
+          {[
+            {
+              title: 'Vues Mini-Site',
+              value: dashboardStats?.miniSiteViews?.value?.toLocaleString?.() || '0',
+              icon: Eye,
+              change: dashboardStats?.miniSiteViews?.growth || '--',
+              changeType: dashboardStats?.miniSiteViews?.growthType || 'neutral',
+              type: 'miniSiteViews' as const,
+              gradient: 'from-green-500 to-green-600',
+              bgColor: 'bg-green-100'
+            },
+            {
+              title: 'Demandes de RDV',
+              value: dashboardStats?.appointments?.value?.toString() || '0',
+              icon: Calendar,
+              change: dashboardStats?.appointments?.growth || '--',
+              changeType: dashboardStats?.appointments?.growthType || 'neutral',
+              type: 'appointments' as const,
+              gradient: 'from-blue-500 to-blue-600',
+              bgColor: 'bg-blue-100'
+            },
+            {
+              title: 'Téléchargements',
+              value: dashboardStats?.catalogDownloads?.value?.toString() || '0',
+              icon: Download,
+              change: dashboardStats?.catalogDownloads?.growth || '--',
+              changeType: dashboardStats?.catalogDownloads?.growthType || 'neutral',
+              type: 'downloads' as const,
+              gradient: 'from-purple-500 to-purple-600',
+              bgColor: 'bg-purple-100'
+            },
+            {
+              title: 'Messages',
+              value: dashboardStats?.messages?.value?.toString() || '0',
+              icon: MessageSquare,
+              change: dashboardStats?.messages?.growth || '--',
+              changeType: dashboardStats?.messages?.growthType || 'neutral',
+              type: 'messages' as const,
+              gradient: 'from-orange-500 to-orange-600',
+              bgColor: 'bg-orange-100'
+            }
+          ].map((stat, index) => (
+            <motion.div
+              key={stat.title}
+              variants={itemVariants}
               className="cursor-pointer"
               onClick={() => handleStatClick(stat.type)}
             >
-              <Card className="siports-glass-card hover:shadow-siports-lg transition-all duration-300">
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-3xl">{stat.icon}</div>
-                    <div className={`text-sm font-medium px-2 py-1 rounded-full ${
-                      stat.changeType === 'positive' 
-                        ? 'bg-green-100 text-green-800' 
-                        : stat.changeType === 'negative'
-                        ? 'bg-red-100 text-red-800'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      {stat.change}
-                    </div>
+              <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-transparent hover:border-current group">
+                <div className="flex items-center justify-between mb-3">
+                  <div className={`p-3 bg-gradient-to-br ${stat.gradient} rounded-lg shadow-md group-hover:scale-110 transition-transform duration-300`}>
+                    <stat.icon className="h-6 w-6 text-white" />
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-600 mb-1">{stat.title}</p>
-                    <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+                  <div className={`text-sm font-medium px-3 py-1 rounded-full ${
+                    stat.changeType === 'positive'
+                      ? 'bg-green-100 text-green-800'
+                      : stat.changeType === 'negative'
+                      ? 'bg-red-100 text-red-800'
+                      : 'bg-gray-100 text-gray-800'
+                  }`}>
+                    {stat.change}
                   </div>
                 </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">{stat.title}</p>
+                  <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+                </div>
               </Card>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Section Système de Double Calendrier */}
         <div className="mb-12">
@@ -647,17 +803,25 @@ export default function ExhibitorDashboard() {
               </div>
             </Card>
 
-            {/* Activité Récente */}
-            <Card className="siports-glass-card mt-8">
+            {/* Activité Récente avec animations */}
+            <Card className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 mt-8">
               <div className="p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                  <span className="mr-2">📈</span>
+                  <div className="p-2 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg mr-3">
+                    <TrendingUp className="h-5 w-5 text-white" />
+                  </div>
                   Activité Récente
                 </h3>
-                <div className="space-y-4">
-                  {dashboard?.recentActivity?.slice(0, 5).map((activity) => (
-                    <div key={activity.id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                      <div className="flex-shrink-0 w-8 h-8 bg-siports-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
+                <div className="space-y-3">
+                  {dashboard?.recentActivity?.slice(0, 5).map((activity, index) => (
+                    <motion.div
+                      key={activity.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="flex items-start space-x-3 p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-green-600 to-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
                         {activity.type === 'profile_view' && '👁️'}
                         {activity.type === 'message' && '💬'}
                         {activity.type === 'appointment' && '📅'}
@@ -665,21 +829,21 @@ export default function ExhibitorDashboard() {
                         {activity.type === 'download' && '📥'}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-gray-900">{activity.description}</p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-sm text-gray-900 font-medium">{activity.description}</p>
+                        <p className="text-xs text-gray-500 mt-1">
                           {new Date(activity.timestamp).toLocaleString('fr-FR')}
                         </p>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                   {(!dashboard?.recentActivity || dashboard.recentActivity.length === 0) && (
                     <div className="text-center text-gray-500 py-4">Aucune activité récente</div>
                   )}
                 </div>
                 <div className="mt-4 pt-4 border-t border-gray-200">
-                  <Button 
-                    variant="ghost" 
-                    className="w-full text-siports-primary"
+                  <Button
+                    variant="ghost"
+                    className="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white hover:from-green-700 hover:to-blue-700"
                     onClick={handleViewAllActivities}
                   >
                     Voir toute l'activité
@@ -717,10 +881,20 @@ export default function ExhibitorDashboard() {
         </div>
       </div>
 
-      {/* Modal QR Code amélioré */}
+      {/* Modal QR Code amélioré avec animations */}
       {showQRModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md text-center relative overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+        >
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md text-center relative overflow-hidden"
+          >
             <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent"></div>
             <div className="mt-4">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">QR Code Stand Exposant</h2>
@@ -777,14 +951,24 @@ export default function ExhibitorDashboard() {
                 </Button>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
 
-      {/* Modal générique amélioré */}
+      {/* Modal générique amélioré avec animations */}
       {modal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-2xl relative overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+        >
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-2xl relative overflow-hidden"
+          >
             <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent"></div>
             <div className="mt-4">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">{modal.title}</h2>
@@ -793,8 +977,8 @@ export default function ExhibitorDashboard() {
                 <Button variant="default" onClick={() => setModal(null)}>Fermer</Button>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
     </div>
   );
