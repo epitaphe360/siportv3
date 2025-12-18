@@ -18,6 +18,12 @@ export default defineConfig({
       usePolling: true,
       interval: 1000,
     },
+    // Fix COEP issue with reCAPTCHA
+    middlewareMode: false,
+    headers: {
+      'Cross-Origin-Embedder-Policy': 'credentialless',
+      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups'
+    }
   },
   preview: {
     host: '0.0.0.0',
