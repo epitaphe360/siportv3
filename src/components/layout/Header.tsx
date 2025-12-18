@@ -197,6 +197,20 @@ export const Header: React.FC = memo(() => {
                           >
                             Métriques & Performance
                           </Link>
+                          <Link
+                            to="/security/scanner"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={closeProfile}
+                          >
+                            🔍 Scanner QR (Sécurité)
+                          </Link>
+                          <Link
+                            to="/badge/digital"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={closeProfile}
+                          >
+                            🎫 Mon Badge Digital
+                          </Link>
                           <hr className="my-1" />
                           <div className="px-4 py-2 text-xs text-red-600 font-medium">
                             Zone Administrateur
@@ -242,6 +256,13 @@ export const Header: React.FC = memo(() => {
                           >
                             Messages & Contact
                           </Link>
+                          <Link
+                            to="/badge/digital"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={closeProfile}
+                          >
+                            🎫 Mon Badge Digital
+                          </Link>
                         </>
                       )}
 
@@ -268,6 +289,20 @@ export const Header: React.FC = memo(() => {
                             onClick={closeProfile}
                           >
                             Networking VIP
+                          </Link>
+                          <Link
+                            to="/partner/payment-selection"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={closeProfile}
+                          >
+                            💳 Abonnement Partenaire
+                          </Link>
+                          <Link
+                            to="/badge/digital"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={closeProfile}
+                          >
+                            🎫 Mon Badge Digital
                           </Link>
                         </>
                       )}
@@ -302,6 +337,13 @@ export const Header: React.FC = memo(() => {
                             onClick={closeProfile}
                           >
                             Mes Rendez-vous
+                          </Link>
+                          <Link
+                            to="/badge/digital"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={closeProfile}
+                          >
+                            🎫 Mon Badge Digital
                           </Link>
                         </>
                       )}

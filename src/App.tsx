@@ -58,6 +58,10 @@ const PaymentValidationPage = React.lazy(() => import('./pages/admin/PaymentVali
 const BadgePage = React.lazy(() => import('./pages/BadgePage'));
 const PartnerUpgradePage = React.lazy(() => import('./pages/PartnerUpgradePage'));
 const BadgeScannerPage = React.lazy(() => import('./pages/BadgeScannerPage'));
+const PartnerBankTransferPage = React.lazy(() => import('./pages/partner/PartnerBankTransferPage'));
+const PartnerPaymentSelectionPage = React.lazy(() => import('./pages/partner/PartnerPaymentSelectionPage'));
+const DigitalBadge = React.lazy(() => import('./components/badge/DigitalBadge'));
+const QRScanner = React.lazy(() => import('./components/security/QRScanner'));
 
 // Admin pages
 const PavillonsAdminPage = React.lazy(() => import('./pages/admin/PavillonsPage'));
@@ -183,8 +187,12 @@ const App = () => {
             <Route path="/visitor/payment-success" element={<ProtectedRoute requiredRole="visitor"><PaymentSuccessPage /></ProtectedRoute>} />
             <Route path="/visitor/payment-instructions" element={<ProtectedRoute requiredRole="visitor"><PaymentInstructionsPage /></ProtectedRoute>} />
             <Route path={ROUTES.BADGE} element={<ProtectedRoute><BadgePage /></ProtectedRoute>} />
+            <Route path="/badge/digital" element={<ProtectedRoute><DigitalBadge /></ProtectedRoute>} />
             <Route path="/badge/scanner" element={<ProtectedRoute><BadgeScannerPage /></ProtectedRoute>} />
+            <Route path="/security/scanner" element={<ProtectedRoute requiredRole="security"><QRScanner /></ProtectedRoute>} />
             <Route path="/partner/upgrade" element={<ProtectedRoute requiredRole="partner"><PartnerUpgradePage /></ProtectedRoute>} />
+            <Route path="/partner/payment-selection" element={<ProtectedRoute requiredRole="partner"><PartnerPaymentSelectionPage /></ProtectedRoute>} />
+            <Route path="/partner/bank-transfer" element={<ProtectedRoute requiredRole="partner"><PartnerBankTransferPage /></ProtectedRoute>} />
             <Route path={ROUTES.MESSAGES} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path={ROUTES.CHAT} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path={ROUTES.APPOINTMENTS} element={<ProtectedRoute><AppointmentCalendar /></ProtectedRoute>} />
