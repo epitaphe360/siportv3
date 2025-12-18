@@ -225,7 +225,21 @@ const translations: Record<string, Record<string, string>> = {
     'common.view': 'عرض',
     'common.contact': 'اتصال',
     'common.download': 'تحميل',
-    'common.share': 'مشاركة'
+    'common.share': 'مشاركة',
+    
+    // Menu descriptions
+    'menu.pavilions_desc': 'المساحات الموضوعية',
+    'menu.events_desc': 'المؤتمرات والورش',
+    'menu.news_desc': 'أخبار الصناعة',
+    'menu.subscriptions_desc': 'العروض والأسعار',
+    
+    // Footer
+    'footer.copyright': '© {year} SIPORTS. جميع الحقوق محفوظة.',
+    'footer.privacy': 'سياسة الخصوصية',
+    'footer.terms': 'شروط الاستخدام',
+    'footer.cookies': 'ملفات تعريف الارتباط',
+    'footer.contact': 'اتصل بنا',
+    'footer.about': 'عن SIPORTS'
   },
   
   es: {
@@ -274,7 +288,21 @@ const translations: Record<string, Record<string, string>> = {
     'common.view': 'Ver',
     'common.contact': 'Contacto',
     'common.download': 'Descargar',
-    'common.share': 'Compartir'
+    'common.share': 'Compartir',
+    
+    // Menu descriptions
+    'menu.pavilions_desc': 'Espacios temáticos',
+    'menu.events_desc': 'Conferencias y talleres',
+    'menu.news_desc': 'Noticias de la industria',
+    'menu.subscriptions_desc': 'Ofertas y tarifas',
+    
+    // Footer
+    'footer.copyright': '© {year} SIPORTS. Todos los derechos reservados.',
+    'footer.privacy': 'Política de privacidad',
+    'footer.terms': 'Términos de uso',
+    'footer.cookies': 'Cookies',
+    'footer.contact': 'Contáctenos',
+    'footer.about': 'Acerca de SIPORTS'
   }
 };
 
