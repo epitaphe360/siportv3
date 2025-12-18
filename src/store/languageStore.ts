@@ -99,7 +99,21 @@ const translations: Record<string, Record<string, string>> = {
     'common.view': 'Voir',
     'common.contact': 'Contact',
     'common.download': 'Télécharger',
-    'common.share': 'Partager'
+    'common.share': 'Partager',
+    
+    // Menu descriptions
+    'menu.pavilions_desc': 'Espaces thématiques',
+    'menu.events_desc': 'Conférences & ateliers',
+    'menu.news_desc': 'Nouvelles du secteur',
+    'menu.subscriptions_desc': 'Offres & tarifs',
+    
+    // Footer
+    'footer.copyright': '© {year} SIPORTS. Tous droits réservés.',
+    'footer.privacy': 'Politique de Confidentialité',
+    'footer.terms': 'Conditions d\'Utilisation',
+    'footer.cookies': 'Cookies',
+    'footer.contact': 'Nous contacter',
+    'footer.about': '\xc0 propos de SIPORTS'
   },
   
   en: {
@@ -148,7 +162,21 @@ const translations: Record<string, Record<string, string>> = {
     'common.view': 'View',
     'common.contact': 'Contact',
     'common.download': 'Download',
-    'common.share': 'Share'
+    'common.share': 'Share',
+    
+    // Menu descriptions
+    'menu.pavilions_desc': 'Thematic spaces',
+    'menu.events_desc': 'Conferences & workshops',
+    'menu.news_desc': 'Industry news',
+    'menu.subscriptions_desc': 'Offers & rates',
+    
+    // Footer
+    'footer.copyright': '\u00a9 {year} SIPORTS. All rights reserved.',
+    'footer.privacy': 'Privacy Policy',
+    'footer.terms': 'Terms of Use',
+    'footer.cookies': 'Cookies',
+    'footer.contact': 'Contact Us',
+    'footer.about': 'About SIPORTS'
   },
   
   ar: {

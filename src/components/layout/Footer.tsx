@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
-import { ROUTES } from '../../lib/routes';
+import { useTranslation } from '../../hooks/useTranslation';
 import {
   Anchor,
   Mail,
@@ -15,6 +15,7 @@ import {
 // OPTIMIZATION: Memoized Footer component to prevent unnecessary re-renders
 export const Footer: React.FC = memo(() => {
   const currentYear = new Date().getFullYear();
+  const { t } = useTranslation();
 
   return (
     <footer className="bg-siports-dark text-white">
@@ -169,17 +170,17 @@ export const Footer: React.FC = memo(() => {
         {/* Bottom Bar */}
         <div className="border-t border-white/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-white/60 text-sm">
-            © {currentYear} SIPORTS. Tous droits réservés.
+            {t('footer.copyright').replace('{year}', currentYear.toString())}
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link to={ROUTES.PRIVACY} className="text-white/60 hover:text-white text-sm transition-colors">
-              Politique de Confidentialité
+              {t('footer.privacy')}
             </Link>
             <Link to={ROUTES.TERMS} className="text-white/60 hover:text-white text-sm transition-colors">
-              Conditions d'Utilisation
+              {t('footer.terms')}
             </Link>
             <Link to={ROUTES.COOKIES} className="text-white/60 hover:text-white text-sm transition-colors">
-              Cookies
+              {t('footer.cookies')}
             </Link>
           </div>
         </div>
