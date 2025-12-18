@@ -17,16 +17,21 @@ DECLARE
 BEGIN
   -- Construire le nom complet
   v_full_name := COALESCE(
-    safe_jsonb(NEW.profile::text)->>'firstName' || ' ' || safe_jsonb(NEW.profile::text)->>'lastName',
+    NULLIF(
+      CONCAT_WS(' ',
+        jsonb_extract_path_text(safe_jsonb(NEW.profile::text), 'firstName'),
+        jsonb_extract_path_text(safe_jsonb(NEW.profile::text), 'lastName')
+      ),
+    ''),
     NEW.name,
     NEW.email
   );
 
   -- Récupérer les informations du profil
   v_email := NEW.email;
-  v_phone := safe_jsonb(NEW.profile::text)->>'phone';
-  v_avatar_url := safe_jsonb(NEW.profile::text)->>'avatar';
-  v_position := safe_jsonb(NEW.profile::text)->>'position';
+  v_phone := jsonb_extract_path_text(safe_jsonb(NEW.profile::text), 'phone');
+  v_avatar_url := jsonb_extract_path_text(safe_jsonb(NEW.profile::text), 'avatar');
+  v_position := jsonb_extract_path_text(safe_jsonb(NEW.profile::text), 'position');
   v_user_level := NEW.visitor_level;
 
   -- Si c'est un exposant, récupérer les infos de la table exhibitors
@@ -38,7 +43,7 @@ BEGIN
     LIMIT 1;
 
     -- Si pas d'entreprise trouvée dans exhibitors, utiliser le profil
-    v_company_name := COALESCE(v_company_name, safe_jsonb(NEW.profile::text)->>'company');
+    v_company_name := COALESCE(v_company_name, jsonb_extract_path_text(safe_jsonb(NEW.profile::text), 'company'));
   END IF;
 
   -- Si c'est un partenaire, récupérer les infos de la table partners
@@ -50,12 +55,12 @@ BEGIN
     LIMIT 1;
 
     -- Si pas d'entreprise trouvée dans partners, utiliser le profil
-    v_company_name := COALESCE(v_company_name, safe_jsonb(NEW.profile::text)->>'company');
+    v_company_name := COALESCE(v_company_name, jsonb_extract_path_text(safe_jsonb(NEW.profile::text), 'company'));
   END IF;
 
   -- Si c'est un visiteur, utiliser les infos du profil
   IF NEW.type = 'visitor' THEN
-    v_company_name := safe_jsonb(NEW.profile::text)->>'company';
+    v_company_name := jsonb_extract_path_text(safe_jsonb(NEW.profile::text), 'company');
   END IF;
 
   -- Générer ou mettre à jour le badge
