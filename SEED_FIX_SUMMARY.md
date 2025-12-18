@@ -27,22 +27,35 @@ Created migration `20251217000000_create_profile_tables.sql` that creates all th
 - ✅ `partner_profiles` (user_id, company_name, contact_name, partnership_level, etc.)
 - ✅ `exhibitor_profiles` (user_id, company_name, stand_number, stand_area, etc.)
 
-### 2. Broken Badge Auto-Generation Triggers ❌ → ✅ DISABLED
+### 2. Broken Badge Auto-Generation Triggers ❌ → ✅ FIXED
 
 **Problem:**
-The `auto_generate_user_badge()` trigger tried to query columns that don't exist:
-- Queried: `"userId"`, `"companyName"`, `"standNumber"` (camelCase)
-- Actual columns: `user_id`, `company_name` (snake_case)
-- No `stand_number` column exists in old `exhibitors` table
+The `auto_generate_user_badge()` trigger caused errors during seed execution:
+```
+ERROR: 42703: column "id" does not exist
+QUERY: SELECT id, company_name FROM partner_profiles WHERE user_id = NEW.id
+```
 
-**Fix:**
-Created migration `20251217000004_disable_badge_triggers.sql` to disable the broken triggers:
-- Disabled `trigger_auto_generate_badge_on_insert`
-- Disabled `trigger_auto_generate_badge_on_update`
-- Disabled `trigger_update_badge_from_exhibitor`
-- Disabled `trigger_update_badge_from_partner`
+The trigger tried to query tables that don't exist yet when inserting users.
 
-Badges can be generated manually later using the `upsert_user_badge()` function.
+**Fix (Two-part solution):**
+
+**Part 1:** Created migration `20251217000004_disable_badge_triggers.sql` to permanently disable the broken triggers
+
+**Part 2:** Modified seed file to temporarily disable triggers during execution:
+```sql
+-- At start of seed file
+ALTER TABLE users DISABLE TRIGGER trigger_auto_generate_badge_on_insert;
+ALTER TABLE users DISABLE TRIGGER trigger_auto_generate_badge_on_update;
+
+-- ... insert all test data ...
+
+-- At end of seed file
+ALTER TABLE users ENABLE TRIGGER trigger_auto_generate_badge_on_insert;
+ALTER TABLE users ENABLE TRIGGER trigger_auto_generate_badge_on_update;
+```
+
+This allows the seed file to work even if migrations haven't been applied yet.
 
 ### 3. Missing Table Handling ❌ → ✅
 
