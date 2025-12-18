@@ -142,6 +142,11 @@ export default function MiniSitePreview() {
     .filter(article => article.category === 'Innovation')
     .slice(0, 6);
 
+  // Parallax effect for hero (hooks must be called unconditionally)
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 500], [0, 150]);
+  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+
   // Helper function to get section data
   const getSection = (sectionName: string) => {
     if (!miniSiteData?.sections) return null;
@@ -218,10 +223,7 @@ export default function MiniSitePreview() {
 
   const socialLinks = exhibitorData.contact_info?.social || {};
 
-  // Parallax effect for hero
-  const { scrollY } = useScroll();
-  const heroY = useTransform(scrollY, [0, 500], [0, 150]);
-  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+  // Parallax effect for hero (moved earlier to keep hooks order)
 
   // Animation variants
   const containerVariants = {

@@ -289,7 +289,16 @@ export class SupabaseService {
         employees: partner.employees
       }));
     } catch (error) {
-      console.error('Erreur lors de la récupération des partenaires:', error);
+      // Log détaillé pour faciliter le debug (message, details, hint si disponibles)
+      try {
+        console.error('Erreur lors de la récupération des partenaires:', {
+          message: (error as any)?.message || String(error),
+          details: (error as any)?.details || (error as any)?.hint || null,
+          raw: JSON.stringify(error)
+        });
+      } catch (e) {
+        console.error('Erreur lors de la récupération des partenaires (raw):', error);
+      }
       return [];
     }
   }
@@ -1594,24 +1603,78 @@ export class SupabaseService {
       if (error) throw error;
       return data || [];
     } catch (error) {
-      console.error('Erreur lors de la récupération des créneaux horaires:', error);
+      try {
+        console.error('Erreur lors de la récupération des créneaux horaires:', {
+          message: (error as any)?.message || String(error),
+          details: (error as any)?.details || (error as any)?.hint || null,
+          raw: JSON.stringify(error)
+        });
+      } catch (e) {
+        console.error('Erreur lors de la récupération des créneaux horaires (raw):', error);
+      }
       return [];
     }
+  }
+
+  // Compat: some components call getTimeSlotsByUser
+  static async getTimeSlotsByUser(userId: string): Promise<TimeSlot[]> {
+    return this.getTimeSlotsByExhibitor(userId);
   }
 
   static async createTimeSlot(slotData: Omit<TimeSlot, 'id' | 'currentBookings' | 'available'>): Promise<TimeSlot> {
     if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
     const safeSupabase = supabase!;
     try {
+      // Map frontend slotData to DB column names to handle schema differences
+      const insertPayload: any = {
+        exhibitor_id: (slotData as any).userId || (slotData as any).exhibitorId || null,
+        slot_date: (slotData as any).date || (slotData as any).slot_date || null,
+        start_time: (slotData as any).startTime || (slotData as any).start_time || null,
+        end_time: (slotData as any).endTime || (slotData as any).end_time || null,
+        duration: (slotData as any).duration || null,
+        type: (slotData as any).type || 'in-person',
+        max_bookings: (slotData as any).maxBookings ?? (slotData as any).max_bookings ?? 1,
+        current_bookings: (slotData as any).currentBookings ?? (slotData as any).current_bookings ?? 0,
+        available: ((slotData as any).currentBookings ?? 0) < ((slotData as any).maxBookings ?? 1),
+        location: (slotData as any).location || null,
+        description: (slotData as any).description || null
+      };
+
       const { data, error } = await safeSupabase
         .from('time_slots')
-        .insert([slotData])
+        .insert([insertPayload])
         .select()
         .single();
+
       if (error) throw error;
-      return data;
+
+      // Transform returned DB row into TimeSlot interface expected by frontend
+      const created: any = data;
+      const transformed: TimeSlot = {
+        id: created.id,
+        userId: created.exhibitor_id || created.user_id,
+        date: created.slot_date ? new Date(created.slot_date) : (created.date ? new Date(created.date) : new Date()),
+        startTime: created.start_time || created.startTime,
+        endTime: created.end_time || created.endTime,
+        duration: created.duration || 0,
+        type: created.type || 'in-person',
+        maxBookings: created.max_bookings || created.maxBookings || 1,
+        currentBookings: created.current_bookings || created.currentBookings || 0,
+        available: created.available ?? ((created.current_bookings || 0) < (created.max_bookings || 1)),
+        location: created.location
+      };
+
+      return transformed;
     } catch (error) {
-      console.error('Erreur lors de la création du créneau horaire:', error);
+      try {
+        console.error('Erreur lors de la création du créneau horaire:', {
+          message: (error as any)?.message || String(error),
+          details: (error as any)?.details || (error as any)?.hint || null,
+          raw: JSON.stringify(error)
+        });
+      } catch (e) {
+        console.error('Erreur lors de la création du créneau horaire (raw):', error);
+      }
       throw error;
     }
   }
