@@ -11,6 +11,7 @@ export const ROUTES = {
   LOGIN: '/login',
   FORGOT_PASSWORD: '/forgot-password',
   REGISTER: '/register',
+  REGISTER_VISITOR: '/register/visitor',
   REGISTER_EXHIBITOR: '/register/exhibitor',
   REGISTER_PARTNER: '/register/partner',
   SIGNUP_SUCCESS: '/signup-success',

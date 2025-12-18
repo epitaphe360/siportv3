@@ -372,7 +372,7 @@ export default function SubscriptionPage() {
     // Redirection selon le type d'offre
     if (tierId === 'visitor-free') {
       // Inscription gratuite - rediriger vers registration visiteur
-      navigate(ROUTES.REGISTER);
+      navigate(ROUTES.REGISTER_VISITOR);
     } else if (tierId === 'visitor-vip') {
       // Upgrade premium - rediriger vers page paiement
       navigate(ROUTES.VISITOR_UPGRADE);
