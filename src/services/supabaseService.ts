@@ -2126,5 +2126,357 @@ export class SupabaseService {
     }
   }
 
+  // ==================== NETWORKING EXTENSIONS ====================
+
+  /**
+   * Create a new connection between users
+   */
+  static async createConnection(addresseeId: string, message?: string): Promise<any> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+    const safeSupabase = supabase!;
+
+    try {
+      const { data: { user } } = await safeSupabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
+      const { data, error } = await safeSupabase
+        .from('connections')
+        .insert([{
+          requester_id: user.id,
+          addressee_id: addresseeId,
+          status: 'pending',
+          message: message || null
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Create notification for addressee
+      await this.createNotification(
+        addresseeId,
+        'Nouvelle demande de connexion',
+        `${user.email} souhaite se connecter avec vous`,
+        'connection',
+        'connection',
+        data.id
+      );
+
+      return data;
+    } catch (error) {
+      console.error('Erreur lors de la création de la connexion:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get all connections for a user (accepted connections only)
+   */
+  static async getUserConnections(userId?: string): Promise<any[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    const safeSupabase = supabase!;
+
+    try {
+      const { data: { user } } = await safeSupabase.auth.getUser();
+      const targetUserId = userId || user?.id;
+      if (!targetUserId) return [];
+
+      const { data, error } = await safeSupabase
+        .from('connections')
+        .select(`
+          *,
+          requester:requester_id(id, name, email, type, profile),
+          addressee:addressee_id(id, name, email, type, profile)
+        `)
+        .or(`requester_id.eq.${targetUserId},addressee_id.eq.${targetUserId}`)
+        .eq('status', 'accepted')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Erreur lors de la récupération des connexions:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Add entity to user favorites
+   */
+  static async addFavorite(entityType: string, entityId: string): Promise<any> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+    const safeSupabase = supabase!;
+
+    try {
+      const { data: { user } } = await safeSupabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
+      const { data, error } = await safeSupabase
+        .from('user_favorites')
+        .insert([{
+          user_id: user.id,
+          entity_type: entityType,
+          entity_id: entityId
+        }])
+        .select()
+        .single();
+
+      if (error) {
+        // If already exists, ignore (unique constraint violation)
+        if (error.code === '23505') {
+          return { message: 'Already in favorites' };
+        }
+        throw error;
+      }
+
+      // Create activity log
+      await this.createActivityLog(
+        user.id,
+        user.id,
+        'favorite_add',
+        `Ajouté ${entityType} aux favoris`,
+        entityType,
+        entityId
+      );
+
+      return data;
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout aux favoris:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Remove entity from user favorites
+   */
+  static async removeFavorite(entityType: string, entityId: string): Promise<void> {
+    if (!this.checkSupabaseConnection()) return;
+    const safeSupabase = supabase!;
+
+    try {
+      const { data: { user } } = await safeSupabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
+      const { error } = await safeSupabase
+        .from('user_favorites')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('entity_type', entityType)
+        .eq('entity_id', entityId);
+
+      if (error) throw error;
+
+      // Create activity log
+      await this.createActivityLog(
+        user.id,
+        user.id,
+        'favorite_remove',
+        `Retiré ${entityType} des favoris`,
+        entityType,
+        entityId
+      );
+    } catch (error) {
+      console.error('Erreur lors de la suppression du favori:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get user's favorites
+   */
+  static async getUserFavorites(userId?: string): Promise<any[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    const safeSupabase = supabase!;
+
+    try {
+      const { data: { user } } = await safeSupabase.auth.getUser();
+      const targetUserId = userId || user?.id;
+      if (!targetUserId) return [];
+
+      const { data, error } = await safeSupabase
+        .from('user_favorites')
+        .select('*')
+        .eq('user_id', targetUserId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Erreur lors de la récupération des favoris:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get pending connection requests for user
+   */
+  static async getPendingConnections(userId?: string): Promise<any[]> {
+    if (!this.checkSupabaseConnection()) return [];
+    const safeSupabase = supabase!;
+
+    try {
+      const { data: { user } } = await safeSupabase.auth.getUser();
+      const targetUserId = userId || user?.id;
+      if (!targetUserId) return [];
+
+      const { data, error } = await safeSupabase
+        .from('connections')
+        .select(`
+          *,
+          requester:requester_id(id, name, email, type, profile)
+        `)
+        .eq('addressee_id', targetUserId)
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Erreur lors de la récupération des demandes en attente:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get daily quotas for user (connections, appointments, etc.)
+   */
+  static async getDailyQuotas(userId?: string): Promise<any> {
+    if (!this.checkSupabaseConnection()) return null;
+    const safeSupabase = supabase!;
+
+    try {
+      const { data: { user } } = await safeSupabase.auth.getUser();
+      const targetUserId = userId || user?.id;
+      if (!targetUserId) return null;
+
+      // Get user to check their level/tier
+      const { data: userData, error: userError } = await safeSupabase
+        .from('users')
+        .select('type, visitor_level, partner_tier')
+        .eq('id', targetUserId)
+        .single();
+
+      if (userError) throw userError;
+
+      // Get today's start time
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // Get quota usage for today
+      const { data: quotaData, error: quotaError } = await safeSupabase
+        .from('quota_usage')
+        .select('*')
+        .eq('user_id', targetUserId)
+        .gte('created_at', today.toISOString());
+
+      if (quotaError) throw quotaError;
+
+      // Calculate limits based on user level
+      let limits = {
+        connections_per_day: 10,
+        appointments: 5,
+        favorites: 20
+      };
+
+      if (userData.type === 'visitor') {
+        switch (userData.visitor_level) {
+          case 'free':
+            limits = { connections_per_day: 10, appointments: 5, favorites: 20 };
+            break;
+          case 'premium':
+            limits = { connections_per_day: 30, appointments: 15, favorites: 50 };
+            break;
+          case 'vip':
+            limits = { connections_per_day: 9999, appointments: 9999, favorites: 9999 };
+            break;
+        }
+      }
+
+      // Calculate current usage
+      const usage = {
+        connections_today: quotaData?.filter(q => q.quota_type === 'connections').length || 0,
+        appointments_total: quotaData?.filter(q => q.quota_type === 'appointments').length || 0,
+        favorites_total: quotaData?.filter(q => q.quota_type === 'favorites').length || 0
+      };
+
+      return {
+        limits,
+        usage,
+        remaining: {
+          connections: Math.max(0, limits.connections_per_day - usage.connections_today),
+          appointments: Math.max(0, limits.appointments - usage.appointments_total),
+          favorites: Math.max(0, limits.favorites - usage.favorites_total)
+        }
+      };
+    } catch (error) {
+      console.error('Erreur lors de la récupération des quotas:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Helper: Create activity log entry
+   */
+  private static async createActivityLog(
+    userId: string,
+    actorId: string,
+    type: string,
+    description: string,
+    entityType?: string,
+    entityId?: string,
+    metadata?: any
+  ): Promise<void> {
+    if (!this.checkSupabaseConnection()) return;
+    const safeSupabase = supabase!;
+
+    try {
+      await safeSupabase
+        .from('activities')
+        .insert([{
+          user_id: userId,
+          actor_id: actorId,
+          type,
+          description,
+          entity_type: entityType || null,
+          entity_id: entityId || null,
+          metadata: metadata || {}
+        }]);
+    } catch (error) {
+      console.error('Erreur lors de la création du log d\'activité:', error);
+      // Don't throw - activity logging is not critical
+    }
+  }
+
+  /**
+   * Helper: Create notification for user
+   */
+  private static async createNotification(
+    userId: string,
+    title: string,
+    message: string,
+    type: string,
+    entityType?: string,
+    entityId?: string
+  ): Promise<void> {
+    if (!this.checkSupabaseConnection()) return;
+    const safeSupabase = supabase!;
+
+    try {
+      await safeSupabase
+        .from('notifications')
+        .insert([{
+          user_id: userId,
+          title,
+          message,
+          type,
+          entity_type: entityType || null,
+          entity_id: entityId || null
+        }]);
+    } catch (error) {
+      console.error('Erreur lors de la création de la notification:', error);
+      // Don't throw - notification is not critical
+    }
+  }
+
 }
 
