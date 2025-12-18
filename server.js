@@ -32,13 +32,33 @@ app.use((req, res, next) => {
   res.header('X-Frame-Options', 'DENY');
   res.header('X-XSS-Protection', '1; mode=block');
   res.header('Referrer-Policy', 'strict-origin-when-cross-origin');
+  // COEP for reCAPTCHA cross-origin resources
+  res.header('Cross-Origin-Embedder-Policy', 'credentialless');
+  res.header('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  next();
+});
+
+// Ensure proper MIME types for dynamic imports
+app.use((req, res, next) => {
+  if (req.path.endsWith('.js')) {
+    res.type('application/javascript');
+  } else if (req.path.endsWith('.wasm')) {
+    res.type('application/wasm');
+  }
   next();
 });
 
 // Serve static files from dist folder
 app.use(express.static(path.join(__dirname, 'dist'), {
   maxAge: '1y',
-  etag: true
+  etag: true,
+  setHeaders: (res, path) => {
+    if (path.endsWith('.js') || path.endsWith('.mjs')) {
+      res.setHeader('Content-Type', 'application/javascript;charset=UTF-8');
+    } else if (path.endsWith('.wasm')) {
+      res.setHeader('Content-Type', 'application/wasm');
+    }
+  }
 }));
 
 // SPA fallback - serve index.html for all routes
