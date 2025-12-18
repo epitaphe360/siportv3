@@ -11,7 +11,10 @@ import {
   BarChart3,
   Crown,
   Zap,
-  FileText
+  FileText,
+  Activity,
+  Sparkles,
+  Shield
 } from 'lucide-react';
 import { useAppointmentStore } from '../../store/appointmentStore';
 import { Card } from '../ui/Card';
@@ -47,7 +50,7 @@ export default function PartnerDashboard() {
 
   useEffect(() => {
     if (!user || user.type !== 'partner') return;
-    
+
     const loadData = async () => {
       try {
         await fetchDashboard();
@@ -62,7 +65,7 @@ export default function PartnerDashboard() {
 
   useEffect(() => {
     if (!user || user.type !== 'partner') return;
-    
+
     const loadAppointments = async () => {
       try {
         await fetchAppointments();
@@ -75,22 +78,50 @@ export default function PartnerDashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]); // Intentionally fetch only on mount
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 }
+    }
+  };
+
   // RBAC: Verify user is a partner - APRÈS tous les hooks
   if (!user || user.type !== 'partner') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center p-4">
-        <Card className="max-w-md w-full p-8 text-center">
-          <div className="text-6xl mb-4">🚫</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Accès Non Autorisé</h2>
-          <p className="text-gray-600 mb-6">
-            Ce tableau de bord est réservé aux partenaires SIPORTS 2026.
-          </p>
-          <Link to={ROUTES.DASHBOARD}>
-            <Button variant="primary" className="w-full">
-              Retour au Tableau de Bord
-            </Button>
-          </Link>
-        </Card>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-md w-full"
+        >
+          <Card className="p-8 text-center bg-white rounded-2xl shadow-2xl">
+            <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
+              <Shield className="h-10 w-10 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Accès Non Autorisé</h2>
+            <p className="text-gray-600 mb-6">
+              Ce tableau de bord est réservé aux partenaires SIPORTS 2026.
+            </p>
+            <Link to={ROUTES.DASHBOARD}>
+              <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                Retour au Tableau de Bord
+              </Button>
+            </Link>
+          </Card>
+        </motion.div>
       </div>
     );
   }
@@ -153,9 +184,12 @@ export default function PartnerDashboard() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 p-6">
         <div className="max-w-7xl mx-auto">
-          <LoadingMessage message="Chargement du tableau de bord partenaire..." />
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-purple-600 mx-auto mb-4"></div>
+            <LoadingMessage message="Chargement du tableau de bord partenaire..." />
+          </div>
         </div>
       </div>
     );
@@ -163,10 +197,14 @@ export default function PartnerDashboard() {
 
   if (!dashboard && dashboardError) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center max-w-md">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 flex items-center justify-center p-4">
+        <div className="text-center max-w-md bg-white rounded-2xl shadow-2xl p-8">
           <ErrorMessage message={dashboardError} />
-          <Button onClick={() => fetchDashboard()} className="mt-4">
+          <Button
+            onClick={() => fetchDashboard()}
+            className="mt-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+          >
+            <Activity className="h-4 w-4 mr-2" />
             Réessayer
           </Button>
         </div>
@@ -174,333 +212,396 @@ export default function PartnerDashboard() {
     );
   }
 
+  const partnerTier = (user.partner_tier || user.profile?.partner_tier || 'museum') as string;
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Messages d'erreur */}
         {(error || dashboardError) && (
-          <ErrorMessage 
-            message={error || dashboardError || 'Une erreur est survenue'} 
-            onDismiss={() => setError(null)}
-          />
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6"
+          >
+            <ErrorMessage
+              message={error || dashboardError || 'Une erreur est survenue'}
+              onDismiss={() => setError(null)}
+            />
+          </motion.div>
         )}
 
-        {/* Header Partenaire */}
-        <div className="mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-3">
-                <div className="bg-purple-600 p-3 rounded-lg">
-                  <Award className="h-8 w-8 text-white" />
+        {/* Header Premium Partenaire */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-8"
+        >
+          <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-2xl shadow-2xl p-8 mb-6 relative overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute inset-0" style={{
+                backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
+                backgroundSize: '40px 40px'
+              }}></div>
+            </div>
+
+            <div className="relative flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center space-x-4">
+                <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
+                  <Crown className="h-10 w-10 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900">
-                    Tableau de Bord Partenaire
+                  <h1 className="text-3xl font-bold text-white mb-1">
+                    Espace Partenaire
                   </h1>
-                  <p className="text-gray-600">
-                    Bienvenue {user?.profile?.firstName || 'Partenaire'}, suivez votre impact SIPORTS 2026
+                  <p className="text-pink-100">
+                    Bienvenue {user?.profile?.firstName || 'Partenaire'}, tier {partnerTier.toUpperCase()} ✨
                   </p>
                 </div>
               </div>
-              <LevelBadge
-                level={(user.partner_tier || user.profile?.partner_tier || 'museum') as string}
-                type="partner"
-                size="lg"
-              />
+              <div className="flex items-center space-x-3">
+                <div className="hidden md:flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <span className="text-white text-sm font-medium">Actif</span>
+                </div>
+                <LevelBadge
+                  level={partnerTier}
+                  type="partner"
+                  size="lg"
+                />
+              </div>
             </div>
-          </motion.div>
-        </div>
+
+            {/* Mini Stats dans le header */}
+            <div className="relative mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-white/80 text-sm mb-1">Visibilité</div>
+                    <div className="text-2xl font-bold text-white">
+                      {dashboardStats?.profileViews.value.toLocaleString() || '0'}
+                    </div>
+                  </div>
+                  <Star className="h-8 w-8 text-white/60" />
+                </div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-white/80 text-sm mb-1">Connexions</div>
+                    <div className="text-2xl font-bold text-white">
+                      {dashboardStats?.connections.value || '0'}
+                    </div>
+                  </div>
+                  <Handshake className="h-8 w-8 text-white/60" />
+                </div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-white/80 text-sm mb-1">Rendez-vous</div>
+                    <div className="text-2xl font-bold text-white">
+                      {dashboardStats?.appointments.value || '0'}
+                    </div>
+                  </div>
+                  <Calendar className="h-8 w-8 text-white/60" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
 
         {/* Quota Summary Card */}
-        <div className="mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mb-8"
+        >
           <QuotaSummaryCard
             title="Vos Quotas Partenaire"
-            level={(user.partner_tier || user.profile?.partner_tier || 'museum') as string}
+            level={partnerTier}
             type="partner"
             quotas={[
               {
                 label: 'Rendez-vous B2B',
                 current: confirmedAppointments.length,
-                limit: getPartnerQuota(user.partner_tier || 'museum', 'appointments'),
+                limit: getPartnerQuota(partnerTier as PartnerTier, 'appointments'),
                 icon: <Calendar className="h-4 w-4 text-gray-400" />
               },
               {
                 label: 'Membres équipe',
                 current: dashboardStats?.teamMembers?.value || 0,
-                limit: getPartnerQuota(user.partner_tier || 'museum', 'teamMembers'),
+                limit: getPartnerQuota(partnerTier as PartnerTier, 'teamMembers'),
                 icon: <Users className="h-4 w-4 text-gray-400" />
               },
               {
                 label: 'Fichiers média',
                 current: dashboardStats?.mediaUploads?.value || 0,
-                limit: getPartnerQuota(user.partner_tier || 'museum', 'mediaUploads'),
+                limit: getPartnerQuota(partnerTier as PartnerTier, 'mediaUploads'),
                 icon: <FileText className="h-4 w-4 text-gray-400" />
               },
               {
                 label: 'Leads exportés ce mois',
                 current: dashboardStats?.leadExports?.value || 0,
-                limit: getPartnerQuota(user.partner_tier || 'museum', 'leadExports'),
+                limit: getPartnerQuota(partnerTier as PartnerTier, 'leadExports'),
                 icon: <TrendingUp className="h-4 w-4 text-gray-400" />
               }
             ]}
             upgradeLink="/partner/upgrade"
           />
-        </div>
+        </motion.div>
 
-        {/* Stats Cards Partenaire */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            <Card>
-              <div className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Visibilité Partenaire</p>
-                    <p className="text-3xl font-bold text-gray-900">
-                      {dashboardStats?.profileViews.value.toLocaleString() || '0'}
-                    </p>
+        {/* Stats Cards Partenaire avec animations */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+        >
+          {[
+            {
+              label: 'Visibilité Partenaire',
+              value: dashboardStats?.profileViews.value.toLocaleString() || '0',
+              growth: dashboardStats?.profileViews.growth || '--',
+              icon: Crown,
+              gradient: 'from-purple-500 to-purple-600',
+              bg: 'bg-purple-100'
+            },
+            {
+              label: 'Connexions Établies',
+              value: dashboardStats?.connections.value || '0',
+              growth: dashboardStats?.connections.growth || '--',
+              icon: Handshake,
+              gradient: 'from-orange-500 to-orange-600',
+              bg: 'bg-orange-100'
+            },
+            {
+              label: 'Rendez-vous',
+              value: dashboardStats?.appointments.value || '0',
+              growth: dashboardStats?.appointments.growth || '--',
+              icon: Calendar,
+              gradient: 'from-blue-500 to-blue-600',
+              bg: 'bg-blue-100'
+            },
+            {
+              label: 'Messages',
+              value: dashboardStats?.messages.value || '0',
+              growth: dashboardStats?.messages.growth || '--',
+              icon: TrendingUp,
+              gradient: 'from-green-500 to-emerald-600',
+              bg: 'bg-green-100'
+            }
+          ].map((stat, index) => (
+            <motion.div key={stat.label} variants={itemVariants}>
+              <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-transparent hover:border-current group">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-600">{stat.label}</p>
+                    <p className="text-3xl font-bold text-gray-900 mt-1">{stat.value}</p>
                   </div>
-                  <div className="bg-purple-100 p-3 rounded-lg">
-                    <Crown className="h-6 w-6 text-purple-600" />
-                  </div>
-                </div>
-                <div className="mt-4 flex items-center">
-                  <span className="text-sm text-gray-600">{dashboardStats?.profileViews.growth || '--'}</span>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <Card>
-              <div className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Connexions Établies</p>
-                    <p className="text-3xl font-bold text-gray-900">
-                      {dashboardStats?.connections.value || '0'}
-                    </p>
-                  </div>
-                  <div className="bg-orange-100 p-3 rounded-lg">
-                    <Handshake className="h-6 w-6 text-orange-600" />
-                  </div>
-                </div>
-                <div className="mt-4 flex items-center">
-                  <span className="text-sm text-gray-600">{dashboardStats?.connections.growth || '--'}</span>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <Card>
-              <div className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Rendez-vous</p>
-                    <p className="text-3xl font-bold text-gray-900">
-                      {dashboardStats?.appointments.value || '0'}
-                    </p>
-                  </div>
-                  <div className="bg-blue-100 p-3 rounded-lg">
-                    <Calendar className="h-6 w-6 text-blue-600" />
+                  <div className={`p-3 bg-gradient-to-br ${stat.gradient} rounded-lg shadow-md group-hover:scale-110 transition-transform duration-300`}>
+                    <stat.icon className="h-6 w-6 text-white" />
                   </div>
                 </div>
-                <div className="mt-4 flex items-center">
-                  <span className="text-sm text-gray-600">{dashboardStats?.appointments.growth || '--'}</span>
+                <div className="flex items-center">
+                  <Badge variant="success" className="text-xs">
+                    <TrendingUp className="h-3 w-3 mr-1" />
+                    {stat.growth}
+                  </Badge>
                 </div>
-              </div>
-            </Card>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            <Card>
-              <div className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Messages</p>
-                    <p className="text-3xl font-bold text-gray-900">
-                      {dashboardStats?.messages.value || '0'}
-                    </p>
-                  </div>
-                  <div className="bg-green-100 p-3 rounded-lg">
-                    <TrendingUp className="h-6 w-6 text-green-600" />
-                  </div>
-                </div>
-                <div className="mt-4 flex items-center">
-                  <span className="text-sm text-gray-600">{dashboardStats?.messages.growth || '--'}</span>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-        </div>
+              </Card>
+            </motion.div>
+          ))}
+        </motion.div>
 
         {/* Actions Rapides Partenaire */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
-          >
-            <Card>
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
+        >
+          <motion.div variants={itemVariants}>
+            <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 h-full">
+              <div className="flex items-center space-x-2 mb-6">
+                <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+                  <Globe className="h-5 w-5 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">
                   Gestion de votre Partenariat
                 </h3>
-                
-                <div className="space-y-4">
-                  <Link to="/partners" className="block">
-                    <Button className="w-full justify-start">
-                      <Globe className="h-4 w-4 mr-3" />
-                      Modifier mon Profil Partenaire
-                    </Button>
-                  </Link>
-                  
-                  <Link to="/partners" className="block">
-                    <Button className="w-full justify-start" variant="outline">
-                      <Edit className="h-4 w-4 mr-3" />
-                      Modifier mon Contenu
-                    </Button>
-                  </Link>
-                  
-                  <Link to="/networking" className="block">
-                    <Button className="w-full justify-start" variant="outline">
-                      <Users className="h-4 w-4 mr-3" />
-                      Réseautage VIP Exclusif
-                    </Button>
-                  </Link>
-                  
-                  <Link to="/partners" className="block">
-                    <Button className="w-full justify-start" variant="outline">
-                      <BarChart3 className="h-4 w-4 mr-3" />
-                      ROI & Analytics
-                    </Button>
-                  </Link>
-                </div>
+              </div>
+
+              <div className="space-y-3">
+                <Link to="/partners" className="block">
+                  <Button className="w-full justify-start bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-md hover:shadow-lg transition-all">
+                    <Globe className="h-4 w-4 mr-3" />
+                    Modifier mon Profil Partenaire
+                  </Button>
+                </Link>
+
+                <Link to="/partners" className="block">
+                  <Button className="w-full justify-start border-2 hover:bg-gray-50" variant="outline">
+                    <Edit className="h-4 w-4 mr-3" />
+                    Modifier mon Contenu
+                  </Button>
+                </Link>
+
+                <Link to="/networking" className="block">
+                  <Button className="w-full justify-start border-2 hover:bg-gray-50" variant="outline">
+                    <Users className="h-4 w-4 mr-3" />
+                    Réseautage VIP Exclusif
+                  </Button>
+                </Link>
+
+                <Link to="/partners" className="block">
+                  <Button className="w-full justify-start border-2 hover:bg-gray-50" variant="outline">
+                    <BarChart3 className="h-4 w-4 mr-3" />
+                    ROI & Analytics
+                  </Button>
+                </Link>
               </div>
             </Card>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6 }}
-          >
-            <Card>
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6">
+          <motion.div variants={itemVariants}>
+            <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 h-full">
+              <div className="flex items-center space-x-2 mb-6">
+                <div className="p-2 bg-gradient-to-br from-orange-500 to-pink-600 rounded-lg">
+                  <Target className="h-5 w-5 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">
                   Impact de votre Partenariat
                 </h3>
-                
-                <div className="space-y-4">
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-sm text-gray-600 mb-2">
-                      Les métriques d'impact détaillées seront disponibles prochainement.
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      Nous travaillons sur un système de tracking complet pour mesurer l'impact de votre partenariat.
-                    </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-orange-50 to-pink-50 p-4 rounded-lg border border-orange-200">
+                  <div className="flex items-start space-x-3">
+                    <Sparkles className="h-5 w-5 text-orange-600 mt-0.5" />
+                    <div>
+                      <p className="text-sm text-gray-900 font-medium mb-1">
+                        Analytics Avancées
+                      </p>
+                      <p className="text-xs text-gray-600">
+                        Les métriques d'impact détaillées seront disponibles prochainement pour mesurer votre ROI.
+                      </p>
+                    </div>
                   </div>
-                  
-                  <div className="pt-4 border-t border-gray-200">
-                    <Link to="/partners">
-                      <Button className="w-full">
-                        <BarChart3 className="h-4 w-4 mr-2" />
-                        Voir les Analytics
-                      </Button>
-                    </Link>
-                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <Link to="/partners">
+                    <Button className="w-full bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-700 hover:to-pink-700 shadow-md hover:shadow-lg transition-all">
+                      <BarChart3 className="h-4 w-4 mr-2" />
+                      Voir les Analytics
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </Card>
           </motion.div>
-        </div>
+        </motion.div>
 
-        {/* Bloc Rendez-vous reçus/confirmés pour Partenaire */}
+        {/* Bloc Rendez-vous */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
+          transition={{ delay: 0.3 }}
+          className="mb-8"
         >
-          <Card>
-            <div className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <Calendar className="h-5 w-5 mr-2 text-purple-600" />
-                Rendez-vous reçus
-              </h3>
-              {isAppointmentsLoading ? (
-                <LoadingMessage message="Chargement des rendez-vous..." />
-              ) : (
-                <>
-                  {pendingAppointments.length === 0 && (
-                    <div className="text-center text-gray-500 py-4">Aucune demande en attente</div>
-                  )}
-                  {pendingAppointments.map((app: any) => (
-                    <div key={app.id} className="flex items-center justify-between border-b py-2 last:border-b-0">
-                      <div>
-                        <div className="font-medium text-gray-900">
-                          Demande de {getVisitorDisplayName(app)}
-                        </div>
-                        <div className="text-xs text-gray-600">{app.message || 'Aucun message'}</div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="default"
-                          onClick={() => handleAccept(app.id)}
-                          disabled={processingAppointment === app.id}
-                        >
-                          {processingAppointment === app.id ? 'Confirmation...' : 'Accepter'}
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => handleReject(app.id)}
-                          disabled={processingAppointment === app.id}
-                        >
-                          {processingAppointment === app.id ? 'Refus...' : 'Refuser'}
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                  
-                  <h4 className="text-lg font-semibold text-gray-900 mt-6 mb-2">Rendez-vous confirmés</h4>
-                  {confirmedAppointments.length === 0 ? (
-                    <div className="text-center text-gray-500 py-2">Aucun rendez-vous confirmé</div>
-                  ) : (
-                    confirmedAppointments.map((app: any) => (
-                      <div key={app.id} className="flex items-center justify-between border-b py-2 last:border-b-0">
-                        <div>
-                          <div className="font-medium text-gray-900">
-                            Avec {getVisitorDisplayName(app)}
-                          </div>
-                          <div className="text-xs text-gray-600">{app.message || 'Aucun message'}</div>
-                        </div>
-                        <Badge variant="success">Confirmé</Badge>
-                      </div>
-                    ))
-                  )}
-                </>
-              )}
+          <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center space-x-2 mb-6">
+              <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+                <Calendar className="h-5 w-5 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">Rendez-vous reçus</h3>
             </div>
+            {isAppointmentsLoading ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+                <p className="text-gray-500 mt-4">Chargement...</p>
+              </div>
+            ) : (
+              <>
+                {pendingAppointments.length === 0 && (
+                  <div className="text-center py-6">
+                    <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-3" />
+                    <p className="text-gray-500">Aucune demande en attente</p>
+                  </div>
+                )}
+                {pendingAppointments.map((app: any, index: number) => (
+                  <motion.div
+                    key={app.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="flex items-center justify-between border-b py-4 last:border-b-0 hover:bg-gray-50 px-3 rounded-lg transition-colors"
+                  >
+                    <div className="flex-1">
+                      <div className="font-medium text-gray-900 flex items-center">
+                        <Badge variant="warning" className="mr-2">Nouveau</Badge>
+                        Demande de {getVisitorDisplayName(app)}
+                      </div>
+                      <div className="text-sm text-gray-600 mt-1">{app.message || 'Aucun message'}</div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                        onClick={() => handleAccept(app.id)}
+                        disabled={processingAppointment === app.id}
+                      >
+                        {processingAppointment === app.id ? 'Confirmation...' : 'Accepter'}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleReject(app.id)}
+                        disabled={processingAppointment === app.id}
+                      >
+                        {processingAppointment === app.id ? 'Refus...' : 'Refuser'}
+                      </Button>
+                    </div>
+                  </motion.div>
+                ))}
+
+                <h4 className="text-lg font-semibold text-gray-900 mt-6 mb-3 flex items-center">
+                  <Award className="h-5 w-5 mr-2 text-green-500" />
+                  Rendez-vous confirmés
+                </h4>
+                {confirmedAppointments.length === 0 ? (
+                  <div className="text-center py-4">
+                    <Award className="h-12 w-12 text-gray-300 mx-auto mb-2" />
+                    <p className="text-gray-500 text-sm">Aucun rendez-vous confirmé</p>
+                  </div>
+                ) : (
+                  confirmedAppointments.map((app: any, index: number) => (
+                    <motion.div
+                      key={app.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="flex items-center justify-between border-b py-4 last:border-b-0 hover:bg-green-50 px-3 rounded-lg transition-colors"
+                    >
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900">
+                          Avec {getVisitorDisplayName(app)}
+                        </div>
+                        <div className="text-sm text-gray-600 mt-1">{app.message || 'Aucun message'}</div>
+                      </div>
+                      <Badge variant="success" className="shadow-sm">
+                        <Award className="h-3 w-3 mr-1" />
+                        Confirmé
+                      </Badge>
+                    </motion.div>
+                  ))
+                )}
+              </>
+            )}
           </Card>
         </motion.div>
 
@@ -508,37 +609,45 @@ export default function PartnerDashboard() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="mt-8"
+          transition={{ delay: 0.4 }}
         >
-          <Card>
-            <div className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <Zap className="h-5 w-5 mr-2 text-purple-600" />
-                Activité Récente
-              </h3>
-              <div className="space-y-4">
-                {dashboard?.recentActivity?.slice(0, 5).map((activity) => (
-                  <div key={activity.id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                    <div className="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
-                      {activity.type === 'profile_view' && '👁️'}
-                      {activity.type === 'message' && '💬'}
-                      {activity.type === 'appointment' && '📅'}
-                      {activity.type === 'connection' && '🤝'}
-                      {activity.type === 'download' && '📥'}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-gray-900">{activity.description}</p>
-                      <p className="text-xs text-gray-500">
-                        {new Date(activity.timestamp).toLocaleString('fr-FR')}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-                {(!dashboard?.recentActivity || dashboard.recentActivity.length === 0) && (
-                  <div className="text-center text-gray-500 py-4">Aucune activité récente</div>
-                )}
+          <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center space-x-2 mb-6">
+              <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+                <Zap className="h-5 w-5 text-white" />
               </div>
+              <h3 className="text-lg font-semibold text-gray-900">Activité Récente</h3>
+            </div>
+            <div className="space-y-3">
+              {dashboard?.recentActivity?.slice(0, 5).map((activity, index) => (
+                <motion.div
+                  key={activity.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="flex items-start space-x-3 p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg hover:shadow-md transition-shadow"
+                >
+                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-purple-600 to-pink-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                    {activity.type === 'profile_view' && '👁️'}
+                    {activity.type === 'message' && '💬'}
+                    {activity.type === 'appointment' && '📅'}
+                    {activity.type === 'connection' && '🤝'}
+                    {activity.type === 'download' && '📥'}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-gray-900 font-medium">{activity.description}</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {new Date(activity.timestamp).toLocaleString('fr-FR')}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+              {(!dashboard?.recentActivity || dashboard.recentActivity.length === 0) && (
+                <div className="text-center py-6">
+                  <Zap className="h-12 w-12 text-gray-300 mx-auto mb-2" />
+                  <p className="text-gray-500">Aucune activité récente</p>
+                </div>
+              )}
             </div>
           </Card>
         </motion.div>
