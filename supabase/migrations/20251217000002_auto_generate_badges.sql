@@ -36,10 +36,10 @@ BEGIN
 
   -- Si c'est un exposant, récupérer les infos de la table exhibitors
   IF NEW.type = 'exhibitor' THEN
-    SELECT id, "companyName", "standNumber"
+    SELECT id, company_name, stand_number
     INTO v_exhibitor_id, v_company_name, v_stand_number
-    FROM exhibitors
-    WHERE "userId" = NEW.id
+    FROM exhibitor_profiles
+    WHERE user_id = NEW.id
     LIMIT 1;
 
     -- Si pas d'entreprise trouvée dans exhibitors, utiliser le profil
@@ -48,10 +48,10 @@ BEGIN
 
   -- Si c'est un partenaire, récupérer les infos de la table partners
   IF NEW.type = 'partner' THEN
-    SELECT id, "organizationName"
+    SELECT id, company_name
     INTO v_partner_id, v_company_name
-    FROM partners
-    WHERE "userId" = NEW.id
+    FROM partner_profiles
+    WHERE user_id = NEW.id
     LIMIT 1;
 
     -- Si pas d'entreprise trouvée dans partners, utiliser le profil
@@ -107,18 +107,18 @@ CREATE OR REPLACE FUNCTION auto_update_badge_from_exhibitor()
 RETURNS TRIGGER AS $$
 BEGIN
   -- Mettre à jour le badge de l'utilisateur lié
-  IF NEW."userId" IS NOT NULL THEN
+  IF NEW.user_id IS NOT NULL THEN
     PERFORM upsert_user_badge(
-      p_user_id := NEW."userId",
+      p_user_id := NEW.user_id,
       p_user_type := 'exhibitor',
       p_user_level := NULL,
-      p_full_name := (SELECT name FROM users WHERE id = NEW."userId"),
-      p_company_name := NEW."companyName",
-      p_position := (SELECT safe_jsonb(profile::text)->>'position' FROM users WHERE id = NEW."userId"),
-      p_email := (SELECT email FROM users WHERE id = NEW."userId"),
-      p_phone := (SELECT safe_jsonb(profile::text)->>'phone' FROM users WHERE id = NEW."userId"),
-      p_avatar_url := (SELECT safe_jsonb(profile::text)->>'avatar' FROM users WHERE id = NEW."userId"),
-      p_stand_number := NEW."standNumber"
+      p_full_name := (SELECT name FROM users WHERE id = NEW.user_id),
+      p_company_name := NEW.company_name,
+      p_position := (SELECT safe_jsonb(profile::text)->>'position' FROM users WHERE id = NEW.user_id),
+      p_email := (SELECT email FROM users WHERE id = NEW.user_id),
+      p_phone := (SELECT safe_jsonb(profile::text)->>'phone' FROM users WHERE id = NEW.user_id),
+      p_avatar_url := (SELECT safe_jsonb(profile::text)->>'avatar' FROM users WHERE id = NEW.user_id),
+      p_stand_number := NEW.stand_number
     );
   END IF;
 
@@ -126,28 +126,29 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-DROP TRIGGER IF EXISTS trigger_update_badge_from_exhibitor ON exhibitors;
+DROP TRIGGER IF EXISTS trigger_update_badge_from_exhibitor ON exhibitor_profiles;
 CREATE TRIGGER trigger_update_badge_from_exhibitor
-  AFTER INSERT OR UPDATE ON exhibitors
+  AFTER INSERT OR UPDATE ON exhibitor_profiles
   FOR EACH ROW
   EXECUTE FUNCTION auto_update_badge_from_exhibitor();
+
 
 -- Trigger pour mettre à jour le badge quand le partenaire est créé/modifié
 CREATE OR REPLACE FUNCTION auto_update_badge_from_partner()
 RETURNS TRIGGER AS $$
 BEGIN
   -- Mettre à jour le badge de l'utilisateur lié
-  IF NEW."userId" IS NOT NULL THEN
+  IF NEW.user_id IS NOT NULL THEN
     PERFORM upsert_user_badge(
-      p_user_id := NEW."userId",
+      p_user_id := NEW.user_id,
       p_user_type := 'partner',
       p_user_level := NULL,
-      p_full_name := (SELECT name FROM users WHERE id = NEW."userId"),
-      p_company_name := NEW."organizationName",
-      p_position := (SELECT safe_jsonb(profile::text)->>'position' FROM users WHERE id = NEW."userId"),
-      p_email := (SELECT email FROM users WHERE id = NEW."userId"),
-      p_phone := (SELECT safe_jsonb(profile::text)->>'phone' FROM users WHERE id = NEW."userId"),
-      p_avatar_url := (SELECT safe_jsonb(profile::text)->>'avatar' FROM users WHERE id = NEW."userId"),
+      p_full_name := (SELECT name FROM users WHERE id = NEW.user_id),
+      p_company_name := NEW.company_name,
+      p_position := (SELECT safe_jsonb(profile::text)->>'position' FROM users WHERE id = NEW.user_id),
+      p_email := (SELECT email FROM users WHERE id = NEW.user_id),
+      p_phone := (SELECT safe_jsonb(profile::text)->>'phone' FROM users WHERE id = NEW.user_id),
+      p_avatar_url := (SELECT safe_jsonb(profile::text)->>'avatar' FROM users WHERE id = NEW.user_id),
       p_stand_number := NULL
     );
   END IF;
@@ -156,9 +157,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-DROP TRIGGER IF EXISTS trigger_update_badge_from_partner ON partners;
+DROP TRIGGER IF EXISTS trigger_update_badge_from_partner ON partner_profiles;
 CREATE TRIGGER trigger_update_badge_from_partner
-  AFTER INSERT OR UPDATE ON partners
+  AFTER INSERT OR UPDATE ON partner_profiles
   FOR EACH ROW
   EXECUTE FUNCTION auto_update_badge_from_partner();
 
