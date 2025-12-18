@@ -12,11 +12,11 @@ get_header(); ?>
             <div class="header-content">
                 <h1>Événements SIPORTS 2026</h1>
                 <p class="header-subtitle">
-                    Du 5 au 7 février 2026 à El Jadida, Maroc.<br>
+                    Du 1er au 3 avril 2026 à El Jadida, Maroc.<br>
                     Conférences, ateliers, networking et innovations portuaires.
                 </p>
                 <div class="event-dates">
-                    <span class="date-badge">📅 5-7 Février 2026</span>
+                    <span class="date-badge">📅 1-3 Avril 2026</span>
                     <span class="location-badge">📍 El Jadida, Maroc</span>
                 </div>
             </div>

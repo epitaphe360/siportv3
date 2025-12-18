@@ -141,7 +141,7 @@ export const Footer: React.FC = memo(() => {
                 <MapPin className="h-4 w-4 text-gray-400" />
                 <span className="text-white/80 text-sm">
                   El Jadida, Maroc<br />
-                  5-7 Février 2026
+                  1-3 Avril 2026
                 </span>
               </div>
               <div className="flex items-center space-x-2">

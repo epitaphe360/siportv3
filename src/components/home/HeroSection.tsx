@@ -65,7 +65,7 @@ export const HeroSection: React.FC = () => {
             <div className="mb-6">
               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 mb-4">
                 <Calendar className="h-4 w-4 mr-2" />
-                5-7 Février 2026
+                1-3 Avril 2026
               </span>
               <h1 className="text-4xl lg:text-6xl font-bold leading-tight mb-6">
                 {t('hero.title')}

@@ -58,7 +58,7 @@ export const CountdownModal: React.FC<CountdownModalProps> = ({ isOpen, onClose 
   const salonInfo = {
     name: 'SIPORTS 2026',
     fullName: 'Salon International des Ports',
-    dates: '5-7 Février 2026',
+    dates: '1-3 Avril 2026',
     location: 'El Jadida, Maroc',
     venue: 'Mohammed VI Exhibition Center',
     hours: '9h30 - 18h00',
@@ -276,7 +276,7 @@ export const CountdownModal: React.FC<CountdownModalProps> = ({ isOpen, onClose 
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="text-center p-4 bg-blue-50 rounded-lg">
-                    <div className="font-bold text-blue-600 mb-2">Jour 1 - 5 Février</div>
+                    <div className="font-bold text-blue-600 mb-2">Jour 1 - 1er Avril</div>
                     <div className="text-sm text-gray-600 space-y-1">
                       <div>• Cérémonie d'ouverture</div>
                       <div>• Conférences plénières</div>
@@ -285,7 +285,7 @@ export const CountdownModal: React.FC<CountdownModalProps> = ({ isOpen, onClose 
                   </div>
                   
                   <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <div className="font-bold text-green-600 mb-2">Jour 2 - 6 Février</div>
+                    <div className="font-bold text-green-600 mb-2">Jour 2 - 2 Avril</div>
                     <div className="text-sm text-gray-600 space-y-1">
                       <div>• Ateliers techniques</div>
                       <div>• Sessions B2B</div>
@@ -294,7 +294,7 @@ export const CountdownModal: React.FC<CountdownModalProps> = ({ isOpen, onClose 
                   </div>
                   
                   <div className="text-center p-4 bg-purple-50 rounded-lg">
-                    <div className="font-bold text-purple-600 mb-2">Jour 3 - 7 Février</div>
+                    <div className="font-bold text-purple-600 mb-2">Jour 3 - 3 Avril</div>
                     <div className="text-sm text-gray-600 space-y-1">
                       <div>• Tables rondes</div>
                       <div>• Remise des prix</div>

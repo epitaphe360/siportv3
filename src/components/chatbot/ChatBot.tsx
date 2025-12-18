@@ -171,7 +171,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
       if (message.includes('salon') || message.includes('siports') || message.includes('information')) {
         return {
           id: Date.now().toString(),
-          content: "🚢 SIPORTS 2026 - Le plus grand salon portuaire international ! 📅 5-7 Février 2026 à El Jadida, Maroc. 330+ exposants, 6000+ visiteurs de 40 pays, 40+ conférences !",
+          content: "🚢 SIPORTS 2026 - Le plus grand salon portuaire international ! 📅 1-3 Avril 2026 à El Jadida, Maroc. 330+ exposants, 6000+ visiteurs de 40 pays, 40+ conférences !",
           isBot: true,
           timestamp,
           type: 'quick_reply',
@@ -213,7 +213,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
     if (message.includes('salon') || message.includes('siports') || message.includes('information')) {
       return {
         id: Date.now().toString(),
-        content: `🚢 Bonjour ${firstName} ! SIPORTS 2026 se déroule du 5 au 7 février 2026 à El Jadida, Maroc. C'est le plus grand salon portuaire international avec 330+ exposants, 6000+ visiteurs de 40 pays !`,
+        content: `🚢 Bonjour ${firstName} ! SIPORTS 2026 se déroule du 1er au 3 avril 2026 à El Jadida, Maroc. C'est le plus grand salon portuaire international avec 330+ exposants, 6000+ visiteurs de 40 pays !`,
         isBot: true,
         timestamp,
         type: 'suggestion',
@@ -595,7 +595,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
     } else {
       // Action personnalisée
       const actionMessages = {
-        'info_salon': `ℹ️ SIPORTS 2026 - Salon International des Ports\n📅 5-7 Février 2026\n📍 El Jadida, Maroc\n🏢 330+ exposants\n👥 6000+ visiteurs\n🌍 40 pays`,
+        'info_salon': `ℹ️ SIPORTS 2026 - Salon International des Ports\n📅 1-3 Avril 2026\n📍 El Jadida, Maroc\n🏢 330+ exposants\n👥 6000+ visiteurs\n🌍 40 pays`,
         'support': `📞 SUPPORT SIPORTS\n📧 Email: support@siportevent.com\n📱 Tél: +212 1 23 45 67 89\n🕒 Lun-Ven: 9h-18h\n💬 Chat en direct disponible`,
         'contact_commercial': `💼 ÉQUIPE COMMERCIALE\n📧 commercial@siportevent.com\n📱 +212 1 23 45 67 90\n🤝 Partenariats & Sponsoring\n📋 Devis personnalisés`
       };

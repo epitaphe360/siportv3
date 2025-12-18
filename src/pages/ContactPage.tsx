@@ -256,7 +256,7 @@ export default function ContactPage() {
                     <h3 className="font-semibold text-gray-900">Adresse</h3>
                     <p className="text-gray-600">
                       El Jadida, Maroc<br />
-                      5-7 Février 2026
+                      1-3 Avril 2026
                     </p>
                   </div>
                 </div>
