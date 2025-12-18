@@ -40,13 +40,13 @@ export const Header: React.FC = memo(() => {
     { name: t('nav.exhibitors'), href: ROUTES.EXHIBITORS },
     { name: t('nav.partners'), href: ROUTES.PARTNERS },
     { name: t('nav.networking'), href: ROUTES.NETWORKING },
-    { name: t('nav.subscriptions'), href: ROUTES.VISITOR_SUBSCRIPTION },
   ];
 
   const infoMenuItems = [
     { name: t('nav.pavilions'), href: ROUTES.PAVILIONS, description: 'Espaces thématiques' },
     { name: t('nav.events'), href: ROUTES.EVENTS, description: 'Conférences & ateliers' },
-    { name: t('nav.news'), href: ROUTES.NEWS, description: 'Nouvelles du secteur' }
+    { name: t('nav.news'), href: ROUTES.NEWS, description: 'Nouvelles du secteur' },
+    { name: t('nav.subscriptions'), href: ROUTES.VISITOR_SUBSCRIPTION, description: 'Offres & tarifs' }
   ];
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
