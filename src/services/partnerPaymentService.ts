@@ -342,3 +342,189 @@ export function formatPartnerPrice(tier: PartnerTier, currency: 'USD' | 'EUR' | 
       return `$${amountUSD.toLocaleString('en-US')}`;
   }
 }
+
+/**
+ * BANK TRANSFER: Crée une demande de paiement par virement bancaire
+ */
+export async function createPartnerBankTransferRequest(
+  userId: string,
+  targetTier: PartnerTier,
+  currentTier?: PartnerTier
+): Promise<{ requestId: string; success: boolean }> {
+  try {
+    const { supabase } = await import('../lib/supabase');
+
+    // Calculer le montant (full ou upgrade)
+    const amountCents = TIER_PRICES[targetTier];
+    let finalAmountCents = amountCents;
+
+    if (currentTier && currentTier !== targetTier) {
+      const currentAmountCents = TIER_PRICES[currentTier];
+      finalAmountCents = Math.max(0, amountCents - currentAmountCents);
+    }
+
+    const finalAmountUSD = finalAmountCents / 100;
+
+    // Créer la demande de paiement
+    const { data, error } = await supabase
+      .from('payment_requests')
+      .insert({
+        user_id: userId,
+        requested_level: targetTier,
+        amount: finalAmountUSD,
+        currency: 'USD',
+        payment_method: 'bank_transfer',
+        status: 'pending',
+        created_at: new Date().toISOString()
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Erreur création demande virement:', error);
+      throw error;
+    }
+
+    return {
+      requestId: data.id,
+      success: true
+    };
+  } catch (error) {
+    console.error('Erreur createPartnerBankTransferRequest:', error);
+    throw error;
+  }
+}
+
+/**
+ * BANK TRANSFER: Récupère les demandes de virement pour un utilisateur
+ */
+export async function getPartnerBankTransferRequests(userId: string): Promise<any[]> {
+  try {
+    const { supabase } = await import('../lib/supabase');
+
+    const { data, error } = await supabase
+      .from('payment_requests')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('payment_method', 'bank_transfer')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    return data || [];
+  } catch (error) {
+    console.error('Erreur getPartnerBankTransferRequests:', error);
+    return [];
+  }
+}
+
+/**
+ * BANK TRANSFER: Valide une demande de virement (admin uniquement)
+ */
+export async function approvePartnerBankTransfer(
+  requestId: string,
+  adminId: string,
+  notes?: string
+): Promise<{ success: boolean }> {
+  try {
+    const { supabase } = await import('../lib/supabase');
+
+    // Récupérer la demande
+    const { data: request, error: fetchError } = await supabase
+      .from('payment_requests')
+      .select('*')
+      .eq('id', requestId)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    // Mettre à jour le statut de la demande
+    const { error: updateRequestError } = await supabase
+      .from('payment_requests')
+      .update({
+        status: 'approved',
+        validated_by: adminId,
+        validated_at: new Date().toISOString(),
+        validation_notes: notes || null
+      })
+      .eq('id', requestId);
+
+    if (updateRequestError) throw updateRequestError;
+
+    // Mettre à jour le tier du partenaire
+    const { error: updateUserError } = await supabase
+      .from('users')
+      .update({
+        partner_tier: request.requested_level,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', request.user_id);
+
+    if (updateUserError) throw updateUserError;
+
+    // Créer une notification
+    await supabase.from('notifications').insert({
+      user_id: request.user_id,
+      type: 'success',
+      title: 'Paiement approuvé',
+      message: `Votre paiement par virement pour le niveau ${request.requested_level} a été approuvé. Votre compte est maintenant activé !`,
+      read: false,
+      created_at: new Date().toISOString()
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Erreur approvePartnerBankTransfer:', error);
+    throw error;
+  }
+}
+
+/**
+ * BANK TRANSFER: Rejette une demande de virement (admin uniquement)
+ */
+export async function rejectPartnerBankTransfer(
+  requestId: string,
+  adminId: string,
+  reason: string
+): Promise<{ success: boolean }> {
+  try {
+    const { supabase } = await import('../lib/supabase');
+
+    // Récupérer la demande
+    const { data: request, error: fetchError } = await supabase
+      .from('payment_requests')
+      .select('*')
+      .eq('id', requestId)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    // Mettre à jour le statut
+    const { error: updateError } = await supabase
+      .from('payment_requests')
+      .update({
+        status: 'rejected',
+        validated_by: adminId,
+        validated_at: new Date().toISOString(),
+        validation_notes: reason
+      })
+      .eq('id', requestId);
+
+    if (updateError) throw updateError;
+
+    // Créer une notification
+    await supabase.from('notifications').insert({
+      user_id: request.user_id,
+      type: 'error',
+      title: 'Paiement refusé',
+      message: `Votre demande de paiement pour le niveau ${request.requested_level} a été refusée. Raison: ${reason}`,
+      read: false,
+      created_at: new Date().toISOString()
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Erreur rejectPartnerBankTransfer:', error);
+    throw error;
+  }
+}

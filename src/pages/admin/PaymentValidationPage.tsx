@@ -20,6 +20,7 @@ interface PaymentRequest {
   users: {
     name: string;
     email: string;
+    type: 'visitor' | 'partner' | 'exhibitor' | 'admin';
   };
 }
 
@@ -27,12 +28,13 @@ export default function PaymentValidationPage() {
   const { user } = useAuthStore();
   const [requests, setRequests] = useState<PaymentRequest[]>([]);
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('pending');
+  const [userTypeFilter, setUserTypeFilter] = useState<'all' | 'visitor' | 'partner' | 'exhibitor'>('all');
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState<string | null>(null);
 
   useEffect(() => {
     loadRequests();
-  }, [filter]);
+  }, [filter, userTypeFilter]);
 
   async function loadRequests() {
     setLoading(true);
@@ -43,7 +45,8 @@ export default function PaymentValidationPage() {
           *,
           users:user_id (
             name,
-            email
+            email,
+            type
           )
         `)
         .order('created_at', { ascending: false });
@@ -55,7 +58,16 @@ export default function PaymentValidationPage() {
       const { data, error } = await query;
 
       if (error) throw error;
-      setRequests(data as PaymentRequest[]);
+
+      // Filtrer par type d'utilisateur côté client
+      let filteredData = data as PaymentRequest[];
+      if (userTypeFilter !== 'all') {
+        filteredData = filteredData.filter(
+          (req) => req.users.type === userTypeFilter
+        );
+      }
+
+      setRequests(filteredData);
     } catch (error) {
       console.error('Erreur chargement:', error);
     } finally {
@@ -121,27 +133,58 @@ export default function PaymentValidationPage() {
       </div>
 
       {/* Filtres */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
-        {(['all', 'pending', 'approved', 'rejected'] as const).map(status => (
-          <button
-            key={status}
-            onClick={() => setFilter(status)}
-            style={{
-              padding: '8px 16px',
-              borderRadius: 4,
-              border: filter === status ? '2px solid #007bff' : '1px solid #ccc',
-              background: filter === status ? '#007bff' : '#fff',
-              color: filter === status ? '#fff' : '#000',
-              cursor: 'pointer',
-              fontWeight: filter === status ? 'bold' : 'normal'
-            }}
-          >
-            {status === 'all' && 'Tous'}
-            {status === 'pending' && '⏳ En attente'}
-            {status === 'approved' && '✅ Approuvés'}
-            {status === 'rejected' && '❌ Rejetés'}
-          </button>
-        ))}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ marginBottom: 12 }}>
+          <strong style={{ fontSize: 14, color: '#666', marginBottom: 8, display: 'block' }}>Statut:</strong>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            {(['all', 'pending', 'approved', 'rejected'] as const).map(status => (
+              <button
+                key={status}
+                onClick={() => setFilter(status)}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: 4,
+                  border: filter === status ? '2px solid #007bff' : '1px solid #ccc',
+                  background: filter === status ? '#007bff' : '#fff',
+                  color: filter === status ? '#fff' : '#000',
+                  cursor: 'pointer',
+                  fontWeight: filter === status ? 'bold' : 'normal'
+                }}
+              >
+                {status === 'all' && 'Tous'}
+                {status === 'pending' && '⏳ En attente'}
+                {status === 'approved' && '✅ Approuvés'}
+                {status === 'rejected' && '❌ Rejetés'}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <strong style={{ fontSize: 14, color: '#666', marginBottom: 8, display: 'block' }}>Type d'utilisateur:</strong>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            {(['all', 'visitor', 'partner', 'exhibitor'] as const).map(type => (
+              <button
+                key={type}
+                onClick={() => setUserTypeFilter(type)}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: 4,
+                  border: userTypeFilter === type ? '2px solid #28a745' : '1px solid #ccc',
+                  background: userTypeFilter === type ? '#28a745' : '#fff',
+                  color: userTypeFilter === type ? '#fff' : '#000',
+                  cursor: 'pointer',
+                  fontWeight: userTypeFilter === type ? 'bold' : 'normal'
+                }}
+              >
+                {type === 'all' && '🌐 Tous'}
+                {type === 'visitor' && '👤 Visiteurs'}
+                {type === 'partner' && '🤝 Partenaires'}
+                {type === 'exhibitor' && '🏢 Exposants'}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {loading ? (
@@ -164,16 +207,37 @@ export default function PaymentValidationPage() {
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
                 <div>
-                  <h3 style={{ margin: 0, marginBottom: 8 }}>
-                    {request.users.name || 'Utilisateur'}
-                  </h3>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                    <h3 style={{ margin: 0 }}>
+                      {request.users.name || 'Utilisateur'}
+                    </h3>
+                    <span style={{
+                      padding: '2px 8px',
+                      borderRadius: 12,
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                      background:
+                        request.users.type === 'visitor' ? '#e3f2fd' :
+                        request.users.type === 'partner' ? '#e8f5e9' :
+                        request.users.type === 'exhibitor' ? '#fff3e0' : '#f5f5f5',
+                      color:
+                        request.users.type === 'visitor' ? '#1976d2' :
+                        request.users.type === 'partner' ? '#388e3c' :
+                        request.users.type === 'exhibitor' ? '#f57c00' : '#666'
+                    }}>
+                      {request.users.type === 'visitor' && '👤 Visiteur'}
+                      {request.users.type === 'partner' && '🤝 Partenaire'}
+                      {request.users.type === 'exhibitor' && '🏢 Exposant'}
+                      {request.users.type === 'admin' && '⚙️ Admin'}
+                    </span>
+                  </div>
                   <p style={{ margin: 0, color: '#666', fontSize: 14 }}>
                     {request.users.email}
                   </p>
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <div style={{ fontSize: 24, fontWeight: 'bold', color: '#28a745' }}>
-                    {request.amount} {request.currency}
+                    {request.amount.toLocaleString()} {request.currency}
                   </div>
                   <div style={{ fontSize: 14, color: '#666' }}>
                     {new Date(request.created_at).toLocaleDateString('fr-FR', {
@@ -189,10 +253,21 @@ export default function PaymentValidationPage() {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                 <div>
-                  <strong>Niveau demandé:</strong> {request.requested_level === 'premium' ? 'Premium VIP' : request.requested_level}
+                  <strong>Niveau demandé:</strong>{' '}
+                  {request.users.type === 'visitor' ? (
+                    request.requested_level === 'premium' ? '⭐ Premium VIP' : request.requested_level
+                  ) : (
+                    <>
+                      {request.requested_level === 'museum' && '🏛️ Museum Partner'}
+                      {request.requested_level === 'silver' && '🥈 Silver Partner'}
+                      {request.requested_level === 'gold' && '🥇 Gold Partner'}
+                      {request.requested_level === 'platinium' && '💎 Platinum Partner'}
+                    </>
+                  )}
                 </div>
                 <div>
-                  <strong>Méthode:</strong> Virement bancaire
+                  <strong>Méthode:</strong>{' '}
+                  {request.payment_method === 'bank_transfer' ? '🏦 Virement bancaire' : request.payment_method}
                 </div>
                 <div>
                   <strong>Statut:</strong>{' '}
