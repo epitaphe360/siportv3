@@ -171,7 +171,7 @@ export default function VisitorVIPRegistration() {
         .from('payment_requests')
         .insert([{
           user_id: authData.user.id,
-          amount: 299.99, // Prix du Pass VIP Premium
+          amount: 700, // Prix du Pass VIP Premium (700 EUR)
           status: 'pending',
           payment_method: null,
           metadata: {
@@ -185,10 +185,25 @@ export default function VisitorVIPRegistration() {
         console.warn('Erreur création demande paiement:', paymentError);
       }
 
-      // 5. Success - Redirect to payment page
+      // 6. Send payment instructions email ✅
+      const { error: emailError } = await supabase.functions.invoke('send-visitor-welcome-email', {
+        body: {
+          email: data.email,
+          name: fullName,
+          level: 'vip',
+          userId: authData.user.id,
+          includePaymentInstructions: true // Email avec instructions de paiement
+        }
+      });
+
+      if (emailError) {
+        console.warn('Erreur envoi email paiement:', emailError);
+      }
+
+      // 7. Success - Redirect to payment page
       toast.success('Compte créé ! Veuillez finaliser le paiement pour activer votre accès VIP.');
 
-      // Log out immediately (VIP can't login until payment)
+      // 8. Log out immediately (VIP can't login until payment)
       await supabase.auth.signOut();
 
       // Redirect to payment page with user info
@@ -539,7 +554,7 @@ export default function VisitorVIPRegistration() {
               {/* Payment Info */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm text-blue-900">
-                  <strong>💳 Paiement requis</strong> : Après création du compte, vous serez redirigé vers la page de paiement sécurisé (299,99 USD). Votre accès VIP sera activé immédiatement après validation du paiement.
+                  <strong>💳 Paiement requis</strong> : Après création du compte, vous serez redirigé vers la page de paiement sécurisé (700 EUR). Votre accès VIP sera activé immédiatement après validation du paiement.
                 </p>
               </div>
 

@@ -9,7 +9,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+// Use port 3000 in development, 5000 in production
+const PORT = process.env.PORT || (process.env.NODE_ENV === 'production' ? 5000 : 3000);
 
 // CORS middleware - Allow all origins for preflight
 app.use((req, res, next) => {

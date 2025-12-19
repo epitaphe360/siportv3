@@ -172,7 +172,7 @@ export const HeroSection: React.FC = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to={ROUTES.REGISTER}>
+              <Link to={ROUTES.REGISTER_EXHIBITOR}>
                 <Button size="lg" className="bg-white text-blue-900 hover:bg-blue-50 w-full sm:w-auto">
                   {t('hero.cta.exhibitor')}
                   <ArrowRight className="ml-2 h-5 w-5" />

@@ -80,7 +80,7 @@ function getFreeVisitorEmailHTML(name: string): string {
       <div style="text-align: center; margin-top: 20px;">
         <a href="${Deno.env.get('PUBLIC_SITE_URL') || 'https://siports2026.com'}/visitor/upgrade"
            style="display: inline-block; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;">
-          Passer au VIP - 299.99 USD
+          Passer au VIP - 700 EUR
         </a>
       </div>
     </div>
@@ -135,7 +135,7 @@ function getVIPVisitorEmailHTML(name: string): string {
     <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; margin: 25px 0; border-radius: 5px;">
       <h3 style="margin-top: 0; color: #d97706;">⚠️ Action requise : Finaliser le paiement</h3>
       <p style="margin: 10px 0;">
-        Pour activer votre accès VIP et profiter de tous les avantages premium, veuillez finaliser le paiement de <strong>299.99 USD</strong>.
+        Pour activer votre accès VIP et profiter de tous les avantages premium, veuillez finaliser le paiement de <strong>700 EUR</strong>.
       </p>
       <div style="text-align: center; margin-top: 20px;">
         <a href="${Deno.env.get('PUBLIC_SITE_URL') || 'https://siports2026.com'}/visitor/subscription"
@@ -255,7 +255,7 @@ Bonjour ${name},
 Votre compte Pass VIP Premium pour SIPORTS 2026 a été créé avec succès !
 
 ACTION REQUISE : FINALISER LE PAIEMENT
-Pour activer votre accès VIP, veuillez finaliser le paiement de 299.99 USD sur :
+Pour activer votre accès VIP, veuillez finaliser le paiement de 700 EUR sur :
 ${Deno.env.get('PUBLIC_SITE_URL') || 'https://siports2026.com'}/visitor/subscription
 
 VOTRE PASS VIP PREMIUM INCLUT :

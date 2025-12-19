@@ -371,11 +371,11 @@ export default function SubscriptionPage() {
 
     // Redirection selon le type d'offre
     if (tierId === 'visitor-free') {
-      // Inscription gratuite - rediriger vers registration visiteur
-      navigate(ROUTES.REGISTER_VISITOR);
+      // Inscription gratuite - rediriger vers nouveau formulaire visiteur gratuit
+      navigate(ROUTES.VISITOR_FREE_REGISTRATION);
     } else if (tierId === 'visitor-vip') {
-      // Upgrade premium - rediriger vers page paiement
-      navigate(ROUTES.VISITOR_UPGRADE);
+      // Upgrade premium VIP - rediriger vers formulaire VIP complet avec photo et paiement
+      navigate(ROUTES.VISITOR_VIP_REGISTRATION);
     } else if (tierId.includes('exhibitor')) {
       // Offre exposant
       navigate(ROUTES.EXHIBITOR_DASHBOARD);

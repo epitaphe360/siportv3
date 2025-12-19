@@ -329,7 +329,7 @@ export default function LoginPage() {
             <p className="text-sm text-gray-600">
               Pas encore de compte ?{' '}
               <Link
-                to={ROUTES.REGISTER}
+                to={ROUTES.VISITOR_REGISTRATION_CHOICE}
                 className="font-medium text-blue-600 hover:text-blue-500"
               >
                 Créer un compte

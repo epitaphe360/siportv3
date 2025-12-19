@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Dashboard, DashboardStats, Activity } from '../types';
+import { supabase } from '../lib/supabase';
 
 interface DashboardState {
   dashboard: Dashboard | null;
@@ -11,15 +12,6 @@ interface DashboardState {
   updateStats: (stats: Partial<DashboardStats>) => void;
 }
 
-// Importer le client Supabase si disponible
-let supabaseClient: any = null;
-try {
-  const sup = require('../lib/supabase');
-  supabaseClient = sup?.supabase || null;
-} catch {
-  supabaseClient = null;
-}
-
 export const useDashboardStore = create<DashboardState>((set, get) => ({
   dashboard: null,
   isLoading: false,
@@ -28,19 +20,15 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
   fetchDashboard: async () => {
     set({ isLoading: true, error: null });
     try {
-      if (!supabaseClient) {
-        throw new Error('Supabase client non disponible');
-      }
-
       // Récupérer l'utilisateur actuel
-      const { data: { user } } = await supabaseClient.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
         throw new Error('Utilisateur non connecté');
       }
 
       // Récupérer les statistiques du profil
-      const { data: userProfile, error: profileError } = await supabaseClient
+      const { data: userProfile, error: profileError } = await supabase
         .from('users')
         .select('*')
         .eq('id', user.id)
@@ -59,7 +47,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       };
 
       // Compter les vues de profil (si table profile_views existe)
-      const { count: profileViewsCount } = await supabaseClient
+      const { count: profileViewsCount } = await supabase
         .from('profile_views')
         .select('*', { count: 'exact', head: true })
         .eq('viewed_user_id', user.id);
@@ -67,7 +55,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       stats.profileViews = profileViewsCount || 0;
 
       // Compter les connexions
-      const { count: connectionsCount } = await supabaseClient
+      const { count: connectionsCount } = await supabase
         .from('connections')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', user.id);
@@ -75,7 +63,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       stats.connections = connectionsCount || 0;
 
       // Compter les rendez-vous
-      const { count: appointmentsCount } = await supabaseClient
+      const { count: appointmentsCount } = await supabase
         .from('appointments')
         .select('*', { count: 'exact', head: true })
         .or(`exhibitor_id.eq.${user.id},visitor_id.eq.${user.id}`);
@@ -83,7 +71,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       stats.appointments = appointmentsCount || 0;
 
       // Compter les messages non lus
-      const { count: messagesCount } = await supabaseClient
+      const { count: messagesCount } = await supabase
         .from('messages')
         .select('*', { count: 'exact', head: true })
         .eq('receiver_id', user.id)
@@ -92,7 +80,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       stats.messages = messagesCount || 0;
 
       // Compter les téléchargements de catalogue (si table downloads existe)
-      const { count: downloadsCount } = await supabaseClient
+      const { count: downloadsCount } = await supabase
         .from('downloads')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', user.id);
@@ -100,7 +88,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       stats.catalogDownloads = downloadsCount || 0;
 
       // Compter les vues du mini-site (si table minisite_views existe)
-      const { count: miniSiteViewsCount } = await supabaseClient
+      const { count: miniSiteViewsCount } = await supabase
         .from('minisite_views')
         .select('*', { count: 'exact', head: true })
         .eq('exhibitor_id', user.id);
@@ -108,7 +96,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       stats.miniSiteViews = miniSiteViewsCount || 0;
 
       // Récupérer les activités récentes
-      const { data: activities, error: activitiesError } = await supabaseClient
+      const { data: activities, error: activitiesError } = await supabase
         .from('activities')
         .select('*')
         .eq('user_id', user.id)
@@ -127,7 +115,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
           .filter((id): id is string => id !== null);
 
         if (actorIds.length > 0) {
-          const { data: actors } = await supabaseClient
+          const { data: actors } = await supabase
             .from('users')
             .select('id, name, profile')
             .in('id', actorIds);

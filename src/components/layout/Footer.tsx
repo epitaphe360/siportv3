@@ -113,7 +113,7 @@ export const Footer: React.FC = memo(() => {
             <h3 className="text-lg font-semibold mb-6 font-heading">Services</h3>
             <ul className="space-y-2">
               <li>
-                <Link to={ROUTES.REGISTER} className="text-gray-400 hover:text-white transition-colors">
+                <Link to={ROUTES.REGISTER_EXHIBITOR} className="text-gray-400 hover:text-white transition-colors">
                   Devenir Exposant
                 </Link>
               </li>

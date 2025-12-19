@@ -106,6 +106,76 @@ Deno.serve(async (req: Request) => {
 
       console.log('✅ Visitor level mis à jour:', userId, '->', visitorLevel);
 
+      // Récupérer les infos utilisateur
+      const { data: userData, error: userFetchError } = await supabase
+        .from('users')
+        .select('email, name, profile')
+        .eq('id', userId)
+        .single();
+
+      if (!userFetchError && userData) {
+        // 9. Call generate-visitor-badge function with photo
+        console.log('📌 Appel generate-visitor-badge...');
+        try {
+          const { error: badgeError } = await supabase.functions.invoke('generate-visitor-badge', {
+            body: {
+              userId: userId,
+              email: userData.email,
+              name: userData.name,
+              level: visitorLevel,
+              photoUrl: userData.profile?.photoUrl || '',
+              includePhoto: visitorLevel === 'vip' // Include photo for VIP
+            }
+          });
+
+          if (badgeError) {
+            console.warn('⚠️ Erreur génération badge:', badgeError);
+          } else {
+            console.log('✅ Badge généré avec succès');
+          }
+        } catch (badgeErr: any) {
+          console.error('❌ Erreur appel generate-visitor-badge:', badgeErr);
+        }
+
+        // 10. Send confirmation email with badge
+        console.log('📧 Envoi email de confirmation...');
+        try {
+          const { error: emailError } = await supabase.functions.invoke('send-visitor-welcome-email', {
+            body: {
+              email: userData.email,
+              name: userData.name,
+              level: visitorLevel,
+              userId: userId,
+              paymentConfirmed: true // Mark as payment confirmed
+            }
+          });
+
+          if (emailError) {
+            console.warn('⚠️ Erreur envoi email confirmation:', emailError);
+          } else {
+            console.log('✅ Email de confirmation envoyé');
+          }
+        } catch (emailErr: any) {
+          console.error('❌ Erreur appel send-visitor-welcome-email:', emailErr);
+        }
+
+        // 11. Update user status to 'active'
+        console.log('🔄 Activation du compte utilisateur...');
+        const { error: statusError } = await supabase
+          .from('users')
+          .update({
+            status: 'active', // 11. Status → 'active'
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', userId);
+
+        if (statusError) {
+          console.error('❌ Erreur activation compte:', statusError);
+        } else {
+          console.log('✅ Compte utilisateur activé');
+        }
+      }
+
       // Créer une notification pour l'utilisateur
       await supabase
         .from('notifications')

@@ -255,7 +255,7 @@ export default function NetworkingPage() {
                   Se connecter
                 </Button>
               </Link>
-              <Link to={ROUTES.REGISTER}>
+              <Link to={ROUTES.VISITOR_REGISTRATION_CHOICE}>
                 <Button variant="outline" size="lg" className="border-blue-700 text-blue-700 hover:bg-blue-50">
                   <Plus className="h-4 w-4 mr-2" />
                   Créer un compte
