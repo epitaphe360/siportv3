@@ -23,6 +23,9 @@ import { useFormAutoSave } from '../../hooks/useFormAutoSave';
 import { useEmailValidation } from '../../hooks/useEmailValidation';
 import { translations, Language } from '../../utils/translations';
 import { toast } from 'react-hot-toast';
+import { SubscriptionSelector } from '../../components/exhibitor/SubscriptionSelector';
+import { ExhibitorLevel } from '../../config/exhibitorQuotas';
+import { supabase } from '../../lib/supabase';
 
 
 const MAX_DESCRIPTION_LENGTH = 500;
@@ -39,6 +42,9 @@ const exhibitorSignUpSchema = z.object({
   sectors: z.array(z.string()).min(1, "Sélectionnez au moins un secteur"),
   companyDescription: z.string().min(20, "La description doit contenir au moins 20 caractères").max(MAX_DESCRIPTION_LENGTH),
   website: z.string().url("URL invalide").optional().or(z.literal('')),
+  standArea: z.number().min(1, "Veuillez sélectionner un abonnement exposant"),
+  subscriptionLevel: z.string().min(1, "Veuillez sélectionner un abonnement"),
+  subscriptionPrice: z.number().min(1, "Prix d'abonnement requis"),
   password: z.string()
     .min(8, "Le mot de passe doit contenir au moins 8 caractères")
     .regex(/[A-Z]/, "Le mot de passe doit contenir au moins une majuscule")
@@ -130,26 +136,31 @@ export default function ExhibitorSignUpPage() {
     const steps = [
       {
         id: '1',
+        label: 'Abonnement Exposant',
+        completed: !!(watchedFields.subscriptionLevel && watchedFields.standArea && watchedFields.subscriptionPrice),
+      },
+      {
+        id: '2',
         label: 'Informations Entreprise',
         completed: !!(watchedFields.companyName && watchedFields.sectors?.length > 0 && watchedFields.country),
       },
       {
-        id: '2',
+        id: '3',
         label: 'Informations Personnelles',
         completed: !!(watchedFields.firstName && watchedFields.lastName && watchedFields.position),
       },
       {
-        id: '3',
+        id: '4',
         label: 'Contact',
         completed: !!(watchedFields.email && watchedFields.phone),
       },
       {
-        id: '4',
+        id: '5',
         label: 'Sécurité',
         completed: !!(watchedFields.password && watchedFields.confirmPassword && watchedFields.password === watchedFields.confirmPassword),
       },
       {
-        id: '5',
+        id: '6',
         label: 'Conditions',
         completed: !!(watchedFields.acceptTerms && watchedFields.acceptPrivacy),
       },
@@ -167,13 +178,15 @@ export default function ExhibitorSignUpPage() {
 
   const onSubmit: SubmitHandler<ExhibitorSignUpFormValues> = async (data) => {
     setIsLoading(true);
-    const { email, password, confirmPassword, acceptTerms, acceptPrivacy, sectors, ...profileData } = data;
+    const { email, password, confirmPassword, acceptTerms, acceptPrivacy, sectors, standArea, subscriptionLevel, subscriptionPrice, ...profileData } = data;
 
     const finalProfileData = {
       ...profileData,
       sector: sectors.join(', '), // Convertir le tableau en string
       role: 'exhibitor' as const,
       status: 'pending' as const,
+      standArea, // Ajouter la surface du stand
+      subscriptionLevel, // Ajouter le niveau d'abonnement
     };
 
     try {
@@ -188,17 +201,72 @@ export default function ExhibitorSignUpPage() {
       }
 
       // @ts-ignore - recaptchaToken sera ajouté à authStore.signUp()
-      const { error } = await signUp({ email, password }, finalProfileData, recaptchaToken);
+      const { error, data: userData } = await signUp({ email, password }, finalProfileData, recaptchaToken);
 
       if (error) {
         throw error;
       }
 
+      // 💰 Créer la demande de paiement
+      if (userData?.user?.id) {
+        // Générer référence de paiement unique
+        const paymentReference = `EXH-2026-${userData.user.id.substring(0, 8).toUpperCase()}`;
+
+        const { error: paymentError } = await supabase
+          .from('payment_requests')
+          .insert({
+            user_id: userData.user.id,
+            amount: subscriptionPrice,
+            currency: 'USD',
+            status: 'pending',
+            payment_method: 'bank_transfer',
+            reference: paymentReference,
+            description: `Abonnement Exposant SIPORTS 2026 - ${subscriptionLevel} (${standArea}m²)`,
+            metadata: {
+              subscriptionLevel,
+              standArea,
+              eventName: 'SIPORTS 2026',
+              eventDates: '5-7 Février 2026'
+            }
+          });
+
+        if (paymentError) {
+          console.error('Erreur création demande paiement:', paymentError);
+          // Ne pas bloquer l'inscription si la création de paiement échoue
+        }
+
+        // 📧 Envoyer email avec instructions de paiement
+        try {
+          const { error: emailError } = await supabase.functions.invoke('send-exhibitor-payment-instructions', {
+            body: {
+              email,
+              name: `${profileData.firstName} ${profileData.lastName}`,
+              companyName: profileData.companyName,
+              subscriptionLevel,
+              standArea,
+              amount: subscriptionPrice,
+              paymentReference,
+              userId: userData.user.id
+            }
+          });
+
+          if (emailError) {
+            console.warn('⚠️ Email de paiement non envoyé:', emailError);
+            // Ne pas bloquer si l'email échoue
+          }
+        } catch (emailError) {
+          console.warn('⚠️ Edge function email non disponible:', emailError);
+        }
+      }
+
       // Supprimer le brouillon après succès
       clearLocalStorage();
 
-      toast.success(t.title || 'Inscription réussie ! Votre compte est en attente de validation.');
-      navigate(ROUTES.SIGNUP_SUCCESS);
+      toast.success(
+        'Inscription réussie ! Un email avec les instructions de paiement vous a été envoyé.',
+        { duration: 5000 }
+      );
+      navigate(ROUTES.PENDING_ACCOUNT);
     } catch (error) {
       console.error("Sign up error:", error);
       toast.error((error as Error).message || "Une erreur s'est produite lors de l'inscription.");
@@ -251,8 +319,25 @@ export default function ExhibitorSignUpPage() {
 
         <Card className="p-8">
           <form onSubmit={handleSubmit(handlePreviewSubmit)} className="space-y-8">
-            {/* Section 1: Informations sur l'entreprise */}
+            {/* Section 0: Sélection d'abonnement */}
             <div className="space-y-6">
+              <SubscriptionSelector
+                selectedLevel={watchedFields.subscriptionLevel as ExhibitorLevel}
+                onSelect={(level, area, price) => {
+                  setValue('subscriptionLevel', level);
+                  setValue('standArea', area);
+                  setValue('subscriptionPrice', price);
+                }}
+              />
+              {errors.subscriptionLevel && (
+                <p className="text-red-500 text-sm text-center font-medium">
+                  {errors.subscriptionLevel.message}
+                </p>
+              )}
+            </div>
+
+            {/* Section 1: Informations sur l'entreprise */}
+            <div className="space-y-6 border-t pt-6">
               <h3 className="text-xl font-semibold text-gray-900 border-b pb-3">
                 Informations sur votre entreprise
               </h3>
