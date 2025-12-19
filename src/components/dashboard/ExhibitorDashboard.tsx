@@ -59,6 +59,9 @@ export default function ExhibitorDashboard() {
 
   // Check if user needs to create mini-site (first login after activation)
   useEffect(() => {
+    let isMounted = true;
+    let timeoutId: NodeJS.Timeout;
+
     const checkMiniSiteStatus = async () => {
       if (!user?.id || user?.status !== 'active') return;
 
@@ -72,18 +75,23 @@ export default function ExhibitorDashboard() {
         if (error) throw error;
 
         // Show popup if mini-site not created yet
-        if (!data?.minisite_created) {
+        if (isMounted && !data?.minisite_created) {
           // Small delay so dashboard loads first
-          setTimeout(() => {
-            setShowMiniSiteSetup(true);
+          timeoutId = setTimeout(() => {
+            if (isMounted) setShowMiniSiteSetup(true);
           }, 1500);
         }
       } catch (err) {
-        console.error('Error checking minisite status:', err);
+        if (isMounted) console.error('Error checking minisite status:', err);
       }
     };
 
     checkMiniSiteStatus();
+
+    return () => {
+      isMounted = false;
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [user?.id, user?.status]);
 
   useEffect(() => {

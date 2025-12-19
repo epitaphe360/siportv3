@@ -8,9 +8,22 @@ import { UserBadge } from '../types';
 
 /**
  * Récupère le badge d'un utilisateur
+ * ✅ SECURITY FIX: Verify user ID matches current authenticated user
  */
 export async function getUserBadge(userId: string): Promise<UserBadge | null> {
   try {
+    // Security check: verify user is authenticated and requesting their own badge
+    const { data: { user: currentUser }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !currentUser) {
+      throw new Error('Not authenticated');
+    }
+    
+    if (currentUser.id !== userId) {
+      console.warn(`⚠️ SECURITY ALERT: Unauthorized badge access attempt: ${currentUser.id} trying to access ${userId}`);
+      throw new Error('Unauthorized: Cannot access badge for other user');
+    }
+
     const { data, error } = await supabase
       .from('user_badges')
       .select('*')

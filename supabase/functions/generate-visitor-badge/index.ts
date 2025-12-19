@@ -21,6 +21,8 @@ interface BadgeRequest {
  * Format: header.payload.signature
  */
 async function generateJWT(payload: any, secret: string): Promise<string> {
+  payload.iat = Math.floor(Date.now() / 1000);
+  payload.exp = Math.floor(Date.now() / 1000) + (30 * 60); // 30 minutes
   const encoder = new TextEncoder()
 
   // Header
@@ -63,6 +65,51 @@ async function generateJWT(payload: any, secret: string): Promise<string> {
     .replace(/=/g, '')
 
   return `${data}.${base64Signature}`
+}
+
+/**
+ * Valide un JWT et retourne le payload si valide
+ */
+async function validateJWT(token: string, secret: string): Promise<{ valid: boolean; payload?: any; error?: string }> {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      return { valid: false, error: 'Invalid JWT format' };
+    }
+
+    const [headerB64, payloadB64, signatureB64] = parts;
+    const data = `${headerB64}.${payloadB64}`;
+
+    // Verify signature
+    const encoder = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      'raw',
+      encoder.encode(secret),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['verify']
+    );
+
+    const signature = Uint8Array.from(
+      atob(signatureB64.replace(/-/g, '+').replace(/_/g, '/')),
+      c => c.charCodeAt(0)
+    );
+
+    const isValid = await crypto.subtle.verify('HMAC', key, signature, encoder.encode(data));
+    if (!isValid) {
+      return { valid: false, error: 'Invalid signature' };
+    }
+
+    // Parse and check expiration
+    const payload = JSON.parse(atob(payloadB64));
+    if (payload.exp && Date.now() >= payload.exp * 1000) {
+      return { valid: false, error: 'JWT expired' };
+    }
+
+    return { valid: true, payload };
+  } catch (err) {
+    return { valid: false, error: err instanceof Error ? err.message : 'Unknown error' };
+  }
 }
 
 /**
