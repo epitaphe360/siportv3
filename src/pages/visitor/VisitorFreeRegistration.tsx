@@ -133,6 +133,9 @@ export default function VisitorFreeRegistration() {
         console.warn('Erreur envoi email:', emailError);
       }
 
+      // 5. Logout immédiat - visiteur gratuit n'a pas accès au dashboard
+      await supabase.auth.signOut();
+
       // Succès !
       setShowSuccess(true);
       toast.success('Inscription réussie ! Vérifiez votre email.');
