@@ -202,7 +202,7 @@ export default function PaymentSuccessPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-gray-900">Planifiez vos rendez-vous B2B</p>
-                    <p className="text-sm text-gray-600">10 demandes actives disponibles immédiatement</p>
+                    <p className="text-sm text-gray-600">Rendez-vous B2B ILLIMITÉS disponibles immédiatement</p>
                   </div>
                 </div>
               </div>
@@ -260,7 +260,7 @@ export default function PaymentSuccessPage() {
           </Card>
           <Card className="p-6 text-center">
             <div className="text-3xl mb-2">📅</div>
-            <h4 className="font-semibold text-gray-900 mb-1">10 RDV B2B Actifs</h4>
+            <h4 className="font-semibold text-gray-900 mb-1">RDV B2B Illimités</h4>
             <p className="text-sm text-gray-600">Planifiez vos rendez-vous stratégiques</p>
           </Card>
           <Card className="p-6 text-center">
