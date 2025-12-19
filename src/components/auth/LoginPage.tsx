@@ -40,7 +40,30 @@ export default function LoginPage() {
 
       // ✅ Rediriger vers le dashboard approprié selon le type d'utilisateur
       const { user } = useAuthStore.getState();
-      
+
+      // 🔴 CRITICAL: Block VIP visitors who haven't paid
+      if (user?.type === 'visitor' && user?.visitor_level === 'vip' && user?.status === 'pending_payment') {
+        // Log out immediately
+        await supabase.auth.signOut();
+
+        // Show payment required error
+        setError('Paiement requis pour accéder au tableau de bord VIP. Veuillez finaliser votre paiement.');
+
+        // Redirect to payment page after 2 seconds
+        setTimeout(() => {
+          navigate(ROUTES.VISITOR_SUBSCRIPTION, {
+            state: {
+              userId: user.id,
+              email: user.email,
+              name: user.name,
+              paymentRequired: true
+            }
+          });
+        }, 2000);
+
+        return;
+      }
+
       if (user?.type === 'admin') {
         navigate(ROUTES.ADMIN_DASHBOARD);
       } else if (user?.type === 'partner') {
@@ -48,7 +71,12 @@ export default function LoginPage() {
       } else if (user?.type === 'exhibitor') {
         navigate(ROUTES.EXHIBITOR_DASHBOARD);
       } else if (user?.type === 'visitor') {
-        navigate(ROUTES.VISITOR_DASHBOARD);
+        // Free visitors go to badge page, VIP visitors go to dashboard
+        if (user.visitor_level === 'free') {
+          navigate(ROUTES.BADGE);
+        } else {
+          navigate(ROUTES.VISITOR_DASHBOARD);
+        }
       } else {
         // Par défaut pour les autres types ou si type non défini
         navigate(ROUTES.DASHBOARD);

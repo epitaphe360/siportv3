@@ -62,6 +62,11 @@ const PartnerPaymentSelectionPage = React.lazy(() => import('./pages/partner/Par
 const DigitalBadge = React.lazy(() => import('./components/badge/DigitalBadge'));
 const QRScanner = React.lazy(() => import('./components/security/QRScanner'));
 
+// Visitor registration pages
+const VisitorRegistrationChoice = React.lazy(() => import('./pages/visitor/VisitorRegistrationChoice'));
+const VisitorFreeRegistration = React.lazy(() => import('./pages/visitor/VisitorFreeRegistration'));
+const VisitorVIPRegistration = React.lazy(() => import('./pages/visitor/VisitorVIPRegistration'));
+
 // Admin pages
 const PavillonsAdminPage = React.lazy(() => import('./pages/admin/PavillonsPage'));
 const CreatePavilionPage = React.lazy(() => import('./pages/admin/CreatePavilionPage'));
@@ -145,6 +150,9 @@ const App = () => {
             <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
             <Route path={ROUTES.REGISTER_EXHIBITOR} element={<ExhibitorSignUpPage />} />
             <Route path={ROUTES.REGISTER_PARTNER} element={<PartnerSignUpPage />} />
+            <Route path={ROUTES.VISITOR_REGISTRATION_CHOICE} element={<VisitorRegistrationChoice />} />
+            <Route path={ROUTES.VISITOR_FREE_REGISTRATION} element={<VisitorFreeRegistration />} />
+            <Route path={ROUTES.VISITOR_VIP_REGISTRATION} element={<VisitorVIPRegistration />} />
             <Route path={ROUTES.SIGNUP_SUCCESS} element={<SignUpSuccessPage />} />
             <Route path={ROUTES.PENDING_ACCOUNT} element={<PendingAccountPage />} />
             <Route path={ROUTES.OAUTH_CALLBACK} element={<OAuthCallbackPage />} />
