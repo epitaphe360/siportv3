@@ -20,6 +20,8 @@ import { ErrorMessage } from '../common/ErrorMessage';
 import { LevelBadge, QuotaSummaryCard } from '../common/QuotaWidget';
 import { getExhibitorLevelByArea, getExhibitorQuota } from '../../config/exhibitorQuotas';
 import { Users, FileText, Award, Scan } from 'lucide-react';
+import { MiniSiteSetupModal } from '../exhibitor/MiniSiteSetupModal';
+import { supabase } from '../../lib/supabase';
 
 // Animation variants
 const containerVariants = {
@@ -48,11 +50,41 @@ export default function ExhibitorDashboard() {
   const [isDownloadingQR, setIsDownloadingQR] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [processingAppointment, setProcessingAppointment] = useState<string | null>(null);
-  
+  const [showMiniSiteSetup, setShowMiniSiteSetup] = useState(false);
+
   const { user } = useAuthStore();
   const { dashboard, fetchDashboard, error: dashboardError } = useDashboardStore();
   const { appointments, fetchAppointments, updateAppointmentStatus, cancelAppointment, isLoading: isAppointmentsLoading } = useAppointmentStore();
   const dashboardStats = useDashboardStats();
+
+  // Check if user needs to create mini-site (first login after activation)
+  useEffect(() => {
+    const checkMiniSiteStatus = async () => {
+      if (!user?.id || user?.status !== 'active') return;
+
+      try {
+        const { data, error } = await supabase
+          .from('users')
+          .select('minisite_created')
+          .eq('id', user.id)
+          .single();
+
+        if (error) throw error;
+
+        // Show popup if mini-site not created yet
+        if (!data?.minisite_created) {
+          // Small delay so dashboard loads first
+          setTimeout(() => {
+            setShowMiniSiteSetup(true);
+          }, 1500);
+        }
+      } catch (err) {
+        console.error('Error checking minisite status:', err);
+      }
+    };
+
+    checkMiniSiteStatus();
+  }, [user?.id, user?.status]);
 
   useEffect(() => {
     const loadAppointments = async () => {
@@ -979,6 +1011,15 @@ export default function ExhibitorDashboard() {
             </div>
           </motion.div>
         </motion.div>
+      )}
+
+      {/* Mini-Site Setup Modal (first login after activation) */}
+      {user?.id && (
+        <MiniSiteSetupModal
+          isOpen={showMiniSiteSetup}
+          onClose={() => setShowMiniSiteSetup(false)}
+          userId={user.id}
+        />
       )}
     </div>
   );
