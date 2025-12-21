@@ -9,7 +9,7 @@ import { test, expect, Page } from '@playwright/test';
 // Configure timeouts
 test.setTimeout(120000); // 120 secondes par test
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:5173';
+const BASE_URL = process.env.BASE_URL || 'http://localhost:9323';
 const TIMESTAMP = Date.now();
 
 // Test data
@@ -34,18 +34,24 @@ const TEST_USERS = {
 
 // Helper functions
 async function login(page: Page, email: string, password: string) {
-  await page.goto(`${BASE_URL}/login`, { waitUntil: 'domcontentloaded', timeout: 10000 });
+  // Navigate to login page with retries
+  await page.goto(`${BASE_URL}/login`, { waitUntil: 'networkidle', timeout: 30000 });
+  
+  // Wait for login form to be visible
+  await page.waitForSelector('input[type="email"]', { state: 'visible', timeout: 15000 });
+  
+  // Fill credentials
   await page.fill('input[type="email"]', email);
   await page.fill('input[type="password"]', password);
   
-  // Click submit and wait for navigation or error in parallel
+  // Click submit and wait for navigation
   await Promise.all([
-    page.waitForLoadState('domcontentloaded', { timeout: 8000 }).catch(() => {}),
+    page.waitForURL(/dashboard|badge|tableau-de-bord|visitor|exhibitor|partner|admin/, { timeout: 15000 }).catch(() => {}),
     page.click('button[type="submit"]')
   ]);
   
-  // Give a brief moment for redirect
-  await page.waitForTimeout(1000);
+  // Wait for page to stabilize
+  await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
 }
 
 async function adminLogin(page: Page) {

@@ -9,7 +9,7 @@ import { test, expect, Page } from '@playwright/test';
 // Configure timeouts
 test.setTimeout(120000); // 120 secondes par test
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:5173';
+const BASE_URL = process.env.BASE_URL || 'http://localhost:9323';
 
 // ============================================================================
 // HELPERS AVEC LOGS

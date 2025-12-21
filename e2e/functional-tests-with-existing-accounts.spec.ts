@@ -1,6 +1,6 @@
 import { test, expect, Page } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:5173';
+const BASE_URL = 'http://localhost:9323';
 const PASSWORD = 'Test@1234567'; // Tous les comptes de test utilisent ce mot de passe
 
 // Comptes de test existants (créés via seed_test_data.sql)
@@ -87,7 +87,7 @@ test.describe('🎯 FUNCTIONAL TESTS - Using Real Accounts', () => {
         await page.waitForURL(/.*\/(login|$)/, { timeout: 10000 }).catch(() => {});
         
         // Devrait être redirigé vers login ou home
-        expect(page.url()).toMatch(/login|localhost:5173\/$/);
+        expect(page.url()).toMatch(/login|localhost:9323\/$/);
       }
     });
   });

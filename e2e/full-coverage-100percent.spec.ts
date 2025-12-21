@@ -13,7 +13,7 @@ test.setTimeout(120000); // 120 secondes par test
 // CONFIGURATION
 // ============================================================================
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:5173';
+const BASE_URL = process.env.BASE_URL || 'http://localhost:9323';
 const API_URL = process.env.API_URL || 'http://localhost:5000';
 
 // Test data avec timestamps pour éviter les doublons
