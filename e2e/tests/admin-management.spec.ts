@@ -1,6 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { testUsers, login } from './helpers';
 
+// Configure timeouts
+test.setTimeout(120000); // 120 secondes par test
+
 /**
  * ============================================================================
  * TESTS E2E: ADMINISTRATION

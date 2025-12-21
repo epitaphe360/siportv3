@@ -329,12 +329,13 @@ export class SupabaseService {
   }
 
   // ==================== TRANSFORMATION METHODS ====================
-  private static transformUserDBToUser(userDB: UserDB): User {
+  private static transformUserDBToUser(userDB: any): User {
     return {
       id: userDB.id,
       email: userDB.email,
       name: userDB.name,
       type: userDB.type,
+      visitor_level: userDB.visitor_level,
       profile: userDB.profile,
       status: userDB.status || 'active',
       createdAt: new Date(userDB.created_at),
@@ -1898,47 +1899,61 @@ export class SupabaseService {
     }
 
     const safeSupabase = supabase!;
+    
+    // Prepare data matching the actual database schema
+    const dbData = {
+      company_name: partnerData.organizationName || partnerData.name, // Reverted to company_name
+      // name: partnerData.organizationName || partnerData.name,
+      partner_type: partnerData.partnerType || partnerData.type || 'silver', // Changed to partner_type
+      // type: partnerData.partnerType || partnerData.type || 'silver',
+      // category: partnerData.sector || 'General', // Commented out to debug schema cache error
+      sector: partnerData.sector,
+      description: partnerData.description || '',
+      website: partnerData.website,
+      logo_url: partnerData.logo,
+      // country: partnerData.country || 'Maroc', // Commented out to debug schema cache error
+      verified: partnerData.verified || false,
+      featured: partnerData.featured || false,
+      partnership_level: partnerData.sponsorshipLevel || 'Silver', // Changed to partnership_level
+      // sponsorship_level: partnerData.sponsorshipLevel || 'Silver',
+      // contributions: partnerData.contributions || [], // Commented out to debug schema cache error
+      // Note: user_id, contract_value, contact_info are not in the current schema
+      // and are omitted to prevent insert errors
+    };
+
     const { data, error } = await (safeSupabase as any)
       .from('partners')
-      .insert([{
-        name: partnerData.name,
-        type: partnerData.type,
-        category: partnerData.category,
-        sector: partnerData.sector,
-        description: partnerData.description,
-        website: partnerData.website,
-        country: partnerData.country,
-        sponsorship_level: partnerData.sponsorshipLevel,
-        contributions: partnerData.contributions || [],
-        logo_url: partnerData.logo,
-        established_year: partnerData.establishedYear,
-        employees: partnerData.employees,
-        verified: partnerData.verified || false,
-        featured: partnerData.featured || false
-      }])
+      .insert([dbData])
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase createPartner error:', error);
+      throw new Error(error.message || JSON.stringify(error));
+    }
 
     // Mapper les données de la DB au format Partner
     return {
       id: data.id,
+      userId: data.user_id, // Might be undefined if not in DB
+      organizationName: data.name,
       name: data.name,
+      partnerType: data.type,
       type: data.type,
-      category: data.category,
       sector: data.sector,
       description: data.description,
       website: data.website,
-      country: data.country,
       sponsorshipLevel: data.sponsorship_level,
       contributions: data.contributions || [],
       logo: data.logo_url,
-      establishedYear: data.established_year,
-      employees: data.employees,
       verified: data.verified || false,
-      featured: data.featured || false
-    };
+      featured: data.featured || false,
+      // Contact info is lost in DB but we return what we can
+      contactName: partnerData.contactName,
+      contactEmail: partnerData.contactEmail,
+      contactPhone: partnerData.contactPhone,
+      contactPosition: partnerData.contactPosition
+    } as Partner;
   }
 
   // ==================== PRODUCTS ====================

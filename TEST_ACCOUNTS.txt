@@ -1,0 +1,142 @@
+========================================
+COMPTES DE TEST E2E - SIPORT V3
+========================================
+Mot de passe pour TOUS les comptes: Test@1234567
+========================================
+
+📋 LISTE DES 10 COMPTES À CRÉER
+
+[1/10] VISITEUR GRATUIT
+   Email: visitor-free@test.siport.com
+   Type: Visiteur
+   Niveau: Gratuit
+   Nom: Visiteur Free Test
+   Password: Test@123456
+
+[2/10] VISITEUR VIP
+   Email: visitor-vip@test.siport.com
+   Type: Visiteur
+   Niveau: VIP (700 EUR)
+   Nom: Visiteur VIP Test
+   Password: Test@123456
+
+[3/10] VISITEUR PRO
+   Email: visitor-pro@test.siport.com
+   Type: Visiteur
+   Niveau: Professionnel
+   Nom: Visiteur Pro Test
+   Password: Test@123456
+
+[4/10] EXPOSANT 9m²
+   Email: exhibitor-9m@test.siport.com
+   Type: Exposant
+   Niveau: Stand 9m²
+   Nom: Exposant 9m Test
+   Password: Test@123456
+
+[5/10] EXPOSANT 18m²
+   Email: exhibitor-18m@test.siport.com
+   Type: Exposant
+   Niveau: Stand 18m²
+   Nom: Exposant 18m Test
+   Password: Test@123456
+
+[6/10] EXPOSANT 36m² PREMIUM
+   Email: exhibitor-36m@test.siport.com
+   Type: Exposant
+   Niveau: Stand 36m² Premium
+   Nom: Exposant 36m Test
+   Password: Test@123456
+
+[7/10] PARTENAIRE MUSÉE
+   Email: partner-museum@test.siport.com
+   Type: Partenaire
+   Niveau: Musée Maritime
+   Nom: Partenaire Musée Test
+   Password: Test@123456
+
+[8/10] PARTENAIRE CHAMBRE
+   Email: partner-chamber@test.siport.com
+   Type: Partenaire
+   Niveau: Chambre de Commerce
+   Nom: Partenaire Chambre Test
+   Password: Test@123456
+
+[9/10] PARTENAIRE SPONSOR
+   Email: partner-sponsor@test.siport.com
+   Type: Partenaire
+   Niveau: Sponsor Officiel
+   Nom: Partenaire Sponsor Test
+   Password: Test@123456
+
+[10/10] ADMINISTRATEUR
+   Email: admin-test@test.siport.com
+   Type: Administrateur
+   Niveau: Admin
+   Nom: Admin Test
+   Password: Test@123456
+
+========================================
+PROCÉDURE DE CRÉATION
+========================================
+
+OPTION A: Création Manuelle (RECOMMANDÉ)
+1. Démarrer le frontend: npm run dev
+2. Aller sur: http://localhost:5173/register
+3. Créer chaque compte un par un avec les infos ci-dessus
+4. Confirmer via email (si activé)
+5. Valider que le login fonctionne
+
+OPTION B: Script Automatique
+1. Vérifier que Supabase local tourne
+2. Exécuter: npm run setup:test-accounts
+3. Vérifier la création avec: node -e "console.log('Test')"
+
+OPTION C: SQL Direct
+1. Accéder à la base Supabase locale
+2. Exécuter: psql -h localhost -p 54322 -U postgres
+3. Copier-coller le contenu de: supabase/seed_test_accounts.sql
+
+========================================
+APRÈS CRÉATION DES COMPTES
+========================================
+
+Lancer les tests fonctionnels:
+> npm run test:e2e:functional
+
+Résultat attendu:
+✅ 25/27 tests passent (93%)
+
+Voir le rapport:
+> npm run test:e2e:report
+
+========================================
+VÉRIFICATION RAPIDE
+========================================
+
+Pour vérifier qu'un compte fonctionne:
+1. Aller sur http://localhost:5173/login
+2. Utiliser un des emails ci-dessus
+3. Mot de passe: Test@123456
+4. Vérifier l'accès au dashboard
+
+========================================
+NOTES IMPORTANTES
+========================================
+
+- Tous les comptes utilisent le MÊME mot de passe
+- Les emails doivent être EXACTS (copier-coller)
+- Vérifier que @test.siport.com est bien dans l'email
+- Si un compte existe déjà, utiliser "Mot de passe oublié"
+- Les tests E2E dépendent de ces comptes EXACTS
+
+========================================
+DOCUMENTATION COMPLÈTE
+========================================
+
+Voir: E2E_TESTS_GUIDE.md
+Résumé: E2E_SUMMARY.md
+Scripts: scripts/create-test-accounts.mjs
+SQL: supabase/seed_test_accounts.sql
+
+========================================

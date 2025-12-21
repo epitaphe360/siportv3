@@ -7,6 +7,9 @@ import {
   Calendar,
   MessageCircle,
   Bell,
+  Video,
+  Mic,
+  Play,
 } from 'lucide-react';
 import { ROUTES } from '../../lib/routes';
 import { Button } from '../ui/Button';
@@ -19,6 +22,7 @@ export const Header: React.FC = memo(() => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isInfoMenuOpen, setIsInfoMenuOpen] = useState(false);
+  const [isMediaMenuOpen, setIsMediaMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuthStore();
   const { t } = useTranslation();
 
@@ -26,9 +30,11 @@ export const Header: React.FC = memo(() => {
   const toggleMenu = useCallback(() => setIsMenuOpen(prev => !prev), []);
   const toggleProfile = useCallback(() => setIsProfileOpen(prev => !prev), []);
   const toggleInfoMenu = useCallback(() => setIsInfoMenuOpen(prev => !prev), []);
+  const toggleMediaMenu = useCallback(() => setIsMediaMenuOpen(prev => !prev), []);
   const closeMenu = useCallback(() => setIsMenuOpen(false), []);
   const closeProfile = useCallback(() => setIsProfileOpen(false), []);
   const closeInfoMenu = useCallback(() => setIsInfoMenuOpen(false), []);
+  const closeMediaMenu = useCallback(() => setIsMediaMenuOpen(false), []);
 
   const handleLogout = useCallback(() => {
     logout();
@@ -47,6 +53,16 @@ export const Header: React.FC = memo(() => {
     { name: t('nav.events'), href: ROUTES.EVENTS, description: t('menu.events_desc') },
     { name: t('nav.news'), href: ROUTES.NEWS, description: t('menu.news_desc') },
     { name: 'Subscriptions', href: ROUTES.VISITOR_SUBSCRIPTION, description: t('menu.subscriptions_desc') }
+  ];
+
+  const mediaMenuItems = [
+    { name: 'Webinaires', href: ROUTES.WEBINARS, description: 'Webinaires sponsorisés en replay', icon: Video },
+    { name: 'Podcasts', href: ROUTES.PODCASTS, description: 'SIPORT Talks - Épisodes audio', icon: Mic },
+    { name: 'Capsules Inside', href: ROUTES.CAPSULES_INSIDE, description: 'Capsules vidéo Inside SIPORT', icon: Play },
+    { name: 'Live Studio', href: ROUTES.LIVE_STUDIO, description: 'Meet The Leaders - Interviews live', icon: Video },
+    { name: 'Best Moments', href: ROUTES.BEST_MOMENTS, description: 'Meilleurs moments du salon', icon: Play },
+    { name: 'Testimonials', href: ROUTES.TESTIMONIALS, description: 'Témoignages vidéo', icon: Video },
+    { name: 'Bibliothèque Média', href: ROUTES.MEDIA_LIBRARY, description: 'Tous les contenus médias', icon: Play },
   ];
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
@@ -81,6 +97,43 @@ export const Header: React.FC = memo(() => {
               </Link>
             ))}
             
+            {/* Media Menu Dropdown */}
+            <div className="relative">
+              <button
+                onClick={toggleMediaMenu}
+                className="text-siports-gray-700 hover:text-siports-primary px-4 py-2 text-sm font-medium transition-colors flex items-center space-x-1 relative group"
+              >
+                <Video className="w-4 h-4" />
+                <span>Média</span>
+                <svg className={`w-4 h-4 transition-transform ${isMediaMenuOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+                <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-siports-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+              </button>
+
+              {isMediaMenuOpen && (
+                <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-2xl shadow-siports-lg border border-siports-gray-200 py-3 z-50">
+                  {mediaMenuItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.name}
+                        to={item.href}
+                        onClick={closeMediaMenu}
+                        className="flex items-start px-6 py-3 text-sm text-siports-gray-700 hover:bg-siports-gray-50 hover:text-siports-primary transition-colors border-l-4 border-transparent hover:border-siports-primary"
+                      >
+                        <Icon className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <div className="font-semibold">{item.name}</div>
+                          <div className="text-xs text-siports-gray-500 mt-1">{item.description}</div>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
             {/* Info Menu Dropdown */}
             <div className="relative">
               <button
@@ -398,6 +451,31 @@ export const Header: React.FC = memo(() => {
                   {item.name}
                 </Link>
               ))}
+
+              {/* Mobile Media Menu */}
+              <div className="border-t border-gray-200 pt-2 mt-2">
+                <div className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider flex items-center">
+                  <Video className="w-4 h-4 mr-2" />
+                  Média
+                </div>
+                {mediaMenuItems.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className="flex items-start px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-colors"
+                      onClick={closeMenu}
+                    >
+                      <Icon className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <div>{item.name}</div>
+                        <div className="text-xs text-gray-500">{item.description}</div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
 
               {/* Mobile Info Menu */}
               <div className="border-t border-gray-200 pt-2 mt-2">

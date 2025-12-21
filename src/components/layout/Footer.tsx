@@ -21,7 +21,7 @@ export const Footer: React.FC = memo(() => {
   return (
     <footer className="bg-siports-dark text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Logo and Description */}
           <div className="lg:col-span-1">
             <div className="flex items-center space-x-2 mb-4">
@@ -103,6 +103,38 @@ export const Footer: React.FC = memo(() => {
               <li>
                 <Link to={ROUTES.NEWS} className="text-gray-400 hover:text-white transition-colors">
                   Actualités
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Media Links */}
+          <div>
+            <h3 className="text-lg font-semibold mb-6 font-heading">Média</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to={ROUTES.WEBINARS} className="text-gray-400 hover:text-white transition-colors">
+                  Webinaires
+                </Link>
+              </li>
+              <li>
+                <Link to={ROUTES.PODCASTS} className="text-gray-400 hover:text-white transition-colors">
+                  Podcasts
+                </Link>
+              </li>
+              <li>
+                <Link to={ROUTES.CAPSULES_INSIDE} className="text-gray-400 hover:text-white transition-colors">
+                  Capsules Inside
+                </Link>
+              </li>
+              <li>
+                <Link to={ROUTES.LIVE_STUDIO} className="text-gray-400 hover:text-white transition-colors">
+                  Live Studio
+                </Link>
+              </li>
+              <li>
+                <Link to={ROUTES.MEDIA_LIBRARY} className="text-gray-400 hover:text-white transition-colors">
+                  Bibliothèque
                 </Link>
               </li>
             </ul>

@@ -274,6 +274,7 @@ export const useNewsStore = create<NewsState>((set, get) => ({
           title: articleData.title || 'Sans titre',
           excerpt: articleData.excerpt || '',
           content: articleData.content || '',
+          author: articleData.author || 'Admin', // Added author field
           category: articleData.category || 'Général',
           tags: articleData.tags || [],
           image_url: articleData.image,
@@ -286,7 +287,7 @@ export const useNewsStore = create<NewsState>((set, get) => ({
 
       if (error) {
         console.error('❌ Erreur insertion article:', error);
-        throw error;
+        throw new Error(error.message || JSON.stringify(error));
       }
 
 

@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+import { Toaster } from 'react-hot-toast';
 const MiniSiteCreationPage = React.lazy(() => import('./pages/MiniSiteCreationPage'));
 import { Routes, Route } from 'react-router-dom';
 import { Header } from './components/layout/Header';
@@ -102,6 +103,22 @@ const PartnerSupportPageComponent = React.lazy(() => import('./pages/partners/Pa
 // Error pages
 const UnauthorizedPage = React.lazy(() => import('./pages/UnauthorizedPage'));
 const ForbiddenPage = React.lazy(() => import('./pages/ForbiddenPage'));
+
+// Media pages
+const WebinarsPage = React.lazy(() => import('./pages/media/WebinarsPage').then(m => ({ default: m.WebinarsPage })));
+const PodcastsPage = React.lazy(() => import('./pages/media/PodcastsPage').then(m => ({ default: m.PodcastsPage })));
+const CapsulesPage = React.lazy(() => import('./pages/media/CapsulesPage').then(m => ({ default: m.CapsulesPage })));
+const LiveStudioPage = React.lazy(() => import('./pages/media/LiveStudioPage').then(m => ({ default: m.LiveStudioPage })));
+const BestMomentsPage = React.lazy(() => import('./pages/media/BestMomentsPage').then(m => ({ default: m.BestMomentsPage })));
+const TestimonialsPage = React.lazy(() => import('./pages/media/TestimonialsPage').then(m => ({ default: m.TestimonialsPage })));
+const MediaLibraryPage = React.lazy(() => import('./pages/media/MediaLibraryPage').then(m => ({ default: m.MediaLibraryPage })));
+
+// Admin Media pages
+const MediaManagementPage = React.lazy(() => import('./pages/admin/media/MediaManagementPage'));
+
+// Partner Media pages
+const PartnerMediaUploadPage = React.lazy(() => import('./pages/partners/PartnerMediaUploadPage'));
+const PartnerMediaAnalyticsPage = React.lazy(() => import('./pages/partners/PartnerMediaAnalyticsPage'));
 
 import { ChatBot } from './components/chatbot/ChatBot';
 import { ChatBotToggle } from './components/chatbot/ChatBotToggle';
@@ -244,6 +261,22 @@ const App = () => {
             <Route path={ROUTES.AVAILABILITY_SETTINGS} element={<AvailabilitySettingsPage />} />
             <Route path={ROUTES.VENUE} element={<VenuePage />} />
 
+            {/* Media routes - public access */}
+            <Route path={ROUTES.WEBINARS} element={<WebinarsPage />} />
+            <Route path={ROUTES.PODCASTS} element={<PodcastsPage />} />
+            <Route path={ROUTES.CAPSULES_INSIDE} element={<CapsulesPage />} />
+            <Route path={ROUTES.LIVE_STUDIO} element={<LiveStudioPage />} />
+            <Route path={ROUTES.BEST_MOMENTS} element={<BestMomentsPage />} />
+            <Route path={ROUTES.TESTIMONIALS} element={<TestimonialsPage />} />
+            <Route path={ROUTES.MEDIA_LIBRARY} element={<MediaLibraryPage />} />
+
+            {/* Partner Media routes - protected */}
+            <Route path={ROUTES.PARTNER_MEDIA_UPLOAD} element={<ProtectedRoute requiredRole="partner"><PartnerMediaUploadPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_MEDIA_ANALYTICS} element={<ProtectedRoute requiredRole="partner"><PartnerMediaAnalyticsPage /></ProtectedRoute>} />
+
+            {/* Admin Media routes - protected */}
+            <Route path={ROUTES.ADMIN_MEDIA_MANAGE} element={<ProtectedRoute requiredRole="admin"><MediaManagementPage /></ProtectedRoute>} />
+
             {/* 404 catch-all route - must be last */}
             <Route path="*" element={<div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
               <h1 className="text-4xl font-bold text-gray-900 mb-4">404</h1>
@@ -270,6 +303,7 @@ const App = () => {
           hasUnreadMessages={false}
         />
       )}
+      <Toaster position="top-right" />
     </div>
   );
 }

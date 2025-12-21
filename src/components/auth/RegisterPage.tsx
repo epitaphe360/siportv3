@@ -334,22 +334,25 @@ export default function RegisterPage() {
       setTimeout(() => {
         // Si un chemin de redirection `next` est présent, l'utiliser (ex: /visitor/subscription?level=premium)
         if (nextPath && nextPath.startsWith('/')) {
-          navigate(nextPath);
+          navigate(nextPath, {
+            state: { 
+              message: 'Bienvenue sur SIPORTS 2026 !',
+              accountType: data.accountType,
+              email: data.email
+            }
+          });
           return;
         }
 
-        if (data.accountType === 'visitor') {
-          // Les visiteurs sont immédiatement actifs
-          navigate(ROUTES.VISITOR_DASHBOARD, {
-            state: { message: 'Bienvenue sur SIPORTS 2026 !' }
-          });
-        } else {
-          // Exposants et partenaires doivent attendre la validation
-          navigate(ROUTES.LOGIN, {
-            state: { message: 'Inscription réussie ! Votre compte est en attente de validation.' }
-          });
-        }
-      }, 3000);
+        // Rediriger toujours vers la page de succès
+        navigate(ROUTES.SIGNUP_SUCCESS, {
+          state: { 
+            accountType: data.accountType,
+            email: data.email,
+            nextPath: nextPath
+          }
+        });
+      }, 2000);
     } catch (error) {
       console.error('Registration error:', error);
       toast.error((error as Error).message || 'Erreur lors de l\'inscription');

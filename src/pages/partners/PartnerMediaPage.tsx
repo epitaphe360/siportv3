@@ -11,7 +11,10 @@ import {
   Award,
   Crown,
   Calendar,
-  ExternalLink
+  ExternalLink,
+  Upload,
+  BarChart3,
+  Library
 } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
@@ -189,12 +192,39 @@ export const PartnerMediaPage: React.FC = () => {
           </div>
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <div className="flex items-center space-x-2">
-              <Crown className="h-5 w-5 text-blue-600" />
-              <span className="text-blue-800 font-medium">Couverture Médiatique Premium</span>
-              <Badge className="bg-blue-100 text-blue-800" size="sm">
-                Temps Réel
-              </Badge>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Crown className="h-5 w-5 text-blue-600" />
+                <span className="text-blue-800 font-medium">Couverture Médiatique Premium</span>
+                <Badge className="bg-blue-100 text-blue-800" size="sm">
+                  Temps Réel
+                </Badge>
+              </div>
+              <div className="flex gap-3">
+                <Link
+                  to={ROUTES.PARTNER_MEDIA_UPLOAD}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <Upload className="w-4 h-4" />
+                  Uploader un média
+                </Link>
+                <Link
+                  to={ROUTES.PARTNER_MEDIA_ANALYTICS}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                >
+                  <BarChart3 className="w-4 h-4" />
+                  Analytics
+                </Link>
+                <Link
+                  to={ROUTES.MEDIA_LIBRARY}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                >
+                  <Library className="w-4 h-4" />
+                  Bibliothèque
+                </Link>
+              </div>
+            </div>
+          </div>
             </div>
           </div>
         </div>

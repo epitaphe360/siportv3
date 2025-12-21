@@ -94,6 +94,33 @@ export const ROUTES = {
   VISITOR_VIP_REGISTRATION: '/visitor/register/vip',
   BADGE: '/badge',
 
+  // Media Routes - Nouvelles fonctionnalités
+  MEDIA_LIBRARY: '/media',
+  WEBINARS: '/media/webinars',
+  WEBINAR_DETAIL: '/media/webinar/:id',
+  PODCASTS: '/media/podcasts',
+  PODCAST_DETAIL: '/media/podcast/:id',
+  CAPSULES_INSIDE: '/media/inside-siport',
+  CAPSULE_DETAIL: '/media/capsule/:id',
+  LIVE_STUDIO: '/media/live-studio',
+  LIVE_STUDIO_DETAIL: '/media/live-studio/:id',
+  BEST_MOMENTS: '/media/best-moments',
+  BEST_MOMENTS_DETAIL: '/media/best-moments/:id',
+  TESTIMONIALS: '/media/testimonials',
+  TESTIMONIAL_DETAIL: '/media/testimonial/:id',
+  
+  // Admin Media Management
+  ADMIN_MEDIA_CREATE: '/admin/media/create',
+  ADMIN_MEDIA_MANAGE: '/admin/media/manage',
+  ADMIN_MEDIA_EDIT: '/admin/media/edit/:id',
+  ADMIN_LIVE_EVENTS: '/admin/live-events',
+  ADMIN_LIVE_EVENT_CREATE: '/admin/live-events/create',
+
+  // Partner Media Management
+  PARTNER_MEDIA_UPLOAD: '/partner/media/upload',
+  PARTNER_MEDIA_ANALYTICS: '/partner/media/analytics',
+  PARTNER_MEDIA_LIBRARY: '/partner/media/library',
+
   // Autres
   PRODUCT_DETAIL: '/products/:id',
   EXHIBITOR_PROFILE_EDIT: '/exhibitor/profile/edit',

@@ -5,17 +5,20 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export default defineConfig({
-  testDir: 'tests',
-  testMatch: ['complete-app-test.spec.ts'],
+  testDir: 'e2e',
+  testMatch: ['**/*.spec.ts'],
   timeout: 30000,
+  workers: 1,
+  retries: 0,
+  fullyParallel: false,
   use: {
-    baseURL: 'http://localhost:5000',
+    baseURL: 'http://localhost:5173',
     headless: true,
     viewport: { width: 1280, height: 800 },
   },
   webServer: {
     command: 'npm run dev',
-    port: 5000,
+    port: 5173,
     reuseExistingServer: true,
     timeout: 60000,
   },

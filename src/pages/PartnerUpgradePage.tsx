@@ -37,7 +37,7 @@ export default function PartnerUpgradePage() {
   const handleUpgrade = (targetTier: PartnerTier) => {
     setSelectedTier(targetTier);
     // Navigate to payment page with tier information
-    navigate(`/partner/payment?tier=${targetTier}`);
+    navigate(`/partner/payment-selection?tier=${targetTier}`);
   };
 
   return (

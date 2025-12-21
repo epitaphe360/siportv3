@@ -9,7 +9,7 @@
 CREATE TABLE IF NOT EXISTS public.payment_requests (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
-  requested_level text NOT NULL CHECK (requested_level IN ('premium')),
+  requested_level text NOT NULL CHECK (requested_level IN ('premium', 'silver', 'gold', 'platinium', 'museum')),
   amount numeric NOT NULL DEFAULT 700.00,
   currency text NOT NULL DEFAULT 'EUR',
   status text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'cancelled')),
@@ -29,6 +29,20 @@ CREATE TABLE IF NOT EXISTS public.payment_requests (
   created_at timestamp with time zone DEFAULT now(),
   updated_at timestamp with time zone DEFAULT now()
 );
+
+-- Mise à jour de la contrainte si la table existe déjà
+DO $$ 
+BEGIN 
+    ALTER TABLE public.payment_requests 
+    DROP CONSTRAINT IF EXISTS payment_requests_requested_level_check;
+    
+    ALTER TABLE public.payment_requests 
+    ADD CONSTRAINT payment_requests_requested_level_check 
+    CHECK (requested_level IN ('premium', 'silver', 'gold', 'platinium', 'museum'));
+EXCEPTION 
+    WHEN undefined_table THEN 
+        NULL; 
+END $$;
 
 -- Index pour performance
 CREATE INDEX IF NOT EXISTS idx_payment_requests_user_id ON public.payment_requests(user_id);
@@ -95,6 +109,8 @@ CREATE POLICY "Admins can update payment requests"
 -- FONCTION: Approuver une demande de paiement
 -- ============================================
 
+DROP FUNCTION IF EXISTS public.approve_payment_request(uuid, uuid, text);
+
 CREATE OR REPLACE FUNCTION public.approve_payment_request(
   request_id uuid,
   admin_id uuid,
@@ -143,6 +159,8 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- ============================================
 -- FONCTION: Rejeter une demande de paiement
 -- ============================================
+
+DROP FUNCTION IF EXISTS public.reject_payment_request(uuid, uuid, text);
 
 CREATE OR REPLACE FUNCTION public.reject_payment_request(
   request_id uuid,
