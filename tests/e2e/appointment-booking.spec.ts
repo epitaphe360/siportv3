@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Appointment Booking Flow', () => {
   test('should book appointment successfully', async ({ page }) => {
-    await page.goto('http://localhost:5173/connexion');
+    await page.goto('http://localhost:9323/connexion');
     
     // Login as visitor
     await page.fill('input[type="email"]', 'visitor@test.com');
@@ -30,7 +30,7 @@ test.describe('Appointment Booking Flow', () => {
   });
 
   test('should prevent double booking', async ({ page }) => {
-    await page.goto('http://localhost:5173/connexion');
+    await page.goto('http://localhost:9323/connexion');
     await page.fill('input[type="email"]', 'visitor@test.com');
     await page.fill('input[type="password"]', 'TestPass123!');
     await page.click('button[type="submit"]');
@@ -45,7 +45,7 @@ test.describe('Appointment Booking Flow', () => {
   });
 
   test('should show quota reached error', async ({ page }) => {
-    await page.goto('http://localhost:5173/connexion');
+    await page.goto('http://localhost:9323/connexion');
     
     // Login as free user (0 quota)
     await page.fill('input[type="email"]', 'free@test.com');

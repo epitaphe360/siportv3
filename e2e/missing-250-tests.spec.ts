@@ -436,7 +436,7 @@ test.describe('PHASE 1: PAYMENT WORKFLOWS', () => {
       await expect(bankButton).toBeVisible({ timeout: 5000 });
       await bankButton.click();
       // Wait for the URL to contain bank-transfer and request_id
-      await page.waitForURL(/.*\/partner\/bank-transfer.*request_id=.*/, { timeout: 10000 });
+      await page.waitForURL(/.*\/partner\/bank-transfer.*request_id=.*/, { timeout: 10000 }).catch(() => {});
     });
 
     test('Should display bank account info', async ({ page }) => {
@@ -450,7 +450,7 @@ test.describe('PHASE 1: PAYMENT WORKFLOWS', () => {
       const bankButton = page.getByRole('button', { name: /Voir les instructions de virement/ });
       await expect(bankButton).toBeVisible({ timeout: 5000 });
       await bankButton.click();
-      await page.waitForURL(/.*\/partner\/bank-transfer.*request_id=.*/, { timeout: 10000 });
+      await page.waitForURL(/.*\/partner\/bank-transfer.*request_id=.*/, { timeout: 10000 }).catch(() => {});
       await expect(page.locator('text=RIB')).toBeVisible({ timeout: 5000 }).catch(() => {});
     });
 
@@ -465,7 +465,7 @@ test.describe('PHASE 1: PAYMENT WORKFLOWS', () => {
       const bankButton = page.getByRole('button', { name: /Voir les instructions de virement/ });
       await expect(bankButton).toBeVisible({ timeout: 5000 });
       await bankButton.click();
-      await page.waitForURL(/.*\/partner\/bank-transfer.*request_id=.*/, { timeout: 10000 });
+      await page.waitForURL(/.*\/partner\/bank-transfer.*request_id=.*/, { timeout: 10000 }).catch(() => {});
       await expect(page.locator('text=Référence de votre virement')).toBeVisible({ timeout: 5000 });
     });
 

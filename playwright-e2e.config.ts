@@ -26,7 +26,7 @@ export default defineConfig({
   // Configuration globale
   use: {
     // URL de base
-    baseURL: process.env.BASE_URL || 'http://localhost:5173',
+    baseURL: process.env.BASE_URL || 'http://localhost:9323',
 
     // Trace on first retry
     trace: 'on-first-retry',

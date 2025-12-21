@@ -7,7 +7,7 @@ test('Vérifier configuration Supabase', async ({ page }) => {
     consoleMessages.push(`[${msg.type()}] ${msg.text()}`);
   });
 
-  await page.goto('http://localhost:5173/login');
+  await page.goto('http://localhost:9323/login');
 
   // Attendre que la page se charge
   await page.waitForTimeout(2000);
