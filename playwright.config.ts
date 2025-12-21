@@ -12,13 +12,13 @@ export default defineConfig({
   retries: 0,
   fullyParallel: false,
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: 'http://localhost:9323',
     headless: true,
     viewport: { width: 1280, height: 800 },
   },
   webServer: {
     command: 'npm run dev',
-    port: 5173,
+    port: 9323,
     reuseExistingServer: true,
     timeout: 60000,
   },
