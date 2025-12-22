@@ -441,12 +441,12 @@ test.describe('📝 INSCRIPTION', () => {
 
 test.describe('♿ ACCESSIBILITÉ', () => {
   
-  test('A11Y-1: Labels sur les inputs', async ({ page }) => {
+  test('A11Y-1: Inputs présents sur login', async ({ page }) => {
     await page.goto(`${BASE_URL}/login`, { waitUntil: 'domcontentloaded' });
     
     const inputs = await page.locator('input').all();
-    // Au moins un input doit exister
-    expect(inputs.length).toBeGreaterThan(0);
+    // Au moins 2 inputs (email + password)
+    expect(inputs.length).toBeGreaterThanOrEqual(2);
   });
 
   test('A11Y-2: Navigation au clavier possible', async ({ page }) => {
