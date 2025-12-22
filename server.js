@@ -33,19 +33,9 @@ app.use((req, res, next) => {
   res.header('X-Frame-Options', 'DENY');
   res.header('X-XSS-Protection', '1; mode=block');
   res.header('Referrer-Policy', 'strict-origin-when-cross-origin');
-  // COEP for reCAPTCHA cross-origin resources
-  res.header('Cross-Origin-Embedder-Policy', 'credentialless');
-  res.header('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
-  next();
-});
-
-// Ensure proper MIME types for dynamic imports
-app.use((req, res, next) => {
-  if (req.path.endsWith('.js')) {
-    res.type('application/javascript');
-  } else if (req.path.endsWith('.wasm')) {
-    res.type('application/wasm');
-  }
+  // COEP is disabled to allow reCAPTCHA and other cross-origin resources
+  // res.header('Cross-Origin-Embedder-Policy', 'credentialless');
+  // res.header('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
   next();
 });
 
@@ -53,18 +43,26 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, 'dist'), {
   maxAge: '1y',
   etag: true,
-  setHeaders: (res, path) => {
-    if (path.endsWith('.js') || path.endsWith('.mjs')) {
-      res.setHeader('Content-Type', 'application/javascript;charset=UTF-8');
-    } else if (path.endsWith('.wasm')) {
-      res.setHeader('Content-Type', 'application/wasm');
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.js') || filePath.endsWith('.mjs')) {
+      res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
     }
   }
 }));
 
 // SPA fallback - serve index.html for all routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'), (err) => {
+    if (err) {
+      res.status(404).send('Not Found');
+    }
+  });
+});
+
+// Error handler to prevent connection resets
+app.use((err, req, res, next) => {
+  console.error('❌ Server Error:', err);
+  res.status(500).send('Internal Server Error');
 });
 
 app.listen(PORT, '0.0.0.0', () => {

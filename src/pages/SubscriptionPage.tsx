@@ -82,7 +82,7 @@ const subscriptionTiers: SubscriptionTier[] = [
       'Accès exclusif aux webinaires',
       'Support prioritaire',
     ],
-    cta: 'Passer à Premium',
+    cta: 'Inscription Visiteur VIP',
     color: 'bg-purple-50',
   },
 
@@ -175,7 +175,7 @@ const subscriptionTiers: SubscriptionTier[] = [
       'Analytics détaillés',
       'Support technique prioritaire',
     ],
-    cta: 'Passer à Premium',
+    cta: 'Inscription Exposant Premium',
     color: 'bg-amber-50',
   },
   {
@@ -499,6 +499,16 @@ export default function SubscriptionPage() {
             </Card>
             ))}
           </div>
+        </div>
+
+        {/* Bouton S'inscrire gratuitement - remplacer le lien existant */}
+        <div className="mt-8 text-center">
+          <button
+            onClick={() => setShowFreeRegistration(true)}
+            className="w-full py-3 px-6 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors"
+          >
+            🟢 S'inscrire gratuitement
+          </button>
         </div>
 
         {/* Additional Info */}

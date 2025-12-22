@@ -4,7 +4,7 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: './',
+  base: '/',
   plugins: [react()],
   server: {
     host: '0.0.0.0',
@@ -21,8 +21,9 @@ export default defineConfig({
     // Fix COEP issue with reCAPTCHA
     middlewareMode: false,
     headers: {
-      'Cross-Origin-Embedder-Policy': 'credentialless',
-      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups'
+      // COEP is disabled to allow reCAPTCHA and other cross-origin resources
+      // 'Cross-Origin-Embedder-Policy': 'credentialless',
+      // 'Cross-Origin-Opener-Policy': 'same-origin-allow-popups'
     }
   },
   preview: {

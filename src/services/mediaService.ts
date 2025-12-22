@@ -27,7 +27,7 @@ export class MediaService {
         .from('media_contents')
         .select(`
           *,
-          sponsor_partner:partners(id, company_name, logo_url, tier)
+          sponsor_partner:partners(id, company_name:name, logo_url, tier:sponsorship_level)
         `);
 
       // Filtres
@@ -98,7 +98,7 @@ export class MediaService {
         .from('media_contents')
         .select(`
           *,
-          sponsor_partner:partners(id, company_name, logo_url, tier, website)
+          sponsor_partner:partners(id, company_name:name, logo_url, tier:sponsorship_level, website)
         `)
         .eq('id', id)
         .single();
@@ -125,7 +125,7 @@ export class MediaService {
         }])
         .select(`
           *,
-          sponsor_partner:partners(id, company_name, logo_url)
+          sponsor_partner:partners(id, company_name:name, logo_url)
         `)
         .single();
 
@@ -150,7 +150,7 @@ export class MediaService {
         .eq('id', id)
         .select(`
           *,
-          sponsor_partner:partners(id, company_name, logo_url)
+          sponsor_partner:partners(id, company_name:name, logo_url)
         `)
         .single();
 
@@ -380,7 +380,7 @@ export class MediaService {
         .from('media_contents')
         .select(`
           *,
-          sponsor_partner:partners(id, company_name, logo_url)
+          sponsor_partner:partners(id, company_name:name, logo_url)
         `)
         .eq('status', 'published')
         .order('views_count', { ascending: false })
@@ -403,7 +403,7 @@ export class MediaService {
         .from('media_contents')
         .select(`
           *,
-          sponsor_partner:partners(id, company_name, logo_url)
+          sponsor_partner:partners(id, company_name:name, logo_url)
         `)
         .eq('status', 'published')
         .order('published_at', { ascending: false })
