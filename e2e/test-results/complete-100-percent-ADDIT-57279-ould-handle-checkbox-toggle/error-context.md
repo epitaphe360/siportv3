@@ -1,0 +1,171 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Aller au contenu principal" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - banner [ref=e5]:
+      - generic [ref=e7]:
+        - link "SIPORTS Logo" [ref=e8] [cursor=pointer]:
+          - /url: /
+          - img "SIPORTS Logo" [ref=e10]
+        - navigation [ref=e11]:
+          - link "Accueil" [ref=e12] [cursor=pointer]:
+            - /url: /
+            - text: Accueil
+          - link "Exposants" [ref=e13] [cursor=pointer]:
+            - /url: /exhibitors
+            - text: Exposants
+          - link "Partenaires" [ref=e14] [cursor=pointer]:
+            - /url: /partners
+            - text: Partenaires
+          - link "Réseautage" [ref=e15] [cursor=pointer]:
+            - /url: /networking
+            - text: Réseautage
+          - button "Média" [ref=e17] [cursor=pointer]:
+            - img [ref=e18]
+            - generic [ref=e21]: Média
+            - img [ref=e22]
+          - button "Informations" [ref=e25] [cursor=pointer]:
+            - generic [ref=e26]: Informations
+            - img [ref=e27]
+        - generic [ref=e29]:
+          - button "🇫🇷 Français" [ref=e31] [cursor=pointer]:
+            - img [ref=e32]
+            - generic [ref=e35]: 🇫🇷 Français
+            - img [ref=e36]
+          - button "3" [ref=e38] [cursor=pointer]:
+            - img [ref=e39]
+            - generic [ref=e42]: "3"
+          - link "2" [ref=e43] [cursor=pointer]:
+            - /url: /messages
+            - img [ref=e44]
+            - generic [ref=e46]: "2"
+          - link "Calendar" [ref=e47] [cursor=pointer]:
+            - /url: /appointments
+            - img [ref=e48]
+          - button "Mon compte" [ref=e51] [cursor=pointer]:
+            - img [ref=e53]
+            - generic [ref=e56]: Mon compte
+    - main [ref=e57]:
+      - generic [ref=e59]:
+        - heading "Profil non trouvé" [level=3] [ref=e60]
+        - paragraph [ref=e61]: Impossible de charger les informations du profil
+    - contentinfo [ref=e62]:
+      - generic [ref=e63]:
+        - generic [ref=e64]:
+          - generic [ref=e65]:
+            - generic [ref=e66]:
+              - img [ref=e68]
+              - generic [ref=e71]:
+                - text: SIPORTS
+                - generic [ref=e72]: "2026"
+            - paragraph [ref=e73]: Salon International des Ports - La plateforme de référence pour l'écosystème portuaire mondial.
+            - generic [ref=e74]:
+              - link "Facebook" [ref=e75] [cursor=pointer]:
+                - /url: https://facebook.com/siports2026
+                - img [ref=e76]
+              - link "Twitter" [ref=e78] [cursor=pointer]:
+                - /url: https://twitter.com/siports2026
+                - img [ref=e79]
+              - link "Linkedin" [ref=e81] [cursor=pointer]:
+                - /url: https://linkedin.com/company/siports2026
+                - img [ref=e82]
+              - link "Youtube" [ref=e86] [cursor=pointer]:
+                - /url: https://youtube.com/@siports2026
+                - img [ref=e87]
+          - generic [ref=e90]:
+            - heading "Navigation" [level=3] [ref=e91]
+            - list [ref=e92]:
+              - listitem [ref=e93]:
+                - link "Accueil" [ref=e94] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e95]:
+                - link "Exposants" [ref=e96] [cursor=pointer]:
+                  - /url: /exhibitors
+              - listitem [ref=e97]:
+                - link "Réseautage" [ref=e98] [cursor=pointer]:
+                  - /url: /networking
+              - listitem [ref=e99]:
+                - link "Événements" [ref=e100] [cursor=pointer]:
+                  - /url: /events
+              - listitem [ref=e101]:
+                - link "Actualités" [ref=e102] [cursor=pointer]:
+                  - /url: /news
+          - generic [ref=e103]:
+            - heading "Média" [level=3] [ref=e104]
+            - list [ref=e105]:
+              - listitem [ref=e106]:
+                - link "Webinaires" [ref=e107] [cursor=pointer]:
+                  - /url: /media/webinars
+              - listitem [ref=e108]:
+                - link "Podcasts" [ref=e109] [cursor=pointer]:
+                  - /url: /media/podcasts
+              - listitem [ref=e110]:
+                - link "Capsules Inside" [ref=e111] [cursor=pointer]:
+                  - /url: /media/inside-siport
+              - listitem [ref=e112]:
+                - link "Live Studio" [ref=e113] [cursor=pointer]:
+                  - /url: /media/live-studio
+              - listitem [ref=e114]:
+                - link "Bibliothèque" [ref=e115] [cursor=pointer]:
+                  - /url: /media
+          - generic [ref=e116]:
+            - heading "Services" [level=3] [ref=e117]
+            - list [ref=e118]:
+              - listitem [ref=e119]:
+                - link "Devenir Exposant" [ref=e120] [cursor=pointer]:
+                  - /url: /register/exhibitor
+              - listitem [ref=e121]:
+                - link "Partenariat" [ref=e122] [cursor=pointer]:
+                  - /url: /partnership
+              - listitem [ref=e123]:
+                - link "Support" [ref=e124] [cursor=pointer]:
+                  - /url: /support
+              - listitem [ref=e125]:
+                - link "API Documentation" [ref=e126] [cursor=pointer]:
+                  - /url: /api
+          - generic [ref=e127]:
+            - heading "Contact" [level=3] [ref=e128]
+            - generic [ref=e129]:
+              - generic [ref=e130]:
+                - img [ref=e131]
+                - generic [ref=e134]:
+                  - text: El Jadida, Maroc
+                  - text: 1-3 Avril 2026
+              - generic [ref=e135]:
+                - img [ref=e136]
+                - link "contact@siportevent.com" [ref=e139] [cursor=pointer]:
+                  - /url: mailto:contact@siportevent.com
+              - generic [ref=e140]:
+                - img [ref=e141]
+                - link "+212 1 23 45 67 89" [ref=e143] [cursor=pointer]:
+                  - /url: tel:+212123456789
+        - generic [ref=e144]:
+          - paragraph [ref=e145]: © 2025 SIPORTS. Tous droits réservés.
+          - generic [ref=e146]:
+            - link "Politique de Confidentialité" [ref=e147] [cursor=pointer]:
+              - /url: /privacy
+            - link "Conditions d'Utilisation" [ref=e148] [cursor=pointer]:
+              - /url: /terms
+            - link "Cookies" [ref=e149] [cursor=pointer]:
+              - /url: /cookies
+    - button [ref=e151] [cursor=pointer]:
+      - img [ref=e153]
+  - iframe [ref=e159]:
+    - generic [active] [ref=f6e1]:
+      - generic [ref=f6e2]: This reCAPTCHA is for testing purposes only. Please report to the site admin if you are seeing this.
+      - generic [ref=f6e3]:
+        - generic [ref=f6e6]:
+          - link "Privacy" [ref=f6e7] [cursor=pointer]:
+            - /url: https://www.google.com/intl/en/policies/privacy/
+          - text: "-"
+          - link "Terms" [ref=f6e8] [cursor=pointer]:
+            - /url: https://www.google.com/intl/en/policies/terms/
+        - generic [ref=f6e9]:
+          - generic [ref=f6e10]:
+            - text: protected by
+            - strong [ref=f6e11]: reCAPTCHA
+          - generic [ref=f6e12]: "-"
+```
