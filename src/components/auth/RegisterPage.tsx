@@ -453,12 +453,13 @@ export default function RegisterPage() {
                     {accountTypes.map((type) => {
                       const Icon = type.icon;
                       return (
-                        <label key={type.value} className="cursor-pointer">
+                        <label key={type.value} className="cursor-pointer" data-testid={`account-type-${type.value}`}>
                           <input
                             type="radio"
                             value={type.value}
                             {...register('accountType')}
                             className="sr-only"
+                            data-testid={`radio-${type.value}`}
                           />
                           <div className={`p-6 border-2 rounded-lg transition-all ${
                             watchedAccountType === type.value
