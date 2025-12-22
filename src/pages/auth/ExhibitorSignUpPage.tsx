@@ -200,7 +200,7 @@ export default function ExhibitorSignUpPage() {
         }
       }
 
-      // @ts-ignore - recaptchaToken sera ajouté à authStore.signUp()
+      // @ts-expect-error - recaptchaToken sera ajouté à authStore.signUp()
       const { error, data: userData } = await signUp({ email, password }, finalProfileData, recaptchaToken);
 
       if (error) {

@@ -183,7 +183,7 @@ export default function PartnerSignUpPage() {
         }
       }
 
-      // @ts-ignore - recaptchaToken sera ajouté à authStore.signUp()
+      // @ts-expect-error - recaptchaToken sera ajouté à authStore.signUp()
       const { error } = await signUp({ email, password }, finalProfileData, recaptchaToken);
 
       if (error) {

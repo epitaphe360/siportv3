@@ -32,7 +32,7 @@ export const passwordSchema = z
 export const phoneSchema = z
   .string()
   .regex(
-    /^\+?[0-9\s\-\(\)]{10,20}$/,
+    /^\+?[0-9\s\-()]{10,20}$/,
     'Format de téléphone invalide'
   )
   .min(10, 'Numéro trop court')

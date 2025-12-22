@@ -4,7 +4,6 @@ import { Check, X, Crown, Zap, Star, Award } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { ROUTES } from '../lib/routes';
-import useAuthStore from '../store/authStore';
 
 // Types
 interface SubscriptionFeature {
@@ -354,7 +353,6 @@ const subscriptionTiers: SubscriptionTier[] = [
 export default function SubscriptionPage() {
   const [selectedType, setSelectedType] = useState<'visitor' | 'partner' | 'exhibitor'>('visitor');
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuthStore();
 
   const visitorTiers = subscriptionTiers.filter(t => t.type === 'visitor');
   const partnerTiers = subscriptionTiers.filter(t => t.type === 'partner');

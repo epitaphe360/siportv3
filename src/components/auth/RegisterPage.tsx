@@ -306,7 +306,7 @@ export default function RegisterPage() {
         }
       }
 
-      // @ts-ignore - recaptchaToken sera ajouté à authStore.register()
+      // @ts-expect-error - recaptchaToken sera ajouté à authStore.register()
       await registerUser(data, recaptchaToken);
 
       // Si c'est un exposant ou partenaire, afficher un toast indiquant validation admin requise
