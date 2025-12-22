@@ -992,6 +992,7 @@ export default function RegisterPage() {
                       type="button"
                       variant="outline"
                       onClick={prevStep}
+                      data-testid="btn-previous"
                     >
                       Précédent
                     </Button>
@@ -1003,6 +1004,7 @@ export default function RegisterPage() {
                     <Button
                       type="button"
                       onClick={nextStep}
+                      data-testid="btn-next"
                     >
                       Suivant
                     </Button>
@@ -1010,6 +1012,7 @@ export default function RegisterPage() {
                     <Button
                       type="submit"
                       disabled={isLoading}
+                      data-testid="btn-submit"
                     >
                       {isLoading ? (
                         <>
