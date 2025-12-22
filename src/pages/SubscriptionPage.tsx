@@ -113,7 +113,7 @@ const subscriptionTiers: SubscriptionTier[] = [
       'Formulaire de contact basique',
       'Accès tableau de bord',
     ],
-    cta: 'Consulter détails',
+    cta: 'Demander à être contacté',
     color: 'bg-blue-50',
   },
   {
@@ -143,7 +143,7 @@ const subscriptionTiers: SubscriptionTier[] = [
       'Messagerie intégrée',
       'Accès aux analytics basiques',
     ],
-    cta: 'Choisir Standard',
+    cta: 'Demander à être contacté',
     color: 'bg-green-50',
   },
   {
@@ -175,7 +175,7 @@ const subscriptionTiers: SubscriptionTier[] = [
       'Analytics détaillés',
       'Support technique prioritaire',
     ],
-    cta: 'Inscription Exposant Premium',
+    cta: 'Demander à être contacté',
     color: 'bg-amber-50',
   },
   {
@@ -208,7 +208,7 @@ const subscriptionTiers: SubscriptionTier[] = [
       'Support technique VIP dédié',
       'Priorité algorithmique',
     ],
-    cta: 'Devenir Elite',
+    cta: 'Demander à être contacté',
     color: 'bg-red-50',
   },
 
@@ -371,19 +371,28 @@ export default function SubscriptionPage() {
       // Inscription VIP - rediriger vers formulaire VIP complet avec photo et paiement
       navigate(ROUTES.VISITOR_VIP_REGISTRATION);
     } else if (tierId.includes('exhibitor')) {
-      // Offre exposant - si non authentifié, rediriger vers inscription exposant
-      if (!isAuthenticated) {
-        navigate(ROUTES.REGISTER_EXHIBITOR);
-      } else {
-        navigate(ROUTES.EXHIBITOR_DASHBOARD);
-      }
+      // Offre exposant - toujours rediriger vers formulaire inscription avec le tier choisi
+      // Un commercial contactera l'exposant après inscription
+      const tier = subscriptionTiers.find(t => t.id === tierId);
+      navigate(ROUTES.REGISTER_EXHIBITOR, {
+        state: {
+          selectedTier: tierId,
+          tierName: tier?.name || '',
+          tierLevel: tier?.level || '',
+          tierPrice: tier?.price || 0
+        }
+      });
     } else if (tierId.includes('partner')) {
-      // Offre partenaire - si non authentifié, rediriger vers inscription partenaire
-      if (!isAuthenticated) {
-        navigate(ROUTES.REGISTER_PARTNER);
-      } else {
-        navigate(ROUTES.PARTNER_DASHBOARD);
-      }
+      // Offre partenaire - rediriger vers inscription partenaire avec le tier choisi
+      const tier = subscriptionTiers.find(t => t.id === tierId);
+      navigate(ROUTES.REGISTER_PARTNER, {
+        state: {
+          selectedTier: tierId,
+          tierName: tier?.name || '',
+          tierLevel: tier?.level || '',
+          tierPrice: tier?.price || 0
+        }
+      });
     }
   };
 

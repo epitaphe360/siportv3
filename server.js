@@ -44,15 +44,33 @@ app.use(express.static(path.join(__dirname, 'dist'), {
   maxAge: '1y',
   etag: true,
   setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.js') || filePath.endsWith('.mjs')) {
+    // Never cache HTML files (especially index.html)
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    } else if (filePath.endsWith('.js') || filePath.endsWith('.mjs')) {
       res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
     }
   }
 }));
 
+// Specific handler for missing assets to avoid SPA fallback returning HTML
+// This prevents the "MIME type" error by returning a 404 instead of index.html
+app.get('/assets/*', (req, res) => {
+  res.status(404).type('text/plain').send('Asset not found');
+});
+
 // SPA fallback - serve index.html for all routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'), (err) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'), {
+    // Ensure index.html is not cached when served via fallback
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    }
+  }, (err) => {
     if (err) {
       res.status(404).send('Not Found');
     }

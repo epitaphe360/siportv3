@@ -16,7 +16,7 @@ cmds = [
 [phases.build]
 cmds = ["npm run build"]
 
-# Start command for production preview server
+# Start command for production server
 [start]
-cmd = "npm run preview"
+cmd = "node server.js"
 
