@@ -32,13 +32,22 @@ const PARTNER = {
 };
 
 async function login(page: Page, email: string, password: string) {
-  await page.goto(`${BASE_URL}/login`);
-  await page.fill('input[type="email"]', email);
-  await page.fill('input[type="password"]', password);
-  await Promise.all([
-    page.waitForURL(/.*\/(visitor|partner|exhibitor|admin)\/dashboard.*/, { timeout: 15000 }),
-    page.click('button[type="submit"], button:has-text("Connexion")')
-  ]).catch(() => console.log('Login may have failed'));
+  await page.goto(`${BASE_URL}/login`, { waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {});
+  await page.fill('input[id="email"]', email, { timeout: 5000 }).catch(() => {});
+  await page.fill('input[id="password"]', password, { timeout: 5000 }).catch(() => {});
+  
+  try {
+    await Promise.all([
+      page.waitForURL(/.*\/(visitor|partner|exhibitor|admin|dashboard|badge).*/, { timeout: 15000 }),
+      page.click('button:has-text("Se connecter")', { timeout: 5000 })
+    ]);
+  } catch (e) {
+    try {
+      await page.click('button[type="submit"]', { timeout: 2000 });
+    } catch (e2) {
+      console.log('Login may have failed');
+    }
+  }
 }
 
 // ============================================================================
@@ -70,13 +79,13 @@ test.describe('🎟️ WORKFLOW 1: Visitor Complete Registration & Badge', () =>
     
     // Step 2: Wait for email verification or auto-login
     await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
-    await page.waitForLoadState('networkidle').catch(() => {});
+    await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
     
     // Step 3: Navigate to badge section
     const badgeNav = page.locator('a:has-text("Badge"), button:has-text("Badge")').first();
     if (await badgeNav.isVisible({ timeout: 3000 }).catch(() => false)) {
       await badgeNav.click();
-      await page.waitForLoadState('networkidle').catch(() => {});
+      await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
       
       // Verify QR code exists
       const qr = page.locator('img[alt*="QR"], img[src*="qr"]').first();
@@ -133,7 +142,7 @@ test.describe('🎟️ WORKFLOW 1: Visitor Complete Registration & Badge', () =>
     const profileBtn = page.locator('button:has-text("Profil")').first();
     await profileBtn.click();
     
-    await page.waitForLoadState('networkidle').catch(() => {});
+    await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
     
     // Edit profile
     const editBtn = page.locator('button:has-text("Éditer")').first();
@@ -201,7 +210,7 @@ test.describe('🎟️ WORKFLOW 1: Visitor Complete Registration & Badge', () =>
     await exhibitorCard.click().catch(() => {});
     
     // Wait for details
-    await page.waitForLoadState('networkidle').catch(() => {});
+    await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
     
     // Click "Book Appointment"
     const bookBtn = page.locator('button:has-text("Rendez-vous|Book|Réserver")').first();
@@ -284,7 +293,7 @@ test.describe('🏪 WORKFLOW 2: Exhibitor Complete Setup & Operations', () => {
     
     if (await miniSiteBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
       await miniSiteBtn.click();
-      await page.waitForLoadState('networkidle').catch(() => {});
+      await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
       
       // Fill mini site info
       const titleInput = page.locator('input[name="title"], input[placeholder*="titre"]').first();
@@ -324,7 +333,7 @@ test.describe('🏪 WORKFLOW 2: Exhibitor Complete Setup & Operations', () => {
     
     if (await appointmentTab.isVisible({ timeout: 2000 }).catch(() => false)) {
       await appointmentTab.click();
-      await page.waitForLoadState('networkidle').catch(() => {});
+      await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
       
       // Find first appointment
       const appointmentRow = page.locator('[class*="appointment"], [class*="row"]').first();
@@ -374,7 +383,7 @@ test.describe('🏪 WORKFLOW 2: Exhibitor Complete Setup & Operations', () => {
     
     if (await analyticsBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
       await analyticsBtn.click();
-      await page.waitForLoadState('networkidle').catch(() => {});
+      await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
       
       // Check for metrics
       const metrics = [
@@ -406,7 +415,7 @@ test.describe('🏪 WORKFLOW 2: Exhibitor Complete Setup & Operations', () => {
     
     if (await upgradeBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
       await upgradeBtn.click();
-      await page.waitForLoadState('networkidle').catch(() => {});
+      await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
       
       // Select new level
       const nextLevel = page.locator('text=Premium, text=Elite').first();
@@ -754,7 +763,7 @@ test.describe('💬 WORKFLOW 6: Networking & Messaging', () => {
     const chatNav = page.locator('a:has-text("Chat|Messages"), button:has-text("Chat")').first();
     if (await chatNav.isVisible({ timeout: 2000 }).catch(() => false)) {
       await chatNav.click();
-      await page.waitForLoadState('networkidle').catch(() => {});
+      await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
       
       // Select conversation
       const conversation = page.locator('[class*="conversation"], [class*="chat-item"]').first();

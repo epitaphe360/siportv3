@@ -4,6 +4,7 @@ const MiniSiteCreationPage = React.lazy(() => import('./pages/MiniSiteCreationPa
 import { Routes, Route } from 'react-router-dom';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
+import { SkipToContent } from './components/common/SkipToContent';
 
 // Lazy load pages
 const HomePage = React.lazy(() => import('./pages/HomePage'));
@@ -50,7 +51,7 @@ const SignUpSuccessPage = React.lazy(() => import('./pages/auth/SignUpSuccessPag
 const PendingAccountPage = React.lazy(() => import('./pages/auth/PendingAccountPage'));
 const OAuthCallbackPage = React.lazy(() => import('./pages/auth/OAuthCallbackPage'));
 const SubscriptionPage = React.lazy(() => import('./pages/SubscriptionPage'));
-const VisitorSubscriptionPage = React.lazy(() => import('./pages/VisitorSubscriptionPage'));
+// VisitorSubscriptionPage removed - route was duplicated with SubscriptionPage
 const VisitorUpgradePage = React.lazy(() => import('./pages/VisitorUpgradePage'));
 const VisitorPaymentPage = React.lazy(() => import('./pages/VisitorPaymentPage'));
 const PaymentSuccessPage = React.lazy(() => import('./pages/visitor/PaymentSuccessPage'));
@@ -150,8 +151,9 @@ const App = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SkipToContent />
       <Header />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         <Suspense fallback={<div className="flex justify-center items-center h-full"><div>Chargement...</div></div>}>
           <Routes>
             <Route path={ROUTES.HOME} element={<HomePage />} />
@@ -205,20 +207,20 @@ const App = () => {
             <Route path={ROUTES.FORBIDDEN} element={<ForbiddenPage />} />
 
             {/* SECURED: Dev route now requires admin role */}
-            <Route path="/dev/test-flow" element={<ProtectedRoute requiredRole="admin"><TestFlowPage /></ProtectedRoute>} />
+            <Route path={ROUTES.DEV_TEST_FLOW} element={<ProtectedRoute requiredRole="admin"><TestFlowPage /></ProtectedRoute>} />
             <Route path={ROUTES.VISITOR_SETTINGS} element={<ProtectedRoute requiredRole="visitor"><VisitorProfileSettings /></ProtectedRoute>} />
-            <Route path={ROUTES.VISITOR_SUBSCRIPTION} element={<ProtectedRoute requiredRole="visitor"><VisitorSubscriptionPage /></ProtectedRoute>} />
+            {/* BUG FIX: Route VISITOR_SUBSCRIPTION dupliquée - supprimée car déjà définie ligne 180 comme route publique */}
             <Route path={ROUTES.VISITOR_UPGRADE} element={<ProtectedRoute requiredRole="visitor"><VisitorUpgradePage /></ProtectedRoute>} />
-            <Route path="/visitor/payment" element={<ProtectedRoute requiredRole="visitor"><VisitorPaymentPage /></ProtectedRoute>} />
-            <Route path="/visitor/payment-success" element={<ProtectedRoute requiredRole="visitor"><PaymentSuccessPage /></ProtectedRoute>} />
-            <Route path="/visitor/payment-instructions" element={<ProtectedRoute requiredRole="visitor"><PaymentInstructionsPage /></ProtectedRoute>} />
+            <Route path={ROUTES.VISITOR_PAYMENT} element={<ProtectedRoute requiredRole="visitor"><VisitorPaymentPage /></ProtectedRoute>} />
+            <Route path={ROUTES.VISITOR_PAYMENT_SUCCESS} element={<ProtectedRoute requiredRole="visitor"><PaymentSuccessPage /></ProtectedRoute>} />
+            <Route path={ROUTES.VISITOR_PAYMENT_INSTRUCTIONS} element={<ProtectedRoute requiredRole="visitor"><PaymentInstructionsPage /></ProtectedRoute>} />
             <Route path={ROUTES.BADGE} element={<ProtectedRoute><BadgePage /></ProtectedRoute>} />
-            <Route path="/badge/digital" element={<ProtectedRoute><DigitalBadge /></ProtectedRoute>} />
-            <Route path="/badge/scanner" element={<ProtectedRoute><BadgeScannerPage /></ProtectedRoute>} />
-            <Route path="/security/scanner" element={<ProtectedRoute requiredRole="security"><QRScanner /></ProtectedRoute>} />
-            <Route path="/partner/upgrade" element={<ProtectedRoute requiredRole="partner"><PartnerUpgradePage /></ProtectedRoute>} />
-            <Route path="/partner/payment-selection" element={<ProtectedRoute requiredRole="partner"><PartnerPaymentSelectionPage /></ProtectedRoute>} />
-            <Route path="/partner/bank-transfer" element={<ProtectedRoute requiredRole="partner"><PartnerBankTransferPage /></ProtectedRoute>} />
+            <Route path={ROUTES.BADGE_DIGITAL} element={<ProtectedRoute><DigitalBadge /></ProtectedRoute>} />
+            <Route path={ROUTES.BADGE_SCANNER} element={<ProtectedRoute><BadgeScannerPage /></ProtectedRoute>} />
+            <Route path={ROUTES.SECURITY_SCANNER} element={<ProtectedRoute requiredRole="security"><QRScanner /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_UPGRADE} element={<ProtectedRoute requiredRole="partner"><PartnerUpgradePage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_PAYMENT_SELECTION} element={<ProtectedRoute requiredRole="partner"><PartnerPaymentSelectionPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_BANK_TRANSFER} element={<ProtectedRoute requiredRole="partner"><PartnerBankTransferPage /></ProtectedRoute>} />
             <Route path={ROUTES.MESSAGES} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path={ROUTES.CHAT} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
             <Route path={ROUTES.APPOINTMENTS} element={<ProtectedRoute><AppointmentCalendar /></ProtectedRoute>} />
@@ -240,10 +242,10 @@ const App = () => {
             <Route path={ROUTES.NEWS} element={<NewsPage />} />
             <Route path={ROUTES.NEWS_DETAIL} element={<ArticleDetailPage />} />
             <Route path={ROUTES.ADMIN_DASHBOARD} element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
-            <Route path="/admin/payment-validation" element={<ProtectedRoute requiredRole="admin"><PaymentValidationPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_PAYMENT_VALIDATION} element={<ProtectedRoute requiredRole="admin"><PaymentValidationPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_USERS} element={<ProtectedRoute requiredRole="admin"><UserManagementPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_CREATE_USER} element={<ProtectedRoute requiredRole="admin"><CreateUserPage /></ProtectedRoute>} />
-            <Route path="/admin/partners" element={<ProtectedRoute requiredRole="admin"><AdminPartnersPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_PARTNERS} element={<ProtectedRoute requiredRole="admin"><AdminPartnersPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_PAVILIONS} element={<ProtectedRoute requiredRole="admin"><PavillonsAdminPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_CREATE_PAVILION} element={<ProtectedRoute requiredRole="admin"><CreatePavilionPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_PAVILION_ADD_DEMO} element={<ProtectedRoute requiredRole="admin"><AddDemoProgramPage /></ProtectedRoute>} />

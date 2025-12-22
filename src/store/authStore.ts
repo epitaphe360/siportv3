@@ -14,7 +14,7 @@ interface RegistrationData {
   password: string;
   firstName: string;
   lastName: string;
-  accountType?: 'admin' | 'exhibitor' | 'partner' | 'visitor';
+  accountType?: 'admin' | 'exhibitor' | 'partner' | 'visitor' | 'security';
   companyName?: string;
   position?: string;
   country?: string;
@@ -206,7 +206,7 @@ const useAuthStore = create<AuthState>()(
       }
 
 
-      const userType = (['admin','exhibitor','partner','visitor'].includes(userData.accountType ?? '') ? userData.accountType! : 'visitor') as User['type'];
+      const userType = (['admin','exhibitor','partner','visitor','security'].includes(userData.accountType ?? '') ? userData.accountType! : 'visitor') as User['type'];
 
       // Appeler la fonction signUp de SupabaseService qui gère Auth + profil
       const newUser = await SupabaseService.signUp(

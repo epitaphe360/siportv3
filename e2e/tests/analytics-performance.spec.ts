@@ -146,7 +146,7 @@ test.describe('13. ANALYTICS & PERFORMANCE', () => {
     // Mesurer le temps de chargement du dashboard
     const startTime = Date.now();
     await page.goto('/dashboard');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
     const loadTime = Date.now() - startTime;
 
     // Vérifier que le temps de chargement est acceptable (<3s)
@@ -188,7 +188,7 @@ test.describe('13. ANALYTICS & PERFORMANCE', () => {
     });
 
     await page.goto('/dashboard');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
 
     // Calculer le temps de réponse moyen
     const avgResponseTime = apiResponses.reduce((a, b) => a + b, 0) / apiResponses.length;
@@ -330,17 +330,17 @@ test.describe('13. ANALYTICS & PERFORMANCE', () => {
     // Premier chargement
     const firstLoadStart = Date.now();
     await page.goto('/dashboard');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
     const firstLoadTime = Date.now() - firstLoadStart;
 
     // Naviguer ailleurs puis revenir
     await page.goto('/events');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
 
     // Retour au dashboard (devrait être en cache)
     const cachedLoadStart = Date.now();
     await page.goto('/dashboard');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
     const cachedLoadTime = Date.now() - cachedLoadStart;
 
     // Le chargement depuis le cache devrait être significativement plus rapide

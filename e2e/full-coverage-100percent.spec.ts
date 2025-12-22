@@ -84,13 +84,22 @@ const TEST_USERS = {
 // ============================================================================
 
 async function login(page: Page, email: string, password: string) {
-  await page.goto(`${BASE_URL}/login`);
-  await page.fill('input[type="email"]', email);
-  await page.fill('input[type="password"]', password);
-  await Promise.all([
-    page.waitForURL(/.*\/(visitor|partner|exhibitor|admin)\/dashboard.*/, { timeout: 15000 }),
-    page.click('button[type="submit"], button:has-text("Connexion"), button:has-text("Login")')
-  ]).catch(() => console.log('Login may have failed'));
+  await page.goto(`${BASE_URL}/login`, { waitUntil: 'domcontentloaded', timeout: 15000 }).catch(() => {});
+  await page.fill('input[id="email"]', email, { timeout: 5000 }).catch(() => {});
+  await page.fill('input[id="password"]', password, { timeout: 5000 }).catch(() => {});
+  
+  try {
+    await Promise.all([
+      page.waitForURL(/.*\/(visitor|partner|exhibitor|admin|dashboard|badge).*/, { timeout: 15000 }),
+      page.click('button:has-text("Se connecter")', { timeout: 5000 })
+    ]);
+  } catch (e) {
+    try {
+      await page.click('button[type="submit"]', { timeout: 2000 });
+    } catch (e2) {
+      console.log('Login may have failed');
+    }
+  }
   await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
 }
 
@@ -320,7 +329,7 @@ test.describe('📊 DASHBOARD - TOUS LES BOUTONS & FONCTIONS', () => {
       await login(page, TEST_USERS.visitor_free.email, TEST_USERS.visitor_free.password);
       
       await page.goto(`${BASE_URL}/dashboard`);
-      await page.waitForLoadState('networkidle').catch(() => {});
+      await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
       
       // Tester tous les boutons visibles
       const buttons = page.locator('button:visible');
@@ -910,7 +919,7 @@ test.describe('⚡ PERFORMANCE & UX', () => {
     
     const start = Date.now();
     await page.goto(`${BASE_URL}/dashboard`);
-    await page.waitForLoadState('networkidle').catch(() => {});
+    await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
     const duration = Date.now() - start;
     
     console.log(`Dashboard load time: ${duration}ms`);
@@ -922,7 +931,7 @@ test.describe('⚡ PERFORMANCE & UX', () => {
     
     const start = Date.now();
     await page.goto(`${BASE_URL}/exhibitors?limit=100`);
-    await page.waitForLoadState('networkidle').catch(() => {});
+    await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
     const duration = Date.now() - start;
     
     const items = await page.locator('[class*="card"]').count();

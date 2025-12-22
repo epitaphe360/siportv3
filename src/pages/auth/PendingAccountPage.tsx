@@ -31,7 +31,7 @@ export default function PendingAccountPage() {
             </h1>
 
             <p className="text-gray-600 mb-6">
-              Bonjour {user?.profile.firstName}, votre demande d'inscription est en cours de traitement.
+              Bonjour {user?.profile?.firstName || 'Utilisateur'}, votre demande d'inscription est en cours de traitement.
             </p>
 
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-left mb-8">

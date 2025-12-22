@@ -89,10 +89,24 @@ export const ROUTES = {
   // Pages visiteur
   VISITOR_SUBSCRIPTION: '/visitor/subscription',
   VISITOR_UPGRADE: '/visitor/upgrade',
+  VISITOR_PAYMENT: '/visitor/payment',
+  VISITOR_PAYMENT_SUCCESS: '/visitor/payment-success',
+  VISITOR_PAYMENT_INSTRUCTIONS: '/visitor/payment-instructions',
   VISITOR_REGISTRATION_CHOICE: '/visitor/register',
   VISITOR_FREE_REGISTRATION: '/visitor/register/free',
   VISITOR_VIP_REGISTRATION: '/visitor/register/vip',
   BADGE: '/badge',
+  BADGE_DIGITAL: '/badge/digital',
+  BADGE_SCANNER: '/badge/scanner',
+  SECURITY_SCANNER: '/security/scanner',
+
+  // Partner upgrade routes
+  PARTNER_UPGRADE: '/partner/upgrade',
+  PARTNER_PAYMENT_SELECTION: '/partner/payment-selection',
+  PARTNER_BANK_TRANSFER: '/partner/bank-transfer',
+
+  // Admin payment
+  ADMIN_PAYMENT_VALIDATION: '/admin/payment-validation',
 
   // Media Routes - Nouvelles fonctionnalités
   MEDIA_LIBRARY: '/media',

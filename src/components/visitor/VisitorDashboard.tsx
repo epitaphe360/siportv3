@@ -443,7 +443,7 @@ export default memo(function VisitorDashboard() {
                 </Link>
                 <div className="mt-3 flex items-center justify-between text-sm">
                   <span className="text-gray-600">RDV restants:</span>
-                  <Badge variant={remaining > 0 ? "success" : "danger"}>
+                  <Badge variant={remaining > 0 ? "success" : "error"}>
                     <strong>{remaining}</strong>
                   </Badge>
                 </div>

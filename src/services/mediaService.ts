@@ -495,3 +495,5 @@ export class MediaService {
     }
   }
 }
+
+export const mediaService = MediaService;

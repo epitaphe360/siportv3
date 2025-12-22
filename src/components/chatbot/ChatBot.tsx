@@ -68,7 +68,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
         }
 
         const userType = user?.type;
-        const firstName = user?.profile.firstName || 'cher utilisateur';
+        const firstName = user?.profile?.firstName || 'cher utilisateur';
 
         switch (userType) {
           case 'admin':
@@ -122,7 +122,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
     const message = userMessage.toLowerCase();
     const timestamp = new Date();
     const userType = user?.type || 'visitor';
-    const firstName = user?.profile.firstName || 'cher utilisateur';
+    const firstName = user?.profile?.firstName || 'cher utilisateur';
 
     // Réponses selon l'authentification
     if (!isAuthenticated) {

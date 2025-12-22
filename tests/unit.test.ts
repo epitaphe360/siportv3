@@ -50,16 +50,16 @@ describe('📊 Quotas Visiteurs', () => {
     expect(getVisitorQuota('free')).toBe(0);
   });
 
-  it('Quota PREMIUM doit être illimité (-1)', async () => {
+  it('Quota PREMIUM doit être 10 (CDC)', async () => {
     const { VISITOR_QUOTAS } = await import('../src/config/quotas');
 
-    expect(VISITOR_QUOTAS.premium).toBe(-1);
+    expect(VISITOR_QUOTAS.premium).toBe(10);
   });
 
-  it('getVisitorQuota(premium) doit retourner 999999 (représentation illimité)', async () => {
+  it('getVisitorQuota(premium) doit retourner 10 (CDC: 10 demandes max)', async () => {
     const { getVisitorQuota } = await import('../src/config/quotas');
 
-    expect(getVisitorQuota('premium')).toBe(999999);
+    expect(getVisitorQuota('premium')).toBe(10);
   });
 
   it('Les niveaux BASIC et VIP ne doivent plus exister', async () => {
@@ -165,7 +165,8 @@ describe('📆 Permissions Événements', () => {
     expect(perms.canAccessPartnerExclusives).toBe(true);
     expect(perms.canAccessNetworkingBreakfast).toBe(true);
     expect(perms.canAccessGalaDinner).toBe(true);
-    expect(perms.canAccessExecutiveLounge).toBe(true);
+    // Note: Executive Lounge est réservé aux partenaires Platinium (CDC)
+    expect(perms.canAccessExecutiveLounge).toBe(false);
     expect(perms.maxEventsPerDay).toBe(-1); // Illimité
     expect(perms.qrAccessLevel).toBe('vip');
   });
@@ -274,10 +275,11 @@ describe('👤 Visitor Levels Configuration', () => {
     expect(VISITOR_LEVELS.premium.color).toBe('#ffd700');
     expect(VISITOR_LEVELS.premium.icon).toBe('👑');
 
-    // Vérifier que le tableau contient des éléments avec 'VIP' et 'illimité'
+    // Vérifier que le tableau contient des éléments avec les features CDC
     const accessText = VISITOR_LEVELS.premium.access.join(' ');
-    expect(accessText).toContain('VIP');
-    expect(accessText).toContain('illimité');
+    expect(accessText).toContain('10 demandes'); // CDC: 10 RDV max
+    expect(accessText).toContain('Networking illimité');
+    expect(accessText).toContain('gala');
   });
 });
 
@@ -293,11 +295,18 @@ describe('🔢 Calcul Quotas Restants', () => {
     expect(remaining).toBe(0);
   });
 
-  it('PREMIUM avec 100 confirmés = toujours illimité', async () => {
+  it('PREMIUM avec 5 confirmés = reste 5 demandes (CDC: 10 max)', async () => {
     const { calculateRemainingQuota } = await import('../src/config/quotas');
 
-    const remaining = calculateRemainingQuota('premium', 100);
-    expect(remaining).toBeGreaterThan(0); // Toujours positif car illimité
+    const remaining = calculateRemainingQuota('premium', 5);
+    expect(remaining).toBe(5); // CDC: 10 max - 5 confirmés = 5 restants
+  });
+
+  it('PREMIUM avec 10+ confirmés = quota atteint', async () => {
+    const { calculateRemainingQuota } = await import('../src/config/quotas');
+
+    const remaining = calculateRemainingQuota('premium', 15);
+    expect(remaining).toBe(0); // Quota atteint
   });
 
   it('Niveau undefined doit retourner 0', async () => {
@@ -399,11 +408,11 @@ describe('🧠 Logique Métier', () => {
     const { getVisitorQuota, VISITOR_QUOTAS } = await import('../src/config/quotas');
     const { getNetworkingPermissions } = await import('../src/lib/networkingPermissions');
 
-    // PREMIUM doit avoir quota illimité (-1)
-    expect(VISITOR_QUOTAS.premium).toBe(-1);
-    expect(getVisitorQuota('premium')).toBe(999999);
+    // PREMIUM doit avoir quota de 10 (CDC)
+    expect(VISITOR_QUOTAS.premium).toBe(10);
+    expect(getVisitorQuota('premium')).toBe(10);
 
-    // Et permissions illimitées
+    // Et permissions illimitées pour le networking
     const perms = getNetworkingPermissions('visitor', 'premium');
     expect(perms.maxMessagesPerDay).toBe(-1);
     expect(perms.maxConnectionsPerDay).toBe(-1);
@@ -494,8 +503,8 @@ describe('🎯 Stratégie de Fonctionnement', () => {
     expect(VISITOR_QUOTAS.free).toBe(0);
     expect(VISITOR_LEVELS.free.label).toContain('Free');
 
-    // PREMIUM doit être payant et illimité
-    expect(VISITOR_QUOTAS.premium).toBe(-1);
+    // PREMIUM doit être payant avec 10 RDV max (CDC)
+    expect(VISITOR_QUOTAS.premium).toBe(10);
     expect(VISITOR_LEVELS.premium.label).toContain('Premium');
   });
 
@@ -533,13 +542,14 @@ describe('🎯 Stratégie de Fonctionnement', () => {
     const freeEvents = getEventAccessPermissions('visitor', 'free');
     const premiumEvents = getEventAccessPermissions('visitor', 'premium');
 
-    // PREMIUM doit avoir significativement plus d'accès
+    // PREMIUM doit avoir significativement plus d'accès (CDC visiteur VIP)
     expect(premiumEvents.canAccessPremiumWorkshops).toBe(true);
     expect(premiumEvents.canAccessVIPEvents).toBe(true);
     expect(premiumEvents.canAccessPartnerExclusives).toBe(true);
     expect(premiumEvents.canAccessNetworkingBreakfast).toBe(true);
     expect(premiumEvents.canAccessGalaDinner).toBe(true);
-    expect(premiumEvents.canAccessExecutiveLounge).toBe(true);
+    // Note: Executive Lounge est réservé aux partenaires Platinium (CDC)
+    expect(premiumEvents.canAccessExecutiveLounge).toBe(false);
 
     // FREE doit avoir accès limité
     expect(freeEvents.canAccessPremiumWorkshops).toBe(false);
@@ -619,7 +629,7 @@ describe('🔒 Sécurité', () => {
 
     // Niveaux valides uniquement
     expect(getVisitorQuota('free')).toBe(0);
-    expect(getVisitorQuota('premium')).toBe(999999);
+    expect(getVisitorQuota('premium')).toBe(10); // CDC: 10 demandes max
   });
 
   it('Protection contre les injections dans les types', async () => {
@@ -648,8 +658,8 @@ describe('🔒 Sécurité', () => {
   it('Les quotas ne peuvent pas être contournés', async () => {
     const { getVisitorQuota } = await import('../src/config/quotas');
 
-    // Tentatives de manipulation
-    expect(getVisitorQuota('premium')).toBe(999999); // Pas Infinity
+    // Tentatives de manipulation - CDC: premium = 10 demandes
+    expect(getVisitorQuota('premium')).toBe(10); // CDC: 10 demandes max
     expect(getVisitorQuota(null as any)).toBe(0); // null devient 0
     expect(getVisitorQuota({} as any)).toBe(0); // objet devient 0
   });
@@ -790,7 +800,7 @@ describe('📊 Analytique & Métriques', () => {
     const premiumQuota = VISITOR_QUOTAS.premium;
 
     expect(freeQuota).toBe(0); // Bloquant → incite à upgrade
-    expect(premiumQuota).toBe(-1); // Illimité → valeur claire
+    expect(premiumQuota).toBe(10); // CDC: 10 demandes max pour VIP
 
     // Différence de valeur mesurable
     const freePerms = getNetworkingPermissions('visitor', 'free');
@@ -888,8 +898,8 @@ describe('🔗 Intégration & Cohérence Globale', () => {
         expect(quota).toBe(0);
         expect(perms.canAccessNetworking).toBe(false);
       } else if (level === 'premium') {
-        // PREMIUM: tout doit être illimité
-        expect(quota).toBe(999999);
+        // PREMIUM: 10 demandes RDV (CDC) + networking illimité
+        expect(quota).toBe(10); // CDC: 10 demandes max
         expect(perms.canAccessNetworking).toBe(true);
         expect(perms.maxMessagesPerDay).toBe(-1);
       }

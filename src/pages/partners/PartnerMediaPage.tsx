@@ -225,8 +225,6 @@ export const PartnerMediaPage: React.FC = () => {
               </div>
             </div>
           </div>
-            </div>
-          </div>
         </div>
 
         {/* Overview Stats */}

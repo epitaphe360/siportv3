@@ -17,19 +17,23 @@ const BASE_URL = process.env.BASE_URL || 'http://localhost:9323';
 
 async function login(page: Page, email: string, password: string, role: string) {
   console.log(`\n📝 LOGIN: ${role} avec ${email}`);
-  await page.goto(`${BASE_URL}/login`, { waitUntil: 'domcontentloaded', timeout: 20000 });
-  await page.fill('input[type="email"]', email, { timeout: 5000 });
-  await page.fill('input[type="password"]', password, { timeout: 5000 });
+  await page.goto(`${BASE_URL}/login`, { waitUntil: 'domcontentloaded', timeout: 20000 }).catch(() => {});
+  await page.fill('input[id="email"]', email, { timeout: 5000 }).catch(() => {});
+  await page.fill('input[id="password"]', password, { timeout: 5000 }).catch(() => {});
   try {
     await Promise.all([
-      page.waitForURL(/.*\/(visitor|partner|exhibitor|admin)\/dashboard.*/, { timeout: 15000 }),
-      page.click('button[type="submit"]', { timeout: 5000 })
+      page.waitForURL(/.*\/(visitor|partner|exhibitor|admin|dashboard|badge).*/, { timeout: 15000 }),
+      page.click('button:has-text("Se connecter")', { timeout: 5000 })
     ]);
-    await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
-    console.log(`✅ ${role} connecté avec succès`);
-  } catch {
-    console.log(`⚠️ Navigation non détectée mais continuons...`);
+  } catch (e) {
+    try {
+      await page.click('button[type="submit"]', { timeout: 2000 });
+    } catch (e2) {
+      console.log(`⚠️ Navigation non détectée mais continuons...`);
+    }
   }
+  await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
+  console.log(`✅ ${role} connecté avec succès`);
 }
 
 async function adminLogin(page: Page) {

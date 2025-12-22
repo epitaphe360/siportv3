@@ -215,7 +215,7 @@ export default function AdminDashboard() {
                       Admin Dashboard
                     </h1>
                     <p className="text-blue-100">
-                      Bienvenue, {user?.profile.firstName} {user?.profile.lastName}
+                      Bienvenue, {user?.profile?.firstName || 'Administrateur'} {user?.profile?.lastName || ''}
                     </p>
                   </div>
                 </div>

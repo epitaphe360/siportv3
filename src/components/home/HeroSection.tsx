@@ -83,9 +83,9 @@ export const HeroSection: React.FC = () => {
               className="mb-8"
             >
               <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20">
-                <h3 className="text-2xl font-bold text-center mb-2 text-white">
+                <h2 className="text-2xl font-bold text-center mb-2 text-white">
                   {t('hero.countdown.title')}
-                </h3>
+                </h2>
                 <p className="text-center text-blue-200 mb-6 text-sm">
                   {t('hero.countdown.subtitle')}
                 </p>

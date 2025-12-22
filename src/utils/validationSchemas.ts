@@ -72,7 +72,7 @@ export const userCreationSchema = z.object({
   password: passwordSchema,
   firstName: nameSchema,
   lastName: nameSchema,
-  type: z.enum(['admin', 'exhibitor', 'partner', 'visitor']),
+  type: z.enum(['admin', 'exhibitor', 'partner', 'visitor', 'security']),
   profile: z.object({
     company: z.string().max(200).optional(),
     position: z.string().max(200).optional(),

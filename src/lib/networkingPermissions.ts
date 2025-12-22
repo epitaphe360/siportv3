@@ -166,6 +166,7 @@ function getVisitorPermissions(passType: VisitorPassType): NetworkingPermissions
 
     case 'premium':
       // Pass Premium VIP 700€ : Accès VIP complet et illimité (équivalent ancien VIP)
+      // CDC: Networking illimité, Soirée gala, Ateliers spécialisés
       return {
         ...baseVisitorPermissions,
         canAccessNetworking: true,
@@ -173,7 +174,7 @@ function getVisitorPermissions(passType: VisitorPassType): NetworkingPermissions
         canMakeConnections: true,
         canScheduleMeetings: true,
         canAccessPremiumFeatures: true,
-        canAccessVIPLounge: false,
+        canAccessVIPLounge: true, // CDC: Networking illimité inclut VIP Lounge
         canAccessPartnerEvents: true,
         maxConnectionsPerDay: -1, // Illimité
         maxMessagesPerDay: -1, // Illimité

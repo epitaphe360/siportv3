@@ -220,7 +220,7 @@ export const Header: React.FC = memo(() => {
                       <User className="h-4 w-4 text-white" />
                     </div>
                     <span className="hidden md:block text-sm font-medium text-gray-700">
-                      {user?.profile.firstName}
+                      {user?.profile?.firstName || 'Mon compte'}
                     </span>
                   </button>
 
@@ -431,6 +431,7 @@ export const Header: React.FC = memo(() => {
             <button
               onClick={toggleMenu}
               className="md:hidden p-2 text-gray-400 hover:text-gray-600"
+              aria-label="Menu"
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>

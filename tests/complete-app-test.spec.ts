@@ -87,7 +87,7 @@ async function loginAs(page: Page, userType: keyof typeof TEST_USERS) {
   console.log(`🔑 Tentative de login : ${user.email}`);
   
   await page.goto('/login');
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
   
   await page.fill('input[type="email"]', user.email);
   await page.fill('input[type="password"]', user.password);

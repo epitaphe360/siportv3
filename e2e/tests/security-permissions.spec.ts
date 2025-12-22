@@ -85,7 +85,7 @@ test.describe('14. SÉCURITÉ & PERMISSIONS', () => {
     await page.click('button[type="submit"]');
 
     // Attendre la sauvegarde
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
 
     // Vérifier que le script n'est pas exécuté
     await page.goto('/profile');

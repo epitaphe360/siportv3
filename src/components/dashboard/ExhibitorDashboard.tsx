@@ -458,10 +458,10 @@ export default function ExhibitorDashboard() {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-white mb-1">Tableau de Bord Exposant</h1>
-                <p className="text-blue-100">Bienvenue {user?.profile.firstName}, gérez votre présence SIPORTS 2026 ✨</p>
+                <p className="text-blue-100">Bienvenue {user?.profile?.firstName || 'Exposant'}, gérez votre présence SIPORTS 2026 ✨</p>
                 <div className="mt-3 flex items-center space-x-3">
                   <Badge variant="info" size="md" className="bg-white/20 text-white border-white/30">
-                    {user?.profile.company}
+                    {user?.profile?.company || 'Entreprise'}
                   </Badge>
                   <Badge variant="success" size="md" className="bg-green-500/20 text-green-100 border-green-400/30">
                     Exposant Vérifié ✓
@@ -957,7 +957,7 @@ export default function ExhibitorDashboard() {
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Contact :</span>
-                  <span>{user?.profile.firstName} {user?.profile.lastName}</span>
+                  <span>{user?.profile?.firstName || ''} {user?.profile?.lastName || ''}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Email :</span>

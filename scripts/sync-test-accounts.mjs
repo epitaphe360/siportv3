@@ -50,12 +50,43 @@ const TEST_ACCOUNTS = [
     name: 'Exposant 36m'
   },
   {
+    id: 'a0000000-0000-0000-0000-000000000010',
+    email: 'exhibitor-54m@test.siport.com',
+    password: 'Test@1234567',
+    type: 'exhibitor',
+    name: 'Exposant 54m'
+  },
+  {
     id: 'a0000000-0000-0000-0000-000000000003',
     email: 'partner-museum@test.siport.com',
     password: 'Test@1234567',
     type: 'partner',
     partner_tier: 'museum',
     name: 'Partenaire Museum'
+  },
+  {
+    id: 'a0000000-0000-0000-0000-000000000004',
+    email: 'partner-chamber@test.siport.com',
+    password: 'Test@1234567',
+    type: 'partner',
+    partner_tier: 'silver',
+    name: 'Partenaire Chambre'
+  },
+  {
+    id: 'a0000000-0000-0000-0000-000000000005',
+    email: 'partner-sponsor@test.siport.com',
+    password: 'Test@1234567',
+    type: 'partner',
+    partner_tier: 'gold',
+    name: 'Partenaire Sponsor'
+  },
+  {
+    id: 'a0000000-0000-0000-0000-000000000006',
+    email: 'partner-platinum@test.siport.com',
+    password: 'Test@1234567',
+    type: 'partner',
+    partner_tier: 'platinum',
+    name: 'Partenaire Platinum'
   },
   {
     id: 'a0000000-0000-0000-0000-000000000099',

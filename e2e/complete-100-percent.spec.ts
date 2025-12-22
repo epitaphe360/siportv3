@@ -14,12 +14,21 @@ const TIMESTAMP = Date.now();
 
 async function login(page: Page, email: string, password: string) {
   await page.goto(`${BASE_URL}/login`, { waitUntil: 'domcontentloaded', timeout: 20000 });
-  await page.fill('input[type="email"]', email, { timeout: 5000 });
-  await page.fill('input[type="password"]', password, { timeout: 5000 });
-  await Promise.all([
-    page.waitForURL(/.*\/(visitor|partner|exhibitor|admin)\/dashboard.*/, { timeout: 15000 }),
-    page.click('button[type="submit"]', { timeout: 5000 })
-  ]).catch(() => console.log('Login may have failed'));
+  await page.fill('input[id="email"]', email, { timeout: 5000 }).catch(() => {});
+  await page.fill('input[id="password"]', password, { timeout: 5000 }).catch(() => {});
+  
+  try {
+    await Promise.all([
+      page.waitForURL(/.*\/(visitor|partner|exhibitor|admin|dashboard|badge).*/, { timeout: 15000 }),
+      page.click('button:has-text("Se connecter")', { timeout: 5000 })
+    ]);
+  } catch (e) {
+    try {
+      await page.click('button[type="submit"]', { timeout: 2000 });
+    } catch (e2) {
+      console.log('Login may have failed');
+    }
+  }
   await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
 }
 

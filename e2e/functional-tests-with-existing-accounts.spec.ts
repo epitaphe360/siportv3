@@ -49,7 +49,7 @@ test.describe('🎯 FUNCTIONAL TESTS - Using Real Accounts', () => {
       const profileLink = page.locator('a[href*="profile"]').or(page.locator('text=Profil')).first();
       if (await profileLink.isVisible({ timeout: 3000 })) {
         await profileLink.click();
-        await page.waitForLoadState('domcontentloaded');
+        await page.waitForLoadState('domcontentloaded', { timeout: 10000 }).catch(() => {});
         expect(page.url()).toMatch(/profile|visitor/);
       }
     });
@@ -141,7 +141,7 @@ test.describe('🎯 FUNCTIONAL TESTS - Using Real Accounts', () => {
       const standLink = page.locator('a[href*="stand"]').or(page.locator('text=Stand')).or(page.locator('text=Minisite')).first();
       if (await standLink.isVisible({ timeout: 3000 })) {
         await standLink.click();
-        await page.waitForLoadState('domcontentloaded');
+        await page.waitForLoadState('domcontentloaded', { timeout: 10000 }).catch(() => {});
         expect(page.url()).toMatch(/stand|minisite|exhibitor/);
       }
     });

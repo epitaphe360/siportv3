@@ -12,7 +12,7 @@ interface UserDB {
   id: string;
   email: string;
   name: string;
-  type: 'exhibitor' | 'partner' | 'visitor' | 'admin';
+  type: 'exhibitor' | 'partner' | 'visitor' | 'admin' | 'security';
   profile: UserProfile;
   status?: 'active' | 'pending' | 'suspended' | 'rejected';
   created_at: string;
