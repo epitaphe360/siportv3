@@ -3,18 +3,18 @@ import { test, expect, Page } from '@playwright/test';
 const BASE_URL = 'http://localhost:9323';
 const PASSWORD = 'Test@1234567'; // Tous les comptes de test utilisent ce mot de passe
 
-// Comptes de test existants (créés via seed_test_data.sql)
+// Comptes de test existants dans Supabase
 const TEST_ACCOUNTS = {
-  visitor_free: 'visitor-free@test.siport.com',
-  visitor_vip: 'visitor-vip@test.siport.com',
+  visitor_free: 'visitor1@test.com',
+  visitor_vip: 'visitor2@test.com',
   exhibitor_9m: 'exhibitor-9m@test.siport.com',
   exhibitor_18m: 'exhibitor-18m@test.siport.com',
   exhibitor_36m: 'exhibitor-36m@test.siport.com',
-  partner_museum: 'partner-museum@test.siport.com',
-  partner_chamber: 'partner-chamber@test.siport.com',
-  partner_sponsor: 'partner-sponsor@test.siport.com',
-  admin_test: 'admin-test@test.siport.com',
-  visitor_pro: 'visitor-pro@test.siport.com'
+  partner_museum: 'nathalie.robert1@partner.com',
+  partner_chamber: 'pierre.laurent2@partner.com',
+  partner_sponsor: 'stéphanie.robert3@partner.com',
+  admin_test: 'admin@siports.com',
+  visitor_pro: 'christophe.lefebvre1@visitor.com'
 };
 
 // Helper: Login avec compte existant
