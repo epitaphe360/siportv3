@@ -79,6 +79,7 @@ export const SubscriptionSelector: React.FC<SubscriptionSelectorProps> = ({
               )}
 
               <Card
+                data-testid={`subscription-card-${level.id}`}
                 className={`
                   relative h-full cursor-pointer transition-all duration-300
                   ${isSelected
@@ -99,17 +100,17 @@ export const SubscriptionSelector: React.FC<SubscriptionSelectorProps> = ({
                       <Icon className="h-8 w-8 text-white" />
                     </div>
 
-                    <h4 className="text-xl font-bold text-gray-900 mb-2">
+                    <h4 className="text-xl font-bold text-gray-900 mb-2" data-testid={`subscription-name-${level.id}`}>
                       {config.displayName}
                     </h4>
 
                     <div className="space-y-1">
                       <div className="flex items-baseline justify-center gap-1">
-                        <span className="text-3xl font-bold text-gray-900">
+                        <span className="text-3xl font-bold text-gray-900" data-testid={`subscription-price-${level.id}`}>
                           ${(config.estimatedPrice / 1000).toFixed(0)}k
                         </span>
                       </div>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500" data-testid={`subscription-area-${level.id}`}>
                         {config.minArea === 0 ? 'Jusqu\'à' : 'À partir de'} {config.maxArea || '54+'}m²
                       </p>
                     </div>
