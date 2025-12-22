@@ -526,6 +526,7 @@ export default function RegisterPage() {
                       <select
                         {...register('sector')}
                         name="sector"
+                        data-testid="select-sector"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="">Sélectionnez un secteur</option>
@@ -534,7 +535,7 @@ export default function RegisterPage() {
                         ))}
                       </select>
                       {errors.sector && (
-                        <p className="text-red-600 text-sm mt-1">{errors.sector.message}</p>
+                        <p className="text-red-600 text-sm mt-1" data-testid="error-sector">{errors.sector.message}</p>
                       )}
                     </div>
 
