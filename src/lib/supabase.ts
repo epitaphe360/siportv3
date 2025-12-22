@@ -688,7 +688,7 @@ const isSupabaseConfigured = supabaseUrl &&
                              !supabaseUrl.includes('votre-project-id') &&
                              !supabaseUrl.includes('your-project-id') &&
                              !supabaseUrl.includes('your-project.supabase') &&
-                             supabaseAnonKey.length > 50 &&
+                             supabaseAnonKey.length > 30 && // Reduced from 50 to support shorter keys
                              !supabaseAnonKey.includes('placeholder') &&
                              !supabaseAnonKey.includes('your_supabase') &&
                              !supabaseAnonKey.includes('your-supabase') &&
