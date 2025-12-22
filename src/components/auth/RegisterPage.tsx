@@ -453,12 +453,13 @@ export default function RegisterPage() {
                     {accountTypes.map((type) => {
                       const Icon = type.icon;
                       return (
-                        <label key={type.value} className="cursor-pointer">
+                        <label key={type.value} className="cursor-pointer" data-testid={`account-type-${type.value}`}>
                           <input
                             type="radio"
                             value={type.value}
                             {...register('accountType')}
                             className="sr-only"
+                            data-testid={`radio-${type.value}`}
                           />
                           <div className={`p-6 border-2 rounded-lg transition-all ${
                             watchedAccountType === type.value
@@ -525,6 +526,7 @@ export default function RegisterPage() {
                       <select
                         {...register('sector')}
                         name="sector"
+                        data-testid="select-sector"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="">Sélectionnez un secteur</option>
@@ -533,7 +535,7 @@ export default function RegisterPage() {
                         ))}
                       </select>
                       {errors.sector && (
-                        <p className="text-red-600 text-sm mt-1">{errors.sector.message}</p>
+                        <p className="text-red-600 text-sm mt-1" data-testid="error-sector">{errors.sector.message}</p>
                       )}
                     </div>
 
@@ -571,6 +573,7 @@ export default function RegisterPage() {
                         <select
                           {...register('country')}
                           name="country"
+                          data-testid="select-country"
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white"
                         >
                           <option value="">Sélectionnez un pays</option>
@@ -582,7 +585,7 @@ export default function RegisterPage() {
                         </select>
                       </div>
                       {errors.country && (
-                        <p className="text-red-600 text-sm mt-1">{errors.country.message}</p>
+                        <p className="text-red-600 text-sm mt-1" data-testid="error-country">{errors.country.message}</p>
                       )}
                     </div>
 
@@ -991,6 +994,7 @@ export default function RegisterPage() {
                       type="button"
                       variant="outline"
                       onClick={prevStep}
+                      data-testid="btn-previous"
                     >
                       Précédent
                     </Button>
@@ -1002,6 +1006,7 @@ export default function RegisterPage() {
                     <Button
                       type="button"
                       onClick={nextStep}
+                      data-testid="btn-next"
                     >
                       Suivant
                     </Button>
@@ -1009,6 +1014,7 @@ export default function RegisterPage() {
                     <Button
                       type="submit"
                       disabled={isLoading}
+                      data-testid="btn-submit"
                     >
                       {isLoading ? (
                         <>

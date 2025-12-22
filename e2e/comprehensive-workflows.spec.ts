@@ -25,89 +25,89 @@ const SUPABASE_URL = process.env.SUPABASE_URL || '';
 const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || '';
 
 // ============================================================================
-// TEST USERS - Using EXISTING accounts from TEST_ACCOUNTS.txt
-// Password for ALL accounts: Test@1234567 (matches sync-test-accounts.mjs)
+// TEST USERS - Using EXISTING accounts from Supabase
+// Password for ALL accounts: Test@1234567
 // ============================================================================
 const TEST_PASSWORD = 'Test@1234567';
 
 const TEST_USERS = {
   // EXISTING ACCOUNTS - use these for tests that require login
   visitor_free: {
-    email: 'visitor-free@test.siport.com',
+    email: 'visitor1@test.com',
     password: TEST_PASSWORD,
-    name: 'Visiteur Free Test',
-    firstName: 'Visiteur',
-    lastName: 'Free Test',
+    name: 'Sophie Bernard',
+    firstName: 'Sophie',
+    lastName: 'Bernard',
     level: 'free'
   },
   visitor_vip: {
-    email: 'visitor-vip@test.siport.com',
+    email: 'visitor2@test.com',
     password: TEST_PASSWORD,
-    name: 'Visiteur VIP Test',
-    firstName: 'Visiteur',
-    lastName: 'VIP Test',
+    name: 'Michel Leroy',
+    firstName: 'Michel',
+    lastName: 'Leroy',
     level: 'vip'
   },
   exhibitor_basic: {
     email: 'exhibitor-9m@test.siport.com',
     password: TEST_PASSWORD,
-    company: 'Exposant 9m Test',
+    company: 'Thomas Dubois',
     level: 'basic',
     standArea: 9
   },
   exhibitor_standard: {
     email: 'exhibitor-18m@test.siport.com',
     password: TEST_PASSWORD,
-    company: 'Exposant 18m Test',
+    company: 'Sophie Lefebvre',
     level: 'standard',
     standArea: 18
   },
   exhibitor_premium: {
     email: 'exhibitor-36m@test.siport.com',
     password: TEST_PASSWORD,
-    company: 'Exposant 36m Test',
+    company: 'David Chen',
     level: 'premium',
     standArea: 36
   },
   exhibitor_elite: {
-    email: 'exhibitor-36m@test.siport.com', // No elite account, use premium
+    email: 'exhibitor-54m@test.siport.com',
     password: TEST_PASSWORD,
-    company: 'Exposant 36m Test',
+    company: 'Lars Svensson',
     level: 'elite',
     standArea: 54
   },
   partner_museum: {
-    email: 'partner-museum@test.siport.com',
+    email: 'nathalie.robert1@partner.com',
     password: TEST_PASSWORD,
-    name: 'Partenaire Musée Test',
+    name: 'Nathalie Robert Consulting',
     level: 'museum',
     investmentTier: '$20,000'
   },
   partner_silver: {
-    email: 'partner-chamber@test.siport.com',
+    email: 'pierre.laurent2@partner.com',
     password: TEST_PASSWORD,
-    name: 'Partenaire Chambre Test',
+    name: 'Pierre Laurent Consulting',
     level: 'silver',
     investmentTier: '$48,000'
   },
   partner_gold: {
-    email: 'partner-sponsor@test.siport.com',
+    email: 'stéphanie.robert3@partner.com',
     password: TEST_PASSWORD,
-    name: 'Partenaire Sponsor Test',
+    name: 'Stéphanie Robert Consulting',
     level: 'gold',
     investmentTier: '$68,000'
   },
   partner_platinum: {
-    email: 'partner-sponsor@test.siport.com', // No platinum, use sponsor
+    email: 'valérie.durand4@partner.com',
     password: TEST_PASSWORD,
-    name: 'Partenaire Sponsor Test',
+    name: 'Valérie Durand Consulting',
     level: 'platinum',
     investmentTier: '$98,000'
   },
   admin: {
-    email: 'admin-test@test.siport.com',
+    email: 'admin@siports.com',
     password: TEST_PASSWORD,
-    name: 'Admin Test',
+    name: 'Admin SIPORTS',
     level: 'admin'
   }
 };
