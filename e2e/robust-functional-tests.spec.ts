@@ -29,12 +29,13 @@ async function login(page: Page, email: string, password: string = PASSWORD): Pr
     await emailInput.fill(email);
     await page.fill('input[type="password"], input[name="password"]', password);
     
-    // Cliquer sur connexion
-    const submitBtn = page.locator('button[type="submit"], button:has-text("Connexion"), button:has-text("Se connecter")').first();
-    await submitBtn.click();
+    // Cliquer et attendre la redirection
+    await Promise.all([
+      page.waitForURL(/.*\/(dashboard|visitor|exhibitor|partner|admin|badge).*/, { timeout: 20000 }).catch(() => {}),
+      page.click('button[type="submit"]')
+    ]);
     
-    // Attendre la redirection (dashboard ou autre page authentifiée)
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(1000);
     
     // Vérifier qu'on n'est plus sur /login
     const currentUrl = page.url();
