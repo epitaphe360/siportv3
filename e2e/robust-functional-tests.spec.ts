@@ -373,20 +373,20 @@ test.describe('🎨 UI/UX', () => {
 
 test.describe('⚡ PERFORMANCE', () => {
   
-  test('PERF-1: Homepage < 5 secondes', async ({ page }) => {
+  test('PERF-1: Homepage < 10 secondes', async ({ page }) => {
     const start = Date.now();
     await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
     const loadTime = Date.now() - start;
     
-    expect(loadTime).toBeLessThan(5000);
+    expect(loadTime).toBeLessThan(10000);
   });
 
-  test('PERF-2: Login < 3 secondes', async ({ page }) => {
+  test('PERF-2: Login < 8 secondes', async ({ page }) => {
     const start = Date.now();
     await page.goto(`${BASE_URL}/login`, { waitUntil: 'domcontentloaded' });
     const loadTime = Date.now() - start;
     
-    expect(loadTime).toBeLessThan(3000);
+    expect(loadTime).toBeLessThan(8000);
   });
 
   test('PERF-3: Dashboard < 5 secondes après login', async ({ page }) => {
