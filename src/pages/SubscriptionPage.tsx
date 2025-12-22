@@ -363,25 +363,27 @@ export default function SubscriptionPage() {
   const displayedTiers = selectedType === 'visitor' ? visitorTiers : selectedType === 'partner' ? partnerTiers : exhibitorTiers;
 
   const handleSubscribe = (tierId: string) => {
-    // Si non authentifié, rediriger vers login
-    if (!isAuthenticated) {
-      navigate(ROUTES.LOGIN, { state: { from: 'subscription', tier: tierId } });
-      return;
-    }
-
-    // Redirection selon le type d'offre
+    // Redirection selon le type d'offre (pas besoin d'être authentifié pour s'inscrire)
     if (tierId === 'visitor-free') {
-      // Inscription gratuite - rediriger vers nouveau formulaire visiteur gratuit
+      // Inscription gratuite - rediriger vers formulaire visiteur gratuit
       navigate(ROUTES.VISITOR_FREE_REGISTRATION);
     } else if (tierId === 'visitor-vip') {
-      // Upgrade premium VIP - rediriger vers formulaire VIP complet avec photo et paiement
+      // Inscription VIP - rediriger vers formulaire VIP complet avec photo et paiement
       navigate(ROUTES.VISITOR_VIP_REGISTRATION);
     } else if (tierId.includes('exhibitor')) {
-      // Offre exposant
-      navigate(ROUTES.EXHIBITOR_DASHBOARD);
+      // Offre exposant - si non authentifié, rediriger vers inscription exposant
+      if (!isAuthenticated) {
+        navigate(ROUTES.REGISTER_EXHIBITOR);
+      } else {
+        navigate(ROUTES.EXHIBITOR_DASHBOARD);
+      }
     } else if (tierId.includes('partner')) {
-      // Offre partenaire
-      navigate(ROUTES.PARTNER_DASHBOARD);
+      // Offre partenaire - si non authentifié, rediriger vers inscription partenaire
+      if (!isAuthenticated) {
+        navigate(ROUTES.REGISTER_PARTNER);
+      } else {
+        navigate(ROUTES.PARTNER_DASHBOARD);
+      }
     }
   };
 
@@ -499,16 +501,6 @@ export default function SubscriptionPage() {
             </Card>
             ))}
           </div>
-        </div>
-
-        {/* Bouton S'inscrire gratuitement - remplacer le lien existant */}
-        <div className="mt-8 text-center">
-          <button
-            onClick={() => setShowFreeRegistration(true)}
-            className="w-full py-3 px-6 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors"
-          >
-            🟢 S'inscrire gratuitement
-          </button>
         </div>
 
         {/* Additional Info */}
