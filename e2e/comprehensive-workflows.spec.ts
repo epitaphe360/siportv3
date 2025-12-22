@@ -98,16 +98,16 @@ const TEST_USERS = {
     investmentTier: '$68,000'
   },
   partner_platinum: {
-    email: 'partner-sponsor@test.siport.com', // No platinum, use sponsor
+    email: 'valérie.durand4@partner.com',
     password: TEST_PASSWORD,
-    name: 'Partenaire Sponsor Test',
+    name: 'Valérie Durand Consulting',
     level: 'platinum',
     investmentTier: '$98,000'
   },
   admin: {
-    email: 'admin-test@test.siport.com',
+    email: 'admin@siports.com',
     password: TEST_PASSWORD,
-    name: 'Admin Test',
+    name: 'Admin SIPORTS',
     level: 'admin'
   }
 };
