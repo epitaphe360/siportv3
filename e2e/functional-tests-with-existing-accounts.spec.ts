@@ -12,7 +12,7 @@ const TEST_ACCOUNTS = {
   exhibitor_36m: 'exhibitor-36m@test.siport.com',
   partner_museum: 'nathalie.robert1@partner.com',
   partner_chamber: 'pierre.laurent2@partner.com',
-  partner_sponsor: 'stéphanie.robert3@partner.com',
+  partner_sponsor: 'pierre.laurent2@partner.com',
   admin_test: 'admin@siports.com',
   visitor_pro: 'christophe.lefebvre1@visitor.com'
 };
