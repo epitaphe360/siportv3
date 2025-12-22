@@ -573,6 +573,7 @@ export default function RegisterPage() {
                         <select
                           {...register('country')}
                           name="country"
+                          data-testid="select-country"
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white"
                         >
                           <option value="">Sélectionnez un pays</option>
@@ -584,7 +585,7 @@ export default function RegisterPage() {
                         </select>
                       </div>
                       {errors.country && (
-                        <p className="text-red-600 text-sm mt-1">{errors.country.message}</p>
+                        <p className="text-red-600 text-sm mt-1" data-testid="error-country">{errors.country.message}</p>
                       )}
                     </div>
 
