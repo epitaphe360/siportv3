@@ -235,6 +235,14 @@ const useAuthStore = create<AuthState>()(
         throw new Error('Échec de la création de l\'utilisateur');
       }
 
+      // ✅ Mettre à jour l'utilisateur dans le store pour les visiteurs (auto-login)
+      if (userType === 'visitor') {
+        set({ 
+          user: newUser, 
+          isAuthenticated: true,
+          isLoading: false 
+        });
+      }
 
       // Créer une demande d'inscription pour exposants et partenaires
       if (userType === 'exhibitor' || userType === 'partner') {
