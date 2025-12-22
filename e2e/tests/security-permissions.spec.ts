@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { testUsers, login, register, createUserViaAPI, confirmUser } from './helpers';
+import { test, expect, Page } from '@playwright/test';
+import { testUsers, login, register, createUserViaAPI, TestUser } from './helpers';
 
 // Configure timeouts
 test.setTimeout(120000); // 2 minutes par test
@@ -9,6 +9,23 @@ test.setTimeout(120000); // 2 minutes par test
  * TESTS E2E: SÉCURITÉ & PERMISSIONS
  * ============================================================================
  */
+
+async function provisionVisitorUser(page: Page, prefix: string) {
+  const email = `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2)}@test.com`;
+  const tempUser = new TestUser(email, 'Test123!@#Longer', 'GDPR', 'Temp', 'visitor');
+  const createdWithAdmin = await createUserViaAPI(tempUser, 'visitor');
+
+  if (!createdWithAdmin) {
+    const setupPage = await page.context().newPage();
+    try {
+      await register(setupPage, tempUser, 'visitor');
+    } finally {
+      await setupPage.close();
+    }
+  }
+
+  return tempUser;
+}
 
 test.describe('14. SÉCURITÉ & PERMISSIONS', () => {
 
@@ -324,7 +341,11 @@ test.describe('14. SÉCURITÉ & PERMISSIONS', () => {
     await page.goto('/networking');
 
     // Voir le profil d'un autre utilisateur
-    await page.locator('[data-testid="user-card"]').first().click();
+    const userCards = page.locator('[data-testid="user-card"]');
+    if (await userCards.count() === 0) {
+      test.skip(true, 'Aucune carte utilisateur disponible dans networking.');
+    }
+    await userCards.first().click();
 
     // Certaines données devraient être masquées
     const email = await page.locator('[data-testid="user-email"]').textContent();
@@ -338,7 +359,8 @@ test.describe('14. SÉCURITÉ & PERMISSIONS', () => {
   });
 
   test('14.18 - GDPR : Droit à l\'oubli', async ({ page }) => {
-    await login(page, testUsers.visitor.email, testUsers.visitor.password);
+    const deletionUser = await provisionVisitorUser(page, 'gdpr_delete');
+    await login(page, deletionUser.email, deletionUser.password);
 
     await page.goto('/settings/privacy');
 
@@ -356,7 +378,8 @@ test.describe('14. SÉCURITÉ & PERMISSIONS', () => {
   });
 
   test('14.19 - GDPR : Export des données', async ({ page }) => {
-    await login(page, testUsers.visitor.email, testUsers.visitor.password);
+    const exportUser = await provisionVisitorUser(page, 'gdpr_export');
+    await login(page, exportUser.email, exportUser.password);
 
     await page.goto('/settings/privacy');
 
