@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import QRCode from 'qrcode';
 import {
@@ -7,8 +7,7 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  Sparkles,
-  Crown
+  Sparkles
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import useAuthStore from '../../store/authStore';
@@ -28,7 +27,6 @@ export default function DigitalBadge() {
   const [secondsRemaining, setSecondsRemaining] = useState<number>(0);
   const [isRotating, setIsRotating] = useState(false);
   const [error, setError] = useState<string>('');
-  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Générer un nouveau QR code
   const generateQR = async () => {

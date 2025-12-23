@@ -128,6 +128,7 @@ import { useLanguageStore } from './store/languageStore';
 import { ROUTES } from './lib/routes';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { initializeAuth } from './lib/initAuth';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 
 const App = () => {
@@ -151,12 +152,13 @@ const App = () => {
   }, [currentLanguage]);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <SkipToContent />
-      <Header />
-      <main id="main-content" className="flex-1">
-        <Suspense fallback={<div className="flex justify-center items-center h-full"><div>Chargement...</div></div>}>
-          <Routes>
+    <ErrorBoundary>
+      <div className="min-h-screen flex flex-col">
+        <SkipToContent />
+        <Header />
+        <main id="main-content" className="flex-1">
+          <Suspense fallback={<div className="flex justify-center items-center h-full"><div>Chargement...</div></div>}>
+            <Routes>
             <Route path={ROUTES.HOME} element={<HomePage />} />
             <Route path={ROUTES.EXHIBITORS} element={<ExhibitorsPage />} />
             <Route path={ROUTES.EXHIBITOR_DETAIL} element={<ExhibitorDetailPage />} />
@@ -308,6 +310,7 @@ const App = () => {
       )}
       <Toaster position="top-right" />
     </div>
+    </ErrorBoundary>
   );
 }
 

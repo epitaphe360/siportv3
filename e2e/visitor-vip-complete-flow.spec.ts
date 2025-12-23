@@ -244,7 +244,7 @@ test.describe('👑 VISITEUR VIP (PREMIUM 700€) - PARCOURS COMPLET', () => {
     const emailInput = page.locator('input[type="email"]').first();
     if (await emailInput.isVisible()) {
       await emailInput.fill(TEST_VISITOR_VIP.email);
-      await page.locator('input[type="password']').first().fill(TEST_VISITOR_VIP.password);
+      await page.locator('input[type="password"]').first().fill(TEST_VISITOR_VIP.password);
       await page.locator('button[type="submit"]').first().click();
       await page.waitForTimeout(2000);
     }
