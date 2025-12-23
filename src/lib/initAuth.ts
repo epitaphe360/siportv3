@@ -23,6 +23,12 @@ export async function initializeAuth() {
 
     if (!session?.user) {
       // No active session
+      // CRITICAL FIX: If store thinks we are logged in, but Supabase says no, we must logout
+      // This prevents "ghost" sessions where localStorage has data but the token is invalid
+      if (useAuthStore.getState().isAuthenticated) {
+        console.warn('⚠️ Session invalide ou expirée détectée au démarrage, nettoyage du store...');
+        useAuthStore.getState().logout();
+      }
       return;
     }
 
