@@ -2515,8 +2515,6 @@ export class SupabaseService {
     }
   }
 
-}
-
   // Helper: structured logging for Supabase errors
   static logSupabaseError(context: string, error: any) {
     try {
@@ -2534,4 +2532,6 @@ export class SupabaseService {
       console.warn('Supabase Error Logger failed', e);
     }
   }
+
+}
 
