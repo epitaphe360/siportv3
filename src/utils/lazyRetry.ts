@@ -26,6 +26,10 @@ export const lazyRetry = (componentImport: () => Promise<{ default: ComponentTyp
         const url = new URL(window.location.href);
         url.searchParams.set('v', now.toString());
         window.location.replace(url.toString());
+        
+        // Return a promise that never resolves to keep Suspense active
+        // and prevent ErrorBoundary from showing the error while reloading
+        return new Promise<{ default: ComponentType<any> }>(() => {});
       }
       
       throw error;

@@ -50,23 +50,41 @@
     <!-- Emergency Chunk Load Error Handler -->
     <script>
       (function() {
+        // Check for chunk load errors immediately
         window.addEventListener('error', function(e) {
           var msg = e.message || '';
-          if (msg.indexOf('fetch') > -1 || msg.indexOf('import') > -1 || msg.indexOf('chunk') > -1 || msg.indexOf('Unexpected token') > -1) {
+          var isChunkError = msg.indexOf('fetch') > -1 || msg.indexOf('import') > -1 || msg.indexOf('chunk') > -1 || msg.indexOf('Unexpected token') > -1;
+          
+          if (isChunkError) {
             console.warn('Emergency reload triggered by HTML script...');
             var lastReload = localStorage.getItem('last-emergency-reload');
             var now = Date.now();
+            
+            // Throttle reloads to 10s
             if (!lastReload || (now - lastReload) > 10000) {
               localStorage.setItem('last-emergency-reload', now);
-              window.location.reload(true);
+              
+              // Add version param to bust cache
+              var url = new URL(window.location.href);
+              url.searchParams.set('v', now);
+              window.location.replace(url.toString());
             }
+            // Prevent default error reporting
+            return true;
           }
         }, true);
         
         window.addEventListener('unhandledrejection', function(e) {
           var msg = (e.reason && e.reason.message) || '';
           if (msg.indexOf('fetch') > -1 || msg.indexOf('import') > -1) {
-            window.location.reload(true);
+            var lastReload = localStorage.getItem('last-emergency-reload');
+            var now = Date.now();
+            if (!lastReload || (now - lastReload) > 10000) {
+              localStorage.setItem('last-emergency-reload', now);
+              var url = new URL(window.location.href);
+              url.searchParams.set('v', now);
+              window.location.replace(url.toString());
+            }
           }
         });
       })();
