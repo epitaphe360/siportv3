@@ -50,6 +50,15 @@
     <!-- Emergency Chunk Load Error Handler -->
     <script>
       (function() {
+        // Aggressively unregister any Service Workers to prevent stale caching
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(var i = 0; i < registrations.length; i++) {
+              registrations[i].unregister();
+            }
+          });
+        }
+
         // Check for chunk load errors immediately
         window.addEventListener('error', function(e) {
           var msg = e.message || '';
@@ -60,8 +69,8 @@
             var lastReload = localStorage.getItem('last-emergency-reload');
             var now = Date.now();
             
-            // Throttle reloads to 10s
-            if (!lastReload || (now - lastReload) > 10000) {
+            // Throttle reloads to 5s (reduced from 10s)
+            if (!lastReload || (now - lastReload) > 5000) {
               localStorage.setItem('last-emergency-reload', now);
               
               // Add version param to bust cache
@@ -79,7 +88,7 @@
           if (msg.indexOf('fetch') > -1 || msg.indexOf('import') > -1) {
             var lastReload = localStorage.getItem('last-emergency-reload');
             var now = Date.now();
-            if (!lastReload || (now - lastReload) > 10000) {
+            if (!lastReload || (now - lastReload) > 5000) {
               localStorage.setItem('last-emergency-reload', now);
               var url = new URL(window.location.href);
               url.searchParams.set('v', now);

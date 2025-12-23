@@ -10,17 +10,27 @@ export const lazyRetry = (componentImport: () => Promise<{ default: ComponentTyp
     try {
       return await componentImport();
     } catch (error) {
-      console.error('Critical load error:', error);
+      // Don't log as error to avoid confusing users, just warn
+      console.warn('Chunk load failed, attempting recovery:', error);
       
       // If any error occurs during lazy load, we assume it's a deployment mismatch
       // and force a hard refresh to get the latest version of the app.
       const lastRetry = window.sessionStorage.getItem('last-lazy-retry');
       const now = Date.now();
       
-      // Only retry once every 10 seconds to avoid infinite loops
-      if (!lastRetry || (now - parseInt(lastRetry)) > 10000) {
+      // Only retry once every 5 seconds (reduced from 10)
+      if (!lastRetry || (now - parseInt(lastRetry)) > 5000) {
         window.sessionStorage.setItem('last-lazy-retry', now.toString());
         console.warn('Deployment mismatch detected. Refreshing app...');
+        
+        // Unregister service workers before reloading
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then((registrations) => {
+            for (const registration of registrations) {
+              registration.unregister();
+            }
+          });
+        }
         
         // Force refresh by appending a timestamp
         const url = new URL(window.location.href);
