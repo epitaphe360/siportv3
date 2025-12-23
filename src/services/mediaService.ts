@@ -24,12 +24,10 @@ export class MediaService {
    */
   static async getMedia(filters?: MediaFilters): Promise<MediaContent[]> {
     try {
+      // Step 1: Fetch media_contents without nested select
       let query = supabase
         .from('media_contents')
-        .select(`
-          *,
-          sponsor_partner:sponsor_partner_id(id, company_name, logo_url, tier:partnership_level)
-        `);
+        .select('*');
 
       // Filtres
       if (filters?.type) {
@@ -70,10 +68,35 @@ export class MediaService {
         query = query.range(filters.offset, filters.offset + (filters.limit || 10) - 1);
       }
 
-      const { data, error } = await query;
+      const { data: mediaData, error } = await query;
 
       if (error) throw error;
-      return data || [];
+      if (!mediaData || mediaData.length === 0) return [];
+
+      // Step 2: Fetch partners separately
+      const partnerIds = mediaData
+        .map(m => m.sponsor_partner_id)
+        .filter((id): id is string => !!id);
+
+      let partners: any[] = [];
+      if (partnerIds.length > 0) {
+        const { data: partnersData } = await supabase
+          .from('partners')
+          .select('id, company_name, logo_url, partnership_level')
+          .in('id', partnerIds);
+        
+        partners = partnersData || [];
+      }
+
+      // Step 3: Merge data locally
+      const result = mediaData.map(media => ({
+        ...media,
+        sponsor_partner: media.sponsor_partner_id 
+          ? partners.find(p => p.id === media.sponsor_partner_id) || null
+          : null
+      }));
+
+      return result;
     } catch (error) {
       console.error('❌ Erreur getMedia:', error);
       return [];
@@ -95,17 +118,33 @@ export class MediaService {
    */
   static async getMediaById(id: string): Promise<MediaContent | null> {
     try {
-      const { data, error } = await supabase
+      // Step 1: Fetch media content
+      const { data: mediaData, error } = await supabase
         .from('media_contents')
-        .select(`
-          *,
-          sponsor_partner:sponsor_partner_id(id, company_name, logo_url, tier:partnership_level, website)
-        `)
+        .select('*')
         .eq('id', id)
         .single();
 
       if (error) throw error;
-      return data;
+      if (!mediaData) return null;
+
+      // Step 2: Fetch partner if exists
+      let partner = null;
+      if (mediaData.sponsor_partner_id) {
+        const { data: partnerData } = await supabase
+          .from('partners')
+          .select('id, company_name, logo_url, partnership_level, website')
+          .eq('id', mediaData.sponsor_partner_id)
+          .single();
+        
+        partner = partnerData;
+      }
+
+      // Step 3: Merge data
+      return {
+        ...mediaData,
+        sponsor_partner: partner
+      };
     } catch (error) {
       console.error('❌ Erreur getMediaById:', error);
       return null;
@@ -117,21 +156,37 @@ export class MediaService {
    */
   static async createMedia(mediaData: CreateMediaRequest): Promise<MediaContent | null> {
     try {
-      const { data, error } = await supabase
+      // Step 1: Insert media content
+      const { data: newMedia, error } = await supabase
         .from('media_contents')
         .insert([{
           ...mediaData,
           status: mediaData.status || 'draft',
           published_at: mediaData.published_at || (mediaData.status === 'published' ? new Date().toISOString() : null)
         }])
-        .select(`
-          *,
-          sponsor_partner:sponsor_partner_id(id, company_name, logo_url)
-        `)
+        .select('*')
         .single();
 
       if (error) throw error;
-      return data;
+      if (!newMedia) return null;
+
+      // Step 2: Fetch partner if exists
+      let partner = null;
+      if (newMedia.sponsor_partner_id) {
+        const { data: partnerData } = await supabase
+          .from('partners')
+          .select('id, company_name, logo_url')
+          .eq('id', newMedia.sponsor_partner_id)
+          .single();
+        
+        partner = partnerData;
+      }
+
+      // Step 3: Return merged data
+      return {
+        ...newMedia,
+        sponsor_partner: partner
+      };
     } catch (error) {
       console.error('❌ Erreur createMedia:', error);
       return null;
@@ -145,18 +200,34 @@ export class MediaService {
     try {
       const { id, ...updates } = updateData;
       
-      const { data, error } = await supabase
+      // Step 1: Update media content
+      const { data: updatedMedia, error } = await supabase
         .from('media_contents')
         .update(updates)
         .eq('id', id)
-        .select(`
-          *,
-          sponsor_partner:sponsor_partner_id(id, company_name, logo_url)
-        `)
+        .select('*')
         .single();
 
       if (error) throw error;
-      return data;
+      if (!updatedMedia) return null;
+
+      // Step 2: Fetch partner if exists
+      let partner = null;
+      if (updatedMedia.sponsor_partner_id) {
+        const { data: partnerData } = await supabase
+          .from('partners')
+          .select('id, company_name, logo_url')
+          .eq('id', updatedMedia.sponsor_partner_id)
+          .single();
+        
+        partner = partnerData;
+      }
+
+      // Step 3: Return merged data
+      return {
+        ...updatedMedia,
+        sponsor_partner: partner
+      };
     } catch (error) {
       console.error('❌ Erreur updateMedia:', error);
       return null;
