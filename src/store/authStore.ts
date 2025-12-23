@@ -369,10 +369,28 @@ const useAuthStore = create<AuthState>()(
     }
   },
 
-  logout: () => {
+  logout: async () => {
+    try {
+      // Sign out from Supabase
+      await supabase.auth.signOut();
+      console.log('✅ Déconnexion Supabase réussie');
+    } catch (error) {
+      console.error('❌ Erreur lors de la déconnexion Supabase:', error);
+    }
+
     // CRITIQUE: Nettoyer TOUS les stores avant de déconnecter
     // Empêche les fuites de données sur ordinateurs partagés
     resetAllStores();
+    
+    // CRITICAL: Nettoyage complet du localStorage et sessionStorage
+    try {
+      localStorage.removeItem('siport-auth-storage');
+      localStorage.removeItem('sb-eqjoqgpbxhsfgcovipgu-auth-token');
+      sessionStorage.clear();
+      console.log('✅ LocalStorage et sessionStorage nettoyés');
+    } catch (error) {
+      console.error('❌ Erreur nettoyage storage:', error);
+    }
 
     // Ensuite, réinitialiser authStore
     set({

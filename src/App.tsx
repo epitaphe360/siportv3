@@ -130,6 +130,16 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import { initializeAuth } from './lib/initAuth';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
+// Import cleanup functions for dev debugging (not used in production)
+if (import.meta.env.DEV) {
+  import('./lib/cleanupAuth').then(({ cleanupAuth, checkAuthStatus }) => {
+    // Make available in browser console for debugging
+    (window as any).cleanupAuth = cleanupAuth;
+    (window as any).checkAuthStatus = checkAuthStatus;
+    console.log('🛠️ Dev tools disponibles: checkAuthStatus(), cleanupAuth()');
+  });
+}
+
 
 const App = () => {
   const [isChatBotOpen, setIsChatBotOpen] = React.useState(false);
