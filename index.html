@@ -7,6 +7,9 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
+    <!-- Build version to detect stale HTML -->
+    <meta name="build-version" content="BUILD_VERSION_PLACEHOLDER" />
+    <meta name="build-time" content="BUILD_TIME_PLACEHOLDER" />
 
     <!-- Primary Meta Tags -->
     <title>SIPORTS 2026 - Salon International des Ports</title>
@@ -50,6 +53,32 @@
     <!-- Emergency Chunk Load Error Handler -->
     <script>
       (function() {
+        // CRITICAL: Aggressive cache-busting and Service Worker cleanup
+        var BUILD_VERSION = document.querySelector('meta[name="build-version"]')?.content || 'unknown';
+        var storageKey = 'app-build-version';
+        var lastVersion = localStorage.getItem(storageKey);
+        
+        // If build version changed, clear all caches and force reload
+        if (lastVersion && lastVersion !== BUILD_VERSION && BUILD_VERSION !== 'BUILD_VERSION_PLACEHOLDER') {
+          console.warn('🔄 New build detected:', lastVersion, '→', BUILD_VERSION);
+          localStorage.clear();
+          sessionStorage.clear();
+          
+          if ('caches' in window) {
+            caches.keys().then(function(names) {
+              for (var i = 0; i < names.length; i++) {
+                caches.delete(names[i]);
+              }
+            });
+          }
+          
+          localStorage.setItem(storageKey, BUILD_VERSION);
+          window.location.reload(true); // Hard reload
+          return;
+        }
+        
+        localStorage.setItem(storageKey, BUILD_VERSION);
+        
         // Aggressively unregister any Service Workers to prevent stale caching
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -62,21 +91,28 @@
         // Check for chunk load errors immediately
         window.addEventListener('error', function(e) {
           var msg = e.message || '';
-          var isChunkError = msg.indexOf('fetch') > -1 || msg.indexOf('import') > -1 || msg.indexOf('chunk') > -1 || msg.indexOf('Unexpected token') > -1;
+          var isChunkError = msg.indexOf('fetch') > -1 || msg.indexOf('import') > -1 || msg.indexOf('chunk') > -1 || msg.indexOf('Unexpected token') > -1 || msg.indexOf('404') > -1;
           
           if (isChunkError) {
-            console.warn('Emergency reload triggered by HTML script...');
+            console.warn('⚠️ Emergency reload triggered by chunk error:', msg);
             var lastReload = localStorage.getItem('last-emergency-reload');
             var now = Date.now();
             
-            // Throttle reloads to 5s (reduced from 10s)
-            if (!lastReload || (now - lastReload) > 5000) {
+            // Throttle reloads to 3s (more aggressive)
+            if (!lastReload || (now - lastReload) > 3000) {
               localStorage.setItem('last-emergency-reload', now);
               
-              // Add version param to bust cache
-              var url = new URL(window.location.href);
-              url.searchParams.set('v', now);
-              window.location.replace(url.toString());
+              // Force hard reload with cache bypass
+              if ('caches' in window) {
+                caches.keys().then(function(names) {
+                  for (var i = 0; i < names.length; i++) {
+                    caches.delete(names[i]);
+                  }
+                  window.location.reload(true);
+                });
+              } else {
+                window.location.reload(true);
+              }
             }
             // Prevent default error reporting
             return true;
@@ -85,14 +121,22 @@
         
         window.addEventListener('unhandledrejection', function(e) {
           var msg = (e.reason && e.reason.message) || '';
-          if (msg.indexOf('fetch') > -1 || msg.indexOf('import') > -1) {
+          if (msg.indexOf('fetch') > -1 || msg.indexOf('import') > -1 || msg.indexOf('404') > -1) {
             var lastReload = localStorage.getItem('last-emergency-reload');
             var now = Date.now();
-            if (!lastReload || (now - lastReload) > 5000) {
+            if (!lastReload || (now - lastReload) > 3000) {
               localStorage.setItem('last-emergency-reload', now);
-              var url = new URL(window.location.href);
-              url.searchParams.set('v', now);
-              window.location.replace(url.toString());
+              
+              if ('caches' in window) {
+                caches.keys().then(function(names) {
+                  for (var i = 0; i < names.length; i++) {
+                    caches.delete(names[i]);
+                  }
+                  window.location.reload(true);
+                });
+              } else {
+                window.location.reload(true);
+              }
             }
           }
         });
