@@ -23,8 +23,7 @@ const ACCOUNTS = [
   { email: 'partner-museum@test.siport.com', type: 'partner', status: 'active' },
   { email: 'partner-chamber@test.siport.com', type: 'partner', status: 'active' },
   { email: 'partner-sponsor@test.siport.com', type: 'partner', status: 'active' },
-  { email: 'admin-test@test.siport.com', type: 'admin', status: 'active' },
-  { email: 'visitor-pro@test.siport.com', type: 'visitor', visitor_level: 'pro', status: 'active' }
+  { email: 'admin-test@test.siport.com', type: 'admin', status: 'active' }
 ];
 
 (async () => {

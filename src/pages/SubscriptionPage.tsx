@@ -445,6 +445,7 @@ export default function SubscriptionPage() {
             {displayedTiers.map((tier) => (
               <Card
                 key={tier.id}
+                data-testid={`subscription-card-${tier.id}`}
                 className={`relative overflow-hidden h-full flex flex-col transition-transform hover:scale-105 ${tier.color}`}
               >
               {/* Header */}

@@ -44,24 +44,6 @@ ON CONFLICT (email) DO UPDATE SET
   name = EXCLUDED.name,
   type = EXCLUDED.type;
 
--- 3. VISITEUR PRO
-INSERT INTO users (
-  id,
-  email,
-  name,
-  type,
-  created_at
-) VALUES (
-  'v0000000-0000-0000-0000-000000000003',
-  'visitor-pro@test.siport.com',
-  'Visiteur Pro Test',
-  'visitor',
-  now()
-)
-ON CONFLICT (email) DO UPDATE SET
-  name = EXCLUDED.name,
-  type = EXCLUDED.type;
-
 -- 4. EXPOSANT 9m²
 INSERT INTO users (
   id,

@@ -494,11 +494,11 @@ export default function PartnerSignUpPage() {
 
             <div className="space-y-3">
               <Button 
-                type="button" 
-                onClick={handlePreviewSubmit} 
+                type="submit" 
                 className="w-full" 
                 disabled={isLoading}
                 variant="default"
+                data-testid="partner-submit-button"
               >
                 {isLoading ? 'Envoi en cours...' : "Prévisualiser et soumettre"}
               </Button>

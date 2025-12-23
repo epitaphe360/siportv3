@@ -14,7 +14,6 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 const ACCOUNTS = [
   'visitor-free@test.siport.com',
   'visitor-vip@test.siport.com',
-  'visitor-pro@test.siport.com',
   'exhibitor-9m@test.siport.com',
   'exhibitor-18m@test.siport.com',
   'exhibitor-36m@test.siport.com',

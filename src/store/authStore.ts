@@ -208,26 +208,34 @@ const useAuthStore = create<AuthState>()(
 
       const userType = (['admin','exhibitor','partner','visitor','security'].includes(userData.accountType ?? '') ? userData.accountType! : 'visitor') as User['type'];
 
+      // Préparer les données utilisateur avec le niveau visiteur par défaut (FREE)
+      const signUpData: any = {
+        name: `${userData.firstName} ${userData.lastName}`.trim(),
+        type: userType,
+        profile: minimalUserProfile({
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          company: userData.companyName ?? '',
+          position: userData.position ?? '',
+          country: userData.country ?? '',
+          phone: userData.phone,
+          linkedin: userData.linkedin,
+          website: userData.website,
+          bio: userData.description ?? '',
+          objectives: userData.objectives ?? []
+        })
+      };
+
+      // ✅ Ajouter le niveau visiteur (par défaut 'free' pour les nouveaux visiteurs)
+      if (userType === 'visitor') {
+        signUpData.visitor_level = 'free';
+      }
+
       // Appeler la fonction signUp de SupabaseService qui gère Auth + profil
       const newUser = await SupabaseService.signUp(
         userData.email,
         userData.password,
-        {
-          name: `${userData.firstName} ${userData.lastName}`.trim(),
-          type: userType,
-          profile: minimalUserProfile({
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            company: userData.companyName ?? '',
-            position: userData.position ?? '',
-            country: userData.country ?? '',
-            phone: userData.phone,
-            linkedin: userData.linkedin,
-            website: userData.website,
-            bio: userData.description ?? '',
-            objectives: userData.objectives ?? []
-          })
-        },
+        signUpData,
         recaptchaToken // 🔐 Passer le token reCAPTCHA
       );
 

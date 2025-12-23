@@ -24,7 +24,6 @@ Write-Host "   via http://localhost:5173/register`n"
 $accounts = @(
     @{ Email = "visitor-free@test.siport.com"; Type = "Visiteur"; Level = "Gratuit"; Name = "Visiteur Free Test" },
     @{ Email = "visitor-vip@test.siport.com"; Type = "Visiteur"; Level = "VIP 700€"; Name = "Visiteur VIP Test" },
-    @{ Email = "visitor-pro@test.siport.com"; Type = "Visiteur"; Level = "Pro"; Name = "Visiteur Pro Test" },
     @{ Email = "exhibitor-9m@test.siport.com"; Type = "Exposant"; Level = "9m²"; Name = "Exposant 9m Test" },
     @{ Email = "exhibitor-18m@test.siport.com"; Type = "Exposant"; Level = "18m²"; Name = "Exposant 18m Test" },
     @{ Email = "exhibitor-36m@test.siport.com"; Type = "Exposant"; Level = "36m²"; Name = "Exposant 36m Test" },

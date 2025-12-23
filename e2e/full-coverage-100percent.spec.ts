@@ -135,15 +135,20 @@ test.describe('🔐 AUTHENTIFICATION - TOUS LES TESTS', () => {
     test('1.1 - Login valide visiteur FREE', async ({ page }) => {
       await page.goto(`${BASE_URL}/login`);
       
-      // Vérifier page load
-      await expect(page.locator('text=Connexion|Email|Mot de passe')).toBeVisible();
+      // Attendre le chargement de la page
+      await page.waitForLoadState('domcontentloaded');
       
-      // Remplir form
-      await page.fill('input[type="email"]', TEST_USERS.visitor_free.email);
-      await page.fill('input[type="password"]', TEST_USERS.visitor_free.password);
+      // Vérifier que le formulaire est visible (chercher un input email au lieu du texte "Connexion")
+      const emailInput = page.locator('input[type="email"], input[name="email"]').first();
+      await expect(emailInput).toBeVisible();
       
-      // Vérifier boutons
-      const submitBtn = page.locator('button[type="submit"], button:has-text("Connexion")');
+      // Remplir le formulaire
+      await emailInput.fill(TEST_USERS.visitor_free.email);
+      const passwordInput = page.locator('input[type="password"]').first();
+      await passwordInput.fill(TEST_USERS.visitor_free.password);
+      
+      // Vérifier et cliquer le bouton de soumission
+      const submitBtn = page.locator('button[type="submit"], button:has-text("Se connecter")').first();
       await expect(submitBtn).toBeVisible();
       await expect(submitBtn).toBeEnabled();
       

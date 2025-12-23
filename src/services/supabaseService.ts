@@ -500,15 +500,22 @@ export class SupabaseService {
 
 
       // 2. Créer le profil utilisateur
+      const userPayload: any = {
+        id: authData.user.id,
+        email,
+        name: userData.name,
+        type: userData.type,
+        profile: userData.profile
+      };
+
+      // ✅ Définir le niveau visiteur par défaut à 'free' pour les visiteurs
+      if (userData.type === 'visitor') {
+        userPayload.visitor_level = 'free';
+      }
+
       const { data: userProfile, error: userError } = await safeSupabase
         .from('users')
-        .insert([{
-          id: authData.user.id,
-          email,
-          name: userData.name,
-          type: userData.type,
-          profile: userData.profile
-        }])
+        .insert([userPayload])
         .select()
         .single();
 
@@ -1706,8 +1713,8 @@ export class SupabaseService {
         .from('appointments')
         .select(`
           *,
-          exhibitor:exhibitors(id, company_name, logo_url),
-          visitor:users(id, name, email)
+          exhibitor:exhibitor_id(id, company_name, logo_url),
+          visitor:visitor_id(id, name, email)
         `)
         .order('created_at', { ascending: false });
 
@@ -1776,8 +1783,8 @@ export class SupabaseService {
         .from('appointments')
         .select(`
           *,
-          exhibitor:exhibitors(id, company_name, logo_url),
-          visitor:users(id, name, email)
+          exhibitor:exhibitor_id(id, company_name, logo_url),
+          visitor:visitor_id(id, name, email)
         `)
         .eq('id', result.appointment_id)
         .single();

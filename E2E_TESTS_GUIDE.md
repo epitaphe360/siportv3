@@ -75,7 +75,6 @@ Tous avec le mot de passe: **Test@1234567**
 |-------|------|--------|-------|
 | visitor-free@test.siport.com | Visiteur | Gratuit | Tests visiteur basique |
 | visitor-vip@test.siport.com | Visiteur | VIP 700€ | Tests features premium |
-| visitor-pro@test.siport.com | Visiteur | Pro | Tests visiteur pro |
 | exhibitor-9m@test.siport.com | Exposant | 9m² | Tests stand basique |
 | exhibitor-18m@test.siport.com | Exposant | 18m² | Tests stand moyen |
 | exhibitor-36m@test.siport.com | Exposant | 36m² | Tests stand premium |

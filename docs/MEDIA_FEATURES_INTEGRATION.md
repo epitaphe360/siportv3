@@ -666,7 +666,7 @@ export class MediaService {
         .from('media_contents')
         .select(`
           *,
-          sponsor_partner:partners(id, company_name, logo_url)
+          sponsor_partner:sponsor_partner_id(id, company_name, logo_url)
         `)
         .eq('type', type);
 
@@ -711,7 +711,7 @@ export class MediaService {
         .from('media_contents')
         .select(`
           *,
-          sponsor_partner:partners(id, company_name, logo_url, tier)
+          sponsor_partner:sponsor_partner_id(id, company_name, logo_url, tier)
         `)
         .eq('id', id)
         .single();

@@ -20,56 +20,49 @@ Mot de passe pour TOUS les comptes: Test@1234567
    Nom: Visiteur VIP Test
    Password: Test@123456
 
-[3/10] VISITEUR PRO
-   Email: visitor-pro@test.siport.com
-   Type: Visiteur
-   Niveau: Professionnel
-   Nom: Visiteur Pro Test
-   Password: Test@123456
-
-[4/10] EXPOSANT 9m²
+[3/9] EXPOSANT 9m²
    Email: exhibitor-9m@test.siport.com
    Type: Exposant
    Niveau: Stand 9m²
    Nom: Exposant 9m Test
    Password: Test@123456
 
-[5/10] EXPOSANT 18m²
+[4/9] EXPOSANT 18m²
    Email: exhibitor-18m@test.siport.com
    Type: Exposant
    Niveau: Stand 18m²
    Nom: Exposant 18m Test
    Password: Test@123456
 
-[6/10] EXPOSANT 36m² PREMIUM
+[5/9] EXPOSANT 36m² PREMIUM
    Email: exhibitor-36m@test.siport.com
    Type: Exposant
    Niveau: Stand 36m² Premium
    Nom: Exposant 36m Test
    Password: Test@123456
 
-[7/10] PARTENAIRE MUSÉE
+[6/9] PARTENAIRE MUSÉE
    Email: partner-museum@test.siport.com
    Type: Partenaire
    Niveau: Musée Maritime
    Nom: Partenaire Musée Test
    Password: Test@123456
 
-[8/10] PARTENAIRE CHAMBRE
+[7/9] PARTENAIRE CHAMBRE
    Email: partner-chamber@test.siport.com
    Type: Partenaire
    Niveau: Chambre de Commerce
    Nom: Partenaire Chambre Test
    Password: Test@123456
 
-[9/10] PARTENAIRE SPONSOR
+[8/9] PARTENAIRE SPONSOR
    Email: partner-sponsor@test.siport.com
    Type: Partenaire
    Niveau: Sponsor Officiel
    Nom: Partenaire Sponsor Test
    Password: Test@123456
 
-[10/10] ADMINISTRATEUR
+[9/9] ADMINISTRATEUR
    Email: admin-test@test.siport.com
    Type: Administrateur
    Niveau: Admin

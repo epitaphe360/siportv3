@@ -111,14 +111,13 @@ npm run test:e2e:functional
 |---|-------|------|-------|
 | 1 | visitor-free@test.siport.com | Visiteur | Gratuit |
 | 2 | visitor-vip@test.siport.com | Visiteur | VIP 700€ |
-| 3 | visitor-pro@test.siport.com | Visiteur | Pro |
-| 4 | exhibitor-9m@test.siport.com | Exposant | 9m² |
-| 5 | exhibitor-18m@test.siport.com | Exposant | 18m² |
-| 6 | exhibitor-36m@test.siport.com | Exposant | 36m² Premium |
-| 7 | partner-museum@test.siport.com | Partenaire | Musée |
-| 8 | partner-chamber@test.siport.com | Partenaire | Chambre |
-| 9 | partner-sponsor@test.siport.com | Partenaire | Sponsor |
-| 10 | admin-test@test.siport.com | Admin | Administration |
+| 3 | exhibitor-9m@test.siport.com | Exposant | 9m² |
+| 4 | exhibitor-18m@test.siport.com | Exposant | 18m² |
+| 5 | exhibitor-36m@test.siport.com | Exposant | 36m² Premium |
+| 6 | partner-museum@test.siport.com | Partenaire | Musée |
+| 7 | partner-chamber@test.siport.com | Partenaire | Chambre |
+| 8 | partner-sponsor@test.siport.com | Partenaire | Sponsor |
+| 9 | admin-test@test.siport.com | Admin | Administration |
 
 ---
 

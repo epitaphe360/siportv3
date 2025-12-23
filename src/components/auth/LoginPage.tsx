@@ -268,7 +268,7 @@ export default function LoginPage() {
             <h4 className="text-sm font-medium text-blue-900 mb-3">
               Connexion rapide - Comptes de démonstration :
             </h4>
-            {!import.meta.env.PROD && (
+            {(!import.meta.env.PROD || import.meta.env.VITE_SHOW_DEMO_LOGINS === 'true') && (
               <div className="grid grid-cols-2 gap-2">
                 <Button
                   type="button"
