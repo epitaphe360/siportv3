@@ -47,6 +47,31 @@
     <!-- Google reCAPTCHA v3 -->
     <script src="https://www.google.com/recaptcha/api.js?render=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" async defer></script>
 
+    <!-- Emergency Chunk Load Error Handler -->
+    <script>
+      (function() {
+        window.addEventListener('error', function(e) {
+          var msg = e.message || '';
+          if (msg.indexOf('fetch') > -1 || msg.indexOf('import') > -1 || msg.indexOf('chunk') > -1 || msg.indexOf('Unexpected token') > -1) {
+            console.warn('Emergency reload triggered by HTML script...');
+            var lastReload = localStorage.getItem('last-emergency-reload');
+            var now = Date.now();
+            if (!lastReload || (now - lastReload) > 10000) {
+              localStorage.setItem('last-emergency-reload', now);
+              window.location.reload(true);
+            }
+          }
+        }, true);
+        
+        window.addEventListener('unhandledrejection', function(e) {
+          var msg = (e.reason && e.reason.message) || '';
+          if (msg.indexOf('fetch') > -1 || msg.indexOf('import') > -1) {
+            window.location.reload(true);
+          }
+        });
+      })();
+    </script>
+
     <!-- Structured Data (Schema.org) -->
     <script type="application/ld+json">
     {
