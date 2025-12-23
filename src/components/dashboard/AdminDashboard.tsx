@@ -61,12 +61,6 @@ export default function AdminDashboard() {
     { name: 'Documents', value: 720 },
   ];
 
-  const userTypeDistribution = [
-    { name: 'Visiteurs', value: adminMetrics.totalVisitors || 425 },
-    { name: 'Exposants', value: adminMetrics.totalExhibitors || 78 },
-    { name: 'Partenaires', value: adminMetrics.totalPartners || 12 },
-  ];
-
   const trafficData = [
     { name: 'Lun', visits: 1200, pageViews: 3400 },
     { name: 'Mar', visits: 1800, pageViews: 4200 },
@@ -94,6 +88,13 @@ export default function AdminDashboard() {
     activeContracts: 0,
     contentModerations: 0
   };
+
+  // userTypeDistribution doit être déclaré APRÈS adminMetrics
+  const userTypeDistribution = [
+    { name: 'Visiteurs', value: adminMetrics.totalVisitors || 425 },
+    { name: 'Exposants', value: adminMetrics.totalExhibitors || 78 },
+    { name: 'Partenaires', value: adminMetrics.totalPartners || 12 },
+  ];
 
   const systemHealth = [
     { name: 'API Performance', status: 'excellent', value: '145ms', color: 'text-green-600' },

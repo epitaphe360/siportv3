@@ -41,7 +41,7 @@ interface AuthState {
   loginWithGoogle: () => Promise<void>;
   loginWithLinkedIn: () => Promise<void>;
   handleOAuthCallback: () => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   setUser: (user: User) => void;
   updateProfile: (profileData: Partial<UserProfile>) => Promise<void>;
 }

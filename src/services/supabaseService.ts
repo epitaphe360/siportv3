@@ -2172,13 +2172,11 @@ export class SupabaseService {
       if (error) throw error;
 
       // Create notification for addressee
+      // Note: createNotification prend (userId, message, type) - 3 params seulement
       await this.createNotification(
         addresseeId,
-        'Nouvelle demande de connexion',
         `${user.email} souhaite se connecter avec vous`,
-        'connection',
-        'connection',
-        data.id
+        'connection'
       );
 
       return data;

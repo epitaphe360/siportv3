@@ -124,8 +124,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
       }
 
       // Identifier l'expéditeur et le destinataire
+      // Note: participants est un string[] (array d'IDs), pas un array d'objets
       const senderId = user.id;
-      const receiverId = conversation.participants.find(p => p.id !== senderId)?.id || '';
+      const receiverId = conversation.participants.find(p => p !== senderId) || '';
 
       // Envoyer via Supabase
       const sentMessage = await SupabaseService.sendMessage(

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { supabase, isSupabaseReady } from '../lib/supabase';
 
 interface VisitorProfile {
   id: string;
@@ -163,14 +164,14 @@ interface VisitorState {
   updateNotificationPreferences: (preferences: Partial<VisitorProfile['notificationPreferences']>) => Promise<void>;
 }
 
-// Importer le client Supabase si disponible
-let supabaseClient: any = null;
-try {
-  const sup = require('../lib/supabase');
-  supabaseClient = sup?.supabase || null;
-} catch {
-  supabaseClient = null;
-}
+// Utiliser le client Supabase importé directement
+const getSupabaseClient = () => {
+  if (!isSupabaseReady()) {
+    console.warn('⚠️ Supabase non configuré');
+    return null;
+  }
+  return supabase;
+};
 
 export const useVisitorStore = create<VisitorState>((set, get) => ({
   visitorProfile: null,
@@ -190,11 +191,12 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
   fetchVisitorData: async () => {
     set({ isLoading: true });
     try {
+      const supabaseClient = getSupabaseClient();
       // Récupérer les données réelles depuis Supabase
       if (supabaseClient) {
         // Récupérer le profil utilisateur actuel
         const { data: { user } } = await supabaseClient.auth.getUser();
-        
+
         if (user) {
           // Récupérer le profil complet depuis la table users
           const { data: userProfile, error: profileError } = await supabaseClient
@@ -205,36 +207,56 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
 
           if (profileError) throw profileError;
 
-          // Récupérer les favoris
+          // Récupérer les favoris depuis user_favorites (structure correcte)
           const { data: favorites, error: favError } = await supabaseClient
-            .from('favorites')
-            .select(`
-              exhibitor_id,
-              exhibitors:users!favorites_exhibitor_id_fkey(
-                id,
-                name,
-                profile
-              )
-            `)
-            .eq('visitor_id', user.id);
+            .from('user_favorites')
+            .select('entity_id, entity_type')
+            .eq('user_id', user.id)
+            .eq('entity_type', 'user');
 
           if (favError) console.warn('Erreur lors de la récupération des favoris:', favError);
 
-          // Récupérer les connexions
-          const { data: connections, error: connError } = await supabaseClient
+          // Récupérer les détails des exposants favoris
+          let favoriteExhibitors: any[] = [];
+          if (favorites && favorites.length > 0) {
+            const exhibitorIds = favorites.map((f: any) => f.entity_id);
+            const { data: exhibitorsData } = await supabaseClient
+              .from('users')
+              .select('id, name, profile')
+              .in('id', exhibitorIds);
+            favoriteExhibitors = exhibitorsData || [];
+          }
+
+          // Récupérer les connexions (structure correcte: requester_id, addressee_id)
+          const { data: connectionsData, error: connError } = await supabaseClient
             .from('connections')
-            .select(`
-              *,
-              connected_user:users!connections_connected_user_id_fkey(
-                id,
-                name,
-                type,
-                profile
-              )
-            `)
-            .eq('user_id', user.id);
+            .select('id, requester_id, addressee_id, status, created_at')
+            .or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`)
+            .eq('status', 'accepted');
 
           if (connError) console.warn('Erreur lors de la récupération des connexions:', connError);
+
+          // Récupérer les détails des utilisateurs connectés
+          let connections: any[] = [];
+          if (connectionsData && connectionsData.length > 0) {
+            const connectedUserIds = connectionsData.map((c: any) =>
+              c.requester_id === user.id ? c.addressee_id : c.requester_id
+            );
+            const { data: usersData } = await supabaseClient
+              .from('users')
+              .select('id, name, type, profile')
+              .in('id', connectedUserIds);
+
+            const usersMap = (usersData || []).reduce((acc: any, u: any) => {
+              acc[u.id] = u;
+              return acc;
+            }, {});
+
+            connections = connectionsData.map((c: any) => {
+              const connectedUserId = c.requester_id === user.id ? c.addressee_id : c.requester_id;
+              return { ...c, connected_user: usersMap[connectedUserId] || null };
+            });
+          }
 
           // Récupérer les notifications
           const { data: notifications, error: notifError } = await supabaseClient
@@ -283,15 +305,15 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
                 inApp: true
               }
             } : null,
-            favoriteExhibitors: (favorites || []).map((fav: any) => ({
-              id: fav.exhibitor_id,
-              name: fav.exhibitors?.name || 'Exposant',
-              sector: fav.exhibitors?.profile?.sectors?.[0] || 'Non spécifié',
-              description: fav.exhibitors?.profile?.companyDescription || '',
-              logo: fav.exhibitors?.profile?.avatar || '',
+            favoriteExhibitors: favoriteExhibitors.map((exhibitor: any) => ({
+              id: exhibitor.id,
+              name: exhibitor.name || 'Exposant',
+              sector: exhibitor.profile?.sectors?.[0] || 'Non spécifié',
+              description: exhibitor.profile?.companyDescription || '',
+              logo: exhibitor.profile?.avatar || '',
               pavilion: 'À déterminer',
-              standNumber: 'À déterminer',
-              website: fav.exhibitors?.profile?.website
+              standNumber: exhibitor.profile?.standNumber || 'À déterminer',
+              website: exhibitor.profile?.website
             })),
             connections: (connections || []).map((conn: any) => ({
               id: conn.id,
@@ -353,6 +375,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
     const { visitorProfile } = get();
     if (!visitorProfile) throw new Error('Aucun profil visiteur chargé');
     
+    const supabaseClient = getSupabaseClient();
     try {
       if (supabaseClient) {
         const { error } = await supabaseClient
@@ -381,13 +404,16 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
     const { visitorProfile, favoriteExhibitors } = get();
     if (!visitorProfile) throw new Error('Utilisateur non connecté');
 
+    const supabaseClient = getSupabaseClient();
     try {
       if (supabaseClient) {
+        // Utiliser user_favorites au lieu de favorites (structure correcte)
         const { error } = await supabaseClient
-          .from('favorites')
+          .from('user_favorites')
           .insert({
-            visitor_id: visitorProfile.id,
-            exhibitor_id: exhibitorId
+            user_id: visitorProfile.id,
+            entity_type: 'user',
+            entity_id: exhibitorId
           });
 
         if (error) throw error;
@@ -407,7 +433,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
             description: exhibitor.profile?.companyDescription || '',
             logo: exhibitor.profile?.avatar || '',
             pavilion: 'À déterminer',
-            standNumber: 'À déterminer',
+            standNumber: exhibitor.profile?.standNumber || 'À déterminer',
             website: exhibitor.profile?.website
           };
 
@@ -424,18 +450,21 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
     const { visitorProfile, favoriteExhibitors } = get();
     if (!visitorProfile) throw new Error('Utilisateur non connecté');
 
+    const supabaseClient = getSupabaseClient();
     try {
       if (supabaseClient) {
+        // Utiliser user_favorites au lieu de favorites (structure correcte)
         const { error } = await supabaseClient
-          .from('favorites')
+          .from('user_favorites')
           .delete()
-          .eq('visitor_id', visitorProfile.id)
-          .eq('exhibitor_id', exhibitorId);
+          .eq('user_id', visitorProfile.id)
+          .eq('entity_type', 'user')
+          .eq('entity_id', exhibitorId);
 
         if (error) throw error;
 
-        set({ 
-          favoriteExhibitors: favoriteExhibitors.filter(e => e.id !== exhibitorId) 
+        set({
+          favoriteExhibitors: favoriteExhibitors.filter(e => e.id !== exhibitorId)
         });
       }
     } catch (error) {
@@ -445,9 +474,10 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
   },
 
   registerForSession: async (sessionId: string) => {
-    const { visitorProfile, registeredSessions } = get();
+    const { visitorProfile } = get();
     if (!visitorProfile) throw new Error('Utilisateur non connecté');
 
+    const supabaseClient = getSupabaseClient();
     try {
       if (supabaseClient) {
         const { error } = await supabaseClient
@@ -473,6 +503,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
     const { visitorProfile, registeredSessions } = get();
     if (!visitorProfile) throw new Error('Utilisateur non connecté');
 
+    const supabaseClient = getSupabaseClient();
     try {
       if (supabaseClient) {
         const { error } = await supabaseClient
@@ -483,8 +514,8 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
 
         if (error) throw error;
 
-        set({ 
-          registeredSessions: registeredSessions.filter(s => s.id !== sessionId) 
+        set({
+          registeredSessions: registeredSessions.filter(s => s.id !== sessionId)
         });
       }
     } catch (error) {
@@ -497,16 +528,9 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
     const { visitorProfile } = get();
     if (!visitorProfile) throw new Error('Utilisateur non connecté');
 
-    try {
-      if (supabaseClient) {
-        // Cette fonctionnalité devrait utiliser le système de rendez-vous existant
-        // via appointmentStore plutôt que visitorStore
-        console.warn('Utiliser appointmentStore.bookAppointment() à la place');
-      }
-    } catch (error) {
-      console.error('Erreur lors de l\'envoi de la demande de rendez-vous:', error);
-      throw error;
-    }
+    // Cette fonctionnalité devrait utiliser le système de rendez-vous existant
+    // via appointmentStore plutôt que visitorStore
+    console.warn('Utiliser appointmentStore.bookAppointment() à la place');
   },
 
   acceptMeetingRequest: async (requestId: string) => {
@@ -523,6 +547,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
     const { visitorProfile } = get();
     if (!visitorProfile) throw new Error('Utilisateur non connecté');
 
+    const supabaseClient = getSupabaseClient();
     try {
       if (supabaseClient) {
         const { error } = await supabaseClient
@@ -544,7 +569,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
 
   markNotificationAsRead: (notificationId: string) => {
     const { notifications } = get();
-    
+
     // Mettre à jour localement
     const updatedNotifications = notifications.map(n =>
       n.id === notificationId ? { ...n, read: true } : n
@@ -552,6 +577,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
     set({ notifications: updatedNotifications });
 
     // Mettre à jour dans Supabase
+    const supabaseClient = getSupabaseClient();
     if (supabaseClient) {
       supabaseClient
         .from('notifications')
@@ -567,6 +593,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
     const { visitorProfile } = get();
     if (!visitorProfile) throw new Error('Utilisateur non connecté');
 
+    const supabaseClient = getSupabaseClient();
     try {
       const updatedPreferences = {
         ...visitorProfile.notificationPreferences,
