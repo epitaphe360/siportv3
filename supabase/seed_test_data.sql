@@ -808,3 +808,466 @@ BEGIN
 ========================================
 ';
 END $$;
+
+-- ========================================
+-- 5. MINI-SITES AVEC CONTENU COMPLET
+-- ========================================
+
+-- Mini-site pour exposant 9m² (StartUp Port Innovations)
+DO $$
+BEGIN
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'mini_sites') THEN
+    INSERT INTO mini_sites (
+      id,
+      exhibitor_id,
+      theme,
+      custom_colors,
+      sections,
+      published,
+      views,
+      last_updated
+    ) VALUES (
+      'a0000000-0000-0000-0000-000000000107',
+      'a0000000-0000-0000-0000-000000000007',
+      'modern',
+      jsonb_build_object(
+        'primaryColor', '#3b82f6',
+        'secondaryColor', '#1e40af',
+        'accentColor', '#60a5fa',
+        'fontFamily', 'Inter'
+      ),
+      jsonb_build_array(
+        jsonb_build_object(
+          'type', 'hero',
+          'content', jsonb_build_object(
+            'title', 'Solutions IoT pour Ports Intelligents',
+            'subtitle', 'Transformez votre port avec nos technologies de pointe',
+            'ctaText', 'Découvrir nos solutions',
+            'ctaLink', '#products'
+          )
+        ),
+        jsonb_build_object(
+          'type', 'about',
+          'content', jsonb_build_object(
+            'title', 'Innovation & Excellence',
+            'description', 'StartUp Port Innovations révolutionne la gestion portuaire avec des solutions IoT avancées. Notre expertise combine capteurs intelligents, IA et analytics pour optimiser vos opérations.',
+            'features', jsonb_build_array(
+              'Solutions IoT sur mesure',
+              'Analytics en temps réel',
+              'Interface intuitive',
+              'Support 24/7'
+            ),
+            'stats', jsonb_build_array(
+              jsonb_build_object('number', '50+', 'label', 'Ports équipés'),
+              jsonb_build_object('number', '1000+', 'label', 'Capteurs déployés'),
+              jsonb_build_object('number', '99.9%', 'label', 'Uptime garanti'),
+              jsonb_build_object('number', '24/7', 'label', 'Support technique')
+            )
+          )
+        )
+      ),
+      true,
+      245,
+      now()
+    );
+  END IF;
+END $$;
+
+-- Mini-site pour exposant 18m² (Maritime Equipment Co)
+DO $$
+BEGIN
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'mini_sites') THEN
+    INSERT INTO mini_sites (
+      id,
+      exhibitor_id,
+      theme,
+      custom_colors,
+      sections,
+      published,
+      views,
+      last_updated
+    ) VALUES (
+      'a0000000-0000-0000-0000-000000000108',
+      'a0000000-0000-0000-0000-000000000008',
+      'elegant',
+      jsonb_build_object(
+        'primaryColor', '#10b981',
+        'secondaryColor', '#059669',
+        'accentColor', '#34d399',
+        'fontFamily', 'Inter'
+      ),
+      jsonb_build_array(
+        jsonb_build_object(
+          'type', 'hero',
+          'content', jsonb_build_object(
+            'title', 'Équipements Maritimes de Qualité Premium',
+            'subtitle', 'Excellence française depuis 1995 - Fabricant certifié ISO 9001',
+            'ctaText', 'Voir notre catalogue',
+            'ctaLink', '#products'
+          )
+        ),
+        jsonb_build_object(
+          'type', 'about',
+          'content', jsonb_build_object(
+            'title', 'Expertise & Fiabilité',
+            'description', 'Leader européen en équipements maritimes et portuaires, nous proposons une gamme complète de solutions certifiées pour tous types de navires et installations portuaires.',
+            'features', jsonb_build_array(
+              'Certification ISO 9001',
+              'Garantie 5 ans',
+              'Stock permanent',
+              'Livraison rapide'
+            ),
+            'stats', jsonb_build_array(
+              jsonb_build_object('number', '30+', 'label', 'Ans d''expérience'),
+              jsonb_build_object('number', '500+', 'label', 'Clients satisfaits'),
+              jsonb_build_object('number', '2000+', 'label', 'Produits disponibles'),
+              jsonb_build_object('number', '98%', 'label', 'Taux satisfaction')
+            )
+          )
+        )
+      ),
+      true,
+      387,
+      now()
+    );
+  END IF;
+END $$;
+
+-- Mini-site pour exposant 36m² (Advanced Port Systems)
+DO $$
+BEGIN
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'mini_sites') THEN
+    INSERT INTO mini_sites (
+      id,
+      exhibitor_id,
+      theme,
+      custom_colors,
+      sections,
+      published,
+      views,
+      last_updated
+    ) VALUES (
+      'a0000000-0000-0000-0000-000000000109',
+      'a0000000-0000-0000-0000-000000000009',
+      'professional',
+      jsonb_build_object(
+        'primaryColor', '#f59e0b',
+        'secondaryColor', '#d97706',
+        'accentColor', '#fbbf24',
+        'fontFamily', 'Inter'
+      ),
+      jsonb_build_array(
+        jsonb_build_object(
+          'type', 'hero',
+          'content', jsonb_build_object(
+            'title', 'Systèmes Automatisés & IA pour Ports',
+            'subtitle', 'Optimisation portuaire de nouvelle génération avec intelligence artificielle',
+            'ctaText', 'Demander une démo',
+            'ctaLink', '#contact'
+          )
+        ),
+        jsonb_build_object(
+          'type', 'about',
+          'content', jsonb_build_object(
+            'title', 'Technologie de Pointe',
+            'description', 'Advanced Port Systems combine IA, robotique et automation pour créer les ports du futur. Nos solutions augmentent la productivité jusqu''à 40% tout en réduisant les coûts opérationnels.',
+            'features', jsonb_build_array(
+              'IA & Machine Learning',
+              'Automatisation complète',
+              'Intégration système',
+              'ROI sous 18 mois'
+            ),
+            'stats', jsonb_build_array(
+              jsonb_build_object('number', '15+', 'label', 'Ports automatisés'),
+              jsonb_build_object('number', '40%', 'label', 'Gain productivité'),
+              jsonb_build_object('number', '60%', 'label', 'Réduction erreurs'),
+              jsonb_build_object('number', '$2M+', 'label', 'Économies moyennes')
+            )
+          )
+        )
+      ),
+      true,
+      523,
+      now()
+    );
+  END IF;
+END $$;
+
+-- ========================================
+-- 6. PRODUITS ET SOLUTIONS
+-- ========================================
+
+-- Produits pour StartUp Port Innovations (9m²)
+DO $$
+BEGIN
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'products') THEN
+    INSERT INTO products (
+      id,
+      exhibitor_id,
+      name,
+      description,
+      category,
+      price,
+      images,
+      features,
+      specifications,
+      featured
+    ) VALUES
+    (
+      'prod-0000-0000-0000-000000000001',
+      'a0000000-0000-0000-0000-000000000007',
+      'SmartPort Sensors Network',
+      'Réseau de capteurs IoT pour monitoring en temps réel des opérations portuaires. Surveillance température, humidité, mouvement, pression.',
+      'IoT & Capteurs',
+      '€15,000',
+      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%233b82f6" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="24" x="50%25" y="50%25" text-anchor="middle"%3ESmartPort Sensors%3C/text%3E%3C/svg%3E'],
+      ARRAY['100 capteurs sans fil', 'Autonomie 5 ans', 'Portée 5km', 'API REST complète', 'Dashboard web inclus'],
+      jsonb_build_object(
+        'Connectivité', 'LoRaWAN / NB-IoT',
+        'Alimentation', 'Batterie lithium 5 ans',
+        'Température', '-40°C à +85°C',
+        'Certification', 'IP68 - Étanche'
+      ),
+      true
+    ),
+    (
+      'prod-0000-0000-0000-000000000002',
+      'a0000000-0000-0000-0000-000000000007',
+      'PortAI Analytics Platform',
+      'Plateforme d''analyse prédictive avec IA pour optimiser flux de containers, prévenir pannes et maximiser efficacité.',
+      'Logiciel & IA',
+      '€8,500/mois',
+      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%231e40af" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="24" x="50%25" y="50%25" text-anchor="middle"%3EPortAI Analytics%3C/text%3E%3C/svg%3E'],
+      ARRAY['Prédictions en temps réel', 'Alertes intelligentes', 'Rapports automatisés', 'Intégration ERP', 'Support ML personnalisé'],
+      jsonb_build_object(
+        'Déploiement', 'Cloud / On-premise',
+        'Intégrations', 'API REST, Webhooks',
+        'Support', '24/7 - Multilingue',
+        'Formation', 'Incluse (2 jours)'
+      ),
+      true
+    ),
+    (
+      'prod-0000-0000-0000-000000000003',
+      'a0000000-0000-0000-0000-000000000007',
+      'Dock Management System',
+      'Système complet de gestion des quais avec planification automatique, suivi en temps réel et optimisation des emplacements.',
+      'Gestion & Planification',
+      '€12,000',
+      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%2360a5fa" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="24" x="50%25" y="50%25" text-anchor="middle"%3EDock Management%3C/text%3E%3C/svg%3E'],
+      ARRAY['Planification IA', 'Tracking GPS', 'Notifications SMS', 'Interface tactile', 'Rapports KPI'],
+      jsonb_build_object(
+        'Utilisateurs', 'Illimité',
+        'Quais gérés', 'Jusqu''à 50',
+        'Mobile', 'iOS / Android',
+        'Langue', 'FR/EN/ES/CN'
+      ),
+      false
+    );
+  END IF;
+END $$;
+
+-- Produits pour Maritime Equipment Co (18m²)
+DO $$
+BEGIN
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'products') THEN
+    INSERT INTO products (
+      id,
+      exhibitor_id,
+      name,
+      description,
+      category,
+      price,
+      images,
+      features,
+      specifications,
+      featured
+    ) VALUES
+    (
+      'prod-0000-0000-0000-000000000004',
+      'a0000000-0000-0000-0000-000000000008',
+      'Heavy Duty Marine Winch 50T',
+      'Treuil maritime industriel 50 tonnes, certification Lloyd''s Register. Construction acier inoxydable 316L pour environnements extrêmes.',
+      'Équipements de levage',
+      '€45,000',
+      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%2310b981" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="24" x="50%25" y="50%25" text-anchor="middle"%3EMarine Winch 50T%3C/text%3E%3C/svg%3E'],
+      ARRAY['Capacité 50 tonnes', 'Câble acier 500m', 'Moteur hydraulique', 'Certification Lloyd''s', 'Garantie 5 ans'],
+      jsonb_build_object(
+        'Capacité', '50,000 kg',
+        'Vitesse', '15 m/min',
+        'Alimentation', 'Hydraulique 350 bar',
+        'Matériau', 'Inox 316L'
+      ),
+      true
+    ),
+    (
+      'prod-0000-0000-0000-000000000005',
+      'a0000000-0000-0000-0000-000000000008',
+      'Port Bollard Series PRO',
+      'Bollard d''amarrage professionnel en fonte ductile, résistance 100T. Installation sur quai béton ou acier.',
+      'Amarrage & Sécurité',
+      '€3,200',
+      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23059669" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="24" x="50%25" y="50%25" text-anchor="middle"%3EPort Bollard PRO%3C/text%3E%3C/svg%3E'],
+      ARRAY['Résistance 100T', 'Fonte ductile GGG50', 'Revêtement époxy', 'Installation facile', 'Maintenance nulle'],
+      jsonb_build_object(
+        'Résistance', '100 tonnes',
+        'Hauteur', '800 mm',
+        'Poids', '450 kg',
+        'Norme', 'EN 795:2012'
+      ),
+      true
+    ),
+    (
+      'prod-0000-0000-0000-000000000006',
+      'a0000000-0000-0000-0000-000000000008',
+      'LED Navigation Light System',
+      'Système d''éclairage LED pour navigation maritime. Conforme COLREG, autonomie 10 ans, visibilité 10 miles nautiques.',
+      'Signalisation & Éclairage',
+      '€8,900',
+      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%2334d399" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="24" x="50%25" y="50%25" text-anchor="middle"%3ELED Navigation%3C/text%3E%3C/svg%3E'],
+      ARRAY['LED haute intensité', 'Autonomie 10 ans', 'Visibilité 10 NM', 'COLREG compliant', 'Solaire + batterie'],
+      jsonb_build_object(
+        'Portée', '10 miles nautiques',
+        'Alimentation', 'Solaire 80W + Li-Ion',
+        'Flash', 'Personnalisable',
+        'Certification', 'IALA / COLREG'
+      ),
+      false
+    ),
+    (
+      'prod-0000-0000-0000-000000000007',
+      'a0000000-0000-0000-0000-000000000008',
+      'Hydraulic Crane 20T',
+      'Grue hydraulique portuaire 20T, flèche télescopique 25m. Commande radio sans fil, système anti-collision intégré.',
+      'Équipements de levage',
+      '€125,000',
+      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%2310b981" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="22" x="50%25" y="50%25" text-anchor="middle"%3EHydraulic Crane 20T%3C/text%3E%3C/svg%3E'],
+      ARRAY['Capacité 20 tonnes', 'Flèche 25m', 'Commande radio', 'Anti-collision', 'Formation incluse'],
+      jsonb_build_object(
+        'Capacité', '20,000 kg',
+        'Portée max', '25 mètres',
+        'Rotation', '360° continu',
+        'Vitesse levage', '8 m/min'
+      ),
+      true
+    );
+  END IF;
+END $$;
+
+-- Produits pour Advanced Port Systems (36m²)
+DO $$
+BEGIN
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'products') THEN
+    INSERT INTO products (
+      id,
+      exhibitor_id,
+      name,
+      description,
+      category,
+      price,
+      images,
+      features,
+      specifications,
+      featured
+    ) VALUES
+    (
+      'prod-0000-0000-0000-000000000008',
+      'a0000000-0000-0000-0000-000000000009',
+      'AI Container Tracking System',
+      'Système de tracking intelligent avec vision par ordinateur et IA pour identification automatique, localisation et suivi en temps réel de tous les containers.',
+      'Automation & IA',
+      '€280,000',
+      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23f59e0b" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="20" x="50%25" y="50%25" text-anchor="middle"%3EAI Container Tracking%3C/text%3E%3C/svg%3E'],
+      ARRAY['Vision IA avancée', 'OCR automatique', 'Tracking GPS/RFID', 'Prédiction disponibilité', 'Tableau de bord temps réel'],
+      jsonb_build_object(
+        'Capacité', 'Illimité',
+        'Précision OCR', '99.8%',
+        'Temps réponse', '< 100ms',
+        'Cloud', 'AWS / Azure / GCP'
+      ),
+      true
+    ),
+    (
+      'prod-0000-0000-0000-000000000009',
+      'a0000000-0000-0000-0000-000000000009',
+      'Automated Stacking Crane (ASC)',
+      'Grue de gerbage automatisée avec navigation autonome, système anti-collision 3D et optimisation IA des emplacements.',
+      'Robotique Portuaire',
+      '€1,200,000',
+      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23d97706" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="24" x="50%25" y="50%25" text-anchor="middle"%3EASC System%3C/text%3E%3C/svg%3E'],
+      ARRAY['Navigation autonome', 'Anti-collision 3D', 'IA optimisation', 'Zéro émission', 'Productivité +45%'],
+      jsonb_build_object(
+        'Capacité levage', '65 tonnes',
+        'Hauteur empilage', '6 containers',
+        'Vitesse', '180 m/min',
+        'Alimentation', 'Électrique 400V'
+      ),
+      true
+    ),
+    (
+      'prod-0000-0000-0000-000000000010',
+      'a0000000-0000-0000-0000-000000000009',
+      'Port Operations Control Center',
+      'Centre de contrôle unifié avec mur d''écrans, logiciel de supervision temps réel, IA prédictive et gestion automatisée de l''ensemble des opérations.',
+      'Système de contrôle',
+      '€450,000',
+      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23fbbf24" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="22" x="50%25" y="50%25" text-anchor="middle"%3EControl Center%3C/text%3E%3C/svg%3E'],
+      ARRAY['Mur écrans 12x4K', 'Supervision temps réel', 'IA prédictive', 'Intégration complète', 'Formation intensive'],
+      jsonb_build_object(
+        'Écrans', '12x 55" 4K',
+        'Postes opérateurs', '8 postes ergonomiques',
+        'Redondance', 'Système N+1',
+        'Support', '24/7 avec astreinte'
+      ),
+      true
+    ),
+    (
+      'prod-0000-0000-0000-000000000011',
+      'a0000000-0000-0000-0000-000000000009',
+      'Smart Gate OCR System',
+      'Portique intelligent avec reconnaissance automatique plaques containers, pesage dynamique et contrôle conformité en moins de 20 secondes.',
+      'Contrôle d''accès',
+      '€95,000',
+      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23f59e0b" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="24" x="50%25" y="50%25" text-anchor="middle"%3ESmart Gate OCR%3C/text%3E%3C/svg%3E'],
+      ARRAY['OCR 360° containers', 'Pesage dynamique', 'Caméras 4K thermiques', 'RFID / Bluetooth', 'Passage < 20 secondes'],
+      jsonb_build_object(
+        'Débit', '200 camions/heure',
+        'Précision OCR', '99.9%',
+        'Caméras', '8x 4K + 2x thermiques',
+        'Intégration', 'TOS / ERP / Douanes'
+      ),
+      false
+    );
+  END IF;
+END $$;
+
+-- ========================================
+-- RÉSUMÉ DES DONNÉES AJOUTÉES
+-- ========================================
+
+DO $$
+BEGIN
+  RAISE NOTICE '
+========================================
+✅ DONNÉES COMPLÈTES AJOUTÉES
+========================================
+
+🏢 MINI-SITES CONFIGURÉS (3):
+  - StartUp Port Innovations (9m²) - 245 vues
+  - Maritime Equipment Co (18m²) - 387 vues  
+  - Advanced Port Systems (36m²) - 523 vues
+
+📦 PRODUITS AJOUTÉS (12):
+  - StartUp: 3 solutions IoT & IA
+  - Maritime Equipment: 4 équipements industriels
+  - Advanced Port: 4 systèmes automatisés
+
+✨ Contenu inclus:
+  - Sections Hero avec CTA
+  - Sections About avec features & stats
+  - Produits avec images, specs, prix
+  - Thèmes personnalisés par exposant
+
+========================================
+';
+END $$;
