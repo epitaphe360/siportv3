@@ -49,7 +49,7 @@ export const PartnerLeadsPage: React.FC = () => {
           id,
           created_at,
           status,
-          connected_user:users!connections_user_id_2_fkey(
+          addressee:users!connections_addressee_id_fkey(
             id,
             name,
             email,
@@ -57,14 +57,19 @@ export const PartnerLeadsPage: React.FC = () => {
             company
           )
         `)
-        .eq('user_id_1', user?.id)
+        .eq('requester_id', user?.id)
         .order('created_at', { ascending: false })
         .limit(50);
 
-      if (error) throw error;
-      setConnections(data || []);
+      if (error) {
+        console.error('Erreur chargement connexions:', error);
+        setConnections([]);
+      } else {
+        setConnections(data || []);
+      }
     } catch (error) {
       console.error('Erreur chargement connexions:', error);
+      setConnections([]);
     } finally {
       setLoading(false);
     }
@@ -79,10 +84,10 @@ export const PartnerLeadsPage: React.FC = () => {
     },
     recentLeads: connections.slice(0, 10).map(conn => ({
       id: conn.id,
-      company: conn.connected_user?.company || 'N/A',
-      contact: conn.connected_user?.name || 'Utilisateur',
-      position: conn.connected_user?.type || 'N/A',
-      sector: conn.connected_user?.type === 'exhibitor' ? 'Exposant' : conn.connected_user?.type === 'visitor' ? 'Visiteur' : 'Autre',
+      company: conn.addressee?.company || 'N/A',
+      contact: conn.addressee?.name || 'Utilisateur',
+      position: conn.addressee?.type || 'N/A',
+      sector: conn.addressee?.type === 'exhibitor' ? 'Exposant' : conn.addressee?.type === 'visitor' ? 'Visiteur' : 'Autre',
       value: 'N/A',
       status: conn.status === 'accepted' ? 'Connecté' : conn.status === 'pending' ? 'En attente' : 'Rejeté',
       lastContact: new Date(conn.created_at).toISOString().split('T')[0],

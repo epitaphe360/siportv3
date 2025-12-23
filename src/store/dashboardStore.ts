@@ -47,20 +47,32 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       };
 
       // Compter les vues de profil (si table profile_views existe)
-      const { count: profileViewsCount } = await supabase
-        .from('profile_views')
-        .select('*', { count: 'exact', head: true })
-        .eq('viewed_user_id', user.id);
-      
-      stats.profileViews = profileViewsCount || 0;
+      try {
+        const { count: profileViewsCount, error } = await supabase
+          .from('profile_views')
+          .select('*', { count: 'exact', head: true })
+          .eq('viewed_user_id', user.id);
+        
+        if (!error) {
+          stats.profileViews = profileViewsCount || 0;
+        }
+      } catch (err) {
+        console.log('Table profile_views non disponible');
+      }
 
       // Compter les connexions
-      const { count: connectionsCount } = await supabase
-        .from('connections')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id);
-      
-      stats.connections = connectionsCount || 0;
+      try {
+        const { count: connectionsCount, error } = await supabase
+          .from('connections')
+          .select('*', { count: 'exact', head: true })
+          .or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`);
+        
+        if (!error) {
+          stats.connections = connectionsCount || 0;
+        }
+      } catch (err) {
+        console.log('Erreur lors du chargement des connexions');
+      }
 
       // Compter les rendez-vous
       const { count: appointmentsCount } = await supabase
@@ -71,29 +83,57 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       stats.appointments = appointmentsCount || 0;
 
       // Compter les messages non lus
-      const { count: messagesCount } = await supabase
-        .from('messages')
-        .select('*', { count: 'exact', head: true })
-        .eq('receiver_id', user.id)
-        .eq('read', false);
-      
-      stats.messages = messagesCount || 0;
+      try {
+        const { data: conversations, error } = await supabase
+          .from('conversations')
+          .select('id')
+          .or(`participant_1.eq.${user.id},participant_2.eq.${user.id}`);
+        
+        if (!error && conversations) {
+          const conversationIds = conversations.map(c => c.id);
+          if (conversationIds.length > 0) {
+            const { count: messagesCount, error: msgError } = await supabase
+              .from('messages')
+              .select('*', { count: 'exact', head: true })
+              .in('conversation_id', conversationIds)
+              .not('read_by', 'cs', `{${user.id}}`);
+            
+            if (!msgError) {
+              stats.messages = messagesCount || 0;
+            }
+          }
+        }
+      } catch (err) {
+        console.log('Erreur lors du chargement des messages');
+      }
 
       // Compter les téléchargements de catalogue (si table downloads existe)
-      const { count: downloadsCount } = await supabase
-        .from('downloads')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id);
-      
-      stats.catalogDownloads = downloadsCount || 0;
+      try {
+        const { count: downloadsCount, error } = await supabase
+          .from('downloads')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id);
+        
+        if (!error) {
+          stats.catalogDownloads = downloadsCount || 0;
+        }
+      } catch (err) {
+        console.log('Table downloads non disponible');
+      }
 
       // Compter les vues du mini-site (si table minisite_views existe)
-      const { count: miniSiteViewsCount } = await supabase
-        .from('minisite_views')
-        .select('*', { count: 'exact', head: true })
-        .eq('exhibitor_id', user.id);
-      
-      stats.miniSiteViews = miniSiteViewsCount || 0;
+      try {
+        const { count: miniSiteViewsCount, error } = await supabase
+          .from('minisite_views')
+          .select('*', { count: 'exact', head: true })
+          .eq('exhibitor_id', user.id);
+        
+        if (!error) {
+          stats.miniSiteViews = miniSiteViewsCount || 0;
+        }
+      } catch (err) {
+        console.log('Table minisite_views non disponible');
+      }
 
       // Récupérer les activités récentes
       const { data: activities, error: activitiesError } = await supabase
