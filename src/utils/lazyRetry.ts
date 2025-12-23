@@ -12,21 +12,29 @@ export const lazyRetry = (componentImport: () => Promise<{ default: ComponentTyp
     );
 
     try {
-      const component = await componentImport();
-      window.localStorage.setItem('page-has-been-force-refreshed', 'false');
-      return component;
+      return await componentImport();
     } catch (error) {
-      console.error('Chunk load error detected:', error);
+      console.error('Lazy load error:', error);
       
-      if (!pageHasAlreadyBeenForceRefreshed) {
-        console.warn('Force refreshing page to fetch latest assets...');
-        // We force a refresh only once to avoid infinite loops
+      // Check if it's a chunk load error
+      const isChunkLoadError = 
+        error instanceof Error && 
+        (error.message.includes('fetch') || 
+         error.message.includes('Loading chunk') || 
+         error.message.includes('dynamically imported module'));
+
+      if (isChunkLoadError && !pageHasAlreadyBeenForceRefreshed) {
+        console.warn('Chunk load error detected. Force refreshing...');
         window.localStorage.setItem('page-has-been-force-refreshed', 'true');
-        window.location.reload();
+        
+        // Add a timestamp to bypass any potential intermediate caches
+        const url = new URL(window.location.href);
+        url.searchParams.set('t', Date.now().toString());
+        window.location.replace(url.toString());
+        
         return { default: () => null } as any;
       }
 
-      console.error('Page was already refreshed but error persists. Throwing error.');
       throw error;
     }
   });

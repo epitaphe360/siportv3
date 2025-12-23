@@ -14,6 +14,27 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// Global error handler for chunk load errors that might escape React.lazy
+window.addEventListener('error', (event) => {
+  const isChunkError = 
+    event.message.includes('Failed to fetch dynamically imported module') ||
+    event.message.includes('Loading chunk');
+    
+  if (isChunkError) {
+    const pageHasAlreadyBeenForceRefreshed = JSON.parse(
+      window.localStorage.getItem('page-has-been-force-refreshed') || 'false'
+    );
+    
+    if (!pageHasAlreadyBeenForceRefreshed) {
+      console.warn('Global chunk error detected. Force refreshing...');
+      window.localStorage.setItem('page-has-been-force-refreshed', 'true');
+      const url = new URL(window.location.href);
+      url.searchParams.set('t', Date.now().toString());
+      window.location.replace(url.toString());
+    }
+  }
+}, true);
+
 // Version check
 
 // Supporte les deux shortcodes: [siports_networking] et [siports_exhibitor_dashboard]
