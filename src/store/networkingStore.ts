@@ -312,9 +312,16 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
 
     try {
       const favorites = await SupabaseService.getUserFavorites(user.id);
-      set({ favorites });
+      if (!favorites || favorites.length === 0) {
+        // Friendly UI fallback: keep existing favorites but notify user if none
+        set({ favorites: [] });
+      } else {
+        set({ favorites });
+      }
     } catch (error) {
       console.error('Erreur lors du chargement des favoris:', error);
+      // Show a non-blocking notification to the user
+      try { const { toast } = await import('sonner'); toast?.error?.('Impossible de charger vos favoris pour le moment.'); } catch(e){}
     }
   },
 

@@ -2340,7 +2340,20 @@ export class SupabaseService {
       if (error) throw error;
       return data || [];
     } catch (error) {
-      console.error('Erreur lors de la récupération des favoris:', error);
+      // Log structured error for debugging
+      this.logSupabaseError('getUserFavorites', error);
+
+      // If the server returned 404 (table missing), return empty gracefully
+      try {
+        const status = (error && (error.status || error.code)) || null;
+        if (status === 404 || status === '404') {
+          console.warn('Table user_favorites non trouvée — retour d\'un tableau vide.');
+          return [];
+        }
+      } catch (e) {
+        // ignore
+      }
+
       return [];
     }
   }
@@ -2503,4 +2516,22 @@ export class SupabaseService {
   }
 
 }
+
+  // Helper: structured logging for Supabase errors
+  static logSupabaseError(context: string, error: any) {
+    try {
+      const structured = {
+        context,
+        message: error?.message || String(error),
+        code: error?.code || error?.status || null,
+        details: error?.details || error?.hint || null,
+        status: error?.status || null,
+        raw: error
+      };
+      // Log to console (could be extended to remote logging)
+      console.warn('Supabase Error:', structured);
+    } catch (e) {
+      console.warn('Supabase Error Logger failed', e);
+    }
+  }
 
