@@ -17,18 +17,18 @@ export interface AdminMetrics {
 }
 
 const defaultMetrics: AdminMetrics = {
-  totalUsers: 9,
-  activeUsers: 2,
-  totalExhibitors: 1,
-  totalPartners: 6,
-  totalVisitors: 4,
-  totalEvents: 6,
-  systemUptime: 99.8,
-  dataStorage: 2.4,
-  apiCalls: 125000,
-  avgResponseTime: 145,
+  totalUsers: 0,
+  activeUsers: 0,
+  totalExhibitors: 0,
+  totalPartners: 0,
+  totalVisitors: 0,
+  totalEvents: 0,
+  systemUptime: 99.9,
+  dataStorage: 0,
+  apiCalls: 0,
+  avgResponseTime: 0,
   pendingValidations: 0,
-  activeContracts: 1,
+  activeContracts: 0,
   contentModerations: 0
 };
 
@@ -75,6 +75,7 @@ export class AdminMetricsService {
       };
 
       await runCount('users', client.from('users').select('id', { count: 'exact', head: true }));
+      await runCount('activeUsers', client.from('users').select('id', { count: 'exact', head: true }).eq('status', 'active'));
       await runCount('exhibitors', client.from('exhibitors').select('id', { count: 'exact', head: true }).eq('verified', true));
       await runCount('partners', client.from('partners').select('id', { count: 'exact', head: true }));
       await runCount('visitors', client.from('users').select('id', { count: 'exact', head: true }).eq('type', 'visitor'));
@@ -85,7 +86,7 @@ export class AdminMetricsService {
 
       const metrics: AdminMetrics = {
         totalUsers: results['users'] ?? defaultMetrics.totalUsers,
-        activeUsers: Math.floor((results['users'] ?? defaultMetrics.totalUsers) * 0.2),
+        activeUsers: results['activeUsers'] ?? defaultMetrics.activeUsers,
         totalExhibitors: results['exhibitors'] ?? defaultMetrics.totalExhibitors,
         totalPartners: results['partners'] ?? defaultMetrics.totalPartners,
         totalVisitors: results['visitors'] ?? defaultMetrics.totalVisitors,

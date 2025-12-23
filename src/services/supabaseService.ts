@@ -1834,7 +1834,6 @@ export class SupabaseService {
       const { data, error } = await safeSupabase
         .from('users')
         .select('*')
-        .eq('status', 'active')
         .order('created_at', { ascending: false });
 
       if (error) {

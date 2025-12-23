@@ -50,6 +50,7 @@ app.get('/metrics', async (req, res) => {
   try {
     const [
       usersResult,
+      activeUsersResult,
       exhibitorsResult,
       partnersResult,
       visitorsResult,
@@ -59,6 +60,7 @@ app.get('/metrics', async (req, res) => {
       contentModerationsResult
     ] = await Promise.all([
       supabase.from('users').select('id', { count: 'exact', head: true }),
+      supabase.from('users').select('id', { count: 'exact', head: true }).eq('status', 'active'),
       supabase.from('exhibitors').select('id', { count: 'exact', head: true }).eq('verified', true),
       supabase.from('users').select('id', { count: 'exact', head: true }).eq('type', 'partner'),
       supabase.from('users').select('id', { count: 'exact', head: true }).eq('type', 'visitor'),
@@ -70,7 +72,7 @@ app.get('/metrics', async (req, res) => {
 
     const metrics = {
       totalUsers: usersResult.count || 0,
-      activeUsers: Math.floor((usersResult.count || 0) * 0.2),
+      activeUsers: activeUsersResult.count || 0,
       totalExhibitors: exhibitorsResult.count || 0,
       totalPartners: partnersResult.count || 0,
       totalVisitors: visitorsResult.count || 0,
