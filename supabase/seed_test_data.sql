@@ -843,7 +843,8 @@ BEGIN
             'title', 'Solutions IoT pour Ports Intelligents',
             'subtitle', 'Transformez votre port avec nos technologies de pointe',
             'ctaText', 'Découvrir nos solutions',
-            'ctaLink', '#products'
+            'ctaLink', '#products',
+            'backgroundImage', 'https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=1920&q=80'
           )
         ),
         jsonb_build_object(
@@ -862,6 +863,10 @@ BEGIN
               jsonb_build_object('number', '1000+', 'label', 'Capteurs déployés'),
               jsonb_build_object('number', '99.9%', 'label', 'Uptime garanti'),
               jsonb_build_object('number', '24/7', 'label', 'Support technique')
+            ),
+            'images', jsonb_build_array(
+              'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80',
+              'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80'
             )
           )
         )
@@ -903,7 +908,8 @@ BEGIN
             'title', 'Équipements Maritimes de Qualité Premium',
             'subtitle', 'Excellence française depuis 1995 - Fabricant certifié ISO 9001',
             'ctaText', 'Voir notre catalogue',
-            'ctaLink', '#products'
+            'ctaLink', '#products',
+            'backgroundImage', 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1920&q=80'
           )
         ),
         jsonb_build_object(
@@ -922,6 +928,10 @@ BEGIN
               jsonb_build_object('number', '500+', 'label', 'Clients satisfaits'),
               jsonb_build_object('number', '2000+', 'label', 'Produits disponibles'),
               jsonb_build_object('number', '98%', 'label', 'Taux satisfaction')
+            ),
+            'images', jsonb_build_array(
+              'https://images.unsplash.com/photo-1565008576549-57569a49371d?w=800&q=80',
+              'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800&q=80'
             )
           )
         )
@@ -963,7 +973,8 @@ BEGIN
             'title', 'Systèmes Automatisés & IA pour Ports',
             'subtitle', 'Optimisation portuaire de nouvelle génération avec intelligence artificielle',
             'ctaText', 'Demander une démo',
-            'ctaLink', '#contact'
+            'ctaLink', '#contact',
+            'backgroundImage', 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1920&q=80'
           )
         ),
         jsonb_build_object(
@@ -982,6 +993,10 @@ BEGIN
               jsonb_build_object('number', '40%', 'label', 'Gain productivité'),
               jsonb_build_object('number', '60%', 'label', 'Réduction erreurs'),
               jsonb_build_object('number', '$2M+', 'label', 'Économies moyennes')
+            ),
+            'images', jsonb_build_array(
+              'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80',
+              'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80'
             )
           )
         )
@@ -1020,7 +1035,7 @@ BEGIN
       'Réseau de capteurs IoT pour monitoring en temps réel des opérations portuaires. Surveillance température, humidité, mouvement, pression.',
       'IoT & Capteurs',
       '€15,000',
-      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%233b82f6" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="24" x="50%25" y="50%25" text-anchor="middle"%3ESmartPort Sensors%3C/text%3E%3C/svg%3E'],
+      ARRAY['https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80', 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&q=80'],
       ARRAY['100 capteurs sans fil', 'Autonomie 5 ans', 'Portée 5km', 'API REST complète', 'Dashboard web inclus'],
       jsonb_build_object(
         'Connectivité', 'LoRaWAN / NB-IoT',
@@ -1037,7 +1052,7 @@ BEGIN
       'Plateforme d''analyse prédictive avec IA pour optimiser flux de containers, prévenir pannes et maximiser efficacité.',
       'Logiciel & IA',
       '€8,500/mois',
-      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%231e40af" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="24" x="50%25" y="50%25" text-anchor="middle"%3EPortAI Analytics%3C/text%3E%3C/svg%3E'],
+      ARRAY['https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80', 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80'],
       ARRAY['Prédictions en temps réel', 'Alertes intelligentes', 'Rapports automatisés', 'Intégration ERP', 'Support ML personnalisé'],
       jsonb_build_object(
         'Déploiement', 'Cloud / On-premise',
@@ -1054,7 +1069,7 @@ BEGIN
       'Système complet de gestion des quais avec planification automatique, suivi en temps réel et optimisation des emplacements.',
       'Gestion & Planification',
       '€12,000',
-      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%2360a5fa" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="24" x="50%25" y="50%25" text-anchor="middle"%3EDock Management%3C/text%3E%3C/svg%3E'],
+      ARRAY['https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80', 'https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=600&q=80'],
       ARRAY['Planification IA', 'Tracking GPS', 'Notifications SMS', 'Interface tactile', 'Rapports KPI'],
       jsonb_build_object(
         'Utilisateurs', 'Illimité',
@@ -1090,7 +1105,7 @@ BEGIN
       'Treuil maritime industriel 50 tonnes, certification Lloyd''s Register. Construction acier inoxydable 316L pour environnements extrêmes.',
       'Équipements de levage',
       '€45,000',
-      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%2310b981" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="24" x="50%25" y="50%25" text-anchor="middle"%3EMarine Winch 50T%3C/text%3E%3C/svg%3E'],
+      ARRAY['https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&q=80', 'https://images.unsplash.com/photo-1565008576549-57569a49371d?w=600&q=80'],
       ARRAY['Capacité 50 tonnes', 'Câble acier 500m', 'Moteur hydraulique', 'Certification Lloyd''s', 'Garantie 5 ans'],
       jsonb_build_object(
         'Capacité', '50,000 kg',
@@ -1107,7 +1122,7 @@ BEGIN
       'Bollard d''amarrage professionnel en fonte ductile, résistance 100T. Installation sur quai béton ou acier.',
       'Amarrage & Sécurité',
       '€3,200',
-      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23059669" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="24" x="50%25" y="50%25" text-anchor="middle"%3EPort Bollard PRO%3C/text%3E%3C/svg%3E'],
+      ARRAY['https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&q=80', 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&q=80'],
       ARRAY['Résistance 100T', 'Fonte ductile GGG50', 'Revêtement époxy', 'Installation facile', 'Maintenance nulle'],
       jsonb_build_object(
         'Résistance', '100 tonnes',
@@ -1124,7 +1139,7 @@ BEGIN
       'Système d''éclairage LED pour navigation maritime. Conforme COLREG, autonomie 10 ans, visibilité 10 miles nautiques.',
       'Signalisation & Éclairage',
       '€8,900',
-      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%2334d399" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="24" x="50%25" y="50%25" text-anchor="middle"%3ELED Navigation%3C/text%3E%3C/svg%3E'],
+      ARRAY['https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=600&q=80', 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80'],
       ARRAY['LED haute intensité', 'Autonomie 10 ans', 'Visibilité 10 NM', 'COLREG compliant', 'Solaire + batterie'],
       jsonb_build_object(
         'Portée', '10 miles nautiques',
@@ -1141,7 +1156,7 @@ BEGIN
       'Grue hydraulique portuaire 20T, flèche télescopique 25m. Commande radio sans fil, système anti-collision intégré.',
       'Équipements de levage',
       '€125,000',
-      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%2310b981" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="22" x="50%25" y="50%25" text-anchor="middle"%3EHydraulic Crane 20T%3C/text%3E%3C/svg%3E'],
+      ARRAY['https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?w=600&q=80', 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&q=80'],
       ARRAY['Capacité 20 tonnes', 'Flèche 25m', 'Commande radio', 'Anti-collision', 'Formation incluse'],
       jsonb_build_object(
         'Capacité', '20,000 kg',
@@ -1177,7 +1192,7 @@ BEGIN
       'Système de tracking intelligent avec vision par ordinateur et IA pour identification automatique, localisation et suivi en temps réel de tous les containers.',
       'Automation & IA',
       '€280,000',
-      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23f59e0b" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="20" x="50%25" y="50%25" text-anchor="middle"%3EAI Container Tracking%3C/text%3E%3C/svg%3E'],
+      ARRAY['https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&q=80', 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&q=80'],
       ARRAY['Vision IA avancée', 'OCR automatique', 'Tracking GPS/RFID', 'Prédiction disponibilité', 'Tableau de bord temps réel'],
       jsonb_build_object(
         'Capacité', 'Illimité',
@@ -1194,7 +1209,7 @@ BEGIN
       'Grue de gerbage automatisée avec navigation autonome, système anti-collision 3D et optimisation IA des emplacements.',
       'Robotique Portuaire',
       '€1,200,000',
-      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23d97706" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="24" x="50%25" y="50%25" text-anchor="middle"%3EASC System%3C/text%3E%3C/svg%3E'],
+      ARRAY['https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?w=600&q=80', 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&q=80'],
       ARRAY['Navigation autonome', 'Anti-collision 3D', 'IA optimisation', 'Zéro émission', 'Productivité +45%'],
       jsonb_build_object(
         'Capacité levage', '65 tonnes',
@@ -1211,7 +1226,7 @@ BEGIN
       'Centre de contrôle unifié avec mur d''écrans, logiciel de supervision temps réel, IA prédictive et gestion automatisée de l''ensemble des opérations.',
       'Système de contrôle',
       '€450,000',
-      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23fbbf24" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="22" x="50%25" y="50%25" text-anchor="middle"%3EControl Center%3C/text%3E%3C/svg%3E'],
+      ARRAY['https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80', 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80'],
       ARRAY['Mur écrans 12x4K', 'Supervision temps réel', 'IA prédictive', 'Intégration complète', 'Formation intensive'],
       jsonb_build_object(
         'Écrans', '12x 55" 4K',
@@ -1228,7 +1243,7 @@ BEGIN
       'Portique intelligent avec reconnaissance automatique plaques containers, pesage dynamique et contrôle conformité en moins de 20 secondes.',
       'Contrôle d''accès',
       '€95,000',
-      ARRAY['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23f59e0b" width="400" height="300"/%3E%3Ctext fill="%23fff" font-size="24" x="50%25" y="50%25" text-anchor="middle"%3ESmart Gate OCR%3C/text%3E%3C/svg%3E'],
+      ARRAY['https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80', 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&q=80'],
       ARRAY['OCR 360° containers', 'Pesage dynamique', 'Caméras 4K thermiques', 'RFID / Bluetooth', 'Passage < 20 secondes'],
       jsonb_build_object(
         'Débit', '200 camions/heure',
