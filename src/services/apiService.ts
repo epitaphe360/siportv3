@@ -16,9 +16,9 @@ type AllowedTable = typeof ALLOWED_TABLES[number];
 const SAFE_COLUMNS: Record<AllowedTable, string> = {
   'exhibitors': 'id, company_name, category, sector, description, logo_url, website, verified, featured, contact_info',
   'products': 'id, exhibitor_id, name, description, category, images, specifications, price, featured',
-  'events': 'id, title, description, event_type, start_time, end_time, location, capacity, registered, category, virtual, featured, meeting_link, tags, speakers',
-  'news_articles': 'id, title, content, excerpt, category, tags, image_url, published, published_at, views',
-  'partners': 'id, name, type, category, description, logo_url, website, country, sector, verified, featured, sponsorship_level',
+  'events': 'id, title, description, type, start_time, end_time, location, capacity, registered, category, virtual, featured, meeting_link, tags',
+  'news_articles': 'id, title, content, excerpt, category, tags, image_url, published, published_at, views, featured',
+  'partners': 'id, company_name, partner_type, description, logo_url, website, sector, verified, featured, partnership_level',
   'mini_sites': 'id, exhibitor_id, theme, custom_colors, sections, published, views, last_updated',
 };
 

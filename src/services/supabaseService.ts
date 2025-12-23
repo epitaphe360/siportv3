@@ -265,28 +265,27 @@ export class SupabaseService {
       const { data, error } = await safeSupabase
         .from('partners')
         .select(
-          `id, name, type, category, sector, description, logo_url, website, country, verified, featured, sponsorship_level, contributions, established_year, employees`
+          `id, company_name, partner_type, sector, description, logo_url, website, contact_info, verified, featured, partnership_level, benefits, created_at`
         )
-        .order('type');
+        .order('partner_type');
 
       if (error) throw error;
 
       return (data || []).map((partner: any) => ({
         id: partner.id,
-        name: partner.name,
-        type: partner.type,
-        category: partner.category,
+        organizationName: partner.company_name,
+        partnerType: partner.partner_type,
+        sector: partner.sector,
         description: partner.description,
         logo: partner.logo_url,
         website: partner.website,
-        country: partner.country || '',
-        sector: partner.sector,
+        country: partner.contact_info?.country || '',
         verified: partner.verified,
         featured: partner.featured,
-        sponsorshipLevel: partner.sponsorship_level,
-        contributions: partner.contributions || [],
-        establishedYear: partner.established_year,
-        employees: partner.employees
+        sponsorshipLevel: partner.partnership_level,
+        contributions: partner.benefits || [],
+        createdAt: new Date(partner.created_at),
+        updatedAt: new Date(partner.created_at) // Fallback
       }));
     } catch (error) {
       // Log détaillé pour faciliter le debug (message, details, hint si disponibles)
@@ -388,7 +387,7 @@ export class SupabaseService {
 
   private static transformEventDBToEvent(eventDB: any): Event {
     // Valider les dates avant de les convertir
-    const startTime = eventDB.start_time || eventDB.start_date; // Fallback pour compatibilité
+    const startTime = eventDB.event_date || eventDB.start_time || eventDB.start_date; // Fallback pour compatibilité
     const endTime = eventDB.end_time || eventDB.end_date;
     
     if (!startTime) {
@@ -399,7 +398,7 @@ export class SupabaseService {
         id: eventDB.id,
         title: eventDB.title || 'Sans titre',
         description: eventDB.description || '',
-        type: eventDB.event_type || 'conference',
+        type: eventDB.type || eventDB.event_type || 'conference',
         startDate: defaultDate,
         endDate: defaultDate,
         capacity: eventDB.capacity,
@@ -407,7 +406,7 @@ export class SupabaseService {
         location: eventDB.location,
         pavilionId: eventDB.pavilion_id,
         organizerId: eventDB.organizer_id,
-        featured: eventDB.is_featured || false,
+        featured: eventDB.featured || eventDB.is_featured || false,
         imageUrl: eventDB.image_url,
         registrationUrl: eventDB.registration_url,
         tags: eventDB.tags || [],
@@ -428,7 +427,7 @@ export class SupabaseService {
         id: eventDB.id,
         title: eventDB.title || 'Sans titre',
         description: eventDB.description || '',
-        type: eventDB.event_type || 'conference',
+        type: eventDB.type || eventDB.event_type || 'conference',
         startDate: defaultDate,
         endDate: defaultDate,
         capacity: eventDB.capacity,
@@ -436,7 +435,7 @@ export class SupabaseService {
         location: eventDB.location,
         pavilionId: eventDB.pavilion_id,
         organizerId: eventDB.organizer_id,
-        featured: eventDB.is_featured || false,
+        featured: eventDB.featured || eventDB.is_featured || false,
         imageUrl: eventDB.image_url,
         registrationUrl: eventDB.registration_url,
         tags: eventDB.tags || [],
@@ -450,7 +449,7 @@ export class SupabaseService {
       id: eventDB.id,
       title: eventDB.title,
       description: eventDB.description,
-      type: eventDB.event_type,
+      type: eventDB.type || eventDB.event_type,
       startDate,
       endDate,
       capacity: eventDB.capacity,
@@ -458,7 +457,7 @@ export class SupabaseService {
       location: eventDB.location,
       pavilionId: eventDB.pavilion_id,
       organizerId: eventDB.organizer_id,
-      featured: eventDB.is_featured || false,
+      featured: eventDB.featured || eventDB.is_featured || false,
       imageUrl: eventDB.image_url,
       registrationUrl: eventDB.registration_url,
       tags: eventDB.tags || [],
@@ -673,17 +672,14 @@ export class SupabaseService {
         .insert([{
           title: eventData.title,
           description: eventData.description,
-          event_type: eventData.type,
+          type: eventData.type,
+          event_date: eventData.startDate.toISOString(),
           start_time: eventData.startDate.toISOString(),
-          end_date: eventData.endDate.toISOString(),
+          end_time: eventData.endDate.toISOString(),
           location: eventData.location,
-          pavilion_id: eventData.pavilionId,
-          organizer_id: eventData.organizerId,
           capacity: eventData.capacity,
           registered: 0,
-          is_featured: eventData.featured,
-          image_url: eventData.imageUrl,
-          registration_url: eventData.registrationUrl,
+          featured: eventData.featured,
           tags: eventData.tags || [],
         }])
         .select()
@@ -707,7 +703,7 @@ export class SupabaseService {
       const { data, error } = await safeSupabase
         .from('events')
         .select('*')
-        .order('start_time', { ascending: true });
+        .order('event_date', { ascending: true });
 
       if (error) throw error;
 
@@ -1311,8 +1307,8 @@ export class SupabaseService {
         .insert([{
           id: userId, // Utilise l'ID utilisateur comme ID partenaire
           user_id: userId,
-          name: userData.profile.company,
-          type: userData.profile.partnerType || 'institutional',
+          company_name: userData.profile.company,
+          partner_type: userData.profile.partnerType || 'institutional',
           sector: userData.profile.sector || 'services',
           description: userData.profile.description || '',
           website: userData.profile.website || ''
@@ -1941,16 +1937,16 @@ export class SupabaseService {
     // Mapper les données de la DB au format Partner
     return {
       id: data.id,
-      userId: data.user_id, // Might be undefined if not in DB
-      organizationName: data.name,
-      name: data.name,
-      partnerType: data.type,
-      type: data.type,
+      userId: data.user_id,
+      organizationName: data.company_name,
+      name: data.company_name,
+      partnerType: data.partner_type,
+      type: data.partner_type,
       sector: data.sector,
       description: data.description,
       website: data.website,
-      sponsorshipLevel: data.sponsorship_level,
-      contributions: data.contributions || [],
+      sponsorshipLevel: data.partnership_level,
+      contributions: data.benefits || [],
       logo: data.logo_url,
       verified: data.verified || false,
       featured: data.featured || false,

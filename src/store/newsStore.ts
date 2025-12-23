@@ -153,7 +153,7 @@ export const useNewsStore = create<NewsState>((set, get) => ({
       // Essayer de charger depuis Supabase
       const { data, error } = await supabase
         .from('news_articles')
-        .select('id, title, content, excerpt, category, tags, image_url, published, published_at, views')
+        .select('id, title, content, excerpt, category, tags, image_url, published, published_at, views, featured')
         .order('published_at', { ascending: false });
 
       if (error) {
@@ -174,7 +174,7 @@ export const useNewsStore = create<NewsState>((set, get) => ({
           publishedAt: new Date(article.published_at || ''),
           category: article.category,
           tags: article.tags || [],
-          featured: false,
+          featured: article.featured || false,
           image: article.image_url || undefined,
           readTime: Math.ceil(article.content.split(' ').length / 200),
           source: 'siports' as const,

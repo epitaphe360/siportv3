@@ -4,20 +4,19 @@ export interface Event {
   id: string;
   title: string;
   description: string;
-  event_type: 'conference' | 'workshop' | 'networking' | 'exhibition';
+  type: string;
+  event_date: string;
   start_time: string;
   end_time: string;
   location: string | null;
-  pavilion_id: string | null;
-  organizer_id: string | null;
   capacity: number | null;
   registered: number;
-  is_featured: boolean;
-  image_url: string | null;
-  registration_url: string | null;
+  featured: boolean;
+  category: string;
+  virtual: boolean;
+  meeting_link: string | null;
   tags: string[];
   created_at: string;
-  updated_at: string;
 }
 
 export class EventsService {
@@ -25,7 +24,7 @@ export class EventsService {
     const { data, error } = await supabase
       .from('events')
       .select('*')
-      .order('start_time', { ascending: false });
+      .order('event_date', { ascending: false });
 
     if (error) {
       console.error('Error fetching events:', error);
@@ -39,8 +38,8 @@ export class EventsService {
     const { data, error } = await supabase
       .from('events')
       .select('*')
-      .gte('start_time', new Date().toISOString())
-      .order('start_time', { ascending: true });
+      .gte('event_date', new Date().toISOString())
+      .order('event_date', { ascending: true });
 
     if (error) {
       console.error('Error fetching upcoming events:', error);
@@ -54,8 +53,8 @@ export class EventsService {
     const { data, error } = await supabase
       .from('events')
       .select('*')
-      .lt('end_date', new Date().toISOString())
-      .order('start_date', { ascending: false });
+      .lt('event_date', new Date().toISOString())
+      .order('event_date', { ascending: false });
 
     if (error) {
       console.error('Error fetching past events:', error);
@@ -69,9 +68,9 @@ export class EventsService {
     const { data, error } = await supabase
       .from('events')
       .select('*')
-      .eq('is_featured', true)
-      .gte('start_date', new Date().toISOString())
-      .order('start_date', { ascending: true });
+      .eq('featured', true)
+      .gte('event_date', new Date().toISOString())
+      .order('event_date', { ascending: true });
 
     if (error) {
       console.error('Error fetching featured events:', error);

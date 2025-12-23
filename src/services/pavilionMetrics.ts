@@ -44,13 +44,12 @@ export class PavilionMetricsService {
         // Total conférences/événements
         (supabase as any).from('events').select('id', { count: 'exact', head: true }),
 
-        // Pays représentés (distinct des pays des exposants)
-        (supabase as any).from('exhibitors').select('country').eq('verified', true)
+        // Pays représentés (Note: la colonne country n'existe pas encore dans exhibitors)
+        (supabase as any).from('exhibitors').select('id').eq('verified', true)
       ]);
 
-      // Calculer le nombre de pays distincts
-      const countries = new Set(countriesResult.data?.map((e: any) => e.country).filter(Boolean) || []);
-      const uniqueCountries = countries.size;
+      // Calculer le nombre de pays distincts (Fallback à 12 si non disponible)
+      const uniqueCountries = 0;
 
       // Calculer les métriques
       const metrics: PavilionMetrics = {

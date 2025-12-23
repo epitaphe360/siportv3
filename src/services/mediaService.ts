@@ -28,7 +28,7 @@ export class MediaService {
         .from('media_contents')
         .select(`
           *,
-          sponsor_partner:sponsor_partner_id(id, company_name:name, logo_url, tier:sponsorship_level)
+          sponsor_partner:sponsor_partner_id(id, company_name, logo_url, tier:partnership_level)
         `);
 
       // Filtres
@@ -99,7 +99,7 @@ export class MediaService {
         .from('media_contents')
         .select(`
           *,
-          sponsor_partner:sponsor_partner_id(id, company_name:name, logo_url, tier:sponsorship_level, website)
+          sponsor_partner:sponsor_partner_id(id, company_name, logo_url, tier:partnership_level, website)
         `)
         .eq('id', id)
         .single();
@@ -126,7 +126,7 @@ export class MediaService {
         }])
         .select(`
           *,
-          sponsor_partner:sponsor_partner_id(id, company_name:name, logo_url)
+          sponsor_partner:sponsor_partner_id(id, company_name, logo_url)
         `)
         .single();
 
@@ -151,7 +151,7 @@ export class MediaService {
         .eq('id', id)
         .select(`
           *,
-          sponsor_partner:sponsor_partner_id(id, company_name:name, logo_url)
+          sponsor_partner:sponsor_partner_id(id, company_name, logo_url)
         `)
         .single();
 
@@ -300,7 +300,10 @@ export class MediaService {
         .from('live_events')
         .select(`
           *,
-          media_content:media_contents(*)
+          media_content:media_contents(
+            *,
+            sponsor_partner:sponsor_partner_id(id, company_name, logo_url)
+          )
         `)
         .gte('event_date', new Date().toISOString())
         .in('status', ['scheduled', 'live'])
@@ -330,7 +333,10 @@ export class MediaService {
         }])
         .select(`
           *,
-          media_content:media_contents(*)
+          media_content:media_contents(
+            *,
+            sponsor_partner:sponsor_partner_id(id, company_name, logo_url)
+          )
         `)
         .single();
 
@@ -349,7 +355,10 @@ export class MediaService {
     try {
       const { data, error } = await supabase
         .from('media_contents')
-        .select('*')
+        .select(`
+          *,
+          sponsor_partner:sponsor_partner_id(id, company_name, logo_url)
+        `)
         .eq('sponsor_partner_id', partnerId)
         .eq('status', 'published')
         .order('published_at', { ascending: false });
@@ -381,7 +390,7 @@ export class MediaService {
         .from('media_contents')
         .select(`
           *,
-          sponsor_partner:sponsor_partner_id(id, company_name:name, logo_url)
+          sponsor_partner:sponsor_partner_id(id, company_name, logo_url)
         `)
         .eq('status', 'published')
         .order('views_count', { ascending: false })
@@ -404,7 +413,7 @@ export class MediaService {
         .from('media_contents')
         .select(`
           *,
-          sponsor_partner:sponsor_partner_id(id, company_name:name, logo_url)
+          sponsor_partner:sponsor_partner_id(id, company_name, logo_url)
         `)
         .eq('status', 'published')
         .order('published_at', { ascending: false })
@@ -435,7 +444,10 @@ export class MediaService {
       if (data && data.media_content_ids && data.media_content_ids.length > 0) {
         const { data: mediaContents } = await supabase
           .from('media_contents')
-          .select('*')
+          .select(`
+            *,
+            sponsor_partner:sponsor_partner_id(id, company_name, logo_url)
+          `)
           .in('id', data.media_content_ids);
 
         data.media_contents = mediaContents || [];
