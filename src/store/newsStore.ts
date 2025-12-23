@@ -247,11 +247,16 @@ export const useNewsStore = create<NewsState>((set, get) => ({
     const { articles, selectedCategory, searchTerm } = get();
     
     return articles.filter(article => {
+      const title = article.title || '';
+      const excerpt = article.excerpt || '';
+      const tags = article.tags || [];
+      const search = searchTerm.toLowerCase();
+
       const matchesCategory = !selectedCategory || article.category === selectedCategory;
       const matchesSearch = !searchTerm || 
-        article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        article.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        article.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+        title.toLowerCase().includes(search) ||
+        excerpt.toLowerCase().includes(search) ||
+        tags.some(tag => tag.toLowerCase().includes(search));
       
       return matchesCategory && matchesSearch;
     });

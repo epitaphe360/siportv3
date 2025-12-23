@@ -85,8 +85,12 @@ export default function PartnersPage() {
 
   useEffect(() => {
     const filtered = partners.filter(partner => {
-      const matchesSearch = partner.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           partner.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const name = partner.name || '';
+      const description = partner.description || '';
+      const search = searchTerm.toLowerCase();
+      
+      const matchesSearch = name.toLowerCase().includes(search) ||
+                           description.toLowerCase().includes(search);
       const matchesTier = !selectedTier || partner.partner_tier === selectedTier;
       const matchesCountry = !selectedCountry || partner.country === selectedCountry;
 
@@ -104,7 +108,7 @@ export default function PartnersPage() {
     { value: 'platinium', label: 'Platinium ($98k)' }
   ];
 
-  const countries = [...new Set(partners.map(p => p.country))];
+  const countries = [...new Set(partners.map(p => p.country).filter(Boolean))];
 
   return (
     <div className="min-h-screen bg-gray-50">

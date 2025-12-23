@@ -120,11 +120,17 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
     const filters = { ...get().filters, ...newFilters };
     
     const filtered = exhibitors.filter(exhibitor => {
+      const sector = exhibitor.sector || '';
+      const companyName = exhibitor.companyName || '';
+      const description = exhibitor.description || '';
+      const search = filters.search.toLowerCase();
+      const filterSector = filters.sector.toLowerCase();
+
       const matchesCategory = !filters.category || exhibitor.category === filters.category;
-      const matchesSector = !filters.sector || exhibitor.sector.toLowerCase().includes(filters.sector.toLowerCase());
+      const matchesSector = !filters.sector || sector.toLowerCase().includes(filterSector);
       const matchesSearch = !filters.search || 
-        exhibitor.companyName.toLowerCase().includes(filters.search.toLowerCase()) ||
-        exhibitor.description.toLowerCase().includes(filters.search.toLowerCase());
+        companyName.toLowerCase().includes(search) ||
+        description.toLowerCase().includes(search);
       
       return matchesCategory && matchesSector && matchesSearch;
     });

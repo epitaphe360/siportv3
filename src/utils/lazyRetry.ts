@@ -16,15 +16,17 @@ export const lazyRetry = (componentImport: () => Promise<{ default: ComponentTyp
       window.localStorage.setItem('page-has-been-force-refreshed', 'false');
       return component;
     } catch (error) {
+      console.error('Chunk load error detected:', error);
+      
       if (!pageHasAlreadyBeenForceRefreshed) {
-        // Assuming that the error is a "chunk load error"
+        console.warn('Force refreshing page to fetch latest assets...');
         // We force a refresh only once to avoid infinite loops
         window.localStorage.setItem('page-has-been-force-refreshed', 'true');
         window.location.reload();
         return { default: () => null } as any;
       }
 
-      // If we already refreshed and it still fails, throw the error
+      console.error('Page was already refreshed but error persists. Throwing error.');
       throw error;
     }
   });

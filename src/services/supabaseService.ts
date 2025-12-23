@@ -273,17 +273,19 @@ export class SupabaseService {
 
       return (data || []).map((partner: any) => ({
         id: partner.id,
-        organizationName: partner.company_name,
-        partnerType: partner.partner_type,
+        name: partner.company_name,
+        partner_tier: partner.partnership_level,
+        category: partner.partner_type,
         sector: partner.sector,
-        description: partner.description,
+        description: partner.description || '',
         logo: partner.logo_url,
         website: partner.website,
         country: partner.contact_info?.country || '',
         verified: partner.verified,
         featured: partner.featured,
-        sponsorshipLevel: partner.partnership_level,
         contributions: partner.benefits || [],
+        establishedYear: partner.established_year || 2024,
+        employees: partner.employees || '1-10',
         createdAt: new Date(partner.created_at),
         updatedAt: new Date(partner.created_at) // Fallback
       }));
