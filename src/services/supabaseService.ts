@@ -2200,19 +2200,38 @@ export class SupabaseService {
       const targetUserId = userId || user?.id;
       if (!targetUserId) return [];
 
+      // Avoid complex nested selects which can fail if relationships are not configured.
+      // Instead fetch connections, then fetch related users and merge locally.
       const { data, error } = await safeSupabase
         .from('connections')
-        .select(`
-          *,
-          requester:requester_id(id, name, email, type, profile),
-          addressee:addressee_id(id, name, email, type, profile)
-        `)
+        .select('id, requester_id, addressee_id, status, created_at')
         .or(`requester_id.eq.${targetUserId},addressee_id.eq.${targetUserId}`)
         .eq('status', 'accepted')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      const rows = data || [];
+
+      const userIds = Array.from(new Set(rows.flatMap((r: any) => [r.requester_id, r.addressee_id]).filter(Boolean)));
+      if (userIds.length === 0) return [];
+
+      const { data: usersData, error: usersError } = await safeSupabase
+        .from('users')
+        .select('id, name, email, type, profile')
+        .in('id', userIds);
+
+      if (usersError) throw usersError;
+
+      const usersMap: Record<string, any> = (usersData || []).reduce((acc: any, u: any) => {
+        acc[u.id] = this.transformUserDBToUser(u);
+        return acc;
+      }, {});
+
+      return rows.map((r: any) => ({
+        ...r,
+        requester: usersMap[r.requester_id] || null,
+        addressee: usersMap[r.addressee_id] || null
+      }));
     } catch (error) {
       console.error('Erreur lors de la récupération des connexions:', error);
       return [];
@@ -2338,18 +2357,35 @@ export class SupabaseService {
       const targetUserId = userId || user?.id;
       if (!targetUserId) return [];
 
+      // Simplified fetch: get pending connection rows then enrich with requester profiles
       const { data, error } = await safeSupabase
         .from('connections')
-        .select(`
-          *,
-          requester:requester_id(id, name, email, type, profile)
-        `)
+        .select('id, requester_id, addressee_id, status, created_at, message')
         .eq('addressee_id', targetUserId)
         .eq('status', 'pending')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      const rows = data || [];
+      const requesterIds = Array.from(new Set(rows.map((r: any) => r.requester_id).filter(Boolean)));
+      if (requesterIds.length === 0) return rows;
+
+      const { data: usersData, error: usersError } = await safeSupabase
+        .from('users')
+        .select('id, name, email, type, profile')
+        .in('id', requesterIds);
+
+      if (usersError) throw usersError;
+
+      const usersMap: Record<string, any> = (usersData || []).reduce((acc: any, u: any) => {
+        acc[u.id] = this.transformUserDBToUser(u);
+        return acc;
+      }, {});
+
+      return rows.map((r: any) => ({
+        ...r,
+        requester: usersMap[r.requester_id] || null
+      }));
     } catch (error) {
       console.error('Erreur lors de la récupération des demandes en attente:', error);
       return [];
