@@ -156,6 +156,9 @@ export default function MiniSitePreview() {
   const heroSection = getSection('hero');
   const aboutSection = getSection('about');
   const contactSection = getSection('contact');
+  
+  // Fallback: Si pas de sections, créer des sections par défaut avec les données de l'exposant
+  const hasConfiguredSections = miniSiteData?.sections && miniSiteData.sections.length > 0;
 
   // Loading state - Premium loading screen
   if (isLoading) {
@@ -303,29 +306,28 @@ export default function MiniSitePreview() {
       </motion.div>
 
       {/* Hero Section - Immersive */}
-      {heroSection && (
-        <section className="relative min-h-[100vh] flex items-center justify-center overflow-hidden">
-          {/* Background with parallax */}
-          <motion.div 
-            style={{ y: heroY }}
-            className="absolute inset-0"
-          >
-            {heroSection.content?.backgroundImage ? (
-              <>
-                <div 
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{ backgroundImage: `url(${heroSection.content.backgroundImage})` }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
-              </>
-            ) : (
+      <section className="relative min-h-[100vh] flex items-center justify-center overflow-hidden">
+        {/* Background with parallax */}
+        <motion.div 
+          style={{ y: heroY }}
+          className="absolute inset-0"
+        >
+          {heroSection?.content?.backgroundImage ? (
+            <>
               <div 
-                className="absolute inset-0"
-                style={{ 
-                  background: `linear-gradient(135deg, ${theme.primaryColor} 0%, ${theme.secondaryColor} 50%, ${theme.accentColor} 100%)` 
-                }}
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url(${heroSection.content.backgroundImage})` }}
               />
-            )}
+              <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
+            </>
+          ) : (
+            <div 
+              className="absolute inset-0"
+              style={{ 
+                background: `linear-gradient(135deg, ${theme.primaryColor} 0%, ${theme.secondaryColor} 50%, ${theme.accentColor} 100%)` 
+              }}
+            />
+          )}
             
             {/* Animated shapes */}
             <div className="absolute inset-0 overflow-hidden">
@@ -397,7 +399,7 @@ export default function MiniSitePreview() {
               className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
               style={{ textShadow: '0 4px 30px rgba(0,0,0,0.3)' }}
             >
-              {heroSection.content?.title || exhibitorData.company_name}
+              {heroSection?.content?.title || exhibitorData.company_name}
             </motion.h1>
 
             <motion.p
@@ -406,7 +408,7 @@ export default function MiniSitePreview() {
               transition={{ delay: 0.5, duration: 0.8 }}
               className="text-xl md:text-2xl mb-10 text-white/90 max-w-3xl mx-auto leading-relaxed"
             >
-              {heroSection.content?.subtitle || exhibitorData.description}
+              {heroSection?.content?.subtitle || exhibitorData.description || 'Découvrez nos solutions innovantes pour l\'industrie maritime'}
             </motion.p>
 
             <motion.div
@@ -415,17 +417,22 @@ export default function MiniSitePreview() {
               transition={{ delay: 0.6, duration: 0.8 }}
               className="flex flex-col sm:flex-row gap-4 justify-center"
             >
-              {heroSection.content?.ctaText && (
+              {(heroSection?.content?.ctaText || !hasConfiguredSections) && (
                 <Button
                   size="lg"
                   className="text-lg px-8 py-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-105"
                   style={{ backgroundColor: theme.accentColor }}
                   onClick={() => {
-                    const element = document.querySelector(heroSection.content.ctaLink || '#products');
-                    element?.scrollIntoView({ behavior: 'smooth' });
+                    const target = heroSection?.content?.ctaLink || '#products';
+                    const element = document.querySelector(target);
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                      document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
+                    }
                   }}
                 >
-                  {heroSection.content.ctaText}
+                  {heroSection?.content?.ctaText || 'Découvrir nos solutions'}
                 </Button>
               )}
               <Button
@@ -454,7 +461,10 @@ export default function MiniSitePreview() {
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
               className="text-white/60 flex flex-col items-center cursor-pointer"
-              onClick={() => document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => {
+                const target = hasConfiguredSections ? '#about' : '#contact';
+                document.querySelector(target)?.scrollIntoView({ behavior: 'smooth' });
+              }}
             >
               <span className="text-sm mb-2">Découvrir</span>
               <ChevronDown className="h-6 w-6" />
@@ -464,37 +474,56 @@ export default function MiniSitePreview() {
       )}
 
       {/* About Section - Modern Design */}
-      {aboutSection && (
-        <section id="about" className="py-24 bg-white relative overflow-hidden">
-          {/* Decorative elements */}
-          <div className="absolute top-0 right-0 w-96 h-96 opacity-5" style={{ background: `radial-gradient(circle, ${theme.primaryColor} 0%, transparent 70%)` }} />
-          <div className="absolute bottom-0 left-0 w-96 h-96 opacity-5" style={{ background: `radial-gradient(circle, ${theme.secondaryColor} 0%, transparent 70%)` }} />
-          
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-100px" }}
-            >
-              {/* Section Header */}
-              <motion.div variants={itemVariants} className="text-center mb-16">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-sm font-medium mb-4">
-                  <Building2 className="h-4 w-4" />
-                  À propos de nous
-                </div>
-                <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ color: theme.primaryColor }}>
-                  {aboutSection.content?.title || 'Notre Histoire'}
-                </h2>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                  {aboutSection.content?.description || exhibitorData.description}
-                </p>
-              </motion.div>
+      <section id="about" className="py-24 bg-white relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 opacity-5" style={{ background: `radial-gradient(circle, ${theme.primaryColor} 0%, transparent 70%)` }} />
+        <div className="absolute bottom-0 left-0 w-96 h-96 opacity-5" style={{ background: `radial-gradient(circle, ${theme.secondaryColor} 0%, transparent 70%)` }} />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            {/* Section Header */}
+            <motion.div variants={itemVariants} className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-sm font-medium mb-4">
+                <Building2 className="h-4 w-4" />
+                À propos de nous
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ color: theme.primaryColor }}>
+                {aboutSection?.content?.title || 'Notre Histoire'}
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                {aboutSection?.content?.description || exhibitorData.description || 'Nous sommes fiers de participer à SIPORTS 2026 et de présenter nos solutions innovantes.'}
+              </p>
+            </motion.div>
 
-              {/* Features Grid - Modern Cards */}
-              {aboutSection.content?.features && aboutSection.content.features.length > 0 && (
-                <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            {/* Features Grid - Modern Cards */}
+            {(aboutSection?.content?.features && aboutSection.content.features.length > 0) ? (
+              <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                   {aboutSection.content.features.map((feature: string, index: number) => (
+                    <motion.div
+                      key={index}
+                      whileHover={{ y: -8, scale: 1.02 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      <Card className="p-6 h-full bg-gradient-to-br from-white to-gray-50 border-0 shadow-lg hover:shadow-xl transition-all group">
+                        <div 
+                          className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110"
+                          style={{ backgroundColor: `${theme.accentColor}15` }}
+                        >
+                          <CheckCircle2 className="h-7 w-7" style={{ color: theme.accentColor }} />
+                        </div>
+                        <h3 className="font-bold text-gray-900 text-lg">{feature}</h3>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              ) : !hasConfiguredSections && (
+                <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                  {['Qualité Premium', 'Service Client 24/7', 'Innovation Continue', 'Expertise Reconnue'].map((feature: string, index: number) => (
                     <motion.div
                       key={index}
                       whileHover={{ y: -8, scale: 1.02 }}
@@ -515,7 +544,7 @@ export default function MiniSitePreview() {
               )}
 
               {/* Stats - Impressive Display */}
-              {aboutSection.content?.stats && aboutSection.content.stats.length > 0 && (
+              {aboutSection?.content?.stats && aboutSection.content.stats.length > 0 && (
                 <motion.div 
                   variants={itemVariants}
                   className="rounded-3xl p-8 md:p-12"
@@ -546,7 +575,7 @@ export default function MiniSitePreview() {
             </motion.div>
           </div>
         </section>
-      )}
+      )
 
       {/* Products Section - Premium Grid */}
       {products.length > 0 && (
