@@ -112,7 +112,12 @@ export default function DigitalBadge() {
 
   // Obtenir les informations de niveau d'accès
   const accessKey = `${payload.userType}_${payload.level}` as keyof typeof ACCESS_LEVELS;
-  const accessLevel = ACCESS_LEVELS[accessKey];
+  const accessLevel = ACCESS_LEVELS[accessKey] || {
+    color: '#CCCCCC',
+    displayName: 'Niveau inconnu',
+    zones: [],
+    events: []
+  };
   const isExpiring = secondsRemaining <= 10;
   const progressPercent = (secondsRemaining / 60) * 100;
 
