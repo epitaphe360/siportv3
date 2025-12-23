@@ -4,6 +4,16 @@ import App from './App';
 import './index.css';
 import { BrowserRouter as Router } from 'react-router-dom';
 
+// Kill any existing service worker that might be caching old assets
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    for (const registration of registrations) {
+      registration.unregister();
+      console.log('Service Worker unregistered');
+    }
+  });
+}
+
 // Version check
 
 // Supporte les deux shortcodes: [siports_networking] et [siports_exhibitor_dashboard]
