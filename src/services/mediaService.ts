@@ -1,6 +1,7 @@
 /**
  * Service pour gérer les contenus médias
  * Webinaires, Podcasts, Capsules vidéo, Live Studio, etc.
+ * Updated: 2024-12-22 - Force redeploy
  */
 
 import { supabase } from '../lib/supabase';
