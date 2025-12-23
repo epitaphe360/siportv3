@@ -16,9 +16,12 @@ if ('serviceWorker' in navigator) {
 
 // Global error handler for chunk load errors that might escape React.lazy
 window.addEventListener('error', (event) => {
+  const errorMessage = event.message || (event.error && event.error.message) || '';
   const isChunkError = 
-    event.message.includes('Failed to fetch dynamically imported module') ||
-    event.message.includes('Loading chunk');
+    errorMessage.includes('Failed to fetch dynamically imported module') ||
+    errorMessage.includes('Loading chunk') ||
+    errorMessage.includes('Unexpected token') || // Sometimes happens if HTML is returned instead of JS
+    (event.error && event.error.name === 'ChunkLoadError');
     
   if (isChunkError) {
     const pageHasAlreadyBeenForceRefreshed = JSON.parse(
@@ -34,6 +37,24 @@ window.addEventListener('error', (event) => {
     }
   }
 }, true);
+
+// Handle unhandled promise rejections (dynamic imports are promises)
+window.addEventListener('unhandledrejection', (event) => {
+  const errorMessage = (event.reason && event.reason.message) || String(event.reason || '');
+  if (errorMessage.includes('Failed to fetch') || errorMessage.includes('dynamically imported module')) {
+    const pageHasAlreadyBeenForceRefreshed = JSON.parse(
+      window.localStorage.getItem('page-has-been-force-refreshed') || 'false'
+    );
+    
+    if (!pageHasAlreadyBeenForceRefreshed) {
+      console.warn('Unhandled chunk rejection detected. Force refreshing...');
+      window.localStorage.setItem('page-has-been-force-refreshed', 'true');
+      const url = new URL(window.location.href);
+      url.searchParams.set('t', Date.now().toString());
+      window.location.replace(url.toString());
+    }
+  }
+});
 
 // Version check
 

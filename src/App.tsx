@@ -136,9 +136,6 @@ const App = () => {
 
   // Initialize auth from Supabase session on app start
   React.useEffect(() => {
-    // Clear the force refresh flag once the app has successfully mounted
-    window.localStorage.setItem('page-has-been-force-refreshed', 'false');
-    
     // Run async init without blocking
     initializeAuth().catch(err => {
       console.error('Erreur initialisation auth:', err);

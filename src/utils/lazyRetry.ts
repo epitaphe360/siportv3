@@ -12,29 +12,29 @@ export const lazyRetry = (componentImport: () => Promise<{ default: ComponentTyp
     );
 
     try {
-      return await componentImport();
+      const component = await componentImport();
+      // Reset the flag on successful load
+      window.localStorage.setItem('page-has-been-force-refreshed', 'false');
+      return component;
     } catch (error) {
       console.error('Lazy load error:', error);
       
-      // Check if it's a chunk load error
-      const isChunkLoadError = 
-        error instanceof Error && 
-        (error.message.includes('fetch') || 
-         error.message.includes('Loading chunk') || 
-         error.message.includes('dynamically imported module'));
-
-      if (isChunkLoadError && !pageHasAlreadyBeenForceRefreshed) {
-        console.warn('Chunk load error detected. Force refreshing...');
+      // In production, any error during dynamic import is likely a chunk load error
+      if (!pageHasAlreadyBeenForceRefreshed) {
+        console.warn('Chunk load error detected. Force refreshing page...');
         window.localStorage.setItem('page-has-been-force-refreshed', 'true');
         
-        // Add a timestamp to bypass any potential intermediate caches
+        // Use location.replace with a cache-busting timestamp
         const url = new URL(window.location.href);
         url.searchParams.set('t', Date.now().toString());
         window.location.replace(url.toString());
         
+        // Return a dummy component while the page reloads
         return { default: () => null } as any;
       }
 
+      // If we already refreshed and it still fails, it might be a real error
+      console.error('Page was already refreshed but error persists. Throwing error.');
       throw error;
     }
   });
