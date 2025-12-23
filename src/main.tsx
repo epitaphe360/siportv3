@@ -35,7 +35,7 @@ const mount = (el: Element) => {
   isMounted = true;
   ReactDOM.createRoot(el as HTMLElement).render(
     <React.StrictMode>
-      <Router>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <App />
       </Router>
     </React.StrictMode>

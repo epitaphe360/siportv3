@@ -8,36 +8,36 @@ import { SupabaseService } from '../services/supabaseService';
  */
 export async function initializeAuth() {
   try {
-    console.log('🔑 Initialisation de l''authentification...');
+    console.log('[AUTH] Initialisation de authentification...');
     
-    // CRITICAL: Vérifier et nettoyer le localStorage si des données invalides
+    // CRITICAL: Verifier et nettoyer le localStorage si donnees invalides
     const storedAuth = localStorage.getItem('siport-auth-storage');
     if (storedAuth) {
       try {
         const parsed = JSON.parse(storedAuth);
-        // Si le store contient un admin mais pas de session Supabase active, c'est suspect
+        // Si le store contient un admin mais pas de session Supabase active, suspect
         if (parsed.state?.user?.type === 'admin') {
-          console.warn('⚠️ Détection d''un admin en localStorage, vérification Supabase...');
+          console.warn('[AUTH] Detection admin en localStorage, verification Supabase...');
         }
       } catch (e) {
-        console.error('❌ localStorage corrompu, nettoyage...');
+        console.error('[AUTH] localStorage corrompu, nettoyage...');
         localStorage.removeItem('siport-auth-storage');
       }
     }
     
     if (!supabase) {
-      console.warn('⚠️ Supabase non configuré');
+      console.warn('[AUTH] Supabase non configure');
       return;
     }
 
-    // Check if there's an active Supabase session
+    // Check if there is an active Supabase session
     const { data: { session }, error } = await supabase.auth.getSession();
 
     if (error) {
-      console.error('❌ Erreur lors de la vérification de session:', error);
-      // En cas d'erreur, nettoyer le store pour éviter les sessions fantômes
+      console.error('[AUTH] Erreur verification session:', error);
+      // En cas erreur, nettoyer le store pour eviter les sessions fantomes
       if (useAuthStore.getState().isAuthenticated) {
-        console.warn('⚠️ Erreur session Supabase, nettoyage du store...');
+        console.warn('[AUTH] Erreur session Supabase, nettoyage du store...');
         useAuthStore.getState().logout();
       }
       return;
@@ -46,12 +46,12 @@ export async function initializeAuth() {
     if (!session?.user) {
       // No active session
       // CRITICAL FIX: If store thinks we are logged in, but Supabase says no, we must logout
-      // This prevents "ghost" sessions where localStorage has data but the token is invalid
+      // This prevents ghost sessions where localStorage has data but the token is invalid
       if (useAuthStore.getState().isAuthenticated) {
-        console.warn('⚠️ Session invalide ou expirée détectée au démarrage, nettoyage du store...');
+        console.warn('[AUTH] Session invalide ou expiree detectee au demarrage, nettoyage du store...');
         useAuthStore.getState().logout();
       }
-      console.log('ℹ️ Aucune session active');
+      console.log('[AUTH] Aucune session active');
       return;
     }
 
@@ -59,9 +59,9 @@ export async function initializeAuth() {
     const userProfile = await SupabaseService.getUserByEmail(session.user.email!);
 
     if (userProfile) {
-      // CRITICAL: Vérification supplémentaire pour les admins
+      // CRITICAL: Verification supplementaire pour les admins
       if (userProfile.type === 'admin') {
-        // Vérifier que l'utilisateur est réellement admin dans la DB
+        // Verifier que utilisateur est reellement admin dans la DB
         const { data: dbUser } = await supabase
           .from('users')
           .select('type, email')
@@ -69,11 +69,11 @@ export async function initializeAuth() {
           .single();
           
         if (!dbUser || dbUser.type !== 'admin') {
-          console.error('❌ Tentative de connexion admin non autorisée!');
+          console.error('[AUTH] Tentative de connexion admin non autorisee!');
           useAuthStore.getState().logout();
           return;
         }
-        console.warn('👑 Admin authentifié:', dbUser.email);
+        console.warn('[AUTH] Admin authentifie:', dbUser.email);
       }
       
       // Restore auth state in store
@@ -84,14 +84,14 @@ export async function initializeAuth() {
         isLoading: false
       });
 
-      console.log('✅ Session restaurée:', userProfile.email, '- Type:', userProfile.type);
+      console.log('[AUTH] Session restauree:', userProfile.email, '- Type:', userProfile.type);
     } else {
-      console.warn('⚠️ Profil utilisateur introuvable, déconnexion...');
+      console.warn('[AUTH] Profil utilisateur introuvable, deconnexion...');
       useAuthStore.getState().logout();
     }
   } catch (error) {
-    console.error('❌ Erreur initialisation auth:', error);
-    // En cas d'erreur fatale, nettoyer le store
+    console.error('[AUTH] Erreur initialisation auth:', error);
+    // En cas erreur fatale, nettoyer le store
     useAuthStore.getState().logout();
   }
 }

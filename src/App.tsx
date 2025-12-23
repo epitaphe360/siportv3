@@ -19,7 +19,7 @@ const DashboardPage = lazyRetry(() => import('./components/dashboard/DashboardPa
 const EventsPage = lazyRetry(() => import('./components/events/EventsPage'));
 const ChatInterface = lazyRetry(() => import('./components/chat/ChatInterface'));
 const AppointmentCalendar = lazyRetry(() => import('./components/appointments/AppointmentCalendar'));
-const MiniSitePreview = lazyRetry(() => import('./components/minisite/MiniSitePreview'));
+const MiniSitePreview = lazyRetry(() => import('./components/minisite/MiniSitePreviewSimple'));
 const ExhibitorDetailPage = lazyRetry(() => import('./pages/ExhibitorDetailPage'));
 const ProfileEdit = lazyRetry(() => import('./pages/exhibitor/ProfileEdit'));
 const ActivityPage = lazyRetry(() => import('./pages/admin/ActivityPage'));

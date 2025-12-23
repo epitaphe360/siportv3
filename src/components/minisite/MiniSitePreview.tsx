@@ -71,6 +71,49 @@ interface ExhibitorData {
   };
 }
 
+// Composant pour gérer les images avec fallback
+const ImageWithFallback = ({ 
+  src, 
+  alt, 
+  className, 
+  fallbackClassName,
+  fallbackIcon: FallbackIcon = Building2 
+}: { 
+  src?: string; 
+  alt: string; 
+  className?: string; 
+  fallbackClassName?: string;
+  fallbackIcon?: React.ComponentType<{ className?: string }>;
+}) => {
+  const [error, setError] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+
+  if (!src || error) {
+    return (
+      <div className={fallbackClassName || className}>
+        <FallbackIcon className="h-8 w-8 text-gray-400" />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {loading && (
+        <div className={fallbackClassName || className}>
+          <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+        </div>
+      )}
+      <img
+        src={src}
+        alt={alt}
+        className={`${className} ${loading ? 'hidden' : ''}`}
+        onError={() => setError(true)}
+        onLoad={() => setLoading(false)}
+      />
+    </>
+  );
+};
+
 export default function MiniSitePreview() {
   const { exhibitorId } = useParams<{ exhibitorId: string }>();
   const navigate = useNavigate();
@@ -105,6 +148,7 @@ export default function MiniSitePreview() {
     try {
       // Charger le mini-site
       const miniSite = await SupabaseService.getMiniSite(exhibitorId);
+      console.log('[MiniSite] Données mini-site chargées:', miniSite);
       
       if (!miniSite) {
         setError('Ce mini-site n\'existe pas ou n\'est pas encore publié.');
@@ -116,6 +160,7 @@ export default function MiniSitePreview() {
 
       // Charger les informations de l'exposant
       const exhibitor = await SupabaseService.getExhibitorForMiniSite(exhibitorId);
+      console.log('[MiniSite] Données exposant chargées:', exhibitor);
       
       if (exhibitor) {
         setExhibitorData(exhibitor);
@@ -123,6 +168,7 @@ export default function MiniSitePreview() {
 
       // Charger les produits
       const exhibitorProducts = await SupabaseService.getExhibitorProducts(exhibitorId);
+      console.log('[MiniSite] Produits chargés:', exhibitorProducts);
       setProducts(exhibitorProducts);
 
       // Incrémenter le compteur de vues
@@ -269,13 +315,12 @@ export default function MiniSitePreview() {
                 </Button>
                 
                 <div className="flex items-center gap-2">
-                  {exhibitorData.logo_url && (
-                    <img 
-                      src={exhibitorData.logo_url} 
-                      alt={exhibitorData.company_name}
-                      className="h-8 w-8 rounded-lg object-contain bg-white shadow-sm"
-                    />
-                  )}
+                  <ImageWithFallback 
+                    src={exhibitorData.logo_url} 
+                    alt={exhibitorData.company_name}
+                    className="h-8 w-8 rounded-lg object-contain bg-white shadow-sm"
+                    fallbackClassName="h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center"
+                  />
                   <span className="font-semibold text-gray-900 hidden md:inline">
                     {exhibitorData.company_name}
                   </span>
@@ -306,7 +351,8 @@ export default function MiniSitePreview() {
       </motion.div>
 
       {/* Hero Section - Immersive */}
-      <section className="relative min-h-[100vh] flex items-center justify-center overflow-hidden">
+      {(heroSection || !hasConfiguredSections) && (
+        <section className="relative min-h-[100vh] flex items-center justify-center overflow-hidden">
         {/* Background with parallax */}
         <motion.div 
           style={{ y: heroY }}
@@ -355,28 +401,27 @@ export default function MiniSitePreview() {
             style={{ opacity: heroOpacity }}
             className="relative z-10 max-w-5xl mx-auto px-4 text-center text-white pt-24"
           >
-            {exhibitorData.logo_url && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, type: "spring" }}
-                className="mb-8"
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, type: "spring" }}
+              className="mb-8"
+            >
+              <motion.div 
+                animate={floatingAnimation}
+                className="inline-block"
               >
-                <motion.div 
-                  animate={floatingAnimation}
-                  className="inline-block"
-                >
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-white/20 blur-2xl rounded-full scale-150" />
-                    <img
-                      src={exhibitorData.logo_url}
-                      alt={exhibitorData.company_name}
-                      className="relative h-28 w-auto mx-auto rounded-2xl shadow-2xl bg-white p-4"
-                    />
-                  </div>
-                </motion.div>
+                <div className="relative">
+                  <div className="absolute inset-0 bg-white/20 blur-2xl rounded-full scale-150" />
+                  <ImageWithFallback
+                    src={exhibitorData.logo_url}
+                    alt={exhibitorData.company_name}
+                    className="relative h-28 w-auto mx-auto rounded-2xl shadow-2xl bg-white p-4"
+                    fallbackClassName="relative h-28 w-28 mx-auto rounded-2xl shadow-2xl bg-white p-4 flex items-center justify-center"
+                  />
+                </div>
               </motion.div>
-            )}
+            </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 40 }}
@@ -408,7 +453,7 @@ export default function MiniSitePreview() {
               transition={{ delay: 0.5, duration: 0.8 }}
               className="text-xl md:text-2xl mb-10 text-white/90 max-w-3xl mx-auto leading-relaxed"
             >
-              {heroSection?.content?.subtitle || exhibitorData.description || 'Découvrez nos solutions innovantes pour l\'industrie maritime'}
+              {heroSection?.content?.subtitle || heroSection?.content?.description || exhibitorData.description || 'Découvrez nos solutions innovantes pour l\'industrie maritime'}
             </motion.p>
 
             <motion.div
@@ -417,24 +462,22 @@ export default function MiniSitePreview() {
               transition={{ delay: 0.6, duration: 0.8 }}
               className="flex flex-col sm:flex-row gap-4 justify-center"
             >
-              {(heroSection?.content?.ctaText || !hasConfiguredSections) && (
-                <Button
-                  size="lg"
-                  className="text-lg px-8 py-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-105"
-                  style={{ backgroundColor: theme.accentColor }}
-                  onClick={() => {
-                    const target = heroSection?.content?.ctaLink || '#products';
-                    const element = document.querySelector(target);
-                    if (element) {
-                      element.scrollIntoView({ behavior: 'smooth' });
-                    } else {
-                      document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
-                    }
-                  }}
-                >
-                  {heroSection?.content?.ctaText || 'Découvrir nos solutions'}
-                </Button>
-              )}
+              <Button
+                size="lg"
+                className="text-lg px-8 py-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-105"
+                style={{ backgroundColor: theme.accentColor }}
+                onClick={() => {
+                  const target = heroSection?.content?.ctaLink || '#products';
+                  const element = document.querySelector(target);
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+              >
+                {heroSection?.content?.ctaText || 'Découvrir nos solutions'}
+              </Button>
               <Button
                 size="lg"
                 variant="outline"
@@ -496,14 +539,14 @@ export default function MiniSitePreview() {
                 {aboutSection?.content?.title || 'Notre Histoire'}
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                {aboutSection?.content?.description || exhibitorData.description || 'Nous sommes fiers de participer à SIPORTS 2026 et de présenter nos solutions innovantes.'}
+                {aboutSection?.content?.description || aboutSection?.content?.text || exhibitorData.description || 'Nous sommes fiers de participer à SIPORTS 2026 et de présenter nos solutions innovantes.'}
               </p>
             </motion.div>
 
             {/* Features Grid - Modern Cards */}
-            {(aboutSection?.content?.features && aboutSection.content.features.length > 0) ? (
+            {((aboutSection?.content?.features || aboutSection?.content?.values) && (aboutSection.content.features?.length > 0 || aboutSection.content.values?.length > 0)) ? (
               <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-                  {aboutSection.content.features.map((feature: string, index: number) => (
+                  {(aboutSection.content.features || aboutSection.content.values).map((feature: string, index: number) => (
                     <motion.div
                       key={index}
                       whileHover={{ y: -8, scale: 1.02 }}
@@ -543,6 +586,32 @@ export default function MiniSitePreview() {
                 </motion.div>
               )}
 
+              {/* About Image - If provided */}
+              {(aboutSection?.content?.image || (aboutSection?.content?.images && aboutSection.content.images.length > 0)) && (
+                <motion.div variants={itemVariants} className="mb-16">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {aboutSection?.content?.image && (
+                      <div className="rounded-2xl overflow-hidden shadow-xl">
+                        <img 
+                          src={aboutSection.content.image} 
+                          alt="À propos de nous"
+                          className="w-full h-64 md:h-80 object-cover"
+                        />
+                      </div>
+                    )}
+                    {aboutSection?.content?.images?.map((img: string, idx: number) => (
+                      <div key={idx} className="rounded-2xl overflow-hidden shadow-xl">
+                        <img 
+                          src={img} 
+                          alt={`Image ${idx + 1}`}
+                          className="w-full h-64 md:h-80 object-cover"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
               {/* Stats - Impressive Display */}
               {aboutSection?.content?.stats && aboutSection.content.stats.length > 0 && (
                 <motion.div 
@@ -575,7 +644,6 @@ export default function MiniSitePreview() {
             </motion.div>
           </div>
         </section>
-      )
 
       {/* Products Section - Premium Grid */}
       {products.length > 0 && (
@@ -613,9 +681,9 @@ export default function MiniSitePreview() {
                     <Card className="overflow-hidden h-full flex flex-col bg-white border-0 shadow-lg hover:shadow-2xl transition-all group">
                       {/* Product Image */}
                       <div className="relative overflow-hidden">
-                        {product.image ? (
+                        {(product.image || product.images?.[0]) ? (
                           <img
-                            src={product.image}
+                            src={product.image || product.images?.[0]}
                             alt={product.name}
                             className="w-full h-56 object-cover transform group-hover:scale-110 transition-transform duration-500"
                           />
@@ -915,13 +983,12 @@ export default function MiniSitePreview() {
             <div className="flex flex-col md:flex-row items-center justify-between gap-8">
               {/* Company Info */}
               <div className="flex items-center gap-4">
-                {exhibitorData.logo_url && (
-                  <img 
-                    src={exhibitorData.logo_url} 
-                    alt={exhibitorData.company_name}
-                    className="h-12 w-12 rounded-xl object-contain bg-white p-2 shadow-lg"
-                  />
-                )}
+                <ImageWithFallback 
+                  src={exhibitorData.logo_url} 
+                  alt={exhibitorData.company_name}
+                  className="h-12 w-12 rounded-xl object-contain bg-white p-2 shadow-lg"
+                  fallbackClassName="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center"
+                />
                 <div className="text-white">
                   <h3 className="font-bold text-xl">{exhibitorData.company_name}</h3>
                   <p className="text-white/70 text-sm">Exposant SIPORTS 2026</p>
