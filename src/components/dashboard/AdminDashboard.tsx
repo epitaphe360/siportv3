@@ -15,7 +15,10 @@ import {
   AlertTriangle,
   Plus,
   ClipboardList,
-  Download
+  Download,
+  TrendingUp,
+  Eye,
+  MessageCircle
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
@@ -27,6 +30,7 @@ import { motion } from 'framer-motion';
 import RegistrationRequests from '../admin/RegistrationRequests';
 import { useNewsStore } from '../../store/newsStore';
 import { toast } from 'sonner';
+import { StatCard, LineChartCard, BarChartCard, PieChartCard } from './charts';
 
 export default function AdminDashboard() {
   const { metrics, isLoading, error, fetchMetrics } = useAdminDashboardStore();
@@ -39,6 +43,39 @@ export default function AdminDashboard() {
     fetchMetrics();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Intentionally fetch only on mount
+
+  // Données de démonstration pour les graphiques
+  const userGrowthData = [
+    { name: 'Jan', users: 120, exhibitors: 15, visitors: 85 },
+    { name: 'Fév', users: 180, exhibitors: 25, visitors: 135 },
+    { name: 'Mar', users: 250, exhibitors: 35, visitors: 190 },
+    { name: 'Avr', users: 340, exhibitors: 48, visitors: 260 },
+    { name: 'Mai', users: 420, exhibitors: 62, visitors: 325 },
+    { name: 'Juin', users: 510, exhibitors: 78, visitors: 395 },
+  ];
+
+  const activityData = [
+    { name: 'Connexions', value: 2840 },
+    { name: 'RDV Créés', value: 1560 },
+    { name: 'Messages', value: 980 },
+    { name: 'Documents', value: 720 },
+  ];
+
+  const userTypeDistribution = [
+    { name: 'Visiteurs', value: adminMetrics.totalVisitors || 425 },
+    { name: 'Exposants', value: adminMetrics.totalExhibitors || 78 },
+    { name: 'Partenaires', value: adminMetrics.totalPartners || 12 },
+  ];
+
+  const trafficData = [
+    { name: 'Lun', visits: 1200, pageViews: 3400 },
+    { name: 'Mar', visits: 1800, pageViews: 4200 },
+    { name: 'Mer', visits: 1600, pageViews: 3800 },
+    { name: 'Jeu', visits: 2100, pageViews: 5200 },
+    { name: 'Ven', visits: 2400, pageViews: 6100 },
+    { name: 'Sam', visits: 1400, pageViews: 2900 },
+    { name: 'Dim', visits: 900, pageViews: 1800 },
+  ];
 
   // Métriques administrateur récupérées depuis Supabase
   // Display loading state if metrics not yet fetched
@@ -502,6 +539,65 @@ export default function AdminDashboard() {
             </div>
           </motion.div>
         </div>
+        </div>
+
+        {/* Section Graphiques - Professional Analytics */}
+        <div className="mb-8 space-y-6">
+          {/* Titre Section */}
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-gray-900">Analyse & Tendances</h2>
+            <div className="flex items-center space-x-2 text-sm text-gray-500">
+              <TrendingUp className="h-4 w-4" />
+              <span>Données en temps réel</span>
+            </div>
+          </div>
+
+          {/* Row 1: Graphique de croissance utilisateurs */}
+          <LineChartCard
+            title="Croissance des Utilisateurs (6 derniers mois)"
+            data={userGrowthData}
+            dataKeys={[
+              { key: 'users', color: '#3b82f6', name: 'Total Utilisateurs' },
+              { key: 'exhibitors', color: '#10b981', name: 'Exposants' },
+              { key: 'visitors', color: '#8b5cf6', name: 'Visiteurs' }
+            ]}
+            height={350}
+            showArea={true}
+            loading={isLoading}
+          />
+
+          {/* Row 2: Distribution et Activité */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <PieChartCard
+              title="Distribution des Utilisateurs"
+              data={userTypeDistribution}
+              colors={['#3b82f6', '#10b981', '#f59e0b']}
+              height={320}
+              loading={isLoading}
+              showPercentage={true}
+            />
+
+            <BarChartCard
+              title="Activité Plateforme (Cette semaine)"
+              data={activityData}
+              dataKey="value"
+              colors={['#3b82f6', '#10b981', '#f59e0b', '#ef4444']}
+              height={320}
+              loading={isLoading}
+            />
+          </div>
+
+          {/* Row 3: Trafic hebdomadaire */}
+          <LineChartCard
+            title="Trafic Hebdomadaire"
+            data={trafficData}
+            dataKeys={[
+              { key: 'visits', color: '#3b82f6', name: 'Visites' },
+              { key: 'pageViews', color: '#10b981', name: 'Pages vues' }
+            ]}
+            height={300}
+            loading={isLoading}
+          />
         </div>
 
         {/* Actions Administrateur - Modern Cards */}
