@@ -29,8 +29,8 @@ wordpress-plugin/
 wordpress-integration/
 wordpress-pages/
 
-# Scripts de développement
-scripts/
+# Scripts de développement (sauf inject-build-version.js requis pour le build)
+# scripts/
 
 # Fichiers temporaires
 *.log
