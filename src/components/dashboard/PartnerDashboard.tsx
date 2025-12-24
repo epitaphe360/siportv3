@@ -377,7 +377,7 @@ export default function PartnerDashboard() {
                 icon: <TrendingUp className="h-4 w-4 text-gray-400" />
               }
             ]}
-            upgradeLink="/partner/upgrade"
+            upgradeLink={ROUTES.PARTNER_UPGRADE}
           />
         </motion.div>
 
@@ -463,28 +463,28 @@ export default function PartnerDashboard() {
               </div>
 
               <div className="space-y-3">
-                <Link to="/partners" className="block">
+                <Link to={ROUTES.PARTNER_PROFILE_EDIT} className="block">
                   <Button className="w-full justify-start bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-md hover:shadow-lg transition-all">
                     <Globe className="h-4 w-4 mr-3" />
                     Modifier mon Profil Partenaire
                   </Button>
                 </Link>
 
-                <Link to="/partners" className="block">
+                <Link to={ROUTES.PARTNER_MEDIA_UPLOAD} className="block">
                   <Button className="w-full justify-start border-2 hover:bg-gray-50" variant="outline">
                     <Edit className="h-4 w-4 mr-3" />
                     Modifier mon Contenu
                   </Button>
                 </Link>
 
-                <Link to="/networking" className="block">
+                <Link to={ROUTES.PARTNER_NETWORKING} className="block">
                   <Button className="w-full justify-start border-2 hover:bg-gray-50" variant="outline">
                     <Users className="h-4 w-4 mr-3" />
                     Réseautage VIP Exclusif
                   </Button>
                 </Link>
 
-                <Link to="/partners" className="block">
+                <Link to={ROUTES.PARTNER_ANALYTICS} className="block">
                   <Button className="w-full justify-start border-2 hover:bg-gray-50" variant="outline">
                     <BarChart3 className="h-4 w-4 mr-3" />
                     ROI & Analytics
@@ -521,7 +521,7 @@ export default function PartnerDashboard() {
                 </div>
 
                 <div className="pt-2">
-                  <Link to="/partners">
+                  <Link to={ROUTES.PARTNER_ANALYTICS}>
                     <Button className="w-full bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-700 hover:to-pink-700 shadow-md hover:shadow-lg transition-all">
                       <BarChart3 className="h-4 w-4 mr-2" />
                       Voir les Analytics

@@ -140,25 +140,68 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await safeSupabase
+      // On récupère d'abord l'utilisateur
+      const { data: userData, error: userError } = await safeSupabase
         .from('users')
-        .select('*, partner_projects(*)')
+        .select('*')
         .eq('email', email)
         .single();
 
-      if (error) {
-        console.error('❌ Erreur DB lors de la récupération utilisateur:', error.message);
-        throw new Error(`Utilisateur non trouvé: ${error.message}`);
+      if (userError) {
+        console.error('❌ Erreur DB lors de la récupération utilisateur:', userError.message);
+        throw new Error(`Utilisateur non trouvé: ${userError.message}`);
       }
 
-      if (!data) {
+      if (!userData) {
         throw new Error('Aucun profil utilisateur trouvé pour cet email');
       }
 
-      return this.transformUserDBToUser(data);
+      // Si c'est un partenaire, on tente de récupérer ses projets séparément
+      // pour éviter les erreurs de jointure si la relation n'est pas détectée par PostgREST
+      let projects: any[] = [];
+      if (userData.type === 'partner') {
+        try {
+          // On essaie de récupérer par user_id (nouvelle structure)
+          const { data: projectsData, error: projectsError } = await safeSupabase
+            .from('partner_projects')
+            .select('*')
+            .eq('user_id', userData.id);
+          
+          if (!projectsError && projectsData) {
+            projects = projectsData;
+          } else {
+            // Fallback: essayer de trouver via la table partners si user_id n'existe pas encore
+            const { data: partnerData } = await safeSupabase
+              .from('partners')
+              .select('id')
+              .eq('user_id', userData.id)
+              .single();
+            
+            if (partnerData) {
+              const { data: fallbackProjects } = await safeSupabase
+                .from('partner_projects')
+                .select('*')
+                .eq('partner_id', partnerData.id);
+              
+              if (fallbackProjects) {
+                projects = fallbackProjects;
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('⚠️ Erreur lors de la récupération des projets partenaire:', e);
+        }
+      }
+
+      const combinedData = {
+        ...userData,
+        partner_projects: projects
+      };
+
+      return this.transformUserDBToUser(combinedData);
     } catch (error) {
       console.error('❌ Erreur lors de la récupération de l\'utilisateur:', error);
-      throw error; // Re-throw au lieu de retourner null
+      throw error;
     }
   }
 
@@ -1733,7 +1776,7 @@ export class SupabaseService {
     
     const safeSupabase = supabase!;
     try {
-      let query = safeSupabase.from('users').select('*, partner_projects(*)');
+      let query = safeSupabase.from('users').select('*');
 
       // Filtre par terme de recherche (nom, entreprise, poste)
       if (filters.searchTerm && filters.searchTerm.trim()) {
@@ -1782,7 +1825,7 @@ export class SupabaseService {
     try {
       const { data, error } = await safeSupabase
         .from('recommendations')
-        .select('recommended_user:recommended_user_id(*, partner_projects(*))')
+        .select('recommended_user:recommended_user_id(*)')
         .eq('user_id', userId)
         .limit(limit);
 

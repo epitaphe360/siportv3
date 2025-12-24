@@ -903,7 +903,7 @@ test.describe('👤 VISITOR FEATURES', () => {
 // ============================================================================
 
 test.describe('📊 TEST SUMMARY', () => {
-  test('Coverage: 100 tests améliorés avec descriptions', async ({}) => {
+  test('Coverage: 100 tests améliorés avec descriptions', async () => {
     console.log('\n\n╔════════════════════════════════════════════╗');
     console.log('║      ✅ 100 TESTS AMÉLIORÉS CRÉÉS          ║');
     console.log('╠════════════════════════════════════════════╣');

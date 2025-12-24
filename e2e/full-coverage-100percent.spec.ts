@@ -120,7 +120,7 @@ async function clickButtonIfExists(page: Page, selector: string): Promise<boolea
       await page.waitForTimeout(500);
       return true;
     }
-  } catch {}
+  } catch { /* Bouton non trouvé ou clic échoué, ignoré */ }
   return false;
 }
 

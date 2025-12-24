@@ -77,7 +77,7 @@ test.describe('🔍 ANALYSE COMPLÈTE LOGIN E2E', () => {
       try {
         const body = await response.json();
         console.log('Response:', JSON.stringify(body).substring(0, 200));
-      } catch {}
+      } catch { /* JSON parse peut échouer, ignoré */ }
     }
   });
 

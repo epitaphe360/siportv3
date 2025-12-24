@@ -449,21 +449,21 @@ export default function ExhibitorDashboard() {
       title: 'Réseautage IA',
       description: 'Découvrez des connexions pertinentes avec l\'IA',
       icon: '🤖',
-      link: '/networking',
+      link: ROUTES.NETWORKING,
       variant: 'default' as const
     },
     {
       title: 'Modifier mon Mini-Site',
       description: 'Personnalisez votre présence digitale',
       icon: '🎨',
-      link: '/minisite/editor',
+      link: ROUTES.MINISITE_EDITOR,
       variant: 'outline' as const
     },
     {
       title: 'Mon Profil Exposant',
       description: 'Mettez à jour vos informations',
       icon: '👤',
-      link: '/profile',
+      link: ROUTES.PROFILE,
       variant: 'outline' as const
     },
     {

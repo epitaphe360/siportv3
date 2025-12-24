@@ -324,7 +324,7 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     } catch (error) {
       console.error('Erreur lors du chargement des favoris:', error);
       // Show a non-blocking notification to the user
-      try { const { toast } = await import('sonner'); toast?.error?.('Impossible de charger vos favoris pour le moment.'); } catch(e){}
+      try { const { toast } = await import('sonner'); toast?.error?.('Impossible de charger vos favoris pour le moment.'); } catch { /* Toast failed, ignore */ }
     }
   },
 

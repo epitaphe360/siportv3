@@ -1987,7 +1987,7 @@ test.describe('PHASE 4: OTHER FEATURES', () => {
 // ============================================================================
 
 test.describe('COVERAGE SUMMARY', () => {
-  test('Should have 280+ tests covering all workflows', async ({}) => {
+  test('Should have 280+ tests covering all workflows', async () => {
     // This test serves as a summary
     // Total: 50 + 60 + 40 + 100 + 30 = 280 tests
     // Phase 1: Payment (50 tests)

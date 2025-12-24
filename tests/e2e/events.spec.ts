@@ -181,7 +181,7 @@ test.describe('Événements', () => {
       await firstEvent.click();
 
       // Vérifier que la capacité est affichée
-      await expect(page.locator('text=/\d+\/\d+|places|capacity/i')).toBeVisible({ timeout: 5000 });
+      await expect(page.locator('text=/[0-9]+[/][0-9]+|places|capacity/i')).toBeVisible({ timeout: 5000 });
     });
 
     test('devrait bloquer l\'inscription si l\'événement est complet', async ({ page }) => {
