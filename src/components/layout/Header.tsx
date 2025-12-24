@@ -419,7 +419,7 @@ export const Header: React.FC = memo(() => {
                     {t('nav.login')}
                   </Button>
                 </Link>
-                <Link to={ROUTES.VISITOR_REGISTRATION_CHOICE}>
+                <Link to={ROUTES.VISITOR_SUBSCRIPTION}>
                   <Button size="sm" className="bg-siports-primary hover:bg-siports-dark text-white">
                     {t('nav.register')}
                   </Button>

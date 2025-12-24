@@ -86,7 +86,7 @@ test.describe('ADDITIONAL: HANDLERS & INTERACTIONS', () => {
 
     test('Should handle radio button selection', async ({ page }) => {
       await visitorLogin(page);
-      await page.goto(`${BASE_URL}/visitor/register`);
+      await page.goto(`${BASE_URL}/visitor/subscription`);
       const radio = page.locator('input[type="radio"]').first();
       await radio.check().catch(() => {});
     });

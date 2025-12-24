@@ -67,7 +67,6 @@ const DigitalBadge = lazyRetry(() => import('./components/badge/DigitalBadge'));
 const QRScanner = lazyRetry(() => import('./components/security/QRScanner'));
 
 // Visitor registration pages
-const VisitorRegistrationChoice = lazyRetry(() => import('./pages/visitor/VisitorRegistrationChoice'));
 const VisitorFreeRegistration = lazyRetry(() => import('./pages/visitor/VisitorFreeRegistration'));
 const VisitorVIPRegistration = lazyRetry(() => import('./pages/visitor/VisitorVIPRegistration'));
 
@@ -184,7 +183,6 @@ const App = () => {
             <Route path={ROUTES.REGISTER_VISITOR} element={<RegisterPage />} />
             <Route path={ROUTES.REGISTER_EXHIBITOR} element={<ExhibitorSignUpPage />} />
             <Route path={ROUTES.REGISTER_PARTNER} element={<PartnerSignUpPage />} />
-            <Route path={ROUTES.VISITOR_REGISTRATION_CHOICE} element={<VisitorRegistrationChoice />} />
             <Route path={ROUTES.VISITOR_FREE_REGISTRATION} element={<VisitorFreeRegistration />} />
             <Route path={ROUTES.VISITOR_VIP_REGISTRATION} element={<VisitorVIPRegistration />} />
             <Route path={ROUTES.SIGNUP_SUCCESS} element={<SignUpSuccessPage />} />

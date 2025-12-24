@@ -142,7 +142,7 @@ export class SupabaseService {
     try {
       const { data, error } = await safeSupabase
         .from('users')
-        .select('*')
+        .select('*, partner_projects(*)')
         .eq('email', email)
         .single();
 
@@ -444,6 +444,7 @@ export class SupabaseService {
 
   // ==================== TRANSFORMATION METHODS ====================
   private static transformUserDBToUser(userDB: any): User {
+    if (!userDB) return null as any;
     return {
       id: userDB.id,
       email: userDB.email,
@@ -452,6 +453,7 @@ export class SupabaseService {
       visitor_level: userDB.visitor_level,
       profile: userDB.profile,
       status: userDB.status || 'active',
+      projects: userDB.partner_projects || [],
       createdAt: new Date(userDB.created_at),
       updatedAt: new Date(userDB.updated_at)
     };
@@ -1720,7 +1722,7 @@ export class SupabaseService {
     
     const safeSupabase = supabase!;
     try {
-      let query = safeSupabase.from('users').select('*');
+      let query = safeSupabase.from('users').select('*, partner_projects(*)');
 
       // Filtre par terme de recherche (nom, entreprise, poste)
       if (filters.searchTerm && filters.searchTerm.trim()) {
@@ -1769,7 +1771,7 @@ export class SupabaseService {
     try {
       const { data, error } = await safeSupabase
         .from('recommendations')
-        .select('recommended_user:recommended_user_id(*)')
+        .select('recommended_user:recommended_user_id(*, partner_projects(*))')
         .eq('user_id', userId)
         .limit(limit);
 

@@ -50,7 +50,7 @@ VISITOR_DASHBOARD            /visitor/dashboard
 VISITOR_SETTINGS             /visitor/settings
 VISITOR_SUBSCRIPTION         /visitor/subscription
 VISITOR_UPGRADE              /visitor/upgrade
-VISITOR_REGISTRATION_CHOICE  /visitor/register
+VISITOR_SUBSCRIPTION         /visitor/subscription
 VISITOR_FREE_REGISTRATION    /visitor/register/free
 VISITOR_VIP_REGISTRATION     /visitor/register/vip
 MESSAGES                     /messages

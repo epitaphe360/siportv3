@@ -113,7 +113,7 @@ export const NetworkingSection: React.FC = () => {
                   Commencer le Réseautage
                 </Button>
               </Link>
-              <Link to={ROUTES.VISITOR_REGISTRATION_CHOICE}>
+              <Link to={ROUTES.VISITOR_SUBSCRIPTION}>
                 <Button variant="outline" size="lg" className="w-full sm:w-auto">
                   <Target className="mr-2 h-5 w-5" />
                   Devenir Membre

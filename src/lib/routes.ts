@@ -92,7 +92,6 @@ export const ROUTES = {
   VISITOR_PAYMENT: '/visitor/payment',
   VISITOR_PAYMENT_SUCCESS: '/visitor/payment-success',
   VISITOR_PAYMENT_INSTRUCTIONS: '/visitor/payment-instructions',
-  VISITOR_REGISTRATION_CHOICE: '/visitor/register',
   VISITOR_FREE_REGISTRATION: '/visitor/register/free',
   VISITOR_VIP_REGISTRATION: '/visitor/register/vip',
   BADGE: '/badge',

@@ -1,3 +1,16 @@
+export interface PartnerProject {
+  id: string;
+  partner_id: string;
+  title: string;
+  description: string;
+  kpi_budget: string;
+  kpi_timeline: string;
+  kpi_impact: string;
+  status: 'planned' | 'in_progress' | 'completed';
+  image_url?: string;
+  created_at: string;
+}
+
 export interface User {
   id: string;
   email: string;
@@ -7,6 +20,7 @@ export interface User {
   partner_tier?: 'museum' | 'silver' | 'gold' | 'platinium'; // Niveau partenaire
   profile: UserProfile;
   status: 'pending' | 'active' | 'suspended' | 'rejected';
+  projects?: PartnerProject[];
   createdAt: Date;
   updatedAt: Date;
 }

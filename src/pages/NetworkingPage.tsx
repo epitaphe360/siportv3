@@ -5,8 +5,13 @@ import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import {
   Users, Brain, MessageCircle, Calendar, User as UserIcon, Plus, Zap, Search,
-  Heart, CheckCircle, Clock, Eye, BarChart3, TrendingUp, Handshake, Star, Briefcase, Mic, Building2, UserPlus, MapPin
+  Heart, CheckCircle, Clock, Eye, BarChart3, TrendingUp, Handshake, Star, Briefcase, Mic, Building2, UserPlus, MapPin,
+  Target, Sparkles, Shield, Globe, ArrowRight, Info
 } from 'lucide-react';
+import {
+  ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
+  BarChart, Bar, XAxis, YAxis, Tooltip, Cell, PieChart, Pie
+} from 'recharts';
 import { useNetworkingStore } from '@/store/networkingStore';
 import useAuthStore from '@/store/authStore';
 import { NetworkingRecommendation, User } from '@/types';
@@ -212,17 +217,54 @@ export default function NetworkingPage() {
   };
 
   const getCompatibilityColor = (score: number) => {
-    if (score >= 80) return 'text-green-600';
+    if (score >= 80) return 'text-emerald-600';
     if (score >= 60) return 'text-blue-600';
-    if (score >= 40) return 'text-yellow-600';
-    return 'text-gray-600';
+    if (score >= 40) return 'text-amber-600';
+    return 'text-slate-600';
+  };
+
+  const getCompatibilityBg = (score: number) => {
+    if (score >= 80) return 'bg-emerald-50 border-emerald-100';
+    if (score >= 60) return 'bg-blue-50 border-blue-100';
+    if (score >= 40) return 'bg-amber-50 border-amber-100';
+    return 'bg-slate-50 border-slate-100';
   };
 
   const getCompatibilityLabel = (score: number) => {
     if (score >= 80) return 'Excellent';
-    if (score >= 60) return 'Bon';
+    if (score >= 60) return 'Très Bon';
     if (score >= 40) return 'Moyen';
     return 'Faible';
+  };
+
+  // Composant pour le score de compatibilité circulaire
+  const CompatibilityScore = ({ score }: { score: number }) => {
+    const color = score >= 80 ? '#10b981' : score >= 60 ? '#3b82f6' : score >= 40 ? '#f59e0b' : '#64748b';
+    return (
+      <div className="relative w-16 h-16">
+        <svg className="w-full h-full" viewBox="0 0 36 36">
+          <path
+            className="text-gray-100"
+            strokeDasharray="100, 100"
+            strokeWidth="3"
+            stroke="currentColor"
+            fill="none"
+            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+          />
+          <path
+            strokeDasharray={`${score}, 100`}
+            strokeWidth="3"
+            strokeLinecap="round"
+            stroke={color}
+            fill="none"
+            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-xs font-bold" style={{ color }}>{score}%</span>
+        </div>
+      </div>
+    );
   };
 
   if (!isAuthenticated) {
@@ -255,7 +297,7 @@ export default function NetworkingPage() {
                   Se connecter
                 </Button>
               </Link>
-              <Link to={ROUTES.VISITOR_REGISTRATION_CHOICE}>
+              <Link to={ROUTES.VISITOR_SUBSCRIPTION}>
                 <Button variant="outline" size="lg" className="border-blue-700 text-blue-700 hover:bg-blue-50">
                   <Plus className="h-4 w-4 mr-2" />
                   Créer un compte
@@ -309,130 +351,123 @@ export default function NetworkingPage() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {/* Bannière avec image de fond améliorée */}
-      <div className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-cyan-900 overflow-hidden">
-        {/* Overlay avec motif géométrique */}
-        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-        <div className="absolute inset-0 opacity-10" style={{
-          backgroundImage: 'radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 80%, white 1px, transparent 1px)',
-          backgroundSize: '50px 50px'
-        }}></div>
+    <div className="bg-slate-50 min-h-screen">
+      {/* Hero Section Ultra-Moderne */}
+      <div className="relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-[#0a192f]">
+        {/* Background avec effet de particules/réseau (CSS pur) */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-indigo-900/80 to-slate-900/90 z-10"></div>
+          <div className="absolute inset-0 opacity-30 z-0" style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=2000')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}></div>
+          
+          {/* Éléments décoratifs animés */}
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full filter blur-[100px] animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-indigo-500/20 rounded-full filter blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+        </div>
 
-        {/* Bulles décoratives animées */}
-        <div className="absolute top-10 left-10 w-64 h-64 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
-        <div className="absolute bottom-10 right-10 w-72 h-72 bg-cyan-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-teal-400 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse" style={{ animationDelay: '4s' }}></div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
           <motion.div
-            initial={{ opacity: 0, y: -30 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center text-white"
           >
-            <motion.div
-              className="flex justify-center mb-8"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-            >
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 shadow-2xl border border-white/20">
-                <img
-                  src="/siports-logo.jpg"
-                  alt="SIPORTS Logo"
-                  className="h-16 w-auto filter brightness-0 invert"
-                />
-              </div>
-            </motion.div>
+            <div className="inline-flex items-center space-x-2 bg-blue-500/10 backdrop-blur-md border border-blue-500/20 rounded-full px-4 py-2 mb-8">
+              <Sparkles className="h-4 w-4 text-blue-400" />
+              <span className="text-blue-200 text-sm font-medium tracking-wide uppercase">Propulsé par l'IA SIPORTS</span>
+            </div>
 
-            <motion.h1
-              className="text-5xl md:text-7xl font-black mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-cyan-100"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-            >
-              Réseautage Intelligent
-            </motion.h1>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 tracking-tight leading-none">
+              Réseautage <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-400">
+                Intelligent
+              </span>
+            </h1>
 
-            <motion.p
-              className="text-xl md:text-2xl font-light mb-10 max-w-3xl mx-auto leading-relaxed text-blue-50"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-            >
-              Connectez-vous avec les bons professionnels grâce à notre IA de matching nouvelle génération
-            </motion.p>
+            <p className="text-xl md:text-2xl text-blue-100/80 max-w-3xl mx-auto mb-12 font-light leading-relaxed">
+              Connectez-vous avec les leaders de l'industrie portuaire mondiale grâce à notre algorithme de matching prédictif.
+            </p>
 
-            <motion.div
-              className="flex flex-wrap gap-4 justify-center items-center"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.8 }}
-            >
-              <div className="flex items-center space-x-3 bg-white/15 backdrop-blur-md rounded-2xl px-6 py-4 shadow-xl border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
-                <div className="bg-blue-500/30 p-2 rounded-lg">
-                  <Brain className="h-6 w-6 text-blue-100" />
+            <div className="flex flex-wrap justify-center gap-6">
+              <div className="flex items-center space-x-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-all group cursor-default">
+                <div className="bg-blue-500/20 p-3 rounded-xl group-hover:scale-110 transition-transform">
+                  <Target className="h-6 w-6 text-blue-400" />
                 </div>
-                <span className="text-lg font-semibold">IA Matching Avancé</span>
-              </div>
-              <div className="flex items-center space-x-3 bg-white/15 backdrop-blur-md rounded-2xl px-6 py-4 shadow-xl border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
-                <div className="bg-green-500/30 p-2 rounded-lg">
-                  <Users className="h-6 w-6 text-green-100" />
+                <div className="text-left">
+                  <div className="text-white font-bold">Matching Précis</div>
+                  <div className="text-blue-200/60 text-xs">Basé sur vos intérêts</div>
                 </div>
-                <span className="text-lg font-semibold">+500 Professionnels</span>
               </div>
-              <div className="flex items-center space-x-3 bg-white/15 backdrop-blur-md rounded-2xl px-6 py-4 shadow-xl border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
-                <div className="bg-yellow-500/30 p-2 rounded-lg">
-                  <Handshake className="h-6 w-6 text-yellow-100" />
+              <div className="flex items-center space-x-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-all group cursor-default">
+                <div className="bg-indigo-500/20 p-3 rounded-xl group-hover:scale-110 transition-transform">
+                  <Globe className="h-6 w-6 text-indigo-400" />
                 </div>
-                <span className="text-lg font-semibold">Opportunités Business</span>
+                <div className="text-left">
+                  <div className="text-white font-bold">Réseau Global</div>
+                  <div className="text-blue-200/60 text-xs">+50 pays représentés</div>
+                </div>
               </div>
-            </motion.div>
+              <div className="flex items-center space-x-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-all group cursor-default">
+                <div className="bg-cyan-500/20 p-3 rounded-xl group-hover:scale-110 transition-transform">
+                  <Shield className="h-6 w-6 text-cyan-400" />
+                </div>
+                <div className="text-left">
+                  <div className="text-white font-bold">Accès Sécurisé</div>
+                  <div className="text-blue-200/60 text-xs">Profils vérifiés</div>
+                </div>
+              </div>
+            </div>
           </motion.div>
         </div>
+
+        {/* Vague décorative en bas */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-slate-50 to-transparent z-30"></div>
       </div>
 
-      {/* Navigation améliorée avec design moderne */}
-      <div className="bg-white/80 backdrop-blur-lg shadow-xl border-b border-gray-200/50 sticky top-0 z-40">
+      {/* Navigation Sticky avec Glassmorphism */}
+      <div className="sticky top-0 z-50 bg-white/70 backdrop-blur-2xl border-b border-slate-200/50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center py-8">
-            <nav className="flex flex-wrap justify-center gap-3 lg:gap-4">
+          <div className="flex items-center justify-center py-4">
+            <nav className="flex items-center space-x-1 sm:space-x-2 bg-slate-100/50 p-1.5 rounded-2xl border border-slate-200/50">
               {[
-                { id: 'recommendations', label: 'Recommandations IA', icon: Brain, color: 'blue', bgGradient: 'from-blue-500 to-blue-600' },
-                { id: 'search', label: 'Recherche Avancée', icon: Search, color: 'green', bgGradient: 'from-green-500 to-green-600' },
-                { id: 'connections', label: 'Mes Connexions', icon: Users, color: 'purple', bgGradient: 'from-purple-500 to-purple-600' },
-                { id: 'favorites', label: 'Mes Favoris', icon: Heart, color: 'red', bgGradient: 'from-red-500 to-red-600' },
-                { id: 'insights', label: 'Insights IA', icon: TrendingUp, color: 'orange', bgGradient: 'from-orange-500 to-orange-600' }
+                { id: 'recommendations', label: 'IA Match', icon: Brain, color: 'blue' },
+                { id: 'search', label: 'Recherche', icon: Search, color: 'emerald' },
+                { id: 'connections', label: 'Réseau', icon: Users, color: 'indigo' },
+                { id: 'favorites', label: 'Favoris', icon: Heart, color: 'rose' },
+                { id: 'insights', label: 'Analyses', icon: TrendingUp, color: 'amber' }
               ].map((tab) => (
-                <motion.button
+                <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as keyof typeof CONFIG.tabIds)}
-                  className={`group relative flex items-center space-x-3 px-6 py-4 rounded-2xl font-semibold transition-all duration-300 overflow-hidden ${
+                  className={`relative flex items-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
                     activeTab === tab.id
-                      ? `bg-gradient-to-r ${tab.bgGradient} text-white shadow-2xl scale-105`
-                      : 'text-gray-600 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 border-2 border-transparent hover:border-gray-200'
+                      ? 'bg-white text-slate-900 shadow-md'
+                      : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'
                   }`}
-                  whileHover={{ y: -3, scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
                 >
-                  {/* Effet de brillance animé au survol */}
-                  {activeTab !== tab.id && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform -skew-x-12 group-hover:translate-x-full"></div>
-                  )}
-
-                  <tab.icon className={`h-5 w-5 ${activeTab === tab.id ? '' : 'group-hover:scale-110 transition-transform'}`} />
-                  <span className="hidden sm:inline relative z-10">{tab.label}</span>
-
-                  {/* Badge indicateur actif */}
+                  <tab.icon className={`h-4 w-4 ${
+                    activeTab === tab.id 
+                      ? tab.color === 'blue' ? 'text-blue-600' :
+                        tab.color === 'emerald' ? 'text-emerald-600' :
+                        tab.color === 'indigo' ? 'text-indigo-600' :
+                        tab.color === 'rose' ? 'text-rose-600' : 'text-amber-600'
+                      : ''
+                  }`} />
+                  <span className="hidden md:inline">{tab.label}</span>
                   {activeTab === tab.id && (
                     <motion.div
-                      layoutId="activeTab"
-                      className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-lg"
-                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                      layoutId="activeTabIndicator"
+                      className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${
+                        tab.color === 'blue' ? 'bg-blue-600' :
+                        tab.color === 'emerald' ? 'bg-emerald-600' :
+                        tab.color === 'indigo' ? 'bg-indigo-600' :
+                        tab.color === 'rose' ? 'bg-rose-600' : 'bg-amber-600'
+                      }`}
                     />
                   )}
-                </motion.button>
+                </button>
               ))}
             </nav>
           </div>
@@ -442,94 +477,110 @@ export default function NetworkingPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {activeTab === CONFIG.tabIds.recommendations && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
-            {/* Statistiques rapides améliorées */}
-            <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Votre Tableau de Bord</h2>
-                <p className="text-gray-600">Suivez vos progrès en temps réel</p>
+            {/* Dashboard de Networking */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 bg-white rounded-3xl shadow-xl shadow-slate-200/50 p-8 border border-slate-100">
+                <div className="flex items-center justify-between mb-8">
+                  <div>
+                    <h2 className="text-2xl font-black text-slate-900">Votre Activité</h2>
+                    <p className="text-slate-500">Aperçu de vos interactions récentes</p>
+                  </div>
+                  <div className="bg-blue-50 p-3 rounded-2xl">
+                    <BarChart3 className="h-6 w-6 text-blue-600" />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[
+                    { label: 'Matches IA', value: recommendations.length, icon: Brain, color: 'blue' },
+                    { label: 'Connexions', value: connections.length, icon: Users, color: 'emerald' },
+                    { label: 'Favoris', value: favorites.length, icon: Heart, color: 'rose' },
+                    { label: 'En attente', value: pendingConnections.length, icon: Clock, color: 'amber' }
+                  ].map((stat) => (
+                    <div key={stat.label} className="bg-slate-50 rounded-2xl p-4 border border-slate-100 hover:border-blue-200 transition-colors group">
+                      <div className={`w-10 h-10 rounded-xl mb-3 flex items-center justify-center ${
+                        stat.color === 'blue' ? 'bg-blue-100 text-blue-600' :
+                        stat.color === 'emerald' ? 'bg-emerald-100 text-emerald-600' :
+                        stat.color === 'rose' ? 'bg-rose-100 text-rose-600' : 'bg-amber-100 text-amber-600'
+                      }`}>
+                        <stat.icon className="h-5 w-5" />
+                      </div>
+                      <div className="text-2xl font-black text-slate-900">{stat.value}</div>
+                      <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200 text-center"
-                >
-                  <div className="flex justify-center mb-4">
-                    <div className="bg-blue-500 p-3 rounded-full">
-                      <Brain className="h-8 w-8 text-white" />
-                    </div>
-                  </div>
-                  <div className="text-3xl font-bold text-blue-600 mb-2">{recommendations.length}</div>
-                  <div className="text-sm font-medium text-blue-800">Recommandations IA</div>
-                  <div className="text-xs text-blue-600 mt-1">Personnalisées pour vous</div>
-                </motion.div>
 
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border border-green-200 text-center"
-                >
-                  <div className="flex justify-center mb-4">
-                    <div className="bg-green-500 p-3 rounded-full">
-                      <Users className="h-8 w-8 text-white" />
+              <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl shadow-xl p-8 text-white relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+                <div className="relative z-10">
+                  <h3 className="text-xl font-bold mb-2">Networking Score</h3>
+                  <p className="text-blue-100/70 text-sm mb-6">Votre influence sur le salon</p>
+                  
+                  <div className="flex items-center justify-center mb-6">
+                    <div className="relative w-32 h-32">
+                      <svg className="w-full h-full" viewBox="0 0 36 36">
+                        <path className="text-white/10" strokeDasharray="100, 100" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path className="text-white" strokeDasharray="75, 100" strokeWidth="3" strokeLinecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <span className="text-3xl font-black">75</span>
+                        <span className="text-[10px] font-bold uppercase opacity-60">Points</span>
+                      </div>
                     </div>
                   </div>
-                  <div className="text-3xl font-bold text-green-600 mb-2">{connections.length}</div>
-                  <div className="text-sm font-medium text-green-800">Connexions</div>
-                  <div className="text-xs text-green-600 mt-1">Actives et fructueuses</div>
-                </motion.div>
-
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl border border-purple-200 text-center"
-                >
-                  <div className="flex justify-center mb-4">
-                    <div className="bg-purple-500 p-3 rounded-full">
-                      <Heart className="h-8 w-8 text-white" />
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="opacity-70">Profil complété</span>
+                      <span className="font-bold">100%</span>
+                    </div>
+                    <div className="w-full bg-white/10 rounded-full h-1.5">
+                      <div className="bg-white h-1.5 rounded-full" style={{ width: '100%' }}></div>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="opacity-70">Engagement</span>
+                      <span className="font-bold">65%</span>
+                    </div>
+                    <div className="w-full bg-white/10 rounded-full h-1.5">
+                      <div className="bg-white h-1.5 rounded-full" style={{ width: '65%' }}></div>
                     </div>
                   </div>
-                  <div className="text-3xl font-bold text-purple-600 mb-2">{favorites.length}</div>
-                  <div className="text-sm font-medium text-purple-800">Favoris</div>
-                  <div className="text-xs text-purple-600 mt-1">Contacts privilégiés</div>
-                </motion.div>
-
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-xl border border-orange-200 text-center"
-                >
-                  <div className="flex justify-center mb-4">
-                    <div className="bg-orange-500 p-3 rounded-full">
-                      <Clock className="h-8 w-8 text-white" />
-                    </div>
-                  </div>
-                  <div className="text-3xl font-bold text-orange-600 mb-2">{pendingConnections.length}</div>
-                  <div className="text-sm font-medium text-orange-800">En attente</div>
-                  <div className="text-xs text-orange-600 mt-1">Demandes en cours</div>
-                </motion.div>
+                </div>
               </div>
             </div>
 
             {isLoading ? (
-              <div className="flex justify-center items-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                <span className="ml-3 text-gray-600">Analyse IA en cours...</span>
+              <div className="flex flex-col justify-center items-center py-20">
+                <div className="relative w-20 h-20">
+                  <div className="absolute inset-0 border-4 border-blue-100 rounded-full"></div>
+                  <div className="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+                </div>
+                <span className="mt-6 text-slate-500 font-medium animate-pulse">Analyse de votre profil par l'IA...</span>
               </div>
             ) : error ? (
-              <Card className="p-6 text-center border-red-200 bg-red-50">
-                <div className="text-red-600 mb-2">Erreur de chargement</div>
-                <div className="text-sm text-gray-600">{error}</div>
+              <Card className="p-12 text-center border-rose-100 bg-rose-50/50 rounded-3xl">
+                <div className="bg-rose-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Info className="h-8 w-8 text-rose-600" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">Oups ! Quelque chose s'est mal passé</h3>
+                <p className="text-slate-600 mb-8 max-w-md mx-auto">{error}</p>
                 <Button
                   onClick={() => fetchRecommendations()}
-                  className="mt-4"
-                  size="sm"
+                  className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3 rounded-xl"
                 >
-                  Réessayer
+                  Réessayer l'analyse
                 </Button>
               </Card>
             ) : recommendations.length === 0 ? (
-              <Card className="text-center p-8">
-                <Brain className="h-16 w-16 text-blue-500 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Activez l'IA pour votre réseau</h3>
-                <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                  Notre IA analyse votre profil pour trouver les meilleurs contacts professionnels adaptés à vos intérêts et objectifs.
+              <Card className="text-center p-16 bg-white rounded-3xl shadow-xl border-slate-100">
+                <div className="bg-blue-50 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-8">
+                  <Brain className="h-12 w-12 text-blue-600" />
+                </div>
+                <h3 className="text-3xl font-black text-slate-900 mb-4">Activez votre Réseau IA</h3>
+                <p className="text-slate-500 mb-10 max-w-xl mx-auto text-lg">
+                  Notre intelligence artificielle analyse vos compétences et vos objectifs pour vous présenter les partenaires les plus pertinents.
                 </p>
                 <Button
                   onClick={() => {
@@ -539,23 +590,27 @@ export default function NetworkingPage() {
                     }
                   }}
                   size="lg"
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-12 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
                 >
-                  <Zap className="h-5 w-5 mr-2" />
-                  Générer les Recommandations IA
+                  <Zap className="h-5 w-5 mr-3" />
+                  Générer mes Recommandations
                 </Button>
               </Card>
             ) : (
-              <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <h2 className="text-xl font-semibold text-gray-900">
-                    Recommandations personnalisées
-                  </h2>
+              <div className="space-y-8">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                  <div>
+                    <h2 className="text-3xl font-black text-slate-900">
+                      Recommandations IA
+                    </h2>
+                    <p className="text-slate-500">Basé sur votre profil et vos intérêts</p>
+                  </div>
                   <Button
                     variant="outline"
-                    size="sm"
                     onClick={() => fetchRecommendations()}
+                    className="rounded-xl border-slate-200 hover:bg-slate-50"
                   >
-                    Actualiser
+                    Actualiser la liste
                   </Button>
                 </div>
 
@@ -573,160 +628,117 @@ export default function NetworkingPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        whileHover={{ y: -8 }}
+                        whileHover={{ y: -10 }}
                         className="group"
                       >
-                        <Card className="p-8 hover:shadow-2xl transition-all duration-300 border-0 bg-white rounded-2xl overflow-hidden relative">
-                          {/* Image de fond décorative */}
-                          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full -mr-16 -mt-16 opacity-20 group-hover:opacity-30 transition-opacity"></div>
-
-                          <div className="relative z-10">
-                            <div className="flex items-start space-x-6 mb-6">
+                        <Card className="h-full flex flex-col bg-white hover:shadow-2xl transition-all duration-500 border-slate-100 rounded-[2rem] overflow-hidden relative">
+                          {/* Header de la carte avec score */}
+                          <div className={`h-24 w-full absolute top-0 left-0 opacity-10 ${getCompatibilityBg(rec.score)}`}></div>
+                          
+                          <div className="p-8 pt-10 relative z-10 flex-1">
+                            <div className="flex justify-between items-start mb-6">
                               <div className="relative">
-                                <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
+                                <Avatar className="h-20 w-20 border-4 border-white shadow-xl">
                                   <AvatarImage src={profile.profile.avatar} alt={`${profile.profile.firstName} ${profile.profile.lastName}`} />
-                                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-xl">
+                                  <AvatarFallback className="bg-gradient-to-br from-slate-800 to-slate-900 text-white font-black text-xl">
                                     {profile.profile.firstName[0]}{profile.profile.lastName[0]}
                                   </AvatarFallback>
                                 </Avatar>
-                                {/* Badge de score */}
-                                <div className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-md">
-                                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${getCompatibilityColor(rec.score)}`}>
-                                    {rec.score}%
-                                  </div>
+                                <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-lg">
+                                  <div className={`w-4 h-4 rounded-full border-2 border-white ${isConnected ? 'bg-emerald-500' : 'bg-slate-300'}`}></div>
                                 </div>
                               </div>
-
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-start justify-between mb-2">
-                                  <div>
-                                    <h4 className="font-bold text-xl text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
-                                      {`${profile.profile.firstName} ${profile.profile.lastName}`}
-                                    </h4>
-                                    <p className="text-sm font-medium text-gray-600 mb-1">{profile.profile.position}</p>
-                                    <p className="text-sm text-gray-500">{profile.profile.company}</p>
-                                  </div>
-                                </div>
-
-                                {/* Visitor Level & Compatibility */}
-                                <div className="flex items-center space-x-3 mb-4">
-                                  {profile.visitor_level && (
-                                    <LevelBadge
-                                      level={profile.visitor_level}
-                                      type="visitor"
-                                      size="sm"
-                                    />
-                                  )}
-                                  <div className="flex items-center space-x-2">
-                                    <div className={`w-3 h-3 rounded-full ${
-                                      rec.score >= 80 ? 'bg-green-500' :
-                                      rec.score >= 60 ? 'bg-blue-500' :
-                                      rec.score >= 40 ? 'bg-yellow-500' : 'bg-gray-500'
-                                    }`}></div>
-                                    <span className="text-sm font-semibold text-gray-700">
-                                      {getCompatibilityLabel(rec.score)} match
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
+                              
+                              <CompatibilityScore score={rec.score} />
                             </div>
 
-                            {/* Citation mise en avant */}
                             <div className="mb-6">
-                              <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-xl border-l-4 border-blue-400">
-                                <p className="text-sm text-gray-700 italic leading-relaxed">
-                                  "{rec.reasons[0]}"
+                              <div className="flex items-center space-x-2 mb-1">
+                                <h4 className="font-black text-xl text-slate-900 group-hover:text-blue-600 transition-colors truncate">
+                                  {`${profile.profile.firstName} ${profile.profile.lastName}`}
+                                </h4>
+                                {profile.visitor_level && (
+                                  <LevelBadge level={profile.visitor_level} type="visitor" size="sm" />
+                                )}
+                              </div>
+                              <p className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-1">{profile.profile.position}</p>
+                              <p className="text-sm text-slate-500 flex items-center">
+                                <Building2 className="h-3 w-3 mr-1.5 opacity-50" />
+                                {profile.profile.company}
+                              </p>
+                            </div>
+
+                            {/* Raison du match */}
+                            <div className={`p-4 rounded-2xl border mb-6 ${getCompatibilityBg(rec.score)}`}>
+                              <div className="flex items-start space-x-3">
+                                <Sparkles className={`h-4 w-4 mt-0.5 flex-shrink-0 ${getCompatibilityColor(rec.score)}`} />
+                                <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                                  {rec.reasons[0]}
                                 </p>
                               </div>
                             </div>
 
-                            {/* Intérêts communs */}
+                            {/* Intérêts */}
                             {profile.profile.interests && profile.profile.interests.length > 0 && (
-                              <div className="mb-6">
-                                <h5 className="text-sm font-bold uppercase text-gray-500 mb-3 flex items-center">
-                                  <Star className="h-4 w-4 mr-2 text-yellow-500" />
-                                  Intérêts communs
-                                </h5>
+                              <div className="mb-8">
                                 <div className="flex flex-wrap gap-2">
-                                  {profile.profile.interests.slice(0, 4).map(interest => (
-                                    <Badge key={interest} className="bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors px-3 py-1 rounded-full text-xs font-medium">
+                                  {profile.profile.interests.slice(0, 3).map(interest => (
+                                    <span key={interest} className="bg-slate-100 text-slate-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-tight">
                                       {interest}
-                                    </Badge>
+                                    </span>
                                   ))}
-                                  {profile.profile.interests.length > 4 && (
-                                    <Badge className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-medium">
-                                      +{profile.profile.interests.length - 4}
-                                    </Badge>
+                                  {profile.profile.interests.length > 3 && (
+                                    <span className="text-[10px] font-black text-slate-400 py-1">
+                                      +{profile.profile.interests.length - 3}
+                                    </span>
                                   )}
                                 </div>
                               </div>
                             )}
+                          </div>
 
-                            {/* Actions principales */}
-                            <div className="space-y-4">
-                              <div className="grid grid-cols-2 gap-3">
-                                {isConnected ? (
-                                  <Button size="sm" variant="outline" disabled className="bg-green-50 border-green-200 text-green-700 hover:bg-green-100 h-12 rounded-xl">
-                                    <CheckCircle className="h-4 w-4 mr-2" />
-                                    Connecté
-                                  </Button>
-                                ) : isPending ? (
-                                  <Button size="sm" variant="outline" disabled className="bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100 h-12 rounded-xl">
-                                    <Clock className="h-4 w-4 mr-2" />
-                                    En attente
-                                  </Button>
-                                ) : (
-                                  <Button
-                                    size="sm"
-                                    onClick={() => handleConnect(profile.id, `${profile.profile.firstName} ${profile.profile.lastName}`)}
-                                    className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transition-all h-12 rounded-xl"
-                                  >
-                                    <Users className="h-4 w-4 mr-2" />
-                                    Connecter
-                                  </Button>
-                                )}
+                          {/* Actions */}
+                          <div className="p-6 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between gap-3">
+                            <div className="flex-1">
+                              {isConnected ? (
+                                <Button size="sm" variant="outline" disabled className="w-full bg-emerald-50 border-emerald-200 text-emerald-700 rounded-xl h-11">
+                                  <CheckCircle className="h-4 w-4 mr-2" />
+                                  Connecté
+                                </Button>
+                              ) : isPending ? (
+                                <Button size="sm" variant="outline" disabled className="w-full bg-amber-50 border-amber-200 text-amber-700 rounded-xl h-11">
+                                  <Clock className="h-4 w-4 mr-2" />
+                                  En attente
+                                </Button>
+                              ) : (
                                 <Button
                                   size="sm"
-                                  variant="outline"
-                                  onClick={() => handleBookAppointment(profile)}
-                                  className="border-2 border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 h-12 rounded-xl"
+                                  onClick={() => handleConnect(profile.id, `${profile.profile.firstName} ${profile.profile.lastName}`)}
+                                  className="w-full bg-slate-900 hover:bg-slate-800 text-white shadow-lg rounded-xl h-11 font-bold"
                                 >
-                                  <Calendar className="h-4 w-4 mr-2" />
-                                  RDV
+                                  <UserPlus className="h-4 w-4 mr-2" />
+                                  Connecter
                                 </Button>
-                              </div>
-
-                              {/* Actions secondaires */}
-                              <div className="flex justify-center space-x-4 pt-2 border-t border-gray-100">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleMessage(`${profile.profile.firstName} ${profile.profile.lastName}`, profile.profile.company || '')}
-                                  className="hover:bg-blue-50 text-blue-600 rounded-lg p-3"
-                                >
-                                  <MessageCircle className="h-5 w-5" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleFavoriteToggle(profile.id, `${profile.profile.firstName} ${profile.profile.lastName}`, isFavorite)}
-                                  className={`rounded-lg p-3 transition-colors ${
-                                    isFavorite
-                                      ? 'text-red-500 hover:bg-red-50'
-                                      : 'text-gray-400 hover:bg-gray-50 hover:text-red-500'
-                                  }`}
-                                >
-                                  <Heart className={`h-5 w-5 ${isFavorite ? 'fill-current' : ''}`} />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleViewProfile(`${profile.profile.firstName} ${profile.profile.lastName}`, profile.profile.company || '', profile)}
-                                  className="hover:bg-gray-50 text-gray-600 rounded-lg p-3"
-                                >
-                                  <Eye className="h-5 w-5" />
-                                </Button>
-                              </div>
+                              )}
+                            </div>
+                            
+                            <div className="flex items-center space-x-2">
+                              <button
+                                onClick={() => handleFavoriteToggle(profile.id, `${profile.profile.firstName} ${profile.profile.lastName}`, isFavorite)}
+                                className={`p-2.5 rounded-xl border transition-all ${
+                                  isFavorite 
+                                    ? 'bg-rose-50 border-rose-200 text-rose-500' 
+                                    : 'bg-white border-slate-200 text-slate-400 hover:text-rose-500 hover:border-rose-200'
+                                }`}
+                              >
+                                <Heart className={`h-5 w-5 ${isFavorite ? 'fill-current' : ''}`} />
+                              </button>
+                              <button
+                                onClick={() => handleViewProfile(`${profile.profile.firstName} ${profile.profile.lastName}`, profile.profile.company || '', profile)}
+                                className="p-2.5 rounded-xl border bg-white border-slate-200 text-slate-400 hover:text-blue-600 hover:border-blue-200 transition-all"
+                              >
+                                <Eye className="h-5 w-5" />
+                              </button>
                             </div>
                           </div>
                         </Card>
@@ -740,47 +752,46 @@ export default function NetworkingPage() {
         )}
         
         {activeTab === CONFIG.tabIds.search && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-            {/* Bannière de recherche */}
-            <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 border border-green-100">
-              <div className="text-center mb-6">
-                <div className="flex justify-center mb-4">
-                  <div className="bg-green-500 p-4 rounded-full">
-                    <Search className="h-8 w-8 text-white" />
-                  </div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+            {/* Header Recherche Moderne */}
+            <div className="bg-white rounded-[3rem] p-10 shadow-xl border border-slate-100 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full -mr-32 -mt-32 opacity-50"></div>
+              <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                <div className="bg-emerald-500 p-6 rounded-[2rem] shadow-lg shadow-emerald-200">
+                  <Search className="h-10 w-10 text-white" />
                 </div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">Recherche Avancée</h2>
-                <p className="text-gray-600 max-w-2xl mx-auto">
-                  Trouvez les professionnels qui correspondent exactement à vos critères grâce à notre moteur de recherche intelligent
-                </p>
+                <div className="text-center md:text-left">
+                  <h2 className="text-4xl font-black text-slate-900 mb-2">Explorateur de Réseau</h2>
+                  <p className="text-slate-500 text-lg">Trouvez les partenaires stratégiques parmi des milliers de profils vérifiés.</p>
+                </div>
               </div>
             </div>
 
-            {/* Filtres de recherche avancés */}
-            <Card className="p-8 shadow-xl border-0 bg-white rounded-2xl">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div className="space-y-2">
-                  <label className="block text-sm font-bold text-gray-700 flex items-center">
-                    <Search className="h-4 w-4 mr-2 text-blue-500" />
+            {/* Filtres de recherche avancés - Style Carte Moderne */}
+            <Card className="p-10 shadow-2xl shadow-slate-200/50 border-0 bg-white rounded-[3rem]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+                <div className="space-y-3">
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center">
+                    <Search className="h-3 w-3 mr-2 text-blue-500" />
                     Mots-clés
                   </label>
                   <input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Technologies, secteurs, compétences..."
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    placeholder="IA, Logistique, 5G..."
+                    className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none font-medium"
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="block text-sm font-bold text-gray-700 flex items-center">
-                    <Building2 className="h-4 w-4 mr-2 text-green-500" />
-                    Secteur d'activité
+                <div className="space-y-3">
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center">
+                    <Building2 className="h-3 w-3 mr-2 text-emerald-500" />
+                    Secteur
                   </label>
                   <select 
                     value={searchFilters.sector}
                     onChange={(e) => setSearchFilters({...searchFilters, sector: e.target.value})}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none font-medium appearance-none"
                   >
                     <option value="">Tous les secteurs</option>
                     <option value="portuaire">Portuaire</option>
@@ -790,15 +801,15 @@ export default function NetworkingPage() {
                     <option value="finance">Finance</option>
                   </select>
                 </div>
-                <div className="space-y-2">
-                  <label className="block text-sm font-bold text-gray-700 flex items-center">
-                    <UserIcon className="h-4 w-4 mr-2 text-purple-500" />
-                    Type de profil
+                <div className="space-y-3">
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center">
+                    <UserIcon className="h-3 w-3 mr-2 text-indigo-500" />
+                    Type
                   </label>
                   <select 
                     value={searchFilters.userType}
                     onChange={(e) => setSearchFilters({...searchFilters, userType: e.target.value})}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none font-medium appearance-none"
                   >
                     <option value="">Tous types</option>
                     <option value="exhibitor">Exposant</option>
@@ -806,15 +817,15 @@ export default function NetworkingPage() {
                     <option value="partner">Partenaire</option>
                   </select>
                 </div>
-                <div className="space-y-2">
-                  <label className="block text-sm font-bold text-gray-700 flex items-center">
-                    <MapPin className="h-4 w-4 mr-2 text-orange-500" />
-                    Localisation
+                <div className="space-y-3">
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center">
+                    <MapPin className="h-3 w-3 mr-2 text-rose-500" />
+                    Région
                   </label>
                   <select 
                     value={searchFilters.location}
                     onChange={(e) => setSearchFilters({...searchFilters, location: e.target.value})}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all outline-none font-medium appearance-none"
                   >
                     <option value="">Toutes régions</option>
                     <option value="europe">Europe</option>
@@ -826,38 +837,37 @@ export default function NetworkingPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button onClick={handleSearch} className="flex-1 sm:flex-none bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                <Button 
+                  onClick={handleSearch} 
+                  className="bg-slate-900 hover:bg-slate-800 text-white px-12 py-4 rounded-2xl font-black shadow-xl transition-all transform hover:scale-105"
+                >
                   <Search className="h-5 w-5 mr-3" />
-                  Rechercher
+                  Lancer la Recherche
                 </Button>
-                <Button variant="outline" onClick={() => {
-                  setSearchTerm('');
-                  setSearchResults([]);
-                  toast.info('Filtres réinitialisés');
-                }} className="px-8 py-3 rounded-xl border-2 hover:bg-gray-50 transition-all">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setSearchTerm('');
+                    setSearchResults([]);
+                    toast.info('Filtres réinitialisés');
+                  }} 
+                  className="px-10 py-4 rounded-2xl border-2 border-slate-200 hover:bg-slate-50 font-bold transition-all"
+                >
                   Réinitialiser
                 </Button>
               </div>
             </Card>
 
-            {/* Résultats de recherche */}
+            {/* Résultats de recherche - Style Grille Moderne */}
             {searchResults.length > 0 && (
-              <div className="space-y-4">
+              <div className="space-y-8">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    Résultats de recherche ({searchResults.length})
+                  <h3 className="text-2xl font-black text-slate-900">
+                    Résultats ({searchResults.length})
                   </h3>
-                  <div className="flex space-x-2">
-                    <Button variant="outline" size="sm">
-                      Trier par pertinence
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      Filtrer
-                    </Button>
-                  </div>
                 </div>
 
-                <div data-testid="search-results" className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div data-testid="search-results" className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                   {searchResults.map((profile, index) => {
                     const isConnected = connections.includes(profile.id);
                     const isFavorite = favorites.includes(profile.id);
@@ -867,61 +877,52 @@ export default function NetworkingPage() {
                       <motion.div
                         key={profile.id}
                         data-testid="user-result"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: index * 0.05 }}
                       >
-                        <Card className="p-4 hover:shadow-md transition-shadow">
-                          <div className="flex items-start space-x-3">
-                            <Avatar className="h-12 w-12">
+                        <Card className="p-6 bg-white hover:shadow-2xl transition-all duration-300 border-slate-100 rounded-[2rem]">
+                          <div className="flex items-center space-x-4 mb-6">
+                            <Avatar className="h-16 w-16 border-2 border-slate-100">
                               <AvatarImage src={profile.profile.avatar} />
-                              <AvatarFallback>
+                              <AvatarFallback className="bg-slate-100 text-slate-600 font-bold">
                                 {profile.profile.firstName[0]}{profile.profile.lastName[0]}
                               </AvatarFallback>
                             </Avatar>
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center space-x-2 mb-1">
-                                <h4 className="font-semibold text-gray-900 truncate">
-                                  {`${profile.profile.firstName} ${profile.profile.lastName}`}
-                                </h4>
-                                {profile.visitor_level && (
-                                  <LevelBadge
-                                    level={profile.visitor_level}
-                                    type="visitor"
-                                    size="sm"
-                                  />
-                                )}
-                              </div>
-                              <p className="text-sm text-gray-600 truncate">{profile.profile.position}</p>
-                              <p className="text-sm text-gray-500 truncate">{profile.profile.company}</p>
+                              <h4 className="font-black text-slate-900 truncate">
+                                {`${profile.profile.firstName} ${profile.profile.lastName}`}
+                              </h4>
+                              <p className="text-xs font-bold text-blue-600 uppercase tracking-wider truncate">{profile.profile.position}</p>
+                              <p className="text-xs text-slate-400 truncate">{profile.profile.company}</p>
                             </div>
                           </div>
 
-                          <div className="mt-3 flex justify-between items-center gap-2">
+                          <div className="flex items-center justify-between gap-3">
                             <Button 
                               size="sm" 
                               variant="outline"
                               onClick={() => handleViewProfile(`${profile.profile.firstName} ${profile.profile.lastName}`, profile.profile.company || '', profile)}
+                              className="flex-1 rounded-xl border-slate-200 h-10 font-bold"
                             >
-                              <Eye className="h-3 w-3 mr-1" />
-                              Voir profil
+                              <Eye className="h-4 w-4 mr-2" />
+                              Profil
                             </Button>
                             {isConnected ? (
-                              <Button size="sm" variant="outline" disabled className="bg-green-50">
-                                <CheckCircle className="h-3 w-3 mr-1" />
-                                Connecté
+                              <Button size="sm" variant="outline" disabled className="flex-1 bg-emerald-50 border-emerald-100 text-emerald-600 rounded-xl h-10">
+                                <CheckCircle className="h-4 w-4" />
                               </Button>
                             ) : isPending ? (
-                              <Button size="sm" variant="outline" disabled className="bg-yellow-50">
-                                <Clock className="h-3 w-3 mr-1" />
-                                En attente
+                              <Button size="sm" variant="outline" disabled className="flex-1 bg-amber-50 border-amber-100 text-amber-600 rounded-xl h-10">
+                                <Clock className="h-4 w-4" />
                               </Button>
                             ) : (
                               <Button
                                 size="sm"
                                 onClick={() => handleConnect(profile.id, `${profile.profile.firstName} ${profile.profile.lastName}`)}
+                                className="flex-1 bg-slate-900 text-white rounded-xl h-10 font-bold"
                               >
-                                <UserPlus className="h-3 w-3 mr-1" />
+                                <UserPlus className="h-4 w-4 mr-2" />
                                 Connecter
                               </Button>
                             )}
@@ -936,13 +937,15 @@ export default function NetworkingPage() {
 
             {/* État vide */}
             {searchTerm && searchResults.length === 0 && (
-              <Card className="text-center p-8">
-                <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun résultat trouvé</h3>
-                <p className="text-gray-600 mb-4">
-                  Essayez d'autres mots-clés ou ajustez vos filtres de recherche.
+              <Card className="text-center p-20 bg-white rounded-[3rem] shadow-xl border-slate-100">
+                <div className="bg-slate-50 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-8">
+                  <Search className="h-12 w-12 text-slate-300" />
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 mb-4">Aucun résultat trouvé</h3>
+                <p className="text-slate-500 mb-10 max-w-md mx-auto">
+                  Essayez d'autres mots-clés ou ajustez vos filtres de recherche pour trouver des partenaires.
                 </p>
-                <Button variant="outline" onClick={() => setSearchTerm('')}>
+                <Button variant="outline" onClick={() => setSearchTerm('')} className="rounded-xl">
                   Effacer la recherche
                 </Button>
               </Card>
@@ -951,325 +954,282 @@ export default function NetworkingPage() {
         )}
 
         {activeTab === CONFIG.tabIds.connections && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-            {/* Bannière des connexions */}
-            <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-8 border border-purple-100">
-              <div className="text-center mb-6">
-                <div className="flex justify-center mb-4">
-                  <div className="bg-purple-500 p-4 rounded-full">
-                    <Users className="h-8 w-8 text-white" />
-                  </div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+            {/* Header Réseau Moderne */}
+            <div className="bg-white rounded-[3rem] p-10 shadow-xl border border-slate-100 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full -mr-32 -mt-32 opacity-50"></div>
+              <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                <div className="bg-indigo-500 p-6 rounded-[2rem] shadow-lg shadow-indigo-200">
+                  <Users className="h-10 w-10 text-white" />
                 </div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">Mes Connexions</h2>
-                <p className="text-gray-600 max-w-2xl mx-auto">
-                  Gérez votre réseau professionnel et suivez l'évolution de vos relations business
-                </p>
+                <div className="text-center md:text-left">
+                  <h2 className="text-4xl font-black text-slate-900 mb-2">Mon Réseau Business</h2>
+                  <p className="text-slate-500 text-lg">Gérez vos relations et transformez vos contacts en opportunités.</p>
+                </div>
               </div>
             </div>
 
-            {/* Statistiques des connexions améliorées */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-2xl border border-green-200 text-center shadow-lg"
-              >
-                <div className="flex justify-center mb-4">
-                  <div className="bg-green-500 p-4 rounded-full">
-                    <CheckCircle className="h-8 w-8 text-white" />
-                  </div>
+            {/* Statistiques du Réseau */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 flex items-center space-x-6">
+                <div className="bg-emerald-100 p-4 rounded-2xl">
+                  <CheckCircle className="h-8 w-8 text-emerald-600" />
                 </div>
-                <div className="text-4xl font-bold text-green-600 mb-2">{connections.length}</div>
-                <div className="text-lg font-medium text-green-800">Connexions actives</div>
-                <div className="text-sm text-green-600 mt-1">Relations établies</div>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl border border-blue-200 text-center shadow-lg"
-              >
-                <div className="flex justify-center mb-4">
-                  <div className="bg-blue-500 p-4 rounded-full">
-                    <Clock className="h-8 w-8 text-white" />
-                  </div>
+                <div>
+                  <div className="text-3xl font-black text-slate-900">{connections.length}</div>
+                  <div className="text-xs font-black text-slate-400 uppercase tracking-widest">Actifs</div>
                 </div>
-                <div className="text-4xl font-bold text-blue-600 mb-2">{pendingConnections.length}</div>
-                <div className="text-lg font-medium text-blue-800">Demandes en attente</div>
-                <div className="text-sm text-blue-600 mt-1">En cours de validation</div>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-2xl border border-purple-200 text-center shadow-lg"
-              >
-                <div className="flex justify-center mb-4">
-                  <div className="bg-purple-500 p-4 rounded-full">
-                    <Heart className="h-8 w-8 text-white" />
-                  </div>
+              </div>
+              <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 flex items-center space-x-6">
+                <div className="bg-amber-100 p-4 rounded-2xl">
+                  <Clock className="h-8 w-8 text-amber-600" />
                 </div>
-                <div className="text-4xl font-bold text-purple-600 mb-2">{favorites.length}</div>
-                <div className="text-lg font-medium text-purple-800">Favoris</div>
-                <div className="text-sm text-purple-600 mt-1">Contacts privilégiés</div>
-              </motion.div>
-            </div>
-
-            {/* Filtres et actions */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <h2 className="text-xl font-semibold text-gray-900">Mes Connexions</h2>
-              <div className="flex space-x-2">
-                <Button variant="outline" size="sm">
-                  <BarChart3 className="h-4 w-4 mr-2" />
-                  Statistiques
-                </Button>
-                <Button variant="outline" size="sm">
-                  Exporter
-                </Button>
+                <div>
+                  <div className="text-3xl font-black text-slate-900">{pendingConnections.length}</div>
+                  <div className="text-xs font-black text-slate-400 uppercase tracking-widest">En attente</div>
+                </div>
+              </div>
+              <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 flex items-center space-x-6">
+                <div className="bg-rose-100 p-4 rounded-2xl">
+                  <Heart className="h-8 w-8 text-rose-600" />
+                </div>
+                <div>
+                  <div className="text-3xl font-black text-slate-900">{favorites.length}</div>
+                  <div className="text-xs font-black text-slate-400 uppercase tracking-widest">Favoris</div>
+                </div>
               </div>
             </div>
 
-            {/* Liste des connexions */}
+            {/* Liste des connexions - Style Moderne */}
             {connections.length === 0 ? (
-              <Card className="text-center p-8">
-                <Users className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Aucune connexion active</h3>
-                <p className="text-gray-600 mb-6">
-                  Commencez à réseauter en consultant les recommandations IA ou en utilisant la recherche avancée.
-                </p>
-                <div className="flex justify-center space-x-4">
-                  <Button onClick={() => setActiveTab(CONFIG.tabIds.recommendations)}>
-                    <Brain className="h-4 w-4 mr-2" />
-                    Voir recommandations
-                  </Button>
-                  <Button variant="outline" onClick={() => setActiveTab(CONFIG.tabIds.search)}>
-                    <Search className="h-4 w-4 mr-2" />
-                    Rechercher
-                  </Button>
+              <Card className="text-center p-20 bg-white rounded-[3rem] shadow-xl border-slate-100">
+                <div className="bg-slate-50 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-8">
+                  <Users className="h-12 w-12 text-slate-300" />
                 </div>
+                <h3 className="text-2xl font-black text-slate-900 mb-4">Votre réseau est encore vide</h3>
+                <p className="text-slate-500 mb-10 max-w-md mx-auto">
+                  Commencez à explorer les profils recommandés par notre IA pour bâtir votre écosystème.
+                </p>
+                <Button 
+                  onClick={() => setActiveTab(CONFIG.tabIds.recommendations)}
+                  className="bg-slate-900 text-white px-10 py-4 rounded-2xl font-black shadow-xl"
+                >
+                  Découvrir des Profils
+                </Button>
               </Card>
             ) : (
-              <div className="space-y-4">
-                {/* Connexions actives */}
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                    Connexions actives ({connections.length})
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {connections.slice(0, 6).map((connectionId) => {
-                      // Mock data - en réalité, il faudrait récupérer les données des connexions
-                      const mockProfile = {
-                        id: connectionId,
-                        profile: {
-                          firstName: 'Jean',
-                          lastName: 'Dupont',
-                          position: 'Directeur Commercial',
-                          company: 'Port de Marseille',
-                          avatar: null
-                        }
-                      };
+              <div className="space-y-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {connections.map((connectionId) => {
+                    // Mock data
+                    const mockProfile = {
+                      id: connectionId,
+                      profile: {
+                        firstName: 'Expert',
+                        lastName: 'Portuaire',
+                        position: 'Directeur Stratégie',
+                        company: 'Global Logistics Hub',
+                        avatar: null
+                      }
+                    };
 
-                      return (
-                        <Card key={connectionId} className="p-4 hover:shadow-md transition-shadow">
-                          <div className="flex items-center space-x-3">
-                            <Avatar className="h-10 w-10">
-                              <AvatarFallback>
-                                {mockProfile.profile.firstName[0]}{mockProfile.profile.lastName[0]}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1">
-                              <h4 className="font-medium text-gray-900">
-                                {mockProfile.profile.firstName} {mockProfile.profile.lastName}
-                              </h4>
-                              <p className="text-sm text-gray-600">{mockProfile.profile.position}</p>
-                              <p className="text-sm text-gray-500">{mockProfile.profile.company}</p>
-                            </div>
-                            <div className="flex space-x-1">
-                              <Button variant="ghost" size="sm">
-                                <MessageCircle className="h-4 w-4" />
-                              </Button>
-                              <Button variant="ghost" size="sm">
-                                <Calendar className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        </Card>
-                      );
-                    })}
-                  </div>
+                    return (
+                      <Card key={connectionId} className="p-6 bg-white hover:shadow-xl transition-all duration-300 border-slate-100 rounded-[2rem] flex items-center gap-6">
+                        <Avatar className="h-16 w-16 border-2 border-slate-100">
+                          <AvatarFallback className="bg-indigo-100 text-indigo-600 font-black">EP</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-black text-slate-900 truncate">
+                            {mockProfile.profile.firstName} {mockProfile.profile.lastName}
+                          </h4>
+                          <p className="text-xs font-bold text-indigo-600 uppercase tracking-wider truncate">{mockProfile.profile.position}</p>
+                          <p className="text-xs text-slate-400 truncate">{mockProfile.profile.company}</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <button className="p-3 rounded-xl bg-slate-50 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-all">
+                            <MessageCircle className="h-5 w-5" />
+                          </button>
+                          <button className="p-3 rounded-xl bg-slate-50 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 transition-all">
+                            <Calendar className="h-5 w-5" />
+                          </button>
+                        </div>
+                      </Card>
+                    );
+                  })}
                 </div>
-
-                {/* Demandes en attente */}
-                {pendingConnections.length > 0 && (
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                      <Clock className="h-5 w-5 text-yellow-500 mr-2" />
-                      Demandes en attente ({pendingConnections.length})
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {pendingConnections.slice(0, 4).map((pendingId) => (
-                        <Card key={pendingId} className="p-4 border-yellow-200 bg-yellow-50">
-                          <div className="flex items-center space-x-3">
-                            <Avatar className="h-10 w-10">
-                              <AvatarFallback>JD</AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1">
-                              <h4 className="font-medium text-gray-900">Demande envoyée</h4>
-                              <p className="text-sm text-gray-600">En attente de réponse</p>
-                            </div>
-                            <Badge className="text-yellow-700 border-yellow-300">
-                              En attente
-                            </Badge>
-                          </div>
-                        </Card>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             )}
           </motion.div>
         )}
 
         {activeTab === CONFIG.tabIds.insights && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-            {/* Bannière des insights */}
-            <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-2xl p-8 border border-orange-100">
-              <div className="text-center mb-6">
-                <div className="flex justify-center mb-4">
-                  <div className="bg-orange-500 p-4 rounded-full">
-                    <TrendingUp className="h-8 w-8 text-white" />
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+            {/* Bannière des insights Ultra-Moderne */}
+            <div className="relative bg-slate-900 rounded-[3rem] p-12 overflow-hidden shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-indigo-600/10 to-transparent z-10"></div>
+              <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full -mr-48 -mt-48 blur-[100px]"></div>
+              
+              <div className="relative z-20 flex flex-col md:flex-row items-center gap-12">
+                <div className="flex-1 text-center md:text-left">
+                  <div className="inline-flex items-center space-x-2 bg-blue-500/20 border border-blue-500/30 rounded-full px-4 py-2 mb-6">
+                    <Zap className="h-4 w-4 text-blue-400" />
+                    <span className="text-blue-300 text-xs font-black uppercase tracking-widest">Analyse Prédictive</span>
                   </div>
+                  <h2 className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight">
+                    Insights <br />
+                    <span className="text-blue-400">Stratégiques</span>
+                  </h2>
+                  <p className="text-blue-100/60 text-lg max-w-xl mb-8">
+                    Découvrez la structure de votre réseau et identifiez les opportunités de croissance grâce à notre moteur d'analyse comportementale.
+                  </p>
+                  <Button 
+                    onClick={loadAIInsights} 
+                    size="lg" 
+                    className="bg-white text-slate-900 hover:bg-blue-50 px-10 py-4 rounded-2xl font-black shadow-xl transition-all transform hover:scale-105"
+                  >
+                    <Brain className="h-5 w-5 mr-3" />
+                    Lancer l'Analyse IA
+                  </Button>
                 </div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">Insights IA Personnalisés</h2>
-                <p className="text-gray-600 max-w-2xl mx-auto">
-                  Découvrez des analyses approfondies de votre réseau professionnel et recevez des recommandations stratégiques basées sur l'intelligence artificielle.
-                </p>
-              </div>
-            </div>
-
-            {/* Métriques principales améliorées */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl border border-blue-200 text-center shadow-lg"
-              >
-                <div className="flex justify-center mb-4">
-                  <div className="bg-blue-500 p-4 rounded-full">
-                    <Brain className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <div className="text-4xl font-bold text-blue-600 mb-2">{recommendations.length}</div>
-                <div className="text-lg font-medium text-blue-800">Recommandations IA</div>
-                <div className="text-sm text-blue-600 mt-1">Suggestions personnalisées</div>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-2xl border border-green-200 text-center shadow-lg"
-              >
-                <div className="flex justify-center mb-4">
-                  <div className="bg-green-500 p-4 rounded-full">
-                    <BarChart3 className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <div className="text-4xl font-bold text-green-600 mb-2">
-                  {Math.round((connections.length / Math.max(recommendations.length + connections.length, 1)) * 100)}%
-                </div>
-                <div className="text-lg font-medium text-green-800">Taux de conversion</div>
-                <div className="text-sm text-green-600 mt-1">Efficacité réseau</div>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-2xl border border-purple-200 text-center shadow-lg"
-              >
-                <div className="flex justify-center mb-4">
-                  <div className="bg-purple-500 p-4 rounded-full">
-                    <Star className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <div className="text-4xl font-bold text-purple-600 mb-2">
-                  {recommendations.reduce((acc, rec) => acc + rec.score, 0) / Math.max(recommendations.length, 1) | 0}%
-                </div>
-                <div className="text-lg font-medium text-purple-800">Score moyen</div>
-                <div className="text-sm text-purple-600 mt-1">Qualité des matches</div>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="bg-gradient-to-br from-orange-50 to-orange-100 p-8 rounded-2xl border border-orange-200 text-center shadow-lg"
-              >
-                <div className="flex justify-center mb-4">
-                  <div className="bg-orange-500 p-4 rounded-full">
-                    <Users className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <div className="text-4xl font-bold text-orange-600 mb-2">
-                  {new Set(recommendations.flatMap(r => r.recommendedUser.profile.interests || [])).size}
-                </div>
-                <div className="text-lg font-medium text-orange-800">Intérêts identifiés</div>
-                <div className="text-sm text-orange-600 mt-1">Domaines d'intérêt</div>
-              </motion.div>
-            </div>
-
-            {/* Bouton génération d'insights amélioré */}
-            <Card className="text-center p-12 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 border-0 shadow-xl rounded-2xl overflow-hidden relative">
-              {/* Image de fond décorative */}
-              <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-blue-200 to-purple-200 rounded-full -mr-20 -mt-20 opacity-20"></div>
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full -ml-16 -mb-16 opacity-20"></div>
-
-              <div className="relative z-10">
-                <div className="flex justify-center mb-6">
-                  <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 rounded-full shadow-lg">
-                    <Brain className="h-12 w-12 text-white" />
-                  </div>
-                </div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-4">
-                  Analyse IA de votre réseau
-                </h3>
-                <p className="text-gray-600 mb-8 max-w-2xl mx-auto text-lg leading-relaxed">
-                  Générez des insights personnalisés sur vos connexions, vos opportunités de networking et vos axes d'amélioration grâce à notre intelligence artificielle avancée.
-                </p>
-                <Button onClick={loadAIInsights} size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-12 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
-                  <Zap className="h-6 w-6 mr-3" />
-                  Générer les Insights IA
-                </Button>
-              </div>
-            </Card>
-
-            {/* Résultats des insights */}
-            {aiInsights && (
-              <div className="space-y-6">
-                <Card className="p-6">
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-blue-100 p-3 rounded-lg">
-                      <TrendingUp className="h-6 w-6 text-blue-600" />
+                
+                <div className="w-full md:w-1/3 aspect-square bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-8 flex items-center justify-center">
+                  <div className="relative w-full h-full">
+                    {/* Animation de scan IA (CSS) */}
+                    <div className="absolute inset-0 border-2 border-blue-500/30 rounded-full animate-ping"></div>
+                    <div className="absolute inset-4 border-2 border-indigo-500/20 rounded-full animate-pulse"></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <TrendingUp className="h-24 w-24 text-blue-400 opacity-50" />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                        Analyse de votre réseau
-                      </h3>
-                      <p className="text-gray-700 mb-4">{aiInsights.summary}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <h4 className="font-medium text-gray-900 mb-2">Points forts</h4>
-                          <ul className="space-y-1">
-                            {aiInsights.suggestions.slice(0, 3).map((suggestion, index) => (
-                              <li key={index} className="flex items-start space-x-2">
-                                <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                <span className="text-sm text-gray-600">{suggestion}</span>
+            {/* Résultats des insights avec Graphiques */}
+            {aiInsights ? (
+              <div className="space-y-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Radar Chart - Répartition des Secteurs */}
+                  <Card className="lg:col-span-2 p-8 bg-white rounded-[2.5rem] shadow-xl border-slate-100">
+                    <div className="flex items-center justify-between mb-8">
+                      <div>
+                        <h3 className="text-xl font-black text-slate-900">Écosystème de Réseau</h3>
+                        <p className="text-slate-500 text-sm">Répartition par secteurs d'activité</p>
+                      </div>
+                      <div className="bg-indigo-50 p-3 rounded-2xl">
+                        <Target className="h-6 w-6 text-indigo-600" />
+                      </div>
+                    </div>
+                    
+                    <div className="h-[400px] w-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={[
+                          { subject: 'Portuaire', A: 120, fullMark: 150 },
+                          { subject: 'Logistique', A: 98, fullMark: 150 },
+                          { subject: 'Technologie', A: 86, fullMark: 150 },
+                          { subject: 'Finance', A: 65, fullMark: 150 },
+                          { subject: 'Formation', A: 45, fullMark: 150 },
+                          { subject: 'Institutionnel', A: 90, fullMark: 150 },
+                        ]}>
+                          <PolarGrid stroke="#e2e8f0" />
+                          <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 12, fontWeight: 700 }} />
+                          <PolarRadiusAxis angle={30} domain={[0, 150]} tick={false} axisLine={false} />
+                          <Radar
+                            name="Mon Réseau"
+                            dataKey="A"
+                            stroke="#3b82f6"
+                            fill="#3b82f6"
+                            fillOpacity={0.3}
+                          />
+                          <Tooltip 
+                            contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                          />
+                        </RadarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </Card>
+
+                  {/* Score de Qualité */}
+                  <div className="space-y-8">
+                    <Card className="p-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-[2.5rem] shadow-xl text-white">
+                      <h3 className="text-lg font-bold mb-6">Qualité des Matches</h3>
+                      <div className="flex items-end justify-between mb-4">
+                        <div className="text-5xl font-black">88%</div>
+                        <div className="bg-white/20 px-3 py-1 rounded-full text-xs font-bold">TOP 5%</div>
+                      </div>
+                      <p className="text-emerald-100 text-sm leading-relaxed">
+                        Votre profil attire des décideurs de haut niveau. Continuez à enrichir vos expériences.
+                      </p>
+                    </Card>
+
+                    <Card className="p-8 bg-white rounded-[2.5rem] shadow-xl border-slate-100">
+                      <h3 className="text-slate-900 font-black mb-6">Croissance</h3>
+                      <div className="h-[150px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={[
+                            { name: 'Lun', val: 4 },
+                            { name: 'Mar', val: 7 },
+                            { name: 'Mer', val: 5 },
+                            { name: 'Jeu', val: 9 },
+                            { name: 'Ven', val: 12 },
+                          ]}>
+                            <Bar dataKey="val" radius={[4, 4, 0, 0]}>
+                              { [0,1,2,3,4].map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={index === 4 ? '#3b82f6' : '#e2e8f0'} />
+                              ))}
+                            </Bar>
+                            <Tooltip cursor={{fill: 'transparent'}} content={() => null} />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                      <div className="flex items-center justify-between mt-4">
+                        <span className="text-slate-400 text-xs font-bold uppercase">Activité Hebdo</span>
+                        <span className="text-emerald-500 text-xs font-black">+24%</span>
+                      </div>
+                    </Card>
+                  </div>
+                </div>
+
+                {/* Analyse Textuelle IA */}
+                <Card className="p-10 bg-white rounded-[3rem] shadow-xl border-slate-100 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-2 h-full bg-blue-600"></div>
+                  <div className="flex flex-col md:flex-row gap-10">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-3 mb-6">
+                        <div className="bg-blue-100 p-2 rounded-lg">
+                          <Sparkles className="h-5 w-5 text-blue-600" />
+                        </div>
+                        <h3 className="text-2xl font-black text-slate-900">Synthèse de l'IA</h3>
+                      </div>
+                      <p className="text-slate-600 text-lg leading-relaxed mb-8">
+                        {aiInsights.summary}
+                      </p>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                          <h4 className="font-black text-slate-900 mb-4 flex items-center">
+                            <CheckCircle className="h-4 w-4 text-emerald-500 mr-2" />
+                            Points Forts
+                          </h4>
+                          <ul className="space-y-3">
+                            {aiInsights.suggestions.slice(0, 2).map((s, i) => (
+                              <li key={i} className="text-sm text-slate-600 flex items-start">
+                                <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-1.5 mr-3 flex-shrink-0"></span>
+                                {s}
                               </li>
                             ))}
                           </ul>
                         </div>
-
-                        <div>
-                          <h4 className="font-medium text-gray-900 mb-2">Opportunités</h4>
-                          <ul className="space-y-1">
-                            {aiInsights.suggestions.slice(3).map((suggestion, index) => (
-                              <li key={index} className="flex items-start space-x-2">
-                                <Star className="h-4 w-4 text-yellow-500 mt-0.5 flex-shrink-0" />
-                                <span className="text-sm text-gray-600">{suggestion}</span>
+                        <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                          <h4 className="font-black text-slate-900 mb-4 flex items-center">
+                            <ArrowRight className="h-4 w-4 text-blue-500 mr-2" />
+                            Recommandations
+                          </h4>
+                          <ul className="space-y-3">
+                            {aiInsights.suggestions.slice(2, 4).map((s, i) => (
+                              <li key={i} className="text-sm text-slate-600 flex items-start">
+                                <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full mt-1.5 mr-3 flex-shrink-0"></span>
+                                {s}
                               </li>
                             ))}
                           </ul>
@@ -1278,237 +1238,94 @@ export default function NetworkingPage() {
                     </div>
                   </div>
                 </Card>
-
-                {/* Graphiques et visualisations */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <Card className="p-6">
-                    <h4 className="font-semibold text-gray-900 mb-4">Répartition par secteur</h4>
-                    <div className="space-y-3">
-                      {[
-                        { sector: 'Portuaire', count: 12, percentage: 40 },
-                        { sector: 'Logistique', count: 8, percentage: 27 },
-                        { sector: 'Technologie', count: 6, percentage: 20 },
-                        { sector: 'Finance', count: 4, percentage: 13 }
-                      ].map((item) => (
-                        <div key={item.sector} className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">{item.sector}</span>
-                          <div className="flex items-center space-x-2">
-                            <div className="w-20 bg-gray-200 rounded-full h-2">
-                              <div
-                                className="bg-blue-600 h-2 rounded-full"
-                                style={{ width: `${item.percentage}%` }}
-                              ></div>
-                            </div>
-                            <span className="text-sm font-medium text-gray-900 w-8">{item.count}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </Card>
-
-                  <Card className="p-6">
-                    <h4 className="font-semibold text-gray-900 mb-4">Évolution du réseau</h4>
-                    <div className="text-center py-8">
-                      <div className="text-3xl font-bold text-blue-600 mb-2">
-                        +{connections.length * 2}
-                      </div>
-                      <div className="text-sm text-gray-600">Nouvelles connexions ce mois</div>
-                      <div className="mt-4 flex justify-center space-x-4 text-sm">
-                        <div className="text-center">
-                          <div className="font-semibold text-green-600">{connections.length}</div>
-                          <div className="text-gray-500">Actives</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="font-semibold text-yellow-600">{pendingConnections.length}</div>
-                          <div className="text-gray-500">En attente</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="font-semibold text-purple-600">{favorites.length}</div>
-                          <div className="text-gray-500">Favoris</div>
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                </div>
+              </div>
+            ) : (
+              /* État vide Insights */
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 opacity-40 grayscale pointer-events-none">
+                <Card className="p-8 h-64 bg-white rounded-3xl"></Card>
+                <Card className="p-8 h-64 bg-white rounded-3xl"></Card>
+                <Card className="p-8 h-64 bg-white rounded-3xl"></Card>
               </div>
             )}
           </motion.div>
         )}
 
         {activeTab === CONFIG.tabIds.favorites && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-            {/* Bannière des favoris */}
-            <div className="bg-gradient-to-r from-red-50 to-pink-50 rounded-2xl p-8 border border-red-100">
-              <div className="text-center mb-6">
-                <div className="flex justify-center mb-4">
-                  <div className="bg-red-500 p-4 rounded-full">
-                    <Heart className="h-8 w-8 text-white" />
-                  </div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+            {/* Header Favoris Moderne */}
+            <div className="bg-white rounded-[3rem] p-10 shadow-xl border border-slate-100 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-rose-50 rounded-full -mr-32 -mt-32 opacity-50"></div>
+              <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                <div className="bg-rose-500 p-6 rounded-[2rem] shadow-lg shadow-rose-200">
+                  <Heart className="h-10 w-10 text-white" />
                 </div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">Mes Favoris</h2>
-                <p className="text-gray-600 max-w-2xl mx-auto">
-                  {favorites.length} contact{favorites.length !== 1 ? 's' : ''} marqué{favorites.length !== 1 ? 's' : ''} comme favori{favorites.length !== 1 ? 's' : ''}
-                </p>
+                <div className="text-center md:text-left">
+                  <h2 className="text-4xl font-black text-slate-900 mb-2">Mes Favoris</h2>
+                  <p className="text-slate-500 text-lg">Gardez un œil sur les profils qui comptent le plus pour vous.</p>
+                </div>
               </div>
             </div>
 
-            {/* Statistiques des favoris améliorées */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="bg-gradient-to-br from-red-50 to-red-100 p-8 rounded-2xl border border-red-200 text-center shadow-lg"
-              >
-                <div className="flex justify-center mb-4">
-                  <div className="bg-red-500 p-4 rounded-full">
-                    <Heart className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <div className="text-4xl font-bold text-red-600 mb-2">{favorites.length}</div>
-                <div className="text-lg font-medium text-red-800">Contacts favoris</div>
-                <div className="text-sm text-red-600 mt-1">Relations privilégiées</div>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-2xl border border-green-200 text-center shadow-lg"
-              >
-                <div className="flex justify-center mb-4">
-                  <div className="bg-green-500 p-4 rounded-full">
-                    <CheckCircle className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <div className="text-4xl font-bold text-green-600 mb-2">
-                  {favorites.filter(f => connections.includes(f)).length}
-                </div>
-                <div className="text-lg font-medium text-green-800">Déjà connectés</div>
-                <div className="text-sm text-green-600 mt-1">Relations actives</div>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl border border-blue-200 text-center shadow-lg"
-              >
-                <div className="flex justify-center mb-4">
-                  <div className="bg-blue-500 p-4 rounded-full">
-                    <UserPlus className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <div className="text-4xl font-bold text-blue-600 mb-2">
-                  {favorites.filter(f => !connections.includes(f)).length}
-                </div>
-                <div className="text-lg font-medium text-blue-800">À contacter</div>
-                <div className="text-sm text-blue-600 mt-1">Opportunités à saisir</div>
-              </motion.div>
-            </div>
-
-            {/* Liste des favoris */}
             {favorites.length === 0 ? (
-              <Card className="text-center py-12">
-                <Heart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Aucun favori pour le moment
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Marquez des contacts comme favoris pour les retrouver facilement ici.
+              <Card className="text-center p-20 bg-white rounded-[3rem] shadow-xl border-slate-100">
+                <div className="bg-rose-50 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-8">
+                  <Heart className="h-12 w-12 text-rose-200" />
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 mb-4">Aucun favori enregistré</h3>
+                <p className="text-slate-500 mb-10 max-w-md mx-auto">
+                  Cliquez sur le cœur des profils qui vous intéressent pour les retrouver ici instantanément.
                 </p>
-                <Button onClick={() => setActiveTab(CONFIG.tabIds.recommendations)} variant="outline">
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Découvrir des recommandations
+                <Button 
+                  onClick={() => setActiveTab(CONFIG.tabIds.recommendations)}
+                  className="bg-slate-900 text-white px-10 py-4 rounded-2xl font-black shadow-xl"
+                >
+                  Explorer les Profils
                 </Button>
               </Card>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {favorites.map((favoriteId) => {
-                  // Mock data - en réalité, il faudrait récupérer les données des utilisateurs
+                  // Mock data
                   const mockFavorite = {
                     id: favoriteId,
-                    name: 'Utilisateur Favori',
-                    title: 'Directeur Commercial',
-                    company: 'Entreprise Example',
-                    avatar: null,
-                    profile: {
-                      interests: ['Technologie', 'Innovation']
-                    }
+                    name: 'Contact Privilégié',
+                    title: 'Directeur Innovation',
+                    company: 'Smart Port Solutions',
+                    avatar: null
                   };
-
-                  const isConnected = connections.includes(favoriteId);
-                  const isPending = pendingConnections.includes(favoriteId);
 
                   return (
                     <motion.div
                       key={favoriteId}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      whileHover={{ scale: 1.02 }}
-                      transition={{ duration: 0.2 }}
+                      whileHover={{ y: -10 }}
+                      transition={{ duration: 0.3 }}
                     >
-                      <Card className="p-6 hover:shadow-lg transition-shadow duration-200">
-                        <div className="flex items-start space-x-4">
-                          <Avatar className="h-12 w-12">
-                            <AvatarImage src={mockFavorite.avatar || undefined} alt={mockFavorite.name} />
-                            <AvatarFallback>
-                              {mockFavorite.name.split(' ').map((n: string) => n[0]).join('')}
-                            </AvatarFallback>
-                          </Avatar>
+                      <Card className="p-8 bg-white hover:shadow-2xl transition-all duration-500 border-slate-100 rounded-[2.5rem] relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-6">
+                          <Heart className="h-6 w-6 text-rose-500 fill-current" />
+                        </div>
+                        
+                        <Avatar className="h-20 w-20 mb-6 border-4 border-slate-50 shadow-lg">
+                          <AvatarFallback className="bg-rose-100 text-rose-600 font-black text-xl">CP</AvatarFallback>
+                        </Avatar>
 
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between mb-2">
-                              <h3 className="font-semibold text-gray-900 truncate">
-                                {mockFavorite.name}
-                              </h3>
-                              <Heart className="h-5 w-5 text-red-500 fill-current" />
-                            </div>
+                        <h3 className="text-xl font-black text-slate-900 mb-1">{mockFavorite.name}</h3>
+                        <p className="text-sm font-bold text-rose-600 uppercase tracking-wider mb-1">{mockFavorite.title}</p>
+                        <p className="text-sm text-slate-400 mb-8">{mockFavorite.company}</p>
 
-                            <p className="text-sm text-gray-600 mb-2">{mockFavorite.title}</p>
-                            <p className="text-sm text-gray-500 mb-3">{mockFavorite.company}</p>
-
-                            <div className="flex flex-wrap gap-1 mb-4">
-                              {mockFavorite.profile?.interests?.slice(0, 2).map((interest, index) => (
-                                <Badge key={index} className="text-xs">
-                                  {interest}
-                                </Badge>
-                              ))}
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center space-x-2">
-                                {isConnected ? (
-                                  <Badge className="bg-green-100 text-green-800">
-                                    <CheckCircle className="h-3 w-3 mr-1" />
-                                    Connecté
-                                  </Badge>
-                                ) : isPending ? (
-                                  <Badge className="bg-yellow-100 text-yellow-800">
-                                    <Clock className="h-3 w-3 mr-1" />
-                                    En attente
-                                  </Badge>
-                                ) : (
-                                  <Badge>
-                                    <UserPlus className="h-3 w-3 mr-1" />
-                                    À contacter
-                                  </Badge>
-                                )}
-                              </div>
-
-                              <div className="flex space-x-2">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => handleViewProfile(mockFavorite.name, mockFavorite.company)}
-                                >
-                                  <Eye className="h-4 w-4" />
-                                </Button>
-                                {!isConnected && !isPending && (
-                                  <Button
-                                    size="sm"
-                                    onClick={() => handleConnect(favoriteId, mockFavorite.name)}
-                                  >
-                                    <UserPlus className="h-4 w-4" />
-                                  </Button>
-                                )}
-                              </div>
-                            </div>
-                          </div>
+                        <div className="flex gap-3">
+                          <Button 
+                            onClick={() => handleViewProfile(mockFavorite.name, mockFavorite.company)}
+                            className="flex-1 bg-slate-900 text-white rounded-xl h-12 font-black"
+                          >
+                            Voir Profil
+                          </Button>
+                          <button 
+                            onClick={() => handleFavoriteToggle(favoriteId, mockFavorite.name, true)}
+                            className="p-3 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 transition-all"
+                          >
+                            <Plus className="h-6 w-6 rotate-45" />
+                          </button>
                         </div>
                       </Card>
                     </motion.div>
