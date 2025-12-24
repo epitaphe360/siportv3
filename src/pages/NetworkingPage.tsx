@@ -269,82 +269,109 @@ export default function NetworkingPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="bg-gradient-to-br from-blue-100 via-blue-50 to-white min-h-screen flex flex-col justify-between">
-        {/* Bannière d'accueil */}
-        <div className="w-full bg-blue-900 py-12 px-4 text-center text-white shadow-lg">
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-2 tracking-tight">SIPORTS 2026 Networking</h1>
-          <p className="text-lg md:text-2xl font-medium mb-4 max-w-2xl mx-auto">
-            Un carrefour d’affaires et de coopération portuaire
-          </p>
-          <p className="text-md md:text-lg max-w-2xl mx-auto opacity-80">
-            Rencontrez les autorités portuaires, logisticiens, investisseurs, centres de formation et institutions venus de plus de 4 continents. Profitez de rencontres B2B ciblées, espaces lounge VIP, sessions de pitch et afterworks pour générer des synergies concrètes.
-          </p>
-        </div>
-        {/* Bloc connexion obligatoire */}
-        <div className="flex-1 flex items-center justify-center">
-          <Card className="p-10 rounded-2xl shadow-2xl bg-white/90 max-w-lg w-full text-center border border-blue-100">
-            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-              <h2 className="text-2xl font-bold text-blue-900 mb-2">Connexion requise</h2>
-              <p className="text-gray-700 mb-6">
-                La connexion est obligatoire pour accéder au networking SIPORTS 2026.<br />
-                Merci de vous connecter ou de créer un compte pour profiter des opportunités de réseautage.
+      <div className="bg-[#0a192f] min-h-screen flex flex-col">
+        {/* Hero Section Ultra-Moderne (Même style que la version connectée) */}
+        <div className="relative flex-1 flex items-center justify-center overflow-hidden">
+          {/* Background avec effet de particules/réseau */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-indigo-900/80 to-slate-900/90 z-10"></div>
+            <div className="absolute inset-0 opacity-30 z-0" style={{
+              backgroundImage: `url('https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=2000')`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}></div>
+            
+            {/* Éléments décoratifs animés */}
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full filter blur-[100px] animate-pulse"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-indigo-500/20 rounded-full filter blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+          </div>
+
+          <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="inline-flex items-center space-x-2 bg-blue-500/10 backdrop-blur-md border border-blue-500/20 rounded-full px-4 py-2 mb-8">
+                <Sparkles className="h-4 w-4 text-blue-400" />
+                <span className="text-blue-200 text-sm font-medium tracking-wide uppercase">Propulsé par l'IA SIPORTS v3.0</span>
+              </div>
+
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 tracking-tight leading-none">
+                Réseautage <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-400">
+                  Intelligent
+                </span>
+              </h1>
+
+              <p className="text-xl md:text-2xl text-blue-100/80 max-w-3xl mx-auto mb-12 font-light leading-relaxed">
+                Connectez-vous avec les leaders de l'industrie portuaire mondiale. <br className="hidden md:block" />
+                Accédez à des opportunités de matching exclusives.
               </p>
+
+              {/* Bloc connexion obligatoire style Glassmorphism */}
+              <div className="max-w-lg mx-auto bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl">
+                <h2 className="text-2xl font-bold text-white mb-4">Connexion requise</h2>
+                <p className="text-blue-100/70 mb-8 leading-relaxed">
+                  Le Hub de Réseautage est réservé aux membres inscrits. 
+                  Connectez-vous pour découvrir vos recommandations personnalisées.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link to={ROUTES.LOGIN} className="flex-1">
+                    <Button size="lg" className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white border-none shadow-lg shadow-blue-900/20">
+                      <UserIcon className="h-4 w-4 mr-2" />
+                      Se connecter
+                    </Button>
+                  </Link>
+                  <Link to={ROUTES.VISITOR_SUBSCRIPTION} className="flex-1">
+                    <Button variant="outline" size="lg" className="w-full border-white/20 text-white hover:bg-white/10 backdrop-blur-md">
+                      <Plus className="h-4 w-4 mr-2" />
+                      S'inscrire
+                    </Button>
+                  </Link>
+                </div>
+              </div>
             </motion.div>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to={ROUTES.LOGIN}>
-                <Button size="lg" className="bg-blue-700 hover:bg-blue-800 text-white">
-                  <UserIcon className="h-4 w-4 mr-2" />
-                  Se connecter
-                </Button>
-              </Link>
-              <Link to={ROUTES.VISITOR_SUBSCRIPTION}>
-                <Button variant="outline" size="lg" className="border-blue-700 text-blue-700 hover:bg-blue-50">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Créer un compte
-                </Button>
-              </Link>
-            </div>
-          </Card>
+          </div>
         </div>
-        {/* Section opportunités */}
-        <div className="bg-white py-10 px-4 mt-8">
-          <h3 className="text-2xl font-bold text-blue-900 mb-6 text-center">Des opportunités de réseautage sur-mesure</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <div className="flex flex-col items-center p-6 bg-blue-50 rounded-xl shadow hover:scale-105 transition-transform">
-              <Handshake className="h-10 w-10 text-blue-700 mb-2" />
-              <span className="font-semibold text-blue-900">Espace B2B pré-programmé</span>
-            </div>
-            <div className="flex flex-col items-center p-6 bg-blue-50 rounded-xl shadow hover:scale-105 transition-transform">
-              <Star className="h-10 w-10 text-yellow-500 mb-2" />
-              <span className="font-semibold text-blue-900">Afterworks & réceptions</span>
-            </div>
-            <div className="flex flex-col items-center p-6 bg-blue-50 rounded-xl shadow hover:scale-105 transition-transform">
-              <Briefcase className="h-10 w-10 text-blue-700 mb-2" />
-              <span className="font-semibold text-blue-900">Tables rondes sectorielles</span>
-            </div>
-            <div className="flex flex-col items-center p-6 bg-blue-50 rounded-xl shadow hover:scale-105 transition-transform">
-              <Building2 className="h-10 w-10 text-blue-700 mb-2" />
-              <span className="font-semibold text-blue-900">Zone Lounge Business & VIP</span>
-            </div>
-            <div className="flex flex-col items-center p-6 bg-blue-50 rounded-xl shadow hover:scale-105 transition-transform">
-              <Mic className="h-10 w-10 text-blue-700 mb-2" />
-              <span className="font-semibold text-blue-900">Sessions de pitch</span>
-            </div>
-            <div className="flex flex-col items-center p-6 bg-blue-50 rounded-xl shadow hover:scale-105 transition-transform">
-              <Users className="h-10 w-10 text-blue-700 mb-2" />
-              <span className="font-semibold text-blue-900">Espaces d’échanges</span>
+
+        {/* Section opportunités style sombre */}
+        <div className="bg-[#0a192f] border-t border-white/5 py-20 px-4">
+          <div className="max-w-7xl mx-auto">
+            <h3 className="text-3xl font-bold text-white mb-12 text-center">L'écosystème SIPORTS à votre portée</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[
+                { icon: Handshake, label: "Espace B2B pré-programmé", desc: "Rencontres ciblées avec des décideurs" },
+                { icon: Star, label: "Afterworks & réceptions", desc: "Networking informel et convivial" },
+                { icon: Briefcase, label: "Tables rondes sectorielles", desc: "Échanges d'expertise approfondis" },
+                { icon: Building2, label: "Zone Lounge Business & VIP", desc: "Espaces de travail et de détente" },
+                { icon: Mic, label: "Sessions de pitch", desc: "Découvrez les innovations du secteur" },
+                { icon: Users, label: "Espaces d’échanges", desc: "Plus de 6000 professionnels attendus" }
+              ].map((item, idx) => (
+                <div key={idx} className="flex flex-col items-center p-8 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all group">
+                  <item.icon className="h-12 w-12 text-blue-400 mb-4 group-hover:scale-110 transition-transform" />
+                  <span className="font-bold text-white text-lg mb-2">{item.label}</span>
+                  <p className="text-blue-100/50 text-sm text-center">{item.desc}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-        {/* Footer */}
-        <footer className="bg-blue-900 text-white py-6 mt-8 text-center text-sm opacity-90">
-          <div className="mb-2">© 2026 - SIPORTS : Salon International des Ports et de leur Écosystème – Tous droits réservés.</div>
-          <div className="flex justify-center gap-4 mb-2">
-            <a href="https://siportevent.com/conditions-generales-2/" className="hover:underline">Conditions Générales</a>
-            <a href="https://siportevent.com/politique-de-confidentialite/" className="hover:underline">Confidentialité</a>
-            <a href="https://siportevent.com/mentions-legales/" className="hover:underline">Mentions Légales</a>
+
+        {/* Footer simplifié */}
+        <footer className="bg-[#050c1a] text-white/40 py-12 border-t border-white/5 text-center text-sm">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="mb-6">© 2026 - SIPORTS : Salon International des Ports et de leur Écosystème – Tous droits réservés.</div>
+            <div className="flex justify-center gap-8 mb-6">
+              <a href="https://siportevent.com/conditions-generales-2/" className="hover:text-white transition-colors">Conditions Générales</a>
+              <a href="https://siportevent.com/politique-de-confidentialite/" className="hover:text-white transition-colors">Confidentialité</a>
+              <a href="https://siportevent.com/mentions-legales/" className="hover:text-white transition-colors">Mentions Légales</a>
+            </div>
+            <div className="inline-block px-4 py-1 rounded-full bg-white/5 border border-white/10">
+              Contact : <a href="mailto:contact@siportevent.com" className="text-blue-400 hover:underline">contact@siportevent.com</a>
+            </div>
           </div>
-          <div>Contact : <a href="mailto:contact@siportevent.com" className="underline">contact@siportevent.com</a></div>
         </footer>
       </div>
     );

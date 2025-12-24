@@ -69,7 +69,7 @@ export const Header: React.FC = memo(() => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to={ROUTES.HOME} className="flex items-center">
+          <Link to={ROUTES.HOME} className="flex items-center space-x-2">
             <div className="h-12 w-auto">
               <img
                 src="/salon-logo01.png"
@@ -81,6 +81,10 @@ export const Header: React.FC = memo(() => {
                   t.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1" height="1"%3E%3C/svg%3E';
                 }}
               />
+            </div>
+            <div className="hidden sm:flex flex-col">
+              <span className="text-xs font-bold text-siports-primary leading-none">v3.0</span>
+              <span className="text-[10px] text-gray-400 font-medium">LIVE</span>
             </div>
           </Link>
 
