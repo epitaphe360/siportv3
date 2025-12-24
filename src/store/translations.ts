@@ -231,6 +231,25 @@ export const allTranslations = {
     'venue.step2_desc': 'Passez votre souris sur un stand pour voir un aperçu',
     'venue.step3_title': 'Cliquez pour plus',
     'venue.step3_desc': 'Cliquez sur un stand pour accéder à la fiche complète',
+    
+    // News Page
+    'news.title': 'Actualités',
+    'news.description': 'Restez informé sur les derniers événements',
+    'news.search_placeholder': 'Chercher une actualité',
+    'news.filter': 'Filtrer',
+    'news.all_categories': 'Toutes les catégories',
+    'news.featured': 'En vedette',
+    'news.views': 'Vues',
+    'news.category': 'Catégorie',
+    
+    // Partnership Page
+    'partnership.title': 'Partenariats SIPORTS 2026',
+    'partnership.description': 'Rejoignez l\'écosystème portuaire international',
+    'partnership.premium': 'Partenaire Premium',
+    'partnership.gold': 'Partenaire Or',
+    'partnership.silver': 'Partenaire Argent',
+    'partnership.become': 'Devenir Partenaire',
+    'partnership.contact': 'Nous Contacter',
   },
   
   en: {
@@ -451,6 +470,25 @@ export const allTranslations = {
     'venue.step2_desc': 'Hover your mouse over a booth to see a preview',
     'venue.step3_title': 'Click for more',
     'venue.step3_desc': 'Click on a booth to access the full exhibitor details',
+    
+    // News Page
+    'news.title': 'News',
+    'news.description': 'Stay informed about the latest events',
+    'news.search_placeholder': 'Search for news',
+    'news.filter': 'Filter',
+    'news.all_categories': 'All categories',
+    'news.featured': 'Featured',
+    'news.views': 'Views',
+    'news.category': 'Category',
+    
+    // Partnership Page
+    'partnership.title': 'SIPORTS 2026 Partnerships',
+    'partnership.description': 'Join the international port ecosystem',
+    'partnership.premium': 'Premium Partner',
+    'partnership.gold': 'Gold Partner',
+    'partnership.silver': 'Silver Partner',
+    'partnership.become': 'Become a Partner',
+    'partnership.contact': 'Contact Us',
   
   ar: {
     'pages.exhibitors.title': 'العارضون',
@@ -670,6 +708,25 @@ export const allTranslations = {
     'venue.step2_desc': 'مرر الفأرة فوق الكشك لرؤية معاينة',
     'venue.step3_title': 'اضغط لمزيد',
     'venue.step3_desc': 'اضغط على الكشك للوصول إلى الملف الكامل',
+    
+    // News Page
+    'news.title': 'أخبار',
+    'news.description': 'ابقَ على اطلاع بآخر الأحداث',
+    'news.search_placeholder': 'ابحث عن خبر',
+    'news.filter': 'تصفية',
+    'news.all_categories': 'جميع الفئات',
+    'news.featured': 'المميز',
+    'news.views': 'المشاهدات',
+    'news.category': 'الفئة',
+    
+    // Partnership Page
+    'partnership.title': 'شراكات SIPORTS 2026',
+    'partnership.description': 'انضم إلى النظام البيئي للموانئ الدولية',
+    'partnership.premium': 'شريك Premium',
+    'partnership.gold': 'شريك ذهبي',
+    'partnership.silver': 'شريك فضي',
+    'partnership.become': 'كن شريكاً',
+    'partnership.contact': 'تواصل معنا',
   
   es: {
     'pages.exhibitors.title': 'Expositores',
@@ -888,4 +945,23 @@ export const allTranslations = {
     'venue.step2_title': 'Pasar sobre un puesto',
     'venue.step2_desc': 'Pase el mouse sobre un puesto para ver una vista previa',
     'venue.step3_title': 'Hacer clic para más',
-    'venue.step3_desc': 'Haga clic en un puesto para acceder a la ficha completa',
+    'venue.step3_desc': 'Haga clic en un puesto para acceder a la ficha completa',    
+    // News Page
+    'news.title': 'Noticias',
+    'news.description': 'Manténgase informado sobre los últimos eventos',
+    'news.search_placeholder': 'Buscar noticias',
+    'news.filter': 'Filtrar',
+    'news.all_categories': 'Todas las categorías',
+    'news.featured': 'Destacado',
+    'news.views': 'Vistas',
+    'news.category': 'Categoría',
+    
+    // Partnership Page
+    'partnership.title': 'Asociaciones SIPORTS 2026',
+    'partnership.description': 'Únase al ecosistema portuario internacional',
+    'partnership.premium': 'Socio Premium',
+    'partnership.gold': 'Socio Oro',
+    'partnership.silver': 'Socio Plata',
+    'partnership.become': 'Conviértase en Socio',
+    'partnership.contact': 'Contáctenos',
+};

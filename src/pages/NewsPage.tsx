@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { useTranslation } from '../hooks/useTranslation';
 import { 
   Search, 
   Filter, 
@@ -25,6 +26,7 @@ import { motion } from 'framer-motion';
 import { CONFIG } from '../lib/config';
 
 export default function NewsPage() {
+  const { t } = useTranslation();
   const {
     articles,
     featuredArticles,
