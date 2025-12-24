@@ -108,29 +108,46 @@ export default function ExhibitorDashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Intentionally fetch only on mount
 
-  // Données pour les graphiques professionnels
-  const visitorEngagementData = [
-    { name: 'Lun', visits: 45, interactions: 28 },
-    { name: 'Mar', visits: 62, interactions: 41 },
-    { name: 'Mer', visits: 78, interactions: 55 },
-    { name: 'Jeu', visits: 95, interactions: 72 },
-    { name: 'Ven', visits: 110, interactions: 85 },
-    { name: 'Sam', visits: 88, interactions: 62 },
-    { name: 'Dim', visits: 52, interactions: 35 },
-  ];
+  // FIXED: Données réelles pour les graphiques (plus de valeurs hardcodées)
+  // Les données d'engagement seront remplies depuis les vraies métriques quand disponibles
+  const visitorEngagementData = React.useMemo(() => {
+    // Retourner des données réelles si disponibles, sinon tableau vide avec message
+    const realData = dashboardStats?.weeklyEngagement || [];
+    if (realData.length > 0) return realData;
 
-  const appointmentStatusData = [
-    { name: 'Confirmés', value: appointments?.filter(a => a.status === 'confirmed').length || 8 },
-    { name: 'En attente', value: appointments?.filter(a => a.status === 'pending').length || 3 },
-    { name: 'Terminés', value: appointments?.filter(a => a.status === 'completed').length || 12 },
-  ];
+    // Données placeholder avec valeurs à 0 pour indiquer l'absence de données
+    return [
+      { name: 'Lun', visits: 0, interactions: 0 },
+      { name: 'Mar', visits: 0, interactions: 0 },
+      { name: 'Mer', visits: 0, interactions: 0 },
+      { name: 'Jeu', visits: 0, interactions: 0 },
+      { name: 'Ven', visits: 0, interactions: 0 },
+      { name: 'Sam', visits: 0, interactions: 0 },
+      { name: 'Dim', visits: 0, interactions: 0 },
+    ];
+  }, [dashboardStats?.weeklyEngagement]);
 
-  const activityBreakdownData = [
-    { name: 'Vues Mini-Site', value: dashboardStats?.miniSiteViews?.value || 245 },
-    { name: 'Téléchargements', value: dashboardStats?.catalogDownloads?.value || 87 },
-    { name: 'Messages', value: dashboardStats?.messages?.value || 64 },
-    { name: 'Connexions', value: dashboardStats?.connections?.value || 32 },
-  ];
+  // FIXED: Utiliser les vraies données de rendez-vous (0 par défaut au lieu de fausses valeurs)
+  const appointmentStatusData = React.useMemo(() => [
+    { name: 'Confirmés', value: appointments?.filter(a => a.status === 'confirmed').length || 0 },
+    { name: 'En attente', value: appointments?.filter(a => a.status === 'pending').length || 0 },
+    { name: 'Terminés', value: appointments?.filter(a => a.status === 'completed').length || 0 },
+  ], [appointments]);
+
+  // FIXED: Utiliser les vraies métriques (0 par défaut)
+  const activityBreakdownData = React.useMemo(() => [
+    { name: 'Vues Mini-Site', value: dashboardStats?.miniSiteViews?.value || 0 },
+    { name: 'Téléchargements', value: dashboardStats?.catalogDownloads?.value || 0 },
+    { name: 'Messages', value: dashboardStats?.messages?.value || 0 },
+    { name: 'Connexions', value: dashboardStats?.connections?.value || 0 },
+  ], [dashboardStats]);
+
+  // Indicateur si aucune donnée réelle n'est disponible
+  const hasRealData = React.useMemo(() => {
+    const totalActivity = activityBreakdownData.reduce((sum, item) => sum + item.value, 0);
+    const totalAppointments = appointmentStatusData.reduce((sum, item) => sum + item.value, 0);
+    return totalActivity > 0 || totalAppointments > 0;
+  }, [activityBreakdownData, appointmentStatusData]);
 
   // CRITICAL #12 FIX: Proper null check before filtering appointments
   const receivedAppointments = user?.id

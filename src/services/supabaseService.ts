@@ -583,26 +583,126 @@ export class SupabaseService {
   // ==================== REAL IMPLEMENTATIONS ====================
   static async createMiniSite(exhibitorId: string, miniSiteData: any): Promise<any> {
     if (!this.checkSupabaseConnection()) return null;
-    
+
     const safeSupabase = supabase!;
     try {
+      // CRITICAL FIX: Convertir les données du wizard en sections de mini-site
+      const sections = miniSiteData.sections || [];
+
+      // Si pas de sections mais des données brutes, les convertir
+      if (sections.length === 0) {
+        // Section Hero avec le nom de l'entreprise
+        if (miniSiteData.company || miniSiteData.logo) {
+          sections.push({
+            id: 'hero',
+            type: 'hero',
+            title: 'Accueil',
+            visible: true,
+            order: 0,
+            content: {
+              title: miniSiteData.company || 'Mon Entreprise',
+              subtitle: miniSiteData.description?.substring(0, 150) || '',
+              backgroundImage: miniSiteData.logo || '',
+              ctaText: 'Nous contacter',
+              ctaLink: '#contact'
+            }
+          });
+        }
+
+        // Section À propos avec la description
+        if (miniSiteData.description) {
+          sections.push({
+            id: 'about',
+            type: 'about',
+            title: 'À propos',
+            visible: true,
+            order: 1,
+            content: {
+              title: 'Notre expertise',
+              description: miniSiteData.description,
+              features: []
+            }
+          });
+        }
+
+        // Section Produits
+        if (miniSiteData.products && miniSiteData.products.length > 0) {
+          const productsList = Array.isArray(miniSiteData.products)
+            ? miniSiteData.products.map((p: any, idx: number) => ({
+                id: String(idx + 1),
+                name: typeof p === 'string' ? p : p.name || 'Produit',
+                description: typeof p === 'object' ? p.description || '' : '',
+                image: typeof p === 'object' ? p.image || '' : '',
+                features: [],
+                price: ''
+              }))
+            : [];
+
+          sections.push({
+            id: 'products',
+            type: 'products',
+            title: 'Produits & Services',
+            visible: true,
+            order: 2,
+            content: {
+              title: 'Nos solutions',
+              products: productsList
+            }
+          });
+        }
+
+        // Section Contact
+        if (miniSiteData.contact || miniSiteData.socials) {
+          sections.push({
+            id: 'contact',
+            type: 'contact',
+            title: 'Contact',
+            visible: true,
+            order: 3,
+            content: {
+              title: 'Contactez-nous',
+              email: miniSiteData.contact?.email || '',
+              phone: miniSiteData.contact?.phone || '',
+              address: miniSiteData.contact?.address || '',
+              website: miniSiteData.contact?.website || '',
+              socials: miniSiteData.socials || []
+            }
+          });
+        }
+      }
+
       const { data, error } = await safeSupabase
         .from('mini_sites')
         .insert([{
           exhibitor_id: exhibitorId,
-          theme: miniSiteData.theme || 'default',
-          custom_colors: miniSiteData.customColors || {},
-          sections: miniSiteData.sections || [],
-          published: false
+          title: miniSiteData.company || 'Mon Mini-Site',
+          description: miniSiteData.description || '',
+          logo_url: miniSiteData.logo || '',
+          theme: typeof miniSiteData.theme === 'object' ? miniSiteData.theme : { primaryColor: '#1e40af' },
+          sections: sections,
+          contact_info: miniSiteData.contact || {},
+          social_links: { links: miniSiteData.socials || [] },
+          is_published: false
         }])
         .select()
         .single();
-        
+
       if (error) throw error;
+
+      // Marquer que le mini-site a été créé dans le profil utilisateur
+      try {
+        await safeSupabase
+          .from('users')
+          .update({ minisite_created: true })
+          .eq('id', exhibitorId);
+      } catch (updateErr) {
+        console.warn('Impossible de marquer minisite_created:', updateErr);
+      }
+
       return data;
     } catch (error) {
       console.error('Erreur création mini-site:', error);
-      return null;
+      throw error; // Propager l'erreur pour meilleur debugging
     }
   }
 
@@ -2458,14 +2558,47 @@ export class SupabaseService {
         }
       }
 
-      // Calculate current usage
+      // FIXED: Essayer d'abord avec la nouvelle table daily_quotas
+      const { data: dailyQuota, error: dailyError } = await safeSupabase
+        .from('daily_quotas')
+        .select('connections_used, messages_used, meetings_used')
+        .eq('user_id', targetUserId)
+        .eq('quota_date', new Date().toISOString().split('T')[0])
+        .maybeSingle();
+
+      if (dailyQuota && !dailyError) {
+        // FIXED: Retourner le format attendu par networkingStore
+        return {
+          connections: dailyQuota.connections_used || 0,
+          messages: dailyQuota.messages_used || 0,
+          meetings: dailyQuota.meetings_used || 0,
+          // Données étendues pour d'autres usages
+          limits,
+          usage: {
+            connections_today: dailyQuota.connections_used || 0,
+            messages_today: dailyQuota.messages_used || 0,
+            meetings_today: dailyQuota.meetings_used || 0
+          },
+          remaining: {
+            connections: Math.max(0, limits.connections_per_day - (dailyQuota.connections_used || 0)),
+            messages: Math.max(0, 50 - (dailyQuota.messages_used || 0)),
+            meetings: Math.max(0, limits.appointments - (dailyQuota.meetings_used || 0))
+          }
+        };
+      }
+
+      // Fallback: Utiliser quota_usage si daily_quotas n'existe pas
       const usage = {
         connections_today: quotaData?.filter(q => q.quota_type === 'connections').length || 0,
         appointments_total: quotaData?.filter(q => q.quota_type === 'appointments').length || 0,
         favorites_total: quotaData?.filter(q => q.quota_type === 'favorites').length || 0
       };
 
+      // FIXED: Format compatible avec networkingStore
       return {
+        connections: usage.connections_today,
+        messages: 0, // pas de tracking messages dans quota_usage
+        meetings: usage.appointments_total,
         limits,
         usage,
         remaining: {
@@ -2476,7 +2609,8 @@ export class SupabaseService {
       };
     } catch (error) {
       console.error('Erreur lors de la récupération des quotas:', error);
-      return null;
+      // FIXED: Retourner des valeurs par défaut au lieu de null
+      return { connections: 0, messages: 0, meetings: 0 };
     }
   }
 
