@@ -267,8 +267,8 @@ export default function VisitorRegistrationChoice() {
                   </tr>
                   <tr className="bg-gray-50 font-semibold">
                     <td className="px-6 py-4 text-sm text-gray-900">Prix</td>
-                    <td className="px-6 py-4 text-center text-green-700">0 USD</td>
-                    <td className="px-6 py-4 text-center text-yellow-700">299.99 USD</td>
+                    <td className="px-6 py-4 text-center text-green-700">0 EUR</td>
+                    <td className="px-6 py-4 text-center text-yellow-700">700 EUR</td>
                   </tr>
                 </tbody>
               </table>
