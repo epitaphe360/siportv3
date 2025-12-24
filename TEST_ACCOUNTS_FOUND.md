@@ -54,9 +54,13 @@
 ---
 
 ### 🟥 **ADMIN**
+- **Email**: `admin@siports.com`
+- **Mot de passe**: `Admin123!`
+- **Type**: Administrateur Principal (Demo)
+
 - **Email**: `admin-test@test.siport.com`
 - **Mot de passe**: `Test@1234567` (ou `Test@123456`)
-- **Type**: Administrateur Système
+- **Type**: Administrateur de Test
 
 ---
 

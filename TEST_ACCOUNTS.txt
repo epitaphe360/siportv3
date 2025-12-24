@@ -59,7 +59,11 @@ Si l'un ne fonctionne pas, essayez l'autre.
 ---
 🟥 ADMINISTRATION
 ---
-[11] ADMIN TEST
+[11] ADMIN OFFICIEL (Demo)
+   Email: admin@siports.com
+   Password: Admin123!
+
+[12] ADMIN TEST
    Email: admin-test@test.siport.com
    Password: Test@1234567 (ou Test@123456)
 
