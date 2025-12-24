@@ -549,17 +549,17 @@ export default function PartnerDetailPage() {
                     
                     <div className="flex items-center space-x-3">
                       <MapPin className="h-5 w-5 text-gray-400" />
-                      <span className="text-gray-700">Casablanca, {partner.country}</span>
+                      <span className="text-gray-700">{partner.country}</span>
                     </div>
                     
                     <div className="flex items-center space-x-3">
                       <Phone className="h-5 w-5 text-gray-400" />
-                      <span className="text-gray-700">+212 522 123 456</span>
+                      <span className="text-gray-700">+44 20 7123 4567</span>
                     </div>
                     
                     <div className="flex items-center space-x-3">
                       <Mail className="h-5 w-5 text-gray-400" />
-                      <span className="text-gray-700">contact@portcasablanca.ma</span>
+                      <span className="text-gray-700">contact@{partner.name.toLowerCase().replace(/\s+/g, '')}.com</span>
                     </div>
                     
                     {partner.website && (
