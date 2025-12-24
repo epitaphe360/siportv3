@@ -16,6 +16,7 @@ import {
   Sparkles,
   Shield
 } from 'lucide-react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { useAppointmentStore } from '../../store/appointmentStore';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
@@ -37,6 +38,7 @@ import type { PartnerTier } from '../../config/partnerTiers';
 export default function PartnerDashboard() {
   // ✅ CORRECTION: Tous les hooks DOIVENT être appelés avant tout return conditionnel
   const { user } = useAuthStore();
+  const { t } = useTranslation();
   const { dashboard, isLoading, error: dashboardError, fetchDashboard } = useDashboardStore();
   const dashboardStats = useDashboardStats();
 
@@ -282,10 +284,10 @@ export default function PartnerDashboard() {
                 </div>
                 <div>
                   <h1 className="text-3xl font-bold text-white mb-1">
-                    Espace Partenaire
+                    {t('partner.my_profile')}
                   </h1>
                   <p className="text-pink-100">
-                    Bienvenue {user?.profile?.firstName || 'Partenaire'}, tier {partnerTier.toUpperCase()} ✨
+                    {t('dashboard.welcome')} {user?.profile?.firstName || 'Partenaire'}, tier {partnerTier.toUpperCase()} ✨
                   </p>
                 </div>
               </div>
@@ -349,30 +351,30 @@ export default function PartnerDashboard() {
           className="mb-8"
         >
           <QuotaSummaryCard
-            title="Vos Quotas Partenaire"
+            title={t('partner.my_booth')}
             level={partnerTier}
             type="partner"
             quotas={[
               {
-                label: 'Rendez-vous B2B',
+                label: t('admin.b2b_appointments'),
                 current: confirmedAppointments.length,
                 limit: getPartnerQuota(partnerTier as PartnerTier, 'appointments'),
                 icon: <Calendar className="h-4 w-4 text-gray-400" />
               },
               {
-                label: 'Membres équipe',
+                label: t('partner.contacts'),
                 current: dashboardStats?.teamMembers?.value || 0,
                 limit: getPartnerQuota(partnerTier as PartnerTier, 'teamMembers'),
                 icon: <Users className="h-4 w-4 text-gray-400" />
               },
               {
-                label: 'Fichiers média',
+                label: t('admin.media_files'),
                 current: dashboardStats?.mediaUploads?.value || 0,
                 limit: getPartnerQuota(partnerTier as PartnerTier, 'mediaUploads'),
                 icon: <FileText className="h-4 w-4 text-gray-400" />
               },
               {
-                label: 'Leads exportés ce mois',
+                label: t('partner.analytics'),
                 current: dashboardStats?.leadExports?.value || 0,
                 limit: getPartnerQuota(partnerTier as PartnerTier, 'leadExports'),
                 icon: <TrendingUp className="h-4 w-4 text-gray-400" />
@@ -459,7 +461,7 @@ export default function PartnerDashboard() {
                   <Globe className="h-5 w-5 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">
-                  Gestion de votre Partenariat
+                  {t('partner.my_events')}
                 </h3>
               </div>
 
@@ -467,28 +469,28 @@ export default function PartnerDashboard() {
                 <Link to={ROUTES.PARTNER_PROFILE_EDIT} className="block">
                   <Button className="w-full justify-start bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-md hover:shadow-lg transition-all">
                     <Globe className="h-4 w-4 mr-3" />
-                    Modifier mon Profil Partenaire
+                    {t('admin.edit_profile')}
                   </Button>
                 </Link>
 
                 <Link to={ROUTES.PARTNER_MEDIA_UPLOAD} className="block">
                   <Button className="w-full justify-start border-2 hover:bg-gray-50" variant="outline">
                     <Edit className="h-4 w-4 mr-3" />
-                    Modifier mon Contenu
+                    {t('admin.media_management')}
                   </Button>
                 </Link>
 
                 <Link to={ROUTES.PARTNER_NETWORKING} className="block">
                   <Button className="w-full justify-start border-2 hover:bg-gray-50" variant="outline">
                     <Users className="h-4 w-4 mr-3" />
-                    Réseautage VIP Exclusif
+                    {t('partner.event_registration')}
                   </Button>
                 </Link>
 
                 <Link to={ROUTES.PARTNER_ANALYTICS} className="block">
                   <Button className="w-full justify-start border-2 hover:bg-gray-50" variant="outline">
                     <BarChart3 className="h-4 w-4 mr-3" />
-                    ROI & Analytics
+                    {t('partner.analytics')}
                   </Button>
                 </Link>
               </div>

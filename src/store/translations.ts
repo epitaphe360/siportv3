@@ -186,6 +186,27 @@ export const allTranslations = {
     'visitor.loading_appointments': 'Chargement des Rendez-vous...',
     'visitor.error_loading': 'Impossible de charger les Rendez-vous. Veuillez réessayer.',
     'visitor.quota_remaining': 'Quota Restant',
+    
+    // Partner Dashboard
+    'partner.my_profile': 'Mon Profil',
+    'partner.my_events': 'Mes Événements',
+    'partner.my_booth': 'Mon Stand',
+    'partner.analytics': 'Mon Rapport',
+    'partner.contacts': 'Mes Contacts',
+    'partner.event_registration': 'Inscription Événement',
+    'partner.attendees': 'Participants',
+    'partner.contribution_level': 'Niveau de Contribution',
+    
+    // Exhibitor Dashboard
+    'exhibitor.my_profile': 'Mon Profil',
+    'exhibitor.my_booth': 'Mon Stand',
+    'exhibitor.appointments': 'Mes Rendez-vous',
+    'exhibitor.analytics': 'Statistiques',
+    'exhibitor.booth_size': 'Taille du Stand',
+    'exhibitor.booth_location': 'Localisation du Stand',
+    'exhibitor.visitor_interactions': 'Interactions Visiteurs',
+    'exhibitor.booth_analytics': 'Analytique du Stand',
+    'exhibitor.my_products': 'Mes Produits',
   },
   
   en: {
@@ -361,6 +382,27 @@ export const allTranslations = {
     'visitor.loading_appointments': 'Loading Appointments...',
     'visitor.error_loading': 'Unable to load Appointments. Please try again.',
     'visitor.quota_remaining': 'Remaining Quota',
+    
+    // Partner Dashboard
+    'partner.my_profile': 'My Profile',
+    'partner.my_events': 'My Events',
+    'partner.my_booth': 'My Booth',
+    'partner.analytics': 'My Report',
+    'partner.contacts': 'My Contacts',
+    'partner.event_registration': 'Event Registration',
+    'partner.attendees': 'Attendees',
+    'partner.contribution_level': 'Contribution Level',
+    
+    // Exhibitor Dashboard
+    'exhibitor.my_profile': 'My Profile',
+    'exhibitor.my_booth': 'My Booth',
+    'exhibitor.appointments': 'My Appointments',
+    'exhibitor.analytics': 'Statistics',
+    'exhibitor.booth_size': 'Booth Size',
+    'exhibitor.booth_location': 'Booth Location',
+    'exhibitor.visitor_interactions': 'Visitor Interactions',
+    'exhibitor.booth_analytics': 'Booth Analytics',
+    'exhibitor.my_products': 'My Products',
   
   ar: {
     'pages.exhibitors.title': 'العارضون',
@@ -535,6 +577,27 @@ export const allTranslations = {
     'visitor.loading_appointments': 'جاري تحميل المواعيد...',
     'visitor.error_loading': 'تعذر تحميل المواعيد. الرجاء المحاولة مجددا.',
     'visitor.quota_remaining': 'الحصة المتبقية',
+    
+    // Partner Dashboard
+    'partner.my_profile': 'ملفي الشخصي',
+    'partner.my_events': 'فعالياتي',
+    'partner.my_booth': 'كشكي',
+    'partner.analytics': 'تقريري',
+    'partner.contacts': 'جهات اتصالي',
+    'partner.event_registration': 'تسجيل الفعالية',
+    'partner.attendees': 'الحاضرون',
+    'partner.contribution_level': 'مستوى المساهمة',
+    
+    // Exhibitor Dashboard
+    'exhibitor.my_profile': 'ملفي الشخصي',
+    'exhibitor.my_booth': 'كشكي',
+    'exhibitor.appointments': 'مواعيدي',
+    'exhibitor.analytics': 'الإحصائيات',
+    'exhibitor.booth_size': 'حجم الكشك',
+    'exhibitor.booth_location': 'موقع الكشك',
+    'exhibitor.visitor_interactions': 'تفاعلات الزوار',
+    'exhibitor.booth_analytics': 'تحليلات الكشك',
+    'exhibitor.my_products': 'منتجاتي',
   
   es: {
     'pages.exhibitors.title': 'Expositores',
@@ -709,4 +772,25 @@ export const allTranslations = {
     'visitor.loading_appointments': 'Cargando Citas...',
     'visitor.error_loading': 'No se pudieron cargar las Citas. Por favor, inténtelo de nuevo.',
     'visitor.quota_remaining': 'Cuota Restante',
+    
+    // Partner Dashboard
+    'partner.my_profile': 'Mi Perfil',
+    'partner.my_events': 'Mis Eventos',
+    'partner.my_booth': 'Mi Puesto',
+    'partner.analytics': 'Mi Informe',
+    'partner.contacts': 'Mis Contactos',
+    'partner.event_registration': 'Registro de Eventos',
+    'partner.attendees': 'Asistentes',
+    'partner.contribution_level': 'Nivel de Contribución',
+    
+    // Exhibitor Dashboard
+    'exhibitor.my_profile': 'Mi Perfil',
+    'exhibitor.my_booth': 'Mi Puesto',
+    'exhibitor.appointments': 'Mis Citas',
+    'exhibitor.analytics': 'Estadísticas',
+    'exhibitor.booth_size': 'Tamaño del Puesto',
+    'exhibitor.booth_location': 'Ubicación del Puesto',
+    'exhibitor.visitor_interactions': 'Interacciones de Visitantes',
+    'exhibitor.booth_analytics': 'Análisis del Puesto',
+    'exhibitor.my_products': 'Mis Productos',
 };

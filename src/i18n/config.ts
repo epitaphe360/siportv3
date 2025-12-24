@@ -7,14 +7,25 @@ const resources = {
   fr: {
     translation: {
       nav: {
+        home: 'Accueil',
         dashboard: 'Tableau de bord',
-        events: 'Événements',
         exhibitors: 'Exposants',
+        partners: 'Partenaires',
+        pavilions: 'Pavillons',
+        information: 'Informations',
+        events: 'Événements',
+        news: 'Actualités',
         subscriptions: 'Abonnements',
         appointments: 'Rendez-vous',
         chat: 'Messagerie',
         networking: 'Networking',
         profile: 'Mon Profil'
+      },
+      menu: {
+        pavilions_desc: 'Découvrez les pavillons du salon',
+        events_desc: 'Calendrier des événements',
+        news_desc: 'Actualités et nouveautés',
+        subscriptions_desc: 'Gérez vos abonnements'
       },
       auth: {
         login: 'Connexion',
@@ -48,14 +59,25 @@ const resources = {
   en: {
     translation: {
       nav: {
+        home: 'Home',
         dashboard: 'Dashboard',
-        events: 'Events',
         exhibitors: 'Exhibitors',
+        partners: 'Partners',
+        pavilions: 'Pavilions',
+        information: 'Information',
+        events: 'Events',
+        news: 'News',
         subscriptions: 'Subscriptions',
         appointments: 'Appointments',
         chat: 'Messages',
         networking: 'Networking',
         profile: 'My Profile'
+      },
+      menu: {
+        pavilions_desc: 'Discover the show pavilions',
+        events_desc: 'Calendar of events',
+        news_desc: 'News and updates',
+        subscriptions_desc: 'Manage your subscriptions'
       },
       auth: {
         login: 'Login',
@@ -89,14 +111,25 @@ const resources = {
   es: {
     translation: {
       nav: {
+        home: 'Inicio',
         dashboard: 'Panel de control',
-        events: 'Eventos',
         exhibitors: 'Expositores',
-       subscriptions: 'Suscripciones',
+        partners: 'Socios',
+        pavilions: 'Pabellones',
+        information: 'Información',
+        events: 'Eventos',
+        news: 'Noticias',
+        subscriptions: 'Suscripciones',
         appointments: 'Citas',
         chat: 'Mensajes',
         networking: 'Networking',
         profile: 'Mi Perfil'
+      },
+      menu: {
+        pavilions_desc: 'Descubre los pabellones de la feria',
+        events_desc: 'Calendario de eventos',
+        news_desc: 'Noticias y actualizaciones',
+        subscriptions_desc: 'Gestiona tus suscripciones'
       },
       auth: {
         login: 'Iniciar sesión',

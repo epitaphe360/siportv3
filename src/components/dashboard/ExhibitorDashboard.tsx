@@ -3,6 +3,7 @@ import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { Link, Navigate } from 'react-router-dom';
+import { useTranslation } from '../../hooks/useTranslation';
 import useAuthStore from '../../store/authStore';
 import { ROUTES } from '../../lib/routes';
 import { useDashboardStore } from '../../store/dashboardStore';
@@ -46,6 +47,7 @@ const itemVariants = {
 
 export default function ExhibitorDashboard() {
   const qrCodeRef = useRef<HTMLCanvasElement>(null);
+  const { t } = useTranslation();
   const [showQRModal, setShowQRModal] = useState(false);
   const [modal, setModal] = useState<{title: string, content: React.ReactNode} | null>(null);
   const [isDownloadingQR, setIsDownloadingQR] = useState(false);
@@ -499,14 +501,14 @@ export default function ExhibitorDashboard() {
                 <Building2 className="h-10 w-10 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-white mb-1">Tableau de Bord Exposant</h1>
-                <p className="text-blue-100">Bienvenue {user?.profile?.firstName || 'Exposant'}, gérez votre présence SIPORTS 2026 ✨</p>
+                <h1 className="text-3xl font-bold text-white mb-1">{t('exhibitor.my_booth')}</h1>
+                <p className="text-blue-100">{t('dashboard.welcome')} {user?.profile?.firstName || 'Exposant'}, {t('exhibitor.booth_location')} ✨</p>
                 <div className="mt-3 flex items-center space-x-3">
                   <Badge variant="info" size="md" className="bg-white/20 text-white border-white/30">
                     {user?.profile?.company || 'Entreprise'}
                   </Badge>
                   <Badge variant="success" size="md" className="bg-green-500/20 text-green-100 border-green-400/30">
-                    Exposant Vérifié ✓
+                    {t('admin.verified')} ✓
                   </Badge>
                 </div>
               </div>
