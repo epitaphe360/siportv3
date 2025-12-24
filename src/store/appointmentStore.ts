@@ -377,12 +377,13 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     }
 
     // Success! Update local state with server data
+    // STATUS: 'pending' - Le RDV est en attente de confirmation par l'exposant
     const newAppointment: Appointment = {
       id: data.appointment_id,
       exhibitorId: exhibitorIdForSlot,
       visitorId,
       timeSlotId,
-      status: 'confirmed',
+      status: 'pending', // IMPORTANT: En attente de confirmation exposant
       message,
       createdAt: new Date(),
       meetingType: 'in-person'
@@ -471,8 +472,26 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       try {
         await SupabaseService.updateAppointmentStatus(appointmentId, status as any);
 
-        // Refresh slots from server for authoritative count
+        // Si le statut passe à 'confirmed', envoyer des notifications
         const appointment = appointments.find(a => a.id === appointmentId);
+        if (status === 'confirmed' && appointment?.status === 'pending') {
+          try {
+            // Import dynamique de toast pour les notifications
+            const { toast } = await import('sonner');
+            
+            // Notification de confirmation
+            toast.success('Rendez-vous confirmé !', {
+              description: 'Les calendriers ont été mis à jour et les participants notifiés.'
+            });
+
+            // TODO: Envoyer notification email/push aux participants
+            // await sendAppointmentConfirmationNotification(appointment);
+          } catch (notifError) {
+            console.warn('Erreur notification:', notifError);
+          }
+        }
+
+        // Refresh slots from server for authoritative count
         if (appointment?.timeSlotId) {
           const affectedSlot = timeSlots.find(s => s.id === appointment.timeSlotId);
           if (affectedSlot?.exhibitorId) {

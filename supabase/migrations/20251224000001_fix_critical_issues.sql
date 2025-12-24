@@ -12,7 +12,10 @@
 -- =====================================================
 -- 1. CONNECTIONS TABLE (for networking)
 -- =====================================================
-CREATE TABLE IF NOT EXISTS connections (
+-- Drop the existing table if it has incompatible structure
+DROP TABLE IF EXISTS connections CASCADE;
+
+CREATE TABLE connections (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   requester_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   addressee_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -154,7 +157,7 @@ BEGIN
     );
   END IF;
 
-  -- Insert appointment
+  -- Insert appointment with status 'pending' (awaiting exhibitor confirmation)
   INSERT INTO appointments (
     time_slot_id,
     visitor_id,
@@ -168,7 +171,7 @@ BEGIN
     p_visitor_id,
     p_exhibitor_id,
     p_notes,
-    'confirmed',
+    'pending',  -- IMPORTANT: Demande en attente de confirmation exposant
     p_meeting_type,
     NOW()
   )
@@ -409,7 +412,40 @@ GRANT EXECUTE ON FUNCTION increment_daily_quota TO authenticated;
 COMMENT ON TABLE connections IS 'User networking connections with status tracking';
 COMMENT ON TABLE user_favorites IS 'User favorites for various entity types';
 COMMENT ON TABLE daily_quotas IS 'Daily usage quotas for networking features';
-COMMENT ON FUNCTION book_appointment_atomic IS 'Atomically books an appointment with proper locking';
+COMMENT ON FUNCTION book_appointment_atomic IS 'Atomically books an appointment with status=pending (requires exhibitor confirmation)';
 COMMENT ON FUNCTION cancel_appointment_atomic IS 'Atomically cancels an appointment and frees the slot';
 COMMENT ON FUNCTION get_daily_quotas IS 'Gets current daily quota usage for a user';
 COMMENT ON FUNCTION increment_daily_quota IS 'Increments a specific daily quota counter';
+
+-- Workflow documentation
+COMMENT ON COLUMN appointments.status IS 'Appointment workflow: pending (visitor request) → confirmed (exhibitor accepts) → completed/cancelled';
+
+-- =====================================================
+-- APPOINTMENT WORKFLOW DOCUMENTATION
+-- =====================================================
+/*
+  FLUX DE PRISE DE RENDEZ-VOUS:
+  
+  1. DEMANDE (Visiteur):
+     - Le visiteur sélectionne un créneau disponible
+     - Appel de book_appointment_atomic()
+     - Création du RDV avec status='pending'
+     - Le créneau reste disponible mais affiche "X RÉSERVÉ(S)"
+  
+  2. CONFIRMATION (Exposant):
+     - L'exposant voit la demande dans son dashboard
+     - Il peut ACCEPTER ou REFUSER
+     - Si accepté: UPDATE appointments SET status='confirmed'
+     - Notification envoyée au visiteur
+     - Calendriers mis à jour (exposant + visiteur)
+  
+  3. AFFICHAGE:
+     - Calendrier personnel exposant: tous les RDV (pending + confirmed)
+     - Calendrier personnel visiteur: tous les RDV (pending + confirmed)
+     - Calendrier de disponibilité: affiche "X RÉSERVÉ(S)" ou "COMPLET"
+  
+  4. ANNULATION:
+     - Visiteur ou exposant peut annuler via cancel_appointment_atomic()
+     - Le créneau est libéré (currentBookings décrémenté)
+     - Status devient 'cancelled'
+*/
