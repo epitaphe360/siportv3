@@ -90,6 +90,25 @@ DO $$ BEGIN
   END IF;
 END $$;
 
+-- Ajouter les valeurs manquantes à l'enum event_type si elles n'existent pas
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_enum WHERE enumlabel = 'exhibition' AND enumtypid = (SELECT oid FROM pg_type WHERE typname = 'event_type')) THEN
+    ALTER TYPE event_type ADD VALUE IF NOT EXISTS 'exhibition';
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_enum WHERE enumlabel = 'workshop' AND enumtypid = (SELECT oid FROM pg_type WHERE typname = 'event_type')) THEN
+    ALTER TYPE event_type ADD VALUE IF NOT EXISTS 'workshop';
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_enum WHERE enumlabel = 'networking' AND enumtypid = (SELECT oid FROM pg_type WHERE typname = 'event_type')) THEN
+    ALTER TYPE event_type ADD VALUE IF NOT EXISTS 'networking';
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_enum WHERE enumlabel = 'conference' AND enumtypid = (SELECT oid FROM pg_type WHERE typname = 'event_type')) THEN
+    ALTER TYPE event_type ADD VALUE IF NOT EXISTS 'conference';
+  END IF;
+EXCEPTION WHEN others THEN
+  -- Ignorer les erreurs si la valeur existe déjà
+  NULL;
+END $$;
+
 -- Créer la table events si elle n'existe pas
 CREATE TABLE IF NOT EXISTS events (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
