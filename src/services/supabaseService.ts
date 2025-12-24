@@ -312,13 +312,37 @@ export class SupabaseService {
       const { data, error } = await safeSupabase
         .from('partners')
         .select(
-          `id, company_name, partner_type, sector, description, logo_url, website, contact_info, verified, featured, partnership_level, benefits, created_at`
+          `id, company_name, partner_type, sector, description, logo_url, website, contact_info, verified, featured, partnership_level, benefits, created_at,
+           projects:partner_projects(*)`
         )
         .eq('id', id)
         .single();
 
       if (error) throw error;
       if (!data) return null;
+
+      // Transformer les projets de la DB vers le format UI
+      const dbProjects = (data.projects || []).map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        description: p.description,
+        status: p.status,
+        startDate: new Date(p.start_date),
+        endDate: p.end_date ? new Date(p.end_date) : undefined,
+        budget: p.budget,
+        impact: p.impact,
+        image: p.image_url,
+        technologies: p.technologies || [],
+        team: p.team || [],
+        kpis: p.kpis || { progress: 0, satisfaction: 0, roi: 0 },
+        timeline: (p.timeline || []).map((t: any) => ({
+          ...t,
+          date: new Date(t.date)
+        })),
+        partners: p.project_partners || [],
+        documents: p.documents || [],
+        gallery: p.gallery || []
+      }));
 
       return {
         id: data.id,
@@ -337,7 +361,7 @@ export class SupabaseService {
         ],
         establishedYear: 2010,
         employees: '500-1000',
-        projects: this.getMockProjects(data.id, data.company_name),
+        projects: dbProjects.length > 0 ? dbProjects : this.getMockProjects(data.id, data.company_name),
       };
     } catch (error) {
       console.error('Erreur lors de la récupération du partenaire:', error);
