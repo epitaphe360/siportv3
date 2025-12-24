@@ -24,8 +24,8 @@ export const CountdownModal: React.FC<CountdownModalProps> = ({ isOpen, onClose 
   useEffect(() => {
     if (!isOpen) return;
 
-    // Date du salon SIPORTS 2026
-    const salonDate = new Date('2026-02-05T09:30:00');
+    // Date du salon SIPORTS 2026 (1-3 Avril 2026)
+    const salonDate = new Date('2026-04-01T09:00:00');
 
     const calculateTimeLeft = () => {
       const now = new Date();
@@ -344,8 +344,8 @@ export const CountdownModal: React.FC<CountdownModalProps> = ({ isOpen, onClose 
                 onClick={() => {
                   const calendarEvent = {
                     title: 'SIPORTS 2026 - Salon International des Ports',
-                    start: '2026-02-05T09:30:00',
-                    end: '2026-02-07T18:00:00',
+                    start: '2026-04-01T09:00:00',
+                    end: '2026-04-03T18:00:00',
                     location: 'Mohammed VI Exhibition Center, El Jadida, Maroc',
                     description: 'Le plus grand salon portuaire international - 330+ exposants, 6300+ visiteurs de 42 pays'
                   };
