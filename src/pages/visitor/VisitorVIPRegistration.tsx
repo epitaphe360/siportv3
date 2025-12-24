@@ -203,12 +203,12 @@ export default function VisitorVIPRegistration() {
       // 7. Success - Redirect to payment page
       toast.success('Compte créé ! Veuillez finaliser le paiement pour activer votre accès VIP.');
 
-      // 8. Log out immediately (VIP can't login until payment)
-      await supabase.auth.signOut();
+      // 8. DO NOT log out - user needs to be logged in to pay
+      // await supabase.auth.signOut();
 
       // Redirect to payment page with user info
       setTimeout(() => {
-        navigate(ROUTES.VISITOR_SUBSCRIPTION, {
+        navigate(ROUTES.VISITOR_PAYMENT, {
           state: {
             userId: authData.user.id,
             email: data.email,

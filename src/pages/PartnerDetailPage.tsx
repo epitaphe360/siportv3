@@ -23,7 +23,8 @@ import {
   CheckCircle,
   Crown,
   Handshake,
-  FileText
+  FileText,
+  AlertCircle
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -31,6 +32,7 @@ import { Badge } from '../components/ui/Badge';
 import LogoWithFallback from '../components/ui/LogoWithFallback';
 import { motion } from 'framer-motion';
 import { CONFIG } from '../lib/config';
+import { SupabaseService } from '../services/supabaseService';
 
 interface Project {
   id: string;
@@ -92,15 +94,35 @@ export default function PartnerDetailPage() {
   const [showContactModal, setShowContactModal] = useState(false);
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [activeTab, setActiveTab] = useState<keyof typeof CONFIG.tabIds>(CONFIG.tabIds.overview);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Simulation de chargement des données du partenaire
-    setTimeout(() => {
-      setPartner(null);
-    }, 500);
+    const loadPartner = async () => {
+      if (!id) return;
+      
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        const data = await SupabaseService.getPartnerById(id);
+        if (data) {
+          setPartner(data);
+        } else {
+          setError("Partenaire non trouvé");
+        }
+      } catch (err) {
+        console.error("Erreur chargement partenaire:", err);
+        setError("Erreur lors du chargement du partenaire");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPartner();
   }, [id]);
 
-  if (!partner) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -108,6 +130,30 @@ export default function PartnerDetailPage() {
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             Chargement du partenaire...
           </h3>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !partner) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center max-w-md px-4">
+          <div className="bg-red-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+            <AlertCircle className="h-8 w-8 text-red-600" />
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">
+            Partenaire non trouvé
+          </h3>
+          <p className="text-gray-600 mb-6">
+            {error || "Le partenaire que vous recherchez n'existe pas ou a été supprimé."}
+          </p>
+          <Link to={ROUTES.PARTNERS}>
+            <Button>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Retour aux partenaires
+            </Button>
+          </Link>
         </div>
       </div>
     );

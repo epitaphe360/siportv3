@@ -304,6 +304,43 @@ export class SupabaseService {
     }
   }
 
+  static async getPartnerById(id: string): Promise<any | null> {
+    if (!this.checkSupabaseConnection()) return null;
+
+    const safeSupabase = supabase!;
+    try {
+      const { data, error } = await safeSupabase
+        .from('partners')
+        .select(
+          `id, company_name, partner_type, sector, description, logo_url, website, contact_info, verified, featured, partnership_level, benefits, created_at`
+        )
+        .eq('id', id)
+        .single();
+
+      if (error) throw error;
+      if (!data) return null;
+
+      return {
+        id: data.id,
+        name: data.company_name,
+        sponsorshipLevel: data.partnership_level,
+        category: data.partner_type,
+        description: data.description || '',
+        longDescription: data.description || '',
+        logo: data.logo_url,
+        website: data.website,
+        country: data.contact_info?.country || '',
+        contributions: data.benefits || [],
+        establishedYear: 2024, // Fallback
+        employees: '1-10', // Fallback
+        projects: [], // Fallback empty projects
+      };
+    } catch (error) {
+      console.error('Erreur lors de la récupération du partenaire:', error);
+      return null;
+    }
+  }
+
   // ==================== RECOMMENDATIONS ====================
   static async getRecommendationsForUser(userId: string, limit: number = 10): Promise<{ itemId: string; itemType: string; similarityScore: number }[]> {
     if (!this.checkSupabaseConnection()) {

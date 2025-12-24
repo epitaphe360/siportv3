@@ -18,7 +18,7 @@ export default function VisitorRegistrationChoice() {
     'Accès aux zones publiques',
     'Conférences publiques',
     'Inscription rapide sans mot de passe',
-    'Gratuit - 0 USD'
+    'Gratuit - 0 EUR'
   ];
 
   const vipFeatures = [
@@ -31,7 +31,7 @@ export default function VisitorRegistrationChoice() {
     'Gala de clôture exclusif',
     'Tableau de bord complet',
     'Support prioritaire',
-    '299,99 USD'
+    '700,00 EUR'
   ];
 
   return (
@@ -92,7 +92,7 @@ export default function VisitorRegistrationChoice() {
                 <div className="mb-6">
                   <div className="flex items-baseline">
                     <span className="text-5xl font-bold text-green-600">0</span>
-                    <span className="text-2xl text-gray-600 ml-2">USD</span>
+                    <span className="text-2xl text-gray-600 ml-2">EUR</span>
                   </div>
                   <p className="text-sm text-gray-500 mt-1">Inscription simple et rapide</p>
                 </div>
@@ -156,9 +156,9 @@ export default function VisitorRegistrationChoice() {
                 <div className="mb-6">
                   <div className="flex items-baseline">
                     <span className="text-5xl font-bold bg-gradient-to-r from-yellow-600 to-yellow-700 bg-clip-text text-transparent">
-                      299.99
+                      700
                     </span>
-                    <span className="text-2xl text-gray-600 ml-2">USD</span>
+                    <span className="text-2xl text-gray-600 ml-2">EUR</span>
                   </div>
                   <p className="text-sm text-gray-500 mt-1">Paiement sécurisé unique</p>
                 </div>
