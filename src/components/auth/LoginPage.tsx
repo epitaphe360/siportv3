@@ -286,6 +286,61 @@ export default function LoginPage() {
                   </Button>
                 </div>
 
+                {/* Exposants */}
+                <div>
+                  <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">🏢 Exposants</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('visitor1@test.com');
+                        setPassword('Admin123!');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      9m²
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('visitor2@test.com');
+                        setPassword('Admin123!');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      18m²
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('visitor1@test.com');
+                        setPassword('Admin123!');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      36m²
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('visitor2@test.com');
+                        setPassword('Admin123!');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      54m²
+                    </Button>
+                  </div>
+                </div>
+
                 {/* Partenaires */}
                 <div>
                   <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">🤝 Partenaires</p>
@@ -300,7 +355,7 @@ export default function LoginPage() {
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      Partenaire 1
+                      Musée
                     </Button>
                     <Button
                       type="button"
@@ -312,7 +367,31 @@ export default function LoginPage() {
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      Partenaire 2
+                      Silver
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('nathalie.robert1@partner.com');
+                        setPassword('Admin123!');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      Gold
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('pierre.laurent2@partner.com');
+                        setPassword('Admin123!');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      Platinium
                     </Button>
                   </div>
                 </div>
@@ -331,7 +410,7 @@ export default function LoginPage() {
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      Visiteur 1
+                      Gratuit
                     </Button>
                     <Button
                       type="button"
@@ -343,7 +422,7 @@ export default function LoginPage() {
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      Visiteur 2
+                      VIP
                     </Button>
                   </div>
                 </div>
