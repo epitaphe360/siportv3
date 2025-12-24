@@ -314,6 +314,7 @@ export const useLanguageStore = create<LanguageState>()(
       isLoading: false,
 
       setLanguage: async (languageCode: string) => {
+        console.log('🌍 setLanguage appelé avec:', languageCode);
         set({ isLoading: true });
 
         try {
@@ -323,23 +324,31 @@ export const useLanguageStore = create<LanguageState>()(
             throw new Error(`Langue non supportée: ${languageCode}`);
           }
 
-          // CRITICAL FIX: Synchroniser avec i18next
-          await i18n.changeLanguage(languageCode);
+          console.log('🌍 Langue trouvée:', language.nativeName);
 
-          // Mettre à jour la langue dans le store
-          set({ currentLanguage: languageCode, isLoading: false });
-          
+          // Synchroniser avec i18next
+          try {
+            await i18n.changeLanguage(languageCode);
+            console.log('🌍 i18next mis à jour');
+          } catch (i18nError) {
+            console.warn('⚠️ i18next changeLanguage failed (non-blocking):', i18nError);
+          }
+
           // Mettre à jour la direction du texte pour l'arabe
           document.documentElement.dir = language.rtl ? 'rtl' : 'ltr';
           document.documentElement.lang = languageCode;
           
           // Mettre à jour le titre de la page
           const titleKey = 'hero.title';
-          const translatedTitle = get().translateText(titleKey);
+          const translatedTitle = translations[languageCode]?.[titleKey] || translations.fr[titleKey] || 'SIPORTS';
           document.title = `${translatedTitle} - SIPORTS 2026`;
+
+          // IMPORTANT: Mettre à jour l'état en dernier pour déclencher le re-render
+          set({ currentLanguage: languageCode, isLoading: false });
+          console.log('✅ Langue changée avec succès vers:', languageCode);
           
         } catch (_error) {
-          console.error('Erreur lors du changement de langue:', _error);
+          console.error('❌ Erreur lors du changement de langue:', _error);
           set({ isLoading: false });
           throw _error;
         }

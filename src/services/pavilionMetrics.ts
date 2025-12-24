@@ -9,10 +9,10 @@ export interface PavilionMetrics {
 
 // Valeurs par défaut pour le développement
 const defaultPavilionMetrics: PavilionMetrics = {
-  totalExhibitors: 24,
-  totalVisitors: 1200,
-  totalConferences: 8,
-  countries: 12
+  totalExhibitors: 0,
+  totalVisitors: 0,
+  totalConferences: 0,
+  countries: 0
 };
 
 export class PavilionMetricsService {
@@ -44,19 +44,19 @@ export class PavilionMetricsService {
         // Total conférences/événements
         (supabase as any).from('events').select('id', { count: 'exact', head: true }),
 
-        // Pays représentés (Note: la colonne country n'existe pas encore dans exhibitors)
-        (supabase as any).from('exhibitors').select('id').eq('verified', true)
+        // Pays représentés
+        (supabase as any).from('exhibitor_profiles').select('country')
       ]);
 
-      // Calculer le nombre de pays distincts (Fallback à 12 si non disponible)
-      const uniqueCountries = 0;
+      // Calculer le nombre de pays distincts
+      const countries = countriesResult.data ? new Set(countriesResult.data.map((p: any) => p.country).filter(Boolean)).size : 0;
 
-      // Calculer les métriques
+      // Calculer les métriques réelles depuis la base de données
       const metrics: PavilionMetrics = {
         totalExhibitors: exhibitorsResult.count || 0,
         totalVisitors: visitorsResult.count || 0,
         totalConferences: eventsResult.count || 0,
-        countries: Math.max(uniqueCountries, 12) // Minimum 12 pays comme demandé
+        countries: Math.max(countries, 1)
       };
 
       console.info('✅ Métriques de pavilions récupérées depuis Supabase:', metrics);

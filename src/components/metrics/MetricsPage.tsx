@@ -49,10 +49,10 @@ export default function MetricsPage() {
   const { user } = useAuthStore();
 
   const [realTimeMetrics, setRealTimeMetrics] = useState({
-    activeUsers: 1247,
-    onlineExhibitors: 89,
-    scheduledMeetings: 156,
-    messagesExchanged: 2341
+    activeUsers: 1232,
+    onlineExhibitors: 85,
+    scheduledMeetings: 172,
+    messagesExchanged: 2500
   });
 
   const [adminMetrics, setAdminMetrics] = useState({
@@ -188,7 +188,7 @@ export default function MetricsPage() {
   const pavilionMetrics: PavilionMetric[] = [
     {
       name: 'Institutionnel & Networking B2B',
-      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.25), // 25% of total
+      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.25),
       visitors: loading ? 0 : Math.round(pavilionData.totalVisitors * 0.25),
       conferences: loading ? 0 : Math.round(pavilionData.totalConferences * 0.25),
       satisfaction: 94,
@@ -196,7 +196,7 @@ export default function MetricsPage() {
     },
     {
       name: 'Industrie Portuaire',
-      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.30), // 30% of total
+      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.30),
       visitors: loading ? 0 : Math.round(pavilionData.totalVisitors * 0.30),
       conferences: loading ? 0 : Math.round(pavilionData.totalConferences * 0.20),
       satisfaction: 92,
@@ -204,7 +204,7 @@ export default function MetricsPage() {
     },
     {
       name: 'Performance & Exploitation',
-      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.20), // 20% of total
+      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.20),
       visitors: loading ? 0 : Math.round(pavilionData.totalVisitors * 0.20),
       conferences: loading ? 0 : Math.round(pavilionData.totalConferences * 0.15),
       satisfaction: 96,
@@ -212,7 +212,7 @@ export default function MetricsPage() {
     },
     {
       name: 'Académique & Scientifique',
-      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.15), // 15% of total
+      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.15),
       visitors: loading ? 0 : Math.round(pavilionData.totalVisitors * 0.15),
       conferences: loading ? 0 : Math.round(pavilionData.totalConferences * 0.25),
       satisfaction: 98,
@@ -220,7 +220,7 @@ export default function MetricsPage() {
     },
     {
       name: 'Musée des Ports',
-      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.10), // 10% of total
+      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.10),
       visitors: loading ? 0 : Math.round(pavilionData.totalVisitors * 0.10),
       conferences: loading ? 0 : Math.round(pavilionData.totalConferences * 0.15),
       satisfaction: 99,

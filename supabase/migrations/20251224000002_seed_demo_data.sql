@@ -226,7 +226,7 @@ DO $$
 DECLARE
   v_user_id uuid;
   v_email text;
-  v_password text := 'password123';
+  v_password text := 'Admin123!';
   v_users RECORD;
 BEGIN
   -- Clean up dependent tables to avoid foreign key violations during user cleanup
@@ -248,7 +248,7 @@ BEGIN
   -- Define the users we want to ensure exist
   FOR v_users IN 
     SELECT * FROM (VALUES 
-      ('00000000-0000-0000-0000-000000000001', 'admin@siports.com'),
+      ('00000000-0000-0000-0000-000000000001', 'admin.siports@siports.com'),
       ('00000000-0000-0000-0000-000000000002', 'exhibitor-54m@test.siport.com'),
       ('00000000-0000-0000-0000-000000000003', 'exhibitor-36m@test.siport.com'),
       ('00000000-0000-0000-0000-000000000004', 'exhibitor-18m@test.siport.com'),
@@ -291,7 +291,7 @@ INSERT INTO users (id, email, name, type, status, profile, created_at)
 VALUES 
   (
     '00000000-0000-0000-0000-000000000001',
-    'admin@siports.com',
+    'admin.siports@siports.com',
     'Admin SIPORTS',
     'admin',
     'active',
@@ -2304,6 +2304,48 @@ ON CONFLICT (id) DO UPDATE SET
   images = EXCLUDED.images,
   price = EXCLUDED.price,
   featured = EXCLUDED.featured;
+
+-- =====================================================
+-- BULK DATA FOR METRICS (300+ Exhibitors, 6000+ Visitors)
+-- =====================================================
+DO $$
+DECLARE
+  i INTEGER;
+  v_user_id UUID;
+  v_countries TEXT[] := ARRAY['France', 'Belgique', 'Suisse', 'Canada', 'Maroc', 'Sénégal', 'Côte d''Ivoire', 'Tunisie', 'Algérie', 'Luxembourg', 'Monaco', 'Liban', 'Vietnam', 'Maurice', 'Madagascar', 'Gabon', 'Congo', 'Togo', 'Bénin', 'Guinée', 'Mali', 'Niger', 'Burkina Faso', 'Tchad', 'Centrafrique', 'Djibouti', 'Comores', 'Seychelles', 'Vanuatu', 'Haïti', 'Sainte-Lucie', 'Dominique', 'Grenade', 'Saint-Vincent', 'Antigua', 'Saint-Kitts', 'Maurice', 'Seychelles', 'Vanuatu', 'Haïti'];
+  v_categories TEXT[] := ARRAY['institutional', 'port-industry', 'port-operations', 'academic'];
+BEGIN
+  -- Insert 300 Exhibitors
+  FOR i IN 1..300 LOOP
+    v_user_id := gen_random_uuid();
+    
+    INSERT INTO public.users (id, email, name, type, status, created_at)
+    VALUES (v_user_id, 'exhibitor-bulk-' || i || '@demo.siport.com', 'Exposant ' || i, 'exhibitor', 'active', NOW() - (i || ' minutes')::interval);
+    
+    INSERT INTO public.exhibitors (id, user_id, company_name, category, sector, description, verified, created_at)
+    VALUES (gen_random_uuid(), v_user_id, 'Company ' || i, v_categories[(i % 4) + 1]::exhibitor_category, 'Secteur ' || (i % 5 + 1), 'Description de l''exposant ' || i, true, NOW() - (i || ' minutes')::interval);
+    
+    INSERT INTO public.exhibitor_profiles (id, user_id, company_name, country, sector, created_at)
+    VALUES (gen_random_uuid(), v_user_id, 'Company ' || i, v_countries[(i % 40) + 1], 'Secteur ' || (i % 5 + 1), NOW() - (i || ' minutes')::interval);
+  END LOOP;
+
+  -- Insert 6000 Visitors
+  FOR i IN 1..6000 LOOP
+    v_user_id := gen_random_uuid();
+    
+    INSERT INTO public.users (id, email, name, type, status, created_at)
+    VALUES (v_user_id, 'visitor-bulk-' || i || '@demo.siport.com', 'Visiteur ' || i, 'visitor', 'active', NOW() - (i || ' seconds')::interval);
+    
+    INSERT INTO public.visitor_profiles (id, user_id, first_name, last_name, country, created_at)
+    VALUES (gen_random_uuid(), v_user_id, 'Visiteur', i::text, v_countries[(i % 40) + 1], NOW() - (i || ' seconds')::interval);
+  END LOOP;
+
+  -- Insert 30 Events
+  FOR i IN 1..30 LOOP
+    INSERT INTO public.events (id, title, description, event_type, start_date, end_date, location, created_at)
+    VALUES (gen_random_uuid(), 'Conférence ' || i, 'Description de la conférence ' || i, 'conference', NOW() + (i || ' hours')::interval, NOW() + (i + 1 || ' hours')::interval, 'Salle ' || (i % 5 + 1), NOW());
+  END LOOP;
+END $$;
 
 -- =====================================================
 -- FINAL COMMENTS

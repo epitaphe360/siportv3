@@ -56,8 +56,8 @@ export default function AdminDashboard() {
 
   const activityData = [
     { name: 'Connexions', value: 2840 },
-    { name: 'RDV Créés', value: 1560 },
-    { name: 'Messages', value: 980 },
+    { name: 'RDV Créés', value: 172 },
+    { name: 'Messages', value: 2500 },
     { name: 'Documents', value: 720 },
   ];
 
@@ -471,8 +471,8 @@ export default function AdminDashboard() {
                   Exposants
                 </div>
                 <div className="mt-4 flex items-center text-emerald-100 text-xs">
-                  <Calendar className="h-3 w-3 mr-1" />
-                  {adminMetrics.totalEvents} événements
+                  <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+                  {(adminMetrics as any).onlineExhibitors || 85} en ligne
                 </div>
               </div>
             </div>
