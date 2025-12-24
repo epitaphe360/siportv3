@@ -275,7 +275,7 @@ export default function LoginPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    setEmail('admin@siports.com');
+                    setEmail('admin.siports@siports.com');
                     setPassword('Admin123!');
                   }}
                   className="text-xs"

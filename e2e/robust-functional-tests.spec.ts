@@ -8,7 +8,7 @@
  * - exhibitor-9m@test.siport.com (exposant 9m²)
  * - exhibitor-18m@test.siport.com (exposant 18m²)
  * - exhibitor-36m@test.siport.com (exposant 36m²)
- * - admin@siports.com (admin)
+ * - admin.siports@siports.com (admin)
  * - nathalie.robert1@partner.com (partenaire)
  */
 
@@ -87,7 +87,7 @@ test.describe('🔐 AUTHENTIFICATION', () => {
   });
 
   test('AUTH-5: Login admin réussit', async ({ page }) => {
-    const success = await login(page, 'admin@siports.com');
+    const success = await login(page, 'admin.siports@siports.com');
     expect(success).toBe(true);
     expect(page.url()).toMatch(/admin|dashboard/);
   });
@@ -249,7 +249,7 @@ test.describe('🏢 DASHBOARD EXPOSANT', () => {
 test.describe('👨‍💼 DASHBOARD ADMIN', () => {
   
   test.beforeEach(async ({ page }) => {
-    await login(page, 'admin@siports.com');
+    await login(page, 'admin.siports@siports.com');
   });
 
   test('ADM-1: Dashboard admin charge', async ({ page }) => {

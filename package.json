@@ -44,6 +44,7 @@
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
     "setup:test-accounts": "node scripts/create-test-accounts.mjs",
+    "setup:test-users": "node scripts/create-test-users.js",
     "list:test-accounts": "powershell scripts/list-test-accounts.ps1",
     "apply-sql": "node scripts/apply_sql.cjs",
     "verify-db": "node scripts/verify_db.cjs",

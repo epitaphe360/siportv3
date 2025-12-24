@@ -5,7 +5,7 @@
 
 export const TEST_USERS = {
   admin: {
-    email: 'admin@siports.com',
+    email: 'admin.siports@siports.com',
     password: 'Admin123!',
     firstName: 'Admin',
     lastName: 'SIPORTS',

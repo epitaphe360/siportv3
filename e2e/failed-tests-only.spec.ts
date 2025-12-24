@@ -447,7 +447,7 @@ test.describe('📋 WORKFLOWS CRITIQUES - Tests Échoués', () => {
   });
 
   test('WF6.1 - Admin: View user analytics', async ({ page }) => {
-    await login(page, 'admin@siports.com', 'Admin123!');
+    await login(page, 'admin.siports@siports.com', 'Admin123!');
     
     await page.goto(`${BASE_URL}/admin/analytics`, { waitUntil: 'domcontentloaded' }).catch(() => {});
     await page.goto(`${BASE_URL}/admin/dashboard`, { waitUntil: 'domcontentloaded' }).catch(() => {});
@@ -458,7 +458,7 @@ test.describe('📋 WORKFLOWS CRITIQUES - Tests Échoués', () => {
   });
 
   test('WF6.2 - Admin: Manage exhibitor quotas', async ({ page }) => {
-    await login(page, 'admin@siports.com', 'Admin123!');
+    await login(page, 'admin.siports@siports.com', 'Admin123!');
     
     await page.goto(`${BASE_URL}/admin/quotas`, { waitUntil: 'domcontentloaded' }).catch(() => {});
     await page.goto(`${BASE_URL}/admin/exhibitors`, { waitUntil: 'domcontentloaded' }).catch(() => {});
@@ -469,7 +469,7 @@ test.describe('📋 WORKFLOWS CRITIQUES - Tests Échoués', () => {
   });
 
   test('WF6.3 - Admin: View payment transactions', async ({ page }) => {
-    await login(page, 'admin@siports.com', 'Admin123!');
+    await login(page, 'admin.siports@siports.com', 'Admin123!');
     
     await page.goto(`${BASE_URL}/admin/payments`, { waitUntil: 'domcontentloaded' }).catch(() => {});
     await page.goto(`${BASE_URL}/admin/transactions`, { waitUntil: 'domcontentloaded' }).catch(() => {});
@@ -480,7 +480,7 @@ test.describe('📋 WORKFLOWS CRITIQUES - Tests Échoués', () => {
   });
 
   test('WF6.4 - Admin: Send announcements to users', async ({ page }) => {
-    await login(page, 'admin@siports.com', 'Admin123!');
+    await login(page, 'admin.siports@siports.com', 'Admin123!');
     
     await page.goto(`${BASE_URL}/admin/announcements`, { waitUntil: 'domcontentloaded' }).catch(() => {});
     
@@ -742,7 +742,7 @@ test.describe('🔧 FEATURES AVANCÉES - Tests Échoués', () => {
   });
 
   test('ADV-Event creation flow', async ({ page }) => {
-    await login(page, 'admin@siports.com', 'Admin123!');
+    await login(page, 'admin.siports@siports.com', 'Admin123!');
     
     await page.goto(`${BASE_URL}/admin/events`, { waitUntil: 'domcontentloaded' }).catch(() => {});
     await page.goto(`${BASE_URL}/admin/events/create`, { waitUntil: 'domcontentloaded' }).catch(() => {});
@@ -788,7 +788,7 @@ test.describe('🔐 AUTH AVANCÉE - Tests Échoués', () => {
   });
   
   test('AUTH-Accès au dashboard admin', async ({ page }) => {
-    await login(page, 'admin@siports.com', 'Admin123!');
+    await login(page, 'admin.siports@siports.com', 'Admin123!');
     
     await page.goto(`${BASE_URL}/admin/dashboard`, { waitUntil: 'domcontentloaded' }).catch(() => {});
     

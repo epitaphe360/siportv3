@@ -60,7 +60,7 @@ Si l'un ne fonctionne pas, essayez l'autre.
 🟥 ADMINISTRATION
 ---
 [11] ADMIN OFFICIEL (Demo)
-   Email: admin@siports.com
+   Email: admin.siports@siports.com
    Password: Admin123!
 
 [12] ADMIN TEST

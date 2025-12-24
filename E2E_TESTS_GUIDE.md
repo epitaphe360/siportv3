@@ -83,7 +83,7 @@ psql -h localhost -p 54322 -U postgres -d postgres < supabase/seed_test_accounts
 | partner-museum@test.siport.com | Partenaire | Musée | Tests partenaire |
 | partner-chamber@test.siport.com | Partenaire | Chambre | Tests partenaire |
 | partner-sponsor@test.siport.com | Partenaire | Sponsor | Tests sponsor |
-| admin@siports.com | Admin | Demo | Admin Principal |
+| admin.siports@siports.com | Admin | Demo | Admin Principal |
 | admin-test@test.siport.com | Admin | Admin | Tests administration |
 
 ### 3. Lancer les Tests

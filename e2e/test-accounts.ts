@@ -79,7 +79,7 @@ export const TEST_ACCOUNTS = {
   
   // Admin
   admin: {
-    email: 'admin@siports.com',
+    email: 'admin.siports@siports.com',
     password: 'Test@1234567',
     name: 'Admin SIPORTS',
     type: 'admin' as const

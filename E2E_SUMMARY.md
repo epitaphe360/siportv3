@@ -117,7 +117,7 @@ npm run test:e2e:functional
 | 6 | partner-museum@test.siport.com | Partenaire | Musée |
 | 7 | partner-chamber@test.siport.com | Partenaire | Chambre |
 | 8 | partner-sponsor@test.siport.com | Partenaire | Sponsor |
-| 9 | admin@siports.com | Admin | Admin Principal (Admin123!) |
+| 9 | admin.siports@siports.com | Admin | Admin Principal (Admin123!) |
 | 10 | admin-test@test.siport.com | Admin | Administration |
 
 ---

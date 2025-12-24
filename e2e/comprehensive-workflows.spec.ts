@@ -105,7 +105,7 @@ const TEST_USERS = {
     investmentTier: '$98,000'
   },
   admin: {
-    email: 'admin@siports.com',
+    email: 'admin.siports@siports.com',
     password: TEST_PASSWORD,
     name: 'Admin SIPORTS',
     level: 'admin'
