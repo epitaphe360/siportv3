@@ -2,20 +2,22 @@
 
 ## ✅ Comptes Existants dans Supabase
 
+⚠️ **Note sur les mots de passe** : Si `Test@123456` ne fonctionne pas, essayez `Test@1234567`.
+
 ### 🟦 **VISITEURS**
 - **Email**: `visitor-free@test.siport.com`
-- **Mot de passe**: `Test@123456`
+- **Mot de passe**: `Test@1234567` (ou `Test@123456`)
 - **Type**: Visitor FREE (badge, 0 rendez-vous)
 
 - **Email**: `visitor-vip@test.siport.com`
-- **Mot de passe**: `Test@123456`
+- **Mot de passe**: `Test@1234567` (ou `Test@123456`)
 - **Type**: Visitor VIP (10 rendez-vous, 3 utilisés)
 
 ---
 
 ### 🟩 **PARTENAIRES**
 - **Email**: `partner-museum@test.siport.com`
-- **Mot de passe**: `Test@123456`
+- **Mot de passe**: `Test@1234567` (ou `Test@123456`)
 - **Type**: Museum ($20k, 20 RDV, 5 utilisés)
 
 - **Email**: `partner-silver@test.siport.com`
@@ -34,7 +36,7 @@
 
 ### 🟨 **EXPOSANTS**
 - **Email**: `exhibitor-9m@test.siport.com`
-- **Mot de passe**: `Test@123456`
+- **Mot de passe**: `Test@1234567` (ou `Test@123456`)
 - **Type**: 9m² Basic (15 RDV, 7 utilisés)
 
 - **Email**: `exhibitor-18m@test.siport.com`
@@ -48,6 +50,13 @@
 - **Email**: `exhibitor-54m@test.siport.com`
 - **Mot de passe**: `Test@123456`
 - **Type**: 60m² Elite (Illimité, 350 utilisés)
+
+---
+
+### 🟥 **ADMIN**
+- **Email**: `admin-test@test.siport.com`
+- **Mot de passe**: `Test@1234567` (ou `Test@123456`)
+- **Type**: Administrateur Système
 
 ---
 

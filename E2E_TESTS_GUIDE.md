@@ -69,7 +69,9 @@ psql -h localhost -p 54322 -U postgres -d postgres < supabase/seed_test_accounts
 
 ### 2. Comptes de Test à Créer
 
-Tous avec le mot de passe: **Test@1234567**
+⚠️ **Note sur les mots de passe** : Il existe deux variantes selon la méthode de création.
+- Variante A: **Test@1234567** (Nouveaux comptes v3)
+- Variante B: **Test@123456** (Comptes issus du seed SQL)
 
 | Email | Type | Niveau | Usage |
 |-------|------|--------|-------|

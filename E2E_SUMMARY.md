@@ -105,7 +105,7 @@ npm run test:e2e:functional
 
 ## 📋 COMPTES DE TEST REQUIS
 
-**Mot de passe pour tous**: `Test@1234567`
+**Mot de passe**: `Test@1234567` (ou `Test@123456` pour les anciens comptes)
 
 | # | Email | Type | Usage |
 |---|-------|------|-------|
