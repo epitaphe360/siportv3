@@ -376,7 +376,7 @@ export default function NetworkingPage() {
           >
             <div className="inline-flex items-center space-x-2 bg-blue-500/10 backdrop-blur-md border border-blue-500/20 rounded-full px-4 py-2 mb-8">
               <Sparkles className="h-4 w-4 text-blue-400" />
-              <span className="text-blue-200 text-sm font-medium tracking-wide uppercase">Propulsé par l'IA SIPORTS</span>
+              <span className="text-blue-200 text-sm font-medium tracking-wide uppercase">Propulsé par l'IA SIPORTS v3.0</span>
             </div>
 
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 tracking-tight leading-none">
