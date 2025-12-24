@@ -66,6 +66,64 @@ BEGIN
   ) THEN
     ALTER TABLE public.exhibitors ADD COLUMN stand_number text;
   END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'exhibitors' 
+    AND column_name = 'featured'
+  ) THEN
+    ALTER TABLE public.exhibitors ADD COLUMN featured boolean DEFAULT false;
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'exhibitors' 
+    AND column_name = 'verified'
+  ) THEN
+    ALTER TABLE public.exhibitors ADD COLUMN verified boolean DEFAULT false;
+  END IF;
+
+  -- S'assurer que la table partners a les bonnes colonnes
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'partners') THEN
+    -- Ajouter company_name si name existe (renommer ou ajouter)
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'partners' AND column_name = 'company_name') THEN
+      IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'partners' AND column_name = 'name') THEN
+        ALTER TABLE public.partners RENAME COLUMN name TO company_name;
+      ELSE
+        ALTER TABLE public.partners ADD COLUMN company_name text;
+      END IF;
+    END IF;
+
+    -- Ajouter partner_type si type existe
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'partners' AND column_name = 'partner_type') THEN
+      IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'partners' AND column_name = 'type') THEN
+        ALTER TABLE public.partners RENAME COLUMN type TO partner_type;
+      ELSE
+        ALTER TABLE public.partners ADD COLUMN partner_type text;
+      END IF;
+    END IF;
+
+    -- Ajouter partnership_level si sponsorship_level existe
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'partners' AND column_name = 'partnership_level') THEN
+      IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'partners' AND column_name = 'sponsorship_level') THEN
+        ALTER TABLE public.partners RENAME COLUMN sponsorship_level TO partnership_level;
+      ELSE
+        ALTER TABLE public.partners ADD COLUMN partnership_level text;
+      END IF;
+    END IF;
+
+    -- Ajouter user_id si manquant
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'partners' AND column_name = 'user_id') THEN
+      ALTER TABLE public.partners ADD COLUMN user_id uuid REFERENCES public.users(id);
+    END IF;
+
+    -- Ajouter contact_info si manquant
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'partners' AND column_name = 'contact_info') THEN
+      ALTER TABLE public.partners ADD COLUMN contact_info jsonb DEFAULT '{}';
+    END IF;
+  END IF;
 END $$;
 
 -- Créer la table pavilions si elle n'existe pas
@@ -419,7 +477,7 @@ ON CONFLICT (id) DO UPDATE SET
 -- =====================================================
 -- 2. INSERT EXHIBITOR PROFILES
 -- =====================================================
-INSERT INTO exhibitors (id, user_id, company_name, category, sector, description, website, logo_url, stand_number, created_at)
+INSERT INTO exhibitors (id, user_id, company_name, category, sector, description, website, logo_url, stand_number, featured, verified, created_at)
 VALUES
   (
     '00000000-0000-0000-0000-000000000102',
@@ -431,6 +489,8 @@ VALUES
     'https://abb.com',
     'https://ui-avatars.com/api/?name=ABB+Marine&size=200',
     'D4-050',
+    true,
+    true,
     NOW()
   ),
   (
@@ -443,6 +503,8 @@ VALUES
     'https://advancedportsys.cn',
     'https://ui-avatars.com/api/?name=Advanced+Port&size=200',
     'C3-027',
+    true,
+    true,
     NOW()
   ),
   (
@@ -455,6 +517,8 @@ VALUES
     'https://maritimeequip.fr',
     'https://ui-avatars.com/api/?name=Maritime+Equip&size=200',
     'B2-015',
+    true,
+    true,
     NOW()
   ),
   (
@@ -467,6 +531,8 @@ VALUES
     'https://startupportinno.com',
     'https://ui-avatars.com/api/?name=StartUp+Port&size=200',
     'A1-001',
+    true,
+    true,
     NOW()
   )
 ON CONFLICT (id) DO UPDATE SET
@@ -476,7 +542,9 @@ ON CONFLICT (id) DO UPDATE SET
   description = EXCLUDED.description,
   website = EXCLUDED.website,
   logo_url = EXCLUDED.logo_url,
-  stand_number = EXCLUDED.stand_number;
+  stand_number = EXCLUDED.stand_number,
+  featured = EXCLUDED.featured,
+  verified = EXCLUDED.verified;
 
 -- =====================================================
 -- 2b. INSERT INTO exhibitor_profiles (pour la compatibilité)
@@ -648,11 +716,11 @@ VALUES
     '00000000-0000-0000-0000-000000000108',
     '00000000-0000-0000-0000-000000000012',
     'Museum Heritage',
-    'cultural',
+    'institutional',
     'Culture',
-    'Préservation du patrimoine maritime et portuaire.',
+    'Institution culturelle partenaire pour la promotion du patrimoine maritime.',
     'https://ui-avatars.com/api/?name=Museum+Heritage&size=200',
-    'https://museum-heritage.example.com',
+    'https://museum.example.com',
     true,
     true,
     'museum',
@@ -702,9 +770,14 @@ VALUES
   )
 ON CONFLICT (id) DO UPDATE SET
   company_name = EXCLUDED.company_name,
+  partner_type = EXCLUDED.partner_type,
+  sector = EXCLUDED.sector,
   description = EXCLUDED.description,
-  partnership_level = EXCLUDED.partnership_level,
-  featured = EXCLUDED.featured;
+  logo_url = EXCLUDED.logo_url,
+  website = EXCLUDED.website,
+  verified = EXCLUDED.verified,
+  featured = EXCLUDED.featured,
+  partnership_level = EXCLUDED.partnership_level;
 
 -- =====================================================
 -- 4. INSERT VISITOR PROFILES
