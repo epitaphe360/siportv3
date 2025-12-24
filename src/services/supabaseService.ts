@@ -1119,14 +1119,39 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await safeSupabase
+      // Essayer d'abord avec l'ID fourni directement (pourrait être user_id ou exhibitor_id)
+      let { data, error } = await safeSupabase
         .from('mini_sites')
         .select('*')
         .eq('exhibitor_id', exhibitorId)
         .single();
 
-      if (error) {
-        console.warn('Mini-site non trouvé:', error.message);
+      // Si pas trouvé, l'ID est peut-être l'exhibitor.id, donc chercher le user_id associé
+      if (error || !data) {
+        console.log('[MiniSite] Pas trouvé par exhibitor_id direct, recherche via exhibitors table...');
+
+        // Chercher l'exhibitor pour obtenir son user_id
+        const { data: exhibitor } = await safeSupabase
+          .from('exhibitors')
+          .select('user_id')
+          .eq('id', exhibitorId)
+          .single();
+
+        if (exhibitor?.user_id) {
+          // Chercher le mini-site avec le user_id de l'exposant
+          const result = await safeSupabase
+            .from('mini_sites')
+            .select('*')
+            .eq('exhibitor_id', exhibitor.user_id)
+            .single();
+
+          data = result.data;
+          error = result.error;
+        }
+      }
+
+      if (error || !data) {
+        console.warn('Mini-site non trouvé:', error?.message || 'Aucune donnée');
         return null;
       }
 
@@ -1149,6 +1174,13 @@ export class SupabaseService {
         };
       }
 
+      // Transformer les noms de colonnes DB → Frontend
+      // La table utilise: is_published, view_count, updated_at
+      // Le frontend attend: published, views, last_updated
+      data.published = data.is_published ?? false;
+      data.views = data.view_count ?? 0;
+      data.last_updated = data.updated_at || data.created_at;
+
       return data;
     } catch (error) {
       console.error('Erreur récupération mini-site:', error);
@@ -1158,14 +1190,35 @@ export class SupabaseService {
 
   static async getExhibitorProducts(exhibitorId: string): Promise<Product[]> {
     if (!this.checkSupabaseConnection()) return [];
-    
+
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await safeSupabase
+      // D'abord essayer avec l'ID comme exhibitor.id
+      let { data, error } = await safeSupabase
         .from('products')
         .select('*')
         .eq('exhibitor_id', exhibitorId);
-        
+
+      // Si pas de produits trouvés, peut-être que c'est un user_id
+      // Chercher l'exhibitor pour obtenir son ID
+      if ((!data || data.length === 0) && !error) {
+        const { data: exhibitor } = await safeSupabase
+          .from('exhibitors')
+          .select('id')
+          .eq('user_id', exhibitorId)
+          .single();
+
+        if (exhibitor?.id) {
+          const result = await safeSupabase
+            .from('products')
+            .select('*')
+            .eq('exhibitor_id', exhibitor.id);
+
+          data = result.data;
+          error = result.error;
+        }
+      }
+
       if (error) throw error;
       
       return (data || []).map((p: any) => ({
@@ -1190,19 +1243,33 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      // Récupérer le nombre de vues actuel
+      // Déterminer le user_id pour chercher le mini-site
+      let userId = exhibitorId;
+
+      // Si l'ID passé est l'exhibitor.id, récupérer le user_id
+      const { data: exhibitor } = await safeSupabase
+        .from('exhibitors')
+        .select('user_id')
+        .eq('id', exhibitorId)
+        .single();
+
+      if (exhibitor?.user_id) {
+        userId = exhibitor.user_id;
+      }
+
+      // Récupérer le nombre de vues actuel (utilise view_count, pas views)
       const { data: currentData } = await safeSupabase
         .from('mini_sites')
-        .select('views')
-        .eq('exhibitor_id', exhibitorId)
+        .select('view_count')
+        .eq('exhibitor_id', userId)
         .single();
 
       if (currentData) {
         // Incrémenter les vues
         await safeSupabase
           .from('mini_sites')
-          .update({ views: (currentData.views || 0) + 1 })
-          .eq('exhibitor_id', exhibitorId);
+          .update({ view_count: (currentData.view_count || 0) + 1 })
+          .eq('exhibitor_id', userId);
       }
     } catch (error) {
       console.error('Erreur incrémentation vues:', error);
@@ -1214,11 +1281,24 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await safeSupabase
+      // D'abord essayer de trouver par exhibitor.id
+      let { data, error } = await safeSupabase
         .from('exhibitors')
         .select('id, company_name, logo_url, description, website, contact_info')
         .eq('id', exhibitorId)
         .single();
+
+      // Si pas trouvé, essayer par user_id (au cas où c'est un user_id qui est passé)
+      if (error || !data) {
+        const result = await safeSupabase
+          .from('exhibitors')
+          .select('id, company_name, logo_url, description, website, contact_info')
+          .eq('user_id', exhibitorId)
+          .single();
+
+        data = result.data;
+        error = result.error;
+      }
 
       if (error) throw error;
 
@@ -1226,8 +1306,8 @@ export class SupabaseService {
     } catch (error) {
       console.error('Erreur récupération exposant pour mini-site:', error);
       return null;
-	    }
-	  }
+    }
+  }
 
   static async getExhibitorByUserId(userId: string): Promise<any | null> {
     if (!this.checkSupabaseConnection()) return null;
