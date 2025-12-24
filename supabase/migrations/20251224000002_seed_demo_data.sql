@@ -17,7 +17,7 @@
 DROP TABLE IF EXISTS public.exhibitor_profiles CASCADE;
 CREATE TABLE public.exhibitor_profiles (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  user_id uuid NOT NULL UNIQUE REFERENCES public.users(id) ON DELETE CASCADE,
   company_name text,
   first_name text,
   last_name text,
@@ -163,129 +163,68 @@ END $$;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 -- Insert into auth.users first to satisfy foreign key constraints
--- Using DO block to avoid unique constraint violations on email
+-- Using DO block to avoid unique constraint violations
 DO $$
 DECLARE
   v_user_id uuid;
   v_email text;
   v_password text := 'password123';
+  v_users RECORD;
 BEGIN
-  -- Admin
-  v_user_id := '00000000-0000-0000-0000-000000000001';
-  v_email := 'admin@siports.com';
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
-    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
-    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
-  END IF;
+  -- Clean up dependent tables to avoid foreign key violations during user cleanup
+  -- We do this because deleting from auth.users triggers deletion in public.users
+  DELETE FROM products;
+  DELETE FROM mini_sites;
+  DELETE FROM news_articles;
+  DELETE FROM events;
+  DELETE FROM appointments;
+  DELETE FROM messages;
+  DELETE FROM connections;
+  DELETE FROM exhibitors;
+  DELETE FROM exhibitor_profiles;
+  DELETE FROM partner_profiles;
+  DELETE FROM visitor_profiles;
+  DELETE FROM notifications;
 
-  -- Exhibitors
-  v_user_id := '00000000-0000-0000-0000-000000000002';
-  v_email := 'exhibitor-54m@test.siport.com';
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
-    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
-    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
-  END IF;
+  -- Define the users we want to ensure exist
+  FOR v_users IN 
+    SELECT * FROM (VALUES 
+      ('00000000-0000-0000-0000-000000000001', 'admin@siports.com'),
+      ('00000000-0000-0000-0000-000000000002', 'exhibitor-54m@test.siport.com'),
+      ('00000000-0000-0000-0000-000000000003', 'exhibitor-36m@test.siport.com'),
+      ('00000000-0000-0000-0000-000000000004', 'exhibitor-18m@test.siport.com'),
+      ('00000000-0000-0000-0000-000000000017', 'exhibitor-9m@test.siport.com'),
+      ('00000000-0000-0000-0000-000000000005', 'partner.gold@example.com'),
+      ('00000000-0000-0000-0000-000000000006', 'partner.silver@example.com'),
+      ('00000000-0000-0000-0000-000000000011', 'partner.platinium@example.com'),
+      ('00000000-0000-0000-0000-000000000012', 'partner.museum@example.com'),
+      ('00000000-0000-0000-0000-000000000013', 'partner.porttech@example.com'),
+      ('00000000-0000-0000-0000-000000000014', 'partner.oceanfreight@example.com'),
+      ('00000000-0000-0000-0000-000000000015', 'partner.coastal@example.com'),
+      ('00000000-0000-0000-0000-000000000007', 'visitor.vip@example.com'),
+      ('00000000-0000-0000-0000-000000000008', 'visitor.premium@example.com'),
+      ('00000000-0000-0000-0000-000000000009', 'visitor.basic@example.com'),
+      ('00000000-0000-0000-0000-000000000010', 'visitor.free@example.com')
+    ) AS t(id, email)
+  LOOP
+    v_user_id := v_users.id::uuid;
+    v_email := v_users.email;
 
-  v_user_id := '00000000-0000-0000-0000-000000000003';
-  v_email := 'exhibitor-36m@test.siport.com';
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
-    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
-    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
-  END IF;
+    -- 1. Remove any user that has this email but a different ID
+    -- We delete from public.users first to avoid constraint issues
+    DELETE FROM public.users WHERE email = v_email AND id <> v_user_id;
+    DELETE FROM auth.users WHERE email = v_email AND id <> v_user_id;
+    
+    -- 2. Remove any user that has this ID but a different email
+    DELETE FROM public.users WHERE id = v_user_id AND email <> v_email;
+    DELETE FROM auth.users WHERE id = v_user_id AND email <> v_email;
 
-  v_user_id := '00000000-0000-0000-0000-000000000004';
-  v_email := 'exhibitor-18m@test.siport.com';
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
-    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
-    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
-  END IF;
-
-  v_user_id := '00000000-0000-0000-0000-000000000017';
-  v_email := 'exhibitor-9m@test.siport.com';
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
-    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
-    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
-  END IF;
-
-  -- Partners
-  v_user_id := '00000000-0000-0000-0000-000000000005';
-  v_email := 'gold.partner@example.com';
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
-    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
-    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
-  END IF;
-
-  v_user_id := '00000000-0000-0000-0000-000000000006';
-  v_email := 'silver.tech@example.com';
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
-    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
-    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
-  END IF;
-
-  v_user_id := '00000000-0000-0000-0000-000000000011';
-  v_email := 'partner.platinium@example.com';
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
-    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
-    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
-  END IF;
-
-  v_user_id := '00000000-0000-0000-0000-000000000012';
-  v_email := 'partner.museum@example.com';
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
-    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
-    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
-  END IF;
-
-  -- New Partners from user request
-  v_user_id := '00000000-0000-0000-0000-000000000013';
-  v_email := 'partner.porttech@example.com';
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
-    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
-    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
-  END IF;
-
-  v_user_id := '00000000-0000-0000-0000-000000000014';
-  v_email := 'partner.oceanfreight@example.com';
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
-    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
-    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
-  END IF;
-
-  v_user_id := '00000000-0000-0000-0000-000000000015';
-  v_email := 'partner.coastal@example.com';
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
-    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
-    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
-  END IF;
-
-  -- Visitors
-  v_user_id := '00000000-0000-0000-0000-000000000007';
-  v_email := 'jean.dupont@example.com';
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
-    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
-    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
-  END IF;
-
-  v_user_id := '00000000-0000-0000-0000-000000000008';
-  v_email := 'marie.martin@example.com';
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
-    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
-    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
-  END IF;
-
-  v_user_id := '00000000-0000-0000-0000-000000000009';
-  v_email := 'pierre.dubois@example.com';
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
-    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
-    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
-  END IF;
-
-  v_user_id := '00000000-0000-0000-0000-000000000010';
-  v_email := 'sophie.bernard@example.com';
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
-    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
-    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
-  END IF;
+    -- 3. Insert if not exists
+    IF NOT EXISTS (SELECT 1 FROM auth.users WHERE id = v_user_id) THEN
+      INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+      VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
+    END IF;
+  END LOOP;
 END $$;
 
 -- Admin user
@@ -300,7 +239,8 @@ VALUES
     '{"role": "administrator", "avatar": "https://ui-avatars.com/api/?name=Admin+SIPORTS"}',
     NOW()
   )
-ON CONFLICT (email) DO UPDATE SET
+ON CONFLICT (id) DO UPDATE SET
+  email = EXCLUDED.email,
   name = EXCLUDED.name,
   type = EXCLUDED.type,
   status = EXCLUDED.status,
@@ -345,7 +285,8 @@ VALUES
     '{"company": "StartUp Port Innovations", "sector": "IoT", "tier": "9m2", "avatar": "https://ui-avatars.com/api/?name=StartUp+Port"}',
     NOW()
   )
-ON CONFLICT (email) DO UPDATE SET
+ON CONFLICT (id) DO UPDATE SET
+  email = EXCLUDED.email,
   name = EXCLUDED.name,
   type = EXCLUDED.type,
   status = EXCLUDED.status,
@@ -417,7 +358,8 @@ VALUES
     '{"company": "Coastal Shipping Co", "tier": "silver", "avatar": "https://ui-avatars.com/api/?name=Coastal+Shipping"}',
     NOW()
   )
-ON CONFLICT (email) DO UPDATE SET
+ON CONFLICT (id) DO UPDATE SET
+  email = EXCLUDED.email,
   name = EXCLUDED.name,
   type = EXCLUDED.type,
   status = EXCLUDED.status,
@@ -466,7 +408,8 @@ VALUES
     '{"firstName": "Sophie", "lastName": "Bernard", "avatar": "https://ui-avatars.com/api/?name=Sophie+Bernard"}',
     NOW()
   )
-ON CONFLICT (email) DO UPDATE SET
+ON CONFLICT (id) DO UPDATE SET
+  email = EXCLUDED.email,
   name = EXCLUDED.name,
   type = EXCLUDED.type,
   visitor_level = EXCLUDED.visitor_level,
@@ -1942,29 +1885,15 @@ ON CONFLICT (id) DO NOTHING;
 -- 13. INSERT USER FAVORITES
 -- =====================================================
 
--- Ensure user_favorites table exists
-CREATE TABLE IF NOT EXISTS user_favorites (
+-- Ensure user_favorites table exists with correct constraints
+DROP TABLE IF EXISTS user_favorites CASCADE;
+CREATE TABLE user_favorites (
   user_id UUID REFERENCES auth.users(id),
   entity_type TEXT NOT NULL,
   entity_id UUID NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   PRIMARY KEY (user_id, entity_type, entity_id)
 );
-
-DO $$
-BEGIN
-    BEGIN
-        ALTER TABLE user_favorites ADD COLUMN user_id UUID REFERENCES auth.users(id);
-    EXCEPTION WHEN duplicate_column THEN NULL; END;
-
-    BEGIN
-        ALTER TABLE user_favorites ADD COLUMN entity_type TEXT;
-    EXCEPTION WHEN duplicate_column THEN NULL; END;
-
-    BEGIN
-        ALTER TABLE user_favorites ADD COLUMN entity_id UUID;
-    EXCEPTION WHEN duplicate_column THEN NULL; END;
-END $$;
 
 INSERT INTO user_favorites (user_id, entity_type, entity_id, created_at)
 VALUES
@@ -1981,8 +1910,9 @@ ON CONFLICT (user_id, entity_type, entity_id) DO NOTHING;
 -- 14. INSERT DAILY QUOTAS
 -- =====================================================
 
--- Ensure daily_quotas table exists
-CREATE TABLE IF NOT EXISTS daily_quotas (
+-- Ensure daily_quotas table exists with correct constraints
+DROP TABLE IF EXISTS daily_quotas CASCADE;
+CREATE TABLE daily_quotas (
   user_id UUID REFERENCES auth.users(id),
   quota_date DATE NOT NULL,
   connections_used INTEGER DEFAULT 0,
@@ -1991,29 +1921,6 @@ CREATE TABLE IF NOT EXISTS daily_quotas (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   PRIMARY KEY (user_id, quota_date)
 );
-
-DO $$
-BEGIN
-    BEGIN
-        ALTER TABLE daily_quotas ADD COLUMN user_id UUID REFERENCES auth.users(id);
-    EXCEPTION WHEN duplicate_column THEN NULL; END;
-
-    BEGIN
-        ALTER TABLE daily_quotas ADD COLUMN quota_date DATE;
-    EXCEPTION WHEN duplicate_column THEN NULL; END;
-
-    BEGIN
-        ALTER TABLE daily_quotas ADD COLUMN connections_used INTEGER DEFAULT 0;
-    EXCEPTION WHEN duplicate_column THEN NULL; END;
-
-    BEGIN
-        ALTER TABLE daily_quotas ADD COLUMN messages_used INTEGER DEFAULT 0;
-    EXCEPTION WHEN duplicate_column THEN NULL; END;
-
-    BEGIN
-        ALTER TABLE daily_quotas ADD COLUMN meetings_used INTEGER DEFAULT 0;
-    EXCEPTION WHEN duplicate_column THEN NULL; END;
-END $$;
 
 INSERT INTO daily_quotas (user_id, quota_date, connections_used, messages_used, meetings_used, created_at)
 VALUES
@@ -2115,6 +2022,21 @@ VALUES
     ]',
     true,
     800,
+    NOW()
+  ),
+  -- StartUp Port Innovations Mini-Site
+  (
+    '00000000-0000-0000-0000-000000001004',
+    '00000000-0000-0000-0000-000000000117',
+    'modern',
+    '{"primary": "#0ea5e9", "secondary": "#0f172a", "accent": "#f59e0b"}',
+    '[
+      {"type": "hero", "title": "StartUp Port Innovations", "subtitle": "L''IoT au service de la performance portuaire", "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200", "cta_text": "Découvrir nos capteurs", "cta_link": "#products"},
+      {"type": "about", "title": "Innovation IoT", "content": "Nous transformons les ports traditionnels en ports intelligents grâce à nos capteurs IoT brevetés et notre plateforme d''analyse prédictive.", "image": "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800"},
+      {"type": "contact", "title": "Rejoignez la révolution", "email": "hello@startupportinno.com", "phone": "+33 7 89 01 23 45", "address": "Station F, Paris, France", "form_enabled": true}
+    ]',
+    true,
+    450,
     NOW()
   )
 ON CONFLICT (id) DO UPDATE SET
@@ -2218,6 +2140,18 @@ VALUES
     'Grue portuaire haute performance pour charges lourdes. Capacité de levage de 100 tonnes avec précision millimétrique.',
     'Équipement',
     ARRAY['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600'],
+    NULL,
+    true,
+    NOW()
+  ),
+  -- StartUp Port Innovations Products
+  (
+    '00000000-0000-0000-0000-000000002010',
+    '00000000-0000-0000-0000-000000000117',
+    'Smart Sensor Node V2',
+    'Capteur IoT multi-paramètres pour le suivi en temps réel des conditions environnementales et structurelles des quais.',
+    'IoT',
+    ARRAY['https://images.unsplash.com/photo-1518770660439-4636190af475?w=600'],
     NULL,
     true,
     NOW()
