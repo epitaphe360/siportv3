@@ -180,21 +180,28 @@ BEGIN
 
   -- Exhibitors
   v_user_id := '00000000-0000-0000-0000-000000000002';
-  v_email := 'expo.tech@example.com';
+  v_email := 'exhibitor-54m@test.siport.com';
   IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
     INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
     VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
   END IF;
 
   v_user_id := '00000000-0000-0000-0000-000000000003';
-  v_email := 'agri.innov@example.com';
+  v_email := 'exhibitor-36m@test.siport.com';
   IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
     INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
     VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
   END IF;
 
   v_user_id := '00000000-0000-0000-0000-000000000004';
-  v_email := 'mode.design@example.com';
+  v_email := 'exhibitor-18m@test.siport.com';
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
+    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
+  END IF;
+
+  v_user_id := '00000000-0000-0000-0000-000000000017';
+  v_email := 'exhibitor-9m@test.siport.com';
   IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
     INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
     VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
@@ -304,29 +311,38 @@ INSERT INTO users (id, email, name, type, status, profile, created_at)
 VALUES 
   (
     '00000000-0000-0000-0000-000000000002',
-    'expo.tech@example.com',
-    'TechExpo Solutions',
+    'exhibitor-54m@test.siport.com',
+    'ABB Marine & Ports',
     'exhibitor',
     'active',
-    '{"company": "TechExpo Solutions", "sector": "Technologie", "avatar": "https://ui-avatars.com/api/?name=TechExpo"}',
+    '{"company": "ABB Marine & Ports", "sector": "Technologie", "tier": "54m2", "avatar": "https://ui-avatars.com/api/?name=ABB+Marine"}',
     NOW()
   ),
   (
     '00000000-0000-0000-0000-000000000003',
-    'agri.innov@example.com',
-    'AgriInnov',
+    'exhibitor-36m@test.siport.com',
+    'Advanced Port Systems',
     'exhibitor',
     'active',
-    '{"company": "AgriInnov", "sector": "Agriculture", "avatar": "https://ui-avatars.com/api/?name=AgriInnov"}',
+    '{"company": "Advanced Port Systems", "sector": "Automation", "tier": "36m2", "avatar": "https://ui-avatars.com/api/?name=Advanced+Port"}',
     NOW()
   ),
   (
     '00000000-0000-0000-0000-000000000004',
-    'mode.design@example.com',
-    'ModeDesign Paris',
+    'exhibitor-18m@test.siport.com',
+    'Maritime Equipment Co',
     'exhibitor',
     'active',
-    '{"company": "ModeDesign Paris", "sector": "Mode", "avatar": "https://ui-avatars.com/api/?name=ModeDesign"}',
+    '{"company": "Maritime Equipment Co", "sector": "Equipment", "tier": "18m2", "avatar": "https://ui-avatars.com/api/?name=Maritime+Equip"}',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000017',
+    'exhibitor-9m@test.siport.com',
+    'StartUp Port Innovations',
+    'exhibitor',
+    'active',
+    '{"company": "StartUp Port Innovations", "sector": "IoT", "tier": "9m2", "avatar": "https://ui-avatars.com/api/?name=StartUp+Port"}',
     NOW()
   )
 ON CONFLICT (email) DO UPDATE SET
@@ -460,39 +476,54 @@ ON CONFLICT (email) DO UPDATE SET
 -- =====================================================
 -- 2. INSERT EXHIBITOR PROFILES
 -- =====================================================
-INSERT INTO exhibitors (id, user_id, company_name, category, sector, description, website, logo_url, created_at)
+INSERT INTO exhibitors (id, user_id, company_name, category, sector, description, website, logo_url, stand_number, created_at)
 VALUES
   (
     '00000000-0000-0000-0000-000000000102',
     '00000000-0000-0000-0000-000000000002',
-    'TechExpo Solutions',
+    'ABB Marine & Ports',
     'port-industry',
-    'Innovation',
-    'Leader mondial en solutions technologiques innovantes pour les salons professionnels. Nous proposons des solutions de réalité virtuelle, d''affichage interactif et de gestion d''événements.',
-    'https://techexpo-solutions.example.com',
-    'https://ui-avatars.com/api/?name=TechExpo&size=200',
+    'Technology',
+    'Leader mondial en automatisation et électrification marine. Nous fournissons des solutions de pointe pour les ports et les navires.',
+    'https://abb.com',
+    'https://ui-avatars.com/api/?name=ABB+Marine&size=200',
+    'D4-050',
     NOW()
   ),
   (
     '00000000-0000-0000-0000-000000000103',
     '00000000-0000-0000-0000-000000000003',
-    'AgriInnov',
+    'Advanced Port Systems',
     'port-operations',
-    'Agritech',
-    'Spécialiste des technologies agricoles durables et intelligentes. Nos solutions IoT et d''agriculture de précision révolutionnent le secteur agricole.',
-    'https://agri-innov.example.com',
-    'https://ui-avatars.com/api/?name=AgriInnov&size=200',
+    'Automation',
+    'Systèmes automatisés et IA pour optimisation portuaire. Spécialiste des terminaux à conteneurs intelligents.',
+    'https://advancedportsys.cn',
+    'https://ui-avatars.com/api/?name=Advanced+Port&size=200',
+    'C3-027',
     NOW()
   ),
   (
     '00000000-0000-0000-0000-000000000104',
     '00000000-0000-0000-0000-000000000004',
-    'ModeDesign Paris',
-    'institutional',
-    'Luxury',
-    'Maison de haute couture parisienne reconnue internationalement. Collections exclusives et sur-mesure pour une clientèle prestigieuse.',
-    'https://mode-design-paris.example.com',
-    'https://ui-avatars.com/api/?name=ModeDesign&size=200',
+    'Maritime Equipment Co',
+    'port-industry',
+    'Equipment',
+    'Fabricant d''équipements maritimes et portuaires de qualité. Grues, chariots cavaliers et solutions de manutention.',
+    'https://maritimeequip.fr',
+    'https://ui-avatars.com/api/?name=Maritime+Equip&size=200',
+    'B2-015',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000117',
+    '00000000-0000-0000-0000-000000000017',
+    'StartUp Port Innovations',
+    'port-industry',
+    'IoT',
+    'Startup innovante en solutions IoT pour ports intelligents. Capteurs connectés et analyse de données en temps réel.',
+    'https://startupportinno.com',
+    'https://ui-avatars.com/api/?name=StartUp+Port&size=200',
+    'A1-001',
     NOW()
   )
 ON CONFLICT (id) DO UPDATE SET
@@ -501,7 +532,22 @@ ON CONFLICT (id) DO UPDATE SET
   sector = EXCLUDED.sector,
   description = EXCLUDED.description,
   website = EXCLUDED.website,
-  logo_url = EXCLUDED.logo_url;
+  logo_url = EXCLUDED.logo_url,
+  stand_number = EXCLUDED.stand_number;
+
+-- =====================================================
+-- 2b. INSERT INTO exhibitor_profiles (pour la compatibilité)
+-- =====================================================
+INSERT INTO exhibitor_profiles (user_id, company_name, description, logo_url, website, sector, category, stand_number, stand_area, created_at)
+VALUES
+  ('00000000-0000-0000-0000-000000000002', 'ABB Marine & Ports', 'Leader mondial en automatisation et électrification marine.', 'https://ui-avatars.com/api/?name=ABB+Marine&size=200', 'https://abb.com', 'Technology', 'major_brand', 'D4-050', 60.0, NOW()),
+  ('00000000-0000-0000-0000-000000000003', 'Advanced Port Systems', 'Systèmes automatisés et IA pour optimisation portuaire.', 'https://ui-avatars.com/api/?name=Advanced+Port&size=200', 'https://advancedportsys.cn', 'Automation', 'automation', 'C3-027', 36.0, NOW()),
+  ('00000000-0000-0000-0000-000000000004', 'Maritime Equipment Co', 'Fabricant d''équipements maritimes et portuaires de qualité.', 'https://ui-avatars.com/api/?name=Maritime+Equip&size=200', 'https://maritimeequip.fr', 'Equipment', 'equipment', 'B2-015', 18.0, NOW()),
+  ('00000000-0000-0000-0000-000000000017', 'StartUp Port Innovations', 'Startup innovante en solutions IoT pour ports intelligents.', 'https://ui-avatars.com/api/?name=StartUp+Port&size=200', 'https://startupportinno.com', 'IoT', 'startup', 'A1-001', 9.0, NOW())
+ON CONFLICT (user_id) DO UPDATE SET
+  company_name = EXCLUDED.company_name,
+  description = EXCLUDED.description,
+  stand_number = EXCLUDED.stand_number;
 
 -- =====================================================
 -- 3. INSERT PARTNER PROFILES (dans partner_profiles)
@@ -2026,49 +2072,49 @@ END $$;
 
 INSERT INTO mini_sites (id, exhibitor_id, theme, custom_colors, sections, published, views, created_at)
 VALUES
-  -- TechExpo Solutions Mini-Site
+  -- ABB Marine & Ports Mini-Site
   (
     '00000000-0000-0000-0000-000000001001',
     '00000000-0000-0000-0000-000000000102',
     'modern',
-    '{"primary": "#1e40af", "secondary": "#3b82f6", "accent": "#60a5fa"}',
+    '{"primary": "#ff0000", "secondary": "#333333", "accent": "#666666"}',
     '[
-      {"type": "hero", "title": "TechExpo Solutions", "subtitle": "Leader mondial en solutions technologiques innovantes", "image": "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1200", "cta_text": "Découvrir nos solutions", "cta_link": "#products"},
-      {"type": "about", "title": "À propos de nous", "content": "TechExpo Solutions est le leader mondial en solutions technologiques innovantes pour les salons professionnels. Depuis 2010, nous proposons des solutions de réalité virtuelle, d''affichage interactif et de gestion d''événements qui transforment l''expérience visiteur.", "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800"},
-      {"type": "contact", "title": "Contactez-nous", "email": "contact@techexpo-solutions.example.com", "phone": "+33 1 23 45 67 89", "address": "123 Avenue de l''Innovation, 75008 Paris", "form_enabled": true}
+      {"type": "hero", "title": "ABB Marine & Ports", "subtitle": "L''avenir de la navigation est électrique, numérique et connecté", "image": "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1200", "cta_text": "Découvrir nos solutions", "cta_link": "#products"},
+      {"type": "about", "title": "À propos de nous", "content": "ABB Marine & Ports est le leader mondial en automatisation et électrification marine. Nous fournissons des solutions de pointe pour les ports et les navires, permettant une exploitation plus efficace et durable.", "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800"},
+      {"type": "contact", "title": "Contactez-nous", "email": "contact@abb.com", "phone": "+46 10 242 4000", "address": "Affolternstrasse 44, 8050 Zurich, Suisse", "form_enabled": true}
     ]',
     true,
-    1456,
+    2500,
     NOW()
   ),
-  -- AgriInnov Mini-Site
+  -- Advanced Port Systems Mini-Site
   (
     '00000000-0000-0000-0000-000000001002',
     '00000000-0000-0000-0000-000000000103',
     'nature',
-    '{"primary": "#16a34a", "secondary": "#22c55e", "accent": "#4ade80"}',
+    '{"primary": "#1e40af", "secondary": "#3b82f6", "accent": "#4ade80"}',
     '[
-      {"type": "hero", "title": "AgriInnov", "subtitle": "L''agriculture intelligente de demain", "image": "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200", "cta_text": "Explorer nos solutions IoT", "cta_link": "#products"},
-      {"type": "about", "title": "Notre mission", "content": "AgriInnov est spécialiste des technologies agricoles durables et intelligentes. Nos solutions IoT et d''agriculture de précision révolutionnent le secteur agricole en réduisant la consommation d''eau de 40% et en optimisant les rendements.", "image": "https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800"},
-      {"type": "contact", "title": "Nous contacter", "email": "contact@agri-innov.example.com", "phone": "+33 4 56 78 90 12", "address": "45 Route des Champs, 69000 Lyon", "form_enabled": true}
+      {"type": "hero", "title": "Advanced Port Systems", "subtitle": "Optimisation portuaire par l''IA", "image": "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200", "cta_text": "Explorer nos solutions", "cta_link": "#products"},
+      {"type": "about", "title": "Notre mission", "content": "Advanced Port Systems développe des systèmes automatisés et des solutions d''IA pour l''optimisation des terminaux portuaires. Nos technologies permettent d''augmenter la productivité de 30%.", "image": "https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800"},
+      {"type": "contact", "title": "Nous contacter", "email": "contact@advancedportsys.cn", "phone": "+86 138 0013 8000", "address": "Tech Park, Shanghai, Chine", "form_enabled": true}
     ]',
     true,
-    892,
+    1200,
     NOW()
   ),
-  -- ModeDesign Paris Mini-Site
+  -- Maritime Equipment Co Mini-Site
   (
     '00000000-0000-0000-0000-000000001003',
     '00000000-0000-0000-0000-000000000104',
     'elegant',
-    '{"primary": "#7c3aed", "secondary": "#8b5cf6", "accent": "#a78bfa"}',
+    '{"primary": "#16a34a", "secondary": "#22c55e", "accent": "#a78bfa"}',
     '[
-      {"type": "hero", "title": "ModeDesign Paris", "subtitle": "L''excellence de la haute couture parisienne", "image": "https://images.unsplash.com/photo-1558769132-cb1aea1f1c77?w=1200", "cta_text": "Découvrir la collection 2025", "cta_link": "#products"},
-      {"type": "about", "title": "Notre maison", "content": "ModeDesign Paris est une maison de haute couture parisienne reconnue internationalement depuis 1985. Nos collections exclusives et sur-mesure allient tradition artisanale et innovation textile pour une clientèle prestigieuse exigeante.", "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800"},
-      {"type": "contact", "title": "Prendre rendez-vous", "email": "contact@mode-design-paris.example.com", "phone": "+33 1 42 68 53 00", "address": "8 Avenue Montaigne, 75008 Paris", "form_enabled": true}
+      {"type": "hero", "title": "Maritime Equipment Co", "subtitle": "L''excellence en équipement portuaire", "image": "https://images.unsplash.com/photo-1558769132-cb1aea1f1c77?w=1200", "cta_text": "Voir le catalogue", "cta_link": "#products"},
+      {"type": "about", "title": "Notre maison", "content": "Maritime Equipment Co est un fabricant français d''équipements maritimes et portuaires de haute qualité. Nous équipons les plus grands ports mondiaux depuis plus de 50 ans.", "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800"},
+      {"type": "contact", "title": "Demander un devis", "email": "contact@maritimeequip.fr", "phone": "+33 6 56 78 90 12", "address": "Zone Portuaire, Marseille, France", "form_enabled": true}
     ]',
     true,
-    2341,
+    800,
     NOW()
   )
 ON CONFLICT (id) DO UPDATE SET
@@ -2129,106 +2175,51 @@ END $$;
 
 INSERT INTO products (id, exhibitor_id, name, description, category, images, price, featured, created_at)
 VALUES
-  -- TechExpo Solutions Products
+  -- ABB Marine & Ports Products
   (
     '00000000-0000-0000-0000-000000002001',
     '00000000-0000-0000-0000-000000000102',
-    'VR Event Platform',
-    'Plateforme de réalité virtuelle complète pour événements professionnels. Permet aux visiteurs de naviguer dans un salon virtuel immersif.',
-    'Réalité Virtuelle',
+    'Azipod® Propulsion',
+    'Système de propulsion électrique révolutionnaire pour navires, offrant une manœuvrabilité exceptionnelle et une efficacité énergétique accrue.',
+    'Propulsion',
     ARRAY['https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?w=600'],
-    15000,
+    NULL,
     true,
     NOW()
   ),
   (
     '00000000-0000-0000-0000-000000002002',
     '00000000-0000-0000-0000-000000000102',
-    'Interactive Display Hub',
-    'Solution d''affichage interactif tactile pour stands d''exposition. Écrans 4K avec analytics intégrés.',
-    'Affichage',
+    'Shore-to-Ship Power',
+    'Solution d''alimentation électrique à quai permettant aux navires de couper leurs moteurs auxiliaires au port, réduisant les émissions.',
+    'Énergie',
     ARRAY['https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600'],
-    8500,
+    NULL,
     true,
     NOW()
   ),
-  (
-    '00000000-0000-0000-0000-000000002003',
-    '00000000-0000-0000-0000-000000000102',
-    'Event Analytics Suite',
-    'Suite complète d''analytics pour mesurer l''engagement visiteurs, les flux de circulation et le ROI de votre présence.',
-    'Analytics',
-    ARRAY['https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600'],
-    2500,
-    false,
-    NOW()
-  ),
-  -- AgriInnov Products
+  -- Advanced Port Systems Products
   (
     '00000000-0000-0000-0000-000000002004',
     '00000000-0000-0000-0000-000000000103',
-    'Smart Soil Sensor Kit',
-    'Kit de capteurs connectés pour analyse des sols en temps réel. Mesure humidité, pH, nutriments et température.',
-    'Capteurs IoT',
-    ARRAY['https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=600'],
-    890,
-    true,
-    NOW()
-  ),
-  (
-    '00000000-0000-0000-0000-000000002005',
-    '00000000-0000-0000-0000-000000000103',
-    'AutoIrrig Pro',
-    'Système d''irrigation automatisé intelligent. Réduit la consommation d''eau de 40% grâce à l''IA.',
-    'Irrigation',
-    ARRAY['https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600'],
-    4500,
-    true,
-    NOW()
-  ),
-  (
-    '00000000-0000-0000-0000-000000002006',
-    '00000000-0000-0000-0000-000000000103',
-    'FarmDashboard Cloud',
-    'Tableau de bord cloud pour piloter toute votre exploitation. Visualisez les données, planifiez les actions, optimisez les rendements.',
+    'Smart Terminal AI',
+    'Système d''IA pour la gestion optimisée des terminaux à conteneurs. Planification automatique des grues et des véhicules.',
     'Logiciel',
-    ARRAY['https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600'],
-    199,
-    false,
+    ARRAY['https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=600'],
+    NULL,
+    true,
     NOW()
   ),
-  -- ModeDesign Paris Products
+  -- Maritime Equipment Co Products
   (
     '00000000-0000-0000-0000-000000002007',
     '00000000-0000-0000-0000-000000000104',
-    'Collection Automne-Hiver 2025',
-    'Notre dernière collection haute couture mêlant tradition parisienne et technologies textiles innovantes.',
-    'Haute Couture',
+    'Heavy Lift Crane X1',
+    'Grue portuaire haute performance pour charges lourdes. Capacité de levage de 100 tonnes avec précision millimétrique.',
+    'Équipement',
     ARRAY['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600'],
     NULL,
     true,
-    NOW()
-  ),
-  (
-    '00000000-0000-0000-0000-000000002008',
-    '00000000-0000-0000-0000-000000000104',
-    'Smart Fabric Collection',
-    'Ligne exclusive de vêtements intégrant des textiles connectés: thermorégulation, suivi biométrique, éclairage LED.',
-    'Innovation',
-    ARRAY['https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600'],
-    3500,
-    true,
-    NOW()
-  ),
-  (
-    '00000000-0000-0000-0000-000000002009',
-    '00000000-0000-0000-0000-000000000104',
-    'Service Sur-Mesure VIP',
-    'Création entièrement personnalisée avec nos maîtres artisans. Rendez-vous privé, choix des matières, essayages exclusifs.',
-    'Services',
-    ARRAY['https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600'],
-    NULL,
-    false,
     NOW()
   )
 ON CONFLICT (id) DO UPDATE SET

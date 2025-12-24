@@ -28,6 +28,7 @@ import {
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
+import LogoWithFallback from '../components/ui/LogoWithFallback';
 import { motion } from 'framer-motion';
 import { CONFIG } from '../lib/config';
 
@@ -207,7 +208,7 @@ export default function PartnerDetailPage() {
             animate={{ opacity: 1, y: 0 }}
             className="flex items-start space-x-6"
           >
-            <img
+            <LogoWithFallback
               src={partner.logo}
               alt={partner.name}
               className="h-24 w-24 rounded-xl object-cover border-2 border-gray-200"
@@ -387,6 +388,11 @@ export default function PartnerDetailPage() {
                       src={project.image}
                       alt={project.name}
                       className="w-full h-48 object-cover rounded-t-lg"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.src = `https://placehold.co/600x400/e2e8f0/64748b?text=${encodeURIComponent(project.name)}`;
+                      }}
                     />
                     <div className="p-6">
                       <div className="flex items-center justify-between mb-3">
@@ -591,6 +597,11 @@ export default function PartnerDetailPage() {
                   src={selectedProject.image}
                   alt={selectedProject.name}
                   className="w-full h-64 object-cover rounded-xl"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.onerror = null;
+                    target.src = `https://placehold.co/800x400/e2e8f0/64748b?text=${encodeURIComponent(selectedProject.name)}`;
+                  }}
                 />
               </div>
 
@@ -757,8 +768,11 @@ export default function PartnerDetailPage() {
                       key={index}
                       src={image}
                       alt={`Projet ${index + 1}`}
-                      className="w-full h-24 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform"
-                    />
+                      className="w-full h-24 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform"                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.src = `https://placehold.co/400x300/e2e8f0/64748b?text=Photo+${index + 1}`;
+                      }}                    />
                   ))}
                 </div>
               </div>

@@ -224,6 +224,11 @@ export default function NewsPage() {
                         src={article.image}
                         alt={article.title}
                         className="w-full h-64 object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null;
+                          target.src = `https://placehold.co/800x400/e2e8f0/64748b?text=${encodeURIComponent(article.title.substring(0, 20))}`;
+                        }}
                       />
                       <div className="absolute top-4 left-4">
                         <Star className="h-5 w-5 text-yellow-500 fill-current" />
@@ -373,6 +378,11 @@ export default function NewsPage() {
                         src={article.image}
                         alt={article.title}
                         className="w-full h-48 object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null;
+                          target.src = `https://placehold.co/600x400/e2e8f0/64748b?text=${encodeURIComponent(article.title.substring(0, 20))}`;
+                        }}
                       />
                       <div className="absolute top-4 right-4">
                         <Badge className={getCategoryColor(article.category)} size="sm">

@@ -4,6 +4,7 @@ import { Search, Filter, Grid2x2 as Grid, List, MapPin, Users, ExternalLink, Sta
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
+import LogoWithFallback from '../components/ui/LogoWithFallback';
 import { motion } from 'framer-motion';
 import { CONFIG } from '../lib/config';
 import { SupabaseService } from '../services/supabaseService';
@@ -319,7 +320,7 @@ export default function PartnersPage() {
                         {/* Header */}
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex items-center space-x-3">
-                            <img
+                            <LogoWithFallback
                               src={partner.logo}
                               alt={partner.name}
                               className="h-12 w-12 rounded-lg object-cover"
@@ -402,7 +403,7 @@ export default function PartnersPage() {
                       </div>
                     ) : (
                       <div className="flex items-center space-x-6 w-full">
-                        <img
+                        <LogoWithFallback
                           src={partner.logo}
                           alt={partner.name}
                           className="h-16 w-16 rounded-lg object-cover flex-shrink-0"
