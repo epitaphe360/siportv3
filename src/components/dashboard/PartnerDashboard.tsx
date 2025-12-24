@@ -127,7 +127,8 @@ export default function PartnerDashboard() {
     );
   }
 
-  const receivedAppointments = appointments.filter(a => user && user.id && a.visitorId === user.id);
+  // FIX: Partners receive appointments when they are the target (exhibitorId), not when they are the visitor
+  const receivedAppointments = appointments.filter(a => user && user.id && a.exhibitorId === user.id);
   const pendingAppointments = receivedAppointments.filter(a => a.status === 'pending');
   const confirmedAppointments = receivedAppointments.filter(a => a.status === 'confirmed');
 
@@ -161,9 +162,9 @@ export default function PartnerDashboard() {
   // This filter may need adjustment based on your data model
 
   const handleAccept = async (appointmentId: string) => {
-    // Role validation: Verify user is involved in this appointment
+    // Role validation: Verify partner is the target of this appointment
     const appointment = appointments.find(a => a.id === appointmentId);
-    if (!appointment || !user?.id || appointment.visitorId !== user.id) {
+    if (!appointment || !user?.id || appointment.exhibitorId !== user.id) {
       setError('Vous n\'êtes pas autorisé à confirmer ce rendez-vous');
       return;
     }
@@ -181,9 +182,9 @@ export default function PartnerDashboard() {
   };
 
   const handleReject = async (appointmentId: string) => {
-    // Role validation: Verify user is involved in this appointment
+    // Role validation: Verify partner is the target of this appointment
     const appointment = appointments.find(a => a.id === appointmentId);
-    if (!appointment || !user?.id || appointment.visitorId !== user.id) {
+    if (!appointment || !user?.id || appointment.exhibitorId !== user.id) {
       setError('Vous n\'êtes pas autorisé à refuser ce rendez-vous');
       return;
     }
