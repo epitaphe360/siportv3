@@ -8,7 +8,7 @@ import { SupabaseService } from '../services/supabaseService';
  */
 export async function initializeAuth() {
   try {
-    console.log('[AUTH] Initialisation de authentification...');
+    console.log("[AUTH] Initialisation de l'authentification...");
     
     // CRITICAL: Verifier et nettoyer le localStorage si donnees invalides
     const storedAuth = localStorage.getItem('siport-auth-storage');
