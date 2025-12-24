@@ -68,6 +68,21 @@ BEGIN
   END IF;
 END $$;
 
+-- Créer la table pavilions si elle n'existe pas
+CREATE TABLE IF NOT EXISTS pavilions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text NOT NULL,
+  slug text UNIQUE,
+  description text NOT NULL,
+  color text DEFAULT '#3b82f6',
+  icon text DEFAULT 'Anchor',
+  order_index integer DEFAULT 0,
+  featured boolean DEFAULT false,
+  image_url text,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
 -- =====================================================
 -- 1. INSERT DEMO USERS
 -- =====================================================
@@ -351,33 +366,39 @@ ON CONFLICT (user_id) DO UPDATE SET
 -- =====================================================
 -- 5. INSERT PAVILIONS
 -- =====================================================
-INSERT INTO pavilions (id, name, description, location, capacity, exhibitor_count, created_at)
+INSERT INTO pavilions (id, name, slug, description, color, icon, order_index, featured, created_at)
 VALUES
   (
     '00000000-0000-0000-0000-000000000201',
     'Pavillon Innovation',
+    'innovation',
     'Espace dédié aux technologies innovantes et startups du futur',
-    'Hall A - Niveau 1',
-    500,
-    15,
+    '#3b82f6',
+    'Zap',
+    1,
+    true,
     NOW()
   ),
   (
     '00000000-0000-0000-0000-000000000202',
     'Pavillon Agritech',
+    'agritech',
     'Solutions agricoles intelligentes et développement durable',
-    'Hall B - Niveau 1',
-    400,
-    12,
+    '#10b981',
+    'Sprout',
+    2,
+    false,
     NOW()
   ),
   (
     '00000000-0000-0000-0000-000000000203',
     'Pavillon Luxe & Mode',
+    'luxe-mode',
     'Haute couture et accessoires de luxe',
-    'Hall C - Niveau 2',
-    300,
-    8,
+    '#ec4899',
+    'Sparkles',
+    3,
+    false,
     NOW()
   )
 ON CONFLICT (id) DO NOTHING;
@@ -452,7 +473,7 @@ ON CONFLICT (id) DO NOTHING;
 -- =====================================================
 -- 7. INSERT NEWS ARTICLES
 -- =====================================================
-INSERT INTO news_articles (id, title, content, summary, author_id, published, featured, category, tags, image_url, created_at)
+INSERT INTO news_articles (id, title, content, excerpt, author_id, published, category, tags, image_url, created_at)
 VALUES
   (
     '00000000-0000-0000-0000-000000000401',
@@ -460,7 +481,6 @@ VALUES
     'Le salon SIPORTS 2025 s''annonce comme l''édition la plus importante de son histoire avec plus de 500 exposants confirmés et 50 000 visiteurs attendus. Cette année, l''accent est mis sur l''innovation durable et les technologies vertes...',
     'Le salon SIPORTS 2025 bat tous les records avec 500 exposants et 50 000 visiteurs attendus.',
     '00000000-0000-0000-0000-000000000001',
-    true,
     true,
     'Événement',
     ARRAY['SIPORTS', 'Salon', 'Innovation'],
@@ -474,7 +494,6 @@ VALUES
     'TechExpo Solutions lance une plateforme VR révolutionnaire pour les salons.',
     '00000000-0000-0000-0000-000000000001',
     true,
-    false,
     'Technologie',
     ARRAY['Innovation', 'Réalité Virtuelle', 'TechExpo'],
     'https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?w=800',
@@ -486,7 +505,6 @@ VALUES
     'AgriInnov présente ses dernières solutions IoT pour l''agriculture de précision. Des capteurs intelligents et des systèmes d''irrigation automatisés qui réduisent la consommation d''eau de 40%...',
     'AgriInnov révolutionne l''agriculture avec des solutions IoT innovantes.',
     '00000000-0000-0000-0000-000000000001',
-    true,
     true,
     'Agriculture',
     ARRAY['AgriTech', 'Innovation', 'Développement Durable'],
@@ -500,7 +518,6 @@ VALUES
     'ModeDesign Paris présente une collection alliant haute couture et technologies.',
     '00000000-0000-0000-0000-000000000001',
     true,
-    false,
     'Mode',
     ARRAY['Mode', 'Innovation', 'Luxe'],
     'https://images.unsplash.com/photo-1558769132-cb1aea1f1c77?w=800',
@@ -1129,28 +1146,30 @@ ON CONFLICT (id) DO NOTHING;
 -- =====================================================
 -- 11. INSERT CONVERSATIONS
 -- =====================================================
-INSERT INTO conversations (id, created_at)
+INSERT INTO conversations (id, type, participants, created_by, created_at)
 VALUES
-  ('00000000-0000-0000-0000-000000000801', NOW() - INTERVAL '2 days'),
-  ('00000000-0000-0000-0000-000000000802', NOW() - INTERVAL '1 day'),
-  ('00000000-0000-0000-0000-000000000803', NOW() - INTERVAL '3 hours')
+  (
+    '00000000-0000-0000-0000-000000000801',
+    'direct',
+    ARRAY['00000000-0000-0000-0000-000000000007'::uuid, '00000000-0000-0000-0000-000000000008'::uuid],
+    '00000000-0000-0000-0000-000000000007',
+    NOW() - INTERVAL '2 days'
+  ),
+  (
+    '00000000-0000-0000-0000-000000000802',
+    'direct',
+    ARRAY['00000000-0000-0000-0000-000000000007'::uuid, '00000000-0000-0000-0000-000000000002'::uuid],
+    '00000000-0000-0000-0000-000000000007',
+    NOW() - INTERVAL '1 day'
+  ),
+  (
+    '00000000-0000-0000-0000-000000000803',
+    'direct',
+    ARRAY['00000000-0000-0000-0000-000000000008'::uuid, '00000000-0000-0000-0000-000000000003'::uuid],
+    '00000000-0000-0000-0000-000000000008',
+    NOW() - INTERVAL '3 hours'
+  )
 ON CONFLICT (id) DO NOTHING;
-
--- Link users to conversations (if conversation_participants table exists)
-DO $$
-BEGIN
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'conversation_participants') THEN
-    INSERT INTO conversation_participants (conversation_id, user_id)
-    VALUES
-      ('00000000-0000-0000-0000-000000000801', '00000000-0000-0000-0000-000000000007'),
-      ('00000000-0000-0000-0000-000000000801', '00000000-0000-0000-0000-000000000008'),
-      ('00000000-0000-0000-0000-000000000802', '00000000-0000-0000-0000-000000000007'),
-      ('00000000-0000-0000-0000-000000000802', '00000000-0000-0000-0000-000000000002'),
-      ('00000000-0000-0000-0000-000000000803', '00000000-0000-0000-0000-000000000008'),
-      ('00000000-0000-0000-0000-000000000803', '00000000-0000-0000-0000-000000000003')
-    ON CONFLICT DO NOTHING;
-  END IF;
-END $$;
 
 -- =====================================================
 -- 12. INSERT MESSAGES
@@ -1239,215 +1258,46 @@ ON CONFLICT (user_id, quota_date) DO UPDATE SET
 -- =====================================================
 -- 15. INSERT MINI-SITES (Pages exposants)
 -- =====================================================
-INSERT INTO mini_sites (id, exhibitor_id, slug, title, description, logo_url, banner_url, theme, sections, contact_info, social_links, is_published, published_at, view_count, created_at, updated_at)
+INSERT INTO mini_sites (id, exhibitor_id, theme, custom_colors, sections, published, views, created_at)
 VALUES
   -- TechExpo Solutions Mini-Site
   (
     '00000000-0000-0000-0000-000000001001',
-    '00000000-0000-0000-0000-000000000002',
-    'techexpo-solutions',
-    'TechExpo Solutions',
-    'Leader mondial en solutions technologiques innovantes pour les salons professionnels.',
-    'https://ui-avatars.com/api/?name=TechExpo&size=200&background=1e40af&color=fff',
-    'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200',
-    '{"primaryColor": "#1e40af", "secondaryColor": "#3b82f6", "accentColor": "#60a5fa", "fontFamily": "Inter"}',
-    '[
-      {
-        "id": "hero",
-        "type": "hero",
-        "title": "Accueil",
-        "visible": true,
-        "order": 0,
-        "content": {
-          "title": "TechExpo Solutions",
-          "subtitle": "L''innovation technologique au service de vos événements",
-          "description": "Leader mondial en solutions technologiques innovantes pour les salons professionnels. Nous proposons des solutions de réalité virtuelle, d''affichage interactif et de gestion d''événements.",
-          "backgroundImage": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200",
-          "ctaText": "Découvrir nos solutions",
-          "ctaLink": "#products"
-        }
-      },
-      {
-        "id": "about",
-        "type": "about",
-        "title": "À propos",
-        "visible": true,
-        "order": 1,
-        "content": {
-          "title": "Notre expertise",
-          "description": "Depuis plus de 15 ans, TechExpo Solutions révolutionne l''expérience des salons professionnels grâce à des technologies de pointe. Notre équipe de 50 experts accompagne les organisateurs et exposants dans leur transformation digitale.",
-          "features": ["Réalité Virtuelle immersive", "Affichage interactif", "Analytics en temps réel", "Support 24/7"],
-          "stats": [
-            {"number": "15+", "label": "Années d''expertise"},
-            {"number": "500+", "label": "Projets réalisés"},
-            {"number": "98%", "label": "Clients satisfaits"},
-            {"number": "50+", "label": "Experts dédiés"}
-          ]
-        }
-      },
-      {
-        "id": "contact",
-        "type": "contact",
-        "title": "Contact",
-        "visible": true,
-        "order": 2,
-        "content": {
-          "title": "Contactez-nous",
-          "email": "contact@techexpo-solutions.com",
-          "phone": "+33 1 23 45 67 89",
-          "address": "123 Avenue de l''Innovation, 75008 Paris"
-        }
-      }
-    ]',
-    '{"email": "contact@techexpo-solutions.com", "phone": "+33 1 23 45 67 89", "address": "123 Avenue de l''Innovation, 75008 Paris"}',
-    '{"links": [{"platform": "linkedin", "url": "https://linkedin.com/company/techexpo"}, {"platform": "twitter", "url": "https://twitter.com/techexpo"}]}',
+    '00000000-0000-0000-0000-000000000102',
+    'modern',
+    '{"primary": "#1e40af", "secondary": "#3b82f6", "accent": "#60a5fa"}',
+    '[]',
     true,
-    NOW(),
     1456,
-    NOW(),
     NOW()
   ),
   -- AgriInnov Mini-Site
   (
     '00000000-0000-0000-0000-000000001002',
-    '00000000-0000-0000-0000-000000000003',
-    'agri-innov',
-    'AgriInnov',
-    'Spécialiste des technologies agricoles durables et intelligentes.',
-    'https://ui-avatars.com/api/?name=AgriInnov&size=200&background=16a34a&color=fff',
-    'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200',
-    '{"primaryColor": "#16a34a", "secondaryColor": "#22c55e", "accentColor": "#4ade80", "fontFamily": "Inter"}',
-    '[
-      {
-        "id": "hero",
-        "type": "hero",
-        "title": "Accueil",
-        "visible": true,
-        "order": 0,
-        "content": {
-          "title": "AgriInnov",
-          "subtitle": "L''agriculture intelligente pour un avenir durable",
-          "description": "Nos solutions IoT et d''agriculture de précision révolutionnent le secteur agricole. Réduisez votre consommation d''eau de 40% et optimisez vos rendements.",
-          "backgroundImage": "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200",
-          "ctaText": "Explorer nos solutions",
-          "ctaLink": "#products"
-        }
-      },
-      {
-        "id": "about",
-        "type": "about",
-        "title": "À propos",
-        "visible": true,
-        "order": 1,
-        "content": {
-          "title": "Innovation agricole durable",
-          "description": "AgriInnov développe des solutions technologiques pour une agriculture plus efficiente et respectueuse de l''environnement. Nos capteurs intelligents et systèmes d''irrigation automatisés permettent une gestion optimale des ressources.",
-          "features": ["Capteurs IoT connectés", "Irrigation automatisée", "Analyse des sols", "Dashboard temps réel"],
-          "stats": [
-            {"number": "40%", "label": "Économie d''eau"},
-            {"number": "25%", "label": "Augmentation rendement"},
-            {"number": "1000+", "label": "Exploitations équipées"},
-            {"number": "10M", "label": "Hectares surveillés"}
-          ]
-        }
-      },
-      {
-        "id": "contact",
-        "type": "contact",
-        "title": "Contact",
-        "visible": true,
-        "order": 2,
-        "content": {
-          "title": "Contactez-nous",
-          "email": "contact@agri-innov.com",
-          "phone": "+33 4 56 78 90 12",
-          "address": "Zone Agritech, 31000 Toulouse"
-        }
-      }
-    ]',
-    '{"email": "contact@agri-innov.com", "phone": "+33 4 56 78 90 12", "address": "Zone Agritech, 31000 Toulouse"}',
-    '{"links": [{"platform": "linkedin", "url": "https://linkedin.com/company/agriinnov"}, {"platform": "youtube", "url": "https://youtube.com/agriinnov"}]}',
+    '00000000-0000-0000-0000-000000000103',
+    'nature',
+    '{"primary": "#16a34a", "secondary": "#22c55e", "accent": "#4ade80"}',
+    '[]',
     true,
-    NOW(),
     892,
-    NOW(),
     NOW()
   ),
   -- ModeDesign Paris Mini-Site
   (
     '00000000-0000-0000-0000-000000001003',
-    '00000000-0000-0000-0000-000000000004',
-    'modedesign-paris',
-    'ModeDesign Paris',
-    'Maison de haute couture parisienne reconnue internationalement.',
-    'https://ui-avatars.com/api/?name=ModeDesign&size=200&background=7c3aed&color=fff',
-    'https://images.unsplash.com/photo-1558769132-cb1aea1f1c77?w=1200',
-    '{"primaryColor": "#7c3aed", "secondaryColor": "#8b5cf6", "accentColor": "#a78bfa", "fontFamily": "Playfair Display"}',
-    '[
-      {
-        "id": "hero",
-        "type": "hero",
-        "title": "Accueil",
-        "visible": true,
-        "order": 0,
-        "content": {
-          "title": "ModeDesign Paris",
-          "subtitle": "L''élégance parisienne rencontre l''innovation",
-          "description": "Collections exclusives et sur-mesure pour une clientèle prestigieuse. La haute couture parisienne intègre les technologies wearables.",
-          "backgroundImage": "https://images.unsplash.com/photo-1558769132-cb1aea1f1c77?w=1200",
-          "ctaText": "Découvrir nos collections",
-          "ctaLink": "#products"
-        }
-      },
-      {
-        "id": "about",
-        "type": "about",
-        "title": "À propos",
-        "visible": true,
-        "order": 1,
-        "content": {
-          "title": "L''art de la haute couture",
-          "description": "Depuis 1985, ModeDesign Paris allie savoir-faire traditionnel et innovation. Nos créations exclusives habillent les plus grandes célébrités et sont présentées dans les défilés internationaux les plus prestigieux.",
-          "features": ["Haute couture sur-mesure", "Textiles intelligents", "Collections exclusives", "Service VIP personnalisé"],
-          "stats": [
-            {"number": "40+", "label": "Années d''excellence"},
-            {"number": "200+", "label": "Défilés internationaux"},
-            {"number": "50", "label": "Artisans experts"},
-            {"number": "15", "label": "Prix de mode remportés"}
-          ]
-        }
-      },
-      {
-        "id": "contact",
-        "type": "contact",
-        "title": "Contact",
-        "visible": true,
-        "order": 2,
-        "content": {
-          "title": "Prenez rendez-vous",
-          "email": "atelier@modedesign-paris.com",
-          "phone": "+33 1 42 68 00 00",
-          "address": "28 Avenue Montaigne, 75008 Paris"
-        }
-      }
-    ]',
-    '{"email": "atelier@modedesign-paris.com", "phone": "+33 1 42 68 00 00", "address": "28 Avenue Montaigne, 75008 Paris"}',
-    '{"links": [{"platform": "instagram", "url": "https://instagram.com/modedesignparis"}, {"platform": "facebook", "url": "https://facebook.com/modedesignparis"}]}',
+    '00000000-0000-0000-0000-000000000104',
+    'elegant',
+    '{"primary": "#7c3aed", "secondary": "#8b5cf6", "accent": "#a78bfa"}',
+    '[]',
     true,
-    NOW(),
     2341,
-    NOW(),
     NOW()
   )
 ON CONFLICT (id) DO UPDATE SET
-  title = EXCLUDED.title,
-  description = EXCLUDED.description,
   theme = EXCLUDED.theme,
-  sections = EXCLUDED.sections,
-  contact_info = EXCLUDED.contact_info,
-  social_links = EXCLUDED.social_links,
-  is_published = EXCLUDED.is_published,
-  view_count = EXCLUDED.view_count;
+  custom_colors = EXCLUDED.custom_colors,
+  published = EXCLUDED.published,
+  views = EXCLUDED.views;
 
 -- =====================================================
 -- 16. INSERT PRODUCTS (Produits des exposants)
@@ -1462,7 +1312,7 @@ VALUES
     'Plateforme de réalité virtuelle complète pour événements professionnels. Permet aux visiteurs de naviguer dans un salon virtuel immersif.',
     'Réalité Virtuelle',
     ARRAY['https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?w=600'],
-    '15 000 € / event',
+    15000,
     true,
     NOW()
   ),
@@ -1473,7 +1323,7 @@ VALUES
     'Solution d''affichage interactif tactile pour stands d''exposition. Écrans 4K avec analytics intégrés.',
     'Affichage',
     ARRAY['https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600'],
-    '8 500 € / unité',
+    8500,
     true,
     NOW()
   ),
@@ -1484,7 +1334,7 @@ VALUES
     'Suite complète d''analytics pour mesurer l''engagement visiteurs, les flux de circulation et le ROI de votre présence.',
     'Analytics',
     ARRAY['https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600'],
-    '2 500 € / mois',
+    2500,
     false,
     NOW()
   ),
@@ -1496,7 +1346,7 @@ VALUES
     'Kit de capteurs connectés pour analyse des sols en temps réel. Mesure humidité, pH, nutriments et température.',
     'Capteurs IoT',
     ARRAY['https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=600'],
-    '890 € / kit',
+    890,
     true,
     NOW()
   ),
@@ -1507,7 +1357,7 @@ VALUES
     'Système d''irrigation automatisé intelligent. Réduit la consommation d''eau de 40% grâce à l''IA.',
     'Irrigation',
     ARRAY['https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600'],
-    '4 500 € / système',
+    4500,
     true,
     NOW()
   ),
@@ -1518,7 +1368,7 @@ VALUES
     'Tableau de bord cloud pour piloter toute votre exploitation. Visualisez les données, planifiez les actions, optimisez les rendements.',
     'Logiciel',
     ARRAY['https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600'],
-    '199 € / mois',
+    199,
     false,
     NOW()
   ),
@@ -1530,7 +1380,7 @@ VALUES
     'Notre dernière collection haute couture mêlant tradition parisienne et technologies textiles innovantes.',
     'Haute Couture',
     ARRAY['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600'],
-    'Sur devis',
+    NULL,
     true,
     NOW()
   ),
@@ -1541,7 +1391,7 @@ VALUES
     'Ligne exclusive de vêtements intégrant des textiles connectés: thermorégulation, suivi biométrique, éclairage LED.',
     'Innovation',
     ARRAY['https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600'],
-    'À partir de 3 500 €',
+    3500,
     true,
     NOW()
   ),
@@ -1552,7 +1402,7 @@ VALUES
     'Création entièrement personnalisée avec nos maîtres artisans. Rendez-vous privé, choix des matières, essayages exclusifs.',
     'Services',
     ARRAY['https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600'],
-    'Sur devis',
+    NULL,
     false,
     NOW()
   )
