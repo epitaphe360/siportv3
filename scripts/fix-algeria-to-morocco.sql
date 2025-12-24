@@ -3,18 +3,20 @@
 
 -- 1. Mettre à jour media_contents
 UPDATE media_contents SET 
-  title = REPLACE(title, 'Algérie', 'Maroc'),
-  title = REPLACE(title, 'algérie', 'Maroc'),
-  title = REPLACE(title, 'algérienne', 'marocaine'),
-  title = REPLACE(title, 'algérien', 'marocain'),
-  title = REPLACE(title, 'algériens', 'marocains'),
-  title = REPLACE(title, 'algériennes', 'marocaines'),
-  description = REPLACE(description, 'Algérie', 'Maroc'),
-  description = REPLACE(description, 'algérie', 'Maroc'),
-  description = REPLACE(description, 'algérienne', 'marocaine'),
-  description = REPLACE(description, 'algérien', 'marocain'),
-  description = REPLACE(description, 'algériens', 'marocains'),
-  description = REPLACE(description, 'algériennes', 'marocaines')
+  title = REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(title, 
+    'Algérie', 'Maroc'), 
+    'algérie', 'Maroc'), 
+    'algérienne', 'marocaine'), 
+    'algérien', 'marocain'), 
+    'algériens', 'marocains'), 
+    'algériennes', 'marocaines'),
+  description = REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(description, 
+    'Algérie', 'Maroc'), 
+    'algérie', 'Maroc'), 
+    'algérienne', 'marocaine'), 
+    'algérien', 'marocain'), 
+    'algériens', 'marocains'), 
+    'algériennes', 'marocaines')
 WHERE title ILIKE '%algéri%' OR description ILIKE '%algéri%';
 
 -- 2. Mettre à jour les speakers dans media_contents (JSONB)
@@ -28,29 +30,20 @@ WHERE speakers::text ILIKE '%DZ%';
 
 -- 3. Mettre à jour salon_config
 UPDATE salon_config SET 
-  location = REPLACE(location, 'Alger', 'Casablanca'),
-  location = REPLACE(location, 'Algérie', 'Maroc'),
+  location = REPLACE(REPLACE(location, 'Alger', 'Casablanca'), 'Algérie', 'Maroc'),
   description = REPLACE(description, 'Algérie', 'Maroc')
 WHERE location ILIKE '%algéri%' OR description ILIKE '%algéri%' OR location ILIKE '%Alger%';
 
 -- 4. Mettre à jour events
 UPDATE events SET 
-  title = REPLACE(title, 'Algérie', 'Maroc'),
-  title = REPLACE(title, 'algérienne', 'marocaine'),
-  title = REPLACE(title, 'algérien', 'marocain'),
-  description = REPLACE(description, 'Algérie', 'Maroc'),
-  description = REPLACE(description, 'algérienne', 'marocaine'),
-  description = REPLACE(description, 'algérien', 'marocain')
+  title = REPLACE(REPLACE(REPLACE(title, 'Algérie', 'Maroc'), 'algérienne', 'marocaine'), 'algérien', 'marocain'),
+  description = REPLACE(REPLACE(REPLACE(description, 'Algérie', 'Maroc'), 'algérienne', 'marocaine'), 'algérien', 'marocain')
 WHERE title ILIKE '%algéri%' OR description ILIKE '%algéri%';
 
 -- 5. Mettre à jour news_articles
 UPDATE news_articles SET 
-  title = REPLACE(title, 'Algérie', 'Maroc'),
-  title = REPLACE(title, 'algérienne', 'marocaine'),
-  title = REPLACE(title, 'algérien', 'marocain'),
-  content = REPLACE(content, 'Algérie', 'Maroc'),
-  content = REPLACE(content, 'algérienne', 'marocaine'),
-  content = REPLACE(content, 'algérien', 'marocain')
+  title = REPLACE(REPLACE(REPLACE(title, 'Algérie', 'Maroc'), 'algérienne', 'marocaine'), 'algérien', 'marocain'),
+  content = REPLACE(REPLACE(REPLACE(content, 'Algérie', 'Maroc'), 'algérienne', 'marocaine'), 'algérien', 'marocain')
 WHERE title ILIKE '%algéri%' OR content ILIKE '%algéri%';
 
 -- 6. Vérification des modifications
