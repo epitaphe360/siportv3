@@ -31,8 +31,10 @@ import RegistrationRequests from '../admin/RegistrationRequests';
 import { useNewsStore } from '../../store/newsStore';
 import { toast } from 'sonner';
 import { StatCard, LineChartCard, BarChartCard, PieChartCard } from './charts';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export default function AdminDashboard() {
+  const { t } = useTranslation();
   const { metrics, isLoading, error, fetchMetrics } = useAdminDashboardStore();
   const { user } = useAuthStore();
   const { fetchFromOfficialSite } = useNewsStore();
@@ -181,14 +183,14 @@ export default function AdminDashboard() {
         <div className="text-center">
           <Shield className="h-12 w-12 text-red-500 mx-auto mb-4" />
           <h2 className="text-lg font-medium text-gray-900 mb-2">
-            Accès Restreint - Administrateurs Uniquement
+            {t('dashboard.restricted_access')}
           </h2>
           <p className="text-gray-600 mb-4">
-            Cette section est réservée aux administrateurs SIPORTS
+            {t('dashboard.restricted_message')}
           </p>
           <Link to={ROUTES.DASHBOARD}>
             <Button variant="default">
-              Retour au Tableau de Bord
+              {t('dashboard.back_to_dashboard')}
             </Button>
           </Link>
         </div>
@@ -220,13 +222,13 @@ export default function AdminDashboard() {
         <div className="text-center">
           <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
           <h2 className="text-lg font-medium text-gray-900 mb-2">
-            Erreur de chargement des métriques
+            {t('dashboard.metrics_error')}
           </h2>
           <p className="text-gray-600 mb-4">
             {error}
           </p>
           <Button variant="default" onClick={() => fetchMetrics()}>
-            Réessayer
+            {t('dashboard.retry')}
           </Button>
         </div>
       </div>
