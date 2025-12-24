@@ -163,23 +163,87 @@ END $$;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 -- Insert into auth.users first to satisfy foreign key constraints
-INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
-VALUES
+-- Using DO block to avoid unique constraint violations on email
+DO $$
+DECLARE
+  v_user_id uuid;
+  v_email text;
+  v_password text := 'password123';
+BEGIN
   -- Admin
-  ('00000000-0000-0000-0000-000000000001', 'admin@siports.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
+  v_user_id := '00000000-0000-0000-0000-000000000001';
+  v_email := 'admin@siports.com';
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
+    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
+  END IF;
+
   -- Exhibitors
-  ('00000000-0000-0000-0000-000000000002', 'expo.tech@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
-  ('00000000-0000-0000-0000-000000000003', 'agri.innov@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
-  ('00000000-0000-0000-0000-000000000004', 'mode.design@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
+  v_user_id := '00000000-0000-0000-0000-000000000002';
+  v_email := 'expo.tech@example.com';
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
+    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
+  END IF;
+
+  v_user_id := '00000000-0000-0000-0000-000000000003';
+  v_email := 'agri.innov@example.com';
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
+    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
+  END IF;
+
+  v_user_id := '00000000-0000-0000-0000-000000000004';
+  v_email := 'mode.design@example.com';
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
+    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
+  END IF;
+
   -- Partners
-  ('00000000-0000-0000-0000-000000000005', 'gold.partner@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
-  ('00000000-0000-0000-0000-000000000006', 'silver.tech@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
+  v_user_id := '00000000-0000-0000-0000-000000000005';
+  v_email := 'gold.partner@example.com';
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
+    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
+  END IF;
+
+  v_user_id := '00000000-0000-0000-0000-000000000006';
+  v_email := 'silver.tech@example.com';
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
+    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
+  END IF;
+
   -- Visitors
-  ('00000000-0000-0000-0000-000000000007', 'jean.dupont@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
-  ('00000000-0000-0000-0000-000000000008', 'marie.martin@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
-  ('00000000-0000-0000-0000-000000000009', 'pierre.dubois@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
-  ('00000000-0000-0000-0000-000000000010', 'sophie.bernard@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated')
-ON CONFLICT (id) DO NOTHING;
+  v_user_id := '00000000-0000-0000-0000-000000000007';
+  v_email := 'jean.dupont@example.com';
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
+    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
+  END IF;
+
+  v_user_id := '00000000-0000-0000-0000-000000000008';
+  v_email := 'marie.martin@example.com';
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
+    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
+  END IF;
+
+  v_user_id := '00000000-0000-0000-0000-000000000009';
+  v_email := 'pierre.dubois@example.com';
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
+    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
+  END IF;
+
+  v_user_id := '00000000-0000-0000-0000-000000000010';
+  v_email := 'sophie.bernard@example.com';
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
+    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
+  END IF;
+END $$;
 
 -- Admin user
 INSERT INTO users (id, email, name, type, status, profile, created_at)
