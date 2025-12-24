@@ -269,55 +269,163 @@ export default function LoginPage() {
               Connexion rapide - Comptes de démonstration :
             </h4>
             {(import.meta.env.VITE_SHOW_DEMO_LOGINS !== 'false') && (
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setEmail('admin.siports@siports.com');
-                    setPassword('Admin123!');
-                  }}
-                  className="text-xs"
-                >
-                  👑 Admin
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setEmail('exposant@siports.com');
-                    setPassword('Expo123!');
-                  }}
-                  className="text-xs"
-                >
-                  🏢 Exposant
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setEmail('visiteur@siports.com');
-                    setPassword('Visit123!');
-                  }}
-                  className="text-xs"
-                >
-                  👥 Visiteur
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setEmail('partenaire@siports.com');
-                    setPassword('Partner123!');
-                  }}
-                  className="text-xs"
-                >
-                  🤝 Partenaire
-                </Button>
+              <div className="space-y-4">
+                {/* Admin */}
+                <div className="grid grid-cols-1 gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setEmail('admin.siports@siports.com');
+                      setPassword('Admin123!');
+                    }}
+                    className="text-xs bg-white hover:bg-blue-100 border-blue-200"
+                  >
+                    👑 Admin Principal
+                  </Button>
+                </div>
+
+                {/* Exposants */}
+                <div>
+                  <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">🏢 Exposants</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('exhibitor-9m@test.siport.com');
+                        setPassword('Test@1234567');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      9m²
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('exhibitor-18m@test.siport.com');
+                        setPassword('Test@123456');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      18m²
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('exhibitor-36m@test.siport.com');
+                        setPassword('Test@123456');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      36m²
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('exhibitor-54m@test.siport.com');
+                        setPassword('Test@123456');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      54m²
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Partenaires */}
+                <div>
+                  <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">🤝 Partenaires</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('partner-museum@test.siport.com');
+                        setPassword('Test@1234567');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      Musée
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('partner-silver@test.siport.com');
+                        setPassword('Test@123456');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      Silver
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('partner-gold@test.siport.com');
+                        setPassword('Test@123456');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      Gold
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('partner-platinium@test.siport.com');
+                        setPassword('Test@123456');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      Platinium
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Visiteurs */}
+                <div>
+                  <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">👥 Visiteurs</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('visitor-free@test.siport.com');
+                        setPassword('Test@1234567');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      Gratuit
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('visitor-vip@test.siport.com');
+                        setPassword('Test@1234567');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      VIP
+                    </Button>
+                  </div>
+                </div>
               </div>
             )}
           </div>

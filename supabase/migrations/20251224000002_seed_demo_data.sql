@@ -243,6 +243,7 @@ BEGIN
   DELETE FROM partner_profiles;
   DELETE FROM visitor_profiles;
   DELETE FROM notifications;
+  DELETE FROM registration_requests;
 
   -- Define the users we want to ensure exist
   FOR v_users IN 
@@ -252,17 +253,17 @@ BEGIN
       ('00000000-0000-0000-0000-000000000003', 'exhibitor-36m@test.siport.com'),
       ('00000000-0000-0000-0000-000000000004', 'exhibitor-18m@test.siport.com'),
       ('00000000-0000-0000-0000-000000000017', 'exhibitor-9m@test.siport.com'),
-      ('00000000-0000-0000-0000-000000000005', 'partner.gold@example.com'),
-      ('00000000-0000-0000-0000-000000000006', 'partner.silver@example.com'),
-      ('00000000-0000-0000-0000-000000000011', 'partner.platinium@example.com'),
-      ('00000000-0000-0000-0000-000000000012', 'partner.museum@example.com'),
-      ('00000000-0000-0000-0000-000000000013', 'partner.porttech@example.com'),
-      ('00000000-0000-0000-0000-000000000014', 'partner.oceanfreight@example.com'),
-      ('00000000-0000-0000-0000-000000000015', 'partner.coastal@example.com'),
-      ('00000000-0000-0000-0000-000000000007', 'visitor.vip@example.com'),
-      ('00000000-0000-0000-0000-000000000008', 'visitor.premium@example.com'),
-      ('00000000-0000-0000-0000-000000000009', 'visitor.basic@example.com'),
-      ('00000000-0000-0000-0000-000000000010', 'visitor.free@example.com')
+      ('00000000-0000-0000-0000-000000000005', 'partner-gold@test.siport.com'),
+      ('00000000-0000-0000-0000-000000000006', 'partner-silver@test.siport.com'),
+      ('00000000-0000-0000-0000-000000000011', 'partner-platinium@test.siport.com'),
+      ('00000000-0000-0000-0000-000000000012', 'partner-museum@test.siport.com'),
+      ('00000000-0000-0000-0000-000000000013', 'partner-porttech@test.siport.com'),
+      ('00000000-0000-0000-0000-000000000014', 'partner-oceanfreight@test.siport.com'),
+      ('00000000-0000-0000-0000-000000000015', 'partner-coastal@test.siport.com'),
+      ('00000000-0000-0000-0000-000000000007', 'visitor-vip@test.siport.com'),
+      ('00000000-0000-0000-0000-000000000008', 'visitor-premium@test.siport.com'),
+      ('00000000-0000-0000-0000-000000000009', 'visitor-basic@test.siport.com'),
+      ('00000000-0000-0000-0000-000000000010', 'visitor-free@test.siport.com')
     ) AS t(id, email)
   LOOP
     v_user_id := v_users.id::uuid;
@@ -355,7 +356,7 @@ INSERT INTO users (id, email, name, type, status, profile, created_at)
 VALUES 
   (
     '00000000-0000-0000-0000-000000000005',
-    'partner.gold@example.com',
+    'partner-gold@test.siport.com',
     'Gold Partner Industries',
     'partner',
     'active',
@@ -364,7 +365,7 @@ VALUES
   ),
   (
     '00000000-0000-0000-0000-000000000006',
-    'partner.silver@example.com',
+    'partner-silver@test.siport.com',
     'Silver Tech Group',
     'partner',
     'active',
@@ -373,7 +374,7 @@ VALUES
   ),
   (
     '00000000-0000-0000-0000-000000000011',
-    'partner.platinium@example.com',
+    'partner-platinium@test.siport.com',
     'Platinium Global Corp',
     'partner',
     'active',
@@ -382,7 +383,7 @@ VALUES
   ),
   (
     '00000000-0000-0000-0000-000000000012',
-    'partner.museum@example.com',
+    'partner-museum@test.siport.com',
     'Museum Heritage',
     'partner',
     'active',
@@ -391,7 +392,7 @@ VALUES
   ),
   (
     '00000000-0000-0000-0000-000000000013',
-    'partner.porttech@example.com',
+    'partner-porttech@test.siport.com',
     'Port Tech Systems',
     'partner',
     'active',
@@ -400,7 +401,7 @@ VALUES
   ),
   (
     '00000000-0000-0000-0000-000000000014',
-    'partner.oceanfreight@example.com',
+    'partner-oceanfreight@test.siport.com',
     'Ocean Freight Services',
     'partner',
     'active',
@@ -409,7 +410,7 @@ VALUES
   ),
   (
     '00000000-0000-0000-0000-000000000015',
-    'partner.coastal@example.com',
+    'partner-coastal@test.siport.com',
     'Coastal Shipping Co',
     'partner',
     'active',
@@ -428,7 +429,7 @@ INSERT INTO users (id, email, name, type, visitor_level, status, profile, create
 VALUES 
   (
     '00000000-0000-0000-0000-000000000007',
-    'visitor.vip@example.com',
+    'visitor-vip@test.siport.com',
     'Jean Dupont',
     'visitor',
     'vip',
@@ -438,7 +439,7 @@ VALUES
   ),
   (
     '00000000-0000-0000-0000-000000000008',
-    'visitor.premium@example.com',
+    'visitor-premium@test.siport.com',
     'Marie Martin',
     'visitor',
     'premium',
@@ -448,7 +449,7 @@ VALUES
   ),
   (
     '00000000-0000-0000-0000-000000000009',
-    'visitor.basic@example.com',
+    'visitor-basic@test.siport.com',
     'Pierre Dubois',
     'visitor',
     'basic',
@@ -458,7 +459,7 @@ VALUES
   ),
   (
     '00000000-0000-0000-0000-000000000010',
-    'visitor.free@example.com',
+    'visitor-free@test.siport.com',
     'Sophie Bernard',
     'visitor',
     'free',
@@ -473,6 +474,73 @@ ON CONFLICT (id) DO UPDATE SET
   visitor_level = EXCLUDED.visitor_level,
   status = EXCLUDED.status,
   profile = EXCLUDED.profile;
+
+-- =====================================================
+-- 1.5 INSERT REGISTRATION REQUESTS (PENDING)
+-- =====================================================
+INSERT INTO registration_requests (id, user_type, email, first_name, last_name, company_name, position, phone, status, created_at)
+VALUES
+  (
+    '00000000-0000-0000-0000-000000000901',
+    'exhibitor',
+    'pending-exhibitor@example.com',
+    'Jean',
+    'Enattente',
+    'Future Port Tech',
+    'CTO',
+    '+33600000001',
+    'pending',
+    NOW() - INTERVAL '1 day'
+  ),
+  (
+    '00000000-0000-0000-0000-000000000902',
+    'partner',
+    'pending-partner@example.com',
+    'Alice',
+    'Demande',
+    'Global Logistics Partner',
+    'Directrice',
+    '+33600000002',
+    'pending',
+    NOW() - INTERVAL '2 hours'
+  ),
+  (
+    '00000000-0000-0000-0000-000000000903',
+    'exhibitor',
+    'new-expo@example.com',
+    'Marc',
+    'Nouveau',
+    'EcoShipping Solutions',
+    'CEO',
+    '+33600000003',
+    'pending',
+    NOW() - INTERVAL '5 hours'
+  ),
+  (
+    '00000000-0000-0000-0000-000000000904',
+    'visitor',
+    'vip-request@example.com',
+    'Sophie',
+    'Vip',
+    'Luxe Events',
+    'Manager',
+    '+33600000004',
+    'pending',
+    NOW() - INTERVAL '10 minutes'
+  ),
+  (
+    '00000000-0000-0000-0000-000000000905',
+    'exhibitor',
+    'maritime-tech@example.com',
+    'Thomas',
+    'Marine',
+    'Maritime Tech',
+    'Sales',
+    '+33600000005',
+    'pending',
+    NOW() - INTERVAL '3 days'
+  )
+ON CONFLICT (id) DO NOTHING;
 
 -- =====================================================
 -- 2. INSERT EXHIBITOR PROFILES
@@ -2108,7 +2176,7 @@ VALUES
       {"type": "about", "title": "Innovation IoT", "content": "Nous transformons les ports traditionnels en ports intelligents grâce à nos capteurs IoT brevetés et notre plateforme d''analyse prédictive.", "image": "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800"},
       {"type": "contact", "title": "Rejoignez la révolution", "email": "hello@startupportinno.com", "phone": "+33 7 89 01 23 45", "address": "Station F, Paris, France", "form_enabled": true}
     ]',
-    true,
+    false,
     450,
     NOW()
   )

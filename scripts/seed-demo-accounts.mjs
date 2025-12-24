@@ -25,7 +25,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey, {
 
 const DEMO_ACCOUNTS = [
   {
-    email: 'admin@siports.com',
+    email: 'admin.siports@siports.com',
     password: 'Admin123!',
     metadata: { first_name: 'Admin', last_name: 'SIPORT', role: 'admin', account_type: 'admin' },
     type: 'admin'

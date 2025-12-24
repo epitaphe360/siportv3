@@ -73,7 +73,7 @@ const TEST_USERS = [
     }
   },
   {
-    email: 'admin@siports.com',
+    email: 'admin.siports@siports.com',
     password: 'Admin123!',
     type: 'admin',
     name: 'Admin SIPORTS',
