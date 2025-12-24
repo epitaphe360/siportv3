@@ -222,6 +222,11 @@ export const WebinarsPage: React.FC = () => {
                       src={filteredWebinars[0].thumbnail_url || '/placeholder-video.jpg'}
                       alt={filteredWebinars[0].title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.src = `https://placehold.co/800x450/e2e8f0/64748b?text=Webinar`;
+                      }}
                     />
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                       <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
