@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import i18n from '../i18n/config';
 
 export interface Language {
   code: string;
@@ -314,7 +315,7 @@ export const useLanguageStore = create<LanguageState>()(
 
       setLanguage: async (languageCode: string) => {
         set({ isLoading: true });
-        
+
         try {
           // Vérifier que la langue est supportée
           const language = supportedLanguages.find(lang => lang.code === languageCode);
@@ -322,10 +323,10 @@ export const useLanguageStore = create<LanguageState>()(
             throw new Error(`Langue non supportée: ${languageCode}`);
           }
 
-          // Simuler un délai de chargement pour les traductions
-          await new Promise(resolve => setTimeout(resolve, 500));
-          
-          // Mettre à jour la langue
+          // CRITICAL FIX: Synchroniser avec i18next
+          await i18n.changeLanguage(languageCode);
+
+          // Mettre à jour la langue dans le store
           set({ currentLanguage: languageCode, isLoading: false });
           
           // Mettre à jour la direction du texte pour l'arabe

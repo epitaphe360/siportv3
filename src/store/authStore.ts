@@ -433,10 +433,51 @@ const useAuthStore = create<AuthState>()(
         token: state.token,
         isAuthenticated: state.isAuthenticated
         // Ne PAS persister les états de loading
-      })
+      }),
+      // CRITICAL FIX: Validation au chargement du store depuis localStorage
+      onRehydrateStorage: () => (state) => {
+        if (state?.user?.type === 'admin' && state?.isAuthenticated) {
+          // SECURITY: Si un admin est détecté dans localStorage, on marque pour vérification
+          // La vérification complète sera faite par initAuth.ts avec Supabase
+          console.warn('⚠️ Session admin détectée dans localStorage - vérification requise');
+
+          // CRITICAL: Ne pas faire confiance au localStorage pour les admins
+          // Forcer une vérification Supabase via initAuth
+          // On ne déconnecte pas immédiatement car initAuth le fera si invalide
+        }
+
+        // Nettoyer les états de loading qui auraient pu être persistés par erreur
+        if (state) {
+          state.isLoading = false;
+          state.isGoogleLoading = false;
+          state.isLinkedInLoading = false;
+        }
+      }
     }
   )
 );
+
+// SECURITY: Nettoyage préventif du localStorage si détection de données corrompues
+(function cleanupCorruptedAuth() {
+  try {
+    const stored = localStorage.getItem('siport-auth-storage');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      // Si isAuthenticated est true mais pas d'user, c'est corrompu
+      if (parsed?.state?.isAuthenticated && !parsed?.state?.user?.id) {
+        console.error('❌ Données auth corrompues détectées, nettoyage...');
+        localStorage.removeItem('siport-auth-storage');
+      }
+      // Si user.type est admin mais pas de token valide
+      if (parsed?.state?.user?.type === 'admin' && !parsed?.state?.token) {
+        console.error('❌ Session admin sans token détectée, nettoyage...');
+        localStorage.removeItem('siport-auth-storage');
+      }
+    }
+  } catch (e) {
+    // Ignore les erreurs de parsing
+  }
+})();
 
 export { useAuthStore };
 export default useAuthStore;

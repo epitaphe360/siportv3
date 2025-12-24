@@ -137,12 +137,23 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
         throw new Error('Vous devez être connecté pour créer un mini-site');
       }
 
-      // Création du mini-site
-      const created = await SupabaseService.createMiniSite(user.id, miniSiteData);
+      // CRITICAL FIX: Récupérer l'exhibitorId depuis le profil utilisateur
+      let exhibitorId = user.id; // Fallback au userId
+      try {
+        const exhibitor = await SupabaseService.getExhibitorByUserId(user.id);
+        if (exhibitor?.id) {
+          exhibitorId = exhibitor.id;
+        }
+      } catch (err) {
+        console.warn('Utilisation du userId comme exhibitorId:', err);
+      }
+
+      // Création du mini-site avec l'exhibitorId correct
+      const created = await SupabaseService.createMiniSite(exhibitorId, miniSiteData);
 
       // Publication automatique
       try {
-        await SupabaseService.updateMiniSite(user.id, {
+        await SupabaseService.updateMiniSite(exhibitorId, {
           published: true
         });
       } catch (pubErr) {
@@ -202,11 +213,22 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
         throw new Error('Vous devez être connecté pour créer un mini-site');
       }
 
-      const created = await SupabaseService.createMiniSite(user.id, miniSiteData);
+      // CRITICAL FIX: Récupérer l'exhibitorId depuis le profil utilisateur
+      let exhibitorId = user.id; // Fallback au userId
+      try {
+        const exhibitor = await SupabaseService.getExhibitorByUserId(user.id);
+        if (exhibitor?.id) {
+          exhibitorId = exhibitor.id;
+        }
+      } catch (err) {
+        console.warn('Utilisation du userId comme exhibitorId:', err);
+      }
+
+      const created = await SupabaseService.createMiniSite(exhibitorId, miniSiteData);
 
       // Publication automatique
       try {
-        await SupabaseService.updateMiniSite(user.id, {
+        await SupabaseService.updateMiniSite(exhibitorId, {
           published: true
         });
       } catch (pubErr) {
@@ -215,7 +237,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
 
       setSuccess(true);
       if (onSuccess) onSuccess();
-      
+
     } catch (e: any) {
       console.error('❌ Erreur création mini-site:', e);
       setError(e?.message || 'Erreur lors de la création du mini-site.');
