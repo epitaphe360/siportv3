@@ -25,38 +25,6 @@ export default function LoginPage() {
   const { login, loginWithGoogle, isLoading, isGoogleLoading } = useAuthStore();
   const navigate = useNavigate();
 
-  const handleQuickLogin = async (quickEmail: string, quickPassword: string) => {
-    setError('');
-    setEmail(quickEmail);
-    setPassword(quickPassword);
-
-    try {
-      await login(quickEmail, quickPassword, { rememberMe: true });
-      
-      const { user } = useAuthStore.getState();
-
-      // Redirection selon le type
-      if (user?.type === 'admin') {
-        navigate(ROUTES.ADMIN_DASHBOARD);
-      } else if (user?.type === 'partner') {
-        navigate(ROUTES.PARTNER_DASHBOARD);
-      } else if (user?.type === 'exhibitor') {
-        navigate(ROUTES.EXHIBITOR_DASHBOARD);
-      } else if (user?.type === 'visitor') {
-        if (user.visitor_level === 'free') {
-          navigate(ROUTES.BADGE);
-        } else {
-          navigate(ROUTES.VISITOR_DASHBOARD);
-        }
-      } else {
-        navigate(ROUTES.DASHBOARD);
-      }
-    } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erreur de connexion rapide';
-      setError(errorMessage);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -69,15 +37,6 @@ export default function LoginPage() {
     try {
       // ✅ Passer l'option rememberMe au login
       await login(email, password, { rememberMe });
-      // Redirection handled below
-    } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Email ou mot de passe incorrect';
-      setError(errorMessage);
-      return;
-    }
-
-    // Redirect logic after successful login
-    try {
 
       // ✅ Rediriger vers le dashboard approprié selon le type d'utilisateur
       const { user } = useAuthStore.getState();
@@ -317,8 +276,10 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleQuickLogin('admin@siport.com', 'Admin123!')}
-                    disabled={isLoading}
+                    onClick={() => {
+                      setEmail('admin@siport.com');
+                      setPassword('Admin123!');
+                    }}
                     className="text-xs bg-white hover:bg-blue-100 border-blue-200"
                   >
                     👑 Admin Principal
@@ -333,8 +294,10 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => handleQuickLogin('visitor1@test.com', 'Admin123!')}
-                      disabled={isLoading}
+                      onClick={() => {
+                        setEmail('visitor1@test.com');
+                        setPassword('Admin123!');
+                      }}
                       className="text-[10px] h-7 bg-white"
                     >
                       9m²
@@ -343,8 +306,10 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => handleQuickLogin('visitor2@test.com', 'Admin123!')}
-                      disabled={isLoading}
+                      onClick={() => {
+                        setEmail('visitor2@test.com');
+                        setPassword('Admin123!');
+                      }}
                       className="text-[10px] h-7 bg-white"
                     >
                       18m²
@@ -353,8 +318,10 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => handleQuickLogin('visitor1@test.com', 'Admin123!')}
-                      disabled={isLoading}
+                      onClick={() => {
+                        setEmail('visitor1@test.com');
+                        setPassword('Admin123!');
+                      }}
                       className="text-[10px] h-7 bg-white"
                     >
                       36m²
@@ -363,8 +330,10 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => handleQuickLogin('visitor2@test.com', 'Admin123!')}
-                      disabled={isLoading}
+                      onClick={() => {
+                        setEmail('visitor2@test.com');
+                        setPassword('Admin123!');
+                      }}
                       className="text-[10px] h-7 bg-white"
                     >
                       54m²
@@ -380,8 +349,10 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => handleQuickLogin('nathalie.robert1@partner.com', 'Admin123!')}
-                      disabled={isLoading}
+                      onClick={() => {
+                        setEmail('nathalie.robert1@partner.com');
+                        setPassword('Admin123!');
+                      }}
                       className="text-[10px] h-7 bg-white"
                     >
                       Musée
@@ -390,8 +361,10 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => handleQuickLogin('pierre.laurent2@partner.com', 'Admin123!')}
-                      disabled={isLoading}
+                      onClick={() => {
+                        setEmail('pierre.laurent2@partner.com');
+                        setPassword('Admin123!');
+                      }}
                       className="text-[10px] h-7 bg-white"
                     >
                       Silver
@@ -400,8 +373,10 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => handleQuickLogin('nathalie.robert1@partner.com', 'Admin123!')}
-                      disabled={isLoading}
+                      onClick={() => {
+                        setEmail('nathalie.robert1@partner.com');
+                        setPassword('Admin123!');
+                      }}
                       className="text-[10px] h-7 bg-white"
                     >
                       Gold
@@ -410,8 +385,10 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => handleQuickLogin('pierre.laurent2@partner.com', 'Admin123!')}
-                      disabled={isLoading}
+                      onClick={() => {
+                        setEmail('pierre.laurent2@partner.com');
+                        setPassword('Admin123!');
+                      }}
                       className="text-[10px] h-7 bg-white"
                     >
                       Platinium
@@ -427,8 +404,10 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => handleQuickLogin('visitor1@test.com', 'Admin123!')}
-                      disabled={isLoading}
+                      onClick={() => {
+                        setEmail('visitor1@test.com');
+                        setPassword('Admin123!');
+                      }}
                       className="text-[10px] h-7 bg-white"
                     >
                       Gratuit
@@ -437,8 +416,10 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => handleQuickLogin('visitor2@test.com', 'Admin123!')}
-                      disabled={isLoading}
+                      onClick={() => {
+                        setEmail('visitor2@test.com');
+                        setPassword('Admin123!');
+                      }}
                       className="text-[10px] h-7 bg-white"
                     >
                       VIP
