@@ -229,6 +229,28 @@ BEGIN
     VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
   END IF;
 
+  -- New Partners from user request
+  v_user_id := '00000000-0000-0000-0000-000000000013';
+  v_email := 'partner.porttech@example.com';
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
+    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
+  END IF;
+
+  v_user_id := '00000000-0000-0000-0000-000000000014';
+  v_email := 'partner.oceanfreight@example.com';
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
+    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
+  END IF;
+
+  v_user_id := '00000000-0000-0000-0000-000000000015';
+  v_email := 'partner.coastal@example.com';
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
+    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
+  END IF;
+
   -- Visitors
   v_user_id := '00000000-0000-0000-0000-000000000007';
   v_email := 'jean.dupont@example.com';
@@ -350,6 +372,33 @@ VALUES
     'partner',
     'active',
     '{"company": "Museum Heritage", "tier": "museum", "avatar": "https://ui-avatars.com/api/?name=Museum+Heritage"}',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000013',
+    'partner.porttech@example.com',
+    'Port Tech Systems',
+    'partner',
+    'active',
+    '{"company": "Port Tech Systems", "tier": "platinium", "avatar": "https://ui-avatars.com/api/?name=Port+Tech"}',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000014',
+    'partner.oceanfreight@example.com',
+    'Ocean Freight Services',
+    'partner',
+    'active',
+    '{"company": "Ocean Freight Services", "tier": "gold", "avatar": "https://ui-avatars.com/api/?name=Ocean+Freight"}',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000015',
+    'partner.coastal@example.com',
+    'Coastal Shipping Co',
+    'partner',
+    'active',
+    '{"company": "Coastal Shipping Co", "tier": "silver", "avatar": "https://ui-avatars.com/api/?name=Coastal+Shipping"}',
     NOW()
   )
 ON CONFLICT (email) DO UPDATE SET
@@ -510,6 +559,45 @@ VALUES
     'France',
     'museum',
     NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000109',
+    '00000000-0000-0000-0000-000000000013',
+    'Port Tech Systems',
+    'Alex Tech',
+    'contact@porttech.example.com',
+    'Solutions logistiques avancées pour les ports modernes.',
+    'https://porttech.example.com',
+    'https://ui-avatars.com/api/?name=Port+Tech&size=200',
+    'France',
+    'platinium',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000110',
+    '00000000-0000-0000-0000-000000000014',
+    'Ocean Freight Services',
+    'Sarah Ocean',
+    'contact@oceanfreight.example.com',
+    'Services de fret maritime et gestion de conteneurs.',
+    'https://oceanfreight.example.com',
+    'https://ui-avatars.com/api/?name=Ocean+Freight&size=200',
+    'France',
+    'gold',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000111',
+    '00000000-0000-0000-0000-000000000015',
+    'Coastal Shipping Co',
+    'Marc Coast',
+    'contact@coastal.example.com',
+    'Transport maritime côtier et logistique régionale.',
+    'https://coastal.example.com',
+    'https://ui-avatars.com/api/?name=Coastal+Shipping&size=200',
+    'France',
+    'silver',
+    NOW()
   )
 ON CONFLICT (id) DO UPDATE SET
   company_name = EXCLUDED.company_name,
@@ -519,6 +607,115 @@ ON CONFLICT (id) DO UPDATE SET
   website = EXCLUDED.website,
   logo_url = EXCLUDED.logo_url,
   partnership_level = EXCLUDED.partnership_level;
+
+-- =====================================================
+-- 3b. INSERT INTO partners (pour la compatibilité UI)
+-- =====================================================
+INSERT INTO partners (id, user_id, company_name, partner_type, sector, description, logo_url, website, verified, featured, partnership_level, created_at)
+VALUES
+  (
+    '00000000-0000-0000-0000-000000000105',
+    '00000000-0000-0000-0000-000000000005',
+    'Gold Partner Industries',
+    'strategic',
+    'Logistique',
+    'Partenaire stratégique majeur offrant des services premium et un accompagnement personnalisé.',
+    'https://ui-avatars.com/api/?name=Gold+Partner&size=200',
+    'https://gold-partner.example.com',
+    true,
+    true,
+    'gold',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000106',
+    '00000000-0000-0000-0000-000000000006',
+    'Silver Tech Group',
+    'technology',
+    'Technologie',
+    'Expert en solutions technologiques pour événements professionnels.',
+    'https://ui-avatars.com/api/?name=Silver+Tech&size=200',
+    'https://silver-tech.example.com',
+    true,
+    true,
+    'silver',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000107',
+    '00000000-0000-0000-0000-000000000011',
+    'Platinium Global Corp',
+    'strategic',
+    'Industrie',
+    'Leader mondial de l''industrie, partenaire exclusif Platinium.',
+    'https://ui-avatars.com/api/?name=Platinium+Global&size=200',
+    'https://platinium-global.example.com',
+    true,
+    true,
+    'platinium',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000108',
+    '00000000-0000-0000-0000-000000000012',
+    'Museum Heritage',
+    'cultural',
+    'Culture',
+    'Préservation du patrimoine maritime et portuaire.',
+    'https://ui-avatars.com/api/?name=Museum+Heritage&size=200',
+    'https://museum-heritage.example.com',
+    true,
+    true,
+    'museum',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000109',
+    '00000000-0000-0000-0000-000000000013',
+    'Port Tech Systems',
+    'technology',
+    'Exploitation & Gestion',
+    'Solutions logistiques avancées pour les ports modernes.',
+    'https://ui-avatars.com/api/?name=Port+Tech&size=200',
+    'https://porttech.example.com',
+    true,
+    true,
+    'platinium',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000110',
+    '00000000-0000-0000-0000-000000000014',
+    'Ocean Freight Services',
+    'logistics',
+    'Exploitation & Gestion',
+    'Services de fret maritime et gestion de conteneurs.',
+    'https://ui-avatars.com/api/?name=Ocean+Freight&size=200',
+    'https://oceanfreight.example.com',
+    true,
+    true,
+    'gold',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000111',
+    '00000000-0000-0000-0000-000000000015',
+    'Coastal Shipping Co',
+    'logistics',
+    'Industrie Portuaire',
+    'Transport maritime côtier et logistique régionale.',
+    'https://ui-avatars.com/api/?name=Coastal+Shipping&size=200',
+    'https://coastal.example.com',
+    true,
+    true,
+    'silver',
+    NOW()
+  )
+ON CONFLICT (id) DO UPDATE SET
+  company_name = EXCLUDED.company_name,
+  description = EXCLUDED.description,
+  partnership_level = EXCLUDED.partnership_level,
+  featured = EXCLUDED.featured;
 
 -- =====================================================
 -- 4. INSERT VISITOR PROFILES
