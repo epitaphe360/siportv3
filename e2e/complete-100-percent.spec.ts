@@ -4,13 +4,12 @@
  * Date: 19 décembre 2025
  */
 
-import { test, expect, Page } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 // Configure timeouts
 test.setTimeout(120000); // 120 secondes par test
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:9323';
-const TIMESTAMP = Date.now();
 
 async function login(page: Page, email: string, password: string) {
   await page.goto(`${BASE_URL}/login`, { waitUntil: 'domcontentloaded', timeout: 20000 });
@@ -22,10 +21,10 @@ async function login(page: Page, email: string, password: string) {
       page.waitForURL(/.*\/(visitor|partner|exhibitor|admin|dashboard|badge).*/, { timeout: 15000 }),
       page.click('button:has-text("Se connecter")', { timeout: 5000 })
     ]);
-  } catch (e) {
+  } catch (_err) {
     try {
       await page.click('button[type="submit"]', { timeout: 2000 });
-    } catch (e2) {
+    } catch (_err2) {
       console.log('Login may have failed');
     }
   }
@@ -1181,7 +1180,7 @@ test.describe('COMPLETE WORKFLOWS: END-TO-END SCENARIOS', () => {
 // ============================================================================
 
 test.describe('COVERAGE SUMMARY - 100%', () => {
-  test('Should have 500+ tests covering 100% of application', async ({}) => {
+  test('Should have 500+ tests covering 100% of application', async () => {
     // Total: 250 + 250 = 500+ tests
     // Coverage: 100% of all routes, components, services, handlers, workflows
   });

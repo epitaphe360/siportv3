@@ -180,9 +180,9 @@ export default function AdminDashboard() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <Shield className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h2 className="text-lg font-medium text-gray-900 mb-2">
             Accès Restreint - Administrateurs Uniquement
-          </h3>
+          </h2>
           <p className="text-gray-600 mb-4">
             Cette section est réservée aux administrateurs SIPORTS
           </p>
@@ -219,9 +219,9 @@ export default function AdminDashboard() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h2 className="text-lg font-medium text-gray-900 mb-2">
             Erreur de chargement des métriques
-          </h3>
+          </h2>
           <p className="text-gray-600 mb-4">
             {error}
           </p>
