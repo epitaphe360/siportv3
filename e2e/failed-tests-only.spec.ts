@@ -72,7 +72,7 @@ async function goToRegister(page: Page, type: 'visitor' | 'exhibitor' | 'partner
     // Sélectionner un pays si présent
     const countrySelect = page.locator('select[name="country"]').first();
     if (await countrySelect.isVisible()) {
-      await countrySelect.selectOption('Algeria');
+      await countrySelect.selectOption('Morocco');
     }
 
     const nextBtn = page.locator('button:has-text("Suivant"), button:has-text("Next")').first();

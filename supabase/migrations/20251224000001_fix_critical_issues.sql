@@ -441,15 +441,15 @@ CREATE INDEX IF NOT EXISTS idx_media_contents_published ON media_contents(publis
 INSERT INTO media_contents (type, title, description, thumbnail_url, duration, status, views_count, likes_count, speakers, tags, category, published_at)
 VALUES
   -- Webinaires
-  ('webinar', 'L''avenir des ports intelligents en Algérie',
-   'Découvrez les tendances et innovations qui transforment l''industrie portuaire algérienne. Un webinaire animé par des experts du secteur.',
+  ('webinar', 'L''avenir des ports intelligents au Maroc',
+   'Découvrez les tendances et innovations qui transforment l''industrie portuaire marocaine. Un webinaire animé par des experts du secteur.',
    'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800',
    3600, 'published', 1250, 89,
-   '[{"name": "Karim Benzarti", "title": "CEO", "company": "PortTech DZ"}, {"name": "Sarah Amrani", "title": "Directrice Innovation", "company": "Algérie Ports"}]'::jsonb,
+   '[{"name": "Karim Bennani", "title": "CEO", "company": "PortTech Maroc"}, {"name": "Sara Amrani", "title": "Directrice Innovation", "company": "Marsa Maroc"}]'::jsonb,
    ARRAY['port', 'digital', 'innovation'], 'Technologie', NOW() - INTERVAL '7 days'),
 
   ('webinar', 'Infrastructures portuaires: normes et qualité',
-   'Analyse approfondie des normes internationales pour les infrastructures portuaires et leur application en Algérie.',
+   'Analyse approfondie des normes internationales pour les infrastructures portuaires et leur application au Maroc.',
    'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=800',
    2700, 'published', 890, 67,
    '[{"name": "Mohamed Larbi", "title": "Expert Qualité", "company": "IANOR"}]'::jsonb,
@@ -463,7 +463,7 @@ VALUES
    ARRAY['finance', 'investissement', 'startup'], 'Finance', NOW() - INTERVAL '21 days'),
 
   -- Podcasts
-  ('podcast', 'SIPORT Talks #1: L''écosystème portuaire algérien',
+  ('podcast', 'SIPORT Talks #1: L''écosystème portuaire marocain',
    'Premier épisode de notre podcast dédié à l''industrie des ports. Invité spécial: le président de l''Autorité Portuaire.',
    'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=800',
    1800, 'published', 2100, 156,
@@ -471,7 +471,7 @@ VALUES
    ARRAY['podcast', 'interview', 'port'], 'Interview', NOW() - INTERVAL '5 days'),
 
   ('podcast', 'SIPORT Talks #2: Femmes et Secteur Maritime',
-   'Focus sur les femmes dans le secteur maritime algérien. Défis, opportunités et success stories.',
+   'Focus sur les femmes dans le secteur maritime marocain. Défis, opportunités et success stories.',
    'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800',
    2100, 'published', 1850, 203,
    '[{"name": "Yasmine Khelifi", "title": "Capitaine", "company": "Marine Nationale"}]'::jsonb,
@@ -479,7 +479,7 @@ VALUES
 
   -- Capsules Inside
   ('capsule_inside', 'Inside SIPORT: Coulisses du salon',
-   'Découvrez les coulisses de l''organisation du plus grand salon portuaire d''Algérie.',
+   'Découvrez les coulisses de l''organisation du plus grand salon portuaire du Maroc.',
    'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800',
    300, 'published', 3500, 245,
    '[]'::jsonb,
