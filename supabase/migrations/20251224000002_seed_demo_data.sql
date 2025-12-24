@@ -475,7 +475,7 @@ ON CONFLICT (id) DO NOTHING;
 -- =====================================================
 -- 6. INSERT EVENTS
 -- =====================================================
-INSERT INTO events (id, title, description, event_type, start_date, end_date, location, pavilion_id, organizer_id, capacity, registered, is_featured, created_at)
+INSERT INTO events (id, title, description, type, start_date, end_date, location, pavilion_id, organizer_id, capacity, registered, is_featured, created_at)
 VALUES
   (
     '00000000-0000-0000-0000-000000000301',
