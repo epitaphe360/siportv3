@@ -478,13 +478,14 @@ ON CONFLICT (id) DO NOTHING;
 -- =====================================================
 -- 6. INSERT EVENTS
 -- =====================================================
-INSERT INTO events (id, title, description, type, event_date, start_time, end_time, start_date, end_date, location, pavilion_id, organizer_id, capacity, registered, is_featured, created_at)
+INSERT INTO events (id, title, description, type, category, event_date, start_time, end_time, start_date, end_date, location, pavilion_id, organizer_id, capacity, registered, is_featured, created_at)
 VALUES
   (
     '00000000-0000-0000-0000-000000000301',
     'Conférence Innovation 2025',
     'Les dernières tendances en matière d''innovation technologique et digitale. Intervenants internationaux et sessions de networking.',
     'conference',
+    'Innovation',
     CURRENT_DATE + INTERVAL '2 days',
     '09:00:00',
     '13:00:00',
@@ -503,6 +504,7 @@ VALUES
     'Atelier Agriculture Durable',
     'Workshop pratique sur les techniques d''agriculture de précision et l''utilisation de l''IoT dans les exploitations.',
     'conference',
+    'Agriculture',
     CURRENT_DATE + INTERVAL '3 days',
     '14:00:00',
     '17:00:00',
@@ -521,6 +523,7 @@ VALUES
     'Défilé Mode & Innovation',
     'Présentation exclusive des collections 2025 avec intégration de technologies wearables.',
     'conference',
+    'Mode',
     CURRENT_DATE + INTERVAL '5 days',
     '10:00:00',
     '12:00:00',
@@ -539,6 +542,7 @@ VALUES
     'Networking Business Leaders',
     'Session de networking exclusif pour dirigeants et décideurs. Cocktail et échanges professionnels.',
     'conference',
+    'Business',
     CURRENT_DATE + INTERVAL '4 days',
     '18:00:00',
     '21:00:00',
