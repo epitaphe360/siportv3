@@ -83,6 +83,34 @@ CREATE TABLE IF NOT EXISTS pavilions (
   updated_at timestamptz DEFAULT now()
 );
 
+-- Créer le type event_type si il n'existe pas
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'event_type') THEN
+    CREATE TYPE event_type AS ENUM ('conference', 'workshop', 'networking', 'exhibition');
+  END IF;
+END $$;
+
+-- Créer la table events si elle n'existe pas
+CREATE TABLE IF NOT EXISTS events (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  title text NOT NULL,
+  description text NOT NULL,
+  event_type event_type NOT NULL DEFAULT 'conference',
+  start_date timestamptz NOT NULL,
+  end_date timestamptz NOT NULL,
+  location text,
+  pavilion_id uuid,
+  organizer_id uuid REFERENCES users(id),
+  capacity integer,
+  registered integer DEFAULT 0,
+  is_featured boolean DEFAULT false,
+  image_url text,
+  registration_url text,
+  tags text[] DEFAULT '{}',
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
 -- =====================================================
 -- 1. INSERT DEMO USERS
 -- =====================================================
@@ -793,9 +821,39 @@ VALUES
     'Annulé à la demande du visiteur',
     'in-person',
     NOW() - INTERVAL '1 day'
+  )
+ON CONFLICT (id) DO NOTHING;
+
+-- =====================================================
+-- 8.5. INSERT MORE TIME SLOTS (AgriInnov & ModeDesign)
+-- =====================================================
+INSERT INTO time_slots (id, exhibitor_id, slot_date, start_time, end_time, duration, type, max_bookings, current_bookings, available, location, created_at)
+VALUES
+  -- AgriInnov - Aujourd'hui
+  (
+    '00000000-0000-0000-0000-000000000504',
+    '00000000-0000-0000-0000-000000000103',
+    CURRENT_DATE,
+    '11:00:00',
+    '11:30:00',
+    30,
     'in-person',
     2,
     0,
+    true,
+    'Stand B07 - Hall Agritech',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000513',
+    '00000000-0000-0000-0000-000000000103',
+    CURRENT_DATE,
+    '14:00:00',
+    '14:30:00',
+    30,
+    'in-person',
+    2,
+    1,
     true,
     'Stand B07 - Hall Agritech',
     NOW()
@@ -942,63 +1000,6 @@ VALUES
     0,
     true,
     'Showroom C12 - Luxe',
-    NOW()
-  )
-ON CONFLICT (id) DO NOTHING;
-
--- =====================================================
--- 9. INSERT APPOINTMENTS
--- =====================================================
-INSERT INTO appointments (id, exhibitor_id, visitor_id, time_slot_id, status, notes, meeting_type, created_at)
-VALUES
-  (
-    '00000000-0000-0000-0000-000000000601',
-    '00000000-0000-0000-0000-000000000102',
-    '00000000-0000-0000-0000-000000000007',
-    '00000000-0000-0000-0000-000000000501',
-    'confirmed',
-    'Intéressé par la solution VR pour notre prochain salon',
-    'in-person',
-    NOW()
-  ),
-  (
-    '00000000-0000-0000-0000-000000000602',
-    '00000000-0000-0000-0000-000000000102',
-    '00000000-0000-0000-0000-000000000008',
-    '00000000-0000-0000-0000-000000000503',
-    'confirmed',
-    'Démo de la plateforme VR complète',
-    'virtual',
-    NOW()
-  ),
-  (
-    '00000000-0000-0000-0000-000000000603',
-    '00000000-0000-0000-0000-000000000103',
-    '00000000-0000-0000-0000-000000000008',
-    '00000000-0000-0000-0000-000000000504',
-    'confirmed',
-    'Discussion sur les solutions IoT pour exploitation agricole',
-    'in-person',
-    NOW()
-  ),
-  (
-    '00000000-0000-0000-0000-000000000604',
-    '00000000-0000-0000-0000-000000000104',
-    '00000000-0000-0000-0000-000000000009',
-    '00000000-0000-0000-0000-000000000507',
-    'confirmed',
-    'Présentation collection exclusive',
-    'in-person',
-    NOW()
-  ),
-  (
-    '00000000-0000-0000-0000-000000000605',
-    '00000000-0000-0000-0000-000000000102',
-    '00000000-0000-0000-0000-000000000009',
-    '00000000-0000-0000-0000-000000000503',
-    'pending',
-    'Demande d''information sur les tarifs',
-    'virtual',
     NOW()
   )
 ON CONFLICT (id) DO NOTHING;
@@ -1256,7 +1257,7 @@ ON CONFLICT (user_id, quota_date) DO UPDATE SET
   meetings_used = EXCLUDED.meetings_used;
 
 -- =====================================================
--- 15. INSERT MINI-SITES (Pages exposants)
+-- 15. INSERT MINI-SITES (Pages exposants avec sections hero, about, contact)
 -- =====================================================
 INSERT INTO mini_sites (id, exhibitor_id, theme, custom_colors, sections, published, views, created_at)
 VALUES
@@ -1266,7 +1267,11 @@ VALUES
     '00000000-0000-0000-0000-000000000102',
     'modern',
     '{"primary": "#1e40af", "secondary": "#3b82f6", "accent": "#60a5fa"}',
-    '[]',
+    '[
+      {"type": "hero", "title": "TechExpo Solutions", "subtitle": "Leader mondial en solutions technologiques innovantes", "image": "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1200", "cta_text": "Découvrir nos solutions", "cta_link": "#products"},
+      {"type": "about", "title": "À propos de nous", "content": "TechExpo Solutions est le leader mondial en solutions technologiques innovantes pour les salons professionnels. Depuis 2010, nous proposons des solutions de réalité virtuelle, d''affichage interactif et de gestion d''événements qui transforment l''expérience visiteur.", "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800"},
+      {"type": "contact", "title": "Contactez-nous", "email": "contact@techexpo-solutions.example.com", "phone": "+33 1 23 45 67 89", "address": "123 Avenue de l''Innovation, 75008 Paris", "form_enabled": true}
+    ]',
     true,
     1456,
     NOW()
@@ -1277,7 +1282,11 @@ VALUES
     '00000000-0000-0000-0000-000000000103',
     'nature',
     '{"primary": "#16a34a", "secondary": "#22c55e", "accent": "#4ade80"}',
-    '[]',
+    '[
+      {"type": "hero", "title": "AgriInnov", "subtitle": "L''agriculture intelligente de demain", "image": "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200", "cta_text": "Explorer nos solutions IoT", "cta_link": "#products"},
+      {"type": "about", "title": "Notre mission", "content": "AgriInnov est spécialiste des technologies agricoles durables et intelligentes. Nos solutions IoT et d''agriculture de précision révolutionnent le secteur agricole en réduisant la consommation d''eau de 40% et en optimisant les rendements.", "image": "https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800"},
+      {"type": "contact", "title": "Nous contacter", "email": "contact@agri-innov.example.com", "phone": "+33 4 56 78 90 12", "address": "45 Route des Champs, 69000 Lyon", "form_enabled": true}
+    ]',
     true,
     892,
     NOW()
@@ -1288,7 +1297,11 @@ VALUES
     '00000000-0000-0000-0000-000000000104',
     'elegant',
     '{"primary": "#7c3aed", "secondary": "#8b5cf6", "accent": "#a78bfa"}',
-    '[]',
+    '[
+      {"type": "hero", "title": "ModeDesign Paris", "subtitle": "L''excellence de la haute couture parisienne", "image": "https://images.unsplash.com/photo-1558769132-cb1aea1f1c77?w=1200", "cta_text": "Découvrir la collection 2025", "cta_link": "#products"},
+      {"type": "about", "title": "Notre maison", "content": "ModeDesign Paris est une maison de haute couture parisienne reconnue internationalement depuis 1985. Nos collections exclusives et sur-mesure allient tradition artisanale et innovation textile pour une clientèle prestigieuse exigeante.", "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800"},
+      {"type": "contact", "title": "Prendre rendez-vous", "email": "contact@mode-design-paris.example.com", "phone": "+33 1 42 68 53 00", "address": "8 Avenue Montaigne, 75008 Paris", "form_enabled": true}
+    ]',
     true,
     2341,
     NOW()
@@ -1296,6 +1309,7 @@ VALUES
 ON CONFLICT (id) DO UPDATE SET
   theme = EXCLUDED.theme,
   custom_colors = EXCLUDED.custom_colors,
+  sections = EXCLUDED.sections,
   published = EXCLUDED.published,
   views = EXCLUDED.views;
 
