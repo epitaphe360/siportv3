@@ -111,6 +111,19 @@ CREATE TABLE IF NOT EXISTS events (
   updated_at timestamptz DEFAULT now()
 );
 
+-- Ajouter la colonne event_type à events si elle n'existe pas
+DO $$ 
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'events' 
+    AND column_name = 'event_type'
+  ) THEN
+    ALTER TABLE public.events ADD COLUMN event_type text DEFAULT 'conference';
+  END IF;
+END $$;
+
 -- =====================================================
 -- 1. INSERT DEMO USERS
 -- =====================================================
