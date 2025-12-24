@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS salon_config (
   end_date timestamptz DEFAULT '2026-06-18T18:00:00Z',
   location text DEFAULT 'Alger, Algérie',
   venue text DEFAULT 'Palais des Expositions - SAFEX',
-  description text DEFAULT 'Salon International du Sport',
+  description text DEFAULT 'Salon International des Ports',
   logo_url text,
   banner_url text,
   website_url text DEFAULT 'https://siports.dz',
@@ -80,7 +80,7 @@ CREATE POLICY "Admin can manage salon config" ON salon_config
 
 -- Insert default salon config if not exists
 INSERT INTO salon_config (name, edition, description)
-SELECT 'SIPORTS 2026', '2026', 'Salon International du Sport - Algérie'
+SELECT 'SIPORTS 2026', '2026', 'Salon International des Ports - Algérie'
 WHERE NOT EXISTS (SELECT 1 FROM salon_config LIMIT 1);
 
 -- =====================================================

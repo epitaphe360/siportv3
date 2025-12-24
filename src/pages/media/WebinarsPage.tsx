@@ -212,7 +212,7 @@ export const WebinarsPage: React.FC = () => {
 
         {/* Featured Webinar */}
         {filteredWebinars[0] && (
-          <Link to={`/media/webinar/${filteredWebinars[0].id}`}>
+          <Link to={ROUTES.WEBINAR_DETAIL.replace(':id', filteredWebinars[0].id)}>
             <Card className="mb-12 overflow-hidden hover:shadow-2xl transition-shadow bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200">
               <div className="p-8 md:flex items-center space-y-6 md:space-y-0 md:space-x-8">
                 {/* Thumbnail */}

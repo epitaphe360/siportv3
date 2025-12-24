@@ -534,7 +534,16 @@ export class SupabaseService {
     }
     
     const startDate = new Date(startTime);
-    const endDate = new Date(endTime || startTime);
+    let endDate: Date;
+
+    // Gérer le cas où endTime est juste une heure (ex: "13:00:00")
+    if (endTime && typeof endTime === 'string' && endTime.includes(':') && !endTime.includes('-') && !endTime.includes('T')) {
+      const [hours, minutes] = endTime.split(':').map(Number);
+      endDate = new Date(startDate);
+      endDate.setHours(hours || 0, minutes || 0, 0);
+    } else {
+      endDate = new Date(endTime || startTime);
+    }
     
     // Vérifier que les dates sont valides
     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
@@ -556,6 +565,7 @@ export class SupabaseService {
         imageUrl: eventDB.image_url,
         registrationUrl: eventDB.registration_url,
         tags: eventDB.tags || [],
+        speakers: eventDB.speakers || [],
         date: defaultDate,
         startTime: '00:00',
         endTime: '00:00'
@@ -578,6 +588,7 @@ export class SupabaseService {
       imageUrl: eventDB.image_url,
       registrationUrl: eventDB.registration_url,
       tags: eventDB.tags || [],
+      speakers: eventDB.speakers || [],
       // Legacy/computed fields for backward compatibility
       date: startDate,
       startTime: startDate.toISOString().substring(11, 16),

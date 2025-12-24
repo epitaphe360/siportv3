@@ -302,7 +302,7 @@ export default memo(function EventsPage() {
                           </div>
                           
                           {/* Speakers */}
-                          {event.speakers.length > 0 && (
+                          {event.speakers && event.speakers.length > 0 && (
                             <div className="mb-6">
                               <h4 className="text-sm font-medium text-gray-900 mb-2">
                                 Intervenants :

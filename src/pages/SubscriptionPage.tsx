@@ -112,7 +112,7 @@ const subscriptionTiers: SubscriptionTier[] = [
       'Formulaire de contact basique',
       'Accès tableau de bord',
     ],
-    cta: 'Demander à être contacté',
+    cta: 'Inscription Exposant',
     color: 'bg-blue-50',
   },
   {
@@ -142,7 +142,7 @@ const subscriptionTiers: SubscriptionTier[] = [
       'Messagerie intégrée',
       'Accès aux analytics basiques',
     ],
-    cta: 'Demander à être contacté',
+    cta: 'Inscription Exposant',
     color: 'bg-green-50',
   },
   {
@@ -174,7 +174,7 @@ const subscriptionTiers: SubscriptionTier[] = [
       'Analytics détaillés',
       'Support technique prioritaire',
     ],
-    cta: 'Demander à être contacté',
+    cta: 'Inscription Exposant',
     color: 'bg-amber-50',
   },
   {
@@ -207,7 +207,7 @@ const subscriptionTiers: SubscriptionTier[] = [
       'Support technique VIP dédié',
       'Priorité algorithmique',
     ],
-    cta: 'Demander à être contacté',
+    cta: 'Inscription Exposant',
     color: 'bg-red-50',
   },
 
@@ -240,7 +240,7 @@ const subscriptionTiers: SubscriptionTier[] = [
       'Interview "Meet The Leaders"',
       'Mention "Best Moments"',
     ],
-    cta: 'Devenir Partenaire Musée',
+    cta: 'Inscription Partenaire',
     color: 'bg-cyan-50',
   },
   {
@@ -273,7 +273,7 @@ const subscriptionTiers: SubscriptionTier[] = [
       'Vidéo testimonial diffusée',
       '50 rendez-vous mensuels',
     ],
-    cta: 'Choisir Silver',
+    cta: 'Inscription Partenaire',
     color: 'bg-indigo-50',
   },
   {
@@ -308,7 +308,7 @@ const subscriptionTiers: SubscriptionTier[] = [
       '100 rendez-vous mensuels',
       'Support technique prioritaire',
     ],
-    cta: 'Choisir Gold',
+    cta: 'Inscription Partenaire',
     color: 'bg-rose-50',
   },
   {
@@ -345,7 +345,7 @@ const subscriptionTiers: SubscriptionTier[] = [
       'Support VIP dédié',
       'Priorité algorithmique maximale',
     ],
-    cta: 'Devenir Partenaire Platinium',
+    cta: 'Inscription Partenaire',
     color: 'bg-amber-50',
   },
 ];
@@ -441,7 +441,7 @@ export default function SubscriptionPage() {
 
         {/* Pricing Cards */}
         <div className="flex justify-center">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl w-full">
+          <div className={`grid grid-cols-1 md:grid-cols-2 ${displayedTiers.length > 2 ? 'lg:grid-cols-4 max-w-7xl' : 'lg:grid-cols-2 max-w-4xl'} gap-8 w-full`}>
             {displayedTiers.map((tier) => (
               <Card
                 key={tier.id}

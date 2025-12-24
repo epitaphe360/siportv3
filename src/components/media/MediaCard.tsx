@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { Play, Clock, Users, Calendar, Award } from 'lucide-react';
 import { Badge } from '../ui/Badge';
 import { Card } from '../ui/Card';
+import { ROUTES } from '../../lib/routes';
 import type { MediaContent } from '../../types/media';
 import { MEDIA_TYPE_LABELS, MEDIA_TYPE_ICONS } from '../../types/media';
 
@@ -43,8 +44,19 @@ export const MediaCard: React.FC<MediaCardProps> = ({
     });
   };
 
-  const defaultLink = `/media/${media.type}/${media.id}`;
-  const href = linkTo || defaultLink;
+  const getMediaRoute = (type: string, id: string) => {
+    switch (type) {
+      case 'webinar': return ROUTES.WEBINAR_DETAIL.replace(':id', id);
+      case 'podcast': return ROUTES.PODCAST_DETAIL.replace(':id', id);
+      case 'capsule_inside': return ROUTES.CAPSULE_DETAIL.replace(':id', id);
+      case 'live_studio': return ROUTES.LIVE_STUDIO_DETAIL.replace(':id', id);
+      case 'best_moments': return ROUTES.BEST_MOMENTS_DETAIL.replace(':id', id);
+      case 'testimonial': return ROUTES.TESTIMONIAL_DETAIL.replace(':id', id);
+      default: return `/media/${type}/${id}`;
+    }
+  };
+
+  const href = linkTo || getMediaRoute(media.type, media.id);
 
   return (
     <Link to={href} className={`group block ${className}`}>

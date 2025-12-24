@@ -113,6 +113,7 @@ const LiveStudioPage = lazyRetry(() => import('./pages/media/LiveStudioPage').th
 const BestMomentsPage = lazyRetry(() => import('./pages/media/BestMomentsPage').then(m => ({ default: m.BestMomentsPage })));
 const TestimonialsPage = lazyRetry(() => import('./pages/media/TestimonialsPage').then(m => ({ default: m.TestimonialsPage })));
 const MediaLibraryPage = lazyRetry(() => import('./pages/media/MediaLibraryPage').then(m => ({ default: m.MediaLibraryPage })));
+const MediaDetailPage = lazyRetry(() => import('./pages/media/MediaDetailPage').then(m => ({ default: m.MediaDetailPage })));
 
 // Admin Media pages
 const MediaManagementPage = lazyRetry(() => import('./pages/admin/media/MediaManagementPage'));
@@ -277,11 +278,17 @@ const App = () => {
 
             {/* Media routes - public access */}
             <Route path={ROUTES.WEBINARS} element={<WebinarsPage />} />
+            <Route path={ROUTES.WEBINAR_DETAIL} element={<MediaDetailPage />} />
             <Route path={ROUTES.PODCASTS} element={<PodcastsPage />} />
+            <Route path={ROUTES.PODCAST_DETAIL} element={<MediaDetailPage />} />
             <Route path={ROUTES.CAPSULES_INSIDE} element={<CapsulesPage />} />
+            <Route path={ROUTES.CAPSULE_DETAIL} element={<MediaDetailPage />} />
             <Route path={ROUTES.LIVE_STUDIO} element={<LiveStudioPage />} />
+            <Route path={ROUTES.LIVE_STUDIO_DETAIL} element={<MediaDetailPage />} />
             <Route path={ROUTES.BEST_MOMENTS} element={<BestMomentsPage />} />
+            <Route path={ROUTES.BEST_MOMENTS_DETAIL} element={<MediaDetailPage />} />
             <Route path={ROUTES.TESTIMONIALS} element={<TestimonialsPage />} />
+            <Route path={ROUTES.TESTIMONIAL_DETAIL} element={<MediaDetailPage />} />
             <Route path={ROUTES.MEDIA_LIBRARY} element={<MediaLibraryPage />} />
 
             {/* Partner Media routes - protected */}

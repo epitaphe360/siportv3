@@ -441,45 +441,45 @@ CREATE INDEX IF NOT EXISTS idx_media_contents_published ON media_contents(publis
 INSERT INTO media_contents (type, title, description, thumbnail_url, duration, status, views_count, likes_count, speakers, tags, category, published_at)
 VALUES
   -- Webinaires
-  ('webinar', 'L''avenir du sport digital en Algérie',
-   'Découvrez les tendances et innovations qui transforment l''industrie sportive algérienne. Un webinaire animé par des experts du secteur.',
-   'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800',
+  ('webinar', 'L''avenir des ports intelligents en Algérie',
+   'Découvrez les tendances et innovations qui transforment l''industrie portuaire algérienne. Un webinaire animé par des experts du secteur.',
+   'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800',
    3600, 'published', 1250, 89,
-   '[{"name": "Karim Benzarti", "title": "CEO", "company": "SportTech DZ"}, {"name": "Sarah Amrani", "title": "Directrice Marketing", "company": "Algérie Sports"}]'::jsonb,
-   ARRAY['sport', 'digital', 'innovation'], 'Technologie', NOW() - INTERVAL '7 days'),
+   '[{"name": "Karim Benzarti", "title": "CEO", "company": "PortTech DZ"}, {"name": "Sarah Amrani", "title": "Directrice Innovation", "company": "Algérie Ports"}]'::jsonb,
+   ARRAY['port', 'digital', 'innovation'], 'Technologie', NOW() - INTERVAL '7 days'),
 
-  ('webinar', 'Équipements sportifs: normes et qualité',
-   'Analyse approfondie des normes internationales pour les équipements sportifs et leur application en Algérie.',
-   'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800',
+  ('webinar', 'Infrastructures portuaires: normes et qualité',
+   'Analyse approfondie des normes internationales pour les infrastructures portuaires et leur application en Algérie.',
+   'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=800',
    2700, 'published', 890, 67,
    '[{"name": "Mohamed Larbi", "title": "Expert Qualité", "company": "IANOR"}]'::jsonb,
    ARRAY['équipement', 'qualité', 'normes'], 'Réglementation', NOW() - INTERVAL '14 days'),
 
-  ('webinar', 'Financement des projets sportifs',
-   'Comment financer votre projet sportif ? Subventions, investisseurs, crowdfunding - toutes les options expliquées.',
+  ('webinar', 'Financement des projets portuaires',
+   'Comment financer votre projet portuaire ? Subventions, investisseurs, PPP - toutes les options expliquées.',
    'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800',
    2400, 'published', 720, 45,
-   '[{"name": "Amine Djebbar", "title": "Consultant Finance", "company": "Sport Invest"}]'::jsonb,
+   '[{"name": "Amine Djebbar", "title": "Consultant Finance", "company": "Port Invest"}]'::jsonb,
    ARRAY['finance', 'investissement', 'startup'], 'Finance', NOW() - INTERVAL '21 days'),
 
   -- Podcasts
-  ('podcast', 'SIPORT Talks #1: L''écosystème sportif algérien',
-   'Premier épisode de notre podcast dédié à l''industrie du sport. Invité spécial: le président de la Fédération Algérienne.',
+  ('podcast', 'SIPORT Talks #1: L''écosystème portuaire algérien',
+   'Premier épisode de notre podcast dédié à l''industrie des ports. Invité spécial: le président de l''Autorité Portuaire.',
    'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=800',
    1800, 'published', 2100, 156,
-   '[{"name": "Farid Bensalem", "title": "Journaliste Sportif", "company": "SIPORTS"}]'::jsonb,
-   ARRAY['podcast', 'interview', 'sport'], 'Interview', NOW() - INTERVAL '5 days'),
+   '[{"name": "Farid Bensalem", "title": "Journaliste Maritime", "company": "SIPORTS"}]'::jsonb,
+   ARRAY['podcast', 'interview', 'port'], 'Interview', NOW() - INTERVAL '5 days'),
 
-  ('podcast', 'SIPORT Talks #2: Femmes et Sport',
-   'Focus sur les femmes dans le sport algérien. Défis, opportunités et success stories.',
+  ('podcast', 'SIPORT Talks #2: Femmes et Secteur Maritime',
+   'Focus sur les femmes dans le secteur maritime algérien. Défis, opportunités et success stories.',
    'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800',
    2100, 'published', 1850, 203,
-   '[{"name": "Yasmine Khelifi", "title": "Athlète", "company": "Équipe Nationale"}]'::jsonb,
-   ARRAY['femmes', 'sport', 'égalité'], 'Société', NOW() - INTERVAL '12 days'),
+   '[{"name": "Yasmine Khelifi", "title": "Capitaine", "company": "Marine Nationale"}]'::jsonb,
+   ARRAY['femmes', 'port', 'égalité'], 'Société', NOW() - INTERVAL '12 days'),
 
   -- Capsules Inside
   ('capsule_inside', 'Inside SIPORT: Coulisses du salon',
-   'Découvrez les coulisses de l''organisation du plus grand salon sportif d''Algérie.',
+   'Découvrez les coulisses de l''organisation du plus grand salon portuaire d''Algérie.',
    'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800',
    300, 'published', 3500, 245,
    '[]'::jsonb,
@@ -493,11 +493,11 @@ VALUES
    ARRAY['stands', 'exposants', 'préparation'], 'Behind The Scenes', NOW() - INTERVAL '2 days'),
 
   -- Live Studio
-  ('live_studio', 'Meet The Leaders: Interview CEO SportTech',
-   'Interview exclusive avec le CEO de SportTech DZ sur l''avenir de la technologie dans le sport.',
+  ('live_studio', 'Meet The Leaders: Interview CEO PortTech',
+   'Interview exclusive avec le CEO de PortTech DZ sur l''avenir de la technologie dans les ports.',
    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800',
    1200, 'published', 1560, 98,
-   '[{"name": "Karim Benzarti", "title": "CEO", "company": "SportTech DZ"}]'::jsonb,
+   '[{"name": "Karim Benzarti", "title": "CEO", "company": "PortTech DZ"}]'::jsonb,
    ARRAY['interview', 'leader', 'technologie'], 'Leadership', NOW() - INTERVAL '8 days'),
 
   -- Best Moments
@@ -513,14 +513,14 @@ VALUES
    'Ahmed Kaci, exposant depuis 3 éditions, partage son expérience au salon SIPORTS.',
    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800',
    180, 'published', 980, 67,
-   '[{"name": "Ahmed Kaci", "title": "Directeur Commercial", "company": "Équipements Pro DZ"}]'::jsonb,
+   '[{"name": "Ahmed Kaci", "title": "Directeur Commercial", "company": "Équipements Portuaires Pro"}]'::jsonb,
    ARRAY['témoignage', 'exposant', 'satisfaction'], 'Témoignage', NOW() - INTERVAL '10 days'),
 
   ('testimonial', 'Témoignage: Visiteur VIP',
    'Retour d''expérience d''un visiteur VIP sur les avantages du pass premium.',
    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800',
    150, 'published', 750, 45,
-   '[{"name": "Mehdi Belkacem", "title": "Acheteur", "company": "Groupe Sportif Oran"}]'::jsonb,
+   '[{"name": "Mehdi Belkacem", "title": "Acheteur", "company": "Groupe Portuaire Oran"}]'::jsonb,
    ARRAY['témoignage', 'visiteur', 'VIP'], 'Témoignage', NOW() - INTERVAL '6 days')
 
 ON CONFLICT DO NOTHING;
