@@ -24,12 +24,14 @@ import PersonalCalendar from './PersonalCalendar';
 import { useAppointmentStore } from '../../store/appointmentStore';
 import { useVisitorStats } from '../../hooks/useVisitorStats';
 import { calculateRemainingQuota, getVisitorQuota } from '../../config/quotas';
+import { useTranslation } from '../../hooks/useTranslation';
 // VisitorLevelGuard removed - FREE visitors can now access dashboard with limited features
 import { LevelBadge, QuotaSummaryCard } from '../common/QuotaWidget';
 import { motion } from 'framer-motion';
 
 // OPTIMIZATION: Memoized VisitorDashboard to prevent unnecessary re-renders
 export default memo(function VisitorDashboard() {
+  const { t } = useTranslation();
   // Auth first so it's available below
   const { user, isAuthenticated } = useAuthStore();
 

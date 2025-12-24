@@ -170,6 +170,22 @@ export const allTranslations = {
     'dashboard.settings': 'Paramètres',
     'dashboard.reports': 'Rapports',
     'dashboard.exports': 'Exports',
+    
+    // Visitor Dashboard
+    'visitor.my_profile': 'Mon Profil',
+    'visitor.my_appointments': 'Mes Rendez-vous',
+    'visitor.my_favorites': 'Mes Favoris',
+    'visitor.my_tickets': 'Mes Billets',
+    'visitor.schedule_appointment': 'Prendre un Rendez-vous',
+    'visitor.appointment_confirmed': 'Rendez-vous Confirmé',
+    'visitor.appointment_declined': 'Rendez-vous Refusé',
+    'visitor.no_appointments': 'Aucun Rendez-vous',
+    'visitor.b2b_appointments': 'Rendez-vous B2B',
+    'visitor.appointment_status': 'Statut des Rendez-vous',
+    'visitor.appointment_scheduled': 'Rendez-vous Programmé',
+    'visitor.loading_appointments': 'Chargement des Rendez-vous...',
+    'visitor.error_loading': 'Impossible de charger les Rendez-vous. Veuillez réessayer.',
+    'visitor.quota_remaining': 'Quota Restant',
   },
   
   en: {
@@ -329,7 +345,22 @@ export const allTranslations = {
     'dashboard.settings': 'Settings',
     'dashboard.reports': 'Reports',
     'dashboard.exports': 'Exports',
-  },
+    
+    // Visitor Dashboard
+    'visitor.my_profile': 'My Profile',
+    'visitor.my_appointments': 'My Appointments',
+    'visitor.my_favorites': 'My Favorites',
+    'visitor.my_tickets': 'My Tickets',
+    'visitor.schedule_appointment': 'Schedule Appointment',
+    'visitor.appointment_confirmed': 'Appointment Confirmed',
+    'visitor.appointment_declined': 'Appointment Declined',
+    'visitor.no_appointments': 'No Appointments',
+    'visitor.b2b_appointments': 'B2B Appointments',
+    'visitor.appointment_status': 'Appointment Status',
+    'visitor.appointment_scheduled': 'Appointment Scheduled',
+    'visitor.loading_appointments': 'Loading Appointments...',
+    'visitor.error_loading': 'Unable to load Appointments. Please try again.',
+    'visitor.quota_remaining': 'Remaining Quota',
   
   ar: {
     'pages.exhibitors.title': 'العارضون',
@@ -488,7 +519,22 @@ export const allTranslations = {
     'dashboard.settings': 'الإعدادات',
     'dashboard.reports': 'التقارير',
     'dashboard.exports': 'الصادرات',
-  },
+    
+    // Visitor Dashboard
+    'visitor.my_profile': 'ملفي الشخصي',
+    'visitor.my_appointments': 'مواعيدي',
+    'visitor.my_favorites': 'مفضلاتي',
+    'visitor.my_tickets': 'تذاكري',
+    'visitor.schedule_appointment': 'جدول موعد',
+    'visitor.appointment_confirmed': 'موعد مؤكد',
+    'visitor.appointment_declined': 'موعد مرفوض',
+    'visitor.no_appointments': 'بدون مواعيد',
+    'visitor.b2b_appointments': 'مواعيد B2B',
+    'visitor.appointment_status': 'حالة الموعد',
+    'visitor.appointment_scheduled': 'موعد مجدول',
+    'visitor.loading_appointments': 'جاري تحميل المواعيد...',
+    'visitor.error_loading': 'تعذر تحميل المواعيد. الرجاء المحاولة مجددا.',
+    'visitor.quota_remaining': 'الحصة المتبقية',
   
   es: {
     'pages.exhibitors.title': 'Expositores',
@@ -647,5 +693,20 @@ export const allTranslations = {
     'dashboard.settings': 'Configuración',
     'dashboard.reports': 'Reportes',
     'dashboard.exports': 'Exportaciones',
-  }
+    
+    // Visitor Dashboard
+    'visitor.my_profile': 'Mi Perfil',
+    'visitor.my_appointments': 'Mis Citas',
+    'visitor.my_favorites': 'Mis Favoritos',
+    'visitor.my_tickets': 'Mis Entradas',
+    'visitor.schedule_appointment': 'Programar Cita',
+    'visitor.appointment_confirmed': 'Cita Confirmada',
+    'visitor.appointment_declined': 'Cita Rechazada',
+    'visitor.no_appointments': 'Sin Citas',
+    'visitor.b2b_appointments': 'Citas B2B',
+    'visitor.appointment_status': 'Estado de la Cita',
+    'visitor.appointment_scheduled': 'Cita Programada',
+    'visitor.loading_appointments': 'Cargando Citas...',
+    'visitor.error_loading': 'No se pudieron cargar las Citas. Por favor, inténtelo de nuevo.',
+    'visitor.quota_remaining': 'Cuota Restante',
 };
