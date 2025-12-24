@@ -181,14 +181,14 @@ export const EnhancedChatInterface: React.FC = () => {
     isPinned: enhancedFeatures[conv.id]?.isPinned || false,
     isArchived: enhancedFeatures[conv.id]?.isArchived || false,
     priority: enhancedFeatures[conv.id]?.priority || 'normal',
-    participants: conv.participants.map((participantId: string) => {
+    participants: (conv.participants || []).map((participantId: string) => {
       // Map participant IDs to user info
       const isOnline = onlineUsers.includes(participantId);
       return {
         id: participantId,
         name: participantId === 'siports-bot' ? 'Assistant SIPORTS' : 
               participantId === 'user2' ? 'Contact Professionnel' : 
-              `Utilisateur ${participantId}`,
+              `Utilisateur ${participantId.substring(0, 8)}`,
         avatar: participantId === 'siports-bot' ? 
                'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=100' :
                undefined,
@@ -298,7 +298,7 @@ export const EnhancedChatInterface: React.FC = () => {
             </div>
           ) : (
             filteredConversations.map((conversation) => {
-              const otherParticipant = conversation.participants.find(p => p.id !== user?.id);
+              const otherParticipant = conversation.participants.find((p: any) => p.id !== user?.id);
               if (!otherParticipant) return null;
 
               return (
