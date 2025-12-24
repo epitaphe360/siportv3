@@ -583,6 +583,10 @@ BEGIN
     EXCEPTION WHEN duplicate_column THEN NULL; END;
 
     BEGIN
+        ALTER TABLE news_articles ADD COLUMN author TEXT;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
         ALTER TABLE news_articles ADD COLUMN published BOOLEAN DEFAULT false;
     EXCEPTION WHEN duplicate_column THEN NULL; END;
 
@@ -599,7 +603,7 @@ BEGIN
     EXCEPTION WHEN duplicate_column THEN NULL; END;
 END $$;
 
-INSERT INTO news_articles (id, title, content, excerpt, author_id, published, category, tags, image_url, created_at)
+INSERT INTO news_articles (id, title, content, excerpt, author_id, author, published, category, tags, image_url, created_at)
 VALUES
   (
     '00000000-0000-0000-0000-000000000401',
@@ -607,6 +611,7 @@ VALUES
     'Le salon SIPORTS 2025 s''annonce comme l''édition la plus importante de son histoire avec plus de 500 exposants confirmés et 50 000 visiteurs attendus. Cette année, l''accent est mis sur l''innovation durable et les technologies vertes...',
     'Le salon SIPORTS 2025 bat tous les records avec 500 exposants et 50 000 visiteurs attendus.',
     '00000000-0000-0000-0000-000000000001',
+    'Admin SIPORTS',
     true,
     'Événement',
     ARRAY['SIPORTS', 'Salon', 'Innovation'],
@@ -619,6 +624,7 @@ VALUES
     'L''exposant TechExpo Solutions présentera en exclusivité sa nouvelle plateforme de réalité virtuelle destinée aux salons professionnels. Une révolution dans l''expérience visiteur...',
     'TechExpo Solutions lance une plateforme VR révolutionnaire pour les salons.',
     '00000000-0000-0000-0000-000000000001',
+    'Admin SIPORTS',
     true,
     'Technologie',
     ARRAY['Innovation', 'Réalité Virtuelle', 'TechExpo'],
@@ -631,6 +637,7 @@ VALUES
     'AgriInnov présente ses dernières solutions IoT pour l''agriculture de précision. Des capteurs intelligents et des systèmes d''irrigation automatisés qui réduisent la consommation d''eau de 40%...',
     'AgriInnov révolutionne l''agriculture avec des solutions IoT innovantes.',
     '00000000-0000-0000-0000-000000000001',
+    'Admin SIPORTS',
     true,
     'Agriculture',
     ARRAY['AgriTech', 'Innovation', 'Développement Durable'],
@@ -643,6 +650,7 @@ VALUES
     'La maison ModeDesign Paris fusionne tradition et innovation avec sa nouvelle collection intégrant des textiles intelligents et des accessoires connectés...',
     'ModeDesign Paris présente une collection alliant haute couture et technologies.',
     '00000000-0000-0000-0000-000000000001',
+    'Admin SIPORTS',
     true,
     'Mode',
     ARRAY['Mode', 'Innovation', 'Luxe'],
