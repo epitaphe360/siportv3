@@ -15,40 +15,43 @@ import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { motion } from 'framer-motion';
 import { ROUTES } from '../../lib/routes';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export const NetworkingSection: React.FC = () => {
+  const { t } = useTranslation();
+  
   const features = [
     {
       icon: Brain,
-      title: 'IA de Matching',
-      description: 'Algorithme intelligent qui analyse vos objectifs et recommande les contacts les plus pertinents.',
+      titleKey: 'home.feature_matching',
+      descKey: 'home.feature_matching_desc',
       color: 'bg-purple-100 text-purple-600'
     },
     {
       icon: MessageCircle,
-      title: 'Chat Assisté',
-      description: 'Messagerie instantanée avec chatbot IA pour faciliter vos premiers échanges.',
+      titleKey: 'home.feature_chat',
+      descKey: 'home.feature_chat_desc',
       color: 'bg-blue-100 text-blue-600'
     },
     {
       icon: Calendar,
-      title: 'Rendez-vous Intelligents',
-      description: 'Planification automatique avec gestion des disponibilités et suggestions de créneaux.',
+      titleKey: 'home.feature_appointments',
+      descKey: 'home.feature_appointments_desc',
       color: 'bg-green-100 text-green-600'
     },
     {
       icon: Globe,
-      title: 'Réseautage Global',
-      description: 'Connectez-vous avec des professionnels de 40 pays dans l\'écosystème portuaire.',
+      titleKey: 'home.feature_global',
+      descKey: 'home.feature_global_desc',
       color: 'bg-orange-100 text-orange-600'
     }
   ];
 
   const stats = [
-    { number: '6,000+', label: 'Professionnels connectés' },
-    { number: '40', label: 'Pays représentés' },
-    { number: '300+', label: 'Exposants actifs' },
-    { number: '95%', label: 'Taux de satisfaction' }
+    { number: '6,000+', labelKey: 'home.stats_professionals' },
+    { number: '40', labelKey: 'home.stats_countries' },
+    { number: '300+', labelKey: 'home.stats_exhibitors' },
+    { number: '95%', labelKey: 'home.stats_satisfaction' }
   ];
 
   return (
@@ -67,15 +70,15 @@ export const NetworkingSection: React.FC = () => {
                 <div className="bg-blue-600 p-2 rounded-lg">
                   <Network className="h-6 w-6 text-white" />
                 </div>
-                <span className="text-blue-600 font-semibold">Réseautage Intelligent</span>
+                <span className="text-blue-600 font-semibold">{t('home.networking_label')}</span>
               </div>
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-                Connectez-vous avec les{' '}
-                <span className="text-blue-600">bons partenaires</span>
+                {t('home.networking_title').split('bons').map((part, i) => (
+                  i === 0 ? part : <span key={i} className="text-blue-600">bons{part}</span>
+                ))}
               </h2>
               <p className="text-lg text-gray-600 mb-8">
-                Notre plateforme utilise l'intelligence artificielle pour vous mettre en relation 
-                avec les professionnels les plus pertinents selon vos objectifs et votre secteur d'activité.
+                {t('home.networking_desc')}
               </p>
             </div>
 
@@ -83,7 +86,7 @@ export const NetworkingSection: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
               {features.map((feature, index) => (
                 <motion.div
-                  key={feature.title}
+                  key={feature.titleKey}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
@@ -95,10 +98,10 @@ export const NetworkingSection: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">
-                      {feature.title}
+                      {t(feature.titleKey)}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      {feature.description}
+                      {t(feature.descKey)}
                     </p>
                   </div>
                 </motion.div>
@@ -110,13 +113,13 @@ export const NetworkingSection: React.FC = () => {
               <Link to={ROUTES.NETWORKING}>
                 <Button size="lg" className="w-full sm:w-auto">
                   <Zap className="mr-2 h-5 w-5" />
-                  Commencer le Réseautage
+                  {t('home.cta_networking')}
                 </Button>
               </Link>
               <Link to={ROUTES.VISITOR_SUBSCRIPTION}>
                 <Button variant="outline" size="lg" className="w-full sm:w-auto">
                   <Target className="mr-2 h-5 w-5" />
-                  Devenir Membre
+                  {t('home.cta_member')}
                 </Button>
               </Link>
               <Button 

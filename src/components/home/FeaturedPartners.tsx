@@ -7,9 +7,11 @@ import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { SupabaseService } from '../../services/supabaseService';
 import { motion } from 'framer-motion';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export const FeaturedPartners: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [partners, setPartners] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -90,10 +92,10 @@ export const FeaturedPartners: React.FC = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Partenaires à la Une
+              {t('home.featured_partners_title')}
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Découvrez les organisations stratégiques qui soutiennent l'excellence du salon SIPORTS 2026
+              {t('home.featured_partners_desc')}
             </p>
           </motion.div>
         </div>
@@ -133,7 +135,7 @@ export const FeaturedPartners: React.FC = () => {
                     {partner.verified && (
                       <Badge variant="success" size="sm" className="flex items-center">
                         <CheckCircle className="h-3 w-3 mr-1" />
-                        Vérifié
+                        {t('home.verified')}
                       </Badge>
                     )}
                   </div>
@@ -142,7 +144,7 @@ export const FeaturedPartners: React.FC = () => {
                   <div className="mb-4">
                     <Badge variant={getTierColor(partner.partner_tier)} className="uppercase tracking-wider font-bold">
                       <Award className="h-3 w-3 mr-1" />
-                      Partenaire {getTierLabel(partner.partner_tier)}
+                      {t('home.partner_tier', { tier: getTierLabel(partner.partner_tier) })}
                     </Badge>
                   </div>
 
@@ -191,7 +193,7 @@ export const FeaturedPartners: React.FC = () => {
         <div className="text-center">
           <Link to={ROUTES.PARTNERS}>
             <Button variant="outline" size="lg" className="group">
-              Voir Tous les Partenaires
+              {t('home.discover_all')}
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>

@@ -9,11 +9,13 @@ import { Button } from '../ui/Button';
 import { useExhibitorStore } from '../../store/exhibitorStore';
 import useAuthStore from '../../store/authStore';
 import { motion } from 'framer-motion';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export const FeaturedExhibitors: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthStore();
   const { exhibitors, fetchExhibitors, isLoading } = useExhibitorStore();
+  const { t } = useTranslation();
   const featuredExhibitors = exhibitors.filter(e => e.featured).slice(0, 3);
 
   useEffect(() => {
@@ -90,10 +92,10 @@ export const FeaturedExhibitors: React.FC = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Exposants à la Une
+              {t('home.featured_exhibitors_title')}
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Découvrez les leaders de l'industrie portuaire qui participent au salon SIPORTS 2026
+              {t('home.featured_exhibitors_desc')}
             </p>
           </motion.div>
         </div>
@@ -141,7 +143,7 @@ export const FeaturedExhibitors: React.FC = () => {
                     {exhibitor.verified && (
                       <Badge variant="success" size="sm" className="flex items-center">
                         <CheckCircle className="h-3 w-3 mr-1" />
-                        Vérifié
+                        {t('home.verified')}
                       </Badge>
                     )}
                   </div>
@@ -226,7 +228,7 @@ export const FeaturedExhibitors: React.FC = () => {
         >
           <Link to={ROUTES.EXHIBITORS}>
             <Button size="lg">
-              Voir Tous les Exposants
+              {t('home.discover_all')}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>
