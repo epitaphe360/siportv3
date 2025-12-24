@@ -601,9 +601,13 @@ BEGIN
     BEGIN
         ALTER TABLE news_articles ADD COLUMN image_url TEXT;
     EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE news_articles ADD COLUMN published_at TIMESTAMPTZ;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
 END $$;
 
-INSERT INTO news_articles (id, title, content, excerpt, author_id, author, published, category, tags, image_url, created_at)
+INSERT INTO news_articles (id, title, content, excerpt, author_id, author, published, published_at, category, tags, image_url, created_at)
 VALUES
   (
     '00000000-0000-0000-0000-000000000401',
@@ -613,6 +617,7 @@ VALUES
     '00000000-0000-0000-0000-000000000001',
     'Admin SIPORTS',
     true,
+    NOW() - INTERVAL '2 days',
     'Événement',
     ARRAY['SIPORTS', 'Salon', 'Innovation'],
     'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800',
@@ -626,6 +631,7 @@ VALUES
     '00000000-0000-0000-0000-000000000001',
     'Admin SIPORTS',
     true,
+    NOW() - INTERVAL '5 days',
     'Technologie',
     ARRAY['Innovation', 'Réalité Virtuelle', 'TechExpo'],
     'https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?w=800',
@@ -639,6 +645,7 @@ VALUES
     '00000000-0000-0000-0000-000000000001',
     'Admin SIPORTS',
     true,
+    NOW() - INTERVAL '1 day',
     'Agriculture',
     ARRAY['AgriTech', 'Innovation', 'Développement Durable'],
     'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800',
@@ -652,6 +659,7 @@ VALUES
     '00000000-0000-0000-0000-000000000001',
     'Admin SIPORTS',
     true,
+    NOW() - INTERVAL '3 days',
     'Mode',
     ARRAY['Mode', 'Innovation', 'Luxe'],
     'https://images.unsplash.com/photo-1558769132-cb1aea1f1c77?w=800',
