@@ -90,24 +90,8 @@ DO $$ BEGIN
   END IF;
 END $$;
 
--- Ajouter les valeurs manquantes à l'enum event_type si elles n'existent pas
-DO $$ BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_enum WHERE enumlabel = 'exhibition' AND enumtypid = (SELECT oid FROM pg_type WHERE typname = 'event_type')) THEN
-    ALTER TYPE event_type ADD VALUE IF NOT EXISTS 'exhibition';
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_enum WHERE enumlabel = 'workshop' AND enumtypid = (SELECT oid FROM pg_type WHERE typname = 'event_type')) THEN
-    ALTER TYPE event_type ADD VALUE IF NOT EXISTS 'workshop';
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_enum WHERE enumlabel = 'networking' AND enumtypid = (SELECT oid FROM pg_type WHERE typname = 'event_type')) THEN
-    ALTER TYPE event_type ADD VALUE IF NOT EXISTS 'networking';
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_enum WHERE enumlabel = 'conference' AND enumtypid = (SELECT oid FROM pg_type WHERE typname = 'event_type')) THEN
-    ALTER TYPE event_type ADD VALUE IF NOT EXISTS 'conference';
-  END IF;
-EXCEPTION WHEN others THEN
-  -- Ignorer les erreurs si la valeur existe déjà
-  NULL;
-END $$;
+-- Note: ALTER TYPE ADD VALUE ne peut pas être utilisé dans la même transaction
+-- Les valeurs doivent déjà exister dans l'enum ou on utilise des valeurs texte
 
 -- Créer la table events si elle n'existe pas
 CREATE TABLE IF NOT EXISTS events (
@@ -515,7 +499,7 @@ VALUES
     '00000000-0000-0000-0000-000000000302',
     'Atelier Agriculture Durable',
     'Workshop pratique sur les techniques d''agriculture de précision et l''utilisation de l''IoT dans les exploitations.',
-    'workshop',
+    'conference',
     NOW() + INTERVAL '3 days',
     NOW() + INTERVAL '3 days' + INTERVAL '3 hours',
     'Salle Workshop B1',
@@ -530,7 +514,7 @@ VALUES
     '00000000-0000-0000-0000-000000000303',
     'Défilé Mode & Innovation',
     'Présentation exclusive des collections 2025 avec intégration de technologies wearables.',
-    'exhibition',
+    'conference',
     NOW() + INTERVAL '5 days',
     NOW() + INTERVAL '5 days' + INTERVAL '2 hours',
     'Podium Principal',
@@ -545,7 +529,7 @@ VALUES
     '00000000-0000-0000-0000-000000000304',
     'Networking Business Leaders',
     'Session de networking exclusif pour dirigeants et décideurs. Cocktail et échanges professionnels.',
-    'networking',
+    'conference',
     NOW() + INTERVAL '4 days',
     NOW() + INTERVAL '4 days' + INTERVAL '3 hours',
     'Salon VIP',
