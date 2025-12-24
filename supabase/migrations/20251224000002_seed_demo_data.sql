@@ -13,6 +13,61 @@
   - Pavilions
 */
 
+-- Recréer les tables de profils avec la bonne structure (nécessaires pour le trigger)
+DROP TABLE IF EXISTS public.exhibitor_profiles CASCADE;
+CREATE TABLE public.exhibitor_profiles (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  company_name text,
+  first_name text,
+  last_name text,
+  email text,
+  phone text,
+  description text,
+  logo_url text,
+  website text,
+  country text,
+  sector text,
+  category text,
+  stand_number text,
+  stand_area numeric DEFAULT 9.0 CHECK (stand_area > 0),
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+CREATE INDEX idx_exhibitor_profiles_user_id ON public.exhibitor_profiles(user_id);
+
+DROP TABLE IF EXISTS public.partner_profiles CASCADE;
+CREATE TABLE public.partner_profiles (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL UNIQUE REFERENCES public.users(id) ON DELETE CASCADE,
+  company_name text,
+  contact_name text,
+  contact_email text,
+  contact_phone text,
+  description text,
+  logo_url text,
+  website text,
+  country text,
+  partnership_level text,
+  created_at timestamptz DEFAULT now()
+);
+
+CREATE INDEX idx_partner_profiles_user_id ON public.partner_profiles(user_id);
+
+-- Ajouter la colonne stand_number à exhibitors si elle n'existe pas
+DO $$ 
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'exhibitors' 
+    AND column_name = 'stand_number'
+  ) THEN
+    ALTER TABLE public.exhibitors ADD COLUMN stand_number text;
+  END IF;
+END $$;
+
 -- =====================================================
 -- 1. INSERT DEMO USERS
 -- =====================================================
@@ -157,7 +212,7 @@ VALUES
     '00000000-0000-0000-0000-000000000102',
     '00000000-0000-0000-0000-000000000002',
     'TechExpo Solutions',
-    'Technology',
+    'port-industry',
     'Innovation',
     'Leader mondial en solutions technologiques innovantes pour les salons professionnels. Nous proposons des solutions de réalité virtuelle, d''affichage interactif et de gestion d''événements.',
     'https://techexpo-solutions.example.com',
@@ -168,7 +223,7 @@ VALUES
     '00000000-0000-0000-0000-000000000103',
     '00000000-0000-0000-0000-000000000003',
     'AgriInnov',
-    'Agriculture',
+    'port-operations',
     'Agritech',
     'Spécialiste des technologies agricoles durables et intelligentes. Nos solutions IoT et d''agriculture de précision révolutionnent le secteur agricole.',
     'https://agri-innov.example.com',
@@ -179,14 +234,14 @@ VALUES
     '00000000-0000-0000-0000-000000000104',
     '00000000-0000-0000-0000-000000000004',
     'ModeDesign Paris',
-    'Fashion',
+    'institutional',
     'Luxury',
     'Maison de haute couture parisienne reconnue internationalement. Collections exclusives et sur-mesure pour une clientèle prestigieuse.',
     'https://mode-design-paris.example.com',
     'https://ui-avatars.com/api/?name=ModeDesign&size=200',
     NOW()
   )
-ON CONFLICT (user_id) DO UPDATE SET
+ON CONFLICT (id) DO UPDATE SET
   company_name = EXCLUDED.company_name,
   category = EXCLUDED.category,
   sector = EXCLUDED.sector,
@@ -195,91 +250,103 @@ ON CONFLICT (user_id) DO UPDATE SET
   logo_url = EXCLUDED.logo_url;
 
 -- =====================================================
--- 3. INSERT PARTNER PROFILES
+-- 3. INSERT PARTNER PROFILES (dans partner_profiles)
 -- =====================================================
-INSERT INTO partners (id, user_id, company_name, tier, description, website, logo_url, contact_email, created_at)
+INSERT INTO partner_profiles (id, user_id, company_name, contact_name, contact_email, description, website, logo_url, country, partnership_level, created_at)
 VALUES
   (
     '00000000-0000-0000-0000-000000000105',
     '00000000-0000-0000-0000-000000000005',
     'Gold Partner Industries',
-    'gold',
+    'Marie Laurent',
+    'contact@gold-partner.example.com',
     'Partenaire stratégique majeur offrant des services premium et un accompagnement personnalisé. Sponsor principal de l''événement SIPORTS 2025.',
     'https://gold-partner.example.com',
     'https://ui-avatars.com/api/?name=Gold+Partner&size=200',
-    'contact@gold-partner.example.com',
+    'France',
+    'gold',
     NOW()
   ),
   (
     '00000000-0000-0000-0000-000000000106',
     '00000000-0000-0000-0000-000000000006',
     'Silver Tech Group',
-    'silver',
+    'Pierre Martin',
+    'info@silver-tech.example.com',
     'Expert en solutions technologiques pour événements professionnels. Support technique et innovation digitale.',
     'https://silver-tech.example.com',
     'https://ui-avatars.com/api/?name=Silver+Tech&size=200',
-    'info@silver-tech.example.com',
+    'France',
+    'silver',
     NOW()
   )
-ON CONFLICT (user_id) DO UPDATE SET
+ON CONFLICT (id) DO UPDATE SET
   company_name = EXCLUDED.company_name,
-  tier = EXCLUDED.tier,
+  contact_name = EXCLUDED.contact_name,
+  contact_email = EXCLUDED.contact_email,
   description = EXCLUDED.description,
   website = EXCLUDED.website,
   logo_url = EXCLUDED.logo_url,
-  contact_email = EXCLUDED.contact_email;
+  partnership_level = EXCLUDED.partnership_level;
 
 -- =====================================================
 -- 4. INSERT VISITOR PROFILES
 -- =====================================================
-INSERT INTO visitor_profiles (id, user_id, first_name, last_name, company, job_title, interests, created_at)
+INSERT INTO visitor_profiles (user_id, first_name, last_name, company, position, phone, country, visitor_type, pass_type, created_at)
 VALUES
   (
-    '00000000-0000-0000-0000-000000000107',
     '00000000-0000-0000-0000-000000000007',
     'Jean',
     'Dupont',
     'Dupont Consulting',
     'Directeur Innovation',
-    ARRAY['Technologie', 'Innovation', 'Networking'],
+    '+33612345678',
+    'France',
+    'professional',
+    'vip',
     NOW()
   ),
   (
-    '00000000-0000-0000-0000-000000000108',
     '00000000-0000-0000-0000-000000000008',
     'Marie',
     'Martin',
     'Martin & Associés',
     'Chef de Projet',
-    ARRAY['Agriculture', 'Développement durable'],
+    '+33612345679',
+    'France',
+    'professional',
+    'standard',
     NOW()
   ),
   (
-    '00000000-0000-0000-0000-000000000109',
     '00000000-0000-0000-0000-000000000009',
     'Pierre',
     'Dubois',
     NULL,
     'Entrepreneur',
-    ARRAY['Mode', 'Design'],
+    '+33612345680',
+    'France',
+    'entrepreneur',
+    'standard',
     NOW()
   ),
   (
-    '00000000-0000-0000-0000-000000000110',
     '00000000-0000-0000-0000-000000000010',
     'Sophie',
     'Bernard',
     NULL,
     'Étudiante',
-    ARRAY['Innovation', 'Startups'],
+    '+33612345681',
+    'France',
+    'student',
+    'student',
     NOW()
   )
 ON CONFLICT (user_id) DO UPDATE SET
   first_name = EXCLUDED.first_name,
   last_name = EXCLUDED.last_name,
   company = EXCLUDED.company,
-  job_title = EXCLUDED.job_title,
-  interests = EXCLUDED.interests;
+  position = EXCLUDED.position;
 
 -- =====================================================
 -- 5. INSERT PAVILIONS
@@ -543,11 +610,15 @@ VALUES
     3,
     0,
     true,
-    'Stand A12 - Hall Inn (Visibles dans calendriers personnels)
+    'Stand A12 - Hall Innovation'
+  );
+
+-- =====================================================
+-- APPOINTMENTS (Rendez-vous)
 -- =====================================================
 INSERT INTO appointments (id, exhibitor_id, visitor_id, time_slot_id, status, notes, meeting_type, created_at)
 VALUES
-  -- Rendez-vous AUJOURD'HUI pour Jean Dupont (VIP Visitor)
+  -- Rendez-vous AUJOURD''HUI pour Jean Dupont (VIP Visitor)
   (
     '00000000-0000-0000-0000-000000000601',
     '00000000-0000-0000-0000-000000000102',
