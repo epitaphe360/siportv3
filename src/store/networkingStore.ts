@@ -174,7 +174,8 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
 
     try {
       // Créer la connexion dans Supabase
-      await SupabaseService.createConnection(user.id, userId);
+      // Note: createConnection prend seulement l'ID du destinataire, l'utilisateur courant est récupéré via auth
+      await SupabaseService.createConnection(userId);
       
       // Mettre à jour le state local
       set(state => ({
@@ -205,7 +206,8 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     }
 
     try {
-      await SupabaseService.addFavorite(user.id, userId);
+      // Note: addFavorite prend (entityType, entityId), l'utilisateur courant est récupéré via auth
+      await SupabaseService.addFavorite('user', userId);
       set(state => ({
         favorites: [...state.favorites, userId],
       }));
@@ -223,7 +225,8 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     }
 
     try {
-      await SupabaseService.removeFavorite(user.id, userId);
+      // Note: removeFavorite prend (entityType, entityId), l'utilisateur courant est récupéré via auth
+      await SupabaseService.removeFavorite('user', userId);
       set(state => ({
         favorites: state.favorites.filter(id => id !== userId),
       }));

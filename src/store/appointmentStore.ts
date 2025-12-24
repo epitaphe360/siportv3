@@ -1,15 +1,15 @@
 import { create } from 'zustand';
 import { Appointment, TimeSlot } from '../types';
 import { SupabaseService } from '../services/supabaseService';
-// Try to import supabase client if available
-let supabaseClient: any = null;
-try {
-   
-  const sup = require('../lib/supabase');
-  supabaseClient = sup?.supabase || null;
-} catch {
-  supabaseClient = null;
-}
+import { supabase as supabaseClient, isSupabaseReady } from '../lib/supabase';
+
+// Helper pour vérifier si Supabase est configuré
+const getSupabaseClient = () => {
+  if (!isSupabaseReady()) {
+    return null;
+  }
+  return supabaseClient;
+};
 
 interface AppointmentState {
   appointments: Appointment[];
@@ -172,8 +172,9 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       }
 
       // Fallback: si SupabaseService n'est pas disponible, utiliser supabaseClient directement
-      if (supabaseClient) {
-        const { data, error } = await supabaseClient
+      const client = getSupabaseClient();
+      if (client) {
+        const { data, error } = await client
           .from('appointments')
           .select(`
             *,
@@ -236,8 +237,9 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       }
 
       // Fallback: utiliser supabaseClient directement
-      if (supabaseClient) {
-        const { data, error } = await supabaseClient
+      const client = getSupabaseClient();
+      if (client) {
+        const { data, error } = await client
           .from('time_slots')
           .select(`
             *,
@@ -298,18 +300,13 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     set({ isBooking: true });
 
     try {
-      // Récupérer l'utilisateur connecté
+      // Récupérer l'utilisateur connecté via import dynamique
       let resolvedUser: any = null;
       try {
-        const auth = require('../store/authStore').default;
-        resolvedUser = auth?.getState ? auth.getState().user : null;
+        const mod = await import('../store/authStore');
+        resolvedUser = mod?.default?.getState ? mod.default.getState().user : null;
       } catch {
-        try {
-          const mod = await import('../store/authStore');
-          resolvedUser = mod?.default?.getState ? mod.default.getState().user : null;
-        } catch {
-          resolvedUser = null;
-        }
+        resolvedUser = null;
       }
 
       // CRITICAL: User must be authenticated
@@ -416,18 +413,13 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
     if (!appointment) return;
 
-    // Get authenticated user
+    // Get authenticated user via import dynamique
     let resolvedUser: any = null;
     try {
-      const auth = require('../store/authStore').default;
-      resolvedUser = auth?.getState ? auth.getState().user : null;
+      const mod = await import('../store/authStore');
+      resolvedUser = mod?.default?.getState ? mod.default.getState().user : null;
     } catch {
-      try {
-        const mod = await import('../store/authStore');
-        resolvedUser = mod?.default?.getState ? mod.default.getState().user : null;
-      } catch {
-        resolvedUser = null;
-      }
+      resolvedUser = null;
     }
 
     if (!resolvedUser?.id) {
@@ -619,10 +611,11 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     const success: string[] = [];
     const failed: { id: string; error: string }[] = [];
 
-    if (supabaseClient) {
+    const client = getSupabaseClient();
+    if (client) {
       for (const a of toConfirm) {
         try {
-          const { error } = await supabaseClient.from('appointments').update({ status: 'confirmed' }).eq('id', a.id);
+          const { error } = await client.from('appointments').update({ status: 'confirmed' }).eq('id', a.id);
           if (error) {
             failed.push({ id: a.id, error: error.message || String(error) });
             continue;
