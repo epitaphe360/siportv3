@@ -207,6 +207,30 @@ export const allTranslations = {
     'exhibitor.visitor_interactions': 'Interactions Visiteurs',
     'exhibitor.booth_analytics': 'Analytique du Stand',
     'exhibitor.my_products': 'Mes Produits',
+    
+    // Contact Page
+    'contact.title': 'Nous Contacter',
+    'contact.description': 'Entrez en contact avec notre équipe',
+    'contact.form_title': 'Formulaire de Contact',
+    'contact.first_name': 'Prénom',
+    'contact.last_name': 'Nom',
+    'contact.email': 'Adresse Email',
+    'contact.company': 'Entreprise',
+    'contact.subject': 'Sujet',
+    'contact.message': 'Message',
+    'contact.send': 'Envoyer',
+    'contact.success': 'Message envoyé avec succès',
+    
+    // Venue Page
+    'venue.title': 'Plan de l\'Événement',
+    'venue.description': 'Explorez la carte interactive pour localiser les stands',
+    'venue.how_to_use': 'Comment utiliser la carte',
+    'venue.step1_title': 'Parcourez la carte',
+    'venue.step1_desc': 'Faites défiler la carte pour voir tous les stands disponibles',
+    'venue.step2_title': 'Survolez un stand',
+    'venue.step2_desc': 'Passez votre souris sur un stand pour voir un aperçu',
+    'venue.step3_title': 'Cliquez pour plus',
+    'venue.step3_desc': 'Cliquez sur un stand pour accéder à la fiche complète',
   },
   
   en: {
@@ -403,6 +427,30 @@ export const allTranslations = {
     'exhibitor.visitor_interactions': 'Visitor Interactions',
     'exhibitor.booth_analytics': 'Booth Analytics',
     'exhibitor.my_products': 'My Products',
+    
+    // Contact Page
+    'contact.title': 'Contact Us',
+    'contact.description': 'Get in touch with our team',
+    'contact.form_title': 'Contact Form',
+    'contact.first_name': 'First Name',
+    'contact.last_name': 'Last Name',
+    'contact.email': 'Email Address',
+    'contact.company': 'Company',
+    'contact.subject': 'Subject',
+    'contact.message': 'Message',
+    'contact.send': 'Send',
+    'contact.success': 'Message sent successfully',
+    
+    // Venue Page
+    'venue.title': 'Event Map',
+    'venue.description': 'Explore the interactive map to locate exhibitor booths',
+    'venue.how_to_use': 'How to use the map',
+    'venue.step1_title': 'Browse the map',
+    'venue.step1_desc': 'Scroll through the map to see all available booths',
+    'venue.step2_title': 'Hover over a booth',
+    'venue.step2_desc': 'Hover your mouse over a booth to see a preview',
+    'venue.step3_title': 'Click for more',
+    'venue.step3_desc': 'Click on a booth to access the full exhibitor details',
   
   ar: {
     'pages.exhibitors.title': 'العارضون',
@@ -598,6 +646,30 @@ export const allTranslations = {
     'exhibitor.visitor_interactions': 'تفاعلات الزوار',
     'exhibitor.booth_analytics': 'تحليلات الكشك',
     'exhibitor.my_products': 'منتجاتي',
+    
+    // Contact Page
+    'contact.title': 'تواصل معنا',
+    'contact.description': 'ابقَ على اتصال مع فريقنا',
+    'contact.form_title': 'نموذج الاتصال',
+    'contact.first_name': 'الاسم الأول',
+    'contact.last_name': 'الاسم الأخير',
+    'contact.email': 'عنوان البريد الإلكتروني',
+    'contact.company': 'الشركة',
+    'contact.subject': 'الموضوع',
+    'contact.message': 'الرسالة',
+    'contact.send': 'إرسال',
+    'contact.success': 'تم إرسال الرسالة بنجاح',
+    
+    // Venue Page
+    'venue.title': 'خريطة الحدث',
+    'venue.description': 'استكشف الخريطة التفاعلية لتحديد موقع الأكشاك',
+    'venue.how_to_use': 'كيفية استخدام الخريطة',
+    'venue.step1_title': 'استعرض الخريطة',
+    'venue.step1_desc': 'مرر عبر الخريطة لرؤية جميع الأكشاك المتاحة',
+    'venue.step2_title': 'مرر فوق الكشك',
+    'venue.step2_desc': 'مرر الفأرة فوق الكشك لرؤية معاينة',
+    'venue.step3_title': 'اضغط لمزيد',
+    'venue.step3_desc': 'اضغط على الكشك للوصول إلى الملف الكامل',
   
   es: {
     'pages.exhibitors.title': 'Expositores',
@@ -793,4 +865,27 @@ export const allTranslations = {
     'exhibitor.visitor_interactions': 'Interacciones de Visitantes',
     'exhibitor.booth_analytics': 'Análisis del Puesto',
     'exhibitor.my_products': 'Mis Productos',
-};
+    
+    // Contact Page
+    'contact.title': 'Contacto',
+    'contact.description': 'Póngase en contacto con nuestro equipo',
+    'contact.form_title': 'Formulario de Contacto',
+    'contact.first_name': 'Nombre',
+    'contact.last_name': 'Apellido',
+    'contact.email': 'Correo Electrónico',
+    'contact.company': 'Empresa',
+    'contact.subject': 'Asunto',
+    'contact.message': 'Mensaje',
+    'contact.send': 'Enviar',
+    'contact.success': 'Mensaje enviado exitosamente',
+    
+    // Venue Page
+    'venue.title': 'Plan del Evento',
+    'venue.description': 'Explore el mapa interactivo para localizar los puestos',
+    'venue.how_to_use': 'Cómo usar el mapa',
+    'venue.step1_title': 'Recorrer el mapa',
+    'venue.step1_desc': 'Desplácese por el mapa para ver todos los puestos disponibles',
+    'venue.step2_title': 'Pasar sobre un puesto',
+    'venue.step2_desc': 'Pase el mouse sobre un puesto para ver una vista previa',
+    'venue.step3_title': 'Hacer clic para más',
+    'venue.step3_desc': 'Haga clic en un puesto para acceder a la ficha completa',

@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
+import { useTranslation } from '../hooks/useTranslation';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { toast } from 'sonner';
 import { SupabaseService } from '../services/supabaseService';
 
 export default function ContactPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -98,10 +100,10 @@ export default function ContactPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Contactez-nous
+            {t('contact.title')}
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Vous avez des questions sur SIPORTS 2026 ? Notre équipe est là pour vous aider.
+            {t('contact.description')}
           </p>
         </div>
 
@@ -109,13 +111,13 @@ export default function ContactPage() {
           {/* Contact Form */}
           <Card className="p-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-              Envoyez-nous un message
+              {t('contact.form_title')}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-                    Prénom *
+                    {t('contact.first_name')} *
                   </label>
                   <input
                     type="text"
