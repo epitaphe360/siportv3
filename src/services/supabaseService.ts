@@ -140,17 +140,20 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      // On récupère d'abord l'utilisateur
-      const { data: userData, error: userError } = await safeSupabase
+      // On récupère d'abord l'utilisateur - utiliser maybeSingle() au lieu de single()
+      // pour éviter l'erreur "Cannot coerce" quand 0 ou plusieurs résultats
+      const { data: usersData, error: userError } = await safeSupabase
         .from('users')
         .select('*')
         .eq('email', email)
-        .single();
+        .limit(1);
 
       if (userError) {
         console.error('❌ Erreur DB lors de la récupération utilisateur:', userError.message);
         throw new Error(`Utilisateur non trouvé: ${userError.message}`);
       }
+
+      const userData = usersData && usersData.length > 0 ? usersData[0] : null;
 
       if (!userData) {
         throw new Error('Aucun profil utilisateur trouvé pour cet email');

@@ -55,6 +55,24 @@ CREATE TABLE public.partner_profiles (
 
 CREATE INDEX idx_partner_profiles_user_id ON public.partner_profiles(user_id);
 
+DROP TABLE IF EXISTS public.visitor_profiles CASCADE;
+CREATE TABLE public.visitor_profiles (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL UNIQUE REFERENCES public.users(id) ON DELETE CASCADE,
+  first_name text,
+  last_name text,
+  company text,
+  position text,
+  phone text,
+  country text,
+  visitor_type text,
+  pass_type text,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+CREATE INDEX idx_visitor_profiles_user_id ON public.visitor_profiles(user_id);
+
 -- Ajouter la colonne stand_number à exhibitors si elle n'existe pas
 DO $$ 
 BEGIN
@@ -231,12 +249,15 @@ DECLARE
 BEGIN
   -- Clean up dependent tables to avoid foreign key violations during user cleanup
   -- We do this because deleting from auth.users triggers deletion in public.users
+  DELETE FROM daily_quotas;
+  DELETE FROM user_favorites;
   DELETE FROM products;
   DELETE FROM mini_sites;
   DELETE FROM news_articles;
   DELETE FROM events;
   DELETE FROM appointments;
   DELETE FROM messages;
+  DELETE FROM conversations;
   DELETE FROM connections;
   DELETE FROM exhibitors;
   DELETE FROM exhibitor_profiles;
@@ -2342,8 +2363,8 @@ BEGIN
 
   -- Insert 30 Events
   FOR i IN 1..30 LOOP
-    INSERT INTO public.events (id, title, description, event_type, start_date, end_date, location, created_at)
-    VALUES (gen_random_uuid(), 'Conférence ' || i, 'Description de la conférence ' || i, 'conference', NOW() + (i || ' hours')::interval, NOW() + (i + 1 || ' hours')::interval, 'Salle ' || (i % 5 + 1), NOW());
+    INSERT INTO public.events (id, title, description, event_type, type, category, event_date, start_time, end_time, start_date, end_date, location, created_at)
+    VALUES (gen_random_uuid(), 'Conférence ' || i, 'Description de la conférence ' || i, 'conference', 'conference', 'Innovation', NOW() + (i || ' hours')::interval, '09:00:00', '10:00:00', NOW() + (i || ' hours')::interval, NOW() + (i + 1 || ' hours')::interval, 'Salle ' || (i % 5 + 1), NOW());
   END LOOP;
 END $$;
 

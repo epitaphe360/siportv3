@@ -1,7 +1,7 @@
 // Usage: SUPABASE_URL=https://xyz.supabase.co SUPABASE_KEY=your_key node scripts/check_supabase_tables.js
 // This script performs simple checks on a few tables via Supabase REST API.
 
-const TABLES = ['users', 'connections', 'user_favorites', 'favorites', 'registration_requests'];
+const TABLES = ['users', 'connections', 'user_favorites', 'favorites', 'registration_requests', 'partners', 'exhibitors'];
 
 async function checkTable(supabaseUrl, supabaseKey, table) {
   const url = `${supabaseUrl.replace(/\/$/, '')}/rest/v1/${table}?select=*&limit=1`;
