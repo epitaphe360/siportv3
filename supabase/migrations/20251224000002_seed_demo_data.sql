@@ -215,6 +215,20 @@ BEGIN
     VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
   END IF;
 
+  v_user_id := '00000000-0000-0000-0000-000000000011';
+  v_email := 'partner.platinium@example.com';
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
+    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
+  END IF;
+
+  v_user_id := '00000000-0000-0000-0000-000000000012';
+  v_email := 'partner.museum@example.com';
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = v_email) THEN
+    INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+    VALUES (v_user_id, v_email, crypt(v_password, gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated');
+  END IF;
+
   -- Visitors
   v_user_id := '00000000-0000-0000-0000-000000000007';
   v_email := 'jean.dupont@example.com';
@@ -318,6 +332,24 @@ VALUES
     'partner',
     'active',
     '{"company": "Silver Tech Group", "tier": "silver", "avatar": "https://ui-avatars.com/api/?name=Silver+Tech"}',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000011',
+    'partner.platinium@example.com',
+    'Platinium Global Corp',
+    'partner',
+    'active',
+    '{"company": "Platinium Global Corp", "tier": "platinium", "avatar": "https://ui-avatars.com/api/?name=Platinium+Global"}',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000012',
+    'partner.museum@example.com',
+    'Museum Heritage',
+    'partner',
+    'active',
+    '{"company": "Museum Heritage", "tier": "museum", "avatar": "https://ui-avatars.com/api/?name=Museum+Heritage"}',
     NOW()
   )
 ON CONFLICT (email) DO UPDATE SET
@@ -451,6 +483,32 @@ VALUES
     'https://ui-avatars.com/api/?name=Silver+Tech&size=200',
     'France',
     'silver',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000107',
+    '00000000-0000-0000-0000-000000000011',
+    'Platinium Global Corp',
+    'Sarah Connor',
+    'contact@platinium-global.example.com',
+    'Leader mondial de l''industrie, partenaire exclusif Platinium. Innovation et excellence.',
+    'https://platinium-global.example.com',
+    'https://ui-avatars.com/api/?name=Platinium+Global&size=200',
+    'USA',
+    'platinium',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000108',
+    '00000000-0000-0000-0000-000000000012',
+    'Museum Heritage',
+    'Jean-Pierre Archives',
+    'contact@museum-heritage.example.com',
+    'Préservation du patrimoine maritime et portuaire. Partenaire culturel.',
+    'https://museum-heritage.example.com',
+    'https://ui-avatars.com/api/?name=Museum+Heritage&size=200',
+    'France',
+    'museum',
     NOW()
   )
 ON CONFLICT (id) DO UPDATE SET
@@ -909,8 +967,24 @@ VALUES
     3,
     0,
     true,
-    'Stand A12 - Hall Innovation'
-  );
+    'Stand A12 - Hall Innovation',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000512',
+    '00000000-0000-0000-0000-000000000102',
+    CURRENT_DATE + INTERVAL '1 day',
+    '14:00:00',
+    '14:30:00',
+    30,
+    'virtual',
+    5,
+    1,
+    true,
+    'Salle VR - Démo en ligne',
+    NOW()
+  )
+ON CONFLICT (id) DO NOTHING;
 
 -- =====================================================
 -- APPOINTMENTS (Rendez-vous)
@@ -953,170 +1027,14 @@ BEGIN
     EXCEPTION WHEN duplicate_column THEN NULL; END;
 END $$;
 
-INSERT INTO appointments (id, exhibitor_id, visitor_id, time_slot_id, status, notes, meeting_type, created_at)
-VALUES
-  -- Rendez-vous AUJOURD''HUI pour Jean Dupont (VIP Visitor)
-  (
-    '00000000-0000-0000-0000-000000000601',
-    '00000000-0000-0000-0000-000000000102',
-    '00000000-0000-0000-0000-000000000007',
-    '00000000-0000-0000-0000-000000000501',
-    'confirmed',
-    'Intéressé par la solution VR pour notre prochain salon. Discussion approfondie prévue.',
-    'in-person',
-    NOW()
-  ),
-  (
-    '00000000-0000-0000-0000-000000000610',
-    '00000000-0000-0000-0000-000000000102',
-    '00000000-0000-0000-0000-000000000007',
-    '00000000-0000-0000-0000-000000000502',
-    'confirmed',
-    'Suite de notre discussion sur l''implémentation VR',
-    'in-person',
-    NOW()
-  ),
-  -- Rendez-vous AUJOURD'HUI pour Marie Martin (Premium Visitor)
-  (
-    '00000000-0000-0000-0000-000000000602',
-    '00000000-0000-0000-0000-000000000102',
-    '00000000-0000-0000-0000-000000000008',
-    '00000000-0000-0000-0000-000000000503',
-    'confirmed',
-    'Démo de la plateforme VR complète avec cas d''usage agricole',
-    'virtual',
-    NOW()
-  ),
-  (
-    '00000000-0000-0000-0000-000000000603',
-    '00000000-0000-0000-0000-000000000103',
-    '00000000-0000-0000-0000-000000000008',
-    '00000000-0000-0000-0000-000000000504',
-    'confirmed',
-    'Discussion sur les solutions IoT pour exploitation agricole - capteurs et automatisation',
-    'in-person',
-    NOW()
-  ),
-  (
-    '00000000-0000-0000-0000-000000000611',
-    '00000000-0000-0000-0000-000000000103',
-    '00000000-0000-0000-0000-000000000008',
-    '00000000-0000-0000-0000-000000000513',
-    'confirmed',
-    'Démonstration des capteurs IoT en conditions réelles',
-    'in-person',
-    NOW()
-  ),
-  -- Rendez-vous AUJOURD'HUI pour Pierre Dubois (Basic Visitor)
-  (
-    '00000000-0000-0000-0000-000000000604',
-    '00000000-0000-0000-0000-000000000104',
-    '00000000-0000-0000-0000-000000000009',
-    '00000000-0000-0000-0000-000000000506',
-    'confirmed',
-    'Présentation collection exclusive automne-hiver 2025',
-    'in-person',
-    NOW()
-  ),
-  (
-    '00000000-0000-0000-0000-000000000612',
-    '00000000-0000-0000-0000-000000000104',
-    '00000000-0000-0000-0000-000000000009',
-    '00000000-0000-0000-0000-000000000517',
-    'confirmed',
-    'Suite - Sélection de pièces sur-mesure',
-    'in-person',
-    NOW()
-  ),
-  -- Rendez-vous AUJOURD'HUI pour Sophie Bernard (Free Visitor)
-  (
-    '00000000-0000-0000-0000-000000000613',
-    '00000000-0000-0000-0000-000000000102',
-    '00000000-0000-0000-0000-000000000010',
-    '00000000-0000-0000-0000-000000000509',
-    'confirmed',
-    'Découverte des technologies VR pour étudiants',
-    'virtual',
-    NOW()
-  ),
-  -- Rendez-vous DEMAIN pour Jean Dupont
-  (
-    '00000000-0000-0000-0000-000000000614',
-    '00000000-0000-0000-0000-000000000102',
-    '00000000-0000-0000-0000-000000000007',
-    '00000000-0000-0000-0000-000000000510',
-    'confirmed',
-    'Point final sur le projet VR - prise de décision',
-    'in-person',
-    NOW()
-  ),
-  -- Rendez-vous DEMAIN pour Marie Martin
-  (
-    '00000000-0000-0000-0000-000000000615',
-    '00000000-0000-0000-0000-000000000103',
-    '00000000-0000-0000-0000-000000000008',
-    '00000000-0000-0000-0000-000000000505',
-    'confirmed',
-    'Analyse des données IoT collectées - rapport personnalisé',
-    'in-person',
-    NOW()
-  ),
-  (
-    '00000000-0000-0000-0000-000000000616',
-    '00000000-0000-0000-0000-000000000102',
-    '00000000-0000-0000-0000-000000000008',
-    '00000000-0000-0000-0000-000000000512',
-    'pending',
-    'Webinaire complet sur la transformation digitale',
-    'virtual',
-    NOW()
-  ),
-  -- Rendez-vous DEMAIN pour Pierre Dubois
-  (
-    '00000000-0000-0000-0000-000000000617',
-    '00000000-0000-0000-0000-000000000104',
-    '00000000-0000-0000-0000-000000000009',
-    '00000000-0000-0000-0000-000000000507',
-    'pending',
-    'Essayage final et validation commande',
-    'in-person',
-    NOW()
-  ),
-  -- Rendez-vous passé (hier) - pour historique
-  (
-    '00000000-0000-0000-0000-000000000605',
-    '00000000-0000-0000-0000-000000000102',
-    '00000000-0000-0000-0000-000000000009',
-    NULL,
-    'completed',
-    'Première prise de contact - très intéressant',
-    'in-person',
-    NOW() - INTERVAL '1 day'
-  ),
-  (
-    '00000000-0000-0000-0000-000000000606',
-    '00000000-0000-0000-0000-000000000103',
-    '00000000-0000-0000-0000-000000000007',
-    NULL,
-    'completed',
-    'Présentation des solutions AgriInnov - excellente session',
-    'in-person',
-    NOW() - INTERVAL '2 days'
-  ),
-  -- Rendez-vous annulé
-  (
-    '00000000-0000-0000-0000-000000000607',
-    '00000000-0000-0000-0000-000000000104',
-    '00000000-0000-0000-0000-000000000010',
-    NULL,
-    'cancelled',
-    'Annulé à la demande du visiteur',
-    'in-person',
-    NOW() - INTERVAL '1 day'
-  )
-ON CONFLICT (id) DO NOTHING;
+-- Disable trigger to allow seeding data that might violate quotas (e.g. free user with confirmed appointment)
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trigger_check_visitor_quota') THEN
+    ALTER TABLE public.appointments DISABLE TRIGGER trigger_check_visitor_quota;
+  END IF;
+END $$;
 
--- =====================================================
 -- 8.5. INSERT MORE TIME SLOTS (AgriInnov & ModeDesign)
 -- =====================================================
 INSERT INTO time_slots (id, exhibitor_id, slot_date, start_time, end_time, duration, type, max_bookings, current_bookings, available, location, created_at)
@@ -1295,6 +1213,182 @@ VALUES
     NOW()
   )
 ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO appointments (id, exhibitor_id, visitor_id, time_slot_id, status, notes, meeting_type, created_at)
+VALUES
+  -- Rendez-vous AUJOURD''HUI pour Jean Dupont (VIP Visitor)
+  (
+    '00000000-0000-0000-0000-000000000601',
+    '00000000-0000-0000-0000-000000000102',
+    '00000000-0000-0000-0000-000000000007',
+    '00000000-0000-0000-0000-000000000501',
+    'confirmed',
+    'Intéressé par la solution VR pour notre prochain salon. Discussion approfondie prévue.',
+    'in-person',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000610',
+    '00000000-0000-0000-0000-000000000102',
+    '00000000-0000-0000-0000-000000000007',
+    '00000000-0000-0000-0000-000000000502',
+    'confirmed',
+    'Suite de notre discussion sur l''implémentation VR',
+    'in-person',
+    NOW()
+  ),
+  -- Rendez-vous AUJOURD'HUI pour Marie Martin (Premium Visitor)
+  (
+    '00000000-0000-0000-0000-000000000602',
+    '00000000-0000-0000-0000-000000000102',
+    '00000000-0000-0000-0000-000000000008',
+    '00000000-0000-0000-0000-000000000503',
+    'confirmed',
+    'Démo de la plateforme VR complète avec cas d''usage agricole',
+    'virtual',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000603',
+    '00000000-0000-0000-0000-000000000103',
+    '00000000-0000-0000-0000-000000000008',
+    '00000000-0000-0000-0000-000000000504',
+    'confirmed',
+    'Discussion sur les solutions IoT pour exploitation agricole - capteurs et automatisation',
+    'in-person',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000611',
+    '00000000-0000-0000-0000-000000000103',
+    '00000000-0000-0000-0000-000000000008',
+    '00000000-0000-0000-0000-000000000513',
+    'confirmed',
+    'Démonstration des capteurs IoT en conditions réelles',
+    'in-person',
+    NOW()
+  ),
+  -- Rendez-vous AUJOURD'HUI pour Pierre Dubois (Basic Visitor)
+  (
+    '00000000-0000-0000-0000-000000000604',
+    '00000000-0000-0000-0000-000000000104',
+    '00000000-0000-0000-0000-000000000009',
+    '00000000-0000-0000-0000-000000000506',
+    'confirmed',
+    'Présentation collection exclusive automne-hiver 2025',
+    'in-person',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000612',
+    '00000000-0000-0000-0000-000000000104',
+    '00000000-0000-0000-0000-000000000009',
+    '00000000-0000-0000-0000-000000000517',
+    'confirmed',
+    'Suite - Sélection de pièces sur-mesure',
+    'in-person',
+    NOW()
+  ),
+  -- Rendez-vous AUJOURD'HUI pour Sophie Bernard (Free Visitor)
+  (
+    '00000000-0000-0000-0000-000000000613',
+    '00000000-0000-0000-0000-000000000102',
+    '00000000-0000-0000-0000-000000000010',
+    '00000000-0000-0000-0000-000000000509',
+    'confirmed',
+    'Découverte des technologies VR pour étudiants',
+    'virtual',
+    NOW()
+  ),
+  -- Rendez-vous DEMAIN pour Jean Dupont
+  (
+    '00000000-0000-0000-0000-000000000614',
+    '00000000-0000-0000-0000-000000000102',
+    '00000000-0000-0000-0000-000000000007',
+    '00000000-0000-0000-0000-000000000510',
+    'confirmed',
+    'Point final sur le projet VR - prise de décision',
+    'in-person',
+    NOW()
+  ),
+  -- Rendez-vous DEMAIN pour Marie Martin
+  (
+    '00000000-0000-0000-0000-000000000615',
+    '00000000-0000-0000-0000-000000000103',
+    '00000000-0000-0000-0000-000000000008',
+    '00000000-0000-0000-0000-000000000505',
+    'confirmed',
+    'Analyse des données IoT collectées - rapport personnalisé',
+    'in-person',
+    NOW()
+  ),
+  (
+    '00000000-0000-0000-0000-000000000616',
+    '00000000-0000-0000-0000-000000000102',
+    '00000000-0000-0000-0000-000000000008',
+    '00000000-0000-0000-0000-000000000512',
+    'pending',
+    'Webinaire complet sur la transformation digitale',
+    'virtual',
+    NOW()
+  ),
+  -- Rendez-vous DEMAIN pour Pierre Dubois
+  (
+    '00000000-0000-0000-0000-000000000617',
+    '00000000-0000-0000-0000-000000000104',
+    '00000000-0000-0000-0000-000000000009',
+    '00000000-0000-0000-0000-000000000507',
+    'pending',
+    'Essayage final et validation commande',
+    'in-person',
+    NOW()
+  ),
+  -- Rendez-vous passé (hier) - pour historique
+  (
+    '00000000-0000-0000-0000-000000000605',
+    '00000000-0000-0000-0000-000000000102',
+    '00000000-0000-0000-0000-000000000009',
+    NULL,
+    'completed',
+    'Première prise de contact - très intéressant',
+    'in-person',
+    NOW() - INTERVAL '1 day'
+  ),
+  (
+    '00000000-0000-0000-0000-000000000606',
+    '00000000-0000-0000-0000-000000000103',
+    '00000000-0000-0000-0000-000000000007',
+    NULL,
+    'completed',
+    'Présentation des solutions AgriInnov - excellente session',
+    'in-person',
+    NOW() - INTERVAL '2 days'
+  ),
+  -- Rendez-vous annulé
+  (
+    '00000000-0000-0000-0000-000000000607',
+    '00000000-0000-0000-0000-000000000104',
+    '00000000-0000-0000-0000-000000000010',
+    NULL,
+    'cancelled',
+    'Annulé à la demande du visiteur',
+    'in-person',
+    NOW() - INTERVAL '1 day'
+  )
+ON CONFLICT (id) DO NOTHING;
+
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'trigger_check_visitor_quota') THEN
+    ALTER TABLE public.appointments ENABLE TRIGGER trigger_check_visitor_quota;
+  END IF;
+END $$;
+
+-- =====================================================
+-- 8.5. INSERT MORE TIME SLOTS (AgriInnov & ModeDesign) - MOVED UP BEFORE APPOINTMENTS
+-- =====================================================
+-- (Moved to ensure FK constraints are satisfied)
+
 
 -- =====================================================
 -- 10. INSERT CONNECTIONS (Visibles dans calendriers via rendez-vous)

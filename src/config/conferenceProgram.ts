@@ -22,37 +22,6 @@ export const CONFERENCE_PROGRAM: DayProgram[] = [
     dayNumber: 1,
     sessions: [
       {
-        time: '09:00 – 10:30',
-        title: 'Quelle stratégie pour renforcer l\'inclusion et la formation dans le maritime africain ?',
-        type: 'session'
-      },
-      {
-        time: '10:30 – 12:00',
-        title: 'Leadership Féminin au cœur de la transformation maritime en partenariat avec (RFPMP-AOC)',
-        type: 'session'
-      },
-      {
-        time: '12:00 – 12:30',
-        title: 'Cérémonie de clôture',
-        type: 'ceremony'
-      },
-      {
-        time: '12:30 – 15:00',
-        title: 'Déjeuner de réseautage',
-        type: 'lunch'
-      },
-      {
-        time: '15:00',
-        title: 'Visite au port de Jorf Lasfar',
-        type: 'visit'
-      }
-    ]
-  },
-  {
-    date: '2 avril 2026',
-    dayNumber: 2,
-    sessions: [
-      {
         time: '10:00 - 12:30',
         title: 'Allocutions institutionnelles (Ministres,...)',
         type: 'opening'
@@ -85,8 +54,8 @@ export const CONFERENCE_PROGRAM: DayProgram[] = [
     ]
   },
   {
-    date: '3 avril 2026',
-    dayNumber: 3,
+    date: '2 avril 2026',
+    dayNumber: 2,
     sessions: [
       {
         time: '09:00 – 10:30',
@@ -112,6 +81,37 @@ export const CONFERENCE_PROGRAM: DayProgram[] = [
         time: '14:00 – 15:30',
         title: 'Ports du futur : entre digitalisation, cybersécurité et compétitivité',
         type: 'session'
+      }
+    ]
+  },
+  {
+    date: '3 avril 2026',
+    dayNumber: 3,
+    sessions: [
+      {
+        time: '09:00 – 10:30',
+        title: 'Quelle stratégie pour renforcer l\'inclusion et la formation dans le maritime africain ?',
+        type: 'session'
+      },
+      {
+        time: '10:30 – 12:00',
+        title: 'Leadership Féminin au cœur de la transformation maritime en partenariat avec (RFPMP-AOC)',
+        type: 'session'
+      },
+      {
+        time: '12:00 – 12:30',
+        title: 'Cérémonie de clôture',
+        type: 'ceremony'
+      },
+      {
+        time: '12:30 – 15:00',
+        title: 'Déjeuner de réseautage',
+        type: 'lunch'
+      },
+      {
+        time: '15:00',
+        title: 'Visite au port de Jorf Lasfar',
+        type: 'visit'
       }
     ]
   }
