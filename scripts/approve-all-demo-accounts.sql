@@ -1,12 +1,14 @@
 -- =====================================================
--- APPROUVER TOUS LES COMPTES DE DÉMONSTRATION
+-- ACTIVER TOUS LES COMPTES DE DÉMONSTRATION
 -- À exécuter dans Supabase SQL Editor
 -- =====================================================
+-- IMPORTANT: Le code authStore.ts attend status = 'active' pour autoriser la connexion
+-- (pas 'approved' qui est le statut de validation admin)
 
--- Approuver tous les comptes de test existants
-UPDATE public.users 
-SET 
-  status = 'approved',
+-- Activer tous les comptes de test existants
+UPDATE public.users
+SET
+  status = 'active',
   is_active = true
 WHERE email IN (
   'admin@siport.com',
