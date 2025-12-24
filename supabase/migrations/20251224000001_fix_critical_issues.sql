@@ -157,7 +157,8 @@ BEGIN
     );
   END IF;
 
-  -- Insert appointment with status 'pending' (awaiting exhibitor confirmation)
+  -- Insert appointment avec statut PENDING (demande visiteur)
+  -- L'exposant/partenaire devra confirmer le RDV ensuite
   INSERT INTO appointments (
     time_slot_id,
     visitor_id,
@@ -171,7 +172,7 @@ BEGIN
     p_visitor_id,
     p_exhibitor_id,
     p_notes,
-    'pending',  -- IMPORTANT: Demande en attente de confirmation exposant
+    'pending',  -- Statut initial: en attente de confirmation exposant/partenaire
     p_meeting_type,
     NOW()
   )
@@ -381,22 +382,148 @@ BEGIN
 END $$;
 
 -- =====================================================
--- 10. SEED DEMO DATA
+-- 10. MEDIA_CONTENTS TABLE + DEMO DATA
 -- =====================================================
 
--- Insert demo exhibitors if table is empty or has few entries
-DO $$
-DECLARE
-  v_exhibitor_count INTEGER;
-BEGIN
-  SELECT COUNT(*) INTO v_exhibitor_count FROM exhibitors;
+CREATE TABLE IF NOT EXISTS media_contents (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  type text NOT NULL CHECK (type IN ('webinar', 'capsule_inside', 'podcast', 'live_studio', 'best_moments', 'testimonial')),
+  title text NOT NULL,
+  description text,
+  thumbnail_url text,
+  video_url text,
+  audio_url text,
+  duration integer, -- en secondes
+  published_at timestamptz,
+  status text DEFAULT 'published' CHECK (status IN ('draft', 'published', 'archived')),
 
-  IF v_exhibitor_count < 3 THEN
-    -- Demo exhibitors will be created via the application
-    -- This just ensures the structure is ready
-    RAISE NOTICE 'Exhibitors table has % entries. Demo data should be added via application.', v_exhibitor_count;
-  END IF;
-END $$;
+  -- Métriques
+  views_count integer DEFAULT 0,
+  likes_count integer DEFAULT 0,
+  shares_count integer DEFAULT 0,
+
+  -- Sponsor/Participants
+  sponsor_partner_id uuid,
+  featured_exhibitors uuid[] DEFAULT '{}',
+  speakers jsonb DEFAULT '[]',
+
+  -- Contenu
+  transcript text,
+  tags text[] DEFAULT '{}',
+  category text,
+
+  -- SEO
+  seo_title text,
+  seo_description text,
+  seo_keywords text[] DEFAULT '{}',
+
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE media_contents ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Anyone can view published media" ON media_contents;
+CREATE POLICY "Anyone can view published media" ON media_contents
+  FOR SELECT USING (status = 'published' OR auth.uid() IS NOT NULL);
+
+DROP POLICY IF EXISTS "Admin can manage media" ON media_contents;
+CREATE POLICY "Admin can manage media" ON media_contents
+  FOR ALL USING (
+    EXISTS (SELECT 1 FROM users WHERE users.id = auth.uid() AND users.type = 'admin')
+  );
+
+CREATE INDEX IF NOT EXISTS idx_media_contents_type ON media_contents(type);
+CREATE INDEX IF NOT EXISTS idx_media_contents_status ON media_contents(status);
+CREATE INDEX IF NOT EXISTS idx_media_contents_published ON media_contents(published_at);
+
+-- Insert demo media content
+INSERT INTO media_contents (type, title, description, thumbnail_url, duration, status, views_count, likes_count, speakers, tags, category, published_at)
+VALUES
+  -- Webinaires
+  ('webinar', 'L''avenir du sport digital en Algérie',
+   'Découvrez les tendances et innovations qui transforment l''industrie sportive algérienne. Un webinaire animé par des experts du secteur.',
+   'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800',
+   3600, 'published', 1250, 89,
+   '[{"name": "Karim Benzarti", "title": "CEO", "company": "SportTech DZ"}, {"name": "Sarah Amrani", "title": "Directrice Marketing", "company": "Algérie Sports"}]'::jsonb,
+   ARRAY['sport', 'digital', 'innovation'], 'Technologie', NOW() - INTERVAL '7 days'),
+
+  ('webinar', 'Équipements sportifs: normes et qualité',
+   'Analyse approfondie des normes internationales pour les équipements sportifs et leur application en Algérie.',
+   'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800',
+   2700, 'published', 890, 67,
+   '[{"name": "Mohamed Larbi", "title": "Expert Qualité", "company": "IANOR"}]'::jsonb,
+   ARRAY['équipement', 'qualité', 'normes'], 'Réglementation', NOW() - INTERVAL '14 days'),
+
+  ('webinar', 'Financement des projets sportifs',
+   'Comment financer votre projet sportif ? Subventions, investisseurs, crowdfunding - toutes les options expliquées.',
+   'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800',
+   2400, 'published', 720, 45,
+   '[{"name": "Amine Djebbar", "title": "Consultant Finance", "company": "Sport Invest"}]'::jsonb,
+   ARRAY['finance', 'investissement', 'startup'], 'Finance', NOW() - INTERVAL '21 days'),
+
+  -- Podcasts
+  ('podcast', 'SIPORT Talks #1: L''écosystème sportif algérien',
+   'Premier épisode de notre podcast dédié à l''industrie du sport. Invité spécial: le président de la Fédération Algérienne.',
+   'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=800',
+   1800, 'published', 2100, 156,
+   '[{"name": "Farid Bensalem", "title": "Journaliste Sportif", "company": "SIPORTS"}]'::jsonb,
+   ARRAY['podcast', 'interview', 'sport'], 'Interview', NOW() - INTERVAL '5 days'),
+
+  ('podcast', 'SIPORT Talks #2: Femmes et Sport',
+   'Focus sur les femmes dans le sport algérien. Défis, opportunités et success stories.',
+   'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800',
+   2100, 'published', 1850, 203,
+   '[{"name": "Yasmine Khelifi", "title": "Athlète", "company": "Équipe Nationale"}]'::jsonb,
+   ARRAY['femmes', 'sport', 'égalité'], 'Société', NOW() - INTERVAL '12 days'),
+
+  -- Capsules Inside
+  ('capsule_inside', 'Inside SIPORT: Coulisses du salon',
+   'Découvrez les coulisses de l''organisation du plus grand salon sportif d''Algérie.',
+   'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800',
+   300, 'published', 3500, 245,
+   '[]'::jsonb,
+   ARRAY['coulisses', 'organisation', 'salon'], 'Behind The Scenes', NOW() - INTERVAL '3 days'),
+
+  ('capsule_inside', 'Inside SIPORT: Préparation des stands',
+   'Comment les exposants préparent leurs stands pour impressionner les visiteurs.',
+   'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800',
+   240, 'published', 2800, 178,
+   '[]'::jsonb,
+   ARRAY['stands', 'exposants', 'préparation'], 'Behind The Scenes', NOW() - INTERVAL '2 days'),
+
+  -- Live Studio
+  ('live_studio', 'Meet The Leaders: Interview CEO SportTech',
+   'Interview exclusive avec le CEO de SportTech DZ sur l''avenir de la technologie dans le sport.',
+   'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800',
+   1200, 'published', 1560, 98,
+   '[{"name": "Karim Benzarti", "title": "CEO", "company": "SportTech DZ"}]'::jsonb,
+   ARRAY['interview', 'leader', 'technologie'], 'Leadership', NOW() - INTERVAL '8 days'),
+
+  -- Best Moments
+  ('best_moments', 'SIPORTS 2025: Les moments forts',
+   'Revivez les meilleurs moments de l''édition 2025 du salon SIPORTS.',
+   'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800',
+   420, 'published', 4200, 312,
+   '[]'::jsonb,
+   ARRAY['highlights', 'salon', '2025'], 'Événement', NOW() - INTERVAL '1 day'),
+
+  -- Testimonials
+  ('testimonial', 'Témoignage: Exposant satisfait',
+   'Ahmed Kaci, exposant depuis 3 éditions, partage son expérience au salon SIPORTS.',
+   'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800',
+   180, 'published', 980, 67,
+   '[{"name": "Ahmed Kaci", "title": "Directeur Commercial", "company": "Équipements Pro DZ"}]'::jsonb,
+   ARRAY['témoignage', 'exposant', 'satisfaction'], 'Témoignage', NOW() - INTERVAL '10 days'),
+
+  ('testimonial', 'Témoignage: Visiteur VIP',
+   'Retour d''expérience d''un visiteur VIP sur les avantages du pass premium.',
+   'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800',
+   150, 'published', 750, 45,
+   '[{"name": "Mehdi Belkacem", "title": "Acheteur", "company": "Groupe Sportif Oran"}]'::jsonb,
+   ARRAY['témoignage', 'visiteur', 'VIP'], 'Témoignage', NOW() - INTERVAL '6 days')
+
+ON CONFLICT DO NOTHING;
 
 -- =====================================================
 -- 11. GRANT PERMISSIONS

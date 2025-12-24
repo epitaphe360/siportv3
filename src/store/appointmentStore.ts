@@ -377,13 +377,13 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     }
 
     // Success! Update local state with server data
-    // STATUS: 'pending' - Le RDV est en attente de confirmation par l'exposant
+    // STATUS: 'pending' - Le RDV est en attente de confirmation par l'exposant/partenaire
     const newAppointment: Appointment = {
       id: data.appointment_id,
       exhibitorId: exhibitorIdForSlot,
       visitorId,
       timeSlotId,
-      status: 'pending', // IMPORTANT: En attente de confirmation exposant
+      status: 'pending', // En attente de confirmation par l'exposant/partenaire
       message,
       createdAt: new Date(),
       meetingType: 'in-person'

@@ -230,7 +230,8 @@ const App = () => {
             <Route path={ROUTES.BADGE} element={<ProtectedRoute><BadgePage /></ProtectedRoute>} />
             <Route path={ROUTES.BADGE_DIGITAL} element={<ProtectedRoute><DigitalBadge /></ProtectedRoute>} />
             <Route path={ROUTES.BADGE_SCANNER} element={<ProtectedRoute><BadgeScannerPage /></ProtectedRoute>} />
-            <Route path={ROUTES.SECURITY_SCANNER} element={<ProtectedRoute requiredRole="security"><QRScanner /></ProtectedRoute>} />
+            {/* FIXED: Permettre aux admins d'accéder au scanner QR (pas seulement 'security') */}
+            <Route path={ROUTES.SECURITY_SCANNER} element={<ProtectedRoute requiredRole={['admin', 'exhibitor', 'partner']}><QRScanner /></ProtectedRoute>} />
             <Route path={ROUTES.PARTNER_UPGRADE} element={<ProtectedRoute requiredRole="partner"><PartnerUpgradePage /></ProtectedRoute>} />
             <Route path={ROUTES.PARTNER_PAYMENT_SELECTION} element={<ProtectedRoute requiredRole="partner"><PartnerPaymentSelectionPage /></ProtectedRoute>} />
             <Route path={ROUTES.PARTNER_BANK_TRANSFER} element={<ProtectedRoute requiredRole="partner"><PartnerBankTransferPage /></ProtectedRoute>} />
