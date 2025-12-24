@@ -114,13 +114,41 @@ CREATE TABLE IF NOT EXISTS events (
 -- Ajouter la colonne event_type à events si elle n'existe pas
 DO $$ 
 BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_schema = 'public' 
-    AND table_name = 'events' 
-    AND column_name = 'event_type'
-  ) THEN
+  -- event_type
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'events' AND column_name = 'event_type') THEN
     ALTER TABLE public.events ADD COLUMN event_type text DEFAULT 'conference';
+  END IF;
+  -- start_date
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'events' AND column_name = 'start_date') THEN
+    ALTER TABLE public.events ADD COLUMN start_date timestamptz DEFAULT now();
+  END IF;
+  -- end_date
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'events' AND column_name = 'end_date') THEN
+    ALTER TABLE public.events ADD COLUMN end_date timestamptz DEFAULT now();
+  END IF;
+  -- location
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'events' AND column_name = 'location') THEN
+    ALTER TABLE public.events ADD COLUMN location text;
+  END IF;
+  -- pavilion_id
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'events' AND column_name = 'pavilion_id') THEN
+    ALTER TABLE public.events ADD COLUMN pavilion_id uuid;
+  END IF;
+  -- organizer_id
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'events' AND column_name = 'organizer_id') THEN
+    ALTER TABLE public.events ADD COLUMN organizer_id uuid;
+  END IF;
+  -- capacity
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'events' AND column_name = 'capacity') THEN
+    ALTER TABLE public.events ADD COLUMN capacity integer;
+  END IF;
+  -- registered
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'events' AND column_name = 'registered') THEN
+    ALTER TABLE public.events ADD COLUMN registered integer DEFAULT 0;
+  END IF;
+  -- is_featured
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'events' AND column_name = 'is_featured') THEN
+    ALTER TABLE public.events ADD COLUMN is_featured boolean DEFAULT false;
   END IF;
 END $$;
 
