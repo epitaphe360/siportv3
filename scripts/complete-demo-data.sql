@@ -43,11 +43,12 @@
 -- =====================================================
 
 -- ADMIN
+-- IMPORTANT: Le code authStore.ts attend status = 'active' pour autoriser la connexion
 UPDATE public.users SET
   name = 'Administrateur SIPORT',
   role = 'admin',
   type = 'admin',
-  status = 'approved',
+  status = 'active',
   is_active = true
 WHERE email = 'admin@siport.com';
 
@@ -57,7 +58,7 @@ UPDATE public.users SET
   role = 'visitor',
   type = 'visitor',
   visitor_level = 'free',
-  status = 'approved',
+  status = 'active',
   is_active = true
 WHERE email = 'visitor-free@test.siport.com';
 
@@ -66,7 +67,7 @@ UPDATE public.users SET
   role = 'visitor',
   type = 'visitor',
   visitor_level = 'premium',
-  status = 'approved',
+  status = 'active',
   is_active = true
 WHERE email = 'visitor-vip@test.siport.com';
 
@@ -76,7 +77,7 @@ UPDATE public.users SET
   role = 'partner',
   type = 'partner',
   partner_tier = 'museum',
-  status = 'approved',
+  status = 'active',
   is_active = true
 WHERE email = 'partner-museum@test.siport.com';
 
@@ -85,7 +86,7 @@ UPDATE public.users SET
   role = 'partner',
   type = 'partner',
   partner_tier = 'silver',
-  status = 'approved',
+  status = 'active',
   is_active = true
 WHERE email = 'partner-silver@test.siport.com';
 
@@ -94,7 +95,7 @@ UPDATE public.users SET
   role = 'partner',
   type = 'partner',
   partner_tier = 'gold',
-  status = 'approved',
+  status = 'active',
   is_active = true
 WHERE email = 'partner-gold@test.siport.com';
 
@@ -103,7 +104,7 @@ UPDATE public.users SET
   role = 'partner',
   type = 'partner',
   partner_tier = 'platinium',
-  status = 'approved',
+  status = 'active',
   is_active = true
 WHERE email = 'partner-platinium@test.siport.com';
 
@@ -112,7 +113,7 @@ UPDATE public.users SET
   name = 'Exposant Basic 9m² Demo',
   role = 'exhibitor',
   type = 'exhibitor',
-  status = 'approved',
+  status = 'active',
   is_active = true
 WHERE email = 'exhibitor-9m@test.siport.com';
 
@@ -120,7 +121,7 @@ UPDATE public.users SET
   name = 'Exposant Standard 18m² Demo',
   role = 'exhibitor',
   type = 'exhibitor',
-  status = 'approved',
+  status = 'active',
   is_active = true
 WHERE email = 'exhibitor-18m@test.siport.com';
 
@@ -128,7 +129,7 @@ UPDATE public.users SET
   name = 'Exposant Premium 36m² Demo',
   role = 'exhibitor',
   type = 'exhibitor',
-  status = 'approved',
+  status = 'active',
   is_active = true
 WHERE email = 'exhibitor-36m@test.siport.com';
 
@@ -136,7 +137,7 @@ UPDATE public.users SET
   name = 'Exposant Elite 54m² Demo',
   role = 'exhibitor',
   type = 'exhibitor',
-  status = 'approved',
+  status = 'active',
   is_active = true
 WHERE email = 'exhibitor-54m@test.siport.com';
 
