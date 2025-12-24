@@ -10,6 +10,7 @@ import { CONFIG } from '../lib/config';
 import { SupabaseService } from '../services/supabaseService';
 import { LevelBadge } from '../components/common/QuotaWidget';
 import type { PartnerTier } from '../config/partnerTiers';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface Partner {
   id: string;
@@ -31,6 +32,7 @@ interface Partner {
 // Les partenaires sont maintenant chargés depuis Supabase
 
 export default function PartnersPage() {
+  const { t } = useTranslation();
   const [partners, setPartners] = useState<Partner[]>([]);
   const [filteredPartners, setFilteredPartners] = useState<Partner[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -102,11 +104,11 @@ export default function PartnersPage() {
   }, [partners, searchTerm, selectedTier, selectedCountry]);
 
   const partnerTiers = [
-    { value: '', label: 'Tous les niveaux' },
-    { value: 'museum', label: 'Museum ($20k)' },
-    { value: 'silver', label: 'Silver ($48k)' },
-    { value: 'gold', label: 'Gold ($68k)' },
-    { value: 'platinium', label: 'Platinium ($98k)' }
+    { value: '', label: t('pages.partners.filter_tier') },
+    { value: 'museum', label: t('pages.partners.tier_museum') + ' ($20k)' },
+    { value: 'silver', label: t('pages.partners.tier_silver') + ' ($48k)' },
+    { value: 'gold', label: t('pages.partners.tier_gold') + ' ($68k)' },
+    { value: 'platinium', label: t('pages.partners.tier_platinium') + ' ($98k)' }
   ];
 
   const countries = [...new Set(partners.map(p => p.country).filter(Boolean))];
@@ -122,11 +124,10 @@ export default function PartnersPage() {
               animate={{ opacity: 1, y: 0 }}
             >
               <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                Nos Partenaires SIPORTS 2026
+                {t('pages.partners.title')}
               </h1>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Découvrez les organisations qui soutiennent et participent au développement 
-                du plus grand salon portuaire international
+                {t('pages.partners.description')}
               </p>
             </motion.div>
           </div>
@@ -137,7 +138,7 @@ export default function PartnersPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Rechercher un partenaire..."
+                placeholder={t('pages.partners.search')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"

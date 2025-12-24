@@ -23,9 +23,11 @@ import { ROUTES } from '../lib/routes';
 import { CONFIG } from '../lib/config';
 import { LevelBadge } from '../components/common/QuotaWidget';
 import { getExhibitorLevelByArea } from '../config/exhibitorQuotas';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function ExhibitorsPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { isAuthenticated } = useAuthStore();
   const { 
     filteredExhibitors, 
@@ -54,19 +56,19 @@ export default function ExhibitorsPage() {
   };
 
   const categories = [
-    { value: '', label: 'Toutes les catégories' },
-    { value: 'institutional', label: 'Institutionnel' },
-    { value: 'port-industry', label: 'Industrie Portuaire' },
-    { value: 'port-operations', label: 'Exploitation & Gestion' },
-    { value: 'academic', label: 'Académique & Formation' }
+    { value: '', label: t('pages.exhibitors.all_categories') },
+    { value: 'institutional', label: t('pages.exhibitors.category_institutional') },
+    { value: 'port-industry', label: t('pages.exhibitors.category_port_industry') },
+    { value: 'port-operations', label: t('pages.exhibitors.category_operations') },
+    { value: 'academic', label: t('pages.exhibitors.category_academic') }
   ];
 
   const getCategoryLabel = (category: string) => {
     const labels = {
-      'institutional': 'Institutionnel',
-      'port-industry': 'Industrie Portuaire',
-      'port-operations': 'Exploitation & Gestion',
-      'academic': 'Académique & Formation'
+      'institutional': t('pages.exhibitors.category_institutional'),
+      'port-industry': t('pages.exhibitors.category_port_industry'),
+      'port-operations': t('pages.exhibitors.category_operations'),
+      'academic': t('pages.exhibitors.category_academic')
     };
     return labels[category as keyof typeof labels] || category;
   };
@@ -89,10 +91,10 @@ export default function ExhibitorsPage() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div className="mb-6 lg:mb-0">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Exposants SIPORTS 2026
+                {t('pages.exhibitors.title')}
               </h1>
               <p className="text-lg text-gray-600">
-                Découvrez les {filteredExhibitors.length} exposants participants au salon
+                {t('pages.exhibitors.description')} {filteredExhibitors.length}
               </p>
             </div>
             
@@ -103,7 +105,7 @@ export default function ExhibitorsPage() {
                 <input
                   type="text"
                   data-testid="search-input"
-                  placeholder="Rechercher un exposant..."
+                  placeholder={t('pages.exhibitors.search')}
                   value={filters.search}
                   onChange={(e) => setFilters({ search: e.target.value })}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -118,7 +120,7 @@ export default function ExhibitorsPage() {
                   className="flex items-center"
                 >
                   <Filter className="h-4 w-4 mr-2" />
-                  Filtres
+                  {t('pages.exhibitors.filter_category')}
                 </Button>
                 
                 <div className="flex border border-gray-300 rounded-lg">
@@ -150,7 +152,7 @@ export default function ExhibitorsPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Catégorie
+                    {t('pages.exhibitors.filter_category')}
                   </label>
                   <select
                     value={filters.category}
@@ -167,7 +169,7 @@ export default function ExhibitorsPage() {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Secteur
+                    {t('profile.sector')}
                   </label>
                   <input
                     type="text"
@@ -180,7 +182,7 @@ export default function ExhibitorsPage() {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Pays
+                    {t('profile.location')}
                   </label>
                   <input
                     type="text"
@@ -217,13 +219,13 @@ export default function ExhibitorsPage() {
               <Search className="h-12 w-12 text-gray-400" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Aucun exposant trouvé
+              {t('pages.exhibitors.no_results')}
             </h3>
             <p className="text-gray-600 mb-4">
-              Essayez de modifier vos critères de recherche
+              {t('messages.confirm_action')}
             </p>
             <Button variant="default" onClick={() => setFilters({ search: '', category: '', sector: '', country: '' })}>
-              Réinitialiser les filtres
+              {t('actions.cancel')}
             </Button>
           </div>
         ) : (
@@ -305,7 +307,7 @@ export default function ExhibitorsPage() {
                       <div className="flex space-x-3">
                         <Link to={`/minisite/${exhibitor.id}`} className="flex-1">
                           <Button variant="outline" size="sm" className="w-full">
-                            Voir le Profil
+                            {t('pages.exhibitors.view_profile')}
                           </Button>
                         </Link>
                         <Button 
@@ -315,7 +317,7 @@ export default function ExhibitorsPage() {
                           onClick={() => handleAppointmentClick(exhibitor.id)}
                         >
                           <Calendar className="h-4 w-4 mr-1" />
-                          RDV
+                          {t('home.book_appointment')}
                         </Button>
                         {exhibitor.website && (
                           <a aria-label="Open in new tab"
@@ -384,7 +386,7 @@ export default function ExhibitorsPage() {
                           <div className="flex items-center space-x-3">
                             <Link to={`/minisite/${exhibitor.id}`}>
                               <Button variant="outline" size="sm">
-                                Voir le Profil
+                                {t('pages.exhibitors.view_profile')}
                               </Button>
                             </Link>
                             <Button 
@@ -393,7 +395,7 @@ export default function ExhibitorsPage() {
                               onClick={() => handleAppointmentClick(exhibitor.id)}
                             >
                               <Calendar className="h-4 w-4 mr-1" />
-                              RDV
+                              {t('home.book_appointment')}
                             </Button>
                           </div>
                         </div>
