@@ -159,6 +159,28 @@ END $$;
 -- 1. INSERT DEMO USERS
 -- =====================================================
 
+-- Ensure pgcrypto is enabled for password hashing
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+-- Insert into auth.users first to satisfy foreign key constraints
+INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+VALUES
+  -- Admin
+  ('00000000-0000-0000-0000-000000000001', 'admin@siports.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
+  -- Exhibitors
+  ('00000000-0000-0000-0000-000000000002', 'expo.tech@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
+  ('00000000-0000-0000-0000-000000000003', 'agri.innov@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
+  ('00000000-0000-0000-0000-000000000004', 'mode.design@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
+  -- Partners
+  ('00000000-0000-0000-0000-000000000005', 'gold.partner@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
+  ('00000000-0000-0000-0000-000000000006', 'silver.tech@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
+  -- Visitors
+  ('00000000-0000-0000-0000-000000000007', 'jean.dupont@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
+  ('00000000-0000-0000-0000-000000000008', 'marie.martin@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
+  ('00000000-0000-0000-0000-000000000009', 'pierre.dubois@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated'),
+  ('00000000-0000-0000-0000-000000000010', 'sophie.bernard@example.com', crypt('password123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated')
+ON CONFLICT (id) DO NOTHING;
+
 -- Admin user
 INSERT INTO users (id, email, name, type, status, profile, created_at)
 VALUES 
