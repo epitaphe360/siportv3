@@ -561,6 +561,44 @@ ON CONFLICT (id) DO NOTHING;
 -- =====================================================
 -- 7. INSERT NEWS ARTICLES
 -- =====================================================
+
+-- Ensure news_articles table exists and has correct columns
+CREATE TABLE IF NOT EXISTS news_articles (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+DO $$
+BEGIN
+    -- Add columns if they don't exist
+    BEGIN
+        ALTER TABLE news_articles ADD COLUMN excerpt TEXT;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE news_articles ADD COLUMN author_id UUID REFERENCES auth.users(id);
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE news_articles ADD COLUMN published BOOLEAN DEFAULT false;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE news_articles ADD COLUMN category TEXT;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE news_articles ADD COLUMN tags TEXT[];
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE news_articles ADD COLUMN image_url TEXT;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+END $$;
+
 INSERT INTO news_articles (id, title, content, excerpt, author_id, published, category, tags, image_url, created_at)
 VALUES
   (
@@ -616,6 +654,60 @@ ON CONFLICT (id) DO NOTHING;
 -- =====================================================
 -- 8. INSERT TIME SLOTS (Plus de créneaux pour calendriers)
 -- =====================================================
+
+-- Ensure time_slots table exists
+CREATE TABLE IF NOT EXISTS time_slots (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  exhibitor_id UUID REFERENCES exhibitors(id),
+  slot_date DATE NOT NULL,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+DO $$
+BEGIN
+    BEGIN
+        ALTER TABLE time_slots ADD COLUMN exhibitor_id UUID REFERENCES exhibitors(id);
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE time_slots ADD COLUMN slot_date DATE;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE time_slots ADD COLUMN start_time TIME;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE time_slots ADD COLUMN end_time TIME;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE time_slots ADD COLUMN duration INTEGER;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE time_slots ADD COLUMN type TEXT;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE time_slots ADD COLUMN max_bookings INTEGER DEFAULT 1;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE time_slots ADD COLUMN current_bookings INTEGER DEFAULT 0;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE time_slots ADD COLUMN available BOOLEAN DEFAULT true;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE time_slots ADD COLUMN location TEXT;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+END $$;
+
 INSERT INTO time_slots (id, exhibitor_id, slot_date, start_time, end_time, duration, type, max_bookings, current_bookings, available, location, created_at)
 VALUES
   -- TechExpo Solutions - Aujourd'hui
@@ -721,6 +813,44 @@ VALUES
 -- =====================================================
 -- APPOINTMENTS (Rendez-vous)
 -- =====================================================
+
+-- Ensure appointments table exists
+CREATE TABLE IF NOT EXISTS appointments (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  exhibitor_id UUID REFERENCES exhibitors(id),
+  visitor_id UUID REFERENCES visitor_profiles(id),
+  time_slot_id UUID REFERENCES time_slots(id),
+  status TEXT DEFAULT 'pending',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+DO $$
+BEGIN
+    BEGIN
+        ALTER TABLE appointments ADD COLUMN exhibitor_id UUID REFERENCES exhibitors(id);
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE appointments ADD COLUMN visitor_id UUID REFERENCES visitor_profiles(id);
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE appointments ADD COLUMN time_slot_id UUID REFERENCES time_slots(id);
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE appointments ADD COLUMN status TEXT DEFAULT 'pending';
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE appointments ADD COLUMN notes TEXT;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE appointments ADD COLUMN meeting_type TEXT;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+END $$;
+
 INSERT INTO appointments (id, exhibitor_id, visitor_id, time_slot_id, status, notes, meeting_type, created_at)
 VALUES
   -- Rendez-vous AUJOURD''HUI pour Jean Dupont (VIP Visitor)
@@ -1067,6 +1197,35 @@ ON CONFLICT (id) DO NOTHING;
 -- =====================================================
 -- 10. INSERT CONNECTIONS (Visibles dans calendriers via rendez-vous)
 -- =====================================================
+
+-- Ensure connections table exists
+CREATE TABLE IF NOT EXISTS connections (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  requester_id UUID REFERENCES auth.users(id),
+  addressee_id UUID REFERENCES auth.users(id),
+  status TEXT DEFAULT 'pending',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+DO $$
+BEGIN
+    BEGIN
+        ALTER TABLE connections ADD COLUMN requester_id UUID REFERENCES auth.users(id);
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE connections ADD COLUMN addressee_id UUID REFERENCES auth.users(id);
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE connections ADD COLUMN status TEXT DEFAULT 'pending';
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE connections ADD COLUMN message TEXT;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+END $$;
+
 INSERT INTO connections (id, requester_id, addressee_id, status, message, created_at)
 VALUES
   -- Jean Dupont (VIP) connecté avec Marie Martin (Premium)
@@ -1207,6 +1366,32 @@ ON CONFLICT (id) DO NOTHING;
 -- =====================================================
 -- 11. INSERT CONVERSATIONS
 -- =====================================================
+
+-- Ensure conversations table exists
+CREATE TABLE IF NOT EXISTS conversations (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  type TEXT DEFAULT 'direct',
+  participants UUID[],
+  created_by UUID REFERENCES auth.users(id),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+DO $$
+BEGIN
+    BEGIN
+        ALTER TABLE conversations ADD COLUMN type TEXT DEFAULT 'direct';
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE conversations ADD COLUMN participants UUID[];
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE conversations ADD COLUMN created_by UUID REFERENCES auth.users(id);
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+END $$;
+
 INSERT INTO conversations (id, type, participants, created_by, created_at)
 VALUES
   (
@@ -1235,6 +1420,32 @@ ON CONFLICT (id) DO NOTHING;
 -- =====================================================
 -- 12. INSERT MESSAGES
 -- =====================================================
+
+-- Ensure messages table exists
+CREATE TABLE IF NOT EXISTS messages (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  conversation_id UUID REFERENCES conversations(id),
+  sender_id UUID REFERENCES auth.users(id),
+  content TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  read_at TIMESTAMPTZ
+);
+
+DO $$
+BEGIN
+    BEGIN
+        ALTER TABLE messages ADD COLUMN conversation_id UUID REFERENCES conversations(id);
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE messages ADD COLUMN sender_id UUID REFERENCES auth.users(id);
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE messages ADD COLUMN content TEXT;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+END $$;
+
 INSERT INTO messages (id, conversation_id, sender_id, content, created_at)
 VALUES
   (
@@ -1291,6 +1502,31 @@ ON CONFLICT (id) DO NOTHING;
 -- =====================================================
 -- 13. INSERT USER FAVORITES
 -- =====================================================
+
+-- Ensure user_favorites table exists
+CREATE TABLE IF NOT EXISTS user_favorites (
+  user_id UUID REFERENCES auth.users(id),
+  entity_type TEXT NOT NULL,
+  entity_id UUID NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  PRIMARY KEY (user_id, entity_type, entity_id)
+);
+
+DO $$
+BEGIN
+    BEGIN
+        ALTER TABLE user_favorites ADD COLUMN user_id UUID REFERENCES auth.users(id);
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE user_favorites ADD COLUMN entity_type TEXT;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE user_favorites ADD COLUMN entity_id UUID;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+END $$;
+
 INSERT INTO user_favorites (user_id, entity_type, entity_id, created_at)
 VALUES
   ('00000000-0000-0000-0000-000000000007', 'exhibitor', '00000000-0000-0000-0000-000000000102', NOW()),
@@ -1305,6 +1541,41 @@ ON CONFLICT (user_id, entity_type, entity_id) DO NOTHING;
 -- =====================================================
 -- 14. INSERT DAILY QUOTAS
 -- =====================================================
+
+-- Ensure daily_quotas table exists
+CREATE TABLE IF NOT EXISTS daily_quotas (
+  user_id UUID REFERENCES auth.users(id),
+  quota_date DATE NOT NULL,
+  connections_used INTEGER DEFAULT 0,
+  messages_used INTEGER DEFAULT 0,
+  meetings_used INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  PRIMARY KEY (user_id, quota_date)
+);
+
+DO $$
+BEGIN
+    BEGIN
+        ALTER TABLE daily_quotas ADD COLUMN user_id UUID REFERENCES auth.users(id);
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE daily_quotas ADD COLUMN quota_date DATE;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE daily_quotas ADD COLUMN connections_used INTEGER DEFAULT 0;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE daily_quotas ADD COLUMN messages_used INTEGER DEFAULT 0;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE daily_quotas ADD COLUMN meetings_used INTEGER DEFAULT 0;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+END $$;
+
 INSERT INTO daily_quotas (user_id, quota_date, connections_used, messages_used, meetings_used, created_at)
 VALUES
   ('00000000-0000-0000-0000-000000000007', CURRENT_DATE, 2, 5, 1, NOW()),
@@ -1319,6 +1590,47 @@ ON CONFLICT (user_id, quota_date) DO UPDATE SET
 -- =====================================================
 -- 15. INSERT MINI-SITES (Pages exposants avec sections hero, about, contact)
 -- =====================================================
+
+-- Ensure mini_sites table exists
+CREATE TABLE IF NOT EXISTS mini_sites (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  exhibitor_id UUID REFERENCES exhibitors(id),
+  theme TEXT DEFAULT 'modern',
+  custom_colors JSONB,
+  sections JSONB,
+  published BOOLEAN DEFAULT false,
+  views INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+DO $$
+BEGIN
+    BEGIN
+        ALTER TABLE mini_sites ADD COLUMN exhibitor_id UUID REFERENCES exhibitors(id);
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE mini_sites ADD COLUMN theme TEXT DEFAULT 'modern';
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE mini_sites ADD COLUMN custom_colors JSONB;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE mini_sites ADD COLUMN sections JSONB;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE mini_sites ADD COLUMN published BOOLEAN DEFAULT false;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE mini_sites ADD COLUMN views INTEGER DEFAULT 0;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+END $$;
+
 INSERT INTO mini_sites (id, exhibitor_id, theme, custom_colors, sections, published, views, created_at)
 VALUES
   -- TechExpo Solutions Mini-Site
@@ -1376,6 +1688,52 @@ ON CONFLICT (id) DO UPDATE SET
 -- =====================================================
 -- 16. INSERT PRODUCTS (Produits des exposants)
 -- =====================================================
+
+-- Ensure products table exists
+CREATE TABLE IF NOT EXISTS products (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  exhibitor_id UUID REFERENCES exhibitors(id),
+  name TEXT NOT NULL,
+  description TEXT,
+  category TEXT,
+  images TEXT[],
+  price NUMERIC,
+  featured BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+DO $$
+BEGIN
+    BEGIN
+        ALTER TABLE products ADD COLUMN exhibitor_id UUID REFERENCES exhibitors(id);
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE products ADD COLUMN name TEXT;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE products ADD COLUMN description TEXT;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE products ADD COLUMN category TEXT;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE products ADD COLUMN images TEXT[];
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE products ADD COLUMN price NUMERIC;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+
+    BEGIN
+        ALTER TABLE products ADD COLUMN featured BOOLEAN DEFAULT false;
+    EXCEPTION WHEN duplicate_column THEN NULL; END;
+END $$;
+
 INSERT INTO products (id, exhibitor_id, name, description, category, images, price, featured, created_at)
 VALUES
   -- TechExpo Solutions Products
