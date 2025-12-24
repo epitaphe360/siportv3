@@ -478,7 +478,7 @@ ON CONFLICT (id) DO NOTHING;
 -- =====================================================
 -- 6. INSERT EVENTS
 -- =====================================================
-INSERT INTO events (id, title, description, type, event_date, start_date, end_date, location, pavilion_id, organizer_id, capacity, registered, is_featured, created_at)
+INSERT INTO events (id, title, description, type, event_date, start_time, end_time, start_date, end_date, location, pavilion_id, organizer_id, capacity, registered, is_featured, created_at)
 VALUES
   (
     '00000000-0000-0000-0000-000000000301',
@@ -486,6 +486,8 @@ VALUES
     'Les dernières tendances en matière d''innovation technologique et digitale. Intervenants internationaux et sessions de networking.',
     'conference',
     CURRENT_DATE + INTERVAL '2 days',
+    '09:00:00',
+    '13:00:00',
     NOW() + INTERVAL '2 days',
     NOW() + INTERVAL '2 days' + INTERVAL '4 hours',
     'Salle Plenière A',
@@ -502,6 +504,8 @@ VALUES
     'Workshop pratique sur les techniques d''agriculture de précision et l''utilisation de l''IoT dans les exploitations.',
     'conference',
     CURRENT_DATE + INTERVAL '3 days',
+    '14:00:00',
+    '17:00:00',
     NOW() + INTERVAL '3 days',
     NOW() + INTERVAL '3 days' + INTERVAL '3 hours',
     'Salle Workshop B1',
@@ -518,6 +522,8 @@ VALUES
     'Présentation exclusive des collections 2025 avec intégration de technologies wearables.',
     'conference',
     CURRENT_DATE + INTERVAL '5 days',
+    '10:00:00',
+    '12:00:00',
     NOW() + INTERVAL '5 days',
     NOW() + INTERVAL '5 days' + INTERVAL '2 hours',
     'Podium Principal',
@@ -534,6 +540,8 @@ VALUES
     'Session de networking exclusif pour dirigeants et décideurs. Cocktail et échanges professionnels.',
     'conference',
     CURRENT_DATE + INTERVAL '4 days',
+    '18:00:00',
+    '21:00:00',
     NOW() + INTERVAL '4 days',
     NOW() + INTERVAL '4 days' + INTERVAL '3 hours',
     'Salon VIP',
