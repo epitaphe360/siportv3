@@ -278,67 +278,12 @@ export default function LoginPage() {
                     size="sm"
                     onClick={() => {
                       setEmail('admin@siport.com');
-                      setPassword('Test@123456');
+                      setPassword('Admin123!');
                     }}
                     className="text-xs bg-white hover:bg-blue-100 border-blue-200"
                   >
                     👑 Admin Principal
                   </Button>
-                </div>
-
-                {/* Exposants */}
-                <div>
-                  <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">🏢 Exposants</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('exhibitor-9m@test.siport.com');
-                        setPassword('Test@123456');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      9m²
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('exhibitor-18m@test.siport.com');
-                        setPassword('Test@123456');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      18m²
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('exhibitor-36m@test.siport.com');
-                        setPassword('Test@123456');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      36m²
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('exhibitor-54m@test.siport.com');
-                        setPassword('Test@123456');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      54m²
-                    </Button>
-                  </div>
                 </div>
 
                 {/* Partenaires */}
@@ -350,48 +295,24 @@ export default function LoginPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('partner-museum@test.siport.com');
-                        setPassword('Test@123456');
+                        setEmail('nathalie.robert1@partner.com');
+                        setPassword('Admin123!');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      Musée
+                      Partenaire 1
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('partner-silver@test.siport.com');
-                        setPassword('Test@123456');
+                        setEmail('pierre.laurent2@partner.com');
+                        setPassword('Admin123!');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      Silver
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('partner-gold@test.siport.com');
-                        setPassword('Test@123456');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      Gold
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('partner-platinium@test.siport.com');
-                        setPassword('Test@123456');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      Platinium
+                      Partenaire 2
                     </Button>
                   </div>
                 </div>
@@ -405,24 +326,24 @@ export default function LoginPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('visitor-free@test.siport.com');
-                        setPassword('Test@123456');
+                        setEmail('visitor1@test.com');
+                        setPassword('Admin123!');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      Gratuit
+                      Visiteur 1
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('visitor-vip@test.siport.com');
-                        setPassword('Test@123456');
+                        setEmail('visitor2@test.com');
+                        setPassword('Admin123!');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      VIP
+                      Visiteur 2
                     </Button>
                   </div>
                 </div>
