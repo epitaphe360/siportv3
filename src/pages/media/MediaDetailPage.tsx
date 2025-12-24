@@ -84,14 +84,14 @@ export default function MediaDetailPage() {
           <div className="absolute bottom-6 left-6 right-6 text-white">
             <div className="flex items-center space-x-3 mb-2">
               <Badge className="bg-blue-600 text-white border-0">
-                {media.type.toUpperCase()}
+                {media.type?.toUpperCase() || 'MÉDIA'}
               </Badge>
               <span className="text-sm font-medium opacity-80 flex items-center">
                 <Clock className="h-4 w-4 mr-1" />
-                {Math.floor(media.duration / 60)} min
+                {Math.floor((media.duration || 0) / 60)} min
               </span>
             </div>
-            <h1 className="text-3xl font-bold">{media.title}</h1>
+            <h1 className="text-3xl font-bold">{media.title || 'Sans titre'}</h1>
           </div>
         </Card>
 
@@ -170,16 +170,16 @@ export default function MediaDetailPage() {
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Publié le</span>
                   <span className="font-medium text-gray-900">
-                    {new Date(media.published_at).toLocaleDateString('fr-FR')}
+                    {media.published_at ? new Date(media.published_at).toLocaleDateString('fr-FR') : 'Non publié'}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Vues</span>
-                  <span className="font-medium text-gray-900">{media.views_count.toLocaleString()}</span>
+                  <span className="font-medium text-gray-900">{(media.views_count || 0).toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Catégorie</span>
-                  <Badge variant="secondary">{media.category}</Badge>
+                  <Badge variant="secondary">{media.category || 'Non classé'}</Badge>
                 </div>
               </div>
             </Card>
