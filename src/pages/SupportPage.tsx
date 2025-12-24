@@ -1,10 +1,12 @@
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
+import { useTranslation } from '../hooks/useTranslation';
 import { HelpCircle, MessageCircle, FileText, Phone } from 'lucide-react';
 import { toast } from 'sonner';
 import { CONFIG, getSupportEmail, getSupportPhone, getSupportMessage } from '../lib/config';
 
 export default function SupportPage() {
+  const { t } = useTranslation();
   const handleSupportRequest = (type: keyof typeof CONFIG.supportTypes) => {
     const message = getSupportMessage(type.toLowerCase() as keyof typeof CONFIG.messages.support);
     toast.success(message);
@@ -16,10 +18,10 @@ export default function SupportPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Support & Assistance
+            {t('support.title')}
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Notre équipe est là pour vous accompagner dans votre expérience SIPORTS 2026.
+            {t('support.description')}
           </p>
         </div>
 

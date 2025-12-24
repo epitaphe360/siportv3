@@ -250,6 +250,34 @@ export const allTranslations = {
     'partnership.silver': 'Partenaire Argent',
     'partnership.become': 'Devenir Partenaire',
     'partnership.contact': 'Nous Contacter',
+    
+    // Subscription Page
+    'subscription.title': 'Plans d\'Abonnement',
+    'subscription.description': 'Choisissez votre plan',
+    'subscription.visitor': 'Visiteur',
+    'subscription.partner': 'Partenaire',
+    'subscription.exhibitor': 'Exposant',
+    'subscription.features': 'Caractéristiques',
+    'subscription.included': 'Inclus',
+    'subscription.not_included': 'Non inclus',
+    'subscription.upgrade': 'Améliorer',
+    'subscription.current_plan': 'Plan actuel',
+    
+    // Legal Pages
+    'legal.terms_title': 'Conditions d\'Utilisation',
+    'legal.privacy_title': 'Politique de Confidentialité',
+    'legal.cookies_title': 'Politique de Cookies',
+    'legal.last_update': 'Dernière mise à jour',
+    'legal.acceptance': 'Acceptation',
+    'legal.usage': 'Utilisation acceptable',
+    'legal.data_collection': 'Collecte de données',
+    'legal.contact': 'Nous Contacter',
+    
+    // Support & Help
+    'support.title': 'Support et Aide',
+    'support.description': 'Nous sommes là pour vous aider',
+    'support.contact_form': 'Formulaire de Contact',
+    'support.faq': 'Questions Fréquentes',
   },
   
   en: {
@@ -489,6 +517,34 @@ export const allTranslations = {
     'partnership.silver': 'Silver Partner',
     'partnership.become': 'Become a Partner',
     'partnership.contact': 'Contact Us',
+    
+    // Subscription Page
+    'subscription.title': 'Subscription Plans',
+    'subscription.description': 'Choose your perfect plan',
+    'subscription.visitor': 'Visitor',
+    'subscription.partner': 'Partner',
+    'subscription.exhibitor': 'Exhibitor',
+    'subscription.features': 'Features',
+    'subscription.included': 'Included',
+    'subscription.not_included': 'Not included',
+    'subscription.upgrade': 'Upgrade',
+    'subscription.current_plan': 'Current plan',
+    
+    // Legal Pages
+    'legal.terms_title': 'Terms of Service',
+    'legal.privacy_title': 'Privacy Policy',
+    'legal.cookies_title': 'Cookie Policy',
+    'legal.last_update': 'Last Updated',
+    'legal.acceptance': 'Acceptance',
+    'legal.usage': 'Acceptable Use',
+    'legal.data_collection': 'Data Collection',
+    'legal.contact': 'Contact Us',
+    
+    // Support & Help
+    'support.title': 'Support & Help',
+    'support.description': 'We are here to help you',
+    'support.contact_form': 'Contact Form',
+    'support.faq': 'Frequently Asked Questions',
   
   ar: {
     'pages.exhibitors.title': 'العارضون',
@@ -727,6 +783,34 @@ export const allTranslations = {
     'partnership.silver': 'شريك فضي',
     'partnership.become': 'كن شريكاً',
     'partnership.contact': 'تواصل معنا',
+    
+    // Subscription Page
+    'subscription.title': 'خطط الاشتراك',
+    'subscription.description': 'اختر خطتك المثالية',
+    'subscription.visitor': 'زائر',
+    'subscription.partner': 'شريك',
+    'subscription.exhibitor': 'عارض',
+    'subscription.features': 'المميزات',
+    'subscription.included': 'مضمون',
+    'subscription.not_included': 'غير مضمون',
+    'subscription.upgrade': 'ترقية',
+    'subscription.current_plan': 'الخطة الحالية',
+    
+    // Legal Pages
+    'legal.terms_title': 'شروط الخدمة',
+    'legal.privacy_title': 'سياسة الخصوصية',
+    'legal.cookies_title': 'سياسة الكوكيز',
+    'legal.last_update': 'آخر تحديث',
+    'legal.acceptance': 'القبول',
+    'legal.usage': 'الاستخدام المقبول',
+    'legal.data_collection': 'جمع البيانات',
+    'legal.contact': 'تواصل معنا',
+    
+    // Support & Help
+    'support.title': 'الدعم والمساعدة',
+    'support.description': 'نحن هنا لمساعدتك',
+    'support.contact_form': 'نموذج الاتصال',
+    'support.faq': 'الأسئلة الشائعة',
   
   es: {
     'pages.exhibitors.title': 'Expositores',

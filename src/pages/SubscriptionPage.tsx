@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '../hooks/useTranslation';
 import { Check, X, Crown, Zap, Star, Award } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
@@ -353,6 +354,7 @@ const subscriptionTiers: SubscriptionTier[] = [
 export default function SubscriptionPage() {
   const [selectedType, setSelectedType] = useState<'visitor' | 'partner' | 'exhibitor'>('visitor');
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const visitorTiers = subscriptionTiers.filter(t => t.type === 'visitor');
   const partnerTiers = subscriptionTiers.filter(t => t.type === 'partner');
@@ -399,9 +401,9 @@ export default function SubscriptionPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Offres & Tarification SIPORTS 2026</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('subscription.title')}</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Choisissez l'offre adaptée à vos besoins pour une expérience optimale au salon
+            {t('subscription.description')}
           </p>
         </div>
 

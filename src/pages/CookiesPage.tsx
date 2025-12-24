@@ -1,9 +1,11 @@
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
+import { useTranslation } from '../hooks/useTranslation';
 import { Cookie, Settings, Shield } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function CookiesPage() {
+  const { t } = useTranslation();
   const handleCookieSettings = () => {
     toast.success('Préférences de cookies mises à jour !');
   };
@@ -14,10 +16,10 @@ export default function CookiesPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Politique des Cookies
+            {t('legal.cookies_title')}
           </h1>
           <p className="text-xl text-gray-600">
-            Dernière mise à jour : {new Date().toLocaleDateString('fr-FR')}
+            {t('legal.last_update')}: {new Date().toLocaleDateString('fr-FR')}
           </p>
         </div>
 
