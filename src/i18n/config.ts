@@ -177,6 +177,64 @@ const resources = {
         search: 'Buscar'
       }
     }
+  },
+  ar: {
+    translation: {
+      nav: {
+        home: 'الرئيسية',
+        dashboard: 'لوحة التحكم',
+        exhibitors: 'العارضون',
+        partners: 'الشركاء',
+        pavilions: 'الأجنحة',
+        information: 'المعلومات',
+        events: 'الفعاليات',
+        news: 'الأخبار',
+        subscriptions: 'الاشتراكات',
+        appointments: 'المواعيد',
+        chat: 'الرسائل',
+        networking: 'التواصل',
+        profile: 'ملفي الشخصي'
+      },
+      menu: {
+        pavilions_desc: 'اكتشف أجنحة المعرض',
+        events_desc: 'تقويم الفعاليات',
+        news_desc: 'الأخبار والتحديثات',
+        subscriptions_desc: 'إدارة اشتراكاتك'
+      },
+      exhibitor_levels: {
+        basic_9: 'أساسي 9م²',
+        standard_18: 'معياري 18م²',
+        premium_36: 'متميز 36م²',
+        elite_54plus: 'نخبة 54م²+'
+      },
+      auth: {
+        login: 'تسجيل الدخول',
+        register: 'إنشاء حساب',
+        logout: 'تسجيل الخروج',
+        email: 'البريد الإلكتروني',
+        password: 'كلمة المرور',
+        remember_me: 'تذكرني',
+        forgot_password: 'هل نسيت كلمة المرور؟'
+      },
+      appointments: {
+        book: 'احجز',
+        cancel: 'إلغاء',
+        confirm: 'تأكيد',
+        quota_reached: 'تم الوصول للحد الأقصى ({{current}}/{{max}})',
+        booking_success: 'تم حجز الموعد بنجاح',
+        no_slots: 'لا توجد فترات زمنية متاحة'
+      },
+      common: {
+        loading: 'جاري التحميل...',
+        error: 'خطأ',
+        success: 'نجح',
+        save: 'حفظ',
+        cancel: 'إلغاء',
+        delete: 'حذف',
+        edit: 'تعديل',
+        search: 'بحث'
+      }
+    }
   }
 };
 
@@ -186,7 +244,7 @@ i18n
   .init({
     resources,
     fallbackLng: 'fr',
-    supportedLngs: ['fr', 'en', 'es'],
+    supportedLngs: ['fr', 'en', 'es', 'ar'],
 
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],

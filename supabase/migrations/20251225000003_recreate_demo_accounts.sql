@@ -21,6 +21,26 @@ DELETE FROM public.visitor_profiles;
 DELETE FROM public.notifications;
 DELETE FROM public.registration_requests;
 DELETE FROM public.user_favorites;
+DELETE FROM public.daily_quotas WHERE user_id IN (
+  SELECT id FROM public.users WHERE email IN (
+    'admin.siports@siports.com',
+    'exhibitor-54m@test.siport.com',
+    'exhibitor-36m@test.siport.com',
+    'exhibitor-18m@test.siport.com',
+    'exhibitor-9m@test.siport.com',
+    'partner-gold@test.siport.com',
+    'partner-silver@test.siport.com',
+    'partner-platinium@test.siport.com',
+    'partner-museum@test.siport.com',
+    'partner-porttech@test.siport.com',
+    'partner-oceanfreight@test.siport.com',
+    'partner-coastal@test.siport.com',
+    'visitor-vip@test.siport.com',
+    'visitor-premium@test.siport.com',
+    'visitor-basic@test.siport.com',
+    'visitor-free@test.siport.com'
+  )
+);
 DELETE FROM public.users WHERE email IN (
   'admin.siports@siports.com',
   'exhibitor-54m@test.siport.com',
