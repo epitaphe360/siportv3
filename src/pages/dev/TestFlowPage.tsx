@@ -11,9 +11,9 @@ export default function TestFlowPage() {
   const [log, setLog] = useState<Array<{ attempt: number; timeSlotId: string; success: boolean; message: string }>>([]);
 
   const run = async () => {
-    // S'assurer qu'un utilisateur de test est connectÃ©
+    // S'assurer qu'un utilisateur de test est connecté
     if (!user) {
-  // Assigner un niveau 'premium' pour permettre plusieurs rÃ©servations pendant le test
+  // Assigner un niveau 'premium' pour permettre plusieurs réservations pendant le test
   setUser({ id: 'visitor-1', email: 'visiteur@siports.com', name: 'Marie Dubois', type: 'visitor', status: 'active', visitor_level: 'premium', profile: {}, createdAt: new Date(), updatedAt: new Date() } as any);
     }
 
@@ -32,15 +32,15 @@ export default function TestFlowPage() {
         const at = attempts[i];
         try {
           await bookAppointment(at.id, at.label);
-          entries.push({ attempt: i + 1, timeSlotId: at.id, success: true, message: 'RÃ©servation crÃ©Ã©e' });
+          entries.push({ attempt: i + 1, timeSlotId: at.id, success: true, message: 'Réservation créée' });
         } catch (err: unknown) {
           entries.push({ attempt: i + 1, timeSlotId: at.id, success: false, message: err?.message || String(err) });
         }
       }
-  // Ne pas recharger les rendez-vous mock ici : fetchAppointments() Ã©craserait les rÃ©servations
-  // crÃ©Ã©es par `bookAppointment` (mock static). On se contente de mettre Ã  jour le journal.
+  // Ne pas recharger les rendez-vous mock ici : fetchAppointments() écraserait les réservations
+  // créées par `bookAppointment` (mock static). On se contente de mettre à jour le journal.
   setLog(entries);
-        // Optionnel : confirmer automatiquement les rendez-vous crÃ©Ã©s par le test (visitor-1)
+        // Optionnel : confirmer automatiquement les rendez-vous créés par le test (visitor-1)
         try {
           const report = await confirmAppointmentsForVisitor('visitor-1');
           if (report.failed && report.failed.length > 0) {
@@ -51,7 +51,7 @@ export default function TestFlowPage() {
         } catch (err: unknown) {
           entries.push({ attempt: 0, timeSlotId: '', success: false, message: 'Erreur confirm: ' + (err?.message || String(err)) });
         }
-      toast.success('Flow de test exÃ©cutÃ©. Consulte le journal sur la page.');
+      toast.success('Flow de test exécuté. Consulte le journal sur la page.');
     } catch (err: unknown) {
       entries.push({ attempt: 0, timeSlotId: '', success: false, message: 'Erreur initiale: ' + (err?.message || String(err)) });
       setLog(entries);
@@ -61,8 +61,8 @@ export default function TestFlowPage() {
 
   return (
     <div style={{padding:24}}>
-      <h1>Test flow automatisÃ©</h1>
-      <p>Ce test simule la souscription et la prise de RDV pour vÃ©rifier les quotas.</p>
+      <h1>Test flow automatisé</h1>
+      <p>Ce test simule la souscription et la prise de RDV pour vérifier les quotas.</p>
       <button onClick={run} style={{padding:'8px 16px',borderRadius:8,background:'#111827',color:'#fff'}}>Lancer le test</button>
       <div style={{marginTop:24}}>
         <h3>Journal des tentatives:</h3>
@@ -71,11 +71,11 @@ export default function TestFlowPage() {
           <button onClick={() => clearMockAppointments().catch(()=>{})} style={{padding:'6px 12px',borderRadius:6,background:'#f87171',color:'#fff'}}>Nettoyer rendez-vous mock</button>
         </div>
         <div style={{background:'#fff',padding:12,borderRadius:8,border:'1px solid #eaeaea'}}>
-          {log.length === 0 && <div style={{color:'#666'}}>Aucune tentative enregistrÃ©e. Cliquez sur Â« Lancer le test Â».</div>}
+          {log.length === 0 && <div style={{color:'#666'}}>Aucune tentative enregistrée. Cliquez sur Â« Lancer le test Â».</div>}
           {log.map((e, idx) => (
             <div key={idx} style={{padding:'8px 6px',borderBottom: idx < log.length - 1 ? '1px dashed #eee' : 'none', display:'flex',justifyContent:'space-between'}}>
               <div>
-                <strong>#{e.attempt}</strong> â€” crÃ©neau <em>{e.timeSlotId || '-'}</em>
+                <strong>#{e.attempt}</strong> â— créneau <em>{e.timeSlotId || '-'}</em>
                 <div style={{fontSize:13,color:'#444'}}>{e.message}</div>
               </div>
               <div style={{color: e.success ? 'green' : 'crimson', fontWeight:700, alignSelf:'center'}}>

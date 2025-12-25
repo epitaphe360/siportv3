@@ -152,10 +152,10 @@ export default function APIPage() {
         <Card className="p-8 text-center">
           <FileText className="h-16 w-16 text-blue-600 mx-auto mb-6" />
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Documentation ComplÃ¨te
+            Documentation Complète
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Consultez notre documentation dÃ©taillÃ©e pour intÃ©grer pleinement l'API SIPORTS.
+            Consultez notre documentation détaillée pour intégrer pleinement l'API SIPORTS.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button onClick={() => window.open(CONFIG.urls.api.docs, '_blank')} size="lg">
@@ -170,7 +170,7 @@ export default function APIPage() {
             </Button>
           </div>
           <p className="text-gray-500 mt-4">
-            Email: {getSupportEmail('api')} | TÃ©lÃ©phone: {getSupportPhone('api')}
+            Email: {getSupportEmail('api')} | Téléphone: {getSupportPhone('api')}
           </p>
         </Card>
       </div>

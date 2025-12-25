@@ -41,7 +41,7 @@ export const LiveStudioPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link to={ROUTES.HOME} className="inline-flex items-center text-white/80 hover:text-white mb-6">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour Ã  l'accueil
+            Retour à l'accueil
           </Link>
           
           <div className="flex items-center space-x-4 mb-4">
@@ -67,7 +67,7 @@ export const LiveStudioPage: React.FC = () => {
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-white/70 text-sm">Leaders interviewÃ©s</p>
+                  <p className="text-white/70 text-sm">Leaders interviewés</p>
                   <p className="text-3xl font-bold">{interviews.length}</p>
                 </div>
                 <Users className="w-8 h-8 text-white/50" />
@@ -109,8 +109,8 @@ export const LiveStudioPage: React.FC = () => {
         ) : filteredInterviews.length === 0 ? (
           <div className="text-center py-20">
             <Video className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">Aucune interview trouvÃ©e</h3>
-            <p className="text-gray-500">Revenez bientÃ´t pour de nouvelles interviews</p>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">Aucune interview trouvée</h3>
+            <p className="text-gray-500">Revenez bientôt pour de nouvelles interviews</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

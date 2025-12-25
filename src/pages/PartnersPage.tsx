@@ -15,7 +15,7 @@ import { useTranslation } from '../hooks/useTranslation';
 interface Partner {
   id: string;
   name: string;
-  partner_tier: PartnerTier; // Nouveau systÃ¨me: museum, silver, gold, platinium
+  partner_tier: PartnerTier; // Nouveau système: museum, silver, gold, platinium
   category: string;
   description: string;
   logo: string;
@@ -29,7 +29,7 @@ interface Partner {
   employees: string;
 }
 
-// Les partenaires sont maintenant chargÃ©s depuis Supabase
+// Les partenaires sont maintenant chargés depuis Supabase
 
 export default function PartnersPage() {
   const { t } = useTranslation();
@@ -70,7 +70,7 @@ export default function PartnersPage() {
         console.error('Erreur lors du chargement des partenaires:', error);
         setPartners([]);
         setFilteredPartners([]);
-        // Statistiques par dÃ©faut
+        // Statistiques par défaut
         setPartnerStats({
           museum: 0,
           silver: 0,

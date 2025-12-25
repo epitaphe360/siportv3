@@ -139,7 +139,7 @@ export default function ActivityPage() {
       case 'warning':
         return <Badge variant="warning">Avertissement</Badge>;
       case 'success':
-        return <Badge variant="success">SuccÃ¨s</Badge>;
+        return <Badge variant="success">Succès</Badge>;
       case 'info':
         return <Badge variant="info">Info</Badge>;
       default:
@@ -151,10 +151,10 @@ export default function ActivityPage() {
     switch (type) {
       case 'user_registration': return 'Inscription utilisateur';
       case 'exhibitor_validation': return 'Validation exposant';
-      case 'content_moderation': return 'ModÃ©ration contenu';
-      case 'security_alert': return 'Alerte sÃ©curitÃ©';
-      case 'event_registration': return 'Inscription Ã©vÃ©nement';
-      case 'system_backup': return 'Sauvegarde systÃ¨me';
+      case 'content_moderation': return 'Modération contenu';
+      case 'security_alert': return 'Alerte sécurité';
+      case 'event_registration': return 'Inscription événement';
+      case 'system_backup': return 'Sauvegarde système';
       case 'user_suspension': return 'Suspension utilisateur';
       case 'api_rate_limit': return 'Limite API';
       default: return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -168,14 +168,14 @@ export default function ActivityPage() {
   const activityTypes = [
     { value: 'user_registration', label: 'Inscription utilisateur' },
     { value: 'exhibitor_validation', label: 'Validation exposant' },
-    { value: 'content_moderation', label: 'ModÃ©ration contenu' },
-    { value: 'security_alert', label: 'Alerte sÃ©curitÃ©' },
-    { value: 'event_registration', label: 'Inscription Ã©vÃ©nement' },
-    { value: 'system_backup', label: 'Sauvegarde systÃ¨me' },
+    { value: 'content_moderation', label: 'Modération contenu' },
+    { value: 'security_alert', label: 'Alerte sécurité' },
+    { value: 'event_registration', label: 'Inscription événement' },
+    { value: 'system_backup', label: 'Sauvegarde système' },
     { value: 'user_suspension', label: 'Suspension utilisateur' },
     { value: 'api_rate_limit', label: 'Limite API' },
-    { value: 'system_error', label: 'Erreur systÃ¨me' },
-    { value: 'content_moderation_warning', label: 'Avertissement modÃ©ration' },
+    { value: 'system_error', label: 'Erreur système' },
+    { value: 'content_moderation_warning', label: 'Avertissement modération' },
   ];
 
   if (isLoading) {
@@ -183,7 +183,7 @@ export default function ActivityPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="h-12 w-12 text-blue-500 animate-spin mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900">Chargement des activitÃ©s...</h3>
+          <h3 className="text-lg font-medium text-gray-900">Chargement des activités...</h3>
         </div>
       </div>
     );
@@ -198,7 +198,7 @@ export default function ActivityPage() {
           <p className="text-gray-600">{error}</p>
           <Button onClick={() => window.location.reload()} className="mt-4">
             <RefreshCw className="h-4 w-4 mr-2" />
-            RÃ©essayer
+            Réessayer
           </Button>
         </div>
       </div>
@@ -212,9 +212,9 @@ export default function ActivityPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">ActivitÃ© SystÃ¨me</h1>
+              <h1 className="text-3xl font-bold text-gray-900">Activité Système</h1>
               <p className="text-gray-600 mt-2">
-                Surveillance et historique des activitÃ©s SIPORTS
+                Surveillance et historique des activités SIPORTS
               </p>
             </div>
             <div className="flex space-x-2">
@@ -236,7 +236,7 @@ export default function ActivityPage() {
             <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">ActivitÃ©s Totales</p>
+                  <p className="text-sm font-medium text-gray-600">Activités Totales</p>
                   <p className="text-3xl font-bold text-gray-900">{activities.length}</p>
                 </div>
                 <Activity className="h-8 w-8 text-blue-600" />
@@ -248,7 +248,7 @@ export default function ActivityPage() {
             <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Alertes SÃ©curitÃ©</p>
+                  <p className="text-sm font-medium text-gray-600">Alertes Sécurité</p>
                   <p className="text-3xl font-bold text-red-600">
                     {activities.filter(a => getSeverityFromType(a.activity_type) === 'error').length}
                   </p>
@@ -295,7 +295,7 @@ export default function ActivityPage() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Rechercher dans les activitÃ©s..."
+                  placeholder="Rechercher dans les activités..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -318,10 +318,10 @@ export default function ActivityPage() {
                 onChange={(e) => setSelectedSeverity(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Toutes les sÃ©vÃ©ritÃ©s</option>
+                <option value="">Toutes les sévérités</option>
                 <option value="error">Erreur</option>
                 <option value="warning">Avertissement</option>
-                <option value="success">SuccÃ¨s</option>
+                <option value="success">Succès</option>
                 <option value="info">Info</option>
               </select>
 
@@ -368,20 +368,20 @@ export default function ActivityPage() {
 
                       <div className="flex items-center space-x-4 text-xs text-gray-500">
                         <span>{formatDate(activity.created_at)}</span>
-                        <span>â€¢</span>
+                        <span>â•</span>
                         <span>{activity.metadata?.user || 'N/A'}</span>
                       </div>
 
-                      {/* DÃ©tails supplÃ©mentaires */}
+                      {/* Détails supplémentaires */}
                       <div className="mt-2 text-xs text-gray-600">
                         {activity.activity_type === 'user_registration' && activity.metadata && (
-                          <span>ID: {activity.metadata.userId} â€¢ Email: {activity.metadata.email}</span>
+                          <span>ID: {activity.metadata.userId} â• Email: {activity.metadata.email}</span>
                         )}
                         {activity.activity_type === 'exhibitor_validation' && activity.metadata && (
-                          <span>Stand: {activity.metadata.standNumber} â€¢ CatÃ©gorie: {activity.metadata.category}</span>
+                          <span>Stand: {activity.metadata.standNumber} â• Catégorie: {activity.metadata.category}</span>
                         )}
                         {activity.activity_type === 'security_alert' && activity.metadata && (
-                          <span>IP: {activity.metadata.ipAddress} â€¢ Tentatives: {activity.metadata.attempts}</span>
+                          <span>IP: {activity.metadata.ipAddress} â• Tentatives: {activity.metadata.attempts}</span>
                         )}
                         {activity.activity_type === 'event_registration' && activity.metadata && (
                           <span>Inscriptions: {activity.metadata.registrations}/{activity.metadata.capacity}</span>
@@ -414,10 +414,10 @@ export default function ActivityPage() {
               <div className="text-center py-12">
                 <Activity className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Aucune activitÃ© trouvÃ©e
+                  Aucune activité trouvée
                 </h3>
                 <p className="text-gray-600">
-                  Essayez de modifier vos critÃ¨res de recherche
+                  Essayez de modifier vos critères de recherche
                 </p>
               </div>
             )}

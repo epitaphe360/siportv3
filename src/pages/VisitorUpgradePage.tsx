@@ -48,19 +48,19 @@ const testimonials = [
   {
     name: 'Ahmed Benali',
     role: 'Directeur Logistique, Port de Casablanca',
-    content: 'Le Pass VIP a transformÃ© ma participation. J\'ai obtenu 8 RDV stratÃ©giques et signÃ© 2 partenariats majeurs.',
+    content: 'Le Pass VIP a transformé ma participation. J\'ai obtenu 8 RDV stratégiques et signé 2 partenariats majeurs.',
     avatar: 'ðŸ‘¨â€ðŸ’¼'
   },
   {
     name: 'Fatima El Amrani',
     role: 'CEO, Maritime Solutions',
-    content: 'Les Ã©vÃ©nements exclusifs VIP m\'ont permis de rencontrer les dÃ©cideurs clÃ©s. ROI exceptionnel !',
+    content: 'Les événements exclusifs VIP m\'ont permis de rencontrer les décideurs clés. ROI exceptionnel !',
     avatar: 'ðŸ‘©â€ðŸ’¼'
   },
   {
     name: 'Jean-Pierre Dubois',
     role: 'Consultant Maritime',
-    content: 'L\'accÃ¨s au networking illimitÃ© vaut largement l\'investissement. Je recommande vivement.',
+    content: 'L\'accès au networking illimité vaut largement l\'investissement. Je recommande vivement.',
     avatar: 'ðŸ‘¨â€ðŸ’¼'
   }
 ];
@@ -116,7 +116,7 @@ export default function VisitorUpgradePage() {
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Pass Gratuit</h3>
                 <div className="text-4xl font-extrabold text-gray-500">0â‚¬</div>
-                <p className="text-gray-600 mt-2">AccÃ¨s limitÃ©</p>
+                <p className="text-gray-600 mt-2">Accès limité</p>
               </div>
               <ul className="space-y-4 mb-8">
                 {freeFeatures.map((feature, index) => (
@@ -151,7 +151,7 @@ export default function VisitorUpgradePage() {
             <Card className="p-8 h-full border-4 border-yellow-400 bg-gradient-to-br from-yellow-50 to-white relative shadow-2xl">
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                 <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 px-6 py-2 rounded-full font-bold shadow-lg">
-                  â­ RECOMMANDÃ‰
+                  â­ RECOMMANDÉ
                 </div>
               </div>
               <div className="text-center mb-6 mt-4">
@@ -163,7 +163,7 @@ export default function VisitorUpgradePage() {
                   <div className="text-2xl font-bold text-gray-400 line-through">950â‚¬</div>
                   <div className="text-5xl font-extrabold text-yellow-600">700â‚¬</div>
                 </div>
-                <p className="text-gray-700 mt-2 font-semibold">AccÃ¨s complet 3 jours</p>
+                <p className="text-gray-700 mt-2 font-semibold">Accès complet 3 jours</p>
               </div>
               <ul className="space-y-4 mb-8">
                 {vipFeatures.map((feature, index) => (
@@ -205,9 +205,9 @@ export default function VisitorUpgradePage() {
               <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Calendar className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="text-xl font-bold mb-2">RDV B2B StratÃ©giques</h3>
+              <h3 className="text-xl font-bold mb-2">RDV B2B Stratégiques</h3>
               <p className="text-gray-600">
-                10 demandes actives pour rencontrer les dÃ©cideurs clÃ©s. LibÃ©ration automatique aprÃ¨s rÃ©ponse.
+                10 demandes actives pour rencontrer les décideurs clés. Libération automatique après réponse.
               </p>
             </motion.div>
 
@@ -222,7 +222,7 @@ export default function VisitorUpgradePage() {
               </div>
               <h3 className="text-xl font-bold mb-2">Networking Premium</h3>
               <p className="text-gray-600">
-                AccÃ¨s illimitÃ© aux Ã©vÃ©nements exclusifs : gala, dÃ©jeuners, lounge privÃ© avec 500+ dÃ©cideurs.
+                Accès illimité aux événements exclusifs : gala, déjeuners, lounge privé avec 500+ décideurs.
               </p>
             </motion.div>
 
@@ -235,9 +235,9 @@ export default function VisitorUpgradePage() {
               <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Shield className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="text-xl font-bold mb-2">Badge Ultra-SÃ©curisÃ©</h3>
+              <h3 className="text-xl font-bold mb-2">Badge Ultra-Sécurisé</h3>
               <p className="text-gray-600">
-                Badge premium avec photo et QR code cryptÃ©. AccÃ¨s prioritaire Ã  toutes les zones VIP.
+                Badge premium avec photo et QR code crypté. Accès prioritaire à toutes les zones VIP.
               </p>
             </motion.div>
           </div>
@@ -277,8 +277,8 @@ export default function VisitorUpgradePage() {
           <Zap className="h-16 w-16 mx-auto mb-6 text-yellow-300" />
           <h2 className="text-4xl font-bold mb-4">ROI Garanti</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Nos membres VIP gÃ©nÃ¨rent en moyenne <span className="font-bold text-yellow-300">15 000â‚¬</span> de
-            nouvelles opportunitÃ©s commerciales lors du salon. Investissez 700â‚¬, rÃ©coltez des milliers.
+            Nos membres VIP génèrent en moyenne <span className="font-bold text-yellow-300">15 000â‚¬</span> de
+            nouvelles opportunités commerciales lors du salon. Investissez 700â‚¬, récoltez des milliers.
           </p>
           <Button
             onClick={handleUpgrade}
@@ -293,19 +293,19 @@ export default function VisitorUpgradePage() {
 
         {/* FAQ Quick */}
         <div className="mt-16 max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-8">Questions frÃ©quentes</h2>
+          <h2 className="text-3xl font-bold text-center mb-8">Questions fréquentes</h2>
           <div className="space-y-4">
             <Card className="p-6">
               <h3 className="font-bold mb-2">ðŸ’³ Quels moyens de paiement acceptez-vous ?</h3>
               <p className="text-gray-600">Cartes bancaires (Visa, Mastercard), PayPal, et cartes marocaines (CMI).</p>
             </Card>
             <Card className="p-6">
-              <h3 className="font-bold mb-2">â±ï¸ L'accÃ¨s est immÃ©diat aprÃ¨s paiement ?</h3>
-              <p className="text-gray-600">Oui ! Votre compte est activÃ© instantanÃ©ment et vous recevez votre badge VIP par email.</p>
+              <h3 className="font-bold mb-2">â±ï¸ L'accès est immédiat après paiement ?</h3>
+              <p className="text-gray-600">Oui ! Votre compte est activé instantanément et vous recevez votre badge VIP par email.</p>
             </Card>
             <Card className="p-6">
-              <h3 className="font-bold mb-2">ðŸ”„ Puis-je annuler aprÃ¨s paiement ?</h3>
-              <p className="text-gray-600">Remboursement complet possible jusqu'Ã  30 jours avant l'Ã©vÃ©nement.</p>
+              <h3 className="font-bold mb-2">ðŸ”„ Puis-je annuler après paiement ?</h3>
+              <p className="text-gray-600">Remboursement complet possible jusqu'à 30 jours avant l'événement.</p>
             </Card>
           </div>
         </div>

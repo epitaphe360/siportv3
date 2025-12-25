@@ -23,7 +23,7 @@ export const PartnerNetworkingPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSector, setSelectedSector] = useState('');
 
-  // DonnÃ©es mockÃ©es pour les opportunitÃ©s de networking
+  // Données mockées pour les opportunités de networking
   const networkingOpportunities = [
     {
       id: '1',
@@ -47,9 +47,9 @@ export const PartnerNetworkingPage: React.FC = () => {
       company: 'Maritime Data Systems',
       title: 'CTO',
       location: 'Nantes, France',
-      interests: ['Big Data', 'IA', 'CybersÃ©curitÃ©'],
+      interests: ['Big Data', 'IA', 'Cybersécurité'],
       mutualConnections: 5,
-      availability: 'Disponible pour un cafÃ©',
+      availability: 'Disponible pour un café',
       rating: 4.9,
       profileStrength: 98
     },
@@ -63,7 +63,7 @@ export const PartnerNetworkingPage: React.FC = () => {
       location: 'Toulouse, France',
       interests: ['R&D', 'Innovation', 'Formation'],
       mutualConnections: 2,
-      availability: 'En dÃ©placement jusqu\'Ã  vendredi',
+      availability: 'En déplacement jusqu\'à vendredi',
       rating: 4.7,
       profileStrength: 92
     },
@@ -71,11 +71,11 @@ export const PartnerNetworkingPage: React.FC = () => {
       id: '4',
       name: 'Claire Dupont',
       type: 'exhibitor',
-      sector: 'SÃ©curitÃ©',
+      sector: 'Sécurité',
       company: 'SecureMaritime',
-      title: 'Responsable SÃ©curitÃ©',
+      title: 'Responsable Sécurité',
       location: 'Brest, France',
-      interests: ['CybersÃ©curitÃ©', 'ConformitÃ©', 'Audit'],
+      interests: ['Cybersécurité', 'Conformité', 'Audit'],
       mutualConnections: 1,
       availability: 'Disponible demain',
       rating: 4.6,
@@ -85,13 +85,13 @@ export const PartnerNetworkingPage: React.FC = () => {
       id: '5',
       name: 'Michel Bernard',
       type: 'partner',
-      sector: 'IngÃ©nierie',
+      sector: 'Ingénierie',
       company: 'Port Engineering Ltd',
       title: 'Chef de Projet',
       location: 'Bordeaux, France',
-      interests: ['IngÃ©nierie', 'Construction', 'Maintenance'],
+      interests: ['Ingénierie', 'Construction', 'Maintenance'],
       mutualConnections: 4,
-      availability: 'Planning chargÃ©',
+      availability: 'Planning chargé',
       rating: 4.5,
       profileStrength: 87
     },
@@ -124,14 +124,14 @@ export const PartnerNetworkingPage: React.FC = () => {
     'Infrastructure Portuaire',
     'Technologie',
     'Data & Analytics',
-    'SÃ©curitÃ©',
-    'IngÃ©nierie',
+    'Sécurité',
+    'Ingénierie',
     'Logistique',
     'Environnement'
   ];
 
   const handleNetworkingAction = (opportunityId: string, action: string) => {
-    // Ici vous pouvez implÃ©menter les actions rÃ©elles
+    // Ici vous pouvez implémenter les actions réelles
   };
 
   const getTypeIcon = (type: string) => {
@@ -153,7 +153,7 @@ export const PartnerNetworkingPage: React.FC = () => {
   const getAvailabilityColor = (availability: string) => {
     if (availability.includes('Libre') || availability.includes('Disponible')) {
       return 'text-green-600 bg-green-50';
-    } else if (availability.includes('Planning chargÃ©')) {
+    } else if (availability.includes('Planning chargé')) {
       return 'text-yellow-600 bg-yellow-50';
     } else {
       return 'text-gray-600 bg-gray-50';
@@ -169,9 +169,9 @@ export const PartnerNetworkingPage: React.FC = () => {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Retour au tableau de bord
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900">Networking PrivilÃ©giÃ©</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Networking Privilégié</h1>
           <p className="text-gray-600 mt-2">
-            DÃ©couvrez et connectez-vous avec les dÃ©cideurs de l'industrie maritime
+            Découvrez et connectez-vous avec les décideurs de l'industrie maritime
           </p>
         </div>
 
@@ -207,7 +207,7 @@ export const PartnerNetworkingPage: React.FC = () => {
             <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Messages EnvoyÃ©s</p>
+                  <p className="text-sm font-medium text-gray-600">Messages Envoyés</p>
                   <p className="text-3xl font-bold text-purple-600">12</p>
                 </div>
                 <MessageCircle className="h-8 w-8 text-purple-600" />
@@ -219,7 +219,7 @@ export const PartnerNetworkingPage: React.FC = () => {
             <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">RÃ©ponses ReÃ§ues</p>
+                  <p className="text-sm font-medium text-gray-600">Réponses Reçues</p>
                   <p className="text-3xl font-bold text-orange-600">8</p>
                 </div>
                 <Target className="h-8 w-8 text-orange-600" />
@@ -305,7 +305,7 @@ export const PartnerNetworkingPage: React.FC = () => {
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <Star className="h-4 w-4 mr-2 text-yellow-500" />
-                      <span>{opportunity.rating}/5 â€¢ {opportunity.profileStrength}% profil complet</span>
+                      <span>{opportunity.rating}/5 â• {opportunity.profileStrength}% profil complet</span>
                     </div>
                   </div>
 
@@ -315,7 +315,7 @@ export const PartnerNetworkingPage: React.FC = () => {
 
                   {opportunity.interests.length > 0 && (
                     <div className="mb-4">
-                      <h4 className="text-sm font-medium text-gray-900 mb-2">Centres d'intÃ©rÃªt :</h4>
+                      <h4 className="text-sm font-medium text-gray-900 mb-2">Centres d'intérêt :</h4>
                       <div className="flex flex-wrap gap-2">
                         {opportunity.interests.slice(0, 3).map((interest, idx) => (
                           <Badge key={idx} variant="info" size="sm">{interest}</Badge>
@@ -354,10 +354,10 @@ export const PartnerNetworkingPage: React.FC = () => {
           <div className="text-center py-12">
             <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Aucune opportunitÃ© trouvÃ©e
+              Aucune opportunité trouvée
             </h3>
             <p className="text-gray-600">
-              Essayez de modifier vos critÃ¨res de recherche
+              Essayez de modifier vos critères de recherche
             </p>
           </div>
         )}
@@ -381,16 +381,16 @@ export const PartnerNetworkingPage: React.FC = () => {
                     ðŸŽ¯ Profils Prioritaires
                   </h4>
                   <p className="text-sm text-purple-700">
-                    3 contacts identifiÃ©s comme stratÃ©giques pour vos objectifs business
+                    3 contacts identifiés comme stratégiques pour vos objectifs business
                   </p>
                 </div>
 
                 <div className="p-4 bg-white rounded-lg border border-purple-200">
                   <h4 className="font-medium text-purple-900 mb-2">
-                    ðŸ“ˆ OpportunitÃ©s Sectorielles
+                    ðŸ“ˆ Opportunités Sectorielles
                   </h4>
                   <p className="text-sm text-purple-700">
-                    Focus recommandÃ© sur les secteurs Data & Technologie cette semaine
+                    Focus recommandé sur les secteurs Data & Technologie cette semaine
                   </p>
                 </div>
               </div>

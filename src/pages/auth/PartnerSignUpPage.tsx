@@ -27,38 +27,38 @@ import { motion } from 'framer-motion';
 import { Building, Mail, Lock, User, Phone, Globe, Briefcase, MapPin, Languages, AlertCircle, Save } from 'lucide-react';
 import { sendPartnerPaymentInstructions } from '../../services/partnerSignupEmailService';
 
-// Validation renforcÃ©e du mot de passe
+// Validation renforcée du mot de passe
 const passwordSchema = z.string()
-  .min(8, "Le mot de passe doit contenir au moins 8 caractÃ¨res")
+  .min(8, "Le mot de passe doit contenir au moins 8 caractères")
   .regex(/[A-Z]/, "Le mot de passe doit contenir au moins une majuscule")
   .regex(/[a-z]/, "Le mot de passe doit contenir au moins une minuscule")
   .regex(/[0-9]/, "Le mot de passe doit contenir au moins un chiffre")
-  .regex(/[!@#$%^&*(),.?":{}|<>]/, "Le mot de passe doit contenir au moins un caractÃ¨re spÃ©cial");
+  .regex(/[!@#$%^&*(),.?":{}|<>]/, "Le mot de passe doit contenir au moins un caractère spécial");
 
-// Validation du tÃ©lÃ©phone international
+// Validation du téléphone international
 const phoneSchema = z.string()
-  .min(5, "Le numÃ©ro de tÃ©lÃ©phone est requis")
+  .min(5, "Le numéro de téléphone est requis")
   .regex(/^\+?[1-9]\d{1,14}$/, "Format international invalide (ex: +237612345678)");
 
 const partnerSignUpSchema = z.object({
   companyName: z.string().min(2, "Le nom de l'organisation est requis"),
-  sectors: z.array(z.string()).min(1, "SÃ©lectionnez au moins un secteur d'activitÃ©"),
+  sectors: z.array(z.string()).min(1, "Sélectionnez au moins un secteur d'activité"),
   country: z.string().min(2, "Le pays est requis"),
   website: z.string().url("L'URL du site web est invalide").optional().or(z.literal('')),
-  firstName: z.string().min(2, "Le prÃ©nom est requis"),
+  firstName: z.string().min(2, "Le prénom est requis"),
   lastName: z.string().min(2, "Le nom de famille est requis"),
   position: z.string().min(2, "Le poste est requis"),
   email: z.string().email("L'adresse e-mail est invalide"),
   phone: phoneSchema,
   password: passwordSchema,
   confirmPassword: z.string().min(1, "Veuillez confirmer votre mot de passe"),
-  companyDescription: z.string().min(20, "La description doit contenir au moins 20 caractÃ¨res"),
+  companyDescription: z.string().min(20, "La description doit contenir au moins 20 caractères"),
   partnershipType: z.string().min(2, "Le type de partenariat est requis"),
   acceptTerms: z.boolean().refine(val => val === true, {
-    message: "Vous devez accepter les conditions gÃ©nÃ©rales",
+    message: "Vous devez accepter les conditions générales",
   }),
   acceptPrivacy: z.boolean().refine(val => val === true, {
-    message: "Vous devez accepter la politique de confidentialitÃ©",
+    message: "Vous devez accepter la politique de confidentialité",
   }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Les mots de passe ne correspondent pas",
@@ -91,7 +91,7 @@ export default function PartnerSignUpPage() {
   // Watch les valeurs pour la progression
   const watchedFields = watch();
   
-  // Validation email en temps rÃ©el
+  // Validation email en temps réel
   const { suggestion: emailSuggestion } = useEmailValidation(watchedFields.email || '');
 
   // Sauvegarde automatique
@@ -106,13 +106,13 @@ export default function PartnerSignUpPage() {
     const draft = loadFromLocalStorage();
     if (draft) {
       const confirmed = window.confirm(
-        'Un brouillon de formulaire a Ã©tÃ© trouvÃ©. Voulez-vous le reprendre ?'
+        'Un brouillon de formulaire a été trouvé. Voulez-vous le reprendre ?'
       );
       if (confirmed) {
         Object.keys(draft).forEach((key) => {
           setValue(key as any, (draft as any)[key]);
         });
-        toast.success('Brouillon chargÃ© !');
+        toast.success('Brouillon chargé !');
       } else {
         clearLocalStorage();
       }
@@ -124,13 +124,13 @@ export default function PartnerSignUpPage() {
     { value: 'technologie', label: 'Technologie et Innovation' },
     { value: 'finance', label: 'Finance et Banque' },
     { value: 'institutionnel', label: 'Institutionnel et Gouvernemental' },
-    { value: 'media', label: 'MÃ©dias et Communication' },
-    { value: 'energie', label: 'Ã‰nergie et Ressources' },
+    { value: 'media', label: 'Médias et Communication' },
+    { value: 'energie', label: 'Énergie et Ressources' },
     { value: 'agriculture', label: 'Agriculture et Agroalimentaire' },
-    { value: 'sante', label: 'SantÃ© et Bien-Ãªtre' },
-    { value: 'education', label: 'Ã‰ducation et Formation' },
+    { value: 'sante', label: 'Santé et Bien-être' },
+    { value: 'education', label: 'Éducation et Formation' },
     { value: 'immobilier', label: 'Immobilier et Construction' },
-    { value: 'tourisme', label: 'Tourisme et HÃ´tellerie' },
+    { value: 'tourisme', label: 'Tourisme et Hôtellerie' },
     { value: 'industrie', label: 'Industrie et Manufacturing' },
   ];
 
@@ -175,7 +175,7 @@ export default function PartnerSignUpPage() {
     };
 
     try {
-      // ðŸ” ExÃ©cuter reCAPTCHA avant inscription
+      // ðŸ” Exécuter reCAPTCHA avant inscription
       let recaptchaToken: string | undefined;
       if (isRecaptchaReady) {
         try {
@@ -185,7 +185,7 @@ export default function PartnerSignUpPage() {
         }
       }
 
-      // @ts-expect-error - recaptchaToken sera ajoutÃ© Ã  authStore.signUp()
+      // @ts-expect-error - recaptchaToken sera ajouté à authStore.signUp()
       const result = await signUp({ email, password }, finalProfileData, recaptchaToken);
 
       if (result?.error) {
@@ -209,10 +209,10 @@ export default function PartnerSignUpPage() {
         }
       }
 
-      // Supprimer le brouillon aprÃ¨s succÃ¨s
+      // Supprimer le brouillon après succès
       clearLocalStorage();
 
-      toast.success(t.title || 'Inscription rÃ©ussie ! Consultez votre email pour les instructions de paiement.');
+      toast.success(t.title || 'Inscription réussie ! Consultez votre email pour les instructions de paiement.');
       navigate(ROUTES.SIGNUP_SUCCESS);
     } catch (error) {
       console.error("Sign up error:", error);
@@ -231,7 +231,7 @@ export default function PartnerSignUpPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {/* SÃ©lecteur de langue */}
+        {/* Sélecteur de langue */}
         <div className="flex justify-end gap-2">
           {(['fr', 'en', 'ar'] as Language[]).map((lang) => (
             <button
@@ -279,13 +279,13 @@ export default function PartnerSignUpPage() {
                   {errors.companyName && <p className="text-red-500 text-xs mt-1">{errors.companyName.message}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="sectors">Secteur(s) d'activitÃ© *</Label>
+                  <Label htmlFor="sectors">Secteur(s) d'activité *</Label>
                   <MultiSelect
-                    label="Secteurs d'activitÃ©"
+                    label="Secteurs d'activité"
                     options={sectorsOptions}
                     selectedValues={watchedFields.sectors || []}
                     onChange={(values) => setValue('sectors', values)}
-                    placeholder="SÃ©lectionnez vos secteurs d'activitÃ©"
+                    placeholder="Sélectionnez vos secteurs d'activité"
                     maxSelections={3}
                   />
                   {errors.sectors && <p className="text-red-500 text-xs mt-1">{errors.sectors.message}</p>}
@@ -296,7 +296,7 @@ export default function PartnerSignUpPage() {
                     <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 z-10 pointer-events-none" />
                     <Select onValueChange={(value: string) => setValue('country', value)} defaultValue="">
                       <SelectTrigger id="country" className="pl-10">
-                        <SelectValue placeholder="SÃ©lectionnez votre pays" />
+                        <SelectValue placeholder="Sélectionnez votre pays" />
                       </SelectTrigger>
                       <SelectContent>
                         {countries.map((country) => (
@@ -318,14 +318,14 @@ export default function PartnerSignUpPage() {
                   {errors.website && <p className="text-red-500 text-xs mt-1">{errors.website.message}</p>}
                 </div>
                  <div>
-                  <Label htmlFor="partnershipType">Type de partenariat souhaitÃ© *</Label>
+                  <Label htmlFor="partnershipType">Type de partenariat souhaité *</Label>
                   <Select onValueChange={(value: string) => setValue('partnershipType', value)} defaultValue="">
                     <SelectTrigger id="partnershipType">
-                      <SelectValue placeholder="SÃ©lectionnez un type" />
+                      <SelectValue placeholder="Sélectionnez un type" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="institutionnel">Institutionnel</SelectItem>
-                      <SelectItem value="media">MÃ©dia</SelectItem>
+                      <SelectItem value="media">Média</SelectItem>
                       <SelectItem value="technologique">Technologique</SelectItem>
                       <SelectItem value="financier">Financier</SelectItem>
                       <SelectItem value="logistique">Logistique</SelectItem>
@@ -341,10 +341,10 @@ export default function PartnerSignUpPage() {
                 <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Informations de Contact</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="firstName">PrÃ©nom *</Label>
+                    <Label htmlFor="firstName">Prénom *</Label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <Input id="firstName" {...register('firstName')} placeholder="Votre prÃ©nom" className="pl-10" />
+                      <Input id="firstName" {...register('firstName')} placeholder="Votre prénom" className="pl-10" />
                     </div>
                     {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName.message}</p>}
                   </div>
@@ -397,7 +397,7 @@ export default function PartnerSignUpPage() {
                   <p className="text-xs text-gray-500 mt-1">Utilisez votre email professionnel</p>
                 </div>
                 <div>
-                  <Label htmlFor="phone">TÃ©lÃ©phone *</Label>
+                  <Label htmlFor="phone">Téléphone *</Label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <Input 
@@ -419,7 +419,7 @@ export default function PartnerSignUpPage() {
                       id="password" 
                       type="password" 
                       {...register('password')} 
-                      placeholder="CrÃ©ez un mot de passe sÃ©curisÃ©" 
+                      placeholder="Créez un mot de passe sécurisé" 
                       className="pl-10"
                       autoComplete="new-password"
                     />
@@ -452,17 +452,17 @@ export default function PartnerSignUpPage() {
                 id="companyDescription" 
                 {...register('companyDescription')} 
                 rows={4} 
-                placeholder="DÃ©crivez votre organisation, vos activitÃ©s et pourquoi vous souhaitez devenir partenaire de SIPORTS 2026." 
+                placeholder="Décrivez votre organisation, vos activités et pourquoi vous souhaitez devenir partenaire de SIPORTS 2026." 
               />
               {errors.companyDescription && <p className="text-red-500 text-xs mt-1">{errors.companyDescription.message}</p>}
               <p className="text-xs text-gray-500 mt-1">
-                {watchedFields.companyDescription?.length || 0} / 20 caractÃ¨res minimum
+                {watchedFields.companyDescription?.length || 0} / 20 caractères minimum
               </p>
             </div>
 
             {/* CGU et RGPD */}
             <div className="space-y-4 border-t pt-6">
-              <h3 className="text-lg font-medium text-gray-900">Conditions GÃ©nÃ©rales</h3>
+              <h3 className="text-lg font-medium text-gray-900">Conditions Générales</h3>
               
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
@@ -476,7 +476,7 @@ export default function PartnerSignUpPage() {
                     <label htmlFor="acceptTerms" className="text-sm text-gray-700 cursor-pointer">
                       J'accepte les{' '}
                       <Link to={ROUTES.TERMS} target="_blank" className="text-primary-600 hover:text-primary-700 underline">
-                        Conditions GÃ©nÃ©rales d'Utilisation
+                        Conditions Générales d'Utilisation
                       </Link>
                       {' '}* 
                     </label>
@@ -495,9 +495,9 @@ export default function PartnerSignUpPage() {
                     <label htmlFor="acceptPrivacy" className="text-sm text-gray-700 cursor-pointer">
                       J'accepte la{' '}
                       <Link to={ROUTES.PRIVACY} target="_blank" className="text-primary-600 hover:text-primary-700 underline">
-                        Politique de ConfidentialitÃ©
+                        Politique de Confidentialité
                       </Link>
-                      {' '}et consent au traitement de mes donnÃ©es personnelles conformÃ©ment au RGPD *
+                      {' '}et consent au traitement de mes données personnelles conformément au RGPD *
                     </label>
                     {errors.acceptPrivacy && <p className="text-red-500 text-xs mt-1">{errors.acceptPrivacy.message}</p>}
                   </div>
@@ -506,7 +506,7 @@ export default function PartnerSignUpPage() {
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-xs text-blue-900">
-                  <strong>Protection de vos donnÃ©es :</strong> Vos informations personnelles sont sÃ©curisÃ©es et ne seront jamais partagÃ©es avec des tiers sans votre consentement. Vous pouvez exercer vos droits d'accÃ¨s, de rectification et de suppression Ã  tout moment.
+                  <strong>Protection de vos données :</strong> Vos informations personnelles sont sécurisées et ne seront jamais partagées avec des tiers sans votre consentement. Vous pouvez exercer vos droits d'accès, de rectification et de suppression à tout moment.
                 </p>
               </div>
             </div>
@@ -519,13 +519,13 @@ export default function PartnerSignUpPage() {
                 variant="default"
                 data-testid="partner-submit-button"
               >
-                {isLoading ? 'Envoi en cours...' : "PrÃ©visualiser et soumettre"}
+                {isLoading ? 'Envoi en cours...' : "Prévisualiser et soumettre"}
               </Button>
               
               {watchedFields && Object.keys(watchedFields).length > 0 && (
                 <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
                   <Save className="h-3 w-3" />
-                  <span>Brouillon enregistrÃ© automatiquement</span>
+                  <span>Brouillon enregistré automatiquement</span>
                 </div>
               )}
 
@@ -535,7 +535,7 @@ export default function PartnerSignUpPage() {
             </div>
           </form>
 
-          {/* Modal de prÃ©visualisation */}
+          {/* Modal de prévisualisation */}
           <PreviewModal
             isOpen={showPreview}
             onClose={() => setShowPreview(false)}
@@ -544,7 +544,7 @@ export default function PartnerSignUpPage() {
           />
         </Card>
 
-        {/* SÃ©parateur "OU" */}
+        {/* Séparateur "OU" */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300"></div>
@@ -566,7 +566,7 @@ export default function PartnerSignUpPage() {
                 try {
                   setIsGoogleLoading(true);
                   await loginWithGoogle();
-                  toast.success('Connexion avec Google rÃ©ussie !');
+                  toast.success('Connexion avec Google réussie !');
                   navigate('/dashboard');
                 } catch (error) {
                   console.error('Google login error:', error);
@@ -615,7 +615,7 @@ export default function PartnerSignUpPage() {
                 try {
                   setIsLinkedInLoading(true);
                   await loginWithLinkedIn();
-                  toast.success('Connexion avec LinkedIn rÃ©ussie !');
+                  toast.success('Connexion avec LinkedIn réussie !');
                   navigate('/dashboard');
                 } catch (error) {
                   console.error('LinkedIn login error:', error);
@@ -651,7 +651,7 @@ export default function PartnerSignUpPage() {
 
         <div className="text-center">
           <p className="text-sm text-gray-600">
-            Vous avez dÃ©jÃ  un compte ?{' '}
+            Vous avez déjà un compte ?{' '}
             <Link to={ROUTES.LOGIN} className="text-primary-600 hover:text-primary-700 font-medium">
               Se connecter
             </Link>

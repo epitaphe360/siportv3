@@ -13,16 +13,16 @@ const MediaManagerPage: React.FC = () => {
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Gestionnaire de mÃ©dias</h1>
+        <h1 className="text-3xl font-bold mb-2">Gestionnaire de médias</h1>
         <p className="text-gray-600">
-          GÃ©rez tous les fichiers mÃ©dias de la plateforme. Vous pouvez tÃ©lÃ©charger, supprimer,
-          organiser et utiliser les mÃ©dias dans diffÃ©rentes parties de l'application.
+          Gérez tous les fichiers médias de la plateforme. Vous pouvez télécharger, supprimer,
+          organiser et utiliser les médias dans différentes parties de l'application.
         </p>
       </div>
 
       {selectedImage && (
         <div className="mb-8 p-4 bg-gray-100 rounded-lg">
-          <h2 className="text-lg font-semibold mb-2">Image sÃ©lectionnÃ©e</h2>
+          <h2 className="text-lg font-semibold mb-2">Image sélectionnée</h2>
           <div className="flex items-center gap-4">
             <div className="w-32 h-32 border rounded-md overflow-hidden">
               <img 
@@ -43,7 +43,7 @@ const MediaManagerPage: React.FC = () => {
                   type="button"
                   onClick={() => {
                     navigator.clipboard.writeText(selectedImage);
-                    toast.success('URL copiÃ©e dans le presse-papier');
+                    toast.success('URL copiée dans le presse-papier');
                   }}
                   className="bg-blue-500 text-white px-3 py-2 rounded-r-md text-sm"
                 >
@@ -57,7 +57,7 @@ const MediaManagerPage: React.FC = () => {
 
       <AdminMediaManager 
         onImageSelect={handleImageSelect}
-        title="Gestionnaire de mÃ©dias administrateur"
+        title="Gestionnaire de médias administrateur"
         showUploadButton={true}
         maxSelections={1}
       />

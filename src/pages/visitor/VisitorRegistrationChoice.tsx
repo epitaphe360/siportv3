@@ -15,22 +15,22 @@ export default function VisitorRegistrationChoice() {
   const navigate = useNavigate();
 
   const freeFeatures = [
-    'AccÃ¨s au salon SIPORTS 2026',
-    'Badge QR sÃ©curisÃ©',
-    'AccÃ¨s aux zones publiques',
-    'ConfÃ©rences publiques',
+    'Accès au salon SIPORTS 2026',
+    'Badge QR sécurisé',
+    'Accès aux zones publiques',
+    'Conférences publiques',
     'Inscription rapide sans mot de passe',
     'Gratuit - 0 EUR'
   ];
 
   const vipFeatures = [
     'Tous les avantages du Pass Gratuit',
-    'Rendez-vous B2B ILLIMITÃ‰S',
-    'AccÃ¨s zones VIP premium',
-    'Badge ultra-sÃ©curisÃ© avec photo',
+    'Rendez-vous B2B ILLIMITÉS',
+    'Accès zones VIP premium',
+    'Badge ultra-sécurisé avec photo',
     'Networking area exclusif',
-    'Ateliers et confÃ©rences VIP',
-    'Gala de clÃ´ture exclusif',
+    'Ateliers et conférences VIP',
+    'Gala de clôture exclusif',
     'Tableau de bord complet',
     'Support prioritaire',
     '700,00 EUR'
@@ -60,7 +60,7 @@ export default function VisitorRegistrationChoice() {
             Inscription Visiteur
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Choisissez le pass qui correspond Ã  vos besoins pour SIPORTS 2026
+            Choisissez le pass qui correspond à vos besoins pour SIPORTS 2026
           </p>
         </motion.div>
 
@@ -86,7 +86,7 @@ export default function VisitorRegistrationChoice() {
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900">Pass Gratuit</h2>
-                    <p className="text-gray-600">AccÃ¨s salon de base</p>
+                    <p className="text-gray-600">Accès salon de base</p>
                   </div>
                 </div>
 
@@ -121,7 +121,7 @@ export default function VisitorRegistrationChoice() {
                 {/* Info */}
                 <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
                   <p className="text-xs text-green-800">
-                    âœ… Aucun mot de passe requis â€¢ Badge envoyÃ© par email
+                    âœ… Aucun mot de passe requis â• Badge envoyé par email
                   </p>
                 </div>
               </div>
@@ -150,7 +150,7 @@ export default function VisitorRegistrationChoice() {
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900">Pass Premium VIP</h2>
-                    <p className="text-gray-600">AccÃ¨s complet et exclusif</p>
+                    <p className="text-gray-600">Accès complet et exclusif</p>
                   </div>
                 </div>
 
@@ -162,7 +162,7 @@ export default function VisitorRegistrationChoice() {
                     </span>
                     <span className="text-2xl text-gray-600 ml-2">EUR</span>
                   </div>
-                  <p className="text-sm text-gray-500 mt-1">Paiement sÃ©curisÃ© unique</p>
+                  <p className="text-sm text-gray-500 mt-1">Paiement sécurisé unique</p>
                 </div>
 
                 {/* Features */}
@@ -190,10 +190,10 @@ export default function VisitorRegistrationChoice() {
                 {/* Highlight */}
                 <div className="mt-4 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-300">
                   <p className="text-sm font-semibold text-gray-900 mb-2">
-                    ðŸŽ¯ Rendez-vous B2B ILLIMITÃ‰S
+                    ðŸŽ¯ Rendez-vous B2B ILLIMITÉS
                   </p>
                   <p className="text-xs text-gray-700">
-                    Planifiez autant de meetings stratÃ©giques que vous le souhaitez avec les exposants et partenaires du salon.
+                    Planifiez autant de meetings stratégiques que vous le souhaitez avec les exposants et partenaires du salon.
                   </p>
                 </div>
               </div>
@@ -211,41 +211,41 @@ export default function VisitorRegistrationChoice() {
           <Card className="overflow-hidden">
             <div className="p-6 bg-gradient-to-r from-gray-50 to-gray-100">
               <h3 className="text-xl font-bold text-gray-900 text-center mb-2">
-                Comparaison dÃ©taillÃ©e
+                Comparaison détaillée
               </h3>
               <p className="text-gray-600 text-center text-sm">
-                Choisissez le pass adaptÃ© Ã  vos objectifs
+                Choisissez le pass adapté à vos objectifs
               </p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-100">
                   <tr>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">FonctionnalitÃ©</th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Fonctionnalité</th>
                     <th className="px-6 py-3 text-center text-sm font-semibold text-green-700">Pass Gratuit</th>
                     <th className="px-6 py-3 text-center text-sm font-semibold text-yellow-700">Pass VIP Premium</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   <tr className="hover:bg-gray-50">
-                    <td className="px-6 py-4 text-sm text-gray-900">AccÃ¨s au salon</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">Accès au salon</td>
                     <td className="px-6 py-4 text-center">âœ…</td>
                     <td className="px-6 py-4 text-center">âœ…</td>
                   </tr>
                   <tr className="hover:bg-gray-50">
-                    <td className="px-6 py-4 text-sm text-gray-900">Badge QR sÃ©curisÃ©</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">Badge QR sécurisé</td>
                     <td className="px-6 py-4 text-center">âœ… Simple</td>
                     <td className="px-6 py-4 text-center">âœ… Avec photo</td>
                   </tr>
                   <tr className="hover:bg-gray-50">
-                    <td className="px-6 py-4 text-sm text-gray-900">ConfÃ©rences publiques</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">Conférences publiques</td>
                     <td className="px-6 py-4 text-center">âœ…</td>
                     <td className="px-6 py-4 text-center">âœ…</td>
                   </tr>
                   <tr className="hover:bg-gray-50 bg-yellow-50">
                     <td className="px-6 py-4 text-sm font-semibold text-gray-900">Rendez-vous B2B</td>
                     <td className="px-6 py-4 text-center text-gray-400">âŒ 0</td>
-                    <td className="px-6 py-4 text-center text-yellow-700 font-bold">âœ… ILLIMITÃ‰S</td>
+                    <td className="px-6 py-4 text-center text-yellow-700 font-bold">âœ… ILLIMITÉS</td>
                   </tr>
                   <tr className="hover:bg-gray-50">
                     <td className="px-6 py-4 text-sm text-gray-900">Tableau de bord</td>
@@ -263,7 +263,7 @@ export default function VisitorRegistrationChoice() {
                     <td className="px-6 py-4 text-center">âœ…</td>
                   </tr>
                   <tr className="hover:bg-gray-50">
-                    <td className="px-6 py-4 text-sm text-gray-900">Gala de clÃ´ture</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">Gala de clôture</td>
                     <td className="px-6 py-4 text-center text-gray-400">âŒ</td>
                     <td className="px-6 py-4 text-center">âœ…</td>
                   </tr>
@@ -286,19 +286,19 @@ export default function VisitorRegistrationChoice() {
           className="mt-12 max-w-3xl mx-auto text-center"
         >
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-            <h3 className="font-semibold text-gray-900 mb-3">Questions frÃ©quentes</h3>
+            <h3 className="font-semibold text-gray-900 mb-3">Questions fréquentes</h3>
             <div className="space-y-2 text-sm text-gray-700 text-left">
               <p>
                 <strong>Q: Puis-je passer du Pass Gratuit au Pass VIP plus tard ?</strong><br />
-                R: Oui, vous pourrez upgrader votre compte Ã  tout moment depuis votre badge.
+                R: Oui, vous pourrez upgrader votre compte à tout moment depuis votre badge.
               </p>
               <p>
-                <strong>Q: Le paiement est-il sÃ©curisÃ© ?</strong><br />
-                R: Oui, nous utilisons Stripe, PayPal et CMI pour des paiements 100% sÃ©curisÃ©s.
+                <strong>Q: Le paiement est-il sécurisé ?</strong><br />
+                R: Oui, nous utilisons Stripe, PayPal et CMI pour des paiements 100% sécurisés.
               </p>
               <p>
                 <strong>Q: Comment recevoir mon badge ?</strong><br />
-                R: Pass Gratuit : badge envoyÃ© par email immÃ©diatement. Pass VIP : badge avec photo envoyÃ© aprÃ¨s validation du paiement.
+                R: Pass Gratuit : badge envoyé par email immédiatement. Pass VIP : badge avec photo envoyé après validation du paiement.
               </p>
             </div>
           </div>
@@ -311,7 +311,7 @@ export default function VisitorRegistrationChoice() {
             onClick={() => navigate(ROUTES.HOME)}
             className="text-gray-600 hover:text-gray-900"
           >
-            â† Retour Ã  l'accueil
+            â† Retour à l'accueil
           </Button>
         </div>
       </div>

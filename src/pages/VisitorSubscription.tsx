@@ -71,7 +71,7 @@ export default function VisitorSubscription() {
 
     // Pour le niveau premium : créer une demande de paiement par virement bancaire
     try {
-      // VÃ©rifier si une demande pending existe dÃ©jÃ 
+      // Vérifier si une demande pending existe déjà
       const { data: existingRequests, error: checkError } = await supabase
         .from('payment_requests')
         .select('*')

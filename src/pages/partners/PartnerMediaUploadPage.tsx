@@ -24,10 +24,10 @@ export const PartnerMediaUploadPage: React.FC = () => {
   const mediaTypes: { value: MediaType; label: string; icon: any }[] = [
     { value: 'webinar', label: 'Webinaire', icon: Video },
     { value: 'podcast', label: 'Podcast', icon: Mic },
-    { value: 'capsule', label: 'Capsule vidÃ©o', icon: ImageIcon },
+    { value: 'capsule', label: 'Capsule vidéo', icon: ImageIcon },
     { value: 'live', label: 'Live Studio', icon: Video },
     { value: 'moment', label: 'Best Moment', icon: FileText },
-    { value: 'testimonial', label: 'TÃ©moignage', icon: Video }
+    { value: 'testimonial', label: 'Témoignage', icon: Video }
   ];
 
   const categories = [
@@ -36,7 +36,7 @@ export const PartnerMediaUploadPage: React.FC = () => {
     'Supply Chain',
     'Innovation',
     'Digital',
-    'DÃ©veloppement Durable',
+    'Développement Durable',
     'E-commerce',
     'Industrie 4.0'
   ];
@@ -55,11 +55,11 @@ export const PartnerMediaUploadPage: React.FC = () => {
         like_count: 0
       });
       
-      alert('MÃ©dia uploadÃ© avec succÃ¨s ! Il sera visible aprÃ¨s validation par l\'Ã©quipe SIPORT.');
+      alert('Média uploadé avec succès ! Il sera visible après validation par l\'équipe SIPORT.');
       navigate('/partner/media');
     } catch (error) {
       console.error('Erreur upload:', error);
-      alert('Erreur lors de l\'upload du mÃ©dia');
+      alert('Erreur lors de l\'upload du média');
     } finally {
       setLoading(false);
     }
@@ -74,17 +74,17 @@ export const PartnerMediaUploadPage: React.FC = () => {
         <div className="mb-8">
           <Link to="/partner/media" className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour Ã  ma bibliothÃ¨que
+            Retour à ma bibliothèque
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900">Uploader un MÃ©dia</h1>
-          <p className="mt-2 text-gray-600">Partagez vos contenus avec la communautÃ© SIPORT</p>
+          <h1 className="text-3xl font-bold text-gray-900">Uploader un Média</h1>
+          <p className="mt-2 text-gray-600">Partagez vos contenus avec la communauté SIPORT</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-8">
-          {/* Type de mÃ©dia */}
+          {/* Type de média */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-3">Type de mÃ©dia *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-3">Type de média *</label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {mediaTypes.map((type) => {
                 const Icon = type.icon;
@@ -125,7 +125,7 @@ export const PartnerMediaUploadPage: React.FC = () => {
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Titre accrocheur de votre mÃ©dia"
+              placeholder="Titre accrocheur de votre média"
             />
           </div>
 
@@ -141,14 +141,14 @@ export const PartnerMediaUploadPage: React.FC = () => {
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="DÃ©crivez le contenu de votre mÃ©dia..."
+              placeholder="Décrivez le contenu de votre média..."
             />
           </div>
 
-          {/* CatÃ©gorie */}
+          {/* Catégorie */}
           <div className="mb-6">
             <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
-              CatÃ©gorie *
+              Catégorie *
             </label>
             <select
               id="category"
@@ -157,17 +157,17 @@ export const PartnerMediaUploadPage: React.FC = () => {
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value="">SÃ©lectionner une catÃ©gorie</option>
+              <option value="">Sélectionner une catégorie</option>
               {categories.map((cat) => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
             </select>
           </div>
 
-          {/* URL vidÃ©o/audio */}
+          {/* URL vidéo/audio */}
           <div className="mb-6">
             <label htmlFor="videoUrl" className="block text-sm font-medium text-gray-700 mb-2">
-              URL du mÃ©dia *
+              URL du média *
             </label>
             <input
               type="url"
@@ -179,7 +179,7 @@ export const PartnerMediaUploadPage: React.FC = () => {
               placeholder="https://youtube.com/watch?v=..."
             />
             <p className="mt-2 text-sm text-gray-500">
-              Lien YouTube, Vimeo ou autre plateforme d'hÃ©bergement
+              Lien YouTube, Vimeo ou autre plateforme d'hébergement
             </p>
           </div>
 
@@ -198,10 +198,10 @@ export const PartnerMediaUploadPage: React.FC = () => {
             />
           </div>
 
-          {/* DurÃ©e */}
+          {/* Durée */}
           <div className="mb-6">
             <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-2">
-              DurÃ©e (minutes) *
+              Durée (minutes) *
             </label>
             <input
               type="number"
@@ -218,7 +218,7 @@ export const PartnerMediaUploadPage: React.FC = () => {
           {/* Tags */}
           <div className="mb-6">
             <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-2">
-              Tags (sÃ©parÃ©s par des virgules)
+              Tags (séparés par des virgules)
             </label>
             <input
               type="text"
@@ -238,7 +238,7 @@ export const PartnerMediaUploadPage: React.FC = () => {
               className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               <Upload className="w-5 h-5" />
-              {loading ? 'Upload en cours...' : 'Uploader le mÃ©dia'}
+              {loading ? 'Upload en cours...' : 'Uploader le média'}
             </button>
             <Link
               to="/partner/media"
@@ -249,7 +249,7 @@ export const PartnerMediaUploadPage: React.FC = () => {
           </div>
 
           <p className="mt-4 text-sm text-gray-500">
-            * Votre mÃ©dia sera soumis Ã  validation avant publication
+            * Votre média sera soumis à validation avant publication
           </p>
         </form>
       </div>

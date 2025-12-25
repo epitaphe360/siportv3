@@ -27,14 +27,14 @@ export default function MediaDetailPage() {
       try {
         const data = await MediaService.getMediaById(id);
         if (!data) {
-          toast.error("MÃ©dia non trouvÃ©");
+          toast.error("Média non trouvé");
           navigate(ROUTES.MEDIA_LIBRARY);
           return;
         }
         setMedia(data);
       } catch (err) {
         console.error("Error fetching media:", err);
-        toast.error("Erreur lors du chargement du mÃ©dia");
+        toast.error("Erreur lors du chargement du média");
       } finally {
         setIsLoading(false);
       }
@@ -62,7 +62,7 @@ export default function MediaDetailPage() {
           className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-8 transition-colors"
         >
           <ArrowLeft className="h-5 w-5 mr-2" />
-          Retour Ã  la mÃ©diathÃ¨que
+          Retour à la médiathèque
         </Link>
 
         {/* Video Player Section */}
@@ -86,7 +86,7 @@ export default function MediaDetailPage() {
           <div className="absolute bottom-6 left-6 right-6 text-white">
             <div className="flex items-center space-x-3 mb-2">
               <Badge className="bg-blue-600 text-white border-0">
-                {media.type?.toUpperCase() || 'MÃ‰DIA'}
+                {media.type?.toUpperCase() || 'MÉDIA'}
               </Badge>
               <span className="text-sm font-medium opacity-80 flex items-center">
                 <Clock className="h-4 w-4 mr-1" />
@@ -135,15 +135,15 @@ export default function MediaDetailPage() {
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-bold text-blue-900 flex items-center">
                   <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
-                  RÃ©sumÃ© IA & Transcription
+                  Résumé IA & Transcription
                 </h3>
-                <Badge variant="outline" className="border-blue-200 text-blue-700">BÃªta</Badge>
+                <Badge variant="outline" className="border-blue-200 text-blue-700">Bêta</Badge>
               </div>
               <p className="text-blue-800/80 italic">
-                "La transformation digitale des ports marocains s'accÃ©lÃ¨re avec l'adoption massive de l'IA et de la 5G. Ce webinaire explore comment ces technologies optimisent la chaÃ®ne logistique et renforcent la compÃ©titivitÃ© du secteur maritime national..."
+                "La transformation digitale des ports marocains s'accélère avec l'adoption massive de l'IA et de la 5G. Ce webinaire explore comment ces technologies optimisent la chaîne logistique et renforcent la compétitivité du secteur maritime national..."
               </p>
               <Button variant="link" className="mt-4 p-0 text-blue-600 font-bold">
-                Lire la transcription complÃ¨te
+                Lire la transcription complète
               </Button>
             </Card>
           </div>
@@ -154,7 +154,7 @@ export default function MediaDetailPage() {
               <div className="space-y-4">
                 <Button className="w-full bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200">
                   <Download className="h-4 w-4 mr-2" />
-                  TÃ©lÃ©charger les ressources
+                  Télécharger les ressources
                 </Button>
                 <div className="flex gap-2">
                   <Button variant="outline" className="flex-1">
@@ -170,9 +170,9 @@ export default function MediaDetailPage() {
 
               <div className="mt-8 pt-8 border-t space-y-4">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">PubliÃ© le</span>
+                  <span className="text-gray-500">Publié le</span>
                   <span className="font-medium text-gray-900">
-                    {media.published_at ? new Date(media.published_at).toLocaleDateString('fr-FR') : 'Non publiÃ©'}
+                    {media.published_at ? new Date(media.published_at).toLocaleDateString('fr-FR') : 'Non publié'}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
@@ -180,8 +180,8 @@ export default function MediaDetailPage() {
                   <span className="font-medium text-gray-900">{(media.views_count || 0).toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">CatÃ©gorie</span>
-                  <Badge variant="secondary">{media.category || 'Non classÃ©'}</Badge>
+                  <span className="text-gray-500">Catégorie</span>
+                  <Badge variant="secondary">{media.category || 'Non classé'}</Badge>
                 </div>
               </div>
             </Card>

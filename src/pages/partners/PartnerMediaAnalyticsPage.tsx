@@ -35,7 +35,7 @@ export const PartnerMediaAnalyticsPage: React.FC = () => {
       setMedia(data);
       calculateStats(data);
     } catch (error) {
-      console.error('Erreur chargement mÃ©dias:', error);
+      console.error('Erreur chargement médias:', error);
     } finally {
       setLoading(false);
     }
@@ -67,9 +67,9 @@ export const PartnerMediaAnalyticsPage: React.FC = () => {
         <div className="mb-8">
           <Link to="/partner/media" className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour Ã  ma bibliothÃ¨que
+            Retour à ma bibliothèque
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900">Analytics MÃ©dias</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Analytics Médias</h1>
           <p className="mt-2 text-gray-600">Suivez les performances de vos contenus</p>
         </div>
 
@@ -107,7 +107,7 @@ export const PartnerMediaAnalyticsPage: React.FC = () => {
               <Clock className="w-8 h-8 opacity-80" />
               <BarChart3 className="w-5 h-5 opacity-60" />
             </div>
-            <p className="text-sm opacity-90">DurÃ©e moyenne</p>
+            <p className="text-sm opacity-90">Durée moyenne</p>
             <p className="text-3xl font-bold mt-1">{Math.round(stats.avgViewDuration)} min</p>
           </div>
         </div>
@@ -145,10 +145,10 @@ export const PartnerMediaAnalyticsPage: React.FC = () => {
           </div>
         )}
 
-        {/* Liste des mÃ©dias avec stats */}
+        {/* Liste des médias avec stats */}
         <div className="bg-white rounded-lg shadow">
           <div className="p-6 border-b border-gray-200">
-            <h2 className="text-xl font-bold text-gray-900">Performance par mÃ©dia</h2>
+            <h2 className="text-xl font-bold text-gray-900">Performance par média</h2>
           </div>
           
           {loading ? (
@@ -159,12 +159,12 @@ export const PartnerMediaAnalyticsPage: React.FC = () => {
           ) : media.length === 0 ? (
             <div className="p-12 text-center">
               <BarChart3 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">Aucun mÃ©dia publiÃ©</p>
+              <p className="text-gray-600">Aucun média publié</p>
               <Link 
                 to="/partner/media/upload"
                 className="mt-4 inline-block text-blue-600 hover:text-blue-700"
               >
-                Uploader votre premier mÃ©dia
+                Uploader votre premier média
               </Link>
             </div>
           ) : (
@@ -173,7 +173,7 @@ export const PartnerMediaAnalyticsPage: React.FC = () => {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      MÃ©dia
+                      Média
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Type

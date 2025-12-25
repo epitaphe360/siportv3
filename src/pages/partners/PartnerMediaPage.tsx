@@ -33,37 +33,37 @@ export const PartnerMediaPage: React.FC = () => {
         id: '1',
         title: 'Interview BFM Business',
         date: '15 Jan 2024',
-        description: 'Discussion sur l\'innovation dans les ports franÃ§ais',
+        description: 'Discussion sur l\'innovation dans les ports français',
         reach: '2.5M',
         duration: '8 min',
-        status: 'DiffusÃ©'
+        status: 'Diffusé'
       },
       {
         id: '2',
-        title: 'Reportage France 3 RÃ©gions',
+        title: 'Reportage France 3 Régions',
         date: '22 Jan 2024',
         description: 'Focus sur la transformation digitale des infrastructures portuaires',
         reach: '1.8M',
         duration: '12 min',
-        status: 'DiffusÃ©'
+        status: 'Diffusé'
       },
       {
         id: '3',
-        title: 'Ã‰mission Ã©conomique M6',
+        title: 'Émission économique M6',
         date: '28 Jan 2024',
         description: 'Table ronde sur l\'avenir de l\'industrie maritime',
         reach: '3.2M',
         duration: '15 min',
-        status: 'ProgrammÃ©'
+        status: 'Programmé'
       }
     ],
     press: [
       {
         id: '1',
-        title: 'Article Les Ã‰chos',
-        outlet: 'Les Ã‰chos',
+        title: 'Article Les Échos',
+        outlet: 'Les Échos',
         date: '10 Jan 2024',
-        headline: 'SIPORTS rÃ©volutionne le networking dans l\'industrie maritime',
+        headline: 'SIPORTS révolutionne le networking dans l\'industrie maritime',
         excerpt: 'La plateforme innovante facilite les connexions entre acteurs du secteur...',
         reach: '850K',
         sentiment: 'positive'
@@ -74,7 +74,7 @@ export const PartnerMediaPage: React.FC = () => {
         outlet: 'L\'Express',
         date: '18 Jan 2024',
         headline: 'Les nouveaux visages de l\'innovation portuaire',
-        excerpt: 'Rencontre avec l\'Ã©quipe derriÃ¨re SIPORTS, la plateforme qui transforme...',
+        excerpt: 'Rencontre avec l\'équipe derrière SIPORTS, la plateforme qui transforme...',
         reach: '650K',
         sentiment: 'positive'
       },
@@ -83,8 +83,8 @@ export const PartnerMediaPage: React.FC = () => {
         title: 'Tribune Le Monde',
         outlet: 'Le Monde',
         date: '25 Jan 2024',
-        headline: 'Digitalisation : les ports franÃ§ais en premiÃ¨re ligne',
-        excerpt: 'Comment SIPORTS accompagne la transformation numÃ©rique du secteur...',
+        headline: 'Digitalisation : les ports français en première ligne',
+        excerpt: 'Comment SIPORTS accompagne la transformation numérique du secteur...',
         reach: '1.2M',
         sentiment: 'positive'
       }
@@ -102,7 +102,7 @@ export const PartnerMediaPage: React.FC = () => {
       {
         id: '2',
         platform: 'Twitter',
-        content: 'Tweet viral sur la durabilitÃ©',
+        content: 'Tweet viral sur la durabilité',
         date: '20 Jan 2024',
         engagement: '890 partages, 234 RT',
         reach: '78K',
@@ -111,7 +111,7 @@ export const PartnerMediaPage: React.FC = () => {
       {
         id: '3',
         platform: 'Instagram',
-        content: 'Story Ã©vÃ©nement partenaire',
+        content: 'Story événement partenaire',
         date: '27 Jan 2024',
         engagement: '456 commentaires, 89K vues',
         reach: '32K',
@@ -123,17 +123,17 @@ export const PartnerMediaPage: React.FC = () => {
         id: '1',
         type: 'Interview',
         media: 'France Inter',
-        date: '5 FÃ©vrier 2024',
-        topic: 'Ã‰conomie bleue et innovation',
-        status: 'ConfirmÃ©'
+        date: '5 Février 2024',
+        topic: 'Économie bleue et innovation',
+        status: 'Confirmé'
       },
       {
         id: '2',
         type: 'Article',
         media: 'Challenges',
-        date: '12 FÃ©vrier 2024',
+        date: '12 Février 2024',
         topic: 'Startups et transformation digitale',
-        status: 'En prÃ©paration'
+        status: 'En préparation'
       }
     ]
   };
@@ -150,20 +150,20 @@ export const PartnerMediaPage: React.FC = () => {
 
   const getSentimentLabel = (sentiment: string) => {
     switch (sentiment) {
-      case 'very_positive': return 'TrÃ¨s positif';
+      case 'very_positive': return 'Très positif';
       case 'positive': return 'Positif';
       case 'neutral': return 'Neutre';
-      case 'negative': return 'NÃ©gatif';
+      case 'negative': return 'Négatif';
       default: return sentiment;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'DiffusÃ©': return 'text-green-600 bg-green-50';
-      case 'ProgrammÃ©': return 'text-blue-600 bg-blue-50';
-      case 'ConfirmÃ©': return 'text-purple-600 bg-purple-50';
-      case 'En prÃ©paration': return 'text-yellow-600 bg-yellow-50';
+      case 'Diffusé': return 'text-green-600 bg-green-50';
+      case 'Programmé': return 'text-blue-600 bg-blue-50';
+      case 'Confirmé': return 'text-purple-600 bg-purple-50';
+      case 'En préparation': return 'text-yellow-600 bg-yellow-50';
       default: return 'text-gray-600 bg-gray-50';
     }
   };
@@ -184,10 +184,10 @@ export const PartnerMediaPage: React.FC = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                MÃ©dias & Communication
+                Médias & Communication
               </h1>
               <p className="text-gray-600">
-                Suivez votre couverture mÃ©diatique et votre prÃ©sence dans les mÃ©dias
+                Suivez votre couverture médiatique et votre présence dans les médias
               </p>
             </div>
           </div>
@@ -196,9 +196,9 @@ export const PartnerMediaPage: React.FC = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <Crown className="h-5 w-5 text-blue-600" />
-                <span className="text-blue-800 font-medium">Couverture MÃ©diatique Premium</span>
+                <span className="text-blue-800 font-medium">Couverture Médiatique Premium</span>
                 <Badge className="bg-blue-100 text-blue-800" size="sm">
-                  Temps RÃ©el
+                  Temps Réel
                 </Badge>
               </div>
               <div className="flex gap-3">
@@ -207,7 +207,7 @@ export const PartnerMediaPage: React.FC = () => {
                   className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   <Upload className="w-4 h-4" />
-                  Uploader un mÃ©dia
+                  Uploader un média
                 </Link>
                 <Link
                   to={ROUTES.PARTNER_MEDIA_ANALYTICS}
@@ -221,7 +221,7 @@ export const PartnerMediaPage: React.FC = () => {
                   className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
                 >
                   <Library className="w-4 h-4" />
-                  BibliothÃ¨que
+                  Bibliothèque
                 </Link>
               </div>
             </div>
@@ -238,7 +238,7 @@ export const PartnerMediaPage: React.FC = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold text-gray-900">{mediaData.overview.totalMentions}</p>
-                  <p className="text-sm text-gray-600">Mentions mÃ©dias</p>
+                  <p className="text-sm text-gray-600">Mentions médias</p>
                 </div>
               </div>
             </div>
@@ -280,7 +280,7 @@ export const PartnerMediaPage: React.FC = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold text-gray-900">{mediaData.overview.mediaValue.toLocaleString()}â‚¬</p>
-                  <p className="text-sm text-gray-600">Valeur mÃ©dia</p>
+                  <p className="text-sm text-gray-600">Valeur média</p>
                 </div>
               </div>
             </div>
@@ -292,7 +292,7 @@ export const PartnerMediaPage: React.FC = () => {
           <div className="p-6">
             <div className="flex items-center space-x-3 mb-6">
               <Tv className="h-6 w-6 text-blue-600" />
-              <h3 className="text-lg font-semibold text-gray-900">TÃ©lÃ©vision</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Télévision</h3>
             </div>
 
             <div className="space-y-4">
@@ -308,7 +308,7 @@ export const PartnerMediaPage: React.FC = () => {
                     <p className="text-gray-600 text-sm mb-2">{item.description}</p>
                     <div className="flex items-center space-x-4 text-sm text-gray-500">
                       <span>ðŸ“… {item.date}</span>
-                      <span>ðŸ‘ï¸ {item.reach} tÃ©lÃ©spectateurs</span>
+                      <span>ðŸ‘ï¸ {item.reach} téléspectateurs</span>
                       <span>â±ï¸ {item.duration}</span>
                     </div>
                   </div>
@@ -324,7 +324,7 @@ export const PartnerMediaPage: React.FC = () => {
           <div className="p-6">
             <div className="flex items-center space-x-3 mb-6">
               <Newspaper className="h-6 w-6 text-green-600" />
-              <h3 className="text-lg font-semibold text-gray-900">Presse Ã‰crite</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Presse Écrite</h3>
             </div>
 
             <div className="space-y-4">
@@ -343,7 +343,7 @@ export const PartnerMediaPage: React.FC = () => {
                   <h5 className="font-medium text-gray-900 mb-2">{item.headline}</h5>
                   <p className="text-gray-600 text-sm mb-3">{item.excerpt}</p>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">PortÃ©e estimÃ©e: {item.reach}</span>
+                    <span className="text-sm text-gray-500">Portée estimée: {item.reach}</span>
                     <ExternalLink className="h-4 w-4 text-gray-400 hover:text-gray-600 cursor-pointer" />
                   </div>
                 </div>
@@ -357,7 +357,7 @@ export const PartnerMediaPage: React.FC = () => {
           <div className="p-6">
             <div className="flex items-center space-x-3 mb-6">
               <Share2 className="h-6 w-6 text-purple-600" />
-              <h3 className="text-lg font-semibold text-gray-900">RÃ©seaux Sociaux</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Réseaux Sociaux</h3>
             </div>
 
             <div className="space-y-4">
@@ -389,7 +389,7 @@ export const PartnerMediaPage: React.FC = () => {
           <div className="p-6">
             <div className="flex items-center space-x-3 mb-6">
               <Calendar className="h-6 w-6 text-orange-600" />
-              <h3 className="text-lg font-semibold text-gray-900">Ã‰vÃ©nements MÃ©diatiques Ã  Venir</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Événements Médiatiques à Venir</h3>
             </div>
 
             <div className="space-y-4">

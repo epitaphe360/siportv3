@@ -30,7 +30,7 @@ export const MediaManagementPage: React.FC = () => {
       });
       setMedia(data);
     } catch (error) {
-      console.error('Erreur chargement mÃ©dias:', error);
+      console.error('Erreur chargement médias:', error);
     } finally {
       setLoading(false);
     }
@@ -66,7 +66,7 @@ export const MediaManagementPage: React.FC = () => {
   };
 
   const handleDelete = async (mediaId: string) => {
-    if (confirm('ÃŠtes-vous sÃ»r de vouloir supprimer ce mÃ©dia ?')) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce média ?')) {
       try {
         await mediaService.deleteMedia(mediaId);
         await loadMedia();
@@ -86,8 +86,8 @@ export const MediaManagementPage: React.FC = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Retour au dashboard
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900">Gestion des MÃ©dias</h1>
-          <p className="mt-2 text-gray-600">Validez, modÃ©rez et gÃ©rez tous les contenus mÃ©dias</p>
+          <h1 className="text-3xl font-bold text-gray-900">Gestion des Médias</h1>
+          <p className="mt-2 text-gray-600">Validez, modérez et gérez tous les contenus médias</p>
         </div>
 
         {/* Stats Cards */}
@@ -95,7 +95,7 @@ export const MediaManagementPage: React.FC = () => {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total MÃ©dias</p>
+                <p className="text-sm text-gray-600">Total Médias</p>
                 <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
               </div>
               <Play className="w-8 h-8 text-blue-500" />
@@ -115,7 +115,7 @@ export const MediaManagementPage: React.FC = () => {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">ApprouvÃ©s</p>
+                <p className="text-sm text-gray-600">Approuvés</p>
                 <p className="text-2xl font-bold text-green-600">{stats.approved}</p>
               </div>
               <CheckCircle className="w-8 h-8 text-green-500" />
@@ -125,7 +125,7 @@ export const MediaManagementPage: React.FC = () => {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">RejetÃ©s</p>
+                <p className="text-sm text-gray-600">Rejetés</p>
                 <p className="text-2xl font-bold text-red-600">{stats.rejected}</p>
               </div>
               <XCircle className="w-8 h-8 text-red-500" />
@@ -156,7 +156,7 @@ export const MediaManagementPage: React.FC = () => {
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                {status === 'all' ? 'Tous' : status === 'pending' ? 'En attente' : status === 'approved' ? 'ApprouvÃ©s' : 'RejetÃ©s'}
+                {status === 'all' ? 'Tous' : status === 'pending' ? 'En attente' : status === 'approved' ? 'Approuvés' : 'Rejetés'}
               </button>
             ))}
           </div>
@@ -171,7 +171,7 @@ export const MediaManagementPage: React.FC = () => {
         ) : media.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-12 text-center">
             <Play className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600">Aucun mÃ©dia trouvÃ©</p>
+            <p className="text-gray-600">Aucun média trouvé</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -186,7 +186,7 @@ export const MediaManagementPage: React.FC = () => {
                         item.status === 'pending' ? 'bg-orange-100 text-orange-800' :
                         'bg-red-100 text-red-800'
                       }`}>
-                        {item.status === 'published' ? 'PubliÃ©' : item.status === 'pending' ? 'En attente' : 'RejetÃ©'}
+                        {item.status === 'published' ? 'Publié' : item.status === 'pending' ? 'En attente' : 'Rejeté'}
                       </span>
                       <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
                         {item.type}
@@ -202,8 +202,8 @@ export const MediaManagementPage: React.FC = () => {
                         <TrendingUp className="w-4 h-4" />
                         {item.like_count || 0} likes
                       </span>
-                      <span>DurÃ©e: {item.duration || 0} min</span>
-                      <span>CrÃ©Ã© le {new Date(item.created_at).toLocaleDateString('fr-FR')}</span>
+                      <span>Durée: {item.duration || 0} min</span>
+                      <span>Créé le {new Date(item.created_at).toLocaleDateString('fr-FR')}</span>
                     </div>
                   </div>
 

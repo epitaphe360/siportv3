@@ -28,7 +28,7 @@ export default function RegistrationSuccessPage() {
             });
           } else {
             navigate(ROUTES.LOGIN, {
-              state: { message: 'Inscription rÃ©ussie ! Votre compte est en attente de validation.' }
+              state: { message: 'Inscription réussie ! Votre compte est en attente de validation.' }
             });
           }
           return 0;
@@ -87,8 +87,8 @@ export default function RegistrationSuccessPage() {
               className="text-3xl font-bold text-center text-gray-900 mb-4"
             >
               {accountType === 'visitor'
-                ? 'ðŸŽ‰ Compte crÃ©Ã© !'
-                : 'âœ… Inscription rÃ©ussie !'}
+                ? 'ðŸŽ‰ Compte créé !'
+                : 'âœ… Inscription réussie !'}
             </motion.h1>
 
             {/* Description */}
@@ -101,7 +101,7 @@ export default function RegistrationSuccessPage() {
               {accountType === 'visitor' ? (
                 <>
                   <p className="text-center text-gray-700">
-                    FÃ©licitations ! Votre compte visiteur a Ã©tÃ© crÃ©Ã© avec succÃ¨s.
+                    Félicitations ! Votre compte visiteur a été créé avec succès.
                   </p>
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                     <p className="text-sm text-gray-600">
@@ -109,13 +109,13 @@ export default function RegistrationSuccessPage() {
                     </p>
                   </div>
                   <p className="text-sm text-gray-500 text-center">
-                    Vous pouvez maintenant accÃ©der Ã  toutes les fonctionnalitÃ©s de SIPORTS 2026 et explorer les innovations portuaires.
+                    Vous pouvez maintenant accéder à toutes les fonctionnalités de SIPORTS 2026 et explorer les innovations portuaires.
                   </p>
                 </>
               ) : (
                 <>
                   <p className="text-center text-gray-700">
-                    Votre demande d'inscription a Ã©tÃ© reÃ§ue avec succÃ¨s.
+                    Votre demande d'inscription a été reçue avec succès.
                   </p>
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                     <p className="text-sm text-gray-600">
@@ -127,7 +127,7 @@ export default function RegistrationSuccessPage() {
                       â³ Votre compte est en attente de validation
                     </p>
                     <p className="text-xs text-gray-500 text-center mt-2">
-                      Notre Ã©quipe d'administrateurs examinera votre demande. Vous recevrez un email de confirmation une fois votre compte validÃ©.
+                      Notre équipe d'administrateurs examinera votre demande. Vous recevrez un email de confirmation une fois votre compte validé.
                     </p>
                   </div>
                 </>
@@ -171,7 +171,7 @@ export default function RegistrationSuccessPage() {
                 className="mt-8 pt-6 border-t border-gray-200"
               >
                 <p className="text-sm font-semibold text-gray-900 mb-3">
-                  Vous avez accÃ¨s Ã  :
+                  Vous avez accès à :
                 </p>
                 <ul className="space-y-2">
                   <li className="flex items-center text-sm text-gray-600">
@@ -180,7 +180,7 @@ export default function RegistrationSuccessPage() {
                   </li>
                   <li className="flex items-center text-sm text-gray-600">
                     <CheckCircle className="h-4 w-4 text-green-600 mr-3" />
-                    Programme des confÃ©rences
+                    Programme des conférences
                   </li>
                   <li className="flex items-center text-sm text-gray-600">
                     <CheckCircle className="h-4 w-4 text-green-600 mr-3" />
@@ -188,7 +188,7 @@ export default function RegistrationSuccessPage() {
                   </li>
                   <li className="flex items-center text-sm text-gray-600">
                     <CheckCircle className="h-4 w-4 text-green-600 mr-3" />
-                    RÃ©seau professionnel
+                    Réseau professionnel
                   </li>
                 </ul>
               </motion.div>

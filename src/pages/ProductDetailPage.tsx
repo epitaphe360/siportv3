@@ -47,22 +47,22 @@ export default function ProductDetailPage() {
 
   const contactExhibitor = () => {
     // Optionally this page could receive exhibitor email via location state; fallback toast
-    toast.info("Contactez l'exposant depuis sa page dÃ©taillÃ©e");
+    toast.info("Contactez l'exposant depuis sa page détaillée");
     if (exhibitorId) navigate(`/exhibitors/${exhibitorId}`);
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">Chargement du produitâ€¦</div>
+      <div className="min-h-screen flex items-center justify-center">Chargement du produitâ…</div>
     );
   }
 
   if (error || !product) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-center p-6">
-        <p className="text-red-600 mb-4">{error || 'Produit non trouvÃ©'}</p>
+        <p className="text-red-600 mb-4">{error || 'Produit non trouvé'}</p>
         {exhibitorId && (
-          <Link to={`/exhibitors/${exhibitorId}`} className="text-blue-600 underline">Retour Ã  l'exposant</Link>
+          <Link to={`/exhibitors/${exhibitorId}`} className="text-blue-600 underline">Retour à l'exposant</Link>
         )}
       </div>
     );
@@ -106,14 +106,14 @@ export default function ProductDetailPage() {
 
               {product.specifications && (
                 <Card className="p-4 mb-6">
-                  <h3 className="font-semibold mb-2">SpÃ©cifications</h3>
+                  <h3 className="font-semibold mb-2">Spécifications</h3>
                   <p className="text-sm text-gray-700 whitespace-pre-line">{product.specifications}</p>
                 </Card>
               )}
 
               {product.technicalSpecs && product.technicalSpecs.length > 0 && (
                 <Card className="p-4 mb-6">
-                  <h3 className="font-semibold mb-2">CaractÃ©ristiques techniques</h3>
+                  <h3 className="font-semibold mb-2">Caractéristiques techniques</h3>
                   <ul className="list-disc pl-6 text-sm text-gray-700">
                     {product.technicalSpecs.map((s, i) => (
                       <li key={i}>{s.name}: {s.value}{s.unit ? ` ${s.unit}` : ''}</li>

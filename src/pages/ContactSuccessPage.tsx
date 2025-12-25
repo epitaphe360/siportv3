@@ -11,7 +11,7 @@ export default function ContactSuccessPage() {
   const location = useLocation();
   const { firstName, email, messageId } = location.state || {};
 
-  // Si pas de donnÃ©es (accÃ¨s direct Ã  la page), rediriger vers contact
+  // Si pas de données (accès direct à la page), rediriger vers contact
   if (!firstName || !email) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
@@ -22,10 +22,10 @@ export default function ContactSuccessPage() {
             </div>
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Aucun message trouvÃ©
+            Aucun message trouvé
           </h1>
           <p className="text-gray-600 mb-6">
-            Il semblerait que vous ayez accÃ©dÃ© Ã  cette page directement. Veuillez remplir le formulaire de contact pour nous envoyer un message.
+            Il semblerait que vous ayez accédé à cette page directement. Veuillez remplir le formulaire de contact pour nous envoyer un message.
           </p>
           <Link to={ROUTES.CONTACT}>
             <Button className="w-full bg-blue-600 hover:bg-blue-700">
@@ -51,12 +51,12 @@ export default function ContactSuccessPage() {
 
           {/* Title */}
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Message envoyÃ© avec succÃ¨s !
+            Message envoyé avec succès !
           </h1>
 
           {/* Personalized message */}
           <p className="text-lg text-gray-600 mb-8">
-            Merci <span className="font-semibold text-gray-900">{firstName}</span> pour votre message. Notre Ã©quipe vous rÃ©pondra dans les plus brefs dÃ©lais Ã  l'adresse{' '}
+            Merci <span className="font-semibold text-gray-900">{firstName}</span> pour votre message. Notre équipe vous répondra dans les plus brefs délais à l'adresse{' '}
             <span className="font-semibold text-blue-600">{email}</span>.
           </p>
 
@@ -68,7 +68,7 @@ export default function ContactSuccessPage() {
             <ul className="text-left space-y-3 text-gray-700">
               <li className="flex items-start">
                 <span className="text-blue-600 mr-2">âœ“</span>
-                <span>Votre message a Ã©tÃ© enregistrÃ© dans notre systÃ¨me{messageId ? ` (RÃ©f: ${messageId.substring(0, 8)})` : ''}</span>
+                <span>Votre message a été enregistré dans notre système{messageId ? ` (Réf: ${messageId.substring(0, 8)})` : ''}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-blue-600 mr-2">âœ“</span>
@@ -76,11 +76,11 @@ export default function ContactSuccessPage() {
               </li>
               <li className="flex items-start">
                 <span className="text-blue-600 mr-2">âœ“</span>
-                <span>Notre Ã©quipe vous rÃ©pondra sous 24-48 heures ouvrÃ©es</span>
+                <span>Notre équipe vous répondra sous 24-48 heures ouvrées</span>
               </li>
               <li className="flex items-start">
                 <span className="text-blue-600 mr-2">âœ“</span>
-                <span>VÃ©rifiez vos spams si vous ne recevez pas notre rÃ©ponse</span>
+                <span>Vérifiez vos spams si vous ne recevez pas notre réponse</span>
               </li>
             </ul>
           </div>
@@ -88,15 +88,15 @@ export default function ContactSuccessPage() {
           {/* Call to action */}
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6 mb-8">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              En attendant notre rÃ©ponse...
+              En attendant notre réponse...
             </h3>
             <p className="text-gray-700 mb-4">
-              DÃ©couvrez les exposants, Ã©vÃ©nements et pavillons de SIPORTS 2026
+              Découvrez les exposants, événements et pavillons de SIPORTS 2026
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link to={ROUTES.EXHIBITORS}>
                 <Button variant="outline" className="w-full sm:w-auto border-blue-600 text-blue-600 hover:bg-blue-50">
-                  DÃ©couvrir les exposants
+                  Découvrir les exposants
                 </Button>
               </Link>
               <Link to={ROUTES.EVENTS}>
@@ -111,14 +111,14 @@ export default function ContactSuccessPage() {
           <Link to={ROUTES.HOME}>
             <Button className="w-full bg-blue-600 hover:bg-blue-700">
               <Home className="h-4 w-4 mr-2" />
-              Retour Ã  l'accueil
+              Retour à l'accueil
             </Button>
           </Link>
 
           {/* Support contact */}
           <div className="mt-8 pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-500">
-              Besoin d'aide immÃ©diate ?{' '}
+              Besoin d'aide immédiate ?{' '}
               <a
                 href="mailto:contact@siportevent.com"
                 className="text-blue-600 hover:text-blue-800 font-medium"

@@ -32,19 +32,19 @@ export const PartnerSupportPage: React.FC = () => {
     recentTickets: [
       {
         id: 'T-2024-001',
-        title: 'ProblÃ¨me d\'accÃ¨s Ã  la plateforme analytics',
+        title: 'Problème d\'accès à la plateforme analytics',
         status: 'En cours',
         priority: 'high',
         category: 'Technique',
         createdAt: '2024-01-15 09:30',
         lastUpdate: '2024-01-15 11:45',
         assignedTo: 'Marie Dupont',
-        description: 'Impossible d\'accÃ©der aux rapports de performance depuis ce matin.'
+        description: 'Impossible d\'accéder aux rapports de performance depuis ce matin.'
       },
       {
         id: 'T-2024-002',
-        title: 'Demande de formation Ã©quipe commerciale',
-        status: 'RÃ©solu',
+        title: 'Demande de formation équipe commerciale',
+        status: 'Résolu',
         priority: 'medium',
         category: 'Formation',
         createdAt: '2024-01-12 14:20',
@@ -54,21 +54,21 @@ export const PartnerSupportPage: React.FC = () => {
       },
       {
         id: 'T-2024-003',
-        title: 'Mise Ã  jour des informations sociÃ©tÃ©',
+        title: 'Mise à jour des informations société',
         status: 'En attente',
         priority: 'low',
         category: 'Administratif',
         createdAt: '2024-01-10 08:15',
         lastUpdate: '2024-01-10 08:15',
         assignedTo: 'Sophie Bernard',
-        description: 'Changement d\'adresse et numÃ©ro de tÃ©lÃ©phone Ã  mettre Ã  jour.'
+        description: 'Changement d\'adresse et numéro de téléphone à mettre à jour.'
       }
     ],
     supportCategories: [
       {
         name: 'Support Technique',
         icon: <Zap className="h-6 w-6" />,
-        description: 'ProblÃ¨mes techniques, bugs, intÃ©grations',
+        description: 'Problèmes techniques, bugs, intégrations',
         tickets: 12,
         avgResolution: '4h 30m'
       },
@@ -89,15 +89,15 @@ export const PartnerSupportPage: React.FC = () => {
       {
         name: 'Administratif',
         icon: <FileText className="h-6 w-6" />,
-        description: 'Mises Ã  jour profil, documents, accÃ¨s',
+        description: 'Mises à jour profil, documents, accès',
         tickets: 4,
         avgResolution: '2h 15m'
       }
     ],
     quickActions: [
       {
-        title: 'CrÃ©er un ticket',
-        description: 'Signaler un problÃ¨me ou faire une demande',
+        title: 'Créer un ticket',
+        description: 'Signaler un problème ou faire une demande',
         icon: <MessageSquare className="h-5 w-5" />,
         action: 'new-ticket'
       },
@@ -109,13 +109,13 @@ export const PartnerSupportPage: React.FC = () => {
       },
       {
         title: 'Base de connaissances',
-        description: 'Trouver des rÃ©ponses aux questions frÃ©quentes',
+        description: 'Trouver des réponses aux questions fréquentes',
         icon: <BookOpen className="h-5 w-5" />,
         action: 'knowledge-base'
       },
       {
         title: 'Planifier une formation',
-        description: 'RÃ©server une session de formation personnalisÃ©e',
+        description: 'Réserver une session de formation personnalisée',
         icon: <Calendar className="h-5 w-5" />,
         action: 'schedule-training'
       }
@@ -125,9 +125,9 @@ export const PartnerSupportPage: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'En cours': return 'text-blue-600 bg-blue-50';
-      case 'RÃ©solu': return 'text-green-600 bg-green-50';
+      case 'Résolu': return 'text-green-600 bg-green-50';
       case 'En attente': return 'text-yellow-600 bg-yellow-50';
-      case 'FermÃ©': return 'text-gray-600 bg-gray-50';
+      case 'Fermé': return 'text-gray-600 bg-gray-50';
       default: return 'text-gray-600 bg-gray-50';
     }
   };
@@ -169,7 +169,7 @@ export const PartnerSupportPage: React.FC = () => {
                 Support Partenaire
               </h1>
               <p className="text-gray-600">
-                Assistance technique, formation et support commercial dÃ©diÃ©s
+                Assistance technique, formation et support commercial dédiés
               </p>
             </div>
           </div>
@@ -179,7 +179,7 @@ export const PartnerSupportPage: React.FC = () => {
               <CheckCircle className="h-5 w-5 text-blue-600" />
               <span className="text-blue-800 font-medium">Support Premium 24/7</span>
               <Badge className="bg-blue-100 text-blue-800" size="sm">
-                Temps de rÃ©ponse: 2h 15m
+                Temps de réponse: 2h 15m
               </Badge>
             </div>
           </div>
@@ -209,7 +209,7 @@ export const PartnerSupportPage: React.FC = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold text-gray-900">{supportData.overview.resolvedThisMonth}</p>
-                  <p className="text-sm text-gray-600">RÃ©solus ce mois</p>
+                  <p className="text-sm text-gray-600">Résolus ce mois</p>
                 </div>
               </div>
             </div>
@@ -223,7 +223,7 @@ export const PartnerSupportPage: React.FC = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold text-gray-900">{supportData.overview.averageResponseTime}</p>
-                  <p className="text-sm text-gray-600">Temps de rÃ©ponse moyen</p>
+                  <p className="text-sm text-gray-600">Temps de réponse moyen</p>
                 </div>
               </div>
             </div>
@@ -268,7 +268,7 @@ export const PartnerSupportPage: React.FC = () => {
         {/* Recent Tickets */}
         <Card className="mb-8">
           <div className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Tickets RÃ©cents</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">Tickets Récents</h3>
             <div className="space-y-4">
               {supportData.recentTickets.map((ticket) => (
                 <div key={ticket.id} className="border border-gray-200 rounded-lg p-4">
@@ -291,19 +291,19 @@ export const PartnerSupportPage: React.FC = () => {
 
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
                     <div>
-                      <span className="text-gray-500 text-sm">CatÃ©gorie:</span>
+                      <span className="text-gray-500 text-sm">Catégorie:</span>
                       <div className="font-medium">{ticket.category}</div>
                     </div>
                     <div>
-                      <span className="text-gray-500 text-sm">CrÃ©Ã© le:</span>
+                      <span className="text-gray-500 text-sm">Créé le:</span>
                       <div className="font-medium">{ticket.createdAt}</div>
                     </div>
                     <div>
-                      <span className="text-gray-500 text-sm">DerniÃ¨re MAJ:</span>
+                      <span className="text-gray-500 text-sm">Dernière MAJ:</span>
                       <div className="font-medium">{ticket.lastUpdate}</div>
                     </div>
                     <div>
-                      <span className="text-gray-500 text-sm">AssignÃ© Ã :</span>
+                      <span className="text-gray-500 text-sm">Assigné à:</span>
                       <div className="font-medium">{ticket.assignedTo}</div>
                     </div>
                   </div>
@@ -311,11 +311,11 @@ export const PartnerSupportPage: React.FC = () => {
                   <div className="flex space-x-2">
                     <button className="flex items-center space-x-1 px-3 py-1 bg-blue-50 text-blue-600 rounded text-sm hover:bg-blue-100">
                       <MessageSquare className="h-3 w-3" />
-                      <span>RÃ©pondre</span>
+                      <span>Répondre</span>
                     </button>
                     <button className="flex items-center space-x-1 px-3 py-1 bg-green-50 text-green-600 rounded text-sm hover:bg-green-100">
                       <CheckCircle className="h-3 w-3" />
-                      <span>Marquer rÃ©solu</span>
+                      <span>Marquer résolu</span>
                     </button>
                   </div>
                 </div>
@@ -327,7 +327,7 @@ export const PartnerSupportPage: React.FC = () => {
         {/* Support Categories */}
         <Card className="mb-8">
           <div className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">CatÃ©gories de Support</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">Catégories de Support</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {supportData.supportCategories.map((category, index) => (
                 <div key={category.name} className="border border-gray-200 rounded-lg p-4">
@@ -352,7 +352,7 @@ export const PartnerSupportPage: React.FC = () => {
                       <div className="font-medium">{category.tickets}</div>
                     </div>
                     <div>
-                      <span className="text-gray-500 text-sm">RÃ©solution moyenne:</span>
+                      <span className="text-gray-500 text-sm">Résolution moyenne:</span>
                       <div className="font-medium">{category.avgResolution}</div>
                     </div>
                   </div>
@@ -378,8 +378,8 @@ export const PartnerSupportPage: React.FC = () => {
               <div className="text-center">
                 <div className="bg-white p-4 rounded-lg border border-blue-200">
                   <Phone className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                  <h4 className="font-medium text-blue-900 mb-1">Support TÃ©lÃ©phonique</h4>
-                  <p className="text-sm text-blue-700 mb-2">24/7 - Disponible immÃ©diatement</p>
+                  <h4 className="font-medium text-blue-900 mb-1">Support Téléphonique</h4>
+                  <p className="text-sm text-blue-700 mb-2">24/7 - Disponible immédiatement</p>
                   <p className="text-blue-600 font-medium">01 23 45 67 89</p>
                 </div>
               </div>
@@ -388,7 +388,7 @@ export const PartnerSupportPage: React.FC = () => {
                 <div className="bg-white p-4 rounded-lg border border-blue-200">
                   <Mail className="h-8 w-8 text-blue-600 mx-auto mb-2" />
                   <h4 className="font-medium text-blue-900 mb-1">Support Email</h4>
-                  <p className="text-sm text-blue-700 mb-2">RÃ©ponse sous 2h</p>
+                  <p className="text-sm text-blue-700 mb-2">Réponse sous 2h</p>
                   <p className="text-blue-600 font-medium">support@sipors.fr</p>
                 </div>
               </div>
@@ -398,7 +398,7 @@ export const PartnerSupportPage: React.FC = () => {
                   <HelpCircle className="h-8 w-8 text-blue-600 mx-auto mb-2" />
                   <h4 className="font-medium text-blue-900 mb-1">Chat en Ligne</h4>
                   <p className="text-sm text-blue-700 mb-2">Disponible 8h-18h</p>
-                  <p className="text-blue-600 font-medium">Chat en bas Ã  droite</p>
+                  <p className="text-blue-600 font-medium">Chat en bas à droite</p>
                 </div>
               </div>
             </div>

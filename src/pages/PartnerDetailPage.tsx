@@ -86,7 +86,7 @@ interface Partner {
   projects: Project[];
 }
 
-// Les donnÃ©es du partenaire sont maintenant chargÃ©es depuis Supabase
+// Les données du partenaire sont maintenant chargées depuis Supabase
 
 export default function PartnerDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -111,7 +111,7 @@ export default function PartnerDetailPage() {
         if (data) {
           setPartner(data);
         } else {
-          setError("Partenaire non trouvÃ©");
+          setError("Partenaire non trouvé");
         }
       } catch (err) {
         console.error("Erreur chargement partenaire:", err);
@@ -145,10 +145,10 @@ export default function PartnerDetailPage() {
             <AlertCircle className="h-8 w-8 text-red-600" />
           </div>
           <h3 className="text-xl font-bold text-gray-900 mb-2">
-            Partenaire non trouvÃ©
+            Partenaire non trouvé
           </h3>
           <p className="text-gray-600 mb-6">
-            {error || "Le partenaire que vous recherchez n'existe pas ou a Ã©tÃ© supprimÃ©."}
+            {error || "Le partenaire que vous recherchez n'existe pas ou a été supprimé."}
           </p>
           <Link to={ROUTES.PARTNERS}>
             <Button>
@@ -209,9 +209,9 @@ export default function PartnerDetailPage() {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'completed': return 'TerminÃ©';
+      case 'completed': return 'Terminé';
       case 'active': return 'En cours';
-      case 'planned': return 'PlanifiÃ©';
+      case 'planned': return 'Planifié';
       default: return status;
     }
   };
@@ -224,7 +224,7 @@ export default function PartnerDetailPage() {
   const handleShare = () => {
     const shareData = {
       title: partner.name,
-      text: `DÃ©couvrez ${partner.name} - ${partner.description}`,
+      text: `Découvrez ${partner.name} - ${partner.description}`,
       url: window.location.href
     };
 
@@ -233,7 +233,7 @@ export default function PartnerDetailPage() {
     } else {
       // Fallback: copier le lien dans le presse-papiers
       navigator.clipboard.writeText(shareData.url);
-      toast.success('Lien copiÃ© dans le presse-papiers !');
+      toast.success('Lien copié dans le presse-papiers !');
     }
   };
 
@@ -362,7 +362,7 @@ export default function PartnerDetailPage() {
                 <div className="text-2xl font-bold text-gray-900 mb-1">
                   {new Date().getFullYear() - partner.establishedYear}+
                 </div>
-                <div className="text-sm text-gray-600">AnnÃ©es d'expÃ©rience</div>
+                <div className="text-sm text-gray-600">Années d'expérience</div>
               </Card>
 
               <Card className="text-center p-6">
@@ -372,7 +372,7 @@ export default function PartnerDetailPage() {
                 <div className="text-2xl font-bold text-gray-900 mb-1">
                   {partner.employees}
                 </div>
-                <div className="text-sm text-gray-600">EmployÃ©s</div>
+                <div className="text-sm text-gray-600">Employés</div>
               </Card>
 
               <Card className="text-center p-6">
@@ -487,7 +487,7 @@ export default function PartnerDetailPage() {
                         onClick={() => handleViewProjectDetails(project)}
                       >
                         <Eye className="h-4 w-4 mr-2" />
-                        Voir les dÃ©tails
+                        Voir les détails
                       </Button>
                     </div>
                   </Card>
@@ -517,7 +517,7 @@ export default function PartnerDetailPage() {
                   
                   <div className="text-center p-6 bg-blue-50 rounded-lg">
                     <div className="text-3xl font-bold text-blue-600 mb-2">3.2Mâ‚¬</div>
-                    <div className="text-sm text-blue-700">Valeur GÃ©nÃ©rÃ©e</div>
+                    <div className="text-sm text-blue-700">Valeur Générée</div>
                   </div>
                   
                   <div className="text-center p-6 bg-purple-50 rounded-lg">
@@ -601,7 +601,7 @@ export default function PartnerDetailPage() {
         )}
       </div>
 
-      {/* Modal DÃ©tails Projet */}
+      {/* Modal Détails Projet */}
       {showProjectModal && selectedProject && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <motion.div
@@ -663,10 +663,10 @@ export default function PartnerDetailPage() {
                 </p>
               </div>
 
-              {/* DÃ©tails Techniques */}
+              {/* Détails Techniques */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">DÃ©tails Techniques</h4>
+                  <h4 className="font-semibold text-gray-900 mb-3">Détails Techniques</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Statut:</span>
@@ -675,12 +675,12 @@ export default function PartnerDetailPage() {
                       </Badge>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">DÃ©but:</span>
+                      <span className="text-gray-600">Début:</span>
                       <span className="font-medium">{formatDate(selectedProject.startDate)}</span>
                     </div>
                     {selectedProject.endDate && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Fin prÃ©vue:</span>
+                        <span className="text-gray-600">Fin prévue:</span>
                         <span className="font-medium">{formatDate(selectedProject.endDate)}</span>
                       </div>
                     )}
@@ -689,7 +689,7 @@ export default function PartnerDetailPage() {
                       <span className="font-bold text-green-600">{selectedProject.budget}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Ã‰quipe:</span>
+                      <span className="text-gray-600">Équipe:</span>
                       <span className="font-medium">
                         {selectedProject.status === 'completed' ? '45 experts' : 
                          selectedProject.status === 'active' ? '32 experts' : '15 experts'}
@@ -743,9 +743,9 @@ export default function PartnerDetailPage() {
                 </div>
               </div>
 
-              {/* Technologies UtilisÃ©es */}
+              {/* Technologies Utilisées */}
               <div className="mb-6">
-                <h4 className="font-semibold text-gray-900 mb-3">Technologies UtilisÃ©es</h4>
+                <h4 className="font-semibold text-gray-900 mb-3">Technologies Utilisées</h4>
                 <div className="flex flex-wrap gap-2">
                   {selectedProject.technologies.map((tech: string, index: number) => (
                     <Badge key={index} variant="info" size="sm">
@@ -829,7 +829,7 @@ export default function PartnerDetailPage() {
               <div className="flex space-x-4">
                 <Button variant="default" className="flex-1" onClick={handleContact}>
                   <MessageCircle className="h-4 w-4 mr-2" />
-                  Contacter l'Ã‰quipe Projet
+                  Contacter l'Équipe Projet
                 </Button>
                 <Button variant="default" onClick={handleShare}>
                   <Share2 className="h-4 w-4 mr-2" />
@@ -920,7 +920,7 @@ export default function PartnerDetailPage() {
                     variant="default"
                     className="flex-1"
                     onClick={() => {
-                      toast.success('Message envoyÃ© avec succÃ¨s !');
+                      toast.success('Message envoyé avec succès !');
                       setShowContactModal(false);
                     }}
                   >

@@ -28,7 +28,7 @@ export const MediaLibraryPage: React.FC = () => {
       const data = await mediaService.getMedia(filters);
       setMedia(data);
     } catch (error) {
-      console.error('Erreur chargement mÃ©dias:', error);
+      console.error('Erreur chargement médias:', error);
     } finally {
       setLoading(false);
     }
@@ -68,7 +68,7 @@ export const MediaLibraryPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link to={ROUTES.HOME} className="inline-flex items-center text-white/80 hover:text-white mb-6">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour Ã  l'accueil
+            Retour à l'accueil
           </Link>
           
           <div className="flex items-center space-x-4 mb-4">
@@ -76,7 +76,7 @@ export const MediaLibraryPage: React.FC = () => {
               <Library className="w-8 h-8" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold mb-2">BibliothÃ¨que MÃ©dia</h1>
+              <h1 className="text-4xl font-bold mb-2">Bibliothèque Média</h1>
               <p className="text-xl text-white/90">Tous les contenus SIPORT en un seul endroit</p>
             </div>
           </div>
@@ -100,7 +100,7 @@ export const MediaLibraryPage: React.FC = () => {
               <p className="text-2xl font-bold">{stats.capsules}</p>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
-              <p className="text-white/70 text-xs mb-1">TÃ©moignages</p>
+              <p className="text-white/70 text-xs mb-1">Témoignages</p>
               <p className="text-2xl font-bold">{stats.testimonials}</p>
             </div>
           </div>
@@ -115,7 +115,7 @@ export const MediaLibraryPage: React.FC = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
-                placeholder="Rechercher dans tous les mÃ©dias..."
+                placeholder="Rechercher dans tous les médias..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -137,7 +137,7 @@ export const MediaLibraryPage: React.FC = () => {
                 <option value="capsule_inside">Capsules Inside</option>
                 <option value="live_studio">Live Studio</option>
                 <option value="best_moments">Best Moments</option>
-                <option value="testimonial">TÃ©moignages</option>
+                <option value="testimonial">Témoignages</option>
               </select>
             </div>
 
@@ -148,7 +148,7 @@ export const MediaLibraryPage: React.FC = () => {
             >
               {categories.map(cat => (
                 <option key={cat} value={cat}>
-                  {cat === 'all' ? 'Toutes les catÃ©gories' : cat}
+                  {cat === 'all' ? 'Toutes les catégories' : cat}
                 </option>
               ))}
             </select>
@@ -163,7 +163,7 @@ export const MediaLibraryPage: React.FC = () => {
         ) : filteredMedia.length === 0 ? (
           <div className="text-center py-20">
             <Library className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">Aucun mÃ©dia trouvÃ©</h3>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">Aucun média trouvé</h3>
             <p className="text-gray-500">Essayez de modifier vos filtres de recherche</p>
           </div>
         ) : (

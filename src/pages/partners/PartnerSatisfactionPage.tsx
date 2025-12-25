@@ -25,9 +25,9 @@ export const PartnerSatisfactionPage: React.FC = () => {
       recommendation: 100
     },
     categories: [
-      { name: 'QualitÃ© des Ã©vÃ©nements', score: 95, icon: Award },
-      { name: 'Support rÃ©activitÃ©', score: 92, icon: MessageSquare },
-      { name: 'ROI perÃ§u', score: 98, icon: TrendingUp },
+      { name: 'Qualité des événements', score: 95, icon: Award },
+      { name: 'Support réactivité', score: 92, icon: MessageSquare },
+      { name: 'ROI perçu', score: 98, icon: TrendingUp },
       { name: 'Recommandation NPS', score: 96, icon: Heart }
     ],
     testimonials: [
@@ -36,7 +36,7 @@ export const PartnerSatisfactionPage: React.FC = () => {
         name: 'Marie Dubois',
         company: 'Port Solutions Inc.',
         rating: 5,
-        comment: 'Partenaire exceptionnel, toujours Ã  l\'Ã©coute et trÃ¨s rÃ©actif. La qualitÃ© des Ã©vÃ©nements est remarquable.',
+        comment: 'Partenaire exceptionnel, toujours à l\'écoute et très réactif. La qualité des événements est remarquable.',
         date: '2024-01-15'
       },
       {
@@ -44,7 +44,7 @@ export const PartnerSatisfactionPage: React.FC = () => {
         name: 'Pierre Martin',
         company: 'TechMarine Solutions',
         rating: 5,
-        comment: 'Excellente visibilitÃ© et retours sur investissement. L\'Ã©quipe est professionnelle et les rÃ©sultats dÃ©passent nos attentes.',
+        comment: 'Excellente visibilité et retours sur investissement. L\'équipe est professionnelle et les résultats dépassent nos attentes.',
         date: '2024-01-12'
       },
       {
@@ -52,15 +52,15 @@ export const PartnerSatisfactionPage: React.FC = () => {
         name: 'Sophie Bernard',
         company: 'LogiFlow Systems',
         rating: 5,
-        comment: 'Partenariat trÃ¨s bÃ©nÃ©fique pour notre dÃ©veloppement. La plateforme SIPORTS offre une visibilitÃ© incomparable.',
+        comment: 'Partenariat très bénéfique pour notre développement. La plateforme SIPORTS offre une visibilité incomparable.',
         date: '2024-01-10'
       },
       {
         id: '4',
-        name: 'Jean-FranÃ§ois Moreau',
+        name: 'Jean-François Moreau',
         company: 'Maritime Tech Hub',
         rating: 5,
-        comment: 'Les Ã©vÃ©nements sont d\'une qualitÃ© exceptionnelle et le networking est trÃ¨s efficace. Hautement recommandÃ©.',
+        comment: 'Les événements sont d\'une qualité exceptionnelle et le networking est très efficace. Hautement recommandé.',
         date: '2024-01-08'
       },
       {
@@ -68,26 +68,26 @@ export const PartnerSatisfactionPage: React.FC = () => {
         name: 'Claire Leroy',
         company: 'Port Innovation',
         rating: 4,
-        comment: 'TrÃ¨s satisfait du partenariat. Quelques amÃ©liorations possibles sur la communication mais globalement excellent.',
+        comment: 'Très satisfait du partenariat. Quelques améliorations possibles sur la communication mais globalement excellent.',
         date: '2024-01-05'
       }
     ],
     improvements: [
       {
         category: 'Communication',
-        suggestion: 'Augmenter la frÃ©quence des newsletters partenaires',
+        suggestion: 'Augmenter la fréquence des newsletters partenaires',
         priority: 'high',
         status: 'planned'
       },
       {
         category: 'Analytics',
-        suggestion: 'Ajouter plus de mÃ©triques dÃ©taillÃ©es dans les rapports',
+        suggestion: 'Ajouter plus de métriques détaillées dans les rapports',
         priority: 'medium',
         status: 'in_progress'
       },
       {
         category: 'Networking',
-        suggestion: 'DÃ©velopper les fonctionnalitÃ©s de mise en relation automatique',
+        suggestion: 'Développer les fonctionnalités de mise en relation automatique',
         priority: 'high',
         status: 'completed'
       }
@@ -123,9 +123,9 @@ export const PartnerSatisfactionPage: React.FC = () => {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'completed': return 'TerminÃ©';
+      case 'completed': return 'Terminé';
       case 'in_progress': return 'En cours';
-      case 'planned': return 'PlanifiÃ©';
+      case 'planned': return 'Planifié';
       default: return status;
     }
   };
@@ -149,7 +149,7 @@ export const PartnerSatisfactionPage: React.FC = () => {
                 Satisfaction Partenariat
               </h1>
               <p className="text-gray-600">
-                DÃ©couvrez ce que pensent nos partenaires de leur expÃ©rience SIPORTS
+                Découvrez ce que pensent nos partenaires de leur expérience SIPORTS
               </p>
             </div>
           </div>
@@ -185,7 +185,7 @@ export const PartnerSatisfactionPage: React.FC = () => {
               <div className="text-3xl font-bold text-gray-900 mb-1">
                 {satisfactionData.overall.totalReviews}
               </div>
-              <div className="text-gray-600 text-sm">Avis reÃ§us</div>
+              <div className="text-gray-600 text-sm">Avis reçus</div>
             </div>
           </Card>
 
@@ -213,7 +213,7 @@ export const PartnerSatisfactionPage: React.FC = () => {
         {/* Categories Scores */}
         <Card className="mb-8">
           <div className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Scores par CatÃ©gorie</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">Scores par Catégorie</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {satisfactionData.categories.map((category) => {
                 const CategoryIcon = category.icon;
@@ -232,7 +232,7 @@ export const PartnerSatisfactionPage: React.FC = () => {
         {/* Testimonials */}
         <Card className="mb-8">
           <div className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">TÃ©moignages Clients</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">Témoignages Clients</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {satisfactionData.testimonials.map((testimonial) => (
                 <div key={testimonial.id} className="p-4 bg-gray-50 rounded-lg">
@@ -258,7 +258,7 @@ export const PartnerSatisfactionPage: React.FC = () => {
         {/* Improvements */}
         <Card>
           <div className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">AmÃ©liorations en Cours</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">Améliorations en Cours</h3>
             <div className="space-y-4">
               {satisfactionData.improvements.map((improvement) => (
                 <div key={improvement.category} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
