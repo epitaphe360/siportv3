@@ -297,48 +297,48 @@ export default function LoginPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('exhibitor1@test.com');
+                        setEmail('exhibitor-9m@test.siport.com');
                         setPassword('Test@123456');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      Maritime
+                      Stand 9m²
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('exhibitor2@test.com');
+                        setEmail('exhibitor-18m@test.siport.com');
                         setPassword('Test@123456');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      Port Tech
+                      Stand 18m²
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('sandrine.morel1@company.com');
+                        setEmail('exhibitor-36m@test.siport.com');
                         setPassword('Test@123456');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      Maritime 2
+                      Stand 36m²
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('thomas.lefebvre3@company.com');
+                        setEmail('exhibitor-54m@test.siport.com');
                         setPassword('Test@123456');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      Naval Eng.
+                      Stand 54m²
                     </Button>
                   </div>
                 </div>
@@ -352,48 +352,48 @@ export default function LoginPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('stéphanie.robert3@partner.com');
+                        setEmail('partner-museum@test.siport.com');
                         setPassword('Test@123456');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      S. Robert
+                      🏛️ Musée
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('valérie.durand4@partner.com');
+                        setEmail('partner-silver@test.siport.com');
                         setPassword('Test@123456');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      V. Durand
+                      🥈 Silver
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('pierre.michel7@partner.com');
+                        setEmail('partner-gold@test.siport.com');
                         setPassword('Test@123456');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      P. Michel
+                      🥇 Gold
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('isabelle.bernard5@partner.com');
+                        setEmail('partner-platinium@test.siport.com');
                         setPassword('Test@123456');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      I. Bernard
+                      💎 Platinium
                     </Button>
                   </div>
                 </div>
@@ -407,24 +407,24 @@ export default function LoginPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('christophe.lefebvre1@visitor.com');
+                        setEmail('visitor-free@test.siport.com');
                         setPassword('Test@123456');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      C. Lefebvre
+                      Gratuit
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('sophie.morel2@visitor.com');
+                        setEmail('visitor-vip@test.siport.com');
                         setPassword('Test@123456');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      S. Morel
+                      VIP
                     </Button>
                   </div>
                 </div>

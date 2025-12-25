@@ -166,19 +166,21 @@ export default function BadgeScannerPage() {
 
       // Valider le badge via l'API
       await validateAndRecordScan(badgeData.badge_code || decodedText);
+      
+      // Succès: on laisse le scanner arrêté pour afficher le résultat.
+      // L'utilisateur devra cliquer sur "Scanner un autre badge" pour relancer.
+      
     } catch (err: any) {
       console.error('Erreur traitement scan:', err);
       toast.error('Badge invalide', {
         description: err.message || 'Impossible de valider ce badge'
       });
-    }
 
-    // Reprendre le scan aprÃ¨s 2 secondes
-    setTimeout(() => {
-      if (!isScanning) {
+      // En cas d'erreur, on relance le scanner automatiquement après 2 secondes
+      setTimeout(() => {
         startScanner();
-      }
-    }, 2000);
+      }, 2000);
+    }
   };
 
   /**

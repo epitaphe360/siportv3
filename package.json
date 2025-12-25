@@ -12,6 +12,7 @@
     "check-env": "node scripts/check-env.cjs",
     "check-env:legacy": "node scripts/check-env.js",
     "build": "vite build && node scripts/inject-build-version.js",
+    "build:scanner": "vite build --config vite.scanner.config.ts && node scripts/rename-scanner.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "build:railway": "npm run build && npm run preview",

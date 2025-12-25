@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code de Test - SIPORTS</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f9ff;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 { color: #1e40af; margin-bottom: 1rem; }
+        #qrcode { margin: 2rem auto; }
+        .code {
+            font-family: monospace;
+            background: #f3f4f6;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Badge de Test</h1>
+        <p>Scannez ce QR code avec l'application</p>
+        
+        <div id="qrcode"></div>
+        
+        <div class="code">00DB9A-C8DDBB</div>
+        <p style="margin-top: 1rem; color: #6b7280; font-size: 0.9rem;">
+            Utilisateur: stéphanie.robert3@partner.com
+        </p>
+    </div>
+
+    <script>
+        // Le code du badge récupéré
+        const badgeCode = "00DB9A-C8DDBB";
+        
+        // Générer le QR Code
+        new QRCode(document.getElementById("qrcode"), {
+            text: badgeCode,
+            width: 256,
+            height: 256,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+    </script>
+</body>
+</html>
