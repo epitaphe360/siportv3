@@ -14,7 +14,8 @@ import {
   FileText,
   Activity,
   Sparkles,
-  Shield
+  Shield,
+  CreditCard
 } from 'lucide-react';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useAppointmentStore } from '../../store/appointmentStore';
@@ -27,7 +28,7 @@ import useAuthStore from '../../store/authStore';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
-import { CreditCard as Edit } from 'lucide-react';
+import { Edit } from 'lucide-react';
 import { getVisitorDisplayName } from '../../utils/visitorHelpers';
 import { useDashboardStats } from '../../hooks/useDashboardStats';
 import { ErrorMessage, LoadingMessage } from '../common/ErrorMessage';
@@ -88,7 +89,8 @@ export default function PartnerDashboard() {
 
   // Vérifier si le profil partenaire existe
   useEffect(() => {
-    if (!user || user.type !== 'partner' || user.status !== 'active') return;
+    // ✅ Permettre l'accès avec pending_payment
+    if (!user || user.type !== 'partner' || !['active', 'pending_payment'].includes(user.status || '')) return;
 
     const checkProfile = async () => {
       try {
@@ -283,6 +285,48 @@ export default function PartnerDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* 🔔 Alerte pour les comptes en attente de paiement */}
+        {user.status === 'pending_payment' && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 bg-gradient-to-r from-amber-500 to-orange-600 rounded-xl shadow-lg p-6 text-white"
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0">
+                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                  <CreditCard className="h-6 w-6" />
+                </div>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold mb-2">⏳ Compte en attente de validation</h3>
+                <p className="text-white/90 mb-4">
+                  Votre inscription a été enregistrée avec succès ! Pour activer toutes les fonctionnalités de votre compte partenaire, 
+                  veuillez effectuer le paiement de votre adhésion.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <Link to="/partner/bank-transfer">
+                    <Button className="bg-white text-orange-600 hover:bg-white/90 font-semibold">
+                      <CreditCard className="h-4 w-4 mr-2" />
+                      Envoyer la preuve de paiement
+                    </Button>
+                  </Link>
+                  <Link to="/partner/profile">
+                    <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
+                      <Edit className="h-4 w-4 mr-2" />
+                      Compléter mon profil
+                    </Button>
+                  </Link>
+                </div>
+                <p className="text-white/75 text-sm mt-3">
+                  ℹ️ Accès limité : Vous pouvez consulter votre profil et soumettre votre preuve de paiement. 
+                  Toutes les autres fonctionnalités seront activées après validation de votre paiement par notre équipe.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* Messages d'erreur */}
         {(error || dashboardError) && (
           <motion.div

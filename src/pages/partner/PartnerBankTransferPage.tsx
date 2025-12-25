@@ -56,6 +56,8 @@ export default function PartnerBankTransferPage() {
   const [proofUrl, setProofUrl] = useState('');
   const [uploading, setUploading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   useEffect(() => {
     loadPaymentRequest();
@@ -98,14 +100,47 @@ export default function PartnerBankTransferPage() {
       return;
     }
 
+    if (!selectedFile && !proofUrl.trim()) {
+      toast.error('Veuillez uploader un fichier ou fournir un lien vers votre preuve');
+      return;
+    }
+
     setUploading(true);
+    let uploadedFileUrl = proofUrl;
 
     try {
+      // Upload file to Supabase Storage if a file is selected
+      if (selectedFile) {
+        const fileExt = selectedFile.name.split('.').pop();
+        const fileName = `${user?.id}_${requestId}_${Date.now()}.${fileExt}`;
+        const filePath = `partner-payment-proofs/${fileName}`;
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('documents')
+          .upload(filePath, selectedFile, {
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (uploadError) {
+          throw new Error(`Erreur upload: ${uploadError.message}`);
+        }
+
+        // Get public URL
+        const { data: publicUrlData } = supabase.storage
+          .from('documents')
+          .getPublicUrl(filePath);
+
+        uploadedFileUrl = publicUrlData.publicUrl;
+        setUploadProgress(100);
+      }
+
+      // Update payment request with proof
       const { error } = await supabase
         .from('payment_requests')
         .update({
           transfer_reference: transferReference,
-          transfer_proof_url: proofUrl || null,
+          transfer_proof_url: uploadedFileUrl || null,
           transfer_date: new Date().toISOString()
         })
         .eq('id', requestId)
@@ -140,13 +175,36 @@ export default function PartnerBankTransferPage() {
 
       toast.success('Justificatif enregistré avec succès !');
       toast.info('Votre paiement sera validé sous 2-5 jours ouvrés');
+      setSelectedFile(null);
+      setUploadProgress(0);
       loadPaymentRequest();
     } catch (error: any) {
       console.error('Error submitting proof:', error);
-      toast.error('Erreur lors de l\'enregistrement');
+      toast.error(error.message || 'Erreur lors de l\'enregistrement');
     } finally {
       setUploading(false);
     }
+  }
+
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+    if (!validTypes.includes(file.type)) {
+      toast.error('Format non supporté. Utilisez PDF, JPG ou PNG');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Fichier trop volumineux. Maximum 5 MB');
+      return;
+    }
+
+    setSelectedFile(file);
+    toast.success(`Fichier sélectionné: ${file.name}`);
   }
 
   function copyToClipboard(text: string, label: string) {
@@ -397,23 +455,73 @@ export default function PartnerBankTransferPage() {
         {paymentRequest?.status === 'pending' && !paymentRequest.transfer_reference && (
           <Card className="p-6 mb-6">
             <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-              <Upload className="h-6 w-6 mr-2 text-blue-600" />
-              Soumettre votre justificatif de virement
-            </h3>
+              <UplJustificatif de virement <span className="text-red-500">*</span>
+                </label>
+                
+                {/* File Upload */}
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition-colors">
+                  <input
+                    type="file"
+                    id="proof-upload"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="proof-upload"
+                    className="cursor-pointer flex flex-col items-center"
+                  >
+                    <Upload className="h-12 w-12 text-gray-400 mb-2" />
+                    {selectedFile ? (
+                      <div className="text-sm">
+                        <p className="font-semibold text-green-600 mb-1">✓ {selectedFile.name}</p>
+                        <p className="text-gray-500">
+                          {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                        </p>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-sm font-medium text-gray-700 mb-1">
+                          Cliquez pour uploader votre preuve de virement
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          PDF, JPG ou PNG (max 5 MB)
+                        </p>
+                      </>
+                    )}
+                  </label>
+                  
+                  {uploadProgress > 0 && uploadProgress < 100 && (
+                    <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${uploadProgress}%` }}
+                      ></div>
+                    </div>
+                  )}
+                </div>
 
-            <div className="space-y-4">
-              <div>
+                <div className="my-4 text-center text-gray-500 text-sm">ou</div>
+
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Référence de votre virement <span className="text-red-500">*</span>
+                  URL du justificatif (alternative)
                 </label>
                 <input
-                  type="text"
-                  value={transferReference}
-                  onChange={(e) => setTransferReference(e.target.value)}
-                  placeholder="Ex: REF123456789 ou numéro de transaction bancaire"
+                  type="url"
+                  value={proofUrl}
+                  onChange={(e) => setProofUrl(e.target.value)}
+                  placeholder="https://... (lien vers Google Drive, Dropbox, etc.)"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  disabled={!!selectedFile}
                 />
                 <p className="text-xs text-gray-500 mt-1">
+                  Si vous préférez, hébergez votre document sur un service cloud
+                </p>
+              </div>
+
+              <Button
+                onClick={handleSubmitProof}
+                disabled={uploading || !transferReference.trim() || (!selectedFile && !proofUrl.trim()
                   Indiquez le numéro de référence ou de transaction fourni par votre banque
                 </p>
               </div>

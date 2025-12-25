@@ -1,7 +1,6 @@
 ﻿
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useTranslation } from '../../hooks/useTranslation';
 import { ROUTES } from '../../lib/routes';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -265,7 +264,7 @@ export default function PartnerSignUpPage() {
         </Card>
 
         <Card className="p-8">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={handleSubmit(handlePreviewSubmit)} className="space-y-6">{/*Changed to open preview first*/}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Informations sur l'organisation */}
               <div className="space-y-4">

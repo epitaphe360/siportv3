@@ -104,7 +104,9 @@ const useAuthStore = create<AuthState>()(
         throw new Error('Email ou mot de passe incorrect');
       }
 
-      if (user.status && user.status !== 'active') {
+      // ✅ Permettre la connexion avec pending_payment (accès limité au dashboard)
+      // Bloquer uniquement les status: 'pending', 'rejected', 'suspended'
+      if (user.status && !['active', 'pending_payment'].includes(user.status)) {
         throw new Error('Votre compte est en attente de validation');
       }
 
@@ -145,7 +147,10 @@ const useAuthStore = create<AuthState>()(
             ? `${profileData.firstName} ${profileData.lastName}`.trim()
             : profileData.name || '',
           type: profileData.role || 'visitor',
-          status: profileData.status || 'pending',
+          // ✅ Status selon le type: partner/exhibitor → pending_payment, visitor → active
+          status: (profileData.role === 'partner' || profileData.role === 'exhibitor') 
+            ? 'pending_payment' 
+            : profileData.status || 'active',
           profile: {
             firstName: profileData.firstName || '',
             lastName: profileData.lastName || '',
