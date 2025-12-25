@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -53,6 +54,7 @@ interface DemoProgram {
 }
 
 export default function PavillonsPage() {
+  const { t } = useTranslation();
   const [pavilions, setPavilions] = useState<Pavilion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -113,8 +115,8 @@ export default function PavillonsPage() {
   const getThemeLabel = (theme: string) => {
     switch (theme) {
       case 'digitalization': return 'Digitalisation';
-      case 'sustainability': return 'Développement Durable';
-      case 'security': return 'Sécurité';
+      case 'sustainability': return 'DÃ©veloppement Durable';
+      case 'security': return 'SÃ©curitÃ©';
       case 'innovation': return 'Innovation';
       default: return theme.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     }
@@ -141,17 +143,17 @@ export default function PavillonsPage() {
   };
 
   const handlePavilionAction = (pavilionId: string, action: string) => {
-    // Ici vous pouvez implémenter les actions réelles
+    // Ici vous pouvez implÃ©menter les actions rÃ©elles
   };
 
   const handleDemoAction = (demoId: string, action: string) => {
-    // Ici vous pouvez implémenter les actions réelles
+    // Ici vous pouvez implÃ©menter les actions rÃ©elles
   };
 
   const themeOptions = [
     { value: 'digitalization', label: 'Digitalisation' },
-    { value: 'sustainability', label: 'Développement Durable' },
-    { value: 'security', label: 'Sécurité' },
+    { value: 'sustainability', label: 'DÃ©veloppement Durable' },
+    { value: 'security', label: 'SÃ©curitÃ©' },
     { value: 'innovation', label: 'Innovation' }
   ];
 
@@ -175,7 +177,7 @@ export default function PavillonsPage() {
           <p className="text-gray-600">{error}</p>
           <Button onClick={() => window.location.reload()} className="mt-4">
             <RefreshCw className="h-4 w-4 mr-2" />
-            Réessayer
+            RÃ©essayer
           </Button>
         </div>
       </div>
@@ -189,7 +191,7 @@ export default function PavillonsPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Gestion des Pavillons Thématiques</h1>
+              <h1 className="text-3xl font-bold text-gray-900">Gestion des Pavillons ThÃ©matiques</h1>
               <p className="text-gray-600 mt-2">
                 Administration et organisation des pavillons SIPORTS 2026
               </p>
@@ -197,7 +199,7 @@ export default function PavillonsPage() {
             <Link to={ROUTES.ADMIN_CREATE_PAVILION}>
               <Button variant="default">
                 <Plus className="h-4 w-4 mr-2" />
-                Créer Pavillon
+                CrÃ©er Pavillon
               </Button>
             </Link>
           </div>
@@ -283,7 +285,7 @@ export default function PavillonsPage() {
                 onChange={(e) => setSelectedTheme(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Tous les thèmes</option>
+                <option value="">Tous les thÃ¨mes</option>
                 {themeOptions.map(theme => (
                   <option key={theme.value} value={theme.value}>{theme.label}</option>
                 ))}
@@ -323,7 +325,7 @@ export default function PavillonsPage() {
                       </p>
                       <div className="flex items-center text-sm text-gray-600">
                         <Calendar className="h-4 w-4 mr-2" />
-                        <span>Créé le {formatDate(pavilion.created_at)}</span>
+                        <span>CrÃ©Ã© le {formatDate(pavilion.created_at)}</span>
                       </div>
                     </div>
                     <div className="ml-4">
@@ -335,7 +337,7 @@ export default function PavillonsPage() {
 
                   {pavilion.demoPrograms && pavilion.demoPrograms.length > 0 && (
                     <div className="mt-6">
-                      <h4 className="text-lg font-semibold text-gray-900 mb-3">Programmes de Démonstration</h4>
+                      <h4 className="text-lg font-semibold text-gray-900 mb-3">Programmes de DÃ©monstration</h4>
                       <div className="space-y-4">
                         {pavilion.demoPrograms.map((program, programIndex) => {
                           const DemoIcon = getDemoTypeIcon(program.type);
@@ -402,10 +404,10 @@ export default function PavillonsPage() {
           <div className="text-center py-12">
             <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Aucun pavillon trouvé
+              Aucun pavillon trouvÃ©
             </h3>
             <p className="text-gray-600">
-              Essayez de modifier vos critères de recherche
+              Essayez de modifier vos critÃ¨res de recherche
             </p>
           </div>
         )}
@@ -413,3 +415,6 @@ export default function PavillonsPage() {
     </div>
   );
 };
+
+
+

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import { ArrowLeft, Calendar, Crown, BadgePercent } from 'lucide-react';
@@ -30,8 +31,9 @@ export const PartnerEventsPage: React.FC = () => {
   }, []);
 
   async function loadEvents() {
+  const { t } = useTranslation();
     try {
-      // Charger les événements depuis Supabase
+      // Charger les Ã©vÃ©nements depuis Supabase
       const { data, error } = await supabase
         .from('events')
         .select(`
@@ -44,7 +46,7 @@ export const PartnerEventsPage: React.FC = () => {
       if (error) throw error;
       setEvents(data || []);
     } catch (error) {
-      console.error('Erreur chargement événements:', error);
+      console.error('Erreur chargement Ã©vÃ©nements:', error);
     } finally {
       setLoading(false);
     }
@@ -52,7 +54,7 @@ export const PartnerEventsPage: React.FC = () => {
 
   const getStatusLabel = (status: string) => {
     const now = new Date();
-    if (status === 'published') return 'À venir';
+    if (status === 'published') return 'Ã€ venir';
     if (status === 'draft') return 'Brouillon';
     return status;
   };
@@ -77,15 +79,15 @@ export const PartnerEventsPage: React.FC = () => {
               <Calendar className="h-8 w-8 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Événements Sponsorisés</h1>
-              <p className="text-gray-600">Gérez vos événements partenaires et suivez leur impact</p>
+              <h1 className="text-3xl font-bold text-gray-900">Ã‰vÃ©nements SponsorisÃ©s</h1>
+              <p className="text-gray-600">GÃ©rez vos Ã©vÃ©nements partenaires et suivez leur impact</p>
             </div>
           </div>
 
           <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
             <div className="flex items-center space-x-2">
               <Crown className="h-5 w-5 text-purple-600" />
-              <span className="text-purple-800 font-medium">Programme Événements Partenaires</span>
+              <span className="text-purple-800 font-medium">Programme Ã‰vÃ©nements Partenaires</span>
               <Badge className="bg-purple-100 text-purple-800" size="sm">
                 Prioritaire
               </Badge>
@@ -96,14 +98,14 @@ export const PartnerEventsPage: React.FC = () => {
         <Card>
           <div className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-6">
-              Événements disponibles ({events.length})
+              Ã‰vÃ©nements disponibles ({events.length})
             </h3>
 
             {loading ? (
-              <div className="text-center py-12 text-gray-500">Chargement des événements...</div>
+              <div className="text-center py-12 text-gray-500">Chargement des Ã©vÃ©nements...</div>
             ) : events.length === 0 ? (
               <div className="text-center py-12 text-gray-500">
-                Aucun événement disponible pour le moment.
+                Aucun Ã©vÃ©nement disponible pour le moment.
               </div>
             ) : (
               <div data-testid="event-list" className="space-y-4">
@@ -117,7 +119,7 @@ export const PartnerEventsPage: React.FC = () => {
                         <div className="font-semibold text-gray-900">{evt.title}</div>
                         <div className="text-sm text-gray-600 mt-1">{evt.description?.substring(0, 100)}...</div>
                         <div className="text-sm text-gray-500 mt-2">
-                          {evt.event_type} • {new Date(evt.start_time).toLocaleDateString('fr-FR')}
+                          {evt.event_type} â€¢ {new Date(evt.start_time).toLocaleDateString('fr-FR')}
                         </div>
                       </div>
                       <div className="flex items-center space-x-4">
@@ -125,11 +127,11 @@ export const PartnerEventsPage: React.FC = () => {
                           {getStatusLabel(evt.status)}
                         </Badge>
                         <span className="text-sm text-gray-700">
-                          {registrationCount > 0 ? `${registrationCount} inscrits` : `Capacité: ${evt.max_participants || 'N/A'}`}
+                          {registrationCount > 0 ? `${registrationCount} inscrits` : `CapacitÃ©: ${evt.max_participants || 'N/A'}`}
                         </span>
                         <Button variant="outline" size="sm">
                           <BadgePercent className="h-4 w-4 mr-2" />
-                          Détails
+                          DÃ©tails
                         </Button>
                       </div>
                     </div>
@@ -143,3 +145,6 @@ export const PartnerEventsPage: React.FC = () => {
     </div>
   );
 };
+
+
+

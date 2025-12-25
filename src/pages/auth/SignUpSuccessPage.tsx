@@ -1,4 +1,4 @@
-
+﻿
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from '../../hooks/useTranslation';
@@ -23,7 +23,7 @@ export default function SignUpSuccessPage() {
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
-          // Redirection automatique après 10 secondes pour visiteurs
+          // Redirection automatique aprÃ¨s 10 secondes pour visiteurs
           if (accountType === 'visitor') {
             navigate(ROUTES.VISITOR_DASHBOARD, {
               state: { message: 'Bienvenue sur SIPORTS 2026 !' }
@@ -83,7 +83,7 @@ export default function SignUpSuccessPage() {
               transition={{ delay: 0.3 }}
               className="text-3xl font-bold text-center text-gray-900 mb-2"
             >
-              🎉 Inscription Réussie !
+              ðŸŽ‰ Inscription RÃ©ussie !
             </motion.h1>
 
             {/* Subtitle */}
@@ -94,8 +94,8 @@ export default function SignUpSuccessPage() {
               className="text-center text-gray-600 mb-6"
             >
               {isVisitor
-                ? 'Félicitations ! Votre compte visiteur a été créé avec succès.'
-                : `Félicitations ! Votre demande d'inscription en tant que ${accountType === 'exhibitor' ? 'exposant' : 'partenaire'} a bien été enregistrée.`}
+                ? 'FÃ©licitations ! Votre compte visiteur a Ã©tÃ© crÃ©Ã© avec succÃ¨s.'
+                : `FÃ©licitations ! Votre demande d'inscription en tant que ${accountType === 'exhibitor' ? 'exposant' : 'partenaire'} a bien Ã©tÃ© enregistrÃ©e.`}
             </motion.p>
 
             {/* Email confirmation */}
@@ -130,7 +130,7 @@ export default function SignUpSuccessPage() {
               <h2 className={`font-semibold mb-4 text-lg flex items-center ${
                 isVisitor ? 'text-green-900' : 'text-yellow-900'
               }`}>
-                {isVisitor ? '✅ Vous avez accès à :' : '📋 Prochaines Étapes'}
+                {isVisitor ? 'âœ… Vous avez accÃ¨s Ã  :' : 'ðŸ“‹ Prochaines Ã‰tapes'}
               </h2>
               <ul className="space-y-3">
                 {isVisitor ? (
@@ -141,7 +141,7 @@ export default function SignUpSuccessPage() {
                     </li>
                     <li className={`flex items-start text-sm ${isVisitor ? 'text-green-800' : 'text-yellow-800'}`}>
                       <CheckCircle className="h-5 w-5 mr-3 mt-0.5 flex-shrink-0" />
-                      <span><strong>Programme :</strong> Découvrez les conférences et événements</span>
+                      <span><strong>Programme :</strong> DÃ©couvrez les confÃ©rences et Ã©vÃ©nements</span>
                     </li>
                     <li className={`flex items-start text-sm ${isVisitor ? 'text-green-800' : 'text-yellow-800'}`}>
                       <CheckCircle className="h-5 w-5 mr-3 mt-0.5 flex-shrink-0" />
@@ -149,7 +149,7 @@ export default function SignUpSuccessPage() {
                     </li>
                     <li className={`flex items-start text-sm ${isVisitor ? 'text-green-800' : 'text-yellow-800'}`}>
                       <CheckCircle className="h-5 w-5 mr-3 mt-0.5 flex-shrink-0" />
-                      <span><strong>Profil :</strong> Complétez votre profil et explorez les opportunités</span>
+                      <span><strong>Profil :</strong> ComplÃ©tez votre profil et explorez les opportunitÃ©s</span>
                     </li>
                   </>
                 ) : (
@@ -157,19 +157,19 @@ export default function SignUpSuccessPage() {
                     <li className={`flex items-start text-sm ${isVisitor ? 'text-green-800' : 'text-yellow-800'}`}>
                       <Mail className="h-5 w-5 mr-3 mt-0.5 flex-shrink-0" />
                       <span>
-                        <strong>Email de confirmation :</strong> Un email récapitulatif vous a été envoyé. Veuillez vérifier votre boîte de réception.
+                        <strong>Email de confirmation :</strong> Un email rÃ©capitulatif vous a Ã©tÃ© envoyÃ©. Veuillez vÃ©rifier votre boÃ®te de rÃ©ception.
                       </span>
                     </li>
                     <li className={`flex items-start text-sm ${isVisitor ? 'text-green-800' : 'text-yellow-800'}`}>
                       <Clock className="h-5 w-5 mr-3 mt-0.5 flex-shrink-0" />
                       <span>
-                        <strong>Validation :</strong> Notre équipe examinera votre demande sous <strong>48 heures ouvrées</strong>.
+                        <strong>Validation :</strong> Notre Ã©quipe examinera votre demande sous <strong>48 heures ouvrÃ©es</strong>.
                       </span>
                     </li>
                     <li className={`flex items-start text-sm ${isVisitor ? 'text-green-800' : 'text-yellow-800'}`}>
                       <Lock className="h-5 w-5 mr-3 mt-0.5 flex-shrink-0" />
                       <span>
-                        <strong>Activation :</strong> Une fois validé, vous recevrez un email avec vos accès complets.
+                        <strong>Activation :</strong> Une fois validÃ©, vous recevrez un email avec vos accÃ¨s complets.
                       </span>
                     </li>
                   </>
@@ -217,4 +217,6 @@ export default function SignUpSuccessPage() {
     </div>
   );
 }
+
+
 

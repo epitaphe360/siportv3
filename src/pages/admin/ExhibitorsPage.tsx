@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -42,6 +43,7 @@ interface Exhibitor {
 }
 
 export default function ExhibitorsPage() {
+  const { t } = useTranslation();
   const [exhibitors, setExhibitors] = useState<Exhibitor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -100,11 +102,11 @@ export default function ExhibitorsPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'approved':
-        return <Badge variant="success"><CheckCircle className="h-3 w-3 mr-1" />Approuvé</Badge>;
+        return <Badge variant="success"><CheckCircle className="h-3 w-3 mr-1" />ApprouvÃ©</Badge>;
       case 'pending':
         return <Badge variant="warning"><AlertTriangle className="h-3 w-3 mr-1" />En attente</Badge>;
       case 'rejected':
-        return <Badge variant="error"><XCircle className="h-3 w-3 mr-1" />Rejeté</Badge>;
+        return <Badge variant="error"><XCircle className="h-3 w-3 mr-1" />RejetÃ©</Badge>;
       default:
         return <Badge variant="info">{status}</Badge>;
     }
@@ -119,8 +121,8 @@ export default function ExhibitorsPage() {
     'Technologie',
     'Logistique',
     'Data & Analytics',
-    'Ingénierie',
-    'Sécurité',
+    'IngÃ©nierie',
+    'SÃ©curitÃ©',
     'Environnement'
   ];
 
@@ -144,7 +146,7 @@ export default function ExhibitorsPage() {
           <p className="text-gray-600">{error}</p>
           <Button onClick={() => window.location.reload()} className="mt-4">
             <RefreshCw className="h-4 w-4 mr-2" />
-            Réessayer
+            RÃ©essayer
           </Button>
         </div>
       </div>
@@ -190,7 +192,7 @@ export default function ExhibitorsPage() {
             <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Approuvés</p>
+                  <p className="text-sm font-medium text-gray-600">ApprouvÃ©s</p>
                   <p className="text-3xl font-bold text-green-600">
                     {exhibitors.filter(e => e.status === 'approved').length}
                   </p>
@@ -249,7 +251,7 @@ export default function ExhibitorsPage() {
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Toutes les catégories</option>
+                <option value="">Toutes les catÃ©gories</option>
                 {categories.map(category => (
                   <option key={category} value={category}>{category}</option>
                 ))}
@@ -261,9 +263,9 @@ export default function ExhibitorsPage() {
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Tous les statuts</option>
-                <option value="approved">Approuvé</option>
+                <option value="approved">ApprouvÃ©</option>
                 <option value="pending">En attente</option>
-                <option value="rejected">Rejeté</option>
+                <option value="rejected">RejetÃ©</option>
               </select>
 
               <Button variant="outline">
@@ -311,7 +313,7 @@ export default function ExhibitorsPage() {
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <Users className="h-4 w-4 mr-2" />
-                      <span>{exhibitor.employees || 'N/A'} employés</span>
+                      <span>{exhibitor.employees || 'N/A'} employÃ©s</span>
                     </div>
                     {/* Assuming standNumber is not directly in the DB or needs to be fetched separately */}
                     {/* {exhibitor.standNumber && (
@@ -367,10 +369,10 @@ export default function ExhibitorsPage() {
           <div className="text-center py-12">
             <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Aucun exposant trouvé
+              Aucun exposant trouvÃ©
             </h3>
             <p className="text-gray-600">
-              Essayez de modifier vos critères de recherche
+              Essayez de modifier vos critÃ¨res de recherche
             </p>
           </div>
         )}
@@ -378,3 +380,6 @@ export default function ExhibitorsPage() {
     </div>
   );
 };
+
+
+

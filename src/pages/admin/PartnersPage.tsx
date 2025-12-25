@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -57,6 +58,7 @@ interface Partner {
 }
 
 export default function PartnersPage() {
+  const { t } = useTranslation();
   const [partners, setPartners] = useState<Partner[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -90,7 +92,7 @@ export default function PartnersPage() {
       setPartners(formattedData as Partner[]);
     } catch (err) {
       console.error('Error fetching partners:', err);
-      setError('Échec du chargement des partenaires. Veuillez réessayer.');
+      setError('Ã‰chec du chargement des partenaires. Veuillez rÃ©essayer.');
     } finally {
       setIsLoading(false);
     }
@@ -189,13 +191,13 @@ export default function PartnersPage() {
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Gestion des Partenaires</h1>
               <p className="text-gray-600 mt-2">
-                Administration complète des partenaires et sponsors SIPORTS
+                Administration complÃ¨te des partenaires et sponsors SIPORTS
               </p>
             </div>
             <Link to={ROUTES.ADMIN_CREATE_PARTNER}>
               <Button variant="default">
                 <Plus className="h-4 w-4 mr-2" />
-                Créer Partenaire
+                CrÃ©er Partenaire
               </Button>
             </Link>
           </div>
@@ -331,7 +333,7 @@ export default function PartnersPage() {
               <div className="mt-4">
                 <Button variant="outline" size="sm" onClick={resetFilters}>
                   <X className="h-4 w-4 mr-2" />
-                  Réinitialiser les filtres
+                  RÃ©initialiser les filtres
                 </Button>
               </div>
             )}
@@ -363,7 +365,7 @@ export default function PartnersPage() {
                     <tr>
                       <td colSpan={7} className="text-center py-12">
                         <Crown className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <p className="text-gray-600">Aucun partenaire trouvé</p>
+                        <p className="text-gray-600">Aucun partenaire trouvÃ©</p>
                       </td>
                     </tr>
                   ) : (
@@ -455,7 +457,7 @@ export default function PartnersPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-700 mb-3">Informations Générales</h3>
+                    <h3 className="text-sm font-semibold text-gray-700 mb-3">Informations GÃ©nÃ©rales</h3>
                     <div className="space-y-3">
                       <div className="flex items-start space-x-2">
                         <Building2 className="h-5 w-5 text-gray-400 mt-0.5" />
@@ -509,7 +511,7 @@ export default function PartnersPage() {
                       <div className="flex items-start space-x-2">
                         <Phone className="h-5 w-5 text-gray-400 mt-0.5" />
                         <div>
-                          <p className="text-xs text-gray-600">Téléphone</p>
+                          <p className="text-xs text-gray-600">TÃ©lÃ©phone</p>
                           <p className="text-sm font-medium text-gray-900">{selectedPartner.contact_info.phone}</p>
                         </div>
                       </div>
@@ -540,7 +542,7 @@ export default function PartnersPage() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-600">Date de Création</p>
+                      <p className="text-xs text-gray-600">Date de CrÃ©ation</p>
                       <p className="text-sm font-medium text-gray-900">
                         {formatDate(selectedPartner.created_at)}
                       </p>
@@ -555,4 +557,7 @@ export default function PartnersPage() {
     </div>
   );
 }
+
+
+
 

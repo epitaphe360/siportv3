@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { Star, ArrowLeft, Search, Play } from 'lucide-react';
 import { mediaService } from '../../services/mediaService';
@@ -40,7 +41,7 @@ export const BestMomentsPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link to={ROUTES.HOME} className="inline-flex items-center text-white/80 hover:text-white mb-6">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour à l'accueil
+            Retour Ã  l'accueil
           </Link>
           
           <div className="flex items-center space-x-4 mb-4">
@@ -56,7 +57,7 @@ export const BestMomentsPage: React.FC = () => {
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 mt-8">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white/70 text-sm mb-1">Moments mémorables</p>
+                <p className="text-white/70 text-sm mb-1">Moments mÃ©morables</p>
                 <p className="text-4xl font-bold">{moments.length}</p>
                 <p className="text-white/80 text-sm mt-2">
                   {moments.reduce((sum, m) => sum + m.views_count, 0).toLocaleString()} vues totales
@@ -91,8 +92,8 @@ export const BestMomentsPage: React.FC = () => {
         ) : filteredMoments.length === 0 ? (
           <div className="text-center py-20">
             <Star className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">Aucun moment trouvé</h3>
-            <p className="text-gray-500">De nouveaux moments seront ajoutés bientôt</p>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">Aucun moment trouvÃ©</h3>
+            <p className="text-gray-500">De nouveaux moments seront ajoutÃ©s bientÃ´t</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -105,3 +106,6 @@ export const BestMomentsPage: React.FC = () => {
     </div>
   );
 };
+
+
+

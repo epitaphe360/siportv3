@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { Play, ArrowLeft, Search, Filter, Eye, Clock } from 'lucide-react';
 import { mediaService } from '../../services/mediaService';
@@ -40,7 +41,7 @@ export const CapsulesPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link to={ROUTES.HOME} className="inline-flex items-center text-white/80 hover:text-white mb-6">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour à l'accueil
+            Retour Ã  l'accueil
           </Link>
           
           <div className="flex items-center space-x-4 mb-4">
@@ -49,7 +50,7 @@ export const CapsulesPage: React.FC = () => {
             </div>
             <div>
               <h1 className="text-4xl font-bold mb-2">Inside SIPORT</h1>
-              <p className="text-xl text-white/90">Découvrez les coulisses du salon</p>
+              <p className="text-xl text-white/90">DÃ©couvrez les coulisses du salon</p>
             </div>
           </div>
 
@@ -77,7 +78,7 @@ export const CapsulesPage: React.FC = () => {
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-white/70 text-sm">Durée moyenne</p>
+                  <p className="text-white/70 text-sm">DurÃ©e moyenne</p>
                   <p className="text-3xl font-bold">
                     {Math.floor(capsules.reduce((sum, c) => sum + (c.duration || 0), 0) / capsules.length / 60)} min
                   </p>
@@ -112,7 +113,7 @@ export const CapsulesPage: React.FC = () => {
         ) : filteredCapsules.length === 0 ? (
           <div className="text-center py-20">
             <Play className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">Aucune capsule trouvée</h3>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">Aucune capsule trouvÃ©e</h3>
             <p className="text-gray-500">Essayez de modifier votre recherche</p>
           </div>
         ) : (
@@ -126,3 +127,6 @@ export const CapsulesPage: React.FC = () => {
     </div>
   );
 };
+
+
+

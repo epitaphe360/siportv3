@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
+import { useTranslation } from '../hooks/useTranslation';
 import { supabase } from '../lib/supabase';
 import useAuthStore from '../store/authStore';
 
@@ -6,12 +7,12 @@ const LEVELS = [
   {
     key: 'free',
     title: 'Pass Gratuit',
-    description: 'Accès limité à la zone exposition, conférences publiques et networking de base.',
-    price: '0€',
+    description: 'AccÃ¨s limitÃ© Ã  la zone exposition, confÃ©rences publiques et networking de base.',
+    price: '0â‚¬',
     features: [
       'Zone exposition',
-      'Conférences publiques',
-      'Networking limité',
+      'ConfÃ©rences publiques',
+      'Networking limitÃ©',
       'Application mobile',
       'Inscription gratuite',
       '0 rendez-vous B2B'
@@ -20,21 +21,22 @@ const LEVELS = [
   {
     key: 'premium',
     title: 'Pass Premium VIP',
-    description: 'Accès VIP complet 3 jours All Inclusive - Tout accès illimité au salon.',
-    price: '700€',
+    description: 'AccÃ¨s VIP complet 3 jours All Inclusive - Tout accÃ¨s illimitÃ© au salon.',
+    price: '700â‚¬',
     features: [
       'Invitation inauguration',
-      'Rendez-vous B2B illimités',
-      'Networking illimité',
-      'Ateliers spécialisés',
-      'Soirée gala exclusive',
-      'Conférences',
-      'Déjeuners networking'
+      'Rendez-vous B2B illimitÃ©s',
+      'Networking illimitÃ©',
+      'Ateliers spÃ©cialisÃ©s',
+      'SoirÃ©e gala exclusive',
+      'ConfÃ©rences',
+      'DÃ©jeuners networking'
     ]
   }
 ];
 
 export default function VisitorSubscription() {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState<string | null>(null);
   const { user } = useAuthStore();
   const userId = user?.id || '';
@@ -43,7 +45,7 @@ export default function VisitorSubscription() {
   const [loading, setLoading] = useState(false);
 
   async function handleSubscribe(level: string) {
-    // Si l'utilisateur n'est pas connecté, rediriger vers l'inscription
+    // Si l'utilisateur n'est pas connectÃ©, rediriger vers l'inscription
     if (!userId) {
       window.location.href = `/register?next=/visitor/subscription&level=${level}`;
       return;
@@ -51,7 +53,7 @@ export default function VisitorSubscription() {
 
     setLoading(true);
 
-    // Le niveau gratuit ne nécessite pas de paiement
+    // Le niveau gratuit ne nÃ©cessite pas de paiement
     if (level === 'free') {
       const { error } = await supabase
         .from('users')
@@ -62,14 +64,14 @@ export default function VisitorSubscription() {
       if (error) {
         setMessage('Erreur lors de l\'inscription gratuite.');
       } else {
-        setMessage('✅ Inscription gratuite réussie !');
+        setMessage('âœ… Inscription gratuite rÃ©ussie !');
       }
       return;
     }
 
-    // Pour le niveau premium : créer une demande de paiement par virement bancaire
+    // Pour le niveau premium : crÃ©er une demande de paiement par virement bancaire
     try {
-      // Vérifier si une demande pending existe déjà
+      // VÃ©rifier si une demande pending existe dÃ©jÃ 
       const { data: existingRequests, error: checkError } = await supabase
         .from('payment_requests')
         .select('*')
@@ -77,19 +79,19 @@ export default function VisitorSubscription() {
         .eq('status', 'pending');
 
       if (checkError) {
-        console.error('Erreur vérification demande:', checkError);
-        setMessage(`❌ Erreur lors de la vérification: ${checkError.message}`);
+        console.error('Erreur vÃ©rification demande:', checkError);
+        setMessage(`âŒ Erreur lors de la vÃ©rification: ${checkError.message}`);
         setLoading(false);
         return;
       }
 
       if (existingRequests && existingRequests.length > 0) {
-        setMessage('⚠️ Vous avez déjà une demande de paiement en attente. Consultez votre profil pour les instructions de virement.');
+        setMessage('âš ï¸ Vous avez dÃ©jÃ  une demande de paiement en attente. Consultez votre profil pour les instructions de virement.');
         setLoading(false);
         return;
       }
 
-      // Créer la demande de paiement
+      // CrÃ©er la demande de paiement
       const { data: request, error } = await supabase
         .from('payment_requests')
         .insert({
@@ -104,23 +106,23 @@ export default function VisitorSubscription() {
         .single();
 
       if (error) {
-        console.error('Erreur création demande:', error);
-        setMessage(`❌ Erreur lors de la création de la demande: ${error.message}`);
+        console.error('Erreur crÃ©ation demande:', error);
+        setMessage(`âŒ Erreur lors de la crÃ©ation de la demande: ${error.message}`);
         setLoading(false);
         return;
       }
 
-      setMessage(`✅ Demande créée avec succès ! Consultez les instructions de virement bancaire ci-dessous.`);
+      setMessage(`âœ… Demande crÃ©Ã©e avec succÃ¨s ! Consultez les instructions de virement bancaire ci-dessous.`);
       setLoading(false);
 
-      // Rediriger vers la page des instructions de paiement après 2 secondes
+      // Rediriger vers la page des instructions de paiement aprÃ¨s 2 secondes
       setTimeout(() => {
         window.location.href = `/visitor/payment-instructions?request_id=${request.id}`;
       }, 2000);
 
     } catch (err: any) {
       console.error('Erreur:', err);
-      setMessage(`❌ Erreur: ${err.message || 'Erreur inconnue'}`);
+      setMessage(`âŒ Erreur: ${err.message || 'Erreur inconnue'}`);
       setLoading(false);
     }
   }
@@ -128,7 +130,7 @@ export default function VisitorSubscription() {
   return (
     <div style={{maxWidth:800,margin:'auto',padding:32}}>
       <h1>Choisissez votre Pass Visiteur</h1>
-      <p>Découvrez les différents niveaux d’accès au Salon International des Ports d’Afrique.</p>
+      <p>DÃ©couvrez les diffÃ©rents niveaux dâ€™accÃ¨s au Salon International des Ports dâ€™Afrique.</p>
       <div style={{display:'flex',gap:24,flexWrap:'wrap'}}>
         {LEVELS.map(level => (
           <div key={level.key} style={{border:'1px solid #ccc',borderRadius:8,padding:24,width:220,background:selected===level.key?'#f0f8ff':'#fff'}}>
@@ -142,7 +144,7 @@ export default function VisitorSubscription() {
               disabled={loading}
               onClick={() => {
                 if (!isLogged) {
-                  // inviter à créer un compte avant de souscrire
+                  // inviter Ã  crÃ©er un compte avant de souscrire
                   window.location.href = `/register?next=/visitor/subscription&level=${level.key}`;
                   return;
                 }
@@ -151,7 +153,7 @@ export default function VisitorSubscription() {
                 handleSubscribe(level.key);
               }}
             >
-              {!isLogged ? 'Créer un compte' : (level.price==='0€' ? 'S\'inscrire' : 'Demander le Pass Premium')}
+              {!isLogged ? 'CrÃ©er un compte' : (level.price==='0â‚¬' ? 'S\'inscrire' : 'Demander le Pass Premium')}
             </button>
           </div>
         ))}
@@ -160,3 +162,6 @@ export default function VisitorSubscription() {
     </div>
   );
 }
+
+
+

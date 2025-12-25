@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -31,33 +31,33 @@ import { supabase } from '../../lib/supabase';
 
 const MAX_DESCRIPTION_LENGTH = 500;
 
-// Schéma de validation Zod
+// SchÃ©ma de validation Zod
 const exhibitorSignUpSchema = z.object({
-  firstName: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
-  lastName: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
+  firstName: z.string().min(2, "Le prÃ©nom doit contenir au moins 2 caractÃ¨res"),
+  lastName: z.string().min(2, "Le nom doit contenir au moins 2 caractÃ¨res"),
   companyName: z.string().min(2, "Le nom de l'entreprise est requis"),
   email: z.string().email("Adresse email invalide"),
-  phone: z.string().regex(/^[\d\s\-+()]+$/, "Numéro de téléphone invalide"),
-  country: z.string().min(2, "Veuillez sélectionner un pays"),
+  phone: z.string().regex(/^[\d\s\-+()]+$/, "NumÃ©ro de tÃ©lÃ©phone invalide"),
+  country: z.string().min(2, "Veuillez sÃ©lectionner un pays"),
   position: z.string().min(2, "Le poste est requis"),
-  sectors: z.array(z.string()).min(1, "Sélectionnez au moins un secteur"),
-  companyDescription: z.string().min(20, "La description doit contenir au moins 20 caractères").max(MAX_DESCRIPTION_LENGTH),
+  sectors: z.array(z.string()).min(1, "SÃ©lectionnez au moins un secteur"),
+  companyDescription: z.string().min(20, "La description doit contenir au moins 20 caractÃ¨res").max(MAX_DESCRIPTION_LENGTH),
   website: z.string().url("URL invalide").optional().or(z.literal('')),
-  standArea: z.number().min(1, "Veuillez sélectionner un abonnement exposant"),
-  subscriptionLevel: z.string().min(1, "Veuillez sélectionner un abonnement"),
+  standArea: z.number().min(1, "Veuillez sÃ©lectionner un abonnement exposant"),
+  subscriptionLevel: z.string().min(1, "Veuillez sÃ©lectionner un abonnement"),
   subscriptionPrice: z.number().min(1, "Prix d'abonnement requis"),
   password: z.string()
-    .min(8, "Le mot de passe doit contenir au moins 8 caractères")
+    .min(8, "Le mot de passe doit contenir au moins 8 caractÃ¨res")
     .regex(/[A-Z]/, "Le mot de passe doit contenir au moins une majuscule")
     .regex(/[a-z]/, "Le mot de passe doit contenir au moins une minuscule")
     .regex(/[0-9]/, "Le mot de passe doit contenir au moins un chiffre")
-    .regex(/[!@#$%^&*]/, "Le mot de passe doit contenir au moins un caractère spécial (!@#$%^&*)"),
+    .regex(/[!@#$%^&*]/, "Le mot de passe doit contenir au moins un caractÃ¨re spÃ©cial (!@#$%^&*)"),
   confirmPassword: z.string(),
   acceptTerms: z.boolean().refine((val) => val === true, {
-    message: "Vous devez accepter les conditions générales d'utilisation",
+    message: "Vous devez accepter les conditions gÃ©nÃ©rales d'utilisation",
   }),
   acceptPrivacy: z.boolean().refine((val) => val === true, {
-    message: "Vous devez accepter la politique de confidentialité",
+    message: "Vous devez accepter la politique de confidentialitÃ©",
   }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Les mots de passe ne correspondent pas",
@@ -101,14 +101,14 @@ export default function ExhibitorSignUpPage() {
   // Email validation
   const { suggestion: emailSuggestion } = useEmailValidation(watchedFields.email || '');
 
-  // Options pour les secteurs d'activité
+  // Options pour les secteurs d'activitÃ©
   const sectorsOptions = [
     { value: 'technologie', label: 'Technologie' },
     { value: 'logistique', label: 'Logistique' },
-    { value: 'media', label: 'Média' },
+    { value: 'media', label: 'MÃ©dia' },
     { value: 'finance', label: 'Finance' },
-    { value: 'sante', label: 'Santé' },
-    { value: 'education', label: 'Éducation' },
+    { value: 'sante', label: 'SantÃ©' },
+    { value: 'education', label: 'Ã‰ducation' },
     { value: 'tourisme', label: 'Tourisme' },
     { value: 'agriculture', label: 'Agriculture' },
     { value: 'industrie', label: 'Industrie' },
@@ -121,7 +121,7 @@ export default function ExhibitorSignUpPage() {
   useEffect(() => {
     const draft = loadFromLocalStorage();
     if (draft && Object.keys(draft).length > 0) {
-      const loadDraft = window.confirm('Un brouillon a été trouvé. Voulez-vous le restaurer ?');
+      const loadDraft = window.confirm('Un brouillon a Ã©tÃ© trouvÃ©. Voulez-vous le restaurer ?');
       if (loadDraft) {
         Object.entries(draft).forEach(([key, value]) => {
           setValue(key as keyof ExhibitorSignUpFormValues, value);
@@ -132,7 +132,7 @@ export default function ExhibitorSignUpPage() {
     }
   }, [loadFromLocalStorage, clearLocalStorage, setValue]);
 
-  // Fonction pour calculer les étapes de progression
+  // Fonction pour calculer les Ã©tapes de progression
   const getProgressSteps = () => {
     const steps = [
       {
@@ -157,7 +157,7 @@ export default function ExhibitorSignUpPage() {
       },
       {
         id: '5',
-        label: 'Sécurité',
+        label: 'SÃ©curitÃ©',
         completed: !!(watchedFields.password && watchedFields.confirmPassword && watchedFields.password === watchedFields.confirmPassword),
       },
       {
@@ -191,26 +191,26 @@ export default function ExhibitorSignUpPage() {
     };
 
     try {
-      // 🔐 Exécuter reCAPTCHA avant inscription
+      // ðŸ” ExÃ©cuter reCAPTCHA avant inscription
       let recaptchaToken: string | undefined;
       if (isRecaptchaReady) {
         try {
           recaptchaToken = await executeRecaptcha('exhibitor_registration');
         } catch (recaptchaError) {
-          console.warn('⚠️ reCAPTCHA failed, proceeding without:', recaptchaError);
+          console.warn('âš ï¸ reCAPTCHA failed, proceeding without:', recaptchaError);
         }
       }
 
-      // @ts-expect-error - recaptchaToken sera ajouté à authStore.signUp()
+      // @ts-expect-error - recaptchaToken sera ajoutÃ© Ã  authStore.signUp()
       const { error, data: userData } = await signUp({ email, password }, finalProfileData, recaptchaToken);
 
       if (error) {
         throw error;
       }
 
-      // 💰 Créer la demande de paiement
+      // ðŸ’° CrÃ©er la demande de paiement
       if (userData?.user?.id) {
-        // Générer référence de paiement unique
+        // GÃ©nÃ©rer rÃ©fÃ©rence de paiement unique
         const paymentReference = `EXH-2026-${userData.user.id.substring(0, 8).toUpperCase()}`;
 
         const { error: paymentError } = await supabase
@@ -222,21 +222,21 @@ export default function ExhibitorSignUpPage() {
             status: 'pending',
             payment_method: 'bank_transfer',
             reference: paymentReference,
-            description: `Abonnement Exposant SIPORTS 2026 - ${subscriptionLevel} (${standArea}m²)`,
+            description: `Abonnement Exposant SIPORTS 2026 - ${subscriptionLevel} (${standArea}mÂ²)`,
             metadata: {
               subscriptionLevel,
               standArea,
               eventName: 'SIPORTS 2026',
-              eventDates: '5-7 Février 2026'
+              eventDates: '5-7 FÃ©vrier 2026'
             }
           });
 
         if (paymentError) {
-          console.error('Erreur création demande paiement:', paymentError);
-          // Ne pas bloquer l'inscription si la création de paiement échoue
+          console.error('Erreur crÃ©ation demande paiement:', paymentError);
+          // Ne pas bloquer l'inscription si la crÃ©ation de paiement Ã©choue
         }
 
-        // 📧 Envoyer email avec instructions de paiement
+        // ðŸ“§ Envoyer email avec instructions de paiement
         try {
           const { error: emailError } = await supabase.functions.invoke('send-exhibitor-payment-instructions', {
             body: {
@@ -252,19 +252,19 @@ export default function ExhibitorSignUpPage() {
           });
 
           if (emailError) {
-            console.warn('⚠️ Email de paiement non envoyé:', emailError);
-            // Ne pas bloquer si l'email échoue
+            console.warn('âš ï¸ Email de paiement non envoyÃ©:', emailError);
+            // Ne pas bloquer si l'email Ã©choue
           }
         } catch (emailError) {
-          console.warn('⚠️ Edge function email non disponible:', emailError);
+          console.warn('âš ï¸ Edge function email non disponible:', emailError);
         }
       }
 
-      // Supprimer le brouillon après succès
+      // Supprimer le brouillon aprÃ¨s succÃ¨s
       clearLocalStorage();
 
       toast.success(
-        'Inscription réussie ! Un email avec les instructions de paiement vous a été envoyé.',
+        'Inscription rÃ©ussie ! Un email avec les instructions de paiement vous a Ã©tÃ© envoyÃ©.',
         { duration: 5000 }
       );
       navigate(ROUTES.PENDING_ACCOUNT);
@@ -285,7 +285,7 @@ export default function ExhibitorSignUpPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {/* Sélecteur de langue */}
+        {/* SÃ©lecteur de langue */}
         <div className="flex justify-end gap-2">
           {(['fr', 'en', 'ar'] as Language[]).map((lang) => (
             <button
@@ -309,7 +309,7 @@ export default function ExhibitorSignUpPage() {
             Inscription Exposant SIPORTS 2026
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Rejoignez notre écosystème et présentez vos produits et services.
+            Rejoignez notre Ã©cosystÃ¨me et prÃ©sentez vos produits et services.
           </p>
         </div>
 
@@ -320,7 +320,7 @@ export default function ExhibitorSignUpPage() {
 
         <Card className="p-8">
           <form onSubmit={handleSubmit(handlePreviewSubmit)} className="space-y-8">
-            {/* Section 0: Sélection d'abonnement */}
+            {/* Section 0: SÃ©lection d'abonnement */}
             <div className="space-y-6">
               <SubscriptionSelector
                 selectedLevel={watchedFields.subscriptionLevel as ExhibitorLevel}
@@ -360,13 +360,13 @@ export default function ExhibitorSignUpPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="sectors">Secteur(s) d'activité *</Label>
+                  <Label htmlFor="sectors">Secteur(s) d'activitÃ© *</Label>
                   <MultiSelect
-                    label="Secteurs d'activité"
+                    label="Secteurs d'activitÃ©"
                     options={sectorsOptions}
                     selectedValues={watchedFields.sectors || []}
                     onChange={(values) => setValue('sectors', values)}
-                    placeholder="Sélectionnez vos secteurs d'activité"
+                    placeholder="SÃ©lectionnez vos secteurs d'activitÃ©"
                     maxSelections={3}
                   />
                   {errors.sectors && <p className="text-red-500 text-xs mt-1">{errors.sectors.message}</p>}
@@ -380,7 +380,7 @@ export default function ExhibitorSignUpPage() {
                     <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 z-10 pointer-events-none" />
                     <Select onValueChange={(value: string) => setValue('country', value)} defaultValue="">
                       <SelectTrigger id="country" className="pl-10">
-                        <SelectValue placeholder="Sélectionnez votre pays" />
+                        <SelectValue placeholder="SÃ©lectionnez votre pays" />
                       </SelectTrigger>
                       <SelectContent>
                         {countries.map((country) => (
@@ -418,11 +418,11 @@ export default function ExhibitorSignUpPage() {
                   {...register('companyDescription')} 
                   rows={4}
                   maxLength={MAX_DESCRIPTION_LENGTH}
-                  placeholder="Décrivez votre organisation, vos activités et vos objectifs pour SIPORTS 2026." 
+                  placeholder="DÃ©crivez votre organisation, vos activitÃ©s et vos objectifs pour SIPORTS 2026." 
                 />
                 {errors.companyDescription && <p className="text-red-500 text-xs mt-1">{errors.companyDescription.message}</p>}
                 <p className="text-xs text-gray-500 mt-1">
-                  {watchedFields.companyDescription?.length || 0} / {MAX_DESCRIPTION_LENGTH} caractères
+                  {watchedFields.companyDescription?.length || 0} / {MAX_DESCRIPTION_LENGTH} caractÃ¨res
                 </p>
               </div>
             </div>
@@ -435,11 +435,11 @@ export default function ExhibitorSignUpPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <Label htmlFor="firstName">Prénom *</Label>
+                  <Label htmlFor="firstName">PrÃ©nom *</Label>
                   <Input 
                     id="firstName" 
                     {...register('firstName')} 
-                    placeholder="Votre prénom"
+                    placeholder="Votre prÃ©nom"
                     autoComplete="given-name"
                   />
                   {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName.message}</p>}
@@ -471,10 +471,10 @@ export default function ExhibitorSignUpPage() {
               </div>
             </div>
 
-            {/* Section 3: Coordonnées de contact */}
+            {/* Section 3: CoordonnÃ©es de contact */}
             <div className="space-y-6 border-t pt-6">
               <h3 className="text-xl font-semibold text-gray-900 pb-3">
-                Coordonnées de contact
+                CoordonnÃ©es de contact
               </h3>
 
               <div>
@@ -515,7 +515,7 @@ export default function ExhibitorSignUpPage() {
               </div>
 
               <div>
-                <Label htmlFor="phone">Téléphone professionnel *</Label>
+                <Label htmlFor="phone">TÃ©lÃ©phone professionnel *</Label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <Input 
@@ -531,10 +531,10 @@ export default function ExhibitorSignUpPage() {
               </div>
             </div>
 
-            {/* Section 4: Sécurité */}
+            {/* Section 4: SÃ©curitÃ© */}
             <div className="space-y-6 border-t pt-6">
               <h3 className="text-xl font-semibold text-gray-900 pb-3">
-                Informations de sécurité
+                Informations de sÃ©curitÃ©
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -546,7 +546,7 @@ export default function ExhibitorSignUpPage() {
                       id="password" 
                       type="password" 
                       {...register('password')} 
-                      placeholder="Créez un mot de passe sécurisé" 
+                      placeholder="CrÃ©ez un mot de passe sÃ©curisÃ©" 
                       className="pl-10"
                       autoComplete="new-password"
                     />
@@ -574,7 +574,7 @@ export default function ExhibitorSignUpPage() {
 
             {/* CGU et RGPD */}
             <div className="space-y-4 border-t pt-6">
-              <h3 className="text-lg font-medium text-gray-900">Conditions Générales</h3>
+              <h3 className="text-lg font-medium text-gray-900">Conditions GÃ©nÃ©rales</h3>
               
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
@@ -588,7 +588,7 @@ export default function ExhibitorSignUpPage() {
                     <label htmlFor="acceptTerms" className="text-sm text-gray-700 cursor-pointer">
                       J'accepte les{' '}
                       <Link to={ROUTES.TERMS} target="_blank" className="text-primary-600 hover:text-primary-700 underline">
-                        Conditions Générales d'Utilisation
+                        Conditions GÃ©nÃ©rales d'Utilisation
                       </Link>
                       {' '}de SIPORTS 2026 *
                     </label>
@@ -607,9 +607,9 @@ export default function ExhibitorSignUpPage() {
                     <label htmlFor="acceptPrivacy" className="text-sm text-gray-700 cursor-pointer">
                       J'accepte la{' '}
                       <Link to={ROUTES.PRIVACY} target="_blank" className="text-primary-600 hover:text-primary-700 underline">
-                        Politique de Confidentialité
+                        Politique de ConfidentialitÃ©
                       </Link>
-                      {' '}et consent au traitement de mes données personnelles conformément au RGPD *
+                      {' '}et consent au traitement de mes donnÃ©es personnelles conformÃ©ment au RGPD *
                     </label>
                     {errors.acceptPrivacy && <p className="text-red-500 text-xs mt-1">{errors.acceptPrivacy.message}</p>}
                   </div>
@@ -618,7 +618,7 @@ export default function ExhibitorSignUpPage() {
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-xs text-blue-900">
-                  <strong>Protection de vos données :</strong> Vos informations personnelles sont sécurisées et ne seront jamais partagées avec des tiers sans votre consentement. Vous pouvez exercer vos droits d'accès, de rectification et de suppression à tout moment.
+                  <strong>Protection de vos donnÃ©es :</strong> Vos informations personnelles sont sÃ©curisÃ©es et ne seront jamais partagÃ©es avec des tiers sans votre consentement. Vous pouvez exercer vos droits d'accÃ¨s, de rectification et de suppression Ã  tout moment.
                 </p>
               </div>
             </div>
@@ -630,13 +630,13 @@ export default function ExhibitorSignUpPage() {
                 disabled={isLoading}
                 variant="default"
               >
-                {isLoading ? 'Envoi en cours...' : "Prévisualiser et soumettre"}
+                {isLoading ? 'Envoi en cours...' : "PrÃ©visualiser et soumettre"}
               </Button>
               
               {watchedFields && Object.keys(watchedFields).length > 0 && (
                 <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
                   <Save className="h-3 w-3" />
-                  <span>Brouillon enregistré automatiquement</span>
+                  <span>Brouillon enregistrÃ© automatiquement</span>
                 </div>
               )}
 
@@ -646,7 +646,7 @@ export default function ExhibitorSignUpPage() {
             </div>
           </form>
 
-          {/* Modal de prévisualisation */}
+          {/* Modal de prÃ©visualisation */}
           <PreviewModal
             isOpen={showPreview}
             onClose={() => setShowPreview(false)}
@@ -655,7 +655,7 @@ export default function ExhibitorSignUpPage() {
           />
         </Card>
 
-        {/* Séparateur "OU" */}
+        {/* SÃ©parateur "OU" */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300"></div>
@@ -677,7 +677,7 @@ export default function ExhibitorSignUpPage() {
                 try {
                   setIsGoogleLoading(true);
                   await loginWithGoogle();
-                  toast.success('Connexion avec Google réussie !');
+                  toast.success('Connexion avec Google rÃ©ussie !');
                   navigate('/dashboard');
                 } catch (error) {
                   console.error('Google login error:', error);
@@ -726,7 +726,7 @@ export default function ExhibitorSignUpPage() {
                 try {
                   setIsLinkedInLoading(true);
                   await loginWithLinkedIn();
-                  toast.success('Connexion avec LinkedIn réussie !');
+                  toast.success('Connexion avec LinkedIn rÃ©ussie !');
                   navigate('/dashboard');
                 } catch (error) {
                   console.error('LinkedIn login error:', error);
@@ -762,7 +762,7 @@ export default function ExhibitorSignUpPage() {
 
         <div className="text-center">
           <p className="text-sm text-gray-600">
-            Déjà un compte ?{' '}
+            DÃ©jÃ  un compte ?{' '}
             <Link to={ROUTES.LOGIN} className="font-medium text-primary-600 hover:text-primary-700 underline">
               Connectez-vous
             </Link>
@@ -772,3 +772,5 @@ export default function ExhibitorSignUpPage() {
     </div>
   );
 };
+
+

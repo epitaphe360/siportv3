@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import { useTranslation } from '../../hooks/useTranslation';
@@ -24,13 +24,13 @@ export default function OAuthCallbackPage() {
         // Handle the OAuth callback and get user data
         await handleOAuthCallback();
 
-        toast.success('Connexion réussie !');
+        toast.success('Connexion rÃ©ussie !');
 
         // Redirect to dashboard after successful authentication
         navigate(ROUTES.DASHBOARD, { replace: true });
 
       } catch (error: any) {
-        console.error('❌ OAuth callback error:', error);
+        console.error('âŒ OAuth callback error:', error);
         setError(error.message || 'Erreur lors de l\'authentification');
         toast.error(error.message || 'Erreur lors de l\'authentification');
 
@@ -81,3 +81,5 @@ export default function OAuthCallbackPage() {
     </div>
   );
 }
+
+

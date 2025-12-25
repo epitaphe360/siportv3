@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useTranslation } from '../hooks/useTranslation';
 import InteractiveVenueMap from '../components/venue/InteractiveVenueMap';
 
@@ -62,3 +62,5 @@ const VenuePage: React.FC = () => {
 };
 
 export default VenuePage;
+
+

@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from '../hooks/useTranslation';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -45,6 +46,7 @@ interface ScanStats {
 }
 
 export default function BadgeScannerPage() {
+  const { t } = useTranslation();
   const { user } = useAuthStore();
   const [isScanning, setIsScanning] = useState(false);
   const [scannedBadge, setScannedBadge] = useState<ScannedBadge | null>(null);
@@ -60,7 +62,7 @@ export default function BadgeScannerPage() {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const videoRef = useRef<HTMLDivElement>(null);
 
-  // Vérifier les permissions caméra au montage
+  // VÃ©rifier les permissions camÃ©ra au montage
   useEffect(() => {
     checkCameraPermission();
 
@@ -70,7 +72,7 @@ export default function BadgeScannerPage() {
   }, []);
 
   /**
-   * Vérifie les permissions caméra
+   * VÃ©rifie les permissions camÃ©ra
    */
   const checkCameraPermission = async () => {
     try {
@@ -87,7 +89,7 @@ export default function BadgeScannerPage() {
   };
 
   /**
-   * Démarre le scanner QR
+   * DÃ©marre le scanner QR
    */
   const startScanner = async () => {
     try {
@@ -101,9 +103,9 @@ export default function BadgeScannerPage() {
       const scanner = new Html5Qrcode('qr-reader');
       scannerRef.current = scanner;
 
-      // Démarrer le scan
+      // DÃ©marrer le scan
       await scanner.start(
-        { facingMode: 'environment' }, // Caméra arrière
+        { facingMode: 'environment' }, // CamÃ©ra arriÃ¨re
         {
           fps: 10,
           qrbox: { width: 250, height: 250 }
@@ -113,12 +115,12 @@ export default function BadgeScannerPage() {
       );
 
       setIsScanning(true);
-      toast.success('Scanner activé');
+      toast.success('Scanner activÃ©');
     } catch (err: any) {
-      console.error('Erreur démarrage scanner:', err);
-      setError('Impossible d\'accéder à la caméra. Vérifiez les permissions.');
-      toast.error('Erreur caméra', {
-        description: 'Vérifiez que votre navigateur a accès à la caméra.'
+      console.error('Erreur dÃ©marrage scanner:', err);
+      setError('Impossible d\'accÃ©der Ã  la camÃ©ra. VÃ©rifiez les permissions.');
+      toast.error('Erreur camÃ©ra', {
+        description: 'VÃ©rifiez que votre navigateur a accÃ¨s Ã  la camÃ©ra.'
       });
 
       if (err.name === 'NotAllowedError') {
@@ -128,7 +130,7 @@ export default function BadgeScannerPage() {
   };
 
   /**
-   * Arrête le scanner QR
+   * ArrÃªte le scanner QR
    */
   const stopScanner = async () => {
     try {
@@ -136,20 +138,20 @@ export default function BadgeScannerPage() {
         await scannerRef.current.stop();
         scannerRef.current = null;
         setIsScanning(false);
-        toast.info('Scanner désactivé');
+        toast.info('Scanner dÃ©sactivÃ©');
       }
     } catch (err) {
-      console.error('Erreur arrêt scanner:', err);
+      console.error('Erreur arrÃªt scanner:', err);
     }
   };
 
   /**
-   * Callback succès scan QR
+   * Callback succÃ¨s scan QR
    */
   const onScanSuccess = async (decodedText: string) => {
-    console.log('QR Code scanné:', decodedText);
+    console.log('QR Code scannÃ©:', decodedText);
 
-    // Arrêter temporairement le scanner pour éviter les scans multiples
+    // ArrÃªter temporairement le scanner pour Ã©viter les scans multiples
     await stopScanner();
 
     try {
@@ -158,7 +160,7 @@ export default function BadgeScannerPage() {
       try {
         badgeData = JSON.parse(decodedText);
       } catch {
-        // Si ce n'est pas du JSON, considérer comme badge_code simple
+        // Si ce n'est pas du JSON, considÃ©rer comme badge_code simple
         badgeData = { badge_code: decodedText };
       }
 
@@ -171,7 +173,7 @@ export default function BadgeScannerPage() {
       });
     }
 
-    // Reprendre le scan après 2 secondes
+    // Reprendre le scan aprÃ¨s 2 secondes
     setTimeout(() => {
       if (!isScanning) {
         startScanner();
@@ -196,7 +198,7 @@ export default function BadgeScannerPage() {
     try {
       const { supabase } = await import('../lib/supabase');
 
-      // Appeler la fonction scan_badge qui valide et incrémente le compteur
+      // Appeler la fonction scan_badge qui valide et incrÃ©mente le compteur
       const { data, error } = await supabase.rpc('scan_badge', {
         p_badge_code: badgeCode
       });
@@ -206,10 +208,10 @@ export default function BadgeScannerPage() {
       }
 
       if (!data) {
-        throw new Error('Badge non trouvé');
+        throw new Error('Badge non trouvÃ©');
       }
 
-      // Créer l'objet badge scanné
+      // CrÃ©er l'objet badge scannÃ©
       const scanned: ScannedBadge = {
         id: data.id,
         badgeCode: data.badge_code,
@@ -226,11 +228,11 @@ export default function BadgeScannerPage() {
         scannedAt: new Date()
       };
 
-      // Mettre à jour l'état
+      // Mettre Ã  jour l'Ã©tat
       setScannedBadge(scanned);
       setScanHistory(prev => [scanned, ...prev.slice(0, 49)]); // Garder les 50 derniers
 
-      // Mettre à jour les stats
+      // Mettre Ã  jour les stats
       setStats(prev => ({
         totalScans: prev.totalScans + 1,
         todayScans: prev.todayScans + 1,
@@ -240,7 +242,7 @@ export default function BadgeScannerPage() {
 
       // Notification sonore et visuelle
       playSuccessSound();
-      toast.success('Badge validé', {
+      toast.success('Badge validÃ©', {
         description: `${scanned.fullName} - ${scanned.companyName || 'N/A'}`
       });
 
@@ -252,14 +254,14 @@ export default function BadgeScannerPage() {
       console.error('Erreur validation badge:', err);
       playErrorSound();
 
-      // Messages d'erreur spécifiques
+      // Messages d'erreur spÃ©cifiques
       if (err.message.includes('expired')) {
-        toast.error('Badge expiré', {
+        toast.error('Badge expirÃ©', {
           description: 'Ce badge n\'est plus valide'
         });
       } else if (err.message.includes('not active')) {
         toast.error('Badge inactif', {
-          description: 'Ce badge a été révoqué ou n\'est pas actif'
+          description: 'Ce badge a Ã©tÃ© rÃ©voquÃ© ou n\'est pas actif'
         });
       } else {
         toast.error('Badge invalide', {
@@ -290,10 +292,10 @@ export default function BadgeScannerPage() {
         created_at: new Date().toISOString()
       });
 
-      console.log('Lead enregistré:', badge.fullName);
+      console.log('Lead enregistrÃ©:', badge.fullName);
     } catch (err) {
       console.error('Erreur enregistrement lead:', err);
-      // Ne pas bloquer le scan si l'enregistrement du lead échoue
+      // Ne pas bloquer le scan si l'enregistrement du lead Ã©choue
     }
   };
 
@@ -313,7 +315,7 @@ export default function BadgeScannerPage() {
   };
 
   /**
-   * Reset du badge scanné (pour en scanner un autre)
+   * Reset du badge scannÃ© (pour en scanner un autre)
    */
   const resetScannedBadge = () => {
     setScannedBadge(null);
@@ -323,7 +325,7 @@ export default function BadgeScannerPage() {
   };
 
   /**
-   * Rendu de la badge scanné
+   * Rendu de la badge scannÃ©
    */
   const renderScannedBadge = (badge: ScannedBadge) => {
     const isValid = badge.status === 'active' && new Date(badge.validUntil) > new Date();
@@ -342,7 +344,7 @@ export default function BadgeScannerPage() {
               <XCircle className="h-16 w-16 text-red-500 mx-auto mb-2" />
             )}
             <h3 className="text-2xl font-bold mb-1">
-              {isValid ? 'Badge Validé' : 'Badge Non Valide'}
+              {isValid ? 'Badge ValidÃ©' : 'Badge Non Valide'}
             </h3>
             <p className="text-gray-600">{badge.badgeCode}</p>
           </div>
@@ -463,7 +465,7 @@ export default function BadgeScannerPage() {
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4 flex items-start">
                   <AlertCircle className="h-5 w-5 text-red-600 mr-3 flex-shrink-0 mt-0.5" />
                   <div className="text-sm text-red-800">
-                    <strong>Accès caméra refusé.</strong> Veuillez autoriser l'accès à la caméra dans les paramètres de votre navigateur.
+                    <strong>AccÃ¨s camÃ©ra refusÃ©.</strong> Veuillez autoriser l'accÃ¨s Ã  la camÃ©ra dans les paramÃ¨tres de votre navigateur.
                   </div>
                 </div>
               )}
@@ -499,7 +501,7 @@ export default function BadgeScannerPage() {
                     className="flex-1"
                     onClick={stopScanner}
                   >
-                    Arrêter le scanner
+                    ArrÃªter le scanner
                   </Button>
                 )}
               </div>
@@ -523,7 +525,7 @@ export default function BadgeScannerPage() {
               {scanHistory.length === 0 ? (
                 <div className="text-center py-12 text-gray-500">
                   <QrCode className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                  <p>Aucun badge scanné</p>
+                  <p>Aucun badge scannÃ©</p>
                 </div>
               ) : (
                 <div className="space-y-3 max-h-[600px] overflow-y-auto">
@@ -552,3 +554,6 @@ export default function BadgeScannerPage() {
     </div>
   );
 }
+
+
+

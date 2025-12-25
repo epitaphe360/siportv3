@@ -1,4 +1,4 @@
-import { Card } from '../components/ui/Card';
+﻿import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { useTranslation } from '../hooks/useTranslation';
 import { Handshake, Star, TrendingUp, Users } from 'lucide-react';
@@ -20,7 +20,7 @@ export default function PartnershipPage() {
             Partenariats SIPORTS 2026
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Rejoignez l'écosystème portuaire international et bénéficiez d'une visibilité exceptionnelle auprès des décideurs du secteur.
+            Rejoignez l'Ã©cosystÃ¨me portuaire international et bÃ©nÃ©ficiez d'une visibilitÃ© exceptionnelle auprÃ¨s des dÃ©cideurs du secteur.
           </p>
         </div>
 
@@ -34,13 +34,13 @@ export default function PartnershipPage() {
               Partenaire Premium
             </h3>
             <p className="text-gray-600 mb-6">
-              Visibilité maximale avec logo sur tous les supports de communication et présence dans les zones VIP.
+              VisibilitÃ© maximale avec logo sur tous les supports de communication et prÃ©sence dans les zones VIP.
             </p>
             <ul className="text-left text-sm text-gray-600 mb-6 space-y-2">
-              <li>• Logo sur le site web principal</li>
-              <li>• Présence dans les newsletters</li>
-              <li>• Accès aux zones VIP</li>
-              <li>• Stand dédié dans les pavillons</li>
+              <li>â€¢ Logo sur le site web principal</li>
+              <li>â€¢ PrÃ©sence dans les newsletters</li>
+              <li>â€¢ AccÃ¨s aux zones VIP</li>
+              <li>â€¢ Stand dÃ©diÃ© dans les pavillons</li>
             </ul>
             <Button onClick={handleContact} className="w-full">
               Devenir Partenaire Premium
@@ -55,13 +55,13 @@ export default function PartnershipPage() {
               Partenaire Technique
             </h3>
             <p className="text-gray-600 mb-6">
-              Participez aux conférences techniques et démontrez votre expertise auprès des professionnels du secteur.
+              Participez aux confÃ©rences techniques et dÃ©montrez votre expertise auprÃ¨s des professionnels du secteur.
             </p>
             <ul className="text-left text-sm text-gray-600 mb-6 space-y-2">
-              <li>• Intervention dans les conférences</li>
-              <li>• Présence dans le catalogue officiel</li>
-              <li>• Accès aux données des participants</li>
-              <li>• Support marketing personnalisé</li>
+              <li>â€¢ Intervention dans les confÃ©rences</li>
+              <li>â€¢ PrÃ©sence dans le catalogue officiel</li>
+              <li>â€¢ AccÃ¨s aux donnÃ©es des participants</li>
+              <li>â€¢ Support marketing personnalisÃ©</li>
             </ul>
             <Button onClick={handleContact} variant="outline" className="w-full">
               Devenir Partenaire Technique
@@ -73,19 +73,19 @@ export default function PartnershipPage() {
               <Users className="h-8 w-8 text-purple-600" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-4">
-              Partenaire Média
+              Partenaire MÃ©dia
             </h3>
             <p className="text-gray-600 mb-6">
-              Couvrez l'événement et bénéficiez d'un accès privilégié aux informations et aux intervenants.
+              Couvrez l'Ã©vÃ©nement et bÃ©nÃ©ficiez d'un accÃ¨s privilÃ©giÃ© aux informations et aux intervenants.
             </p>
             <ul className="text-left text-sm text-gray-600 mb-6 space-y-2">
-              <li>• Accréditation presse complète</li>
-              <li>• Accès aux conférences et ateliers</li>
-              <li>• Communiqués de presse exclusifs</li>
-              <li>• Photos et vidéos officielles</li>
+              <li>â€¢ AccrÃ©ditation presse complÃ¨te</li>
+              <li>â€¢ AccÃ¨s aux confÃ©rences et ateliers</li>
+              <li>â€¢ CommuniquÃ©s de presse exclusifs</li>
+              <li>â€¢ Photos et vidÃ©os officielles</li>
             </ul>
             <Button onClick={handleContact} variant="outline" className="w-full">
-              Devenir Partenaire Média
+              Devenir Partenaire MÃ©dia
             </Button>
           </Card>
         </div>
@@ -98,15 +98,15 @@ export default function PartnershipPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                Visibilité Internationale
+                VisibilitÃ© Internationale
               </h3>
               <p className="text-gray-600 mb-4">
                 SIPORTS 2026 rassemble plus de 500 exposants et 10 000 visiteurs professionnels du monde entier.
               </p>
               <ul className="text-gray-600 space-y-2">
-                <li>• Exposition auprès de décideurs clés</li>
-                <li>• Couverture médiatique internationale</li>
-                <li>• Réseau professionnel étendu</li>
+                <li>â€¢ Exposition auprÃ¨s de dÃ©cideurs clÃ©s</li>
+                <li>â€¢ Couverture mÃ©diatique internationale</li>
+                <li>â€¢ RÃ©seau professionnel Ã©tendu</li>
               </ul>
             </div>
             <div>
@@ -114,12 +114,12 @@ export default function PartnershipPage() {
                 Retour sur Investissement
               </h3>
               <p className="text-gray-600 mb-4">
-                Nos partenaires bénéficient d'un ROI démontré grâce à notre stratégie marketing ciblée.
+                Nos partenaires bÃ©nÃ©ficient d'un ROI dÃ©montrÃ© grÃ¢ce Ã  notre stratÃ©gie marketing ciblÃ©e.
               </p>
               <ul className="text-gray-600 space-y-2">
-                <li>• Génération de leads qualifiés</li>
-                <li>• Opportunités business concrètes</li>
-                <li>• Image de marque renforcée</li>
+                <li>â€¢ GÃ©nÃ©ration de leads qualifiÃ©s</li>
+                <li>â€¢ OpportunitÃ©s business concrÃ¨tes</li>
+                <li>â€¢ Image de marque renforcÃ©e</li>
               </ul>
             </div>
           </div>
@@ -129,10 +129,10 @@ export default function PartnershipPage() {
         <Card className="p-8 text-center">
           <Handshake className="h-16 w-16 text-blue-600 mx-auto mb-6" />
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Prêt à nous rejoindre ?
+            PrÃªt Ã  nous rejoindre ?
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Contactez notre équipe commerciale pour discuter de votre projet de partenariat et découvrir les opportunités adaptées à vos objectifs.
+            Contactez notre Ã©quipe commerciale pour discuter de votre projet de partenariat et dÃ©couvrir les opportunitÃ©s adaptÃ©es Ã  vos objectifs.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button onClick={handleContact} size="lg">
@@ -147,10 +147,12 @@ export default function PartnershipPage() {
             </Button>
           </div>
           <p className="text-gray-500 mt-4">
-            Email: {getSupportEmail('commercial')} | Téléphone: {getSupportPhone('commercial')}
+            Email: {getSupportEmail('commercial')} | TÃ©lÃ©phone: {getSupportPhone('commercial')}
           </p>
         </Card>
       </div>
     </div>
   );
 }
+
+

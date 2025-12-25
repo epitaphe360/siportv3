@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import {
@@ -50,7 +50,7 @@ export default function ExhibitorDetailPage() {
 
   const exhibitor = selectedExhibitor || exhibitors.find(e => e.id === id);
 
-  // Fonction pour gérer le clic sur le bouton RDV
+  // Fonction pour gÃ©rer le clic sur le bouton RDV
   const handleAppointmentClick = () => {
     if (!isAuthenticated) {
       navigate(`/login?redirect=/appointments?exhibitor=${exhibitor?.id}`);
@@ -69,7 +69,7 @@ export default function ExhibitorDetailPage() {
 
   const handleShare = () => {
     const shareData = {
-      title: `Découvrez ${exhibitor?.companyName}`,
+      title: `DÃ©couvrez ${exhibitor?.companyName}`,
       text: exhibitor?.description,
       url: window.location.href
     };
@@ -78,7 +78,7 @@ export default function ExhibitorDetailPage() {
       navigator.share(shareData);
     } else {
       navigator.clipboard.writeText(shareData.url);
-      toast.success('Lien copié dans le presse-papiers !');
+      toast.success('Lien copiÃ© dans le presse-papiers !');
     }
   };
 
@@ -92,7 +92,7 @@ export default function ExhibitorDetailPage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    toast.success('Téléchargement de la brochure démarré');
+    toast.success('TÃ©lÃ©chargement de la brochure dÃ©marrÃ©');
   };
 
   if (!exhibitor) {
@@ -133,7 +133,7 @@ export default function ExhibitorDetailPage() {
       case 'institutional': return 'Institutionnel';
       case 'port-industry': return 'Industrie Portuaire';
       case 'port-operations': return 'Exploitation & Gestion';
-      case 'academic': return 'Académique & Formation';
+      case 'academic': return 'AcadÃ©mique & Formation';
       default: return category;
     }
   };
@@ -238,7 +238,7 @@ export default function ExhibitorDetailPage() {
             {[
               { id: 'overview', label: 'Vue d\'ensemble', icon: Eye },
               { id: 'projects', label: 'Produits', icon: Package },
-              { id: 'impact', label: 'À propos', icon: Building2 },
+              { id: 'impact', label: 'Ã€ propos', icon: Building2 },
               { id: 'contact', label: 'Contact', icon: MessageCircle }
             ].map((tab) => (
               <button
@@ -303,7 +303,7 @@ export default function ExhibitorDetailPage() {
                 <div className="text-2xl font-bold text-gray-900 mb-1">
                   {exhibitor.markets.length}
                 </div>
-                <div className="text-sm text-gray-600">Marchés</div>
+                <div className="text-sm text-gray-600">MarchÃ©s</div>
               </Card>
             </div>
 
@@ -312,7 +312,7 @@ export default function ExhibitorDetailPage() {
               <Card>
                 <div className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                    Certifications & Accréditations
+                    Certifications & AccrÃ©ditations
                   </h3>
                   <div className="flex flex-wrap gap-3">
                     {exhibitor.certifications.map((cert, index) => (
@@ -326,11 +326,11 @@ export default function ExhibitorDetailPage() {
               </Card>
             )}
 
-            {/* Marchés */}
+            {/* MarchÃ©s */}
             <Card>
               <div className="p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Marchés Ciblés
+                  MarchÃ©s CiblÃ©s
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {exhibitor.markets.map((market, index) => (
@@ -358,7 +358,7 @@ export default function ExhibitorDetailPage() {
                   Aucun produit disponible
                 </h3>
                 <p className="text-gray-600">
-                  Cet exposant n'a pas encore ajouté de produits à son catalogue.
+                  Cet exposant n'a pas encore ajoutÃ© de produits Ã  son catalogue.
                 </p>
               </Card>
             ) : (
@@ -398,7 +398,7 @@ export default function ExhibitorDetailPage() {
 
                         {product.specifications && (
                           <div className="mb-4">
-                            <h4 className="font-medium text-gray-900 mb-2">Spécifications</h4>
+                            <h4 className="font-medium text-gray-900 mb-2">SpÃ©cifications</h4>
                             <p className="text-sm text-gray-600">{product.specifications}</p>
                           </div>
                         )}
@@ -406,7 +406,7 @@ export default function ExhibitorDetailPage() {
                         <div className="flex space-x-3">
                           <Button variant="outline" size="sm" className="flex-1">
                             <Eye className="h-4 w-4 mr-2" />
-                            Voir détails
+                            Voir dÃ©tails
                           </Button>
                           <Button variant="default" size="sm" onClick={handleDownloadBrochure}>
                             <Download className="h-4 w-4" />
@@ -430,7 +430,7 @@ export default function ExhibitorDetailPage() {
             <Card>
               <div className="p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  À propos de {exhibitor.companyName}
+                  Ã€ propos de {exhibitor.companyName}
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -438,7 +438,7 @@ export default function ExhibitorDetailPage() {
                     <div className="flex items-center space-x-3">
                       <Building2 className="h-5 w-5 text-gray-400" />
                       <div>
-                        <p className="font-medium text-gray-900">Secteur d'activité</p>
+                        <p className="font-medium text-gray-900">Secteur d'activitÃ©</p>
                         <p className="text-gray-600">{exhibitor.sector}</p>
                       </div>
                     </div>
@@ -447,7 +447,7 @@ export default function ExhibitorDetailPage() {
                       <div className="flex items-center space-x-3">
                         <Calendar className="h-5 w-5 text-gray-400" />
                         <div>
-                          <p className="font-medium text-gray-900">Année de création</p>
+                          <p className="font-medium text-gray-900">AnnÃ©e de crÃ©ation</p>
                           <p className="text-gray-600">{exhibitor.establishedYear}</p>
                         </div>
                       </div>
@@ -458,7 +458,7 @@ export default function ExhibitorDetailPage() {
                         <Users className="h-5 w-5 text-gray-400" />
                         <div>
                           <p className="font-medium text-gray-900">Effectif</p>
-                          <p className="text-gray-600">{exhibitor.employeeCount} employés</p>
+                          <p className="text-gray-600">{exhibitor.employeeCount} employÃ©s</p>
                         </div>
                       </div>
                     )}
@@ -554,7 +554,7 @@ export default function ExhibitorDetailPage() {
 
                       <Button variant="outline" className="w-full" onClick={handleDownloadBrochure}>
                         <Download className="h-4 w-4 mr-2" />
-                        Télécharger la brochure
+                        TÃ©lÃ©charger la brochure
                       </Button>
                     </div>
                   </div>
@@ -567,3 +567,5 @@ export default function ExhibitorDetailPage() {
     </div>
   );
 }
+
+

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from '../hooks/useTranslation';
@@ -45,7 +45,7 @@ export default function VisitorPaymentPage() {
   // Redirect if already VIP
   React.useEffect(() => {
     if (user?.visitor_level === 'premium' || user?.visitor_level === 'vip') {
-      toast.success('Vous êtes déjà abonné Premium VIP !');
+      toast.success('Vous Ãªtes dÃ©jÃ  abonnÃ© Premium VIP !');
       navigate(ROUTES.VISITOR_DASHBOARD);
     }
   }, [user, navigate]);
@@ -100,7 +100,7 @@ export default function VisitorPaymentPage() {
         status: 'approved', // PayPal approves instantly
       });
 
-      toast.success('Paiement PayPal réussi !');
+      toast.success('Paiement PayPal rÃ©ussi !');
       navigate('/visitor/payment-success');
     } catch (err: any) {
       console.error('PayPal capture error:', err);
@@ -149,15 +149,15 @@ export default function VisitorPaymentPage() {
       icon: CreditCard,
       color: 'blue',
       recommended: true,
-      fees: '0€ de frais',
+      fees: '0â‚¬ de frais',
     },
     {
       id: 'paypal' as PaymentMethod,
       name: 'PayPal',
-      description: 'Paiement sécurisé via votre compte PayPal',
+      description: 'Paiement sÃ©curisÃ© via votre compte PayPal',
       icon: Shield,
       color: 'indigo',
-      fees: '0€ de frais',
+      fees: '0â‚¬ de frais',
     },
     {
       id: 'cmi' as PaymentMethod,
@@ -183,7 +183,7 @@ export default function VisitorPaymentPage() {
             Paiement Pass Premium VIP
           </h1>
           <p className="text-xl text-gray-600">
-            Choisissez votre moyen de paiement préféré
+            Choisissez votre moyen de paiement prÃ©fÃ©rÃ©
           </p>
         </motion.div>
 
@@ -192,15 +192,15 @@ export default function VisitorPaymentPage() {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Votre commande</h3>
             <div className="text-right">
-              <div className="text-2xl font-bold text-gray-900 line-through text-gray-400">950€</div>
-              <div className="text-3xl font-bold text-yellow-600">700€</div>
-              <div className="text-sm text-green-600 font-semibold">-250€ d'économie</div>
+              <div className="text-2xl font-bold text-gray-900 line-through text-gray-400">950â‚¬</div>
+              <div className="text-3xl font-bold text-yellow-600">700â‚¬</div>
+              <div className="text-sm text-green-600 font-semibold">-250â‚¬ d'Ã©conomie</div>
             </div>
           </div>
           <div className="space-y-2 text-sm text-gray-700">
             <div className="flex items-center">
               <Check className="h-4 w-4 mr-2 text-green-500" />
-              Pass Premium VIP - Accès complet 3 jours
+              Pass Premium VIP - AccÃ¨s complet 3 jours
             </div>
             <div className="flex items-center">
               <Check className="h-4 w-4 mr-2 text-green-500" />
@@ -208,11 +208,11 @@ export default function VisitorPaymentPage() {
             </div>
             <div className="flex items-center">
               <Check className="h-4 w-4 mr-2 text-green-500" />
-              Accès événements exclusifs (gala, ateliers, conférences)
+              AccÃ¨s Ã©vÃ©nements exclusifs (gala, ateliers, confÃ©rences)
             </div>
             <div className="flex items-center">
               <Check className="h-4 w-4 mr-2 text-green-500" />
-              Badge ultra-sécurisé avec photo
+              Badge ultra-sÃ©curisÃ© avec photo
             </div>
           </div>
         </Card>
@@ -260,7 +260,7 @@ export default function VisitorPaymentPage() {
                         <h4 className="font-semibold text-gray-900">{method.name}</h4>
                         {method.recommended && (
                           <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">
-                            Recommandé
+                            RecommandÃ©
                           </span>
                         )}
                       </div>
@@ -305,7 +305,7 @@ export default function VisitorPaymentPage() {
                 ) : (
                   <>
                     <CreditCard className="mr-2 h-5 w-5" />
-                    Payer 700€ par Carte Bancaire
+                    Payer 700â‚¬ par Carte Bancaire
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </>
                 )}
@@ -359,7 +359,7 @@ export default function VisitorPaymentPage() {
         {/* Security Badge */}
         <div className="mt-8 flex items-center justify-center text-sm text-gray-600">
           <Shield className="h-5 w-5 mr-2 text-green-600" />
-          <span>Paiement 100% sécurisé - Vos données sont cryptées</span>
+          <span>Paiement 100% sÃ©curisÃ© - Vos donnÃ©es sont cryptÃ©es</span>
         </div>
 
         {/* Cancel */}
@@ -375,3 +375,5 @@ export default function VisitorPaymentPage() {
     </div>
   );
 }
+
+

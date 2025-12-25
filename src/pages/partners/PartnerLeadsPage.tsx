@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -41,6 +42,7 @@ export const PartnerLeadsPage: React.FC = () => {
   }, []);
 
   async function loadConnections() {
+  const { t } = useTranslation();
     try {
       // Charger les connexions du partenaire
       const { data, error } = await supabase
@@ -89,22 +91,22 @@ export const PartnerLeadsPage: React.FC = () => {
       position: conn.addressee?.type || 'N/A',
       sector: conn.addressee?.type === 'exhibitor' ? 'Exposant' : conn.addressee?.type === 'visitor' ? 'Visiteur' : 'Autre',
       value: 'N/A',
-      status: conn.status === 'accepted' ? 'Connecté' : conn.status === 'pending' ? 'En attente' : 'Rejeté',
+      status: conn.status === 'accepted' ? 'ConnectÃ©' : conn.status === 'pending' ? 'En attente' : 'RejetÃ©',
       lastContact: new Date(conn.created_at).toISOString().split('T')[0],
-      nextAction: conn.status === 'accepted' ? 'Suivi actif' : 'En attente de réponse',
+      nextAction: conn.status === 'accepted' ? 'Suivi actif' : 'En attente de rÃ©ponse',
       priority: conn.status === 'accepted' ? 'high' : 'medium'
     })),
     leadSources: [
-      { source: 'Événements SIPORTS', count: 34, percentage: 38 },
+      { source: 'Ã‰vÃ©nements SIPORTS', count: 34, percentage: 38 },
       { source: 'Networking Partenaires', count: 28, percentage: 31 },
-      { source: 'Références Clients', count: 15, percentage: 17 },
+      { source: 'RÃ©fÃ©rences Clients', count: 15, percentage: 17 },
       { source: 'Campagnes Marketing', count: 12, percentage: 14 }
     ],
     conversionFunnel: [
-      { stage: 'Leads Générés', count: 89, percentage: 100 },
-      { stage: 'Qualifiés', count: 67, percentage: 75 },
+      { stage: 'Leads GÃ©nÃ©rÃ©s', count: 89, percentage: 100 },
+      { stage: 'QualifiÃ©s', count: 67, percentage: 75 },
       { stage: 'Proposition', count: 23, percentage: 26 },
-      { stage: 'Négociation', count: 12, percentage: 13 },
+      { stage: 'NÃ©gociation', count: 12, percentage: 13 },
       { stage: 'Conversion', count: 11, percentage: 12 }
     ]
   };
@@ -156,7 +158,7 @@ export const PartnerLeadsPage: React.FC = () => {
                 Leads & Prospects
               </h1>
               <p className="text-gray-600">
-                Gérez vos leads qualifiés et suivez leur progression dans le pipeline commercial
+                GÃ©rez vos leads qualifiÃ©s et suivez leur progression dans le pipeline commercial
               </p>
             </div>
           </div>
@@ -182,7 +184,7 @@ export const PartnerLeadsPage: React.FC = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold text-gray-900">{leadsData.overview.totalLeads}</p>
-                  <p className="text-sm text-gray-600">Leads générés</p>
+                  <p className="text-sm text-gray-600">Leads gÃ©nÃ©rÃ©s</p>
                 </div>
               </div>
             </div>
@@ -196,7 +198,7 @@ export const PartnerLeadsPage: React.FC = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold text-gray-900">{leadsData.overview.qualifiedLeads}</p>
-                  <p className="text-sm text-gray-600">Leads qualifiés</p>
+                  <p className="text-sm text-gray-600">Leads qualifiÃ©s</p>
                 </div>
               </div>
             </div>
@@ -223,8 +225,8 @@ export const PartnerLeadsPage: React.FC = () => {
                   <Award className="h-8 w-8 text-orange-600" />
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-gray-900">{leadsData.overview.totalValue.toLocaleString()}€</p>
-                  <p className="text-sm text-gray-600">Valeur estimée</p>
+                  <p className="text-2xl font-bold text-gray-900">{leadsData.overview.totalValue.toLocaleString()}â‚¬</p>
+                  <p className="text-sm text-gray-600">Valeur estimÃ©e</p>
                 </div>
               </div>
             </div>
@@ -234,14 +236,14 @@ export const PartnerLeadsPage: React.FC = () => {
         {/* Recent Leads */}
         <Card className="mb-8">
           <div className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Leads Récents</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">Leads RÃ©cents</h3>
             <div className="space-y-4">
               {leadsData.recentLeads.map((lead) => (
                 <div key={lead.id} className="border border-gray-200 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-3">
                     <div>
                       <h4 className="font-semibold text-gray-900">{lead.company}</h4>
-                      <p className="text-sm text-gray-600">{lead.contact} • {lead.position}</p>
+                      <p className="text-sm text-gray-600">{lead.contact} â€¢ {lead.position}</p>
                     </div>
                     <div className="flex items-center space-x-2">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(lead.status)}`}>
@@ -362,7 +364,7 @@ export const PartnerLeadsPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="p-4 bg-white rounded-lg border border-blue-200">
                 <h4 className="font-medium text-blue-900 mb-2">
-                  🎯 Qualification Rapide
+                  ðŸŽ¯ Qualification Rapide
                 </h4>
                 <p className="text-sm text-blue-700">
                   Contactez les leads chauds dans les 24h pour maximiser vos chances de conversion
@@ -371,7 +373,7 @@ export const PartnerLeadsPage: React.FC = () => {
 
               <div className="p-4 bg-white rounded-lg border border-blue-200">
                 <h4 className="font-medium text-blue-900 mb-2">
-                  📊 Suivi Régulier
+                  ðŸ“Š Suivi RÃ©gulier
                 </h4>
                 <p className="text-sm text-blue-700">
                   Planifiez des points de suivi hebdomadaires pour maintenir l'engagement
@@ -380,19 +382,19 @@ export const PartnerLeadsPage: React.FC = () => {
 
               <div className="p-4 bg-white rounded-lg border border-blue-200">
                 <h4 className="font-medium text-blue-900 mb-2">
-                  🎪 Personnalisation
+                  ðŸŽª Personnalisation
                 </h4>
                 <p className="text-sm text-blue-700">
-                  Adaptez vos propositions aux besoins spécifiques de chaque prospect
+                  Adaptez vos propositions aux besoins spÃ©cifiques de chaque prospect
                 </p>
               </div>
 
               <div className="p-4 bg-white rounded-lg border border-blue-200">
                 <h4 className="font-medium text-blue-900 mb-2">
-                  📈 Mesure des Résultats
+                  ðŸ“ˆ Mesure des RÃ©sultats
                 </h4>
                 <p className="text-sm text-blue-700">
-                  Analysez régulièrement vos taux de conversion pour optimiser votre approche
+                  Analysez rÃ©guliÃ¨rement vos taux de conversion pour optimiser votre approche
                 </p>
               </div>
             </div>
@@ -402,3 +404,6 @@ export const PartnerLeadsPage: React.FC = () => {
     </div>
   );
 };
+
+
+

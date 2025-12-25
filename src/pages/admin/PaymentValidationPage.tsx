@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { supabase } from '../../lib/supabase';
 import useAuthStore from '../../store/authStore';
 
@@ -25,6 +26,7 @@ interface PaymentRequest {
 }
 
 export default function PaymentValidationPage() {
+  const { t } = useTranslation();
   const { user } = useAuthStore();
   const [requests, setRequests] = useState<PaymentRequest[]>([]);
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('pending');
@@ -59,7 +61,7 @@ export default function PaymentValidationPage() {
 
       if (error) throw error;
 
-      // Filtrer par type d'utilisateur côté client
+      // Filtrer par type d'utilisateur cÃ´tÃ© client
       let filteredData = data as PaymentRequest[];
       if (userTypeFilter !== 'all') {
         filteredData = filteredData.filter(
@@ -89,10 +91,10 @@ export default function PaymentValidationPage() {
 
       if (error) throw error;
 
-      alert('✅ Paiement approuvé avec succès !');
+      alert('âœ… Paiement approuvÃ© avec succÃ¨s !');
       loadRequests();
     } catch (error: any) {
-      alert(`❌ Erreur: ${error.message}`);
+      alert(`âŒ Erreur: ${error.message}`);
     } finally {
       setProcessing(null);
     }
@@ -112,10 +114,10 @@ export default function PaymentValidationPage() {
 
       if (error) throw error;
 
-      alert('✅ Paiement rejeté.');
+      alert('âœ… Paiement rejetÃ©.');
       loadRequests();
     } catch (error: any) {
-      alert(`❌ Erreur: ${error.message}`);
+      alert(`âŒ Erreur: ${error.message}`);
     } finally {
       setProcessing(null);
     }
@@ -126,7 +128,7 @@ export default function PaymentValidationPage() {
   return (
     <div style={{ padding: 32 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <h1>💳 Validation des Paiements</h1>
+        <h1>ðŸ’³ Validation des Paiements</h1>
         <div style={{ background: '#ffc107', color: '#000', padding: '8px 16px', borderRadius: 20, fontWeight: 'bold' }}>
           {pendingCount} en attente
         </div>
@@ -152,9 +154,9 @@ export default function PaymentValidationPage() {
                 }}
               >
                 {status === 'all' && 'Tous'}
-                {status === 'pending' && '⏳ En attente'}
-                {status === 'approved' && '✅ Approuvés'}
-                {status === 'rejected' && '❌ Rejetés'}
+                {status === 'pending' && 'â³ En attente'}
+                {status === 'approved' && 'âœ… ApprouvÃ©s'}
+                {status === 'rejected' && 'âŒ RejetÃ©s'}
               </button>
             ))}
           </div>
@@ -177,10 +179,10 @@ export default function PaymentValidationPage() {
                   fontWeight: userTypeFilter === type ? 'bold' : 'normal'
                 }}
               >
-                {type === 'all' && '🌐 Tous'}
-                {type === 'visitor' && '👤 Visiteurs'}
-                {type === 'partner' && '🤝 Partenaires'}
-                {type === 'exhibitor' && '🏢 Exposants'}
+                {type === 'all' && 'ðŸŒ Tous'}
+                {type === 'visitor' && 'ðŸ‘¤ Visiteurs'}
+                {type === 'partner' && 'ðŸ¤ Partenaires'}
+                {type === 'exhibitor' && 'ðŸ¢ Exposants'}
               </button>
             ))}
           </div>
@@ -191,7 +193,7 @@ export default function PaymentValidationPage() {
         <div style={{ textAlign: 'center', padding: 48 }}>Chargement...</div>
       ) : requests.length === 0 ? (
         <div style={{ textAlign: 'center', padding: 48, color: '#666' }}>
-          Aucune demande à afficher
+          Aucune demande Ã  afficher
         </div>
       ) : (
         <div style={{ display: 'grid', gap: 16 }}>
@@ -225,10 +227,10 @@ export default function PaymentValidationPage() {
                         request.users.type === 'partner' ? '#388e3c' :
                         request.users.type === 'exhibitor' ? '#f57c00' : '#666'
                     }}>
-                      {request.users.type === 'visitor' && '👤 Visiteur'}
-                      {request.users.type === 'partner' && '🤝 Partenaire'}
-                      {request.users.type === 'exhibitor' && '🏢 Exposant'}
-                      {request.users.type === 'admin' && '⚙️ Admin'}
+                      {request.users.type === 'visitor' && 'ðŸ‘¤ Visiteur'}
+                      {request.users.type === 'partner' && 'ðŸ¤ Partenaire'}
+                      {request.users.type === 'exhibitor' && 'ðŸ¢ Exposant'}
+                      {request.users.type === 'admin' && 'âš™ï¸ Admin'}
                     </span>
                   </div>
                   <p style={{ margin: 0, color: '#666', fontSize: 14 }}>
@@ -253,21 +255,21 @@ export default function PaymentValidationPage() {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                 <div>
-                  <strong>Niveau demandé:</strong>{' '}
+                  <strong>Niveau demandÃ©:</strong>{' '}
                   {request.users.type === 'visitor' ? (
-                    request.requested_level === 'premium' ? '⭐ Premium VIP' : request.requested_level
+                    request.requested_level === 'premium' ? 'â­ Premium VIP' : request.requested_level
                   ) : (
                     <>
-                      {request.requested_level === 'museum' && '🏛️ Museum Partner'}
-                      {request.requested_level === 'silver' && '🥈 Silver Partner'}
-                      {request.requested_level === 'gold' && '🥇 Gold Partner'}
-                      {request.requested_level === 'platinium' && '💎 Platinum Partner'}
+                      {request.requested_level === 'museum' && 'ðŸ›ï¸ Museum Partner'}
+                      {request.requested_level === 'silver' && 'ðŸ¥ˆ Silver Partner'}
+                      {request.requested_level === 'gold' && 'ðŸ¥‡ Gold Partner'}
+                      {request.requested_level === 'platinium' && 'ðŸ’Ž Platinum Partner'}
                     </>
                   )}
                 </div>
                 <div>
-                  <strong>Méthode:</strong>{' '}
-                  {request.payment_method === 'bank_transfer' ? '🏦 Virement bancaire' : request.payment_method}
+                  <strong>MÃ©thode:</strong>{' '}
+                  {request.payment_method === 'bank_transfer' ? 'ðŸ¦ Virement bancaire' : request.payment_method}
                 </div>
                 <div>
                   <strong>Statut:</strong>{' '}
@@ -282,15 +284,15 @@ export default function PaymentValidationPage() {
                       request.status === 'rejected' ? '#dc3545' : '#6c757d',
                     color: '#fff'
                   }}>
-                    {request.status === 'pending' && '⏳ En attente'}
-                    {request.status === 'approved' && '✅ Approuvé'}
-                    {request.status === 'rejected' && '❌ Rejeté'}
-                    {request.status === 'cancelled' && '🚫 Annulé'}
+                    {request.status === 'pending' && 'â³ En attente'}
+                    {request.status === 'approved' && 'âœ… ApprouvÃ©'}
+                    {request.status === 'rejected' && 'âŒ RejetÃ©'}
+                    {request.status === 'cancelled' && 'ðŸš« AnnulÃ©'}
                   </span>
                 </div>
                 {request.transfer_reference && (
                   <div>
-                    <strong>Référence virement:</strong> {request.transfer_reference}
+                    <strong>RÃ©fÃ©rence virement:</strong> {request.transfer_reference}
                   </div>
                 )}
               </div>
@@ -312,7 +314,7 @@ export default function PaymentValidationPage() {
 
               {request.validated_at && (
                 <div style={{ fontSize: 14, color: '#666', marginBottom: 16 }}>
-                  Validé le {new Date(request.validated_at).toLocaleDateString('fr-FR', {
+                  ValidÃ© le {new Date(request.validated_at).toLocaleDateString('fr-FR', {
                     day: 'numeric',
                     month: 'long',
                     year: 'numeric',
@@ -340,7 +342,7 @@ export default function PaymentValidationPage() {
                       opacity: processing === request.id ? 0.6 : 1
                     }}
                   >
-                    ✅ Approuver
+                    âœ… Approuver
                   </button>
                   <button
                     onClick={() => handleReject(request.id)}
@@ -358,7 +360,7 @@ export default function PaymentValidationPage() {
                       opacity: processing === request.id ? 0.6 : 1
                     }}
                   >
-                    ❌ Rejeter
+                    âŒ Rejeter
                   </button>
                 </div>
               )}
@@ -369,3 +371,6 @@ export default function PaymentValidationPage() {
     </div>
   );
 }
+
+
+

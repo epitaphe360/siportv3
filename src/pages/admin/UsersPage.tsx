@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -32,6 +33,7 @@ type User = Database['public']['Tables']['users']['Row'] & {
 };
 
 export default function UsersPage() {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
@@ -121,13 +123,13 @@ export default function UsersPage() {
       case 'active': return <Badge variant="success">Actif</Badge>;
       case 'pending': return <Badge variant="warning">En attente</Badge>;
       case 'suspended': return <Badge variant="error">Suspendu</Badge>;
-      case 'rejected': return <Badge variant="error">Rejeté</Badge>;
+      case 'rejected': return <Badge variant="error">RejetÃ©</Badge>;
       default: return <Badge variant="info">{status}</Badge>;
     }
   };
 
   const handleUserAction = (userId: string, action: string) => {
-    // Ici vous pouvez implémenter les actions réelles
+    // Ici vous pouvez implÃ©menter les actions rÃ©elles
   };
 
   if (isLoading) {
@@ -150,7 +152,7 @@ export default function UsersPage() {
           <p className="text-gray-600">{error}</p>
           <Button onClick={() => window.location.reload()} className="mt-4">
             <RefreshCw className="h-4 w-4 mr-2" />
-            Réessayer
+            RÃ©essayer
           </Button>
         </div>
       </div>
@@ -166,13 +168,13 @@ export default function UsersPage() {
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Gestion des Utilisateurs</h1>
               <p className="text-gray-600 mt-2">
-                Administration complète des comptes utilisateur SIPORTS
+                Administration complÃ¨te des comptes utilisateur SIPORTS
               </p>
             </div>
             <Link to={ROUTES.ADMIN_CREATE_USER}>
               <Button variant="default">
                 <Users className="h-4 w-4 mr-2" />
-                Créer Utilisateur
+                CrÃ©er Utilisateur
               </Button>
             </Link>
           </div>
@@ -259,7 +261,7 @@ export default function UsersPage() {
                 onChange={(e) => setSelectedRole(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Tous les rôles</option>
+                <option value="">Tous les rÃ´les</option>
                 <option value="admin">Administrateur</option>
                 <option value="partner">Partenaire</option>
                 <option value="exhibitor">Exposant</option>
@@ -275,7 +277,7 @@ export default function UsersPage() {
                 <option value="active">Actif</option>
                 <option value="pending">En attente</option>
                 <option value="suspended">Suspendu</option>
-                <option value="rejected">Rejeté</option>
+                <option value="rejected">RejetÃ©</option>
               </select>
 
               <Button variant="outline">
@@ -294,10 +296,10 @@ export default function UsersPage() {
                 <thead>
                   <tr className="border-b border-gray-200">
                     <th className="text-left py-3 px-4 font-medium text-gray-900">Utilisateur</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900">Rôle</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">RÃ´le</th>
                     <th className="text-left py-3 px-4 font-medium text-gray-900">Entreprise</th>
                     <th className="text-left py-3 px-4 font-medium text-gray-900">Statut</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-900">Dernière connexion</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-900">DerniÃ¨re connexion</th>
                     <th className="text-left py-3 px-4 font-medium text-gray-900">Actions</th>
                   </tr>
                 </thead>
@@ -376,10 +378,10 @@ export default function UsersPage() {
               <div className="text-center py-12">
                 <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Aucun utilisateur trouvé
+                  Aucun utilisateur trouvÃ©
                 </h3>
                 <p className="text-gray-600">
-                  Essayez de modifier vos critères de recherche
+                  Essayez de modifier vos critÃ¨res de recherche
                 </p>
               </div>
             )}
@@ -389,4 +391,7 @@ export default function UsersPage() {
     </div>
   );
 };
+
+
+
 

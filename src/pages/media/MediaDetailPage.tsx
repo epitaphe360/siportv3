@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, Calendar, Users, Play, Share2, Heart, 
@@ -14,6 +15,7 @@ import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 
 export default function MediaDetailPage() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [media, setMedia] = useState<any>(null);
@@ -25,14 +27,14 @@ export default function MediaDetailPage() {
       try {
         const data = await MediaService.getMediaById(id);
         if (!data) {
-          toast.error("Média non trouvé");
+          toast.error("MÃ©dia non trouvÃ©");
           navigate(ROUTES.MEDIA_LIBRARY);
           return;
         }
         setMedia(data);
       } catch (err) {
         console.error("Error fetching media:", err);
-        toast.error("Erreur lors du chargement du média");
+        toast.error("Erreur lors du chargement du mÃ©dia");
       } finally {
         setIsLoading(false);
       }
@@ -60,7 +62,7 @@ export default function MediaDetailPage() {
           className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-8 transition-colors"
         >
           <ArrowLeft className="h-5 w-5 mr-2" />
-          Retour à la médiathèque
+          Retour Ã  la mÃ©diathÃ¨que
         </Link>
 
         {/* Video Player Section */}
@@ -84,7 +86,7 @@ export default function MediaDetailPage() {
           <div className="absolute bottom-6 left-6 right-6 text-white">
             <div className="flex items-center space-x-3 mb-2">
               <Badge className="bg-blue-600 text-white border-0">
-                {media.type?.toUpperCase() || 'MÉDIA'}
+                {media.type?.toUpperCase() || 'MÃ‰DIA'}
               </Badge>
               <span className="text-sm font-medium opacity-80 flex items-center">
                 <Clock className="h-4 w-4 mr-1" />
@@ -99,7 +101,7 @@ export default function MediaDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <Card className="p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">À propos de ce contenu</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Ã€ propos de ce contenu</h2>
               <p className="text-gray-600 leading-relaxed text-lg mb-8">
                 {media.description}
               </p>
@@ -133,15 +135,15 @@ export default function MediaDetailPage() {
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-bold text-blue-900 flex items-center">
                   <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
-                  Résumé IA & Transcription
+                  RÃ©sumÃ© IA & Transcription
                 </h3>
-                <Badge variant="outline" className="border-blue-200 text-blue-700">Bêta</Badge>
+                <Badge variant="outline" className="border-blue-200 text-blue-700">BÃªta</Badge>
               </div>
               <p className="text-blue-800/80 italic">
-                "La transformation digitale des ports marocains s'accélère avec l'adoption massive de l'IA et de la 5G. Ce webinaire explore comment ces technologies optimisent la chaîne logistique et renforcent la compétitivité du secteur maritime national..."
+                "La transformation digitale des ports marocains s'accÃ©lÃ¨re avec l'adoption massive de l'IA et de la 5G. Ce webinaire explore comment ces technologies optimisent la chaÃ®ne logistique et renforcent la compÃ©titivitÃ© du secteur maritime national..."
               </p>
               <Button variant="link" className="mt-4 p-0 text-blue-600 font-bold">
-                Lire la transcription complète
+                Lire la transcription complÃ¨te
               </Button>
             </Card>
           </div>
@@ -152,7 +154,7 @@ export default function MediaDetailPage() {
               <div className="space-y-4">
                 <Button className="w-full bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200">
                   <Download className="h-4 w-4 mr-2" />
-                  Télécharger les ressources
+                  TÃ©lÃ©charger les ressources
                 </Button>
                 <div className="flex gap-2">
                   <Button variant="outline" className="flex-1">
@@ -168,9 +170,9 @@ export default function MediaDetailPage() {
 
               <div className="mt-8 pt-8 border-t space-y-4">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Publié le</span>
+                  <span className="text-gray-500">PubliÃ© le</span>
                   <span className="font-medium text-gray-900">
-                    {media.published_at ? new Date(media.published_at).toLocaleDateString('fr-FR') : 'Non publié'}
+                    {media.published_at ? new Date(media.published_at).toLocaleDateString('fr-FR') : 'Non publiÃ©'}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
@@ -178,8 +180,8 @@ export default function MediaDetailPage() {
                   <span className="font-medium text-gray-900">{(media.views_count || 0).toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Catégorie</span>
-                  <Badge variant="secondary">{media.category || 'Non classé'}</Badge>
+                  <span className="text-gray-500">CatÃ©gorie</span>
+                  <Badge variant="secondary">{media.category || 'Non classÃ©'}</Badge>
                 </div>
               </div>
             </Card>
@@ -202,3 +204,6 @@ export default function MediaDetailPage() {
     </div>
   );
 }
+
+
+

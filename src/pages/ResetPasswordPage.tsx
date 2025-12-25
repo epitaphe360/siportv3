@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
@@ -52,7 +52,7 @@ export default function ResetPasswordPage() {
     setMessage(null);
     try {
       if (!isSupabaseReady() || !supabase) {
-        setError('Supabase non configuré.');
+        setError('Supabase non configurÃ©.');
         setLoading(false);
         return;
       }
@@ -60,9 +60,9 @@ export default function ResetPasswordPage() {
       // Update user password (requires an authenticated session set via tokens)
   const { error: updErr } = await (supabase as any).auth.updateUser({ password: newPassword });
   if (updErr) {
-        setError(updErr.message || 'Erreur lors de la réinitialisation du mot de passe.');
+        setError(updErr.message || 'Erreur lors de la rÃ©initialisation du mot de passe.');
       } else {
-        setMessage('Mot de passe changé avec succès. Vous pouvez maintenant vous connecter.');
+        setMessage('Mot de passe changÃ© avec succÃ¨s. Vous pouvez maintenant vous connecter.');
         // Clear URL fragment for security
         try { history.replaceState({}, '', window.location.pathname); } catch (e) { console.warn(e) }
       }
@@ -74,9 +74,9 @@ export default function ResetPasswordPage() {
 
   return (
     <Card className="max-w-md mx-auto p-8 mt-12">
-      <h2 className="text-2xl font-bold mb-4">Réinitialiser le mot de passe</h2>
+      <h2 className="text-2xl font-bold mb-4">RÃ©initialiser le mot de passe</h2>
       {!hasTokens && (
-        <div className="mb-4 text-gray-700">Le lien de réinitialisation semble incomplet ou expiré. Assurez-vous d'utiliser le lien envoyé par email.</div>
+        <div className="mb-4 text-gray-700">Le lien de rÃ©initialisation semble incomplet ou expirÃ©. Assurez-vous d'utiliser le lien envoyÃ© par email.</div>
       )}
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
@@ -92,3 +92,5 @@ export default function ResetPasswordPage() {
     </Card>
   );
 }
+
+

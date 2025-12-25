@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { Calendar, Search, Filter, Users, Clock, MapPin, Video, MoreVertical, Edit, Eye, Plus, CheckCircle, XCircle, AlertTriangle, RefreshCw } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
@@ -9,6 +10,7 @@ import { EventsService, Event } from '../../services/eventsService';
 import { useFilterSearch } from '../../hooks/useFilterSearch';
 
 export default function EventsPage() {
+  const { t } = useTranslation();
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -87,11 +89,11 @@ export default function EventsPage() {
 
   const getEventTypeLabel = (type: string) => {
     switch (type) {
-      case 'conference': return 'Conférence';
+      case 'conference': return 'ConfÃ©rence';
       case 'workshop': return 'Atelier';
       case 'roundtable': return 'Table ronde';
-      case 'networking': return 'Réseautage';
-      case 'demo': return 'Démonstration';
+      case 'networking': return 'RÃ©seautage';
+      case 'demo': return 'DÃ©monstration';
       case 'keynote': return 'Keynote';
       default: return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     }
@@ -100,28 +102,28 @@ export default function EventsPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'confirmed':
-        return <Badge variant="success"><CheckCircle className="h-3 w-3 mr-1" />Confirmé</Badge>;
+        return <Badge variant="success"><CheckCircle className="h-3 w-3 mr-1" />ConfirmÃ©</Badge>;
       case 'pending':
         return <Badge variant="warning"><AlertTriangle className="h-3 w-3 mr-1" />En attente</Badge>;
       case 'cancelled':
-        return <Badge variant="error"><XCircle className="h-3 w-3 mr-1" />Annulé</Badge>;
+        return <Badge variant="error"><XCircle className="h-3 w-3 mr-1" />AnnulÃ©</Badge>;
       case 'completed':
-        return <Badge variant="info">Terminé</Badge>;
+        return <Badge variant="info">TerminÃ©</Badge>;
       default:
         return <Badge variant="info">{status}</Badge>;
     }
   };
 
   const handleEventAction = (eventId: string, action: string) => {
-    // Ici vous pouvez implémenter les actions réelles
+    // Ici vous pouvez implÃ©menter les actions rÃ©elles
   };
 
   const eventTypes = [
-    { value: 'conference', label: 'Conférence' },
+    { value: 'conference', label: 'ConfÃ©rence' },
     { value: 'workshop', label: 'Atelier' },
     { value: 'roundtable', label: 'Table ronde' },
-    { value: 'networking', label: 'Réseautage' },
-    { value: 'demo', label: 'Démonstration' },
+    { value: 'networking', label: 'RÃ©seautage' },
+    { value: 'demo', label: 'DÃ©monstration' },
     { value: 'keynote', label: 'Keynote' }
   ];
 
@@ -130,7 +132,7 @@ export default function EventsPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="h-12 w-12 text-blue-500 animate-spin mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900">Chargement des événements...</h3>
+          <h3 className="text-lg font-medium text-gray-900">Chargement des Ã©vÃ©nements...</h3>
         </div>
       </div>
     );
@@ -145,7 +147,7 @@ export default function EventsPage() {
           <p className="text-gray-600">{error}</p>
           <Button onClick={() => window.location.reload()} className="mt-4">
             <RefreshCw className="h-4 w-4 mr-2" />
-            Réessayer
+            RÃ©essayer
           </Button>
         </div>
       </div>
@@ -159,15 +161,15 @@ export default function EventsPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Gestion des Événements</h1>
+              <h1 className="text-3xl font-bold text-gray-900">Gestion des Ã‰vÃ©nements</h1>
               <p className="text-gray-600 mt-2">
-                Administration et organisation des événements SIPORTS 2026
+                Administration et organisation des Ã©vÃ©nements SIPORTS 2026
               </p>
             </div>
             <Link to="/admin/content">
               <Button variant="default">
                 <Plus className="h-4 w-4 mr-2" />
-                Créer Événement
+                CrÃ©er Ã‰vÃ©nement
               </Button>
             </Link>
           </div>
@@ -179,7 +181,7 @@ export default function EventsPage() {
             <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Événements</p>
+                  <p className="text-sm font-medium text-gray-600">Total Ã‰vÃ©nements</p>
                   <p className="text-3xl font-bold text-gray-900">{events.length}</p>
                 </div>
                 <Calendar className="h-8 w-8 text-blue-600" />
@@ -191,7 +193,7 @@ export default function EventsPage() {
             <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Confirmés</p>
+                  <p className="text-sm font-medium text-gray-600">ConfirmÃ©s</p>
                   <p className="text-3xl font-bold text-green-600">
                     {events.filter(e => e.status === 'confirmed').length}
                   </p>
@@ -265,10 +267,10 @@ export default function EventsPage() {
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Tous les statuts</option>
-                <option value="confirmed">Confirmé</option>
+                <option value="confirmed">ConfirmÃ©</option>
                 <option value="pending">En attente</option>
-                <option value="cancelled">Annulé</option>
-                <option value="completed">Terminé</option>
+                <option value="cancelled">AnnulÃ©</option>
+                <option value="completed">TerminÃ©</option>
               </select>
 
               <Button variant="outline">
@@ -296,7 +298,7 @@ export default function EventsPage() {
                         {event.title}
                       </h3>
                       <p className="text-sm text-gray-600 mb-2">
-                        {getEventTypeLabel(event.event_type)} • {event.organizer}
+                        {getEventTypeLabel(event.event_type)} â€¢ {event.organizer}
                       </p>
                       {getStatusBadge(event.status)}
                     </div>
@@ -331,7 +333,7 @@ export default function EventsPage() {
                     {event.virtual && (
                       <div className="flex items-center text-sm text-blue-600">
                         <Video className="h-4 w-4 mr-2" />
-                        <span>Événement virtuel</span>
+                        <span>Ã‰vÃ©nement virtuel</span>
                       </div>
                     )}
                   </div>
@@ -389,10 +391,10 @@ export default function EventsPage() {
           <div className="text-center py-12">
             <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Aucun événement trouvé
+              Aucun Ã©vÃ©nement trouvÃ©
             </h3>
             <p className="text-gray-600">
-              Essayez de modifier vos critères de recherche
+              Essayez de modifier vos critÃ¨res de recherche
             </p>
           </div>
         )}
@@ -400,3 +402,6 @@ export default function EventsPage() {
     </div>
   );
 };
+
+
+

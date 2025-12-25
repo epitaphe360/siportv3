@@ -1,8 +1,9 @@
-/**
+﻿/**
  * Formulaire d'inscription Visiteur VIP PREMIUM
  * Workflow complet avec photo, mot de passe et paiement obligatoire
  */
 import { useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,15 +18,15 @@ import { ROUTES } from '../../lib/routes';
 import { COUNTRIES } from '../../data/countries';
 
 const vipVisitorSchema = z.object({
-  firstName: z.string().min(2, 'Prénom requis'),
+  firstName: z.string().min(2, 'PrÃ©nom requis'),
   lastName: z.string().min(2, 'Nom requis'),
   email: z.string().email('Email invalide'),
-  password: z.string().min(8, 'Minimum 8 caractères').regex(
+  password: z.string().min(8, 'Minimum 8 caractÃ¨res').regex(
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
     'Doit contenir majuscule, minuscule et chiffre'
   ),
   confirmPassword: z.string(),
-  phone: z.string().min(8, 'Téléphone requis'),
+  phone: z.string().min(8, 'TÃ©lÃ©phone requis'),
   country: z.string().min(2, 'Pays requis'),
   sector: z.string().min(2, 'Secteur requis'),
   position: z.string().min(2, 'Fonction requise'),
@@ -39,18 +40,19 @@ const vipVisitorSchema = z.object({
 type VIPVisitorForm = z.infer<typeof vipVisitorSchema>;
 
 const sectors = [
-  'Autorité Portuaire',
+  'AutoritÃ© Portuaire',
   'Transport Maritime',
   'Logistique',
   'Consulting',
   'Technologie',
   'Finance',
-  'Média/Presse',
+  'MÃ©dia/Presse',
   'Institutionnel',
   'Autre'
 ];
 
 export default function VisitorVIPRegistration() {
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -72,13 +74,13 @@ export default function VisitorVIPRegistration() {
     if (file) {
       // Validate file type
       if (!file.type.startsWith('image/')) {
-        toast.error('Veuillez sélectionner une image');
+        toast.error('Veuillez sÃ©lectionner une image');
         return;
       }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        toast.error('La photo ne doit pas dépasser 5MB');
+        toast.error('La photo ne doit pas dÃ©passer 5MB');
         return;
       }
 
@@ -115,7 +117,7 @@ export default function VisitorVIPRegistration() {
           });
 
         if (uploadError) {
-          throw new Error('Erreur lors du téléchargement de la photo');
+          throw new Error('Erreur lors du tÃ©lÃ©chargement de la photo');
         }
 
         // Get public URL
@@ -140,7 +142,7 @@ export default function VisitorVIPRegistration() {
       });
 
       if (authError) throw authError;
-      if (!authData.user) throw new Error('Échec création utilisateur');
+      if (!authData.user) throw new Error('Ã‰chec crÃ©ation utilisateur');
 
       // 3. Create user profile with EXPLICIT vip level and pending_payment status
       const { error: userError } = await supabase
@@ -150,8 +152,8 @@ export default function VisitorVIPRegistration() {
           email: data.email,
           name: fullName,
           type: 'visitor',
-          visitor_level: 'vip', // ✅ EXPLICIT VIP
-          status: 'pending_payment', // ✅ En attente de paiement
+          visitor_level: 'vip', // âœ… EXPLICIT VIP
+          status: 'pending_payment', // âœ… En attente de paiement
           profile: {
             firstName: data.firstName,
             lastName: data.lastName,
@@ -160,7 +162,7 @@ export default function VisitorVIPRegistration() {
             businessSector: data.sector,
             position: data.position,
             company: data.company,
-            photoUrl: photoUrl // ✅ Photo stockée
+            photoUrl: photoUrl // âœ… Photo stockÃ©e
           }
         }]);
 
@@ -182,10 +184,10 @@ export default function VisitorVIPRegistration() {
         }]);
 
       if (paymentError) {
-        console.warn('Erreur création demande paiement:', paymentError);
+        console.warn('Erreur crÃ©ation demande paiement:', paymentError);
       }
 
-      // 6. Send payment instructions email ✅
+      // 6. Send payment instructions email âœ…
       const { error: emailError } = await supabase.functions.invoke('send-visitor-welcome-email', {
         body: {
           email: data.email,
@@ -201,7 +203,7 @@ export default function VisitorVIPRegistration() {
       }
 
       // 7. Success - Redirect to payment page
-      toast.success('Compte créé ! Veuillez finaliser le paiement pour activer votre accès VIP.');
+      toast.success('Compte crÃ©Ã© ! Veuillez finaliser le paiement pour activer votre accÃ¨s VIP.');
 
       // 8. DO NOT log out - user needs to be logged in to pay
       // await supabase.auth.signOut();
@@ -248,14 +250,14 @@ export default function VisitorVIPRegistration() {
             Inscription Pass Premium VIP
           </h1>
           <p className="text-yellow-100 text-lg">
-            Accès complet au salon avec badge photo sécurisé
+            AccÃ¨s complet au salon avec badge photo sÃ©curisÃ©
           </p>
           <div className="mt-4 inline-flex items-center space-x-3 bg-yellow-800 px-6 py-3 rounded-full">
-            <span className="text-yellow-100 font-semibold">👑 RDV B2B Illimités</span>
-            <span className="text-yellow-200">•</span>
-            <span className="text-yellow-100 font-semibold">🎉 Gala exclusif</span>
-            <span className="text-yellow-200">•</span>
-            <span className="text-yellow-100 font-semibold">🤝 Networking premium</span>
+            <span className="text-yellow-100 font-semibold">ðŸ‘‘ RDV B2B IllimitÃ©s</span>
+            <span className="text-yellow-200">â€¢</span>
+            <span className="text-yellow-100 font-semibold">ðŸŽ‰ Gala exclusif</span>
+            <span className="text-yellow-200">â€¢</span>
+            <span className="text-yellow-100 font-semibold">ðŸ¤ Networking premium</span>
           </div>
         </motion.div>
 
@@ -272,9 +274,9 @@ export default function VisitorVIPRegistration() {
                 <label className="block text-center mb-4">
                   <div className="flex items-center justify-center space-x-2 mb-2">
                     <Camera className="h-5 w-5 text-yellow-600" />
-                    <span className="text-lg font-semibold text-gray-900">Photo d'identité *</span>
+                    <span className="text-lg font-semibold text-gray-900">Photo d'identitÃ© *</span>
                   </div>
-                  <p className="text-sm text-gray-600">Photo obligatoire pour badge VIP sécurisé</p>
+                  <p className="text-sm text-gray-600">Photo obligatoire pour badge VIP sÃ©curisÃ©</p>
                 </label>
 
                 {photoPreview ? (
@@ -293,7 +295,7 @@ export default function VisitorVIPRegistration() {
                       }}
                       className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transform translate-x-1/2 -translate-y-1/2"
                     >
-                      ✕
+                      âœ•
                     </button>
                   </div>
                 ) : (
@@ -301,7 +303,7 @@ export default function VisitorVIPRegistration() {
                     <div className="border-2 border-dashed border-yellow-400 rounded-lg p-8 text-center hover:bg-yellow-50 transition-colors">
                       <Upload className="h-12 w-12 mx-auto text-yellow-600 mb-3" />
                       <p className="text-sm font-semibold text-gray-700 mb-1">
-                        Cliquez pour télécharger votre photo
+                        Cliquez pour tÃ©lÃ©charger votre photo
                       </p>
                       <p className="text-xs text-gray-500">
                         Format: JPG, PNG (max 5MB)
@@ -326,7 +328,7 @@ export default function VisitorVIPRegistration() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Prénom *
+                    PrÃ©nom *
                   </label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -334,7 +336,7 @@ export default function VisitorVIPRegistration() {
                       type="text"
                       {...register('firstName')}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                      placeholder="Votre prénom"
+                      placeholder="Votre prÃ©nom"
                     />
                   </div>
                   {errors.firstName && (
@@ -392,7 +394,7 @@ export default function VisitorVIPRegistration() {
                       type="password"
                       {...register('password')}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                      placeholder="Minimum 8 caractères"
+                      placeholder="Minimum 8 caractÃ¨res"
                     />
                   </div>
                   {errors.password && (
@@ -423,7 +425,7 @@ export default function VisitorVIPRegistration() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Téléphone *
+                    TÃ©lÃ©phone *
                   </label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -449,7 +451,7 @@ export default function VisitorVIPRegistration() {
                       {...register('country')}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 appearance-none bg-white"
                     >
-                      <option value="">Sélectionnez</option>
+                      <option value="">SÃ©lectionnez</option>
                       {COUNTRIES.map((country) => (
                         <option key={country.code} value={country.code}>
                           {country.name}
@@ -467,13 +469,13 @@ export default function VisitorVIPRegistration() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Secteur d'activité *
+                    Secteur d'activitÃ© *
                   </label>
                   <select
                     {...register('sector')}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   >
-                    <option value="">Sélectionnez</option>
+                    <option value="">SÃ©lectionnez</option>
                     {sectors.map((sector) => (
                       <option key={sector} value={sector}>{sector}</option>
                     ))}
@@ -525,27 +527,27 @@ export default function VisitorVIPRegistration() {
                 </h4>
                 <ul className="text-sm text-gray-700 space-y-2">
                   <li className="flex items-start">
-                    <span className="text-yellow-600 mr-2">✓</span>
-                    <span><strong>Rendez-vous B2B ILLIMITÉS</strong> - Planifiez autant de meetings que souhaité</span>
+                    <span className="text-yellow-600 mr-2">âœ“</span>
+                    <span><strong>Rendez-vous B2B ILLIMITÃ‰S</strong> - Planifiez autant de meetings que souhaitÃ©</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-yellow-600 mr-2">✓</span>
-                    <span><strong>Badge ultra-sécurisé avec photo</strong> - QR code JWT rotatif</span>
+                    <span className="text-yellow-600 mr-2">âœ“</span>
+                    <span><strong>Badge ultra-sÃ©curisÃ© avec photo</strong> - QR code JWT rotatif</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-yellow-600 mr-2">✓</span>
-                    <span><strong>Accès zones VIP</strong> - Salons premium, networking area</span>
+                    <span className="text-yellow-600 mr-2">âœ“</span>
+                    <span><strong>AccÃ¨s zones VIP</strong> - Salons premium, networking area</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-yellow-600 mr-2">✓</span>
-                    <span><strong>Gala de clôture exclusif</strong> - Événement réseau premium</span>
+                    <span className="text-yellow-600 mr-2">âœ“</span>
+                    <span><strong>Gala de clÃ´ture exclusif</strong> - Ã‰vÃ©nement rÃ©seau premium</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-yellow-600 mr-2">✓</span>
-                    <span><strong>Ateliers et conférences VIP</strong> - Contenus exclusifs</span>
+                    <span className="text-yellow-600 mr-2">âœ“</span>
+                    <span><strong>Ateliers et confÃ©rences VIP</strong> - Contenus exclusifs</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-yellow-600 mr-2">✓</span>
+                    <span className="text-yellow-600 mr-2">âœ“</span>
                     <span><strong>Tableau de bord complet</strong> - Gestion rendez-vous et networking</span>
                   </li>
                 </ul>
@@ -554,7 +556,7 @@ export default function VisitorVIPRegistration() {
               {/* Payment Info */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm text-blue-900">
-                  <strong>💳 Paiement requis</strong> : Après création du compte, vous serez redirigé vers la page de paiement sécurisé (700 EUR). Votre accès VIP sera activé immédiatement après validation du paiement.
+                  <strong>ðŸ’³ Paiement requis</strong> : AprÃ¨s crÃ©ation du compte, vous serez redirigÃ© vers la page de paiement sÃ©curisÃ© (700 EUR). Votre accÃ¨s VIP sera activÃ© immÃ©diatement aprÃ¨s validation du paiement.
                 </p>
               </div>
 
@@ -567,12 +569,12 @@ export default function VisitorVIPRegistration() {
                 {isSubmitting ? (
                   <>
                     <Loader className="animate-spin h-5 w-5 mr-2" />
-                    Création du compte VIP...
+                    CrÃ©ation du compte VIP...
                   </>
                 ) : (
                   <>
                     <Crown className="h-5 w-5 mr-2" />
-                    Créer mon compte VIP et payer
+                    CrÃ©er mon compte VIP et payer
                   </>
                 )}
               </Button>
@@ -580,7 +582,7 @@ export default function VisitorVIPRegistration() {
               {/* Free Pass Link */}
               <div className="text-center pt-4 border-t">
                 <p className="text-sm text-gray-600 mb-2">
-                  Vous cherchez un accès gratuit au salon ?
+                  Vous cherchez un accÃ¨s gratuit au salon ?
                 </p>
                 <Button
                   type="button"
@@ -588,7 +590,7 @@ export default function VisitorVIPRegistration() {
                   onClick={() => navigate(ROUTES.VISITOR_FREE_REGISTRATION)}
                   className="border-green-500 text-green-600 hover:bg-green-50"
                 >
-                  🆓 S'inscrire avec le Pass Gratuit
+                  ðŸ†“ S'inscrire avec le Pass Gratuit
                 </Button>
               </div>
             </form>
@@ -598,3 +600,6 @@ export default function VisitorVIPRegistration() {
     </div>
   );
 }
+
+
+

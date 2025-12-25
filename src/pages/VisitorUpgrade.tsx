@@ -1,27 +1,29 @@
-import React from 'react';
+﻿import React from 'react';
+import { useTranslation } from '../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 
 export default function VisitorUpgrade() {
+  const { t } = useTranslation();
   return (
     <div style={{padding:24}}>
-      <h1>Mettre à niveau votre compte</h1>
+      <h1>Mettre Ã  niveau votre compte</h1>
       <p>Choisissez un niveau et simulez un paiement pour les tests.</p>
       <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:12,marginTop:12}}>
         <div style={{padding:12,border:'1px solid #eaeaea',borderRadius:8}}>
           <h3>Pass Gratuit</h3>
-          <p>0 RDV B2B - Accès limité</p>
+          <p>0 RDV B2B - AccÃ¨s limitÃ©</p>
           <Button>Choisir Pass Gratuit</Button>
         </div>
         <div style={{padding:12,border:'1px solid #eaeaea',borderRadius:8}}>
-          <h3>Pass Premium VIP - 700€</h3>
-          <p>RDV B2B illimités + Tous les avantages</p>
+          <h3>Pass Premium VIP - 700â‚¬</h3>
+          <p>RDV B2B illimitÃ©s + Tous les avantages</p>
           <ul style={{fontSize:'12px',marginTop:'8px',textAlign:'left'}}>
             <li>Invitation inauguration</li>
-            <li>Ateliers spécialisés</li>
-            <li>Soirée gala exclusive</li>
-            <li>Conférences</li>
-            <li>Déjeuners networking</li>
+            <li>Ateliers spÃ©cialisÃ©s</li>
+            <li>SoirÃ©e gala exclusive</li>
+            <li>ConfÃ©rences</li>
+            <li>DÃ©jeuners networking</li>
           </ul>
           <Button>Choisir Premium VIP</Button>
         </div>
@@ -31,3 +33,6 @@ export default function VisitorUpgrade() {
     </div>
   );
 }
+
+
+

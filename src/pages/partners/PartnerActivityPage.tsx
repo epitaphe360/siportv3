@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -24,8 +25,8 @@ export const PartnerActivityPage: React.FC = () => {
     {
       id: '1',
       type: 'connection',
-      title: 'Nouvelle connexion établie',
-      description: 'Vous êtes maintenant connecté avec Port Solutions Inc.',
+      title: 'Nouvelle connexion Ã©tablie',
+      description: 'Vous Ãªtes maintenant connectÃ© avec Port Solutions Inc.',
       timestamp: new Date(Date.now() - 3600000),
       icon: Handshake,
       color: 'text-green-600',
@@ -35,8 +36,8 @@ export const PartnerActivityPage: React.FC = () => {
     {
       id: '2',
       type: 'message',
-      title: 'Nouveau message reçu',
-      description: 'TechMarine Solutions vous a envoyé un message',
+      title: 'Nouveau message reÃ§u',
+      description: 'TechMarine Solutions vous a envoyÃ© un message',
       timestamp: new Date(Date.now() - 7200000),
       icon: MessageCircle,
       color: 'text-blue-600',
@@ -46,8 +47,8 @@ export const PartnerActivityPage: React.FC = () => {
     {
       id: '3',
       type: 'event',
-      title: 'Participation à un événement',
-      description: 'Vous avez participé à la conférence "Digital Transformation in Ports"',
+      title: 'Participation Ã  un Ã©vÃ©nement',
+      description: 'Vous avez participÃ© Ã  la confÃ©rence "Digital Transformation in Ports"',
       timestamp: new Date(Date.now() - 10800000),
       icon: Calendar,
       color: 'text-purple-600',
@@ -57,8 +58,8 @@ export const PartnerActivityPage: React.FC = () => {
     {
       id: '4',
       type: 'sponsorship',
-      title: 'Sponsoring activé',
-      description: 'Votre logo est maintenant affiché sur la page d\'accueil',
+      title: 'Sponsoring activÃ©',
+      description: 'Votre logo est maintenant affichÃ© sur la page d\'accueil',
       timestamp: new Date(Date.now() - 14400000),
       icon: Award,
       color: 'text-yellow-600',
@@ -68,8 +69,8 @@ export const PartnerActivityPage: React.FC = () => {
     {
       id: '5',
       type: 'profile_view',
-      title: 'Profil consulté',
-      description: 'Votre profil a été consulté 15 fois aujourd\'hui',
+      title: 'Profil consultÃ©',
+      description: 'Votre profil a Ã©tÃ© consultÃ© 15 fois aujourd\'hui',
       timestamp: new Date(Date.now() - 18000000),
       icon: Users,
       color: 'text-indigo-600',
@@ -79,8 +80,8 @@ export const PartnerActivityPage: React.FC = () => {
     {
       id: '6',
       type: 'content',
-      title: 'Contenu partagé',
-      description: 'Votre article "Innovation in Maritime Technology" a été partagé',
+      title: 'Contenu partagÃ©',
+      description: 'Votre article "Innovation in Maritime Technology" a Ã©tÃ© partagÃ©',
       timestamp: new Date(Date.now() - 21600000),
       icon: FileText,
       color: 'text-orange-600',
@@ -90,8 +91,8 @@ export const PartnerActivityPage: React.FC = () => {
     {
       id: '7',
       type: 'alert',
-      title: 'Alerte système',
-      description: 'Mise à jour de vos métriques de performance disponible',
+      title: 'Alerte systÃ¨me',
+      description: 'Mise Ã  jour de vos mÃ©triques de performance disponible',
       timestamp: new Date(Date.now() - 25200000),
       icon: AlertTriangle,
       color: 'text-red-600',
@@ -101,8 +102,8 @@ export const PartnerActivityPage: React.FC = () => {
     {
       id: '8',
       type: 'meeting',
-      title: 'Rendez-vous programmé',
-      description: 'RDV confirmé avec LogiFlow Systems demain à 14h',
+      title: 'Rendez-vous programmÃ©',
+      description: 'RDV confirmÃ© avec LogiFlow Systems demain Ã  14h',
       timestamp: new Date(Date.now() - 28800000),
       icon: Calendar,
       color: 'text-teal-600',
@@ -120,7 +121,7 @@ export const PartnerActivityPage: React.FC = () => {
     const now = new Date();
     const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
 
-    if (diffInHours < 1) return 'À l\'instant';
+    if (diffInHours < 1) return 'Ã€ l\'instant';
     if (diffInHours < 24) return `Il y a ${diffInHours}h`;
 
     const diffInDays = Math.floor(diffInHours / 24);
@@ -138,7 +139,7 @@ export const PartnerActivityPage: React.FC = () => {
     switch (type) {
       case 'connection': return 'Connexion';
       case 'message': return 'Message';
-      case 'event': return 'Événement';
+      case 'event': return 'Ã‰vÃ©nement';
       case 'sponsorship': return 'Sponsoring';
       case 'profile_view': return 'Consultation';
       case 'content': return 'Contenu';
@@ -178,7 +179,7 @@ export const PartnerActivityPage: React.FC = () => {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">
-                  Activité Partenaire
+                  ActivitÃ© Partenaire
                 </h1>
                 <p className="text-gray-600">
                   Suivez toutes vos interactions et engagements SIPORTS
@@ -192,15 +193,15 @@ export const PartnerActivityPage: React.FC = () => {
                 onChange={(e) => setSelectedFilter(e.target.value)}
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="all">Toutes les activités</option>
-                <option value="networking">Réseautage</option>
+                <option value="all">Toutes les activitÃ©s</option>
+                <option value="networking">RÃ©seautage</option>
                 <option value="communication">Communication</option>
-                <option value="events">Événements</option>
+                <option value="events">Ã‰vÃ©nements</option>
                 <option value="sponsorship">Sponsoring</option>
                 <option value="engagement">Engagement</option>
                 <option value="content">Contenu</option>
                 <option value="meetings">Rendez-vous</option>
-                <option value="system">Système</option>
+                <option value="system">SystÃ¨me</option>
               </select>
             </div>
           </div>
@@ -208,9 +209,9 @@ export const PartnerActivityPage: React.FC = () => {
           <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
             <div className="flex items-center space-x-2">
               <Crown className="h-5 w-5 text-purple-600" />
-              <span className="text-purple-800 font-medium">Historique Complet des Activités</span>
+              <span className="text-purple-800 font-medium">Historique Complet des ActivitÃ©s</span>
               <Badge className="bg-purple-100 text-purple-800" size="sm">
-                Temps Réel
+                Temps RÃ©el
               </Badge>
             </div>
           </div>
@@ -222,7 +223,7 @@ export const PartnerActivityPage: React.FC = () => {
             <div className="p-6 text-center">
               <Activity className="h-12 w-12 text-blue-600 mx-auto mb-4" />
               <div className="text-3xl font-bold text-gray-900 mb-2">{activityStats.total}</div>
-              <div className="text-gray-600">Activités totales</div>
+              <div className="text-gray-600">ActivitÃ©s totales</div>
             </div>
           </Card>
 
@@ -247,7 +248,7 @@ export const PartnerActivityPage: React.FC = () => {
         <Card>
           <div className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-6">
-              Historique des Activités
+              Historique des ActivitÃ©s
             </h3>
 
             <div className="space-y-4">
@@ -291,7 +292,7 @@ export const PartnerActivityPage: React.FC = () => {
               <div className="text-center py-12">
                 <Activity className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Aucune activité trouvée
+                  Aucune activitÃ© trouvÃ©e
                 </h3>
                 <p className="text-gray-600">
                   Essayez de modifier vos filtres de recherche
@@ -304,3 +305,6 @@ export const PartnerActivityPage: React.FC = () => {
     </div>
   );
 };
+
+
+

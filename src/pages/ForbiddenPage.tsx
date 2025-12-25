@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 import { ROUTES } from '../lib/routes';
 import { useTranslation } from '../hooks/useTranslation';
 
@@ -12,3 +12,5 @@ export default function ForbiddenPage() {
     </div>
   );
 }
+
+

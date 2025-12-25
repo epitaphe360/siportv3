@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import { toast } from 'sonner';
@@ -37,7 +38,7 @@ export const PartnerAnalyticsPage: React.FC = () => {
     },
     performance: [
       { month: 'Jan', views: 1200, connections: 25, leads: 8 },
-      { month: 'Fév', views: 1350, connections: 32, leads: 12 },
+      { month: 'FÃ©v', views: 1350, connections: 32, leads: 12 },
       { month: 'Mar', views: 1580, connections: 45, leads: 15 },
       { month: 'Avr', views: 1820, connections: 52, leads: 18 },
       { month: 'Mai', views: 2100, connections: 67, leads: 23 },
@@ -47,7 +48,7 @@ export const PartnerAnalyticsPage: React.FC = () => {
       { sector: 'Infrastructure Portuaire', percentage: 35, connections: 31 },
       { sector: 'Technologie', percentage: 28, connections: 25 },
       { sector: 'Data & Analytics', percentage: 22, connections: 20 },
-      { sector: 'Sécurité', percentage: 15, connections: 13 }
+      { sector: 'SÃ©curitÃ©', percentage: 15, connections: 13 }
     ],
     engagement: {
       messagesSent: 156,
@@ -88,7 +89,7 @@ export const PartnerAnalyticsPage: React.FC = () => {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
 
-    toast.success('Rapport d\'analyse exporté avec succès !');
+    toast.success('Rapport d\'analyse exportÃ© avec succÃ¨s !');
   };
 
   return (
@@ -138,9 +139,9 @@ export const PartnerAnalyticsPage: React.FC = () => {
           <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
             <div className="flex items-center space-x-2">
               <Crown className="h-5 w-5 text-purple-600" />
-              <span className="text-purple-800 font-medium">Rapports Détaillés Partenaires</span>
+              <span className="text-purple-800 font-medium">Rapports DÃ©taillÃ©s Partenaires</span>
               <Badge className="bg-purple-100 text-purple-800" size="sm">
-                Données Temps Réel
+                DonnÃ©es Temps RÃ©el
               </Badge>
             </div>
           </div>
@@ -182,7 +183,7 @@ export const PartnerAnalyticsPage: React.FC = () => {
               <div className="text-3xl font-bold text-gray-900 mb-1">
                 {analyticsData.overview.connections}
               </div>
-              <div className="text-gray-600 text-sm">Connexions établies</div>
+              <div className="text-gray-600 text-sm">Connexions Ã©tablies</div>
             </div>
           </Card>
 
@@ -201,7 +202,7 @@ export const PartnerAnalyticsPage: React.FC = () => {
               <div className="text-3xl font-bold text-gray-900 mb-1">
                 {analyticsData.overview.leadsGenerated}
               </div>
-              <div className="text-gray-600 text-sm">Leads générés</div>
+              <div className="text-gray-600 text-sm">Leads gÃ©nÃ©rÃ©s</div>
             </div>
           </Card>
 
@@ -229,15 +230,15 @@ export const PartnerAnalyticsPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <Card>
             <div className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6">Évolution des Performances</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-6">Ã‰volution des Performances</h3>
               <div className="space-y-4">
                 {analyticsData.performance.map((month) => (
                   <div key={month.month} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <span className="font-medium text-gray-900">{month.month}</span>
                     <div className="flex space-x-6 text-sm">
-                      <span className="text-blue-600">👁️ {formatNumber(month.views)}</span>
-                      <span className="text-green-600">🤝 {month.connections}</span>
-                      <span className="text-orange-600">🎯 {month.leads}</span>
+                      <span className="text-blue-600">ðŸ‘ï¸ {formatNumber(month.views)}</span>
+                      <span className="text-green-600">ðŸ¤ {month.connections}</span>
+                      <span className="text-orange-600">ðŸŽ¯ {month.leads}</span>
                     </div>
                   </div>
                 ))}
@@ -247,7 +248,7 @@ export const PartnerAnalyticsPage: React.FC = () => {
 
           <Card>
             <div className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6">Répartition Sectorielle</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-6">RÃ©partition Sectorielle</h3>
               <div className="space-y-4">
                 {analyticsData.topSectors.map((sector, index) => (
                   <div key={sector.sector} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -269,42 +270,42 @@ export const PartnerAnalyticsPage: React.FC = () => {
         {/* Engagement Metrics */}
         <Card className="mb-8">
           <div className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Métriques d'Engagement</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">MÃ©triques d'Engagement</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               <div className="text-center p-4 bg-blue-50 rounded-lg">
                 <MessageCircle className="h-8 w-8 text-blue-600 mx-auto mb-2" />
                 <div className="text-2xl font-bold text-blue-600">{analyticsData.engagement.messagesSent}</div>
-                <div className="text-sm text-blue-700">Messages envoyés</div>
+                <div className="text-sm text-blue-700">Messages envoyÃ©s</div>
               </div>
 
               <div className="text-center p-4 bg-green-50 rounded-lg">
                 <MessageCircle className="h-8 w-8 text-green-600 mx-auto mb-2" />
                 <div className="text-2xl font-bold text-green-600">{analyticsData.engagement.messagesReceived}</div>
-                <div className="text-sm text-green-700">Messages reçus</div>
+                <div className="text-sm text-green-700">Messages reÃ§us</div>
               </div>
 
               <div className="text-center p-4 bg-purple-50 rounded-lg">
                 <Calendar className="h-8 w-8 text-purple-600 mx-auto mb-2" />
                 <div className="text-2xl font-bold text-purple-600">{analyticsData.engagement.meetingsScheduled}</div>
-                <div className="text-sm text-purple-700">RDV programmés</div>
+                <div className="text-sm text-purple-700">RDV programmÃ©s</div>
               </div>
 
               <div className="text-center p-4 bg-orange-50 rounded-lg">
                 <Calendar className="h-8 w-8 text-orange-600 mx-auto mb-2" />
                 <div className="text-2xl font-bold text-orange-600">{analyticsData.engagement.meetingsAttended}</div>
-                <div className="text-sm text-orange-700">RDV honorés</div>
+                <div className="text-sm text-orange-700">RDV honorÃ©s</div>
               </div>
 
               <div className="text-center p-4 bg-indigo-50 rounded-lg">
                 <Award className="h-8 w-8 text-indigo-600 mx-auto mb-2" />
                 <div className="text-2xl font-bold text-indigo-600">{analyticsData.engagement.contentShared}</div>
-                <div className="text-sm text-indigo-700">Contenus partagés</div>
+                <div className="text-sm text-indigo-700">Contenus partagÃ©s</div>
               </div>
 
               <div className="text-center p-4 bg-pink-50 rounded-lg">
                 <Crown className="h-8 w-8 text-pink-600 mx-auto mb-2" />
                 <div className="text-2xl font-bold text-pink-600">{analyticsData.engagement.eventsSponsored}</div>
-                <div className="text-sm text-pink-700">Événements sponsorisés</div>
+                <div className="text-sm text-pink-700">Ã‰vÃ©nements sponsorisÃ©s</div>
               </div>
             </div>
           </div>
@@ -318,23 +319,23 @@ export const PartnerAnalyticsPage: React.FC = () => {
                 <Activity className="h-5 w-5 text-green-600" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900">
-                Analyse ROI Détaillée
+                Analyse ROI DÃ©taillÃ©e
               </h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="p-4 bg-white rounded-lg border border-green-200">
                 <h4 className="font-medium text-green-900 mb-2">
-                  💰 Retour sur Investissement
+                  ðŸ’° Retour sur Investissement
                 </h4>
                 <p className="text-sm text-green-700">
-                  Votre investissement initial de 50K€ a généré 142K€ de valeur ajoutée
+                  Votre investissement initial de 50Kâ‚¬ a gÃ©nÃ©rÃ© 142Kâ‚¬ de valeur ajoutÃ©e
                 </p>
               </div>
 
               <div className="p-4 bg-white rounded-lg border border-green-200">
                 <h4 className="font-medium text-green-900 mb-2">
-                  📈 Croissance Mensuelle
+                  ðŸ“ˆ Croissance Mensuelle
                 </h4>
                 <p className="text-sm text-green-700">
                   +15% de croissance mensuelle moyenne sur les 6 derniers mois
@@ -343,10 +344,10 @@ export const PartnerAnalyticsPage: React.FC = () => {
 
               <div className="p-4 bg-white rounded-lg border border-green-200">
                 <h4 className="font-medium text-green-900 mb-2">
-                  🎯 Objectifs Atteints
+                  ðŸŽ¯ Objectifs Atteints
                 </h4>
                 <p className="text-sm text-green-700">
-                  89% des objectifs business fixés ont été dépassés
+                  89% des objectifs business fixÃ©s ont Ã©tÃ© dÃ©passÃ©s
                 </p>
               </div>
             </div>
@@ -356,3 +357,6 @@ export const PartnerAnalyticsPage: React.FC = () => {
     </div>
   );
 };
+
+
+

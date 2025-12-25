@@ -1,10 +1,12 @@
-import { Card } from '@/components/ui/Card';
+﻿import { Card } from '@/components/ui/Card';
+import { useTranslation } from '../hooks/useTranslation';
 import { Badge } from '@/components/ui/Badge';
 import useAuthStore from '@/store/authStore';
 import AvailabilityManager from '@/components/availability/AvailabilityManager';
 import { toast } from 'sonner';
 
 export default function AvailabilitySettingsPage() {
+  const { t } = useTranslation();
   const { user } = useAuthStore();
 
   if (!user) {
@@ -12,10 +14,10 @@ export default function AvailabilitySettingsPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            Accès non autorisé
+            AccÃ¨s non autorisÃ©
           </h3>
           <p className="text-gray-600">
-            Veuillez vous connecter pour accéder à cette page
+            Veuillez vous connecter pour accÃ©der Ã  cette page
           </p>
         </div>
       </div>
@@ -28,10 +30,10 @@ export default function AvailabilitySettingsPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            Accès réservé
+            AccÃ¨s rÃ©servÃ©
           </h3>
           <p className="text-gray-600">
-            Cette fonctionnalité est réservée aux exposants et partenaires
+            Cette fonctionnalitÃ© est rÃ©servÃ©e aux exposants et partenaires
           </p>
         </div>
       </div>
@@ -40,7 +42,7 @@ export default function AvailabilitySettingsPage() {
 
   const handleAvailabilityUpdate = (timeSlots: TimeSlot[]) => {
     // In a real app, this would save to the backend
-    toast.success(`${timeSlots.length} créneau${timeSlots.length !== 1 ? 'x' : ''} mis à jour`);
+    toast.success(`${timeSlots.length} crÃ©neau${timeSlots.length !== 1 ? 'x' : ''} mis Ã  jour`);
   };
 
   return (
@@ -49,10 +51,10 @@ export default function AvailabilitySettingsPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
-            Gestion des Disponibilités
+            Gestion des DisponibilitÃ©s
           </h1>
           <p className="text-gray-600 mt-2">
-            Définissez vos créneaux horaires pour permettre aux autres participants de prendre rendez-vous avec vous.
+            DÃ©finissez vos crÃ©neaux horaires pour permettre aux autres participants de prendre rendez-vous avec vous.
           </p>
           <div className="mt-4 flex items-center space-x-2">
             <Badge variant="info">
@@ -68,17 +70,17 @@ export default function AvailabilitySettingsPage() {
         <Card className="p-6 mb-8 bg-blue-50 border-blue-200">
           <div className="flex items-start space-x-3">
             <div className="bg-blue-100 p-2 rounded-lg">
-              <span className="text-2xl">ℹ️</span>
+              <span className="text-2xl">â„¹ï¸</span>
             </div>
             <div>
               <h3 className="font-semibold text-blue-900 mb-2">
-                Pourquoi définir vos disponibilités ?
+                Pourquoi dÃ©finir vos disponibilitÃ©s ?
               </h3>
               <ul className="text-sm text-blue-700 space-y-1">
-                <li>• Permettre aux visiteurs de réserver des rendez-vous personnalisés</li>
-                <li>• Améliorer votre visibilité dans les recommandations IA</li>
-                <li>• Optimiser votre temps sur le salon SIPORTS 2026</li>
-                <li>• Créer des opportunités de networking ciblées</li>
+                <li>â€¢ Permettre aux visiteurs de rÃ©server des rendez-vous personnalisÃ©s</li>
+                <li>â€¢ AmÃ©liorer votre visibilitÃ© dans les recommandations IA</li>
+                <li>â€¢ Optimiser votre temps sur le salon SIPORTS 2026</li>
+                <li>â€¢ CrÃ©er des opportunitÃ©s de networking ciblÃ©es</li>
               </ul>
             </div>
           </div>
@@ -95,18 +97,18 @@ export default function AvailabilitySettingsPage() {
         <Card className="p-6 mt-8 bg-green-50 border-green-200">
           <div className="flex items-start space-x-3">
             <div className="bg-green-100 p-2 rounded-lg">
-              <span className="text-2xl">💡</span>
+              <span className="text-2xl">ðŸ’¡</span>
             </div>
             <div>
               <h3 className="font-semibold text-green-900 mb-2">
-                Conseils pour optimiser vos disponibilités
+                Conseils pour optimiser vos disponibilitÃ©s
               </h3>
               <ul className="text-sm text-green-700 space-y-1">
-                <li>• Définissez des créneaux pendant les heures d'ouverture du salon (9h-18h)</li>
-                <li>• Prévoyez des pauses entre vos rendez-vous pour les déplacements</li>
-                <li>• Indiquez clairement le lieu de rencontre (stand, salle de réunion, etc.)</li>
-                <li>• Mettez à jour vos disponibilités en temps réel si nécessaire</li>
-                <li>• Proposez différents types de rencontre (présentiel, virtuel, hybride)</li>
+                <li>â€¢ DÃ©finissez des crÃ©neaux pendant les heures d'ouverture du salon (9h-18h)</li>
+                <li>â€¢ PrÃ©voyez des pauses entre vos rendez-vous pour les dÃ©placements</li>
+                <li>â€¢ Indiquez clairement le lieu de rencontre (stand, salle de rÃ©union, etc.)</li>
+                <li>â€¢ Mettez Ã  jour vos disponibilitÃ©s en temps rÃ©el si nÃ©cessaire</li>
+                <li>â€¢ Proposez diffÃ©rents types de rencontre (prÃ©sentiel, virtuel, hybride)</li>
               </ul>
             </div>
           </div>
@@ -115,3 +117,6 @@ export default function AvailabilitySettingsPage() {
     </div>
   );
 }
+
+
+

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { MessageSquare, ArrowLeft, Search, Star } from 'lucide-react';
 import { mediaService } from '../../services/mediaService';
@@ -22,7 +23,7 @@ export const TestimonialsPage: React.FC = () => {
       const data = await mediaService.getMedia(filters);
       setTestimonials(data);
     } catch (error) {
-      console.error('Erreur chargement témoignages:', error);
+      console.error('Erreur chargement tÃ©moignages:', error);
     } finally {
       setLoading(false);
     }
@@ -40,7 +41,7 @@ export const TestimonialsPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link to={ROUTES.HOME} className="inline-flex items-center text-white/80 hover:text-white mb-6">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour à l'accueil
+            Retour Ã  l'accueil
           </Link>
           
           <div className="flex items-center space-x-4 mb-4">
@@ -48,15 +49,15 @@ export const TestimonialsPage: React.FC = () => {
               <MessageSquare className="w-8 h-8" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold mb-2">Témoignages</h1>
-              <p className="text-xl text-white/90">Découvrez les retours d'expérience de nos partenaires</p>
+              <h1 className="text-4xl font-bold mb-2">TÃ©moignages</h1>
+              <p className="text-xl text-white/90">DÃ©couvrez les retours d'expÃ©rience de nos partenaires</p>
             </div>
           </div>
 
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 mt-8">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white/70 text-sm mb-1">Témoignages</p>
+                <p className="text-white/70 text-sm mb-1">TÃ©moignages</p>
                 <p className="text-4xl font-bold">{testimonials.length}</p>
                 <p className="text-white/80 text-sm mt-2">De partenaires satisfaits</p>
               </div>
@@ -77,7 +78,7 @@ export const TestimonialsPage: React.FC = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Rechercher un témoignage..."
+              placeholder="Rechercher un tÃ©moignage..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -93,8 +94,8 @@ export const TestimonialsPage: React.FC = () => {
         ) : filteredTestimonials.length === 0 ? (
           <div className="text-center py-20">
             <MessageSquare className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">Aucun témoignage trouvé</h3>
-            <p className="text-gray-500">De nouveaux témoignages seront ajoutés prochainement</p>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">Aucun tÃ©moignage trouvÃ©</h3>
+            <p className="text-gray-500">De nouveaux tÃ©moignages seront ajoutÃ©s prochainement</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -107,3 +108,6 @@ export const TestimonialsPage: React.FC = () => {
     </div>
   );
 };
+
+
+

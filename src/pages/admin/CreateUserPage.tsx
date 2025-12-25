@@ -1,4 +1,5 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -25,6 +26,7 @@ interface FormErrors {
 }
 
 export default function CreateUserPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -80,7 +82,7 @@ export default function CreateUserPage() {
     if (!userData.password.trim()) {
       newErrors.password = 'Le mot de passe est requis.';
     } else if (userData.password.length < 8) {
-      newErrors.password = 'Le mot de passe doit contenir au moins 8 caractères.';
+      newErrors.password = 'Le mot de passe doit contenir au moins 8 caractÃ¨res.';
     }
     
     if (!userData.type) {
@@ -120,9 +122,9 @@ export default function CreateUserPage() {
       await apiService.create('users', finalUserData);
       navigate(ROUTES.ADMIN_USERS);
     } catch (error: unknown) {
-      console.error('Erreur lors de la création de l\'utilisateur:', error);
+      console.error('Erreur lors de la crÃ©ation de l\'utilisateur:', error);
       setErrors({ 
-        general: error instanceof Error ? error.message : String(error) || 'Une erreur est survenue. Veuillez réessayer.' 
+        general: error instanceof Error ? error.message : String(error) || 'Une erreur est survenue. Veuillez rÃ©essayer.' 
       });
     } finally {
       setIsLoading(false);
@@ -142,9 +144,9 @@ export default function CreateUserPage() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Créer un Utilisateur</h1>
+              <h1 className="text-3xl font-bold text-gray-900">CrÃ©er un Utilisateur</h1>
               <p className="text-gray-600 mt-2">
-                Ajoutez un nouveau compte utilisateur au système SIPORTS
+                Ajoutez un nouveau compte utilisateur au systÃ¨me SIPORTS
               </p>
             </div>
           </div>
@@ -210,7 +212,7 @@ export default function CreateUserPage() {
                     value={userData.password}
                     onChange={(e) => handleChange('password', e.target.value)}
                     className={`w-full px-3 py-2 border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 ${errors.password ? 'focus:ring-red-500' : 'focus:ring-blue-500'}`}
-                    placeholder="Minimum 8 caractères"
+                    placeholder="Minimum 8 caractÃ¨res"
                   />
                   {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
                 </div>
@@ -247,12 +249,12 @@ export default function CreateUserPage() {
             </div>
           </Card>
 
-          {/* Informations complémentaires */}
+          {/* Informations complÃ©mentaires */}
           <Card>
             <div className="p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
                 <Building2 className="h-5 w-5 mr-2 text-indigo-600" />
-                Informations Complémentaires
+                Informations ComplÃ©mentaires
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -271,7 +273,7 @@ export default function CreateUserPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Téléphone
+                    TÃ©lÃ©phone
                   </label>
                   <input
                     type="tel"
@@ -315,12 +317,12 @@ export default function CreateUserPage() {
               {isLoading ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Création en cours...
+                  CrÃ©ation en cours...
                 </>
               ) : (
                 <>
                   <Save className="h-4 w-4 mr-2" />
-                  Créer l'Utilisateur
+                  CrÃ©er l'Utilisateur
                 </>
               )}
             </Button>
@@ -330,4 +332,7 @@ export default function CreateUserPage() {
     </div>
   );
 }
+
+
+
 

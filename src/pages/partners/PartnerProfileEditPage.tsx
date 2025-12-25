@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import { toast } from 'sonner';
@@ -13,7 +14,7 @@ import { Button } from '../../components/ui/Button';
 export const PartnerProfileEditPage: React.FC = () => {
   const [formData, setFormData] = useState({
     companyName: 'TechNav Solutions',
-    description: 'Solutions de navigation et de tracking maritime avancées pour l\'industrie portuaire moderne.',
+    description: 'Solutions de navigation et de tracking maritime avancÃ©es pour l\'industrie portuaire moderne.',
     website: 'https://technav-solutions.com',
     address: '15 Rue de la Navigation, 13002 Marseille',
     phone: '+33 4 91 23 45 67',
@@ -23,7 +24,7 @@ export const PartnerProfileEditPage: React.FC = () => {
     ceo: 'Marie Martin',
     contactPerson: 'Pierre Dubois',
     sectors: ['Technologie', 'Navigation', 'Data Analytics'],
-    services: ['Systèmes de tracking GPS', 'Analyse de données maritimes', 'Solutions IoT portuaires'],
+    services: ['SystÃ¨mes de tracking GPS', 'Analyse de donnÃ©es maritimes', 'Solutions IoT portuaires'],
     certifications: ['ISO 9001', 'ISO 27001', 'Maritime Security'],
     logo: null
   });
@@ -42,13 +43,13 @@ export const PartnerProfileEditPage: React.FC = () => {
     // Simulation de sauvegarde
     await new Promise(resolve => setTimeout(resolve, 2000));
     setIsSaving(false);
-    toast.success('Profil mis à jour avec succès !');
+    toast.success('Profil mis Ã  jour avec succÃ¨s !');
   };
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Ici vous pouvez gérer l'upload du fichier
+      // Ici vous pouvez gÃ©rer l'upload du fichier
     }
   };
 
@@ -63,15 +64,15 @@ export const PartnerProfileEditPage: React.FC = () => {
           </Link>
           <h1 className="text-3xl font-bold text-gray-900">Modifier le Profil Partenaire</h1>
           <p className="text-gray-600 mt-2">
-            Mettez à jour les informations de votre entreprise partenaire
+            Mettez Ã  jour les informations de votre entreprise partenaire
           </p>
         </div>
 
         <div className="space-y-6">
-          {/* Informations générales */}
+          {/* Informations gÃ©nÃ©rales */}
           <Card>
             <div className="p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">Informations Générales</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">Informations GÃ©nÃ©rales</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -112,7 +113,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Téléphone
+                    TÃ©lÃ©phone
                   </label>
                   <input
                     type="tel"
@@ -136,7 +137,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Nombre d'employés
+                    Nombre d'employÃ©s
                   </label>
                   <input
                     type="number"
@@ -148,7 +149,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Année de création
+                    AnnÃ©e de crÃ©ation
                   </label>
                   <input
                     type="number"
@@ -160,7 +161,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Directeur Général
+                    Directeur GÃ©nÃ©ral
                   </label>
                   <input
                     type="text"
@@ -206,7 +207,7 @@ export const PartnerProfileEditPage: React.FC = () => {
                     />
                   </label>
                   <p className="mt-1 text-sm text-gray-500">
-                    PNG, JPG jusqu'à 2MB
+                    PNG, JPG jusqu'Ã  2MB
                   </p>
                 </div>
               </div>
@@ -221,10 +222,10 @@ export const PartnerProfileEditPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Secteurs d'activité
+                    Secteurs d'activitÃ©
                   </label>
                   <div className="space-y-2">
-                    {['Technologie', 'Navigation', 'Data Analytics', 'Sécurité', 'Environnement', 'Logistique'].map(sector => (
+                    {['Technologie', 'Navigation', 'Data Analytics', 'SÃ©curitÃ©', 'Environnement', 'Logistique'].map(sector => (
                       <label key={sector} className="flex items-center">
                         <input
                           type="checkbox"
@@ -246,7 +247,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Services proposés
+                    Services proposÃ©s
                   </label>
                   <textarea
                     value={formData.services.join('\n')}
@@ -318,3 +319,6 @@ export const PartnerProfileEditPage: React.FC = () => {
     </div>
   );
 };
+
+
+

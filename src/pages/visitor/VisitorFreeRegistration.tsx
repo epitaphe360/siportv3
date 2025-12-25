@@ -1,8 +1,9 @@
-/**
+﻿/**
  * Formulaire d'inscription Visiteur GRATUIT
- * Workflow simplifié sans mot de passe ni dashboard
+ * Workflow simplifiÃ© sans mot de passe ni dashboard
  */
 import { useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,10 +18,10 @@ import { ROUTES } from '../../lib/routes';
 import { COUNTRIES } from '../../data/countries';
 
 const freeVisitorSchema = z.object({
-  firstName: z.string().min(2, 'Prénom requis'),
+  firstName: z.string().min(2, 'PrÃ©nom requis'),
   lastName: z.string().min(2, 'Nom requis'),
   email: z.string().email('Email invalide'),
-  phone: z.string().min(8, 'Téléphone requis'),
+  phone: z.string().min(8, 'TÃ©lÃ©phone requis'),
   country: z.string().min(2, 'Pays requis'),
   sector: z.string().min(2, 'Secteur requis'),
   position: z.string().optional(),
@@ -30,18 +31,19 @@ const freeVisitorSchema = z.object({
 type FreeVisitorForm = z.infer<typeof freeVisitorSchema>;
 
 const sectors = [
-  'Autorité Portuaire',
+  'AutoritÃ© Portuaire',
   'Transport Maritime',
   'Logistique',
   'Consulting',
   'Technologie',
-  'Étudiant',
-  'Média/Presse',
+  'Ã‰tudiant',
+  'MÃ©dia/Presse',
   'Institutionnel',
   'Autre'
 ];
 
 export default function VisitorFreeRegistration() {
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
@@ -62,7 +64,7 @@ export default function VisitorFreeRegistration() {
     try {
       const fullName = `${data.firstName} ${data.lastName}`.trim();
 
-      // 1. Créer l'utilisateur Supabase Auth (sans mot de passe)
+      // 1. CrÃ©er l'utilisateur Supabase Auth (sans mot de passe)
       const temporaryPassword = `temp-${Date.now()}-${Math.random().toString(36)}`;
 
       const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -78,9 +80,9 @@ export default function VisitorFreeRegistration() {
       });
 
       if (authError) throw authError;
-      if (!authData.user) throw new Error('Échec création utilisateur');
+      if (!authData.user) throw new Error('Ã‰chec crÃ©ation utilisateur');
 
-      // 2. Créer l'entrée dans la table users
+      // 2. CrÃ©er l'entrÃ©e dans la table users
       const { error: userError } = await supabase
         .from('users')
         .insert([{
@@ -88,7 +90,7 @@ export default function VisitorFreeRegistration() {
           email: data.email,
           name: fullName,
           type: 'visitor',
-          visitor_level: 'free', // ✅ EXPLICITE
+          visitor_level: 'free', // âœ… EXPLICITE
           status: 'pending', // En attente de validation email
           profile: {
             firstName: data.firstName,
@@ -103,7 +105,7 @@ export default function VisitorFreeRegistration() {
 
       if (userError) throw userError;
 
-      // 3. Générer badge QR automatiquement
+      // 3. GÃ©nÃ©rer badge QR automatiquement
       const { error: badgeError } = await supabase.functions.invoke('generate-visitor-badge', {
         body: {
           userId: authData.user.id,
@@ -115,7 +117,7 @@ export default function VisitorFreeRegistration() {
       });
 
       if (badgeError) {
-        console.warn('Erreur génération badge:', badgeError);
+        console.warn('Erreur gÃ©nÃ©ration badge:', badgeError);
         // Ne pas bloquer l'inscription
       }
 
@@ -133,16 +135,16 @@ export default function VisitorFreeRegistration() {
         console.warn('Erreur envoi email:', emailError);
       }
 
-      // 5. Logout immédiat - visiteur gratuit n'a pas accès au dashboard
+      // 5. Logout immÃ©diat - visiteur gratuit n'a pas accÃ¨s au dashboard
       await supabase.auth.signOut();
 
-      // Succès !
+      // SuccÃ¨s !
       setShowSuccess(true);
-      toast.success('Inscription réussie ! Vérifiez votre email.');
+      toast.success('Inscription rÃ©ussie ! VÃ©rifiez votre email.');
 
       setTimeout(() => {
         navigate(ROUTES.HOME, {
-          state: { message: 'Vérifiez votre email pour recevoir votre badge gratuit !' }
+          state: { message: 'VÃ©rifiez votre email pour recevoir votre badge gratuit !' }
         });
       }, 3000);
 
@@ -176,14 +178,14 @@ export default function VisitorFreeRegistration() {
             Inscription Visiteur Gratuit
           </h1>
           <p className="text-green-100">
-            Recevez votre badge d'accès gratuit par email
+            Recevez votre badge d'accÃ¨s gratuit par email
           </p>
           <div className="mt-4 inline-flex items-center space-x-2 bg-green-800 px-4 py-2 rounded-full">
-            <span className="text-green-200 text-sm">✅ Accès salon</span>
-            <span className="text-green-200">•</span>
-            <span className="text-green-200 text-sm">✅ Badge QR</span>
-            <span className="text-green-200">•</span>
-            <span className="text-green-200 text-sm">✅ Gratuit</span>
+            <span className="text-green-200 text-sm">âœ… AccÃ¨s salon</span>
+            <span className="text-green-200">â€¢</span>
+            <span className="text-green-200 text-sm">âœ… Badge QR</span>
+            <span className="text-green-200">â€¢</span>
+            <span className="text-green-200 text-sm">âœ… Gratuit</span>
           </div>
         </motion.div>
 
@@ -195,11 +197,11 @@ export default function VisitorFreeRegistration() {
         >
           <Card className="p-8">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              {/* Nom et Prénom */}
+              {/* Nom et PrÃ©nom */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Prénom *
+                    PrÃ©nom *
                   </label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -207,7 +209,7 @@ export default function VisitorFreeRegistration() {
                       type="text"
                       {...register('firstName')}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="Votre prénom"
+                      placeholder="Votre prÃ©nom"
                     />
                   </div>
                   {errors.firstName && (
@@ -252,15 +254,15 @@ export default function VisitorFreeRegistration() {
                   <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>
                 )}
                 <p className="text-xs text-gray-500 mt-1">
-                  📧 Votre badge sera envoyé à cette adresse
+                  ðŸ“§ Votre badge sera envoyÃ© Ã  cette adresse
                 </p>
               </div>
 
-              {/* Téléphone et Pays */}
+              {/* TÃ©lÃ©phone et Pays */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Téléphone *
+                    TÃ©lÃ©phone *
                   </label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -286,7 +288,7 @@ export default function VisitorFreeRegistration() {
                       {...register('country')}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none bg-white"
                     >
-                      <option value="">Sélectionnez</option>
+                      <option value="">SÃ©lectionnez</option>
                       {COUNTRIES.map((country) => (
                         <option key={country.code} value={country.code}>
                           {country.name}
@@ -303,13 +305,13 @@ export default function VisitorFreeRegistration() {
               {/* Secteur */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Secteur d'activité *
+                  Secteur d'activitÃ© *
                 </label>
                 <select
                   {...register('sector')}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
-                  <option value="">Sélectionnez</option>
+                  <option value="">SÃ©lectionnez</option>
                   {sectors.map((sector) => (
                     <option key={sector} value={sector}>{sector}</option>
                   ))}
@@ -331,7 +333,7 @@ export default function VisitorFreeRegistration() {
                       type="text"
                       {...register('position')}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="Ex: Ingénieur"
+                      placeholder="Ex: IngÃ©nieur"
                     />
                   </div>
                 </div>
@@ -351,12 +353,12 @@ export default function VisitorFreeRegistration() {
 
               {/* Info */}
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <h4 className="font-semibold text-green-900 mb-2">✅ Inclus dans votre pass gratuit</h4>
+                <h4 className="font-semibold text-green-900 mb-2">âœ… Inclus dans votre pass gratuit</h4>
                 <ul className="text-sm text-green-700 space-y-1">
-                  <li>• Accès au salon SIPORTS 2026</li>
-                  <li>• Badge QR sécurisé envoyé par email</li>
-                  <li>• Accès aux conférences publiques</li>
-                  <li>• Pas de mot de passe requis</li>
+                  <li>â€¢ AccÃ¨s au salon SIPORTS 2026</li>
+                  <li>â€¢ Badge QR sÃ©curisÃ© envoyÃ© par email</li>
+                  <li>â€¢ AccÃ¨s aux confÃ©rences publiques</li>
+                  <li>â€¢ Pas de mot de passe requis</li>
                 </ul>
               </div>
 
@@ -369,7 +371,7 @@ export default function VisitorFreeRegistration() {
                 {isSubmitting ? (
                   <>
                     <Loader className="animate-spin h-5 w-5 mr-2" />
-                    Création en cours...
+                    CrÃ©ation en cours...
                   </>
                 ) : (
                   'Obtenir mon badge gratuit'
@@ -379,7 +381,7 @@ export default function VisitorFreeRegistration() {
               {/* VIP Link */}
               <div className="text-center pt-4 border-t">
                 <p className="text-sm text-gray-600 mb-2">
-                  Besoin d'un accès VIP complet ?
+                  Besoin d'un accÃ¨s VIP complet ?
                 </p>
                 <Button
                   type="button"
@@ -387,7 +389,7 @@ export default function VisitorFreeRegistration() {
                   onClick={() => navigate(ROUTES.VISITOR_VIP_REGISTRATION)}
                   className="border-yellow-500 text-yellow-600 hover:bg-yellow-50"
                 >
-                  👑 Passer au Pass VIP Premium
+                  ðŸ‘‘ Passer au Pass VIP Premium
                 </Button>
               </div>
             </form>
@@ -408,10 +410,10 @@ export default function VisitorFreeRegistration() {
                   <CheckCircle className="h-12 w-12 text-green-600" />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-3">
-                  Badge envoyé !
+                  Badge envoyÃ© !
                 </h2>
                 <p className="text-gray-600 mb-6">
-                  Vérifiez votre email <strong>{watch('email')}</strong> pour recevoir votre badge d'accès gratuit.
+                  VÃ©rifiez votre email <strong>{watch('email')}</strong> pour recevoir votre badge d'accÃ¨s gratuit.
                 </p>
                 <motion.div
                   initial={{ width: 0 }}
@@ -427,3 +429,6 @@ export default function VisitorFreeRegistration() {
     </div>
   );
 }
+
+
+

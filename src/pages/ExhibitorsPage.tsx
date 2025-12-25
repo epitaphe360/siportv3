@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Search,
@@ -44,7 +44,7 @@ export default function ExhibitorsPage() {
     fetchExhibitors();
   }, [fetchExhibitors]);
 
-  // Fonction pour gérer le clic sur le bouton RDV
+  // Fonction pour gÃ©rer le clic sur le bouton RDV
   const handleAppointmentClick = (exhibitorId: string) => {
     if (!isAuthenticated) {
       // Rediriger vers la page de connexion avec redirection vers les RDV
@@ -411,3 +411,4 @@ export default function ExhibitorsPage() {
     </div>
   );
 };
+

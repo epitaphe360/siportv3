@@ -1,4 +1,5 @@
-import { toast } from 'sonner';
+﻿import { toast } from 'sonner';
+import { useTranslation } from '../hooks/useTranslation';
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock, User, Eye, Share2, Bookmark, MessageCircle, Tag, ExternalLink, Download, Printer as Print, Globe, TrendingUp, BookOpen, Heart, Facebook, Twitter, Linkedin } from 'lucide-react';
@@ -19,33 +20,34 @@ const getFullArticleText = (article: NewsArticle): string => {
     
     ${article.excerpt}
     
-    ${article.content || "L'industrie portuaire mondiale connaît une transformation sans précédent. Les ports modernes ne sont plus seulement des points de transit, mais deviennent de véritables hubs technologiques intégrés dans l'économie numérique mondiale."}
+    ${article.content || "L'industrie portuaire mondiale connaÃ®t une transformation sans prÃ©cÃ©dent. Les ports modernes ne sont plus seulement des points de transit, mais deviennent de vÃ©ritables hubs technologiques intÃ©grÃ©s dans l'Ã©conomie numÃ©rique mondiale."}
     
     Les Enjeux de la Transformation Digitale
     
-    La digitalisation des ports représente un défi majeur pour l'industrie maritime. Les autorités portuaires investissent massivement dans des technologies de pointe pour optimiser leurs opérations et améliorer leur compétitivité.
+    La digitalisation des ports reprÃ©sente un dÃ©fi majeur pour l'industrie maritime. Les autoritÃ©s portuaires investissent massivement dans des technologies de pointe pour optimiser leurs opÃ©rations et amÃ©liorer leur compÃ©titivitÃ©.
     
-    L'avenir des ports se joue aujourd'hui dans leur capacité à intégrer les technologies émergentes tout en préservant leur efficacité opérationnelle.
+    L'avenir des ports se joue aujourd'hui dans leur capacitÃ© Ã  intÃ©grer les technologies Ã©mergentes tout en prÃ©servant leur efficacitÃ© opÃ©rationnelle.
     
-    Technologies Émergentes
+    Technologies Ã‰mergentes
     
-    Intelligence Artificielle pour l'optimisation des flux. IoT et capteurs pour la surveillance en temps réel. Blockchain pour la traçabilité des marchandises. Automatisation des équipements de manutention.
+    Intelligence Artificielle pour l'optimisation des flux. IoT et capteurs pour la surveillance en temps rÃ©el. Blockchain pour la traÃ§abilitÃ© des marchandises. Automatisation des Ã©quipements de manutention.
     
-    Impact sur l'Écosystème Portuaire
+    Impact sur l'Ã‰cosystÃ¨me Portuaire
     
-    Cette transformation ne concerne pas seulement les infrastructures, mais l'ensemble de l'écosystème portuaire. Les opérateurs, les transitaires, les transporteurs et même les autorités douanières doivent s'adapter à ces nouvelles réalités technologiques.
+    Cette transformation ne concerne pas seulement les infrastructures, mais l'ensemble de l'Ã©cosystÃ¨me portuaire. Les opÃ©rateurs, les transitaires, les transporteurs et mÃªme les autoritÃ©s douaniÃ¨res doivent s'adapter Ã  ces nouvelles rÃ©alitÃ©s technologiques.
     
-    Chiffres Clés : 85% des ports sont en digitalisation. Gain d'efficacité de plus 40%. Investissement moyen de 2.5 millions d'euros.
+    Chiffres ClÃ©s : 85% des ports sont en digitalisation. Gain d'efficacitÃ© de plus 40%. Investissement moyen de 2.5 millions d'euros.
     
     Perspectives d'Avenir
     
-    L'avenir des ports s'annonce prometteur avec l'émergence de nouvelles technologies et l'engagement croissant vers la durabilité. SIPORTS 2026 sera l'occasion de découvrir ces innovations et de rencontrer les acteurs qui façonnent l'avenir du secteur portuaire.
+    L'avenir des ports s'annonce prometteur avec l'Ã©mergence de nouvelles technologies et l'engagement croissant vers la durabilitÃ©. SIPORTS 2026 sera l'occasion de dÃ©couvrir ces innovations et de rencontrer les acteurs qui faÃ§onnent l'avenir du secteur portuaire.
   `;
   
   return fullText.trim();
 };
 
 export default function ArticleDetailPage() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const { articles, fetchNews } = useNewsStore();
   const [article, setArticle] = useState<NewsArticle | null>(null);
@@ -73,7 +75,7 @@ export default function ArticleDetailPage() {
           .slice(0, 3);
         setRelatedArticles(related);
 
-        // Scroll vers le haut pour voir le début de l'article
+        // Scroll vers le haut pour voir le dÃ©but de l'article
         setTimeout(() => {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }, 100);
@@ -81,7 +83,7 @@ export default function ArticleDetailPage() {
     }
   }, [id, articles]);
 
-  // Suivi du progrès de lecture
+  // Suivi du progrÃ¨s de lecture
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
@@ -122,10 +124,10 @@ export default function ArticleDetailPage() {
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
-      'Événement': 'bg-blue-100 text-blue-800',
+      'Ã‰vÃ©nement': 'bg-blue-100 text-blue-800',
       'Innovation': 'bg-purple-100 text-purple-800',
       'Partenariat': 'bg-green-100 text-green-800',
-      'Durabilité': 'bg-emerald-100 text-emerald-800',
+      'DurabilitÃ©': 'bg-emerald-100 text-emerald-800',
       'Formation': 'bg-orange-100 text-orange-800',
       'Commerce': 'bg-indigo-100 text-indigo-800'
     };
@@ -151,14 +153,14 @@ export default function ArticleDetailPage() {
       window.open(urls[platform as keyof typeof urls], '_blank', 'width=600,height=400');
     } else {
       navigator.clipboard.writeText(shareData.url);
-      toast.success('🔗 Lien de l\'article copié dans le presse-papiers !');
+      toast.success('ðŸ”— Lien de l\'article copiÃ© dans le presse-papiers !');
     }
   };
 
   const handleBookmark = () => {
   setIsBookmarked(!isBookmarked);
-  const action = isBookmarked ? 'retiré des' : 'ajouté aux';
-  toast.success(`📖 Article ${action} favoris !`);
+  const action = isBookmarked ? 'retirÃ© des' : 'ajoutÃ© aux';
+  toast.success(`ðŸ“– Article ${action} favoris !`);
   };
 
   const handleLike = () => {
@@ -171,7 +173,7 @@ export default function ArticleDetailPage() {
   };
 
   const handleDownloadPDF = () => {
-    toast('📄 Génération du PDF en cours...', { icon: '📄' });
+    toast('ðŸ“„ GÃ©nÃ©ration du PDF en cours...', { icon: 'ðŸ“„' });
   };
 
   return (
@@ -191,7 +193,7 @@ export default function ArticleDetailPage() {
             <Link to={ROUTES.NEWS}>
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Retour aux actualités
+                Retour aux actualitÃ©s
               </Button>
             </Link>
             
@@ -219,7 +221,7 @@ export default function ArticleDetailPage() {
             </div>
           </div>
 
-          {/* Métadonnées Article */}
+          {/* MÃ©tadonnÃ©es Article */}
           <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
             <Badge className={getCategoryColor(article.category)} size="sm">
               {article.category}
@@ -296,9 +298,9 @@ export default function ArticleDetailPage() {
           className="prose prose-lg max-w-none mb-12"
         >
           <div className="text-gray-800 leading-relaxed space-y-6">
-            {/* Contenu enrichi simulé */}
+            {/* Contenu enrichi simulÃ© */}
             <p className="text-lg">
-              {article.content || `L'industrie portuaire mondiale connaît une transformation sans précédent. Les ports modernes ne sont plus seulement des points de transit, mais deviennent de véritables hubs technologiques intégrés dans l'économie numérique mondiale.`}
+              {article.content || `L'industrie portuaire mondiale connaÃ®t une transformation sans prÃ©cÃ©dent. Les ports modernes ne sont plus seulement des points de transit, mais deviennent de vÃ©ritables hubs technologiques intÃ©grÃ©s dans l'Ã©conomie numÃ©rique mondiale.`}
             </p>
 
             <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">
@@ -306,18 +308,18 @@ export default function ArticleDetailPage() {
             </h2>
             
             <p>
-              La digitalisation des ports représente un défi majeur pour l'industrie maritime. Les autorités portuaires investissent massivement dans des technologies de pointe pour optimiser leurs opérations et améliorer leur compétitivité.
+              La digitalisation des ports reprÃ©sente un dÃ©fi majeur pour l'industrie maritime. Les autoritÃ©s portuaires investissent massivement dans des technologies de pointe pour optimiser leurs opÃ©rations et amÃ©liorer leur compÃ©titivitÃ©.
             </p>
 
             <blockquote className="border-l-4 border-blue-600 pl-6 py-4 bg-blue-50 rounded-r-lg my-8">
               <p className="text-lg italic text-blue-900">
-                "L'avenir des ports se joue aujourd'hui dans leur capacité à intégrer les technologies émergentes tout en préservant leur efficacité opérationnelle."
+                "L'avenir des ports se joue aujourd'hui dans leur capacitÃ© Ã  intÃ©grer les technologies Ã©mergentes tout en prÃ©servant leur efficacitÃ© opÃ©rationnelle."
               </p>
-              <footer className="text-blue-700 mt-2">— {article.author}</footer>
+              <footer className="text-blue-700 mt-2">â€” {article.author}</footer>
             </blockquote>
 
             <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-3">
-              Technologies Émergentes
+              Technologies Ã‰mergentes
             </h3>
             
             <ul className="space-y-2 ml-6">
@@ -327,30 +329,30 @@ export default function ArticleDetailPage() {
               </li>
               <li className="flex items-start space-x-2">
                 <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
-                <span>IoT et capteurs pour la surveillance en temps réel</span>
+                <span>IoT et capteurs pour la surveillance en temps rÃ©el</span>
               </li>
               <li className="flex items-start space-x-2">
                 <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
-                <span>Blockchain pour la traçabilité des marchandises</span>
+                <span>Blockchain pour la traÃ§abilitÃ© des marchandises</span>
               </li>
               <li className="flex items-start space-x-2">
                 <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
-                <span>Automatisation des équipements de manutention</span>
+                <span>Automatisation des Ã©quipements de manutention</span>
               </li>
             </ul>
 
             <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-3">
-              Impact sur l'Écosystème Portuaire
+              Impact sur l'Ã‰cosystÃ¨me Portuaire
             </h3>
             
             <p>
-              Cette transformation ne concerne pas seulement les infrastructures, mais l'ensemble de l'écosystème portuaire. Les opérateurs, les transitaires, les transporteurs et même les autorités douanières doivent s'adapter à ces nouvelles réalités technologiques.
+              Cette transformation ne concerne pas seulement les infrastructures, mais l'ensemble de l'Ã©cosystÃ¨me portuaire. Les opÃ©rateurs, les transitaires, les transporteurs et mÃªme les autoritÃ©s douaniÃ¨res doivent s'adapter Ã  ces nouvelles rÃ©alitÃ©s technologiques.
             </p>
 
             <div className="bg-gray-50 p-6 rounded-xl my-8">
               <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
                 <TrendingUp className="h-5 w-5 mr-2 text-green-600" />
-                Chiffres Clés
+                Chiffres ClÃ©s
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="text-center">
@@ -359,10 +361,10 @@ export default function ArticleDetailPage() {
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-green-600">+40%</div>
-                  <div className="text-sm text-gray-600">Gain d'efficacité</div>
+                  <div className="text-sm text-gray-600">Gain d'efficacitÃ©</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">2.5M€</div>
+                  <div className="text-2xl font-bold text-purple-600">2.5Mâ‚¬</div>
                   <div className="text-sm text-gray-600">Investissement moyen</div>
                 </div>
               </div>
@@ -373,7 +375,7 @@ export default function ArticleDetailPage() {
             </h3>
             
             <p>
-              L'avenir des ports s'annonce prometteur avec l'émergence de nouvelles technologies et l'engagement croissant vers la durabilité. SIPORTS 2026 sera l'occasion de découvrir ces innovations et de rencontrer les acteurs qui façonnent l'avenir du secteur portuaire.
+              L'avenir des ports s'annonce prometteur avec l'Ã©mergence de nouvelles technologies et l'engagement croissant vers la durabilitÃ©. SIPORTS 2026 sera l'occasion de dÃ©couvrir ces innovations et de rencontrer les acteurs qui faÃ§onnent l'avenir du secteur portuaire.
             </p>
 
             {article.sourceUrl && (
@@ -405,7 +407,7 @@ export default function ArticleDetailPage() {
         >
           <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
             <Tag className="h-4 w-4 mr-2" />
-            Mots-clés
+            Mots-clÃ©s
           </h4>
           <div className="flex flex-wrap gap-2">
             {article.tags.map((tag: string, index: number) => (
@@ -441,7 +443,7 @@ export default function ArticleDetailPage() {
                 commentsSection.scrollIntoView({ behavior: 'smooth' });
               } else {
                 // Si pas de section commentaires, ouvrir un modal simple
-                toast.info('Section commentaires - Fonctionnalité en développement');
+                toast.info('Section commentaires - FonctionnalitÃ© en dÃ©veloppement');
               }
             }}> 
               <MessageCircle className="h-4 w-4 mr-2" />
@@ -498,12 +500,12 @@ export default function ArticleDetailPage() {
                   {article.author}
                 </h4>
                 <p className="text-gray-600 mb-3">
-                  Expert en développement portuaire et innovation maritime. Contributeur régulier aux publications spécialisées du secteur.
+                  Expert en dÃ©veloppement portuaire et innovation maritime. Contributeur rÃ©gulier aux publications spÃ©cialisÃ©es du secteur.
                 </p>
                 <div className="flex items-center space-x-4 text-sm text-gray-500">
-                  <span>📧 {article.author.toLowerCase().replace(' ', '.')}@siportevent.com</span>
-                  <span>🔗 LinkedIn</span>
-                  <span>📰 12 articles publiés</span>
+                  <span>ðŸ“§ {article.author.toLowerCase().replace(' ', '.')}@siportevent.com</span>
+                  <span>ðŸ”— LinkedIn</span>
+                  <span>ðŸ“° 12 articles publiÃ©s</span>
                 </div>
               </div>
             </div>
@@ -577,11 +579,11 @@ export default function ArticleDetailPage() {
           <Card className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
             <div className="p-8 text-center">
               <h3 className="text-2xl font-bold mb-4">
-                Restez informé des actualités portuaires
+                Restez informÃ© des actualitÃ©s portuaires
               </h3>
               <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
-                Recevez les dernières nouvelles du secteur portuaire et les actualités 
-                exclusives de SIPORTS 2026 directement dans votre boîte mail
+                Recevez les derniÃ¨res nouvelles du secteur portuaire et les actualitÃ©s 
+                exclusives de SIPORTS 2026 directement dans votre boÃ®te mail
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
@@ -594,7 +596,7 @@ export default function ArticleDetailPage() {
                   size="lg" 
                   className="bg-white text-blue-600 hover:bg-blue-50"
                   onClick={() => {
-                    toast.success('✅ Inscription newsletter confirmée.');
+                    toast.success('âœ… Inscription newsletter confirmÃ©e.');
                   }}
                 >
                   S'abonner
@@ -630,3 +632,5 @@ export default function ArticleDetailPage() {
     </div>
   );
 };
+
+

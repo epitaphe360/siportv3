@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
     setMessage(null);
     try {
       if (!isSupabaseReady() || !supabase) {
-        setError('Supabase non configuré. Impossible d\'envoyer l\'email.');
+        setError('Supabase non configurÃ©. Impossible d\'envoyer l\'email.');
         setLoading(false);
         return;
       }
@@ -28,9 +28,9 @@ export default function ForgotPasswordPage() {
       const redirectTo = `${window.location.origin}/reset-password`;
       const res = await (supabase as any).auth.resetPasswordForEmail(email, { redirectTo });
       if (res?.error) {
-        setError(res.error.message || 'Erreur lors de la demande de réinitialisation.');
+        setError(res.error.message || 'Erreur lors de la demande de rÃ©initialisation.');
       } else {
-        setMessage('Un email de réinitialisation a été envoyé si l\'adresse existe dans le système.');
+        setMessage('Un email de rÃ©initialisation a Ã©tÃ© envoyÃ© si l\'adresse existe dans le systÃ¨me.');
       }
     } catch (err: unknown) {
       setError(err?.message || String(err));
@@ -56,3 +56,5 @@ export default function ForgotPasswordPage() {
     </Card>
   );
 }
+
+

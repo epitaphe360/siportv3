@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import { Check, X, Crown, Zap, Star, Award } from 'lucide-react';
@@ -35,21 +35,21 @@ const subscriptionTiers: SubscriptionTier[] = [
     price: 0,
     currency: 'EUR',
     icon: <Zap className="w-8 h-8" />,
-    description: 'Accès basique au salon',
+    description: 'AccÃ¨s basique au salon',
     type: 'visitor',
     level: 'free',
     features: [
-      { name: 'Accès au site du salon', included: true },
+      { name: 'AccÃ¨s au site du salon', included: true },
       { name: 'Consultation des exposants', included: true },
       { name: 'Demandes de rendez-vous', included: false },
       { name: 'Messagerie directe', included: false },
       { name: 'Mini-sites des exposants', included: true },
-      { name: 'Événements en direct', included: true },
+      { name: 'Ã‰vÃ©nements en direct', included: true },
     ],
     benefits: [
-      'Accès complet à l\'annuaire des exposants',
+      'AccÃ¨s complet Ã  l\'annuaire des exposants',
       'Consultation des profils publics',
-      'Voir les événements et conférences',
+      'Voir les Ã©vÃ©nements et confÃ©rences',
       'Badge visiteur gratuit',
     ],
     cta: 'S\'inscrire gratuitement',
@@ -61,25 +61,25 @@ const subscriptionTiers: SubscriptionTier[] = [
     price: 700,
     currency: 'EUR',
     icon: <Crown className="w-8 h-8" />,
-    description: 'Accès prioritaire + 10 rendez-vous',
+    description: 'AccÃ¨s prioritaire + 10 rendez-vous',
     type: 'visitor',
     level: 'premium',
     features: [
-      { name: 'Accès au site du salon', included: true },
+      { name: 'AccÃ¨s au site du salon', included: true },
       { name: 'Consultation des exposants', included: true },
       { name: 'Demandes de rendez-vous (10)', included: true },
       { name: 'Messagerie directe', included: true },
       { name: 'Mini-sites des exposants', included: true },
-      { name: 'Événements en direct', included: true },
+      { name: 'Ã‰vÃ©nements en direct', included: true },
       { name: 'Badge VIP prioritaire', included: true },
-      { name: 'Accès prioritaire aux nouveautés', included: true },
+      { name: 'AccÃ¨s prioritaire aux nouveautÃ©s', included: true },
     ],
     benefits: [
       '10 demandes de rendez-vous actives',
       'Messagerie directe avec les exposants',
       'Badge VIP virtuel avec QR code',
-      'Priorité dans les algorithmes de recommandation',
-      'Accès exclusif aux webinaires',
+      'PrioritÃ© dans les algorithmes de recommandation',
+      'AccÃ¨s exclusif aux webinaires',
       'Support prioritaire',
     ],
     cta: 'Inscription Visiteur VIP',
@@ -89,18 +89,18 @@ const subscriptionTiers: SubscriptionTier[] = [
   // EXHIBITOR SUBSCRIPTIONS
   {
     id: 'exhibitor-9m',
-    name: 'Exposant 9m² (Base)',
+    name: 'Exposant 9mÂ² (Base)',
     price: 0,
     currency: 'stand',
     icon: <Star className="w-8 h-8" />,
-    description: 'Profil & présence de base',
+    description: 'Profil & prÃ©sence de base',
     type: 'exhibitor',
     level: '9m2',
     features: [
       { name: 'Profil d\'exposant public', included: true },
       { name: 'Logo sur le site', included: true },
-      { name: 'Présentation courte', included: true },
-      { name: 'Mini-site personnalisé', included: false },
+      { name: 'PrÃ©sentation courte', included: true },
+      { name: 'Mini-site personnalisÃ©', included: false },
       { name: 'Gestion des rendez-vous', included: false },
       { name: 'Store produits', included: false },
       { name: 'Tableau de bord exposant', included: true },
@@ -108,17 +108,17 @@ const subscriptionTiers: SubscriptionTier[] = [
     ],
     benefits: [
       'Profil d\'exposant modifiable',
-      'Présence sur le site',
+      'PrÃ©sence sur le site',
       'Logo et description',
       'Formulaire de contact basique',
-      'Accès tableau de bord',
+      'AccÃ¨s tableau de bord',
     ],
     cta: 'Inscription Exposant',
     color: 'bg-blue-50',
   },
   {
     id: 'exhibitor-18m',
-    name: 'Exposant 18m² (Standard)',
+    name: 'Exposant 18mÂ² (Standard)',
     price: 2500,
     currency: 'EUR',
     icon: <Star className="w-8 h-8" />,
@@ -128,27 +128,27 @@ const subscriptionTiers: SubscriptionTier[] = [
     features: [
       { name: 'Profil d\'exposant public', included: true },
       { name: 'Logo sur le site', included: true },
-      { name: 'Mini-site personnalisé', included: true },
+      { name: 'Mini-site personnalisÃ©', included: true },
       { name: 'Gestion des rendez-vous (15)', included: true },
       { name: 'Store produits & filtrage', included: true },
-      { name: 'URL personnalisée', included: true },
+      { name: 'URL personnalisÃ©e', included: true },
       { name: 'Tableau de bord complet', included: true },
       { name: 'Support standard', included: true },
     ],
     benefits: [
-      'Mini-site dédié avec URL personnalisée',
-      '15 créneaux de rendez-vous disponibles',
-      'Présentation complète de produits/services',
-      'Système de filtrage des visiteurs',
-      'Messagerie intégrée',
-      'Accès aux analytics basiques',
+      'Mini-site dÃ©diÃ© avec URL personnalisÃ©e',
+      '15 crÃ©neaux de rendez-vous disponibles',
+      'PrÃ©sentation complÃ¨te de produits/services',
+      'SystÃ¨me de filtrage des visiteurs',
+      'Messagerie intÃ©grÃ©e',
+      'AccÃ¨s aux analytics basiques',
     ],
     cta: 'Inscription Exposant',
     color: 'bg-green-50',
   },
   {
     id: 'exhibitor-36m',
-    name: 'Exposant 36m² (Premium)',
+    name: 'Exposant 36mÂ² (Premium)',
     price: 5000,
     currency: 'EUR',
     icon: <Award className="w-8 h-8" />,
@@ -157,22 +157,22 @@ const subscriptionTiers: SubscriptionTier[] = [
     level: '36m2',
     features: [
       { name: 'Profil d\'exposant public', included: true },
-      { name: 'Mini-site personnalisé', included: true },
-      { name: 'Mise en avant "À la Une"', included: true },
+      { name: 'Mini-site personnalisÃ©', included: true },
+      { name: 'Mise en avant "Ã€ la Une"', included: true },
       { name: 'Gestion des rendez-vous (30)', included: true },
-      { name: 'Store produits avancé', included: true },
-      { name: 'Accès API Supabase limité', included: true },
-      { name: 'Outils de réseautage avancés', included: true },
+      { name: 'Store produits avancÃ©', included: true },
+      { name: 'AccÃ¨s API Supabase limitÃ©', included: true },
+      { name: 'Outils de rÃ©seautage avancÃ©s', included: true },
       { name: 'Support prioritaire', included: true },
-      { name: 'Badge virtuel personnalisé', included: true },
+      { name: 'Badge virtuel personnalisÃ©', included: true },
     ],
     benefits: [
       'Mise en avant sur la page d\'accueil',
-      '30 créneaux de rendez-vous',
-      'Mini-site premium avec médias illimités',
-      'Intégration API personnalisée',
+      '30 crÃ©neaux de rendez-vous',
+      'Mini-site premium avec mÃ©dias illimitÃ©s',
+      'IntÃ©gration API personnalisÃ©e',
       'Messagerie directe et chat',
-      'Analytics détaillés',
+      'Analytics dÃ©taillÃ©s',
       'Support technique prioritaire',
     ],
     cta: 'Inscription Exposant',
@@ -180,33 +180,33 @@ const subscriptionTiers: SubscriptionTier[] = [
   },
   {
     id: 'exhibitor-54m',
-    name: 'Exposant 54m²+ (Elite)',
+    name: 'Exposant 54mÂ²+ (Elite)',
     price: 7500,
     currency: 'EUR',
     icon: <Crown className="w-8 h-8" />,
-    description: 'Visibilité maximale + créneaux illimités',
+    description: 'VisibilitÃ© maximale + crÃ©neaux illimitÃ©s',
     type: 'exhibitor',
     level: '54m2',
     features: [
       { name: 'Profil d\'exposant public', included: true },
       { name: 'Mini-site Premium', included: true },
       { name: 'Mise en avant permanente', included: true },
-      { name: 'Rendez-vous illimités', included: true },
+      { name: 'Rendez-vous illimitÃ©s', included: true },
       { name: 'Store produits complet', included: true },
-      { name: 'Accès API Supabase complet', included: true },
-      { name: 'Outils de réseautage illimités', included: true },
+      { name: 'AccÃ¨s API Supabase complet', included: true },
+      { name: 'Outils de rÃ©seautage illimitÃ©s', included: true },
       { name: 'Support VIP 24/7', included: true },
-      { name: 'Personnalisation avancée', included: true },
+      { name: 'Personnalisation avancÃ©e', included: true },
     ],
     benefits: [
       'Mise en avant permanente et prioritaire',
-      'Créneaux de rendez-vous illimités',
-      'Mini-site avec scripts personnalisés',
-      'Accès API complet pour intégrations',
-      'Stockage médias illimité',
-      'Chat et messagerie illimitée',
-      'Support technique VIP dédié',
-      'Priorité algorithmique',
+      'CrÃ©neaux de rendez-vous illimitÃ©s',
+      'Mini-site avec scripts personnalisÃ©s',
+      'AccÃ¨s API complet pour intÃ©grations',
+      'Stockage mÃ©dias illimitÃ©',
+      'Chat et messagerie illimitÃ©e',
+      'Support technique VIP dÃ©diÃ©',
+      'PrioritÃ© algorithmique',
     ],
     cta: 'Inscription Exposant',
     color: 'bg-red-50',
@@ -215,29 +215,29 @@ const subscriptionTiers: SubscriptionTier[] = [
   // PARTNER SUBSCRIPTIONS
   {
     id: 'partner-museum',
-    name: 'Partenaire Musée (20k$)',
+    name: 'Partenaire MusÃ©e (20k$)',
     price: 20000,
     currency: 'USD',
     icon: <Star className="w-8 h-8" />,
-    description: 'Présence & mini-site',
+    description: 'PrÃ©sence & mini-site',
     type: 'partner',
     level: 'museum',
     features: [
       { name: 'Logo sur le site', included: true },
-      { name: 'Mini-site dédié', included: true },
-      { name: 'Bannière rotative', included: true },
-      { name: 'Présence newsletter', included: true },
-      { name: 'Vidéos "Inside SIPORT"', included: true },
+      { name: 'Mini-site dÃ©diÃ©', included: true },
+      { name: 'BanniÃ¨re rotative', included: true },
+      { name: 'PrÃ©sence newsletter', included: true },
+      { name: 'VidÃ©os "Inside SIPORT"', included: true },
       { name: 'Interview Live Studio', included: true },
       { name: 'Inclusion podcast', included: false },
-      { name: 'Priorité algorithmique', included: false },
+      { name: 'PrioritÃ© algorithmique', included: false },
     ],
     benefits: [
-      'Logo en 4ème ligne sur le site',
+      'Logo en 4Ã¨me ligne sur le site',
       'Mini-site Premium Exposure',
-      'Bannière Web rotative',
-      'Présence dans e-mailings',
-      'Capsules vidéo marquées',
+      'BanniÃ¨re Web rotative',
+      'PrÃ©sence dans e-mailings',
+      'Capsules vidÃ©o marquÃ©es',
       'Interview "Meet The Leaders"',
       'Mention "Best Moments"',
     ],
@@ -250,28 +250,28 @@ const subscriptionTiers: SubscriptionTier[] = [
     price: 48000,
     currency: 'USD',
     icon: <Award className="w-8 h-8" />,
-    description: 'Visibilité renforcée 3ème ligne',
+    description: 'VisibilitÃ© renforcÃ©e 3Ã¨me ligne',
     type: 'partner',
     level: 'silver',
     features: [
-      { name: 'Logo en 3ème ligne', included: true },
-      { name: 'Mini-site dédié', included: true },
-      { name: 'Bannière rotative', included: true },
+      { name: 'Logo en 3Ã¨me ligne', included: true },
+      { name: 'Mini-site dÃ©diÃ©', included: true },
+      { name: 'BanniÃ¨re rotative', included: true },
       { name: 'Section "Top Innovations"', included: true },
-      { name: 'Présence newsletters', included: true },
-      { name: 'Capsules vidéo sponsorisées', included: true },
+      { name: 'PrÃ©sence newsletters', included: true },
+      { name: 'Capsules vidÃ©o sponsorisÃ©es', included: true },
       { name: 'Podcast SIPORT Talks', included: true },
       { name: 'Interview Live Studio', included: true },
-      { name: 'Testimonial vidéo (1 min)', included: true },
+      { name: 'Testimonial vidÃ©o (1 min)', included: true },
     ],
     benefits: [
-      'Logo visible en 3ème ligne prioritaire',
-      'Présence dans toutes les newsletters',
-      'Mini-site avec actualités complètes',
-      'Capsules vidéo "Inside SIPORT"',
+      'Logo visible en 3Ã¨me ligne prioritaire',
+      'PrÃ©sence dans toutes les newsletters',
+      'Mini-site avec actualitÃ©s complÃ¨tes',
+      'Capsules vidÃ©o "Inside SIPORT"',
       'Interview audio dans le Podcast',
       'Interview Live Studio "Meet The Leaders"',
-      'Vidéo testimonial diffusée',
+      'VidÃ©o testimonial diffusÃ©e',
       '50 rendez-vous mensuels',
     ],
     cta: 'Inscription Partenaire',
@@ -283,29 +283,29 @@ const subscriptionTiers: SubscriptionTier[] = [
     price: 68000,
     currency: 'USD',
     icon: <Crown className="w-8 h-8" />,
-    description: 'Visibilité premium 2ème ligne',
+    description: 'VisibilitÃ© premium 2Ã¨me ligne',
     type: 'partner',
     level: 'gold',
     features: [
-      { name: 'Logo en 2ème ligne', included: true },
+      { name: 'Logo en 2Ã¨me ligne', included: true },
       { name: 'Mini-site premium', included: true },
-      { name: 'Bannière Web rotative', included: true },
+      { name: 'BanniÃ¨re Web rotative', included: true },
       { name: 'Section "Top Innovations"', included: true },
-      { name: 'Newsletter en 2ème ligne', included: true },
-      { name: 'Capsules vidéo sponsorisées', included: true },
+      { name: 'Newsletter en 2Ã¨me ligne', included: true },
+      { name: 'Capsules vidÃ©o sponsorisÃ©es', included: true },
       { name: 'Podcast SIPORT Talks', included: true },
       { name: 'Interview Live Studio', included: true },
-      { name: 'Testimonial vidéo (2 min)', included: true },
+      { name: 'Testimonial vidÃ©o (2 min)', included: true },
       { name: 'Support prioritaire', included: true },
     ],
     benefits: [
-      'Logo visible en 2ème ligne prioritaire',
+      'Logo visible en 2Ã¨me ligne prioritaire',
       'Tous les canaux web & email',
       'Mini-site "SIPORT Premium Exposure"',
-      'Capsules vidéo & brand awareness',
+      'Capsules vidÃ©o & brand awareness',
       'Interview audio Podcast',
       'Interview Live Studio prioritaire',
-      'Vidéo testimonial 2 min diffusée',
+      'VidÃ©o testimonial 2 min diffusÃ©e',
       '100 rendez-vous mensuels',
       'Support technique prioritaire',
     ],
@@ -318,33 +318,33 @@ const subscriptionTiers: SubscriptionTier[] = [
     price: 98000,
     currency: 'USD',
     icon: <Crown className="w-8 h-8" />,
-    description: 'Visibilité maximale 1ère ligne + illimité',
+    description: 'VisibilitÃ© maximale 1Ã¨re ligne + illimitÃ©',
     type: 'partner',
     level: 'platinum',
     features: [
-      { name: 'Logo en 1ère ligne partout', included: true },
+      { name: 'Logo en 1Ã¨re ligne partout', included: true },
       { name: 'Mini-site premium', included: true },
-      { name: 'Bannière Web rotative', included: true },
+      { name: 'BanniÃ¨re Web rotative', included: true },
       { name: 'Section "Top Innovations"', included: true },
-      { name: 'Newsletters en 1ère ligne', included: true },
-      { name: 'Webinaires sponsorisés', included: true },
-      { name: 'Capsules vidéo "Inside SIPORT"', included: true },
+      { name: 'Newsletters en 1Ã¨re ligne', included: true },
+      { name: 'Webinaires sponsorisÃ©s', included: true },
+      { name: 'Capsules vidÃ©o "Inside SIPORT"', included: true },
       { name: 'Podcast SIPORT Talks', included: true },
       { name: 'Interview Live Studio prioritaire', included: true },
-      { name: 'Testimonial vidéo (3 min)', included: true },
+      { name: 'Testimonial vidÃ©o (3 min)', included: true },
       { name: 'Support VIP 24/7', included: true },
     ],
     benefits: [
-      'Logo en 1ère ligne sur tous les canaux',
+      'Logo en 1Ã¨re ligne sur tous les canaux',
       'Mini-site "Premium Exposure" complet',
-      'Webinaires sponsorisés avec replay',
-      'Capsules vidéo exclusives marquées',
+      'Webinaires sponsorisÃ©s avec replay',
+      'Capsules vidÃ©o exclusives marquÃ©es',
       'Inclusion podcast prioritaire',
       'Interview Live Studio "Meet The Leaders"',
-      'Vidéo testimonial 3 min premium',
-      'Rendez-vous illimités',
-      'Support VIP dédié',
-      'Priorité algorithmique maximale',
+      'VidÃ©o testimonial 3 min premium',
+      'Rendez-vous illimitÃ©s',
+      'Support VIP dÃ©diÃ©',
+      'PrioritÃ© algorithmique maximale',
     ],
     cta: 'Inscription Partenaire',
     color: 'bg-amber-50',
@@ -363,7 +363,7 @@ export default function SubscriptionPage() {
   const displayedTiers = selectedType === 'visitor' ? visitorTiers : selectedType === 'partner' ? partnerTiers : exhibitorTiers;
 
   const handleSubscribe = (tierId: string) => {
-    // Redirection selon le type d'offre (pas besoin d'être authentifié pour s'inscrire)
+    // Redirection selon le type d'offre (pas besoin d'Ãªtre authentifiÃ© pour s'inscrire)
     if (tierId === 'visitor-free') {
       // Inscription gratuite - rediriger vers formulaire visiteur gratuit
       navigate(ROUTES.VISITOR_FREE_REGISTRATION);
@@ -372,7 +372,7 @@ export default function SubscriptionPage() {
       navigate(ROUTES.VISITOR_VIP_REGISTRATION);
     } else if (tierId.includes('exhibitor')) {
       // Offre exposant - toujours rediriger vers formulaire inscription avec le tier choisi
-      // Un commercial contactera l'exposant après inscription
+      // Un commercial contactera l'exposant aprÃ¨s inscription
       const tier = subscriptionTiers.find(t => t.id === tierId);
       navigate(ROUTES.REGISTER_EXHIBITOR, {
         state: {
@@ -417,7 +417,7 @@ export default function SubscriptionPage() {
                 : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-purple-300'
             }`}
           >
-            👤 Visiteurs
+            ðŸ‘¤ Visiteurs
           </button>
           <button
             onClick={() => setSelectedType('exhibitor')}
@@ -427,7 +427,7 @@ export default function SubscriptionPage() {
                 : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-blue-300'
             }`}
           >
-            🏢 Exposants
+            ðŸ¢ Exposants
           </button>
           <button
             onClick={() => setSelectedType('partner')}
@@ -437,7 +437,7 @@ export default function SubscriptionPage() {
                 : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-amber-300'
             }`}
           >
-            🤝 Partenaires
+            ðŸ¤ Partenaires
           </button>
         </div>
 
@@ -471,7 +471,7 @@ export default function SubscriptionPage() {
 
               {/* Features */}
               <div className="p-6 flex-grow">
-                <h4 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">Fonctionnalités</h4>
+                <h4 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">FonctionnalitÃ©s</h4>
                 <ul className="space-y-3">
                   {tier.features.map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-3">
@@ -515,27 +515,27 @@ export default function SubscriptionPage() {
 
         {/* Additional Info */}
         <div className="mt-16 bg-white rounded-2xl p-8 border border-gray-200 shadow-sm">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Comment ça marche ?</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Comment Ã§a marche ?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <div className="text-4xl font-bold text-purple-600 mb-3">1</div>
               <h3 className="font-semibold text-gray-900 mb-2">Choix de l'offre</h3>
               <p className="text-gray-600">
-                Sélectionnez l'offre qui correspond à vos besoins parmi nos différents niveaux.
+                SÃ©lectionnez l'offre qui correspond Ã  vos besoins parmi nos diffÃ©rents niveaux.
               </p>
             </div>
             <div>
               <div className="text-4xl font-bold text-purple-600 mb-3">2</div>
-              <h3 className="font-semibold text-gray-900 mb-2">Paiement sécurisé</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Paiement sÃ©curisÃ©</h3>
               <p className="text-gray-600">
                 Paiement en ligne ou via un commercial. Validation par administrateur automatique.
               </p>
             </div>
             <div>
               <div className="text-4xl font-bold text-purple-600 mb-3">3</div>
-              <h3 className="font-semibold text-gray-900 mb-2">Accès immédiat</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">AccÃ¨s immÃ©diat</h3>
               <p className="text-gray-600">
-                Accès instantané à votre tableau de bord et à tous les avantages de votre offre.
+                AccÃ¨s instantanÃ© Ã  votre tableau de bord et Ã  tous les avantages de votre offre.
               </p>
             </div>
           </div>
@@ -543,22 +543,22 @@ export default function SubscriptionPage() {
 
         {/* FAQ Section */}
         <div className="mt-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Questions fréquentes</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Questions frÃ©quentes</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="p-6">
               <h3 className="font-semibold text-gray-900 mb-3">Puis-je changer d'offre ?</h3>
               <p className="text-gray-600">
-                Oui, vous pouvez faire évoluer votre offre à tout moment. Un administrateur validera les changements.
+                Oui, vous pouvez faire Ã©voluer votre offre Ã  tout moment. Un administrateur validera les changements.
               </p>
             </Card>
             <Card className="p-6">
-              <h3 className="font-semibold text-gray-900 mb-3">Quel est le délai d'activation ?</h3>
+              <h3 className="font-semibold text-gray-900 mb-3">Quel est le dÃ©lai d'activation ?</h3>
               <p className="text-gray-600">
-                Une fois le paiement validé, votre accès est activé dans les 24 heures.
+                Une fois le paiement validÃ©, votre accÃ¨s est activÃ© dans les 24 heures.
               </p>
             </Card>
             <Card className="p-6">
-              <h3 className="font-semibold text-gray-900 mb-3">Y a-t-il une facturation récurrente ?</h3>
+              <h3 className="font-semibold text-gray-900 mb-3">Y a-t-il une facturation rÃ©currente ?</h3>
               <p className="text-gray-600">
                 Non, sauf mention contraire. Les offres sont forfaitaires pour le salon 2026.
               </p>
@@ -566,7 +566,7 @@ export default function SubscriptionPage() {
             <Card className="p-6">
               <h3 className="font-semibold text-gray-900 mb-3">Comment contacter le support ?</h3>
               <p className="text-gray-600">
-                Contactez notre équipe via le formulaire du site ou par e-mail : support@siports.com
+                Contactez notre Ã©quipe via le formulaire du site ou par e-mail : support@siports.com
               </p>
             </Card>
           </div>
@@ -575,3 +575,5 @@ export default function SubscriptionPage() {
     </div>
   );
 }
+
+
