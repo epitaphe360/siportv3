@@ -10,6 +10,7 @@ import { useExhibitorStore } from '../../store/exhibitorStore';
 import useAuthStore from '../../store/authStore';
 import { motion } from 'framer-motion';
 import { useTranslation } from '../../hooks/useTranslation';
+import { translateSector } from '../../utils/sectorTranslations';
 
 export const FeaturedExhibitors: React.FC = () => {
   const navigate = useNavigate();
@@ -137,7 +138,7 @@ export const FeaturedExhibitors: React.FC = () => {
                         <h3 className="font-semibold text-gray-900 text-lg">
                           {exhibitor.companyName}
                         </h3>
-                        <p className="text-sm text-gray-600 font-medium">{exhibitor.sector}</p>
+                        <p className="text-sm text-gray-600 font-medium">{translateSector(exhibitor.sector, t)}</p>
                       </div>
                     </div>
                     {exhibitor.verified && (

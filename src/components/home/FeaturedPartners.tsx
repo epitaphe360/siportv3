@@ -8,6 +8,7 @@ import { Button } from '../ui/Button';
 import { SupabaseService } from '../../services/supabaseService';
 import { motion } from 'framer-motion';
 import { useTranslation } from '../../hooks/useTranslation';
+import { translateSector } from '../../utils/sectorTranslations';
 
 export const FeaturedPartners: React.FC = () => {
   const navigate = useNavigate();
@@ -129,7 +130,7 @@ export const FeaturedPartners: React.FC = () => {
                         <h3 className="font-semibold text-gray-900 text-lg">
                           {partner.name}
                         </h3>
-                        <p className="text-sm text-gray-600 font-medium">{partner.sector}</p>
+                        <p className="text-sm text-gray-600 font-medium">{translateSector(partner.sector, t)}</p>
                       </div>
                     </div>
                     {partner.verified && (

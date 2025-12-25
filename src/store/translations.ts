@@ -34,7 +34,17 @@ export const allTranslations = {
     'pages.exhibitors.category_port_industry': 'Industrie Portuaire',
     'pages.exhibitors.category_operations': 'Exploitation & Gestion',
     'pages.exhibitors.category_academic': 'Académique & Formation',
+    'pages.exhibitors.category_technology': 'Technologie',
+    'pages.exhibitors.category_automation': 'Automatisation',
+    'pages.exhibitors.category_equipment': 'Équipement',
     'pages.exhibitors.featured': 'En vedette',
+    
+    // Sector Translations
+    'sector.technology': 'Technologie',
+    'sector.port_industry': 'Industrie Portuaire',
+    'sector.automation': 'Automatisation',
+    'sector.equipment': 'Équipement',
+    'sector.operations_management': 'Exploitation & Gestion',
     'pages.exhibitors.verified': 'Vérifié',
     'pages.exhibitors.contact': 'Contacter',
     'pages.exhibitors.view_profile': 'Voir le profil',
@@ -115,6 +125,15 @@ export const allTranslations = {
     'exhibitor.booth_size': 'Taille du stand',
     'exhibitor.booth_location': 'Localisation du stand',
     
+    // Home Page
+    'home.book_appointment': 'Réserver un rendez-vous',
+    'home.verified': 'Vérifié',
+    'home.featured_partners_title': 'Partenaires à la Une',
+    'home.featured_partners_desc': 'Les organisations leaders qui soutiennent SIPORTS 2026',
+    'home.discover_all': 'Découvrez tous les partenaires',
+    'home.featured_exhibitors_title': 'Exposants à la Une',
+    'home.featured_exhibitors_desc': 'Les meilleurs exposants du salon',
+    
     // Actions communes
     'actions.save': 'Sauvegarder',
     'actions.cancel': 'Annuler',
@@ -169,6 +188,7 @@ export const allTranslations = {
     'dashboard.restricted_access': 'Accès Restreint - Administrateurs Uniquement',
     'dashboard.restricted_message': 'Cette section est réservée aux administrateurs SIPORTS',
     'dashboard.back_to_dashboard': 'Retour au Tableau de Bord',
+    'dashboard.welcome': 'Bienvenue dans',
     'dashboard.loading_metrics': 'Chargement des métriques...',
     'dashboard.metrics_error': 'Erreur de chargement des métriques',
     'dashboard.retry': 'Réessayer',
@@ -400,7 +420,17 @@ export const allTranslations = {
     'pages.exhibitors.category_port_industry': 'Port Industry',
     'pages.exhibitors.category_operations': 'Operations & Management',
     'pages.exhibitors.category_academic': 'Academic & Training',
+    'pages.exhibitors.category_technology': 'Technology',
+    'pages.exhibitors.category_automation': 'Automation',
+    'pages.exhibitors.category_equipment': 'Equipment',
     'pages.exhibitors.featured': 'Featured',
+    
+    // Sector Translations
+    'sector.technology': 'Technology',
+    'sector.port_industry': 'Port Industry',
+    'sector.automation': 'Automation',
+    'sector.equipment': 'Equipment',
+    'sector.operations_management': 'Operations & Management',
     'pages.exhibitors.verified': 'Verified',
     'pages.exhibitors.contact': 'Contact',
     'pages.exhibitors.view_profile': 'View Profile',
@@ -477,6 +507,15 @@ export const allTranslations = {
     'exhibitor.booth_size': 'Booth Size',
     'exhibitor.booth_location': 'Booth Location',
     
+    // Home Page
+    'home.book_appointment': 'Book Appointment',
+    'home.verified': 'Verified',
+    'home.featured_partners_title': 'Featured Partners',
+    'home.featured_partners_desc': 'Leading organizations supporting SIPORTS 2026',
+    'home.discover_all': 'Discover All Partners',
+    'home.featured_exhibitors_title': 'Featured Exhibitors',
+    'home.featured_exhibitors_desc': 'The best exhibitors of the show',
+    
     'actions.save': 'Save',
     'actions.cancel': 'Cancel',
     'actions.edit': 'Edit',
@@ -527,6 +566,7 @@ export const allTranslations = {
     'dashboard.restricted_access': 'Restricted Access - Administrators Only',
     'dashboard.restricted_message': 'This section is reserved for SIPORTS administrators',
     'dashboard.back_to_dashboard': 'Back to Dashboard',
+    'dashboard.welcome': 'Welcome to',
     'dashboard.loading_metrics': 'Loading metrics...',
     'dashboard.metrics_error': 'Error loading metrics',
     'dashboard.retry': 'Retry',
@@ -758,7 +798,17 @@ export const allTranslations = {
     'pages.exhibitors.category_port_industry': 'صناعة الموانئ',
     'pages.exhibitors.category_operations': 'العمليات والإدارة',
     'pages.exhibitors.category_academic': 'الأكاديمي والتدريب',
+    'pages.exhibitors.category_technology': 'التكنولوجيا',
+    'pages.exhibitors.category_automation': 'الأتمتة',
+    'pages.exhibitors.category_equipment': 'المعدات',
     'pages.exhibitors.featured': 'المميز',
+    
+    // Sector Translations
+    'sector.technology': 'التكنولوجيا',
+    'sector.port_industry': 'صناعة الموانئ',
+    'sector.automation': 'الأتمتة',
+    'sector.equipment': 'المعدات',
+    'sector.operations_management': 'العمليات والإدارة',
     'pages.exhibitors.verified': 'تم التحقق',
     'pages.exhibitors.contact': 'اتصال',
     'pages.exhibitors.view_profile': 'عرض الملف الشخصي',
@@ -835,6 +885,15 @@ export const allTranslations = {
     'exhibitor.booth_size': 'حجم الكشك',
     'exhibitor.booth_location': 'موقع الكشك',
     
+    // Home Page
+    'home.book_appointment': 'حجز موعد',
+    'home.verified': 'تم التحقق',
+    'home.featured_partners_title': 'الشركاء المميزون',
+    'home.featured_partners_desc': 'المنظمات الرائدة التي تدعم SIPORTS 2026',
+    'home.discover_all': 'اكتشف جميع الشركاء',
+    'home.featured_exhibitors_title': 'العارضون المميزون',
+    'home.featured_exhibitors_desc': 'أفضل العارضين في المعرض',
+    
     'actions.save': 'حفظ',
     'actions.cancel': 'إلغاء',
     'actions.edit': 'تعديل',
@@ -885,6 +944,7 @@ export const allTranslations = {
     'dashboard.restricted_access': 'وصول مقيد - المسؤولون فقط',
     'dashboard.restricted_message': 'هذا القسم مخصص لمسؤولي SIPORTS',
     'dashboard.back_to_dashboard': 'العودة إلى لوحة التحكم',
+    'dashboard.welcome': 'أهلا بك في',
     'dashboard.loading_metrics': 'جاري تحميل المقاييس...',
     'dashboard.metrics_error': 'خطأ في تحميل المقاييس',
     'dashboard.retry': 'حاول مجددا',
