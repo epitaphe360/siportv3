@@ -362,14 +362,14 @@ export default function NetworkingPage() {
           </div>
         </div>
 
-        {/* Footer simplifiÃ© */}
+        {/* Footer simplifié© */}
         <footer className="bg-[#050c1a] text-white/40 py-12 border-t border-white/5 text-center text-sm">
           <div className="max-w-7xl mx-auto px-4">
-            <div className="mb-6">Â© 2026 - SIPORTS : Salon International des Ports et de leur Ã‰cosystÃ¨me â€“ Tous droits rÃ©servÃ©s.</div>
+            <div className="mb-6">© 2026 - SIPORTS : Salon International des Ports et de leur Ã‰cosystÃ¨me â€“ Tous droits rÃ©servÃ©s.</div>
             <div className="flex justify-center gap-8 mb-6">
-              <a href="https://siportevent.com/conditions-generales-2/" className="hover:text-white transition-colors">Conditions GÃ©nÃ©rales</a>
-              <a href="https://siportevent.com/politique-de-confidentialite/" className="hover:text-white transition-colors">ConfidentialitÃ©</a>
-              <a href="https://siportevent.com/mentions-legales/" className="hover:text-white transition-colors">Mentions LÃ©gales</a>
+              <a href="https://siportevent.com/conditions-generales-2/" className="hover:text-white transition-colors">Conditions Générales</a>
+              <a href="https://siportevent.com/politique-de-confidentialite/" className="hover:text-white transition-colors">Confidentialité©</a>
+              <a href="https://siportevent.com/mentions-legales/" className="hover:text-white transition-colors">Mentions Légales</a>
             </div>
             <div className="inline-block px-4 py-1 rounded-full bg-white/5 border border-white/10">
               Contact : <a href="mailto:contact@siportevent.com" className="text-blue-400 hover:underline">contact@siportevent.com</a>
@@ -1479,4 +1479,5 @@ export default function NetworkingPage() {
     </div>
   );
 };
+
 
