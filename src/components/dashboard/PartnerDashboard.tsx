@@ -33,6 +33,8 @@ import { useDashboardStats } from '../../hooks/useDashboardStats';
 import { ErrorMessage, LoadingMessage } from '../common/ErrorMessage';
 import { LevelBadge, QuotaSummaryCard } from '../common/QuotaWidget';
 import { getPartnerQuota, getPartnerTierConfig } from '../../config/partnerTiers';
+import PartnerProfileCreationModal from '../partner/PartnerProfileCreationModal';
+import { supabase } from '../../lib/supabase';
 import type { PartnerTier } from '../../config/partnerTiers';
 
 export default function PartnerDashboard() {
@@ -50,6 +52,9 @@ export default function PartnerDashboard() {
   const [showLeadsModal, setShowLeadsModal] = useState(false);
   const [showEventsModal, setShowEventsModal] = useState(false);
   const [showSatisfactionModal, setShowSatisfactionModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [hasProfile, setHasProfile] = useState<boolean | null>(null);
+
 
   useEffect(() => {
     if (!user || user.type !== 'partner') return;
@@ -80,6 +85,37 @@ export default function PartnerDashboard() {
     loadAppointments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]); // Intentionally fetch only on mount
+
+  // Vérifier si le profil partenaire existe
+  useEffect(() => {
+    if (!user || user.type !== 'partner' || user.status !== 'active') return;
+
+    const checkProfile = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('partner_profiles')
+          .select('id')
+          .eq('user_id', user.id)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          console.error('Erreur vérification profil:', error);
+        }
+
+        setHasProfile(!!data);
+        
+        // Si pas de profil et compte activé, afficher le modal
+        if (!data && user.status === 'active') {
+          setShowProfileModal(true);
+        }
+      } catch (err) {
+        console.error('Erreur:', err);
+        setHasProfile(false);
+      }
+    };
+
+    checkProfile();
+  }, [user]);
 
   // Animation variants
   const containerVariants = {
@@ -733,6 +769,18 @@ export default function PartnerDashboard() {
             </div>
           </Card>
         </motion.div>
+
+      {/* Modal de création de profil partenaire */}
+      {user?.status === 'active' && (
+        <PartnerProfileCreationModal
+          isOpen={showProfileModal}
+          onClose={() => setShowProfileModal(false)}
+          onComplete={() => {
+            setHasProfile(true);
+            setShowProfileModal(false);
+          }}
+        />
+      )}
       </div>
     </div>
   );
