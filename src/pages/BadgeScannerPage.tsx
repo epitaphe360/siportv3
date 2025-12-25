@@ -29,6 +29,7 @@ interface ScannedBadge {
   companyName?: string;
   email: string;
   phone?: string;
+  avatarUrl?: string; // Photo du visiteur pour vérification d'identité
   userType: 'visitor' | 'exhibitor' | 'partner' | 'admin';
   userLevel?: string;
   accessLevel: string;
@@ -62,14 +63,63 @@ export default function BadgeScannerPage() {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const videoRef = useRef<HTMLDivElement>(null);
 
-  // VÃ©rifier les permissions camÃ©ra au montage
+  // Charger les stats et vérifier les permissions caméra au montage
   useEffect(() => {
     checkCameraPermission();
+    loadScanStats();
 
     return () => {
       stopScanner();
     };
   }, []);
+
+  /**
+   * Charge les statistiques de scan depuis la base de données
+   */
+  const loadScanStats = async () => {
+    try {
+      const { supabase } = await import('../lib/supabase');
+      
+      // Récupérer le total des scans (somme de tous les scan_count)
+      const { data: badges, error } = await supabase
+        .from('user_badges')
+        .select('scan_count, last_scanned_at')
+        .gt('scan_count', 0);
+      
+      if (error) {
+        console.error('Erreur chargement stats:', error);
+        return;
+      }
+
+      if (badges && badges.length > 0) {
+        const totalScans = badges.reduce((sum, b) => sum + (b.scan_count || 0), 0);
+        const uniqueVisitors = badges.length;
+        
+        // Compter les scans d'aujourd'hui
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayScans = badges.filter(b => {
+          if (!b.last_scanned_at) return false;
+          const scanDate = new Date(b.last_scanned_at);
+          return scanDate >= today;
+        }).length;
+
+        // Trouver le dernier scan
+        const lastScan = badges
+          .filter(b => b.last_scanned_at)
+          .sort((a, b) => new Date(b.last_scanned_at).getTime() - new Date(a.last_scanned_at).getTime())[0];
+
+        setStats({
+          totalScans,
+          todayScans,
+          uniqueVisitors,
+          lastScanTime: lastScan?.last_scanned_at ? new Date(lastScan.last_scanned_at) : undefined
+        });
+      }
+    } catch (err) {
+      console.error('Erreur chargement stats:', err);
+    }
+  };
 
   /**
    * VÃ©rifie les permissions camÃ©ra
@@ -221,6 +271,7 @@ export default function BadgeScannerPage() {
         companyName: data.company_name,
         email: data.email,
         phone: data.phone,
+        avatarUrl: data.avatar_url, // Photo pour vérification d'identité
         userType: data.user_type,
         userLevel: data.user_level,
         accessLevel: data.access_level,
@@ -340,13 +391,26 @@ export default function BadgeScannerPage() {
       >
         <Card className={`p-6 ${isValid ? 'border-green-500' : 'border-red-500'} border-2`}>
           <div className="text-center mb-6">
-            {isValid ? (
-              <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-2" />
+            {/* Photo du visiteur pour vérification d'identité */}
+            {badge.avatarUrl ? (
+              <img 
+                src={badge.avatarUrl} 
+                alt={badge.fullName}
+                className="w-32 h-32 rounded-full object-cover mx-auto mb-4 border-4 border-white shadow-lg"
+              />
             ) : (
-              <XCircle className="h-16 w-16 text-red-500 mx-auto mb-2" />
+              <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-4 border-4 border-white shadow-lg">
+                <User className="h-16 w-16 text-gray-400" />
+              </div>
+            )}
+            
+            {isValid ? (
+              <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-2" />
+            ) : (
+              <XCircle className="h-12 w-12 text-red-500 mx-auto mb-2" />
             )}
             <h3 className="text-2xl font-bold mb-1">
-              {isValid ? 'Badge ValidÃ©' : 'Badge Non Valide'}
+              {isValid ? 'Badge Validé' : 'Badge Non Valide'}
             </h3>
             <p className="text-gray-600">{badge.badgeCode}</p>
           </div>
