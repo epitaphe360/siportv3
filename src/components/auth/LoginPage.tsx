@@ -288,86 +288,97 @@ export default function LoginPage() {
                   </Button>
                 </div>
 
-                {/* Exhibitors - Placeholder */}
+                {/* Exhibitors */}
                 <div>
                   <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">🏢 {t('login.demo_exhibitors')}</p>
-                  <p className="text-[9px] text-blue-600 mb-2">
-                    {t('login.demo_accounts')} - Contactez l'administrateur
-                  </p>
                   <div className="grid grid-cols-2 gap-2">
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
-                      disabled
-                      className="text-[10px] h-7 bg-gray-100 text-gray-500"
+                      onClick={() => {
+                        setEmail('exhibitor_1766398912371@test.com');
+                        setPassword('');
+                      }}
+                      className="text-[10px] h-7 bg-white"
                     >
-                      9m²
+                      Exhibitor 1
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
-                      disabled
-                      className="text-[10px] h-7 bg-gray-100 text-gray-500"
+                      onClick={() => {
+                        setEmail('exhibitor_1766398790576@test.com');
+                        setPassword('');
+                      }}
+                      className="text-[10px] h-7 bg-white"
                     >
-                      18m²
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      disabled
-                      className="text-[10px] h-7 bg-gray-100 text-gray-500"
-                    >
-                      36m²
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      disabled
-                      className="text-[10px] h-7 bg-gray-100 text-gray-500"
-                    >
-                      54m²
+                      Exhibitor 2
                     </Button>
                   </div>
                 </div>
 
-                {/* Partners - Placeholder */}
+                {/* Partners */}
                 <div>
                   <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">🤝 {t('login.demo_partners')}</p>
-                  <p className="text-[9px] text-blue-600 mb-2">
-                    Demande d'accès - Contactez l'administrateur
-                  </p>
                   <div className="grid grid-cols-2 gap-2">
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
-                      disabled
-                      className="text-[8px] h-6 bg-gray-100 text-gray-500"
+                      onClick={() => {
+                        setEmail('pierre.laurent2@partner.com');
+                        setPassword('');
+                      }}
+                      className="text-[10px] h-7 bg-white"
                     >
-                      Gold
+                      Partner 1
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
-                      disabled
-                      className="text-[8px] h-6 bg-gray-100 text-gray-500"
+                      onClick={() => {
+                        setEmail('nathalie.robert1@partner.com');
+                        setPassword('');
+                      }}
+                      className="text-[10px] h-7 bg-white"
                     >
-                      Silver
+                      Partner 2
                     </Button>
                   </div>
                 </div>
 
-                {/* Visitors - Placeholder */}
+                {/* Visitors */}
                 <div>
                   <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">👥 {t('login.demo_visitors')}</p>
-                  <p className="text-[9px] text-blue-600">
-                    Inscription libre disponible
-                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('visitor1@test.com');
+                        setPassword('');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      Visitor 1
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('visitor2@test.com');
+                        setPassword('');
+                      }}
+                      className="text-[10px] h-7 bg-white"
+                    >
+                      Visitor 2
+                    </Button>
+                  </div>
                 </div>
               </div>
             )}
