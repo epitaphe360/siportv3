@@ -227,6 +227,13 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
   // Fetch time slots for a specific exhibitor (userId)
   fetchTimeSlots: async (exhibitorId: string) => {
+    // Validation: exhibitorId must be a valid UUID
+    if (!exhibitorId || !exhibitorId.includes('-') || exhibitorId.length !== 36) {
+      console.warn('[APPOINTMENT] Invalid exhibitorId format:', exhibitorId);
+      set({ timeSlots: [], isLoading: false });
+      return;
+    }
+
     set({ isLoading: true });
     try {
       // If SupabaseService is available and supabase is configured, use it

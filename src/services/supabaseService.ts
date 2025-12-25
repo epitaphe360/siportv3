@@ -1952,6 +1952,13 @@ export class SupabaseService {
   // ==================== TIME SLOTS ====================
   static async getTimeSlotsByExhibitor(exhibitorId: string): Promise<TimeSlot[]> {
     if (!this.checkSupabaseConnection()) return [];
+    
+    // Validate UUID format (must be 36 chars with hyphens)
+    if (!exhibitorId || !exhibitorId.includes('-') || exhibitorId.length !== 36) {
+      console.warn('[TIME_SLOTS] Invalid exhibitorId format:', exhibitorId);
+      return [];
+    }
+
     if (!exhibitorId) {
       console.warn('[TIME_SLOTS] Exhibitor ID is empty');
       return [];

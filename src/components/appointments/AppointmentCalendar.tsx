@@ -54,9 +54,14 @@ export default function AppointmentCalendar() {
   });
   
   // Récupérer l'ID de l'exposant depuis l'URL ou les paramètres
-  const exhibitorId = searchParams.get('exhibitor') ||
-                     location.pathname.split('/').pop() ||
-                     '';
+  const rawExhibitorId = searchParams.get('exhibitor') ||
+                         location.pathname.split('/').pop() ||
+                         '';
+  
+  // Valider que c'est une UUID valide (36 caractères avec tirets)
+  const exhibitorId = (rawExhibitorId && rawExhibitorId.includes('-') && rawExhibitorId.length === 36) 
+    ? rawExhibitorId 
+    : '';
 
   // Vérification d'authentification
   useEffect(() => {
