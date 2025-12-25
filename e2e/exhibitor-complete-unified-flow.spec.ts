@@ -52,25 +52,13 @@ test.describe('🏢 EXPOSANT - FLUX COMPLET UNIFIÉ', () => {
     // PARTIE 1: INSCRIPTION ET PAIEMENT
     // =========================================================================
 
-    // --- ÉTAPE 1: CHOIX DU STAND ---
-    console.log('📍 ÉTAPE 1: Choix du stand exposant');
-    await page.goto(`${BASE_URL}/exhibitor/subscription`);
+    // --- ÉTAPE 1: PAGE D'INSCRIPTION EXPOSANT ---
+    console.log('📍 ÉTAPE 1: Navigation vers inscription exposant');
+    await page.goto(`${BASE_URL}/register`);
     await page.waitForLoadState('domcontentloaded');
     await page.waitForTimeout(1000);
 
-    // Vérifier que les offres de stand sont visibles
-    const hasStandOptions = await page.locator('text=/9m²|18m²|36m²|54m²|Stand/i').first().isVisible({ timeout: 10000 });
-    expect(hasStandOptions).toBe(true);
-
-    await page.screenshot({ path: 'screenshots/exhibitor-unified/1-choix-stand.png', fullPage: true });
-
-    // Cliquer sur le bouton d'inscription pour un stand
-    const inscriptionBtn = page.locator('button:has-text("S\'inscrire"), button:has-text("Choisir"), a:has-text("Sélectionner")').first();
-    if (await inscriptionBtn.isVisible()) {
-      await inscriptionBtn.click();
-    } else {
-      await page.goto(`${BASE_URL}/register`);
-    }
+    await page.screenshot({ path: 'screenshots/exhibitor-unified/1-page-register.png', fullPage: true });
 
     // --- ÉTAPE 2: FORMULAIRE D'INSCRIPTION ---
     console.log('📍 ÉTAPE 2: Formulaire d\'inscription exposant');
