@@ -146,7 +146,7 @@ export default function VisitorFreeRegistration() {
         navigate(ROUTES.HOME, {
           state: { message: 'VÃ©rifiez votre email pour recevoir votre badge gratuit !' }
         });
-      }, 3000);
+      }, 6000);
 
     } catch (error: any) {
       console.error('Erreur inscription:', error);

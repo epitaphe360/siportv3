@@ -52,7 +52,7 @@ export default function BadgePage() {
       setBadge(newBadge);
     } catch (err: any) {
       console.error('Error generating badge:', err);
-      setError(err.message || 'Erreur lors de la gÃ©nÃ©ration du badge');
+      setError(err.message || 'Erreur lors de la génération du badge');
     } finally {
       setGenerating(false);
     }
@@ -69,7 +69,7 @@ export default function BadgePage() {
         backgroundColor: '#ffffff',
       });
 
-      // Convertir en blob et tÃ©lÃ©charger
+      // Convertir en blob et télécharger
       canvas.toBlob((blob) => {
         if (blob) {
           const url = URL.createObjectURL(blob);
@@ -84,7 +84,7 @@ export default function BadgePage() {
       });
     } catch (err) {
       console.error('Error downloading badge:', err);
-      alert('Erreur lors du tÃ©lÃ©chargement. Veuillez faire une capture d\'Ã©cran du badge.');
+      alert('Erreur lors du téléchargement. Veuillez faire une capture d\'écran du badge.');
     }
   }
 
@@ -103,7 +103,7 @@ export default function BadgePage() {
   if (!user) {
     return (
       <div style={{ maxWidth: 900, margin: 'auto', padding: 32, textAlign: 'center' }}>
-        <p>Vous devez Ãªtre connectÃ© pour voir votre badge.</p>
+        <p>Vous devez être connecté pour voir votre badge.</p>
       </div>
     );
   }
@@ -238,13 +238,14 @@ export default function BadgePage() {
                 boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
               }}
             >
-              {/* En-tÃªte */}
+              {/* En-tête */}
               <div style={{ textAlign: 'center', marginBottom: 20, borderBottom: `2px solid ${badgeColor}`, paddingBottom: 16 }}>
+                <img src="/salon-logo01.png" alt="SIPORTS Logo" style={{ height: 60, marginBottom: 10 }} />
                 <div style={{ fontSize: 24, fontWeight: 'bold', color: badgeColor }}>
-                  SIPORT 2025
+                  SIPORTS 2026
                 </div>
                 <div style={{ fontSize: 12, color: '#666', marginTop: 4 }}>
-                  Salon International des Ports d'Afrique
+                  Salon International des Ports et de leurs Écosystème
                 </div>
               </div>
 
@@ -295,10 +296,10 @@ export default function BadgePage() {
                 {getAccessLevelLabel(badge.accessLevel)}
               </div>
 
-              {/* Informations supplÃ©mentaires */}
+              {/* Informations supplémentaires */}
               {badge.standNumber && (
                 <div style={{ textAlign: 'center', marginBottom: 16, fontSize: 14 }}>
-                  <strong>Stand NÂ°:</strong> {badge.standNumber}
+                  <strong>Stand N°:</strong> {badge.standNumber}
                 </div>
               )}
 
@@ -312,17 +313,11 @@ export default function BadgePage() {
                 </div>
               </div>
 
-              {/* ValiditÃ© */}
+              {/* Validité */}
               <div style={{ textAlign: 'center', fontSize: 11, color: '#666' }}>
-                <div>Valide jusqu'au:</div>
-                <div style={{ fontWeight: 'bold' }}>
-                  {new Date(badge.validUntil).toLocaleDateString('fr-FR', {
-                    day: '2-digit',
-                    month: 'long',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
+                <div>Valide du:</div>
+                <div style={{ fontWeight: 'bold', fontSize: 14 }}>
+                  1 au 3 avril 2026
                 </div>
               </div>
             </div>
@@ -330,55 +325,55 @@ export default function BadgePage() {
 
           {/* Instructions */}
           <div className="no-print" style={{ background: '#e7f3ff', padding: 24, borderRadius: 8 }}>
-            <h3 style={{ marginTop: 0 }}>ðŸ“± Instructions d'utilisation</h3>
+            <h3 style={{ marginTop: 0 }}>📱 Instructions d'utilisation</h3>
             <ol style={{ marginBottom: 0 }}>
               <li>
-                <strong>TÃ©lÃ©chargez</strong> votre badge en cliquant sur "TÃ©lÃ©charger PNG" ou imprimez-le
+                <strong>Téléchargez</strong> votre badge en cliquant sur "Télécharger PNG" ou imprimez-le
               </li>
               <li>
-                <strong>Conservez</strong> le badge sur votre tÃ©lÃ©phone ou imprimez-le sur papier
+                <strong>Conservez</strong> le badge sur votre téléphone ou imprimez-le sur papier
               </li>
               <li>
-                <strong>PrÃ©sentez</strong> le QR code Ã  l'entrÃ©e du salon pour scanner votre accÃ¨s
+                <strong>Présentez</strong> le QR code à l'entrée du salon pour scanner votre accès
               </li>
               <li>
-                <strong>Portez</strong> votre badge de maniÃ¨re visible pendant toute la durÃ©e du salon
+                <strong>Portez</strong> votre badge de manière visible pendant toute la durée du salon
               </li>
             </ol>
 
             {badge.accessLevel === 'vip' && (
               <div style={{ marginTop: 16, background: '#fff3cd', padding: 12, borderRadius: 8, border: '1px solid #ffc107' }}>
-                <strong>ðŸ‘‘ Avantages Pass Premium VIP:</strong>
+                <strong>👑 Avantages Pass Premium VIP:</strong>
                 <ul style={{ marginBottom: 0, marginTop: 8 }}>
-                  <li>AccÃ¨s illimitÃ© Ã  toutes les zones</li>
-                  <li>Rendez-vous B2B illimitÃ©s</li>
-                  <li>AccÃ¨s aux Ã©vÃ©nements exclusifs</li>
-                  <li>DÃ©jeuners networking</li>
-                  <li>SoirÃ©e gala</li>
+                  <li>Accès illimité à toutes les zones</li>
+                  <li>Rendez-vous B2B illimités</li>
+                  <li>Accès aux événements exclusifs</li>
+                  <li>Déjeuners networking</li>
+                  <li>Soirée gala</li>
                 </ul>
               </div>
             )}
 
             {badge.userType === 'exhibitor' && (
               <div style={{ marginTop: 16, background: '#d1ecf1', padding: 12, borderRadius: 8, border: '1px solid #0c5460' }}>
-                <strong>ðŸ¢ Badge Exposant:</strong> Ce badge vous donne accÃ¨s Ã  votre stand et aux zones exposants.
+                <strong>🏢 Badge Exposant:</strong> Ce badge vous donne accès à votre stand et aux zones exposants.
                 {badge.standNumber && ` Votre stand: ${badge.standNumber}`}
               </div>
             )}
 
             {badge.userType === 'partner' && (
               <div style={{ marginTop: 16, background: '#e2e3e5', padding: 12, borderRadius: 8, border: '1px solid #6c757d' }}>
-                <strong>ðŸ¤ Badge Partenaire:</strong> Ce badge vous donne accÃ¨s Ã  toutes les zones partenaires et Ã©vÃ©nements.
+                <strong>🤝 Badge Partenaire:</strong> Ce badge vous donne accès à toutes les zones partenaires et événements.
               </div>
             )}
           </div>
 
           {/* Statistiques */}
           <div className="no-print" style={{ marginTop: 24, padding: 16, background: '#f8f9fa', borderRadius: 8 }}>
-            <h4 style={{ marginTop: 0, marginBottom: 12 }}>ðŸ“Š Statistiques du badge</h4>
+            <h4 style={{ marginTop: 0, marginBottom: 12 }}>📊 Statistiques du badge</h4>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 16 }}>
               <div>
-                <div style={{ fontSize: 12, color: '#666' }}>Scans effectuÃ©s</div>
+                <div style={{ fontSize: 12, color: '#666' }}>Scans effectués</div>
                 <div style={{ fontSize: 20, fontWeight: 'bold' }}>{badge.scanCount}</div>
               </div>
               {badge.lastScannedAt && (
@@ -403,7 +398,7 @@ export default function BadgePage() {
                     color: badge.status === 'active' ? '#28a745' : '#dc3545',
                   }}
                 >
-                  {badge.status === 'active' ? 'âœ… Actif' : 'âŒ ' + badge.status}
+                  {badge.status === 'active' ? '✅ Actif' : '❌ ' + badge.status}
                 </div>
               </div>
             </div>

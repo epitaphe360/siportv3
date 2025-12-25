@@ -330,10 +330,10 @@ export default function RegisterPage() {
       // Afficher la modal de succès
       setShowSuccess(true);
 
-      // Rediriger vers la page de connexion après 4 secondes
+      // Rediriger vers la page de connexion après 6 secondes (pour laisser le temps de lire/screenshot)
       setTimeout(() => {
         navigate(ROUTES.LOGIN);
-      }, 4000);
+      }, 6000);
     } catch (error) {
       console.error('Registration error:', error);
       toast.error((error as Error).message || 'Erreur lors de l\'inscription');
@@ -1100,7 +1100,7 @@ export default function RegisterPage() {
         {/* Success Modal */}
         <AnimatePresence>
           {showSuccess && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}

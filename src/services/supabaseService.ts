@@ -305,28 +305,29 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
+      // FIX: Use correct column names matching the partners table schema
       const { data, error } = await safeSupabase
         .from('partners')
         .select(
-          `id, company_name, partner_type, sector, description, logo_url, website, contact_info, verified, featured, partnership_level, benefits, created_at`
+          `id, name, type, category, sector, description, logo_url, website, country, verified, featured, sponsorship_level, contributions, established_year, employees, created_at`
         )
-        .order('partner_type');
+        .order('type');
 
       if (error) throw error;
 
       return (data || []).map((partner: any) => ({
         id: partner.id,
-        name: partner.company_name,
-        partner_tier: partner.partnership_level,
-        category: partner.partner_type,
+        name: partner.name,
+        partner_tier: partner.sponsorship_level,
+        category: partner.category || partner.type,
         sector: partner.sector,
         description: partner.description || '',
         logo: partner.logo_url,
         website: partner.website,
-        country: partner.contact_info?.country || '',
+        country: partner.country || '',
         verified: partner.verified,
         featured: partner.featured,
-        contributions: partner.benefits || [],
+        contributions: partner.contributions || [],
         establishedYear: partner.established_year || 2024,
         employees: partner.employees || '1-10',
         createdAt: new Date(partner.created_at),
@@ -352,10 +353,11 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
+      // FIX: Use correct column names matching the partners table schema
       const { data, error } = await safeSupabase
         .from('partners')
         .select(
-          `id, company_name, partner_type, sector, description, logo_url, website, contact_info, verified, featured, partnership_level, benefits, created_at,
+          `id, name, type, category, sector, description, logo_url, website, country, verified, featured, sponsorship_level, contributions, established_year, employees, created_at,
            projects:partner_projects(*)`
         )
         .eq('id', id)
@@ -389,22 +391,22 @@ export class SupabaseService {
 
       return {
         id: data.id,
-        name: data.company_name,
-        sponsorshipLevel: data.partnership_level,
-        category: data.partner_type,
+        name: data.name,
+        sponsorshipLevel: data.sponsorship_level,
+        category: data.category || data.type,
         description: data.description || '',
         longDescription: data.description || '',
         logo: data.logo_url,
         website: data.website,
-        country: data.contact_info?.country || data.country || 'Royaume-Uni',
-        contributions: data.benefits || [
+        country: data.country || 'Maroc',
+        contributions: data.contributions || [
           "Sponsoring Session Plénière",
           "Espace Networking Premium",
           "Visibilité Logo Multi-supports"
         ],
-        establishedYear: 2010,
-        employees: '500-1000',
-        projects: dbProjects.length > 0 ? dbProjects : this.getMockProjects(data.id, data.company_name),
+        establishedYear: data.established_year || 2010,
+        employees: data.employees || '500-1000',
+        projects: dbProjects.length > 0 ? dbProjects : this.getMockProjects(data.id, data.name),
       };
     } catch (error) {
       console.error('Erreur lors de la récupération du partenaire:', error);
@@ -2411,6 +2413,16 @@ export class SupabaseService {
     if (!this.checkSupabaseConnection()) return;
     const safeSupabase = supabase!;
     try {
+      // Step 1: Get the user_id from the registration request
+      const { data: request, error: fetchError } = await (safeSupabase as any)
+        .from('registration_requests')
+        .select('user_id, user_type')
+        .eq('id', requestId)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      // Step 2: Update the registration request
       const updateData: any = {
         status,
         reviewed_by: reviewedBy,
@@ -2424,6 +2436,36 @@ export class SupabaseService {
         .update(updateData)
         .eq('id', requestId);
       if (error) throw error;
+
+      // Step 3: CRITICAL FIX - Also update the user's status
+      if (request?.user_id) {
+        const newUserStatus = status === 'approved' ? 'active' : 'rejected';
+        const { error: userError } = await (safeSupabase as any)
+          .from('users')
+          .update({ status: newUserStatus })
+          .eq('id', request.user_id);
+
+        if (userError) {
+          console.error('Error updating user status:', userError);
+          // Don't throw - the registration request was updated successfully
+        }
+
+        // Step 4: If partner, also update partners table verified status
+        if (request.user_type === 'partner' && status === 'approved') {
+          await (safeSupabase as any)
+            .from('partners')
+            .update({ verified: true })
+            .eq('id', request.user_id);
+        }
+
+        // Step 5: If exhibitor, also update exhibitors table verified status
+        if (request.user_type === 'exhibitor' && status === 'approved') {
+          await (safeSupabase as any)
+            .from('exhibitors')
+            .update({ verified: true })
+            .eq('user_id', request.user_id);
+        }
+      }
     } catch (error) {
       console.error('Error updating registration request status:', error);
       throw error;

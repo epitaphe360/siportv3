@@ -365,8 +365,8 @@ export default function SubscriptionPage() {
   const handleSubscribe = (tierId: string) => {
     // Redirection selon le type d'offre (pas besoin d'Ãªtre authentifiÃ© pour s'inscrire)
     if (tierId === 'visitor-free') {
-      // Inscription gratuite - rediriger vers formulaire visiteur gratuit
-      navigate(ROUTES.VISITOR_FREE_REGISTRATION);
+      // Inscription gratuite - rediriger vers formulaire visiteur standard pour créer un compte complet
+      navigate(ROUTES.REGISTER_VISITOR);
     } else if (tierId === 'visitor-vip') {
       // Inscription VIP - rediriger vers formulaire VIP complet avec photo et paiement
       navigate(ROUTES.VISITOR_VIP_REGISTRATION);

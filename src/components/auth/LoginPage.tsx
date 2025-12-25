@@ -73,12 +73,8 @@ export default function LoginPage() {
       } else if (user?.type === 'exhibitor') {
         navigate(ROUTES.EXHIBITOR_DASHBOARD);
       } else if (user?.type === 'visitor') {
-        // Free visitors go to badge page, VIP visitors go to dashboard
-        if (user.visitor_level === 'free') {
-          navigate(ROUTES.BADGE);
-        } else {
-          navigate(ROUTES.VISITOR_DASHBOARD);
-        }
+        // All visitors go to dashboard (Free and VIP)
+        navigate(ROUTES.VISITOR_DASHBOARD);
       } else {
         // Par défaut pour les autres types ou si type non défini
         navigate(ROUTES.DASHBOARD);
