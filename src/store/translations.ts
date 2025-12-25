@@ -5,6 +5,25 @@
 
 export const allTranslations = {
   fr: {
+    // Navigation Header
+    'nav.home': 'Accueil',
+    'nav.exhibitors': 'Exposants',
+    'nav.partners': 'Partenaires',
+    'nav.networking': 'Réseautage',
+    'nav.pavilions': 'Pavillons',
+    'nav.events': 'Événements',
+    'nav.news': 'Actualités',
+    'nav.information': 'Information',
+    'nav.login': 'Se connecter',
+    'nav.register': 'S\'inscrire',
+    'nav.logout': 'Se déconnecter',
+    
+    // Menu Descriptions
+    'menu.pavilions_desc': 'Explorez les pavillons du salon',
+    'menu.events_desc': 'Conférences et ateliers',
+    'menu.news_desc': 'Dernières actualités de l\'événement',
+    'menu.subscriptions_desc': 'Plans d\'abonnement disponibles',
+
     // Pages générales
     'pages.exhibitors.title': 'Exposants',
     'pages.exhibitors.description': 'Découvrez les entreprises et organisations de l\'industrie portuaire',
@@ -353,6 +372,25 @@ export const allTranslations = {
   },
   
   en: {
+    // Navigation Header
+    'nav.home': 'Home',
+    'nav.exhibitors': 'Exhibitors',
+    'nav.partners': 'Partners',
+    'nav.networking': 'Networking',
+    'nav.pavilions': 'Pavilions',
+    'nav.events': 'Events',
+    'nav.news': 'News',
+    'nav.information': 'Information',
+    'nav.login': 'Login',
+    'nav.register': 'Register',
+    'nav.logout': 'Logout',
+    
+    // Menu Descriptions
+    'menu.pavilions_desc': 'Explore the exhibition pavilions',
+    'menu.events_desc': 'Conferences and workshops',
+    'menu.news_desc': 'Latest event news',
+    'menu.subscriptions_desc': 'Available subscription plans',
+
     'pages.exhibitors.title': 'Exhibitors',
     'pages.exhibitors.description': 'Discover the companies and organizations in the port industry',
     'pages.exhibitors.search': 'Search for an exhibitor',
@@ -692,6 +730,25 @@ export const allTranslations = {
   },
   
   ar: {
+    // Navigation Header
+    'nav.home': 'الرئيسية',
+    'nav.exhibitors': 'العارضون',
+    'nav.partners': 'الشركاء',
+    'nav.networking': 'التواصل',
+    'nav.pavilions': 'الأجنحة',
+    'nav.events': 'الأحداث',
+    'nav.news': 'الأخبار',
+    'nav.information': 'المعلومات',
+    'nav.login': 'تسجيل الدخول',
+    'nav.register': 'التسجيل',
+    'nav.logout': 'تسجيل الخروج',
+    
+    // Menu Descriptions
+    'menu.pavilions_desc': 'استكشف أجنحة المعرض',
+    'menu.events_desc': 'المؤتمرات والورش',
+    'menu.news_desc': 'أحدث أخبار الحدث',
+    'menu.subscriptions_desc': 'خطط الاشتراك المتاحة',
+
     'pages.exhibitors.title': 'العارضون',
     'pages.exhibitors.description': 'اكتشف الشركات والمنظمات في صناعة الموانئ',
     'pages.exhibitors.search': 'ابحث عن عارض',
