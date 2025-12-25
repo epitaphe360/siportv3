@@ -56,6 +56,13 @@ interface LanguageState {
 // Utiliser le dictionnaire de traductions enrichi
 const translations = allTranslations;
 
+// Debug: Vérifier que les traductions sont chargées
+if (!translations || !translations.fr) {
+  console.error('❌ ERREUR: Traductions non chargées!', { translations });
+} else {
+  console.log('✅ Traductions chargées:', Object.keys(translations));
+}
+
 export const useLanguageStore = create<LanguageState>()(
   persist(
     (set, get) => ({
@@ -116,7 +123,12 @@ export const useLanguageStore = create<LanguageState>()(
         const { currentLanguage } = get();
         const languageTranslations = translations[currentLanguage] || translations.fr;
         
-        // Support des clés imbriquées (ex: "exhibitor_levels.basic_9")
+        // D'abord, essayer la clé telle quelle (pour 'nav.home' par exemple)
+        if (key in languageTranslations) {
+          return languageTranslations[key];
+        }
+        
+        // Sinon, essayer comme clé imbriquée (pour compatibilité)
         const keys = key.split('.');
         let value: any = languageTranslations;
         
@@ -125,6 +137,9 @@ export const useLanguageStore = create<LanguageState>()(
             value = value[k];
           } else {
             // Clé non trouvée, retourner fallback ou la clé
+            if (key.startsWith('nav.')) {
+              console.warn(`⚠️ Traduction manquante: ${key}`);
+            }
             return fallback || key;
           }
         }
