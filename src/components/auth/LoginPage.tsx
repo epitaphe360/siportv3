@@ -277,7 +277,7 @@ export default function LoginPage() {
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      setEmail('admin@siport.com');
+                      setEmail('admin.siports@siports.com');
                       setPassword('Admin123!');
                     }}
                     className="text-xs bg-white hover:bg-blue-100 border-blue-200"
@@ -296,7 +296,7 @@ export default function LoginPage() {
                       size="sm"
                       onClick={() => {
                         setEmail('exhibitor-9m@test.siport.com');
-                        setPassword('Test@1234567');
+                        setPassword('Admin123!');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
@@ -308,7 +308,7 @@ export default function LoginPage() {
                       size="sm"
                       onClick={() => {
                         setEmail('exhibitor-18m@test.siport.com');
-                        setPassword('Test@1234567');
+                        setPassword('Admin123!');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
@@ -320,7 +320,7 @@ export default function LoginPage() {
                       size="sm"
                       onClick={() => {
                         setEmail('exhibitor-36m@test.siport.com');
-                        setPassword('Test@1234567');
+                        setPassword('Admin123!');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
@@ -332,7 +332,7 @@ export default function LoginPage() {
                       size="sm"
                       onClick={() => {
                         setEmail('exhibitor-54m@test.siport.com');
-                        setPassword('Test@1234567');
+                        setPassword('Admin123!');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
@@ -350,7 +350,7 @@ export default function LoginPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('nathalie.robert1@partner.com');
+                        setEmail('partner-museum@test.siport.com');
                         setPassword('Admin123!');
                       }}
                       className="text-[10px] h-7 bg-white"
@@ -362,7 +362,7 @@ export default function LoginPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('pierre.laurent2@partner.com');
+                        setEmail('partner-silver@test.siport.com');
                         setPassword('Admin123!');
                       }}
                       className="text-[10px] h-7 bg-white"
@@ -374,7 +374,7 @@ export default function LoginPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('nathalie.robert1@partner.com');
+                        setEmail('partner-gold@test.siport.com');
                         setPassword('Admin123!');
                       }}
                       className="text-[10px] h-7 bg-white"
@@ -386,7 +386,7 @@ export default function LoginPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('pierre.laurent2@partner.com');
+                        setEmail('partner-platinium@test.siport.com');
                         setPassword('Admin123!');
                       }}
                       className="text-[10px] h-7 bg-white"
@@ -405,7 +405,7 @@ export default function LoginPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('visitor1@test.com');
+                        setEmail('visitor-free@test.siport.com');
                         setPassword('Admin123!');
                       }}
                       className="text-[10px] h-7 bg-white"
@@ -417,7 +417,7 @@ export default function LoginPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('visitor2@test.com');
+                        setEmail('visitor-vip@test.siport.com');
                         setPassword('Admin123!');
                       }}
                       className="text-[10px] h-7 bg-white"
