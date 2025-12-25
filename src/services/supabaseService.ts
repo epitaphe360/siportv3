@@ -284,10 +284,7 @@ export class SupabaseService {
           website,
           verified,
           featured,
-          contact_info,
-          products:products!products_exhibitor_id_fkey(id, exhibitor_id, name, description, category, images, specifications, price, featured),
-          mini_site:mini_sites!mini_sites_exhibitor_id_fkey(theme, custom_colors, sections, published, views, last_updated),
-          user:users!exhibitors_user_id_fkey(profile)
+          contact_info
         `);
 
       if (exhibitorsError) throw exhibitorsError;
