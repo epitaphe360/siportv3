@@ -417,7 +417,7 @@ export default function SubscriptionPage() {
                 : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-purple-300'
             }`}
           >
-            ðŸ‘¤ Visiteurs
+            👤 Visiteurs
           </button>
           <button
             onClick={() => setSelectedType('exhibitor')}
@@ -427,7 +427,7 @@ export default function SubscriptionPage() {
                 : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-blue-300'
             }`}
           >
-            ðŸ¢ Exposants
+            🏢 Exposants
           </button>
           <button
             onClick={() => setSelectedType('partner')}
@@ -437,7 +437,7 @@ export default function SubscriptionPage() {
                 : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-amber-300'
             }`}
           >
-            ðŸ¤ Partenaires
+            🤝 Partenaires
           </button>
         </div>
 
