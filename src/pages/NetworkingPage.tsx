@@ -71,7 +71,7 @@ export default function NetworkingPage() {
   React.useEffect(() => {
     if (isAuthenticated && user) {
       fetchRecommendations();
-      // Charger les donnÃ©es de rÃ©seautage
+      // Charger les données de réseautage
       const store = useNetworkingStore.getState();
       store.loadConnections();
       store.loadFavorites();
@@ -83,7 +83,7 @@ export default function NetworkingPage() {
 
   const handleSearch = async () => {
     if (!searchTerm.trim() && !searchFilters.sector && !searchFilters.userType && !searchFilters.location) {
-      toast.error('Veuillez saisir un terme de recherche ou sÃ©lectionner au moins un filtre');
+      toast.error('Veuillez saisir un terme de recherche ou sélectionner au moins un filtre');
       return;
     }
     
@@ -101,9 +101,9 @@ export default function NetworkingPage() {
       setActiveTab(CONFIG.tabIds.search);
       
       if (results.length === 0) {
-        toast.info('Aucun rÃ©sultat trouvÃ© pour votre recherche');
+        toast.info('Aucun résultat trouvé pour votre recherche');
       } else {
-        toast.success(`${results.length} profil(s) trouvÃ©(s)`);
+        toast.success(`${results.length} profil(s) trouvé(s)`);
       }
     } catch (error) {
       console.error('Erreur lors de la recherche:', error);
@@ -126,7 +126,7 @@ export default function NetworkingPage() {
       if (foundUser) {
         setSelectedUserProfile(foundUser);
       } else {
-        toast.error('Profil utilisateur non trouvÃ©');
+        toast.error('Profil utilisateur non trouvé');
       }
     }
   };
@@ -161,30 +161,30 @@ export default function NetworkingPage() {
 
   const handleConfirmAppointment = async () => {
     if (!selectedExhibitorForRDV) {
-      toast.error('Aucun exposant sÃ©lectionnÃ©');
+      toast.error('Aucun exposant sélectionné');
       return;
     }
     if (!selectedTimeSlot) {
-      toast.error('Veuillez sÃ©lectionner un crÃ©neau horaire');
+      toast.error('Veuillez sélectionner un créneau horaire');
       return;
     }
     
-    // Quotas B2B selon visitor_level - utilise le systÃ¨me centralisÃ©
+    // Quotas B2B selon visitor_level - utilise le système centralisé
     const level = user?.visitor_level || 'free';
     const quota = getVisitorQuota(level); // Depuis quotas.ts
 
-    // RÃ©cupÃ©rer les VRAIS rendez-vous depuis appointmentStore
+    // Récupérer les VRAIS rendez-vous depuis appointmentStore
     const appointmentStore = useAppointmentStore.getState();
     const userAppointments = appointmentStore.appointments.filter(
       (a: any) => a.visitorId === user?.id && a.status === 'confirmed'
     );
 
-    // VÃ©rifier le quota (999999 = illimitÃ© pour premium)
+    // Vérifier le quota (999999 = illimité pour premium)
     if (quota !== 999999 && userAppointments.length >= quota) {
       if (quota === 0) {
         toast.error(
-          `AccÃ¨s restreint : votre Pass Gratuit ne permet pas de prendre de rendez-vous B2B. ` +
-          `Passez au Pass Premium VIP pour des RDV B2B illimitÃ©s !`,
+          `Accès restreint : votre Pass Gratuit ne permet pas de prendre de rendez-vous B2B. ` +
+          `Passez au Pass Premium VIP pour des RDV B2B illimités !`,
           { duration: 5000 }
         );
       } else {
@@ -204,17 +204,17 @@ export default function NetworkingPage() {
       })
       .catch((err: unknown) => {
         console.error('Booking failed', err);
-        toast.error(err?.message || 'Ã‰chec de la rÃ©servation');
+        toast.error(err?.message || 'Échec de la réservation');
       });
   };
 
   const handleFavoriteToggle = (userId: string, userName: string, isFavorite: boolean) => {
     if (isFavorite) {
       removeFromFavorites(userId);
-      toast.success(`RetirÃ© des favoris : ${userName}`);
+      toast.success(`Retiré des favoris : ${userName}`);
     } else {
       addToFavorites(userId);
-      toast.success(`AjoutÃ© aux favoris : ${userName}`);
+      toast.success(`Ajouté aux favoris : ${userName}`);
     }
   };
 
@@ -234,12 +234,12 @@ export default function NetworkingPage() {
 
   const getCompatibilityLabel = (score: number) => {
     if (score >= 80) return 'Excellent';
-    if (score >= 60) return 'TrÃ¨s Bon';
+    if (score >= 60) return 'Très Bon';
     if (score >= 40) return 'Moyen';
     return 'Faible';
   };
 
-  // Composant pour le score de compatibilitÃ© circulaire
+  // Composant pour le score de compatibilité circulaire
   const CompatibilityScore = ({ score }: { score: number }) => {
     const color = score >= 80 ? '#10b981' : score >= 60 ? '#3b82f6' : score >= 40 ? '#f59e0b' : '#64748b';
     return (
@@ -283,7 +283,7 @@ export default function NetworkingPage() {
               backgroundPosition: 'center'
             }}></div>
             
-            {/* Ã‰lÃ©ments dÃ©coratifs animÃ©s */}
+            {/* Éléments décoratifs animés */}
             <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full filter blur-[100px] animate-pulse"></div>
             <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-indigo-500/20 rounded-full filter blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
           </div>
@@ -345,12 +345,12 @@ export default function NetworkingPage() {
             <h3 className="text-3xl font-bold text-white mb-12 text-center">L'Ã©cosystÃ¨me SIPORTS Ã  votre portÃ©e</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
-                { icon: Handshake, label: "Espace B2B prÃ©-programmÃ©", desc: "Rencontres ciblÃ©es avec des dÃ©cideurs" },
-                { icon: Star, label: "Afterworks & rÃ©ceptions", desc: "Networking informel et convivial" },
-                { icon: Briefcase, label: "Tables rondes sectorielles", desc: "Ã‰changes d'expertise approfondis" },
-                { icon: Building2, label: "Zone Lounge Business & VIP", desc: "Espaces de travail et de dÃ©tente" },
-                { icon: Mic, label: "Sessions de pitch", desc: "DÃ©couvrez les innovations du secteur" },
-                { icon: Users, label: "Espaces dâ€™Ã©changes", desc: "Plus de 6000 professionnels attendus" }
+                { icon: Handshake, label: "Espace B2B pré-programmé", desc: "Rencontres ciblées avec des décideurs" },
+                { icon: Star, label: "Afterworks & réceptions", desc: "Networking informel et convivial" },
+                { icon: Briefcase, label: "Tables rondes sectorielles", desc: "Échanges d'expertise approfondis" },
+                { icon: Building2, label: "Zone Lounge Business & VIP", desc: "Espaces de travail et de détente" },
+                { icon: Mic, label: "Sessions de pitch", desc: "Découvrez les innovations du secteur" },
+                { icon: Users, label: "Espaces d'échanges", desc: "Plus de 6000 professionnels attendus" }
               ].map((item, idx) => (
                 <div key={idx} className="flex flex-col items-center p-8 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all group">
                   <item.icon className="h-12 w-12 text-blue-400 mb-4 group-hover:scale-110 transition-transform" />

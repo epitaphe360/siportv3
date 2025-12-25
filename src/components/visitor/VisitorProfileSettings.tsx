@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -29,10 +29,17 @@ import { getVisitorQuota } from '../../config/quotas';
 import useAuthStore from '../../store/authStore';
 
 export default function VisitorProfileSettings() {
-  const { visitorProfile, updateProfile, updateNotificationPreferences, isLoading } = useVisitorStore();
+  const { visitorProfile, updateProfile, updateNotificationPreferences, isLoading, fetchVisitorData } = useVisitorStore();
   const { user } = useAuthStore();
   const [isEditing, setIsEditing] = useState(false);
   const [activeSection, setActiveSection] = useState<'profile' | 'interests' | 'notifications' | 'privacy' | 'quotas'>('profile');
+
+  // Charger les données du visiteur au montage du composant
+  useEffect(() => {
+    if (user && !visitorProfile) {
+      fetchVisitorData();
+    }
+  }, [user, visitorProfile, fetchVisitorData]);
 
   const [formData, setFormData] = useState({
     firstName: visitorProfile?.firstName || '',

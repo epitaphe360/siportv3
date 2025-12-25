@@ -30,6 +30,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 // VisitorLevelGuard removed - FREE visitors can now access dashboard with limited features
 import { LevelBadge, QuotaSummaryCard } from '../common/QuotaWidget';
 import { motion } from 'framer-motion';
+import { useVisitorStore } from '../../store/visitorStore';
 
 // OPTIMIZATION: Memoized VisitorDashboard to prevent unnecessary re-renders
 export default memo(function VisitorDashboard() {
@@ -46,11 +47,20 @@ export default memo(function VisitorDashboard() {
     isLoading: isAppointmentsLoading,
   } = useAppointmentStore();
 
+  const { fetchVisitorData } = useVisitorStore();
+
   // Utiliser le hook personnalisé pour les statistiques dynamiques
   const stats = useVisitorStats();
 
   const [showAvailabilityModal, setShowAvailabilityModal] = useState<{ exhibitorId: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Charger les données du visiteur au montage du composant
+  useEffect(() => {
+    if (user) {
+      fetchVisitorData();
+    }
+  }, [user, fetchVisitorData]);
 
   useEffect(() => {
     const loadAppointments = async () => {

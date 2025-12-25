@@ -378,21 +378,11 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
       await page.screenshot({ path: 'screenshots/inscription VIP/4-etat-apres-inscription.png', fullPage: true });
     }
 
-    // --- ÉTAPE 5: CONNEXION VIP (avec compte existant pour la suite) ---
-    console.log('📍 ÉTAPE 5: Page de connexion VIP');
+    // --- ÉTAPE 5: VÉRIFICATION VIP (l'utilisateur est déjà connecté après l'inscription) ---
+    console.log('📍 ÉTAPE 5: Vérification statut VIP');
 
-    // Utiliser le compte VIP existant pour les tests de dashboard
-    await page.goto(`${BASE_URL}/login`);
-    await page.waitForLoadState('domcontentloaded');
-
-    // Remplir le login avec compte VIP existant
-    await page.locator('input[type="email"]').first().fill(TEST_VISITOR_VIP.email);
-    await page.locator('input[type="password"]').first().fill(TEST_VISITOR_VIP.password);
-
-    // 📸 SCREENSHOT 5: Connexion VIP
-    await page.screenshot({ path: 'screenshots/inscription VIP/5-connexion-vip.png', fullPage: true });
-
-    await page.locator('button[type="submit"]').first().click();
+    // Attendre un peu pour s'assurer que le statut VIP est bien enregistré
+    await page.waitForTimeout(2000);
 
     // --- ÉTAPE 6: TABLEAU DE BORD VIP ---
     console.log('📍 ÉTAPE 6: Tableau de bord VIP');
