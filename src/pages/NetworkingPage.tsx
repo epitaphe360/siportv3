@@ -188,7 +188,7 @@ export default function NetworkingPage() {
           { duration: 5000 }
         );
       } else {
-        toast.error(`Quota atteint : vous avez dÃ©jÃ  ${quota} RDV B2B confirmÃ©s pour votre niveau.`);
+        toast.error(`Quota atteint : vous avez déjà ${quota} RDV B2B confirmés pour votre niveau.`);
       }
       return;
     }
@@ -196,7 +196,7 @@ export default function NetworkingPage() {
     // Try to call the canonical booking flow
     appointmentStore.bookAppointment(selectedTimeSlot, appointmentMessage)
       .then(() => {
-        toast.success(`Demande de RDV envoyÃ©e Ã  ${selectedExhibitorForRDV.profile.firstName} ${selectedExhibitorForRDV.profile.lastName}`);
+        toast.success(`Demande de RDV envoyée à ${selectedExhibitorForRDV.profile.firstName} ${selectedExhibitorForRDV.profile.lastName}`);
         setShowAppointmentModal(false);
         setSelectedExhibitorForRDV(null);
         setSelectedTimeSlot('');
@@ -272,9 +272,9 @@ export default function NetworkingPage() {
   if (!isAuthenticated) {
     return (
       <div className="bg-[#0a192f] min-h-screen flex flex-col">
-        {/* Hero Section Ultra-Moderne (MÃªme style que la version connectÃ©e) */}
+        {/* Hero Section Ultra-Moderne (Même style que la version connectée) */}
         <div className="relative flex-1 flex items-center justify-center overflow-hidden">
-          {/* Background avec effet de particules/rÃ©seau */}
+          {/* Background avec effet de particules/réseau */}
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-indigo-900/80 to-slate-900/90 z-10"></div>
             <div className="absolute inset-0 opacity-30 z-0" style={{
@@ -308,7 +308,7 @@ export default function NetworkingPage() {
 
               <p className="text-xl md:text-2xl text-blue-100/80 max-w-3xl mx-auto mb-12 font-light leading-relaxed">
                 Connectez-vous avec les leaders de l'industrie portuaire mondiale. <br className="hidden md:block" />
-                AccÃ©dez Ã  des opportunitÃ©s de matching exclusives.
+                Accédez à des opportunités de matching exclusives.
               </p>
 
               {/* Bloc connexion obligatoire style Glassmorphism */}
@@ -339,10 +339,10 @@ export default function NetworkingPage() {
           </div>
         </div>
 
-        {/* Section opportunitÃ©s style sombre */}
+        {/* Section opportunités style sombre */}
         <div className="bg-[#0a192f] border-t border-white/5 py-20 px-4">
           <div className="max-w-7xl mx-auto">
-            <h3 className="text-3xl font-bold text-white mb-12 text-center">L'Ã©cosystÃ¨me SIPORTS Ã  votre portÃ©e</h3>
+            <h3 className="text-3xl font-bold text-white mb-12 text-center">L'écosystème SIPORTS à votre portée</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 { icon: Handshake, label: "Espace B2B pré-programmé", desc: "Rencontres ciblées avec des décideurs" },
@@ -365,7 +365,7 @@ export default function NetworkingPage() {
         {/* Footer simplifié© */}
         <footer className="bg-[#050c1a] text-white/40 py-12 border-t border-white/5 text-center text-sm">
           <div className="max-w-7xl mx-auto px-4">
-            <div className="mb-6">© 2026 - SIPORTS : Salon International des Ports et de leur Ã‰cosystÃ¨me â€“ Tous droits rÃ©servÃ©s.</div>
+            <div className="mb-6">© 2026 - SIPORTS : Salon International des Ports et de leur Écosystème — Tous droits réservés.</div>
             <div className="flex justify-center gap-8 mb-6">
               <a href="https://siportevent.com/conditions-generales-2/" className="hover:text-white transition-colors">Conditions Générales</a>
               <a href="https://siportevent.com/politique-de-confidentialite/" className="hover:text-white transition-colors">Confidentialité©</a>
@@ -384,7 +384,7 @@ export default function NetworkingPage() {
     <div className="bg-slate-50 min-h-screen">
       {/* Hero Section Ultra-Moderne */}
       <div className="relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-[#0a192f]">
-        {/* Background avec effet de particules/rÃ©seau (CSS pur) */}
+        {/* Background avec effet de particules/réseau (CSS pur) */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-indigo-900/80 to-slate-900/90 z-10"></div>
           <div className="absolute inset-0 opacity-30 z-0" style={{
@@ -393,7 +393,7 @@ export default function NetworkingPage() {
             backgroundPosition: 'center'
           }}></div>
           
-          {/* Ã‰lÃ©ments dÃ©coratifs animÃ©s */}
+          {/* Éléments décoratifs animés */}
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full filter blur-[100px] animate-pulse"></div>
           <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-indigo-500/20 rounded-full filter blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
         </div>
@@ -406,18 +406,18 @@ export default function NetworkingPage() {
           >
             <div className="inline-flex items-center space-x-2 bg-blue-500/10 backdrop-blur-md border border-blue-500/20 rounded-full px-4 py-2 mb-8">
               <Sparkles className="h-4 w-4 text-blue-400" />
-              <span className="text-blue-200 text-sm font-medium tracking-wide uppercase">PropulsÃ© par l'IA SIPORTS v3.0</span>
+              <span className="text-blue-200 text-sm font-medium tracking-wide uppercase">Propulsé par l'IA SIPORTS v3.0</span>
             </div>
 
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 tracking-tight leading-none">
-              RÃ©seautage <br />
+              Réseautage <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-400">
                 Intelligent
               </span>
             </h1>
 
             <p className="text-xl md:text-2xl text-blue-100/80 max-w-3xl mx-auto mb-12 font-light leading-relaxed">
-              Connectez-vous avec les leaders de l'industrie portuaire mondiale grÃ¢ce Ã  notre algorithme de matching prÃ©dictif.
+              Connectez-vous avec les leaders de l'industrie portuaire mondiale grâce à notre algorithme de matching prédictif.
             </p>
 
             <div className="flex flex-wrap justify-center gap-6">
@@ -426,8 +426,8 @@ export default function NetworkingPage() {
                   <Target className="h-6 w-6 text-blue-400" />
                 </div>
                 <div className="text-left">
-                  <div className="text-white font-bold">Matching PrÃ©cis</div>
-                  <div className="text-blue-200/60 text-xs">BasÃ© sur vos intÃ©rÃªts</div>
+                  <div className="text-white font-bold">Matching Précis</div>
+                  <div className="text-blue-200/60 text-xs">Basé sur vos intérêts</div>
                 </div>
               </div>
               <div className="flex items-center space-x-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-all group cursor-default">
@@ -435,8 +435,8 @@ export default function NetworkingPage() {
                   <Globe className="h-6 w-6 text-indigo-400" />
                 </div>
                 <div className="text-left">
-                  <div className="text-white font-bold">RÃ©seau Global</div>
-                  <div className="text-blue-200/60 text-xs">+50 pays reprÃ©sentÃ©s</div>
+                  <div className="text-white font-bold">Réseau Global</div>
+                  <div className="text-blue-200/60 text-xs">+50 pays représentés</div>
                 </div>
               </div>
               <div className="flex items-center space-x-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-all group cursor-default">
@@ -444,15 +444,15 @@ export default function NetworkingPage() {
                   <Shield className="h-6 w-6 text-cyan-400" />
                 </div>
                 <div className="text-left">
-                  <div className="text-white font-bold">AccÃ¨s SÃ©curisÃ©</div>
-                  <div className="text-blue-200/60 text-xs">Profils vÃ©rifiÃ©s</div>
+                  <div className="text-white font-bold">Accès Sécurisé</div>
+                  <div className="text-blue-200/60 text-xs">Profils vérifiés</div>
                 </div>
               </div>
             </div>
           </motion.div>
         </div>
 
-        {/* Vague dÃ©corative en bas */}
+        {/* Vague décorative en bas */}
         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-slate-50 to-transparent z-30"></div>
       </div>
 
@@ -464,7 +464,7 @@ export default function NetworkingPage() {
               {[
                 { id: 'recommendations', label: 'IA Match', icon: Brain, color: 'blue' },
                 { id: 'search', label: 'Recherche', icon: Search, color: 'emerald' },
-                { id: 'connections', label: 'RÃ©seau', icon: Users, color: 'indigo' },
+                { id: 'connections', label: 'Réseau', icon: Users, color: 'indigo' },
                 { id: 'favorites', label: 'Favoris', icon: Heart, color: 'rose' },
                 { id: 'insights', label: 'Analyses', icon: TrendingUp, color: 'amber' }
               ].map((tab) => (
@@ -512,8 +512,8 @@ export default function NetworkingPage() {
               <div className="lg:col-span-2 bg-white rounded-3xl shadow-xl shadow-slate-200/50 p-8 border border-slate-100">
                 <div className="flex items-center justify-between mb-8">
                   <div>
-                    <h2 className="text-2xl font-black text-slate-900">Votre ActivitÃ©</h2>
-                    <p className="text-slate-500">AperÃ§u de vos interactions rÃ©centes</p>
+                    <h2 className="text-2xl font-black text-slate-900">Votre Activité</h2>
+                    <p className="text-slate-500">Aperçu de vos interactions récentes</p>
                   </div>
                   <div className="bg-blue-50 p-3 rounded-2xl">
                     <BarChart3 className="h-6 w-6 text-blue-600" />
@@ -563,7 +563,7 @@ export default function NetworkingPage() {
                   
                   <div className="space-y-3">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="opacity-70">Profil complÃ©tÃ©</span>
+                      <span className="opacity-70">Profil complété</span>
                       <span className="font-bold">100%</span>
                     </div>
                     <div className="w-full bg-white/10 rounded-full h-1.5">
@@ -594,13 +594,13 @@ export default function NetworkingPage() {
                 <div className="bg-rose-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Info className="h-8 w-8 text-rose-600" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">Oups ! Quelque chose s'est mal passÃ©</h3>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">Oups ! Quelque chose s'est mal passé</h3>
                 <p className="text-slate-600 mb-8 max-w-md mx-auto">{error}</p>
                 <Button
                   onClick={() => fetchRecommendations()}
                   className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3 rounded-xl"
                 >
-                  RÃ©essayer l'analyse
+                  Réessayer l'analyse
                 </Button>
               </Card>
             ) : recommendations.length === 0 ? (
@@ -653,7 +653,7 @@ export default function NetworkingPage() {
                     <h2 className="text-3xl font-black text-slate-900">
                       Recommandations IA
                     </h2>
-                    <p className="text-slate-500">BasÃ© sur votre profil et vos intÃ©rÃªts</p>
+                    <p className="text-slate-500">Basé sur votre profil et vos intérêts</p>
                   </div>
                   <Button
                     variant="outline"
@@ -728,7 +728,7 @@ export default function NetworkingPage() {
                               </div>
                             </div>
 
-                            {/* IntÃ©rÃªts */}
+                            {/* Intérêts */}
                             {profile.profile.interests && profile.profile.interests.length > 0 && (
                               <div className="mb-8">
                                 <div className="flex flex-wrap gap-2">
@@ -753,7 +753,7 @@ export default function NetworkingPage() {
                               {isConnected ? (
                                 <Button size="sm" variant="outline" disabled className="w-full bg-emerald-50 border-emerald-200 text-emerald-700 rounded-xl h-11">
                                   <CheckCircle className="h-4 w-4 mr-2" />
-                                  ConnectÃ©
+                                  Connecté
                                 </Button>
                               ) : isPending ? (
                                 <Button size="sm" variant="outline" disabled className="w-full bg-amber-50 border-amber-200 text-amber-700 rounded-xl h-11">
@@ -811,19 +811,19 @@ export default function NetworkingPage() {
                   <Search className="h-10 w-10 text-white" />
                 </div>
                 <div className="text-center md:text-left">
-                  <h2 className="text-4xl font-black text-slate-900 mb-2">Explorateur de RÃ©seau</h2>
-                  <p className="text-slate-500 text-lg">Trouvez les partenaires stratÃ©giques parmi des milliers de profils vÃ©rifiÃ©s.</p>
+                  <h2 className="text-4xl font-black text-slate-900 mb-2">Explorateur de Réseau</h2>
+                  <p className="text-slate-500 text-lg">Trouvez les partenaires stratégiques parmi des milliers de profils vérifiés.</p>
                 </div>
               </div>
             </div>
 
-            {/* Filtres de recherche avancÃ©s - Style Carte Moderne */}
+            {/* Filtres de recherche avancés - Style Carte Moderne */}
             <Card className="p-10 shadow-2xl shadow-slate-200/50 border-0 bg-white rounded-[3rem]">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
                 <div className="space-y-3">
                   <label className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center">
                     <Search className="h-3 w-3 mr-2 text-blue-500" />
-                    Mots-clÃ©s
+                    Mots-clés
                   </label>
                   <input
                     type="text"
@@ -870,18 +870,18 @@ export default function NetworkingPage() {
                 <div className="space-y-3">
                   <label className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center">
                     <MapPin className="h-3 w-3 mr-2 text-rose-500" />
-                    RÃ©gion
+                    Région
                   </label>
                   <select 
                     value={searchFilters.location}
                     onChange={(e) => setSearchFilters({...searchFilters, location: e.target.value})}
                     className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10 transition-all outline-none font-medium appearance-none"
                   >
-                    <option value="">Toutes rÃ©gions</option>
+                    <option value="">Toutes régions</option>
                     <option value="europe">Europe</option>
                     <option value="afrique">Afrique</option>
                     <option value="asie">Asie</option>
-                    <option value="amerique">AmÃ©rique</option>
+                    <option value="amerique">Amérique</option>
                   </select>
                 </div>
               </div>
@@ -899,21 +899,21 @@ export default function NetworkingPage() {
                   onClick={() => {
                     setSearchTerm('');
                     setSearchResults([]);
-                    toast.info('Filtres rÃ©initialisÃ©s');
+                    toast.info('Filtres réinitialisés');
                   }} 
                   className="px-10 py-4 rounded-2xl border-2 border-slate-200 hover:bg-slate-50 font-bold transition-all"
                 >
-                  RÃ©initialiser
+                  Réinitialiser
                 </Button>
               </div>
             </Card>
 
-            {/* RÃ©sultats de recherche - Style Grille Moderne */}
+            {/* Résultats de recherche - Style Grille Moderne */}
             {searchResults.length > 0 && (
               <div className="space-y-8">
                 <div className="flex justify-between items-center">
                   <h3 className="text-2xl font-black text-slate-900">
-                    RÃ©sultats ({searchResults.length})
+                    Résultats ({searchResults.length})
                   </h3>
                 </div>
 
@@ -985,15 +985,15 @@ export default function NetworkingPage() {
               </div>
             )}
 
-            {/* Ã‰tat vide */}
+            {/* État vide */}
             {searchTerm && searchResults.length === 0 && (
               <Card className="text-center p-20 bg-white rounded-[3rem] shadow-xl border-slate-100">
                 <div className="bg-slate-50 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-8">
                   <Search className="h-12 w-12 text-slate-300" />
                 </div>
-                <h3 className="text-2xl font-black text-slate-900 mb-4">Aucun rÃ©sultat trouvÃ©</h3>
+                <h3 className="text-2xl font-black text-slate-900 mb-4">Aucun résultat trouvé</h3>
                 <p className="text-slate-500 mb-10 max-w-md mx-auto">
-                  Essayez d'autres mots-clÃ©s ou ajustez vos filtres de recherche pour trouver des partenaires.
+                  Essayez d'autres mots-clés ou ajustez vos filtres de recherche pour trouver des partenaires.
                 </p>
                 <Button variant="outline" onClick={() => setSearchTerm('')} className="rounded-xl">
                   Effacer la recherche
@@ -1005,7 +1005,7 @@ export default function NetworkingPage() {
 
         {activeTab === CONFIG.tabIds.connections && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
-            {/* Header RÃ©seau Moderne */}
+            {/* Header Réseau Moderne */}
             <div className="bg-white rounded-[3rem] p-10 shadow-xl border border-slate-100 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full -mr-32 -mt-32 opacity-50"></div>
               <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
@@ -1013,13 +1013,13 @@ export default function NetworkingPage() {
                   <Users className="h-10 w-10 text-white" />
                 </div>
                 <div className="text-center md:text-left">
-                  <h2 className="text-4xl font-black text-slate-900 mb-2">Mon RÃ©seau Business</h2>
-                  <p className="text-slate-500 text-lg">GÃ©rez vos relations et transformez vos contacts en opportunitÃ©s.</p>
+                  <h2 className="text-4xl font-black text-slate-900 mb-2">Mon Réseau Business</h2>
+                  <p className="text-slate-500 text-lg">Gérez vos relations et transformez vos contacts en opportunités.</p>
                 </div>
               </div>
             </div>
 
-            {/* Statistiques du RÃ©seau */}
+            {/* Statistiques du Réseau */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 flex items-center space-x-6">
                 <div className="bg-emerald-100 p-4 rounded-2xl">
@@ -1056,15 +1056,15 @@ export default function NetworkingPage() {
                 <div className="bg-slate-50 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-8">
                   <Users className="h-12 w-12 text-slate-300" />
                 </div>
-                <h3 className="text-2xl font-black text-slate-900 mb-4">Votre rÃ©seau est encore vide</h3>
+                <h3 className="text-2xl font-black text-slate-900 mb-4">Votre réseau est encore vide</h3>
                 <p className="text-slate-500 mb-10 max-w-md mx-auto">
-                  Commencez Ã  explorer les profils recommandÃ©s par notre IA pour bÃ¢tir votre Ã©cosystÃ¨me.
+                  Commencez à explorer les profils recommandés par notre IA pour bâtir votre écosystème.
                 </p>
                 <Button 
                   onClick={() => setActiveTab(CONFIG.tabIds.recommendations)}
                   className="bg-slate-900 text-white px-10 py-4 rounded-2xl font-black shadow-xl"
                 >
-                  DÃ©couvrir des Profils
+                  Découvrir des Profils
                 </Button>
               </Card>
             ) : (
@@ -1077,7 +1077,7 @@ export default function NetworkingPage() {
                       profile: {
                         firstName: 'Expert',
                         lastName: 'Portuaire',
-                        position: 'Directeur StratÃ©gie',
+                        position: 'Directeur Stratégie',
                         company: 'Global Logistics Hub',
                         avatar: null
                       }
@@ -1114,7 +1114,7 @@ export default function NetworkingPage() {
 
         {activeTab === CONFIG.tabIds.insights && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
-            {/* BanniÃ¨re des insights Ultra-Moderne */}
+            {/* Bannière des insights Ultra-Moderne */}
             <div className="relative bg-slate-900 rounded-[3rem] p-12 overflow-hidden shadow-2xl">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-indigo-600/10 to-transparent z-10"></div>
               <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full -mr-48 -mt-48 blur-[100px]"></div>
@@ -1123,14 +1123,14 @@ export default function NetworkingPage() {
                 <div className="flex-1 text-center md:text-left">
                   <div className="inline-flex items-center space-x-2 bg-blue-500/20 border border-blue-500/30 rounded-full px-4 py-2 mb-6">
                     <Zap className="h-4 w-4 text-blue-400" />
-                    <span className="text-blue-300 text-xs font-black uppercase tracking-widest">Analyse PrÃ©dictive</span>
+                    <span className="text-blue-300 text-xs font-black uppercase tracking-widest">Analyse Prédictive</span>
                   </div>
                   <h2 className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight">
                     Insights <br />
-                    <span className="text-blue-400">StratÃ©giques</span>
+                    <span className="text-blue-400">Stratégiques</span>
                   </h2>
                   <p className="text-blue-100/60 text-lg max-w-xl mb-8">
-                    DÃ©couvrez la structure de votre rÃ©seau et identifiez les opportunitÃ©s de croissance grÃ¢ce Ã  notre moteur d'analyse comportementale.
+                    Découvrez la structure de votre réseau et identifiez les opportunités de croissance grâce à notre moteur d'analyse comportementale.
                   </p>
                   <Button 
                     onClick={loadAIInsights} 
@@ -1155,16 +1155,16 @@ export default function NetworkingPage() {
               </div>
             </div>
 
-            {/* RÃ©sultats des insights avec Graphiques */}
+            {/* Résultats des insights avec Graphiques */}
             {aiInsights ? (
               <div className="space-y-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  {/* Radar Chart - RÃ©partition des Secteurs */}
+                  {/* Radar Chart - Répartition des Secteurs */}
                   <Card className="lg:col-span-2 p-8 bg-white rounded-[2.5rem] shadow-xl border-slate-100">
                     <div className="flex items-center justify-between mb-8">
                       <div>
-                        <h3 className="text-xl font-black text-slate-900">Ã‰cosystÃ¨me de RÃ©seau</h3>
-                        <p className="text-slate-500 text-sm">RÃ©partition par secteurs d'activitÃ©</p>
+                        <h3 className="text-xl font-black text-slate-900">Écosystème de Réseau</h3>
+                        <p className="text-slate-500 text-sm">Répartition par secteurs d'activité</p>
                       </div>
                       <div className="bg-indigo-50 p-3 rounded-2xl">
                         <Target className="h-6 w-6 text-indigo-600" />
@@ -1185,7 +1185,7 @@ export default function NetworkingPage() {
                           <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 12, fontWeight: 700 }} />
                           <PolarRadiusAxis angle={30} domain={[0, 150]} tick={false} axisLine={false} />
                           <Radar
-                            name="Mon RÃ©seau"
+                            name="Mon Réseau"
                             dataKey="A"
                             stroke="#3b82f6"
                             fill="#3b82f6"
@@ -1199,16 +1199,16 @@ export default function NetworkingPage() {
                     </div>
                   </Card>
 
-                  {/* Score de QualitÃ© */}
+                  {/* Score de Qualité */}
                   <div className="space-y-8">
                     <Card className="p-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-[2.5rem] shadow-xl text-white">
-                      <h3 className="text-lg font-bold mb-6">QualitÃ© des Matches</h3>
+                      <h3 className="text-lg font-bold mb-6">Qualité des Matches</h3>
                       <div className="flex items-end justify-between mb-4">
                         <div className="text-5xl font-black">88%</div>
                         <div className="bg-white/20 px-3 py-1 rounded-full text-xs font-bold">TOP 5%</div>
                       </div>
                       <p className="text-emerald-100 text-sm leading-relaxed">
-                        Votre profil attire des dÃ©cideurs de haut niveau. Continuez Ã  enrichir vos expÃ©riences.
+                        Votre profil attire des décideurs de haut niveau. Continuez à enrichir vos expériences.
                       </p>
                     </Card>
 
@@ -1233,7 +1233,7 @@ export default function NetworkingPage() {
                         </ResponsiveContainer>
                       </div>
                       <div className="flex items-center justify-between mt-4">
-                        <span className="text-slate-400 text-xs font-bold uppercase">ActivitÃ© Hebdo</span>
+                        <span className="text-slate-400 text-xs font-bold uppercase">Activité Hebdo</span>
                         <span className="text-emerald-500 text-xs font-black">+24%</span>
                       </div>
                     </Card>
@@ -1249,7 +1249,7 @@ export default function NetworkingPage() {
                         <div className="bg-blue-100 p-2 rounded-lg">
                           <Sparkles className="h-5 w-5 text-blue-600" />
                         </div>
-                        <h3 className="text-2xl font-black text-slate-900">SynthÃ¨se de l'IA</h3>
+                        <h3 className="text-2xl font-black text-slate-900">Synthèse de l'IA</h3>
                       </div>
                       <p className="text-slate-600 text-lg leading-relaxed mb-8">
                         {aiInsights.summary}
@@ -1290,7 +1290,7 @@ export default function NetworkingPage() {
                 </Card>
               </div>
             ) : (
-              /* Ã‰tat vide Insights */
+              /* État vide Insights */
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 opacity-40 grayscale pointer-events-none">
                 <Card className="p-8 h-64 bg-white rounded-3xl"></Card>
                 <Card className="p-8 h-64 bg-white rounded-3xl"></Card>
@@ -1311,7 +1311,7 @@ export default function NetworkingPage() {
                 </div>
                 <div className="text-center md:text-left">
                   <h2 className="text-4xl font-black text-slate-900 mb-2">Mes Favoris</h2>
-                  <p className="text-slate-500 text-lg">Gardez un Å“il sur les profils qui comptent le plus pour vous.</p>
+                  <p className="text-slate-500 text-lg">Gardez un œil sur les profils qui comptent le plus pour vous.</p>
                 </div>
               </div>
             </div>
@@ -1321,9 +1321,9 @@ export default function NetworkingPage() {
                 <div className="bg-rose-50 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-8">
                   <Heart className="h-12 w-12 text-rose-200" />
                 </div>
-                <h3 className="text-2xl font-black text-slate-900 mb-4">Aucun favori enregistrÃ©</h3>
+                <h3 className="text-2xl font-black text-slate-900 mb-4">Aucun favori enregistré</h3>
                 <p className="text-slate-500 mb-10 max-w-md mx-auto">
-                  Cliquez sur le cÅ“ur des profils qui vous intÃ©ressent pour les retrouver ici instantanÃ©ment.
+                  Cliquez sur le cœur des profils qui vous intéressent pour les retrouver ici instantanément.
                 </p>
                 <Button 
                   onClick={() => setActiveTab(CONFIG.tabIds.recommendations)}
@@ -1338,7 +1338,7 @@ export default function NetworkingPage() {
                   // Mock data
                   const mockFavorite = {
                     id: favoriteId,
-                    name: 'Contact PrivilÃ©giÃ©',
+                    name: 'Contact Privilégié',
                     title: 'Directeur Innovation',
                     company: 'Smart Port Solutions',
                     avatar: null
@@ -1394,17 +1394,17 @@ export default function NetworkingPage() {
               Prendre RDV avec {selectedExhibitorForRDV.profile.firstName} {selectedExhibitorForRDV.profile.lastName}
             </h3>
             
-            {/* SÃ©lection du crÃ©neau horaire */}
+            {/* Sélection du créneau horaire */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Choisir un crÃ©neau horaire
+                Choisir un créneau horaire
               </label>
               <select
                 value={selectedTimeSlot}
                 onChange={(e) => setSelectedTimeSlot(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">SÃ©lectionner un crÃ©neau</option>
+                <option value="">Sélectionner un créneau</option>
                 {Array.isArray(timeSlots) && timeSlots.length > 0 ? (
                   timeSlots.map((slot) => {
                     const dateObj = slot.date ? new Date(slot.date as any) : null;
@@ -1419,7 +1419,7 @@ export default function NetworkingPage() {
                   })
                 ) : (
                   // graceful fallback when no slots available
-                  <option value="" disabled>Aucun crÃ©neau disponible</option>
+                  <option value="" disabled>Aucun créneau disponible</option>
                 )}
               </select>
             </div>
@@ -1432,7 +1432,7 @@ export default function NetworkingPage() {
               <textarea
                 value={appointmentMessage}
                 onChange={(e) => setAppointmentMessage(e.target.value)}
-                placeholder="DÃ©crivez briÃ¨vement l'objet de votre rendez-vous..."
+                placeholder="Décrivez brièvement l'objet de votre rendez-vous..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 rows={3}
               />
