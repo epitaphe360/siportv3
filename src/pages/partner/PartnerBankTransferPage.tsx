@@ -113,6 +113,31 @@ export default function PartnerBankTransferPage() {
 
       if (error) throw error;
 
+      // Créer une notification pour les admins
+      try {
+        // Récupérer tous les admins
+        const { data: admins } = await supabase
+          .from('users')
+          .select('id')
+          .eq('type', 'admin');
+
+        // Créer une notification pour chaque admin
+        if (admins && admins.length > 0) {
+          const notifications = admins.map(admin => ({
+            user_id: admin.id,
+            title: 'Nouveau justificatif de paiement partenaire',
+            message: `${user?.companyName || user?.firstName + ' ' + user?.lastName} a soumis un justificatif de paiement pour validation.`,
+            type: 'info',
+            created_at: new Date().toISOString()
+          }));
+
+          await supabase.from('notifications').insert(notifications);
+        }
+      } catch (notifError) {
+        console.error('Erreur création notification admin:', notifError);
+        // Ne pas bloquer si la notification échoue
+      }
+
       toast.success('Justificatif enregistrÃ© avec succÃ¨s !');
       toast.info('Votre paiement sera validÃ© sous 2-5 jours ouvrÃ©s');
       loadPaymentRequest();
