@@ -115,7 +115,22 @@ export const useLanguageStore = create<LanguageState>()(
       translateText: (key: string, fallback?: string) => {
         const { currentLanguage } = get();
         const languageTranslations = translations[currentLanguage] || translations.fr;
-        return languageTranslations[key] || fallback || key;
+        
+        // Support des clés imbriquées (ex: "exhibitor_levels.basic_9")
+        const keys = key.split('.');
+        let value: any = languageTranslations;
+        
+        for (const k of keys) {
+          if (value && typeof value === 'object' && k in value) {
+            value = value[k];
+          } else {
+            // Clé non trouvée, retourner fallback ou la clé
+            return fallback || key;
+          }
+        }
+        
+        // Retourner la valeur si c'est une chaîne, sinon fallback ou clé
+        return typeof value === 'string' ? value : (fallback || key);
       }
     }),
     {
