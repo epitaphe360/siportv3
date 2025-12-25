@@ -1409,7 +1409,7 @@ export default function NetworkingPage() {
                   timeSlots.map((slot) => {
                     const dateObj = slot.date ? new Date(slot.date as any) : null;
                     const dateLabel = dateObj ? dateObj.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : String(slot.date || '');
-                    const locationPart = slot.location ? ` â€¢ ${slot.location}` : '';
+                    const locationPart = slot.location ? ` • ${slot.location}` : '';
                     const availability = slot.available === false ? ' (Complet)' : '';
                     return (
                       <option key={slot.id} value={slot.id}>
