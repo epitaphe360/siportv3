@@ -31,6 +31,10 @@ import {
   convertEURtoMAD,
 } from '../services/paymentService';
 import { ROUTES } from '../lib/routes';
+import { supabase } from '../lib/supabase';
+
+// Add this for testing purposes
+const IS_DEV = import.meta.env.DEV;
 
 type PaymentMethod = 'stripe' | 'paypal' | 'cmi';
 
@@ -45,7 +49,7 @@ export default function VisitorPaymentPage() {
   // Redirect if already VIP
   React.useEffect(() => {
     if (user?.visitor_level === 'premium' || user?.visitor_level === 'vip') {
-      toast.success('Vous Ãªtes dÃ©jÃ  abonnÃ© Premium VIP !');
+      toast.success('Vous êtes déjà abonné Premium VIP !');
       navigate(ROUTES.VISITOR_DASHBOARD);
     }
   }, [user, navigate]);
@@ -100,7 +104,7 @@ export default function VisitorPaymentPage() {
         status: 'approved', // PayPal approves instantly
       });
 
-      toast.success('Paiement PayPal rÃ©ussi !');
+      toast.success('Paiement PayPal réussi !');
       navigate('/visitor/payment-success');
     } catch (err: any) {
       console.error('PayPal capture error:', err);
@@ -141,6 +145,52 @@ export default function VisitorPaymentPage() {
     }
   };
 
+  // TEST ONLY: Simulate successful payment
+  const handleSimulateSuccess = async () => {
+    if (!user) return;
+    setIsProcessing(true);
+    try {
+      // Create payment record (may fail if table doesn't exist - non-blocking)
+      try {
+        await createPaymentRecord({
+          userId: user.id,
+          amount: PAYMENT_AMOUNTS.VIP_PASS,
+          currency: 'EUR',
+          paymentMethod: 'stripe',
+          status: 'approved',
+          transactionId: `sim_${Date.now()}`
+        });
+      } catch (paymentError) {
+        console.warn('Payment record creation skipped:', paymentError);
+      }
+      
+      // Update user status AND visitor_level to premium
+      const { error } = await supabase
+        .from('users')
+        .update({ 
+          status: 'active',
+          visitor_level: 'premium'
+        })
+        .eq('id', user.id);
+        
+      if (error) {
+        console.error('Error updating user:', error);
+        throw error;
+      }
+      
+      // Show success toast
+      toast.success('🎉 Paiement VIP simulé avec succès !');
+      
+      // Navigate to success page
+      navigate(ROUTES.VISITOR_PAYMENT_SUCCESS);
+    } catch (err) {
+      console.error('Simulation error:', err);
+      toast.error('Erreur lors de la simulation du paiement');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const paymentMethods = [
     {
       id: 'stripe' as PaymentMethod,
@@ -149,15 +199,15 @@ export default function VisitorPaymentPage() {
       icon: CreditCard,
       color: 'blue',
       recommended: true,
-      fees: '0â‚¬ de frais',
+      fees: '0€ de frais',
     },
     {
       id: 'paypal' as PaymentMethod,
       name: 'PayPal',
-      description: 'Paiement sÃ©curisÃ© via votre compte PayPal',
+      description: 'Paiement sécurisé via votre compte PayPal',
       icon: Shield,
       color: 'indigo',
-      fees: '0â‚¬ de frais',
+      fees: '0€ de frais',
     },
     {
       id: 'cmi' as PaymentMethod,
@@ -183,7 +233,7 @@ export default function VisitorPaymentPage() {
             Paiement Pass Premium VIP
           </h1>
           <p className="text-xl text-gray-600">
-            Choisissez votre moyen de paiement prÃ©fÃ©rÃ©
+            Choisissez votre moyen de paiement préféré
           </p>
         </motion.div>
 
@@ -192,15 +242,15 @@ export default function VisitorPaymentPage() {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Votre commande</h3>
             <div className="text-right">
-              <div className="text-2xl font-bold text-gray-900 line-through text-gray-400">950â‚¬</div>
-              <div className="text-3xl font-bold text-yellow-600">700â‚¬</div>
-              <div className="text-sm text-green-600 font-semibold">-250â‚¬ d'Ã©conomie</div>
+              <div className="text-2xl font-bold text-gray-900 line-through text-gray-400">950€</div>
+              <div className="text-3xl font-bold text-yellow-600">700€</div>
+              <div className="text-sm text-green-600 font-semibold">-250€ d'économie</div>
             </div>
           </div>
           <div className="space-y-2 text-sm text-gray-700">
             <div className="flex items-center">
               <Check className="h-4 w-4 mr-2 text-green-500" />
-              Pass Premium VIP - AccÃ¨s complet 3 jours
+              Pass Premium VIP - Accès complet 3 jours
             </div>
             <div className="flex items-center">
               <Check className="h-4 w-4 mr-2 text-green-500" />
@@ -208,11 +258,11 @@ export default function VisitorPaymentPage() {
             </div>
             <div className="flex items-center">
               <Check className="h-4 w-4 mr-2 text-green-500" />
-              AccÃ¨s Ã©vÃ©nements exclusifs (gala, ateliers, confÃ©rences)
+              Accès événements exclusifs (gala, ateliers, conférences)
             </div>
             <div className="flex items-center">
               <Check className="h-4 w-4 mr-2 text-green-500" />
-              Badge ultra-sÃ©curisÃ© avec photo
+              Badge ultra-sécurisé avec photo
             </div>
           </div>
         </Card>
@@ -260,7 +310,7 @@ export default function VisitorPaymentPage() {
                         <h4 className="font-semibold text-gray-900">{method.name}</h4>
                         {method.recommended && (
                           <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">
-                            RecommandÃ©
+                            Recommandé
                           </span>
                         )}
                       </div>
@@ -305,7 +355,7 @@ export default function VisitorPaymentPage() {
                 ) : (
                   <>
                     <CreditCard className="mr-2 h-5 w-5" />
-                    Payer 700â‚¬ par Carte Bancaire
+                    Payer 700€ par Carte Bancaire
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </>
                 )}
@@ -359,8 +409,21 @@ export default function VisitorPaymentPage() {
         {/* Security Badge */}
         <div className="mt-8 flex items-center justify-center text-sm text-gray-600">
           <Shield className="h-5 w-5 mr-2 text-green-600" />
-          <span>Paiement 100% sÃ©curisÃ© - Vos donnÃ©es sont cryptÃ©es</span>
+          <span>Paiement 100% sécurisé - Vos données sont cryptées</span>
         </div>
+
+        {/* DEV ONLY: Simulate Payment Button */}
+        {IS_DEV && (
+          <div className="mt-4 text-center">
+            <Button 
+              variant="outline" 
+              onClick={handleSimulateSuccess}
+              className="text-xs text-gray-500 border-dashed"
+            >
+              [DEV] Simuler Paiement Réussi
+            </Button>
+          </div>
+        )}
 
         {/* Cancel */}
         <div className="mt-6 text-center">

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
-import { 
+import {
   User, 
   Building2, 
   Mail, 
@@ -18,7 +18,9 @@ import {
   Award,
   Calendar,
   Eye,
-  ArrowLeft
+  ArrowLeft,
+  Sparkles,
+  ArrowRight
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
@@ -236,6 +238,29 @@ export default function ProfilePage() {
                     <span className="font-semibold text-gray-900">15</span>
                   </div>
                 </div>
+              </div>
+            </Card>
+
+            {/* Matching Profile CTA */}
+            <Card className="mt-6 bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200">
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="h-5 w-5 text-purple-600" />
+                  <h3 className="font-semibold text-purple-900">Matching IA</h3>
+                </div>
+                <p className="text-sm text-purple-700 mb-4">
+                  Complétez votre profil de matching pour obtenir des recommandations personnalisées
+                </p>
+                <Link to={ROUTES.PROFILE_MATCHING}>
+                  <Button 
+                    variant="default" 
+                    size="sm" 
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                  >
+                    Configurer mon matching
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Button>
+                </Link>
               </div>
             </Card>
           </motion.div>

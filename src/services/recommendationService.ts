@@ -47,6 +47,24 @@ const weights = {
  */
 class RecommendationService {
   /**
+   * Ensures profile has default values for matching
+   */
+  private static ensureProfileDefaults(profile: any): any {
+    return {
+      interests: profile?.interests || [],
+      sectors: profile?.sectors || [],
+      objectives: profile?.objectives || [],
+      collaborationTypes: profile?.collaborationTypes || [],
+      country: profile?.country || '',
+      bio: profile?.bio || '',
+      companySize: profile?.companySize || '',
+      company: profile?.company || '',
+      lastActive: profile?.lastActive || null,
+      ...profile
+    };
+  }
+
+  /**
    * Generates a list of networking recommendations for a given user.
    * @param currentUser - The user for whom to generate recommendations.
    * @param allUsers - A list of all potential users to recommend.
@@ -58,16 +76,37 @@ class RecommendationService {
   ): Promise<NetworkingRecommendation[]> {
     const recommendations: NetworkingRecommendation[] = [];
 
+    // Ensure current user profile has defaults
+    const currentUserWithDefaults = {
+      ...currentUser,
+      profile: this.ensureProfileDefaults(currentUser.profile)
+    };
+
     // Filter out the current user and users of the same company
     const potentialMatches = allUsers.filter(
-      (p) => p.id !== currentUser.id && p.profile.company !== currentUser.profile.company
+      (p) => p.id !== currentUser.id && 
+             p.profile?.company !== currentUser.profile?.company &&
+             p.type !== currentUser.type // Prioritize different user types for networking
     );
 
-    for (const potentialMatch of potentialMatches) {
-      const { score, reasons } = this.calculateMatchScore(currentUser, potentialMatch);
+    // If no matches with different types, include same types
+    const matchPool = potentialMatches.length > 0 ? potentialMatches : allUsers.filter(
+      (p) => p.id !== currentUser.id
+    );
 
-      // Only recommend users with a score above a certain threshold
-      if (score > 30) {
+    for (const potentialMatch of matchPool) {
+      // Ensure potential match profile has defaults
+      const matchWithDefaults = {
+        ...potentialMatch,
+        profile: this.ensureProfileDefaults(potentialMatch.profile)
+      };
+
+      const { score, reasons } = this.calculateMatchScore(currentUserWithDefaults as User, matchWithDefaults as User);
+
+      // Lower threshold for users with empty profiles - base score on user type priority
+      const threshold = (potentialMatch.profile?.interests?.length > 0) ? 30 : 15;
+      
+      if (score > threshold) {
         recommendations.push({
           id: `${currentUser.id}-${potentialMatch.id}`,
           userId: currentUser.id,
@@ -96,52 +135,62 @@ class RecommendationService {
   private static calculateMatchScore(user1: User, user2: User): { score: number; reasons: string[] } {
     let score = 0;
     const reasons: string[] = [];
-    const p1 = user1.profile;
-    const p2 = user2.profile;
+    const p1: any = user1.profile || {};
+    const p2: any = user2.profile || {};
+
+    // Ensure arrays exist to avoid null errors
+    const p1Interests = p1.interests || [];
+    const p2Interests = p2.interests || [];
+    const p1Sectors = p1.sectors || [];
+    const p2Sectors = p2.sectors || [];
+    const p1Objectives = p1.objectives || [];
+    const p2Objectives = p2.objectives || [];
+    const p1CollabTypes = p1.collaborationTypes || [];
+    const p2CollabTypes = p2.collaborationTypes || [];
 
     // 1. User Type Priority System
     // Partners get priority over exhibitors, exhibitors over visitors
     if (user1.type === 'visitor' && user2.type === 'exhibitor') {
       score += weights.exhibitorPriority;
-      reasons.push('Priorité exposant sur visiteur');
+      reasons.push('Exposant recommandé pour networking');
     } else if (user1.type === 'visitor' && user2.type === 'partner') {
       score += weights.exhibitorPriority + weights.partnerPriority;
-      reasons.push('Priorité partenaire sur visiteur');
+      reasons.push('Partenaire officiel du salon');
     } else if (user1.type === 'exhibitor' && user2.type === 'partner') {
       score += weights.partnerPriority;
-      reasons.push('Priorité partenaire sur exposant');
+      reasons.push('Partenaire stratégique');
     }
 
     // Reverse priority for the other user perspective
     if (user2.type === 'visitor' && user1.type === 'exhibitor') {
       score += weights.exhibitorPriority;
-      reasons.push('Vous avez la priorité en tant qu\'exposant');
+      reasons.push('Visiteur intéressé par vos services');
     } else if (user2.type === 'visitor' && user1.type === 'partner') {
       score += weights.exhibitorPriority + weights.partnerPriority;
-      reasons.push('Vous avez la priorité en tant que partenaire');
+      reasons.push('Visiteur potentiel');
     } else if (user2.type === 'exhibitor' && user1.type === 'partner') {
       score += weights.partnerPriority;
-      reasons.push('Vous avez la priorité en tant que partenaire');
+      reasons.push('Exposant dans votre secteur');
     }
 
     // 2. Shared Interests
-    const sharedInterests = getIntersection(p1.interests, p2.interests);
+    const sharedInterests = getIntersection(p1Interests, p2Interests);
     if (sharedInterests.length > 0) {
       score += sharedInterests.length * weights.sharedInterests;
       reasons.push(`Partage l'intérêt pour : ${sharedInterests.join(', ')}`);
     }
 
     // 3. Shared Business Sectors
-    const sharedSectors = getIntersection(p1.sectors, p2.sectors);
+    const sharedSectors = getIntersection(p1Sectors, p2Sectors);
     if (sharedSectors.length > 0) {
       score += sharedSectors.length * weights.sharedSectors;
       reasons.push(`Opère dans le même secteur : ${sharedSectors.join(', ')}`);
     }
 
     // 4. Complementary Objectives
-    p1.objectives.forEach(obj1 => {
+    p1Objectives.forEach((obj1: string) => {
       const complements = complementaryObjectives[obj1] || [];
-      const matchingObjectives = getIntersection(complements, p2.objectives);
+      const matchingObjectives = getIntersection(complements, p2Objectives);
       if (matchingObjectives.length > 0) {
         score += matchingObjectives.length * weights.complementaryObjectives;
         reasons.push(`Objectifs complémentaires (e.g., "${obj1}" et "${matchingObjectives[0]}")`);
@@ -155,7 +204,7 @@ class RecommendationService {
     }
 
     // 6. Shared Collaboration Types
-    const sharedCollaboration = getIntersection(p1.collaborationTypes, p2.collaborationTypes);
+    const sharedCollaboration = getIntersection(p1CollabTypes, p2CollabTypes);
     if (sharedCollaboration.length > 0) {
         score += sharedCollaboration.length * weights.sharedCollaborationTypes;
         reasons.push(`Recherche des collaborations similaires : ${sharedCollaboration.join(', ')}`);

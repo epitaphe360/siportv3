@@ -89,12 +89,13 @@ export async function upsertUserBadge(params: {
 export async function generateBadgeFromUser(userId: string): Promise<UserBadge> {
   try {
     // Récupérer les informations de l'utilisateur
+    // Spécifier explicitement les foreign keys pour éviter l'erreur "more than one relationship found"
     const { data: user, error: userError } = await supabase
       .from('users')
       .select(`
         *,
-        exhibitors(*),
-        partners(*)
+        exhibitors:exhibitors!exhibitors_user_id_fkey(*),
+        partners:partners!partners_user_id_fkey(*)
       `)
       .eq('id', userId)
       .single();

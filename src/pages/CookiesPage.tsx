@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 export default function CookiesPage() {
   const { t } = useTranslation();
   const handleCookieSettings = () => {
-    toast.success('PrÃ©fÃ©rences de cookies mises Ã  jour !');
+    toast.success('Préférences de cookies mises à jour !');
   };
 
   return (
@@ -29,8 +29,8 @@ export default function CookiesPage() {
             <h2 className="text-2xl font-bold text-gray-900">Qu'est-ce qu'un cookie ?</h2>
           </div>
           <p className="text-gray-700 mb-6">
-            Un cookie est un petit fichier texte dÃ©posÃ© sur votre ordinateur lorsque vous visitez notre site web.
-            Il permet Ã  la plateforme de mÃ©moriser vos prÃ©fÃ©rences et d'amÃ©liorer votre expÃ©rience utilisateur.
+            Un cookie est un petit fichier texte déposé sur votre ordinateur lorsque vous visitez notre site web.
+            Il permet à la plateforme de mémoriser vos préférences et d'améliorer votre expérience utilisateur.
           </p>
         </Card>
 

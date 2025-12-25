@@ -21,27 +21,27 @@ import useAuthStore from '../store/authStore';
 import { ROUTES } from '../lib/routes';
 
 const freeFeatures = [
-  { icon: Check, text: 'Badge numÃ©rique basique', included: true },
-  { icon: Check, text: 'AccÃ¨s zone exposition', included: true },
-  { icon: Check, text: 'ConfÃ©rences publiques', included: true },
+  { icon: Check, text: 'Badge numérique basique', included: true },
+  { icon: Check, text: 'Accès zone exposition', included: true },
+  { icon: Check, text: 'Conférences publiques', included: true },
   { icon: X, text: 'Rendez-vous B2B', included: false },
-  { icon: X, text: 'Networking illimitÃ©', included: false },
-  { icon: X, text: 'Ã‰vÃ©nements exclusifs', included: false },
-  { icon: X, text: 'Ateliers spÃ©cialisÃ©s', included: false },
-  { icon: X, text: 'SoirÃ©e gala', included: false },
+  { icon: X, text: 'Networking illimité', included: false },
+  { icon: X, text: 'Événements exclusifs', included: false },
+  { icon: X, text: 'Ateliers spécialisés', included: false },
+  { icon: X, text: 'Soirée gala', included: false },
 ];
 
 const vipFeatures = [
   { icon: Crown, text: 'Badge Premium avec photo', included: true, highlight: true },
-  { icon: Check, text: 'AccÃ¨s complet 3 jours', included: true },
+  { icon: Check, text: 'Accès complet 3 jours', included: true },
   { icon: Check, text: '10 demandes de RDV B2B actives', included: true, highlight: true },
-  { icon: Check, text: 'Networking illimitÃ©', included: true },
+  { icon: Check, text: 'Networking illimité', included: true },
   { icon: Check, text: 'Invitation inauguration', included: true },
-  { icon: Check, text: 'Ateliers spÃ©cialisÃ©s', included: true },
-  { icon: Check, text: 'SoirÃ©e gala exclusive', included: true },
-  { icon: Check, text: 'DÃ©jeuners networking', included: true },
-  { icon: Check, text: 'ConfÃ©rences VIP', included: true },
-  { icon: Check, text: 'AccÃ¨s lounge privÃ©', included: true },
+  { icon: Check, text: 'Ateliers spécialisés', included: true },
+  { icon: Check, text: 'Soirée gala exclusive', included: true },
+  { icon: Check, text: 'Déjeuners networking', included: true },
+  { icon: Check, text: 'Conférences VIP', included: true },
+  { icon: Check, text: 'Accès lounge privé', included: true },
 ];
 
 const testimonials = [
@@ -91,12 +91,12 @@ export default function VisitorUpgradePage() {
               Passez au Pass Premium VIP
             </h1>
             <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-90">
-              DÃ©bloquez toutes les fonctionnalitÃ©s et maximisez votre retour sur investissement au SIPORT 2026
+              Débloquez toutes les fonctionnalités et maximisez votre retour sur investissement au SIPORT 2026
             </p>
             {isFree && (
               <div className="inline-block bg-yellow-400 text-blue-900 px-6 py-3 rounded-full font-bold text-lg">
                 <Gift className="inline-block mr-2 h-5 w-5" />
-                Offre de lancement : 700â‚¬ au lieu de 950â‚¬
+                Offre de lancement : 700€ au lieu de 950€
               </div>
             )}
           </motion.div>

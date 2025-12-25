@@ -608,22 +608,42 @@ export default function NetworkingPage() {
                 <div className="bg-blue-50 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-8">
                   <Brain className="h-12 w-12 text-blue-600" />
                 </div>
-                <h3 className="text-3xl font-black text-slate-900 mb-4">Activez votre RÃ©seau IA</h3>
+                <h3 className="text-3xl font-black text-slate-900 mb-4">Activez votre Réseau IA</h3>
                 <p className="text-slate-500 mb-10 max-w-xl mx-auto text-lg">
-                  Notre intelligence artificielle analyse vos compÃ©tences et vos objectifs pour vous prÃ©senter les partenaires les plus pertinents.
+                  Notre intelligence artificielle analyse vos compétences et vos objectifs pour vous présenter les partenaires les plus pertinents.
                 </p>
+                
+                {/* Appel à compléter le profil */}
+                <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-2xl p-6 mb-8 max-w-md mx-auto">
+                  <div className="flex items-center justify-center gap-2 mb-3">
+                    <Sparkles className="h-5 w-5 text-purple-600" />
+                    <span className="font-bold text-purple-900">Améliorez votre matching</span>
+                  </div>
+                  <p className="text-sm text-purple-700 mb-4">
+                    Complétez votre profil pour obtenir des recommandations plus pertinentes
+                  </p>
+                  <Link 
+                    to={ROUTES.PROFILE_MATCHING}
+                    className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 rounded-xl font-semibold transition-all hover:shadow-lg"
+                  >
+                    <UserIcon className="h-4 w-4" />
+                    Compléter mon profil
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+
                 <Button
                   onClick={() => {
                     if (user) {
                       generateRecommendations(user.id);
-                      toast.success('IA activÃ©e, recommandations gÃ©nÃ©rÃ©es !');
+                      toast.success('IA activée, recommandations générées !');
                     }
                   }}
                   size="lg"
                   className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-12 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
                 >
                   <Zap className="h-5 w-5 mr-3" />
-                  GÃ©nÃ©rer mes Recommandations
+                  Générer mes Recommandations
                 </Button>
               </Card>
             ) : (

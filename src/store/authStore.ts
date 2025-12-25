@@ -404,7 +404,9 @@ const useAuthStore = create<AuthState>()(
   },
   
   setUser: (user) => set({ 
-    user
+    user,
+    isAuthenticated: !!user, // ✅ CRITICAL: Also update isAuthenticated when setting user
+    token: user ? 'local-session' : null // ✅ Set a token to mark authenticated state
   }),
 
   updateProfile: async (profileData: Partial<UserProfile>) => {

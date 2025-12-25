@@ -29,6 +29,7 @@ const PartnerDetailPage = lazyRetry(() => import('./pages/PartnerDetailPage'));
 const PavillonsPage = lazyRetry(() => import('./components/pavilions/PavillonsPage'));
 const MetricsPage = lazyRetry(() => import('./components/metrics/MetricsPage'));
 const DetailedProfilePage = lazyRetry(() => import('./components/profile/DetailedProfilePage'));
+const ProfileMatchingPage = lazyRetry(() => import('./pages/ProfileMatchingPage'));
 const VisitorDashboard = lazyRetry(() => import('./components/visitor/VisitorDashboard'));
 const TestFlowPage = lazyRetry(() => import('./pages/dev/TestFlowPage'));
 const VisitorProfileSettings = lazyRetry(() => import('./components/visitor/VisitorProfileSettings'));
@@ -193,6 +194,7 @@ const App = () => {
             {/* Protected routes - require authentication */}
             <Route path={ROUTES.PROFILE} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path={ROUTES.PROFILE_DETAILED} element={<ProtectedRoute><DetailedProfilePage /></ProtectedRoute>} />
+            <Route path={ROUTES.PROFILE_MATCHING} element={<ProtectedRoute><ProfileMatchingPage /></ProtectedRoute>} />
             <Route path={ROUTES.DASHBOARD} element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
             <Route path={ROUTES.EXHIBITOR_PROFILE} element={<ProtectedRoute requiredRole="exhibitor"><ProfilePage /></ProtectedRoute>} />
             <Route path={`${ROUTES.EXHIBITOR_PROFILE}/edit`} element={<ProtectedRoute requiredRole="exhibitor"><ProfileEdit /></ProtectedRoute>} />
@@ -223,9 +225,9 @@ const App = () => {
             <Route path={ROUTES.VISITOR_SETTINGS} element={<ProtectedRoute requiredRole="visitor"><VisitorProfileSettings /></ProtectedRoute>} />
             {/* BUG FIX: Route VISITOR_SUBSCRIPTION dupliquée - supprimée car déjà définie ligne 180 comme route publique */}
             <Route path={ROUTES.VISITOR_UPGRADE} element={<ProtectedRoute requiredRole="visitor"><VisitorUpgradePage /></ProtectedRoute>} />
-            <Route path={ROUTES.VISITOR_PAYMENT} element={<ProtectedRoute requiredRole="visitor"><VisitorPaymentPage /></ProtectedRoute>} />
-            <Route path={ROUTES.VISITOR_PAYMENT_SUCCESS} element={<ProtectedRoute requiredRole="visitor"><PaymentSuccessPage /></ProtectedRoute>} />
-            <Route path={ROUTES.VISITOR_PAYMENT_INSTRUCTIONS} element={<ProtectedRoute requiredRole="visitor"><PaymentInstructionsPage /></ProtectedRoute>} />
+            <Route path={ROUTES.VISITOR_PAYMENT} element={<ProtectedRoute requiredRole="visitor" allowPendingPayment={true}><VisitorPaymentPage /></ProtectedRoute>} />
+            <Route path={ROUTES.VISITOR_PAYMENT_SUCCESS} element={<ProtectedRoute requiredRole="visitor" allowPendingPayment={true}><PaymentSuccessPage /></ProtectedRoute>} />
+            <Route path={ROUTES.VISITOR_PAYMENT_INSTRUCTIONS} element={<ProtectedRoute requiredRole="visitor" allowPendingPayment={true}><PaymentInstructionsPage /></ProtectedRoute>} />
             <Route path={ROUTES.BADGE} element={<ProtectedRoute><BadgePage /></ProtectedRoute>} />
             <Route path={ROUTES.BADGE_DIGITAL} element={<ProtectedRoute><DigitalBadge /></ProtectedRoute>} />
             <Route path={ROUTES.BADGE_SCANNER} element={<ProtectedRoute><BadgeScannerPage /></ProtectedRoute>} />

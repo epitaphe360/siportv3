@@ -65,6 +65,9 @@ export default function AppointmentCalendar() {
     ? rawExhibitorId 
     : '';
 
+  // Mode "Mes rendez-vous" si pas d'exhibitorId
+  const isMyAppointmentsMode = !exhibitorId;
+
   // Vérification d'authentification
   useEffect(() => {
     if (!isAuthenticated) {
@@ -73,19 +76,16 @@ export default function AppointmentCalendar() {
       navigate(`${ROUTES.LOGIN}?redirect=${encodeURIComponent(currentPath)}`);
       return;
     }
-
-    // Vérifier qu'un exhibitorId est fourni
-    if (!exhibitorId) {
-      toast.error('ID exposant manquant');
-      navigate('/'); // Rediriger vers la page d'accueil
-      return;
-    }
-  }, [isAuthenticated, navigate, searchParams, exhibitorId]);
+    // Note: On ne redirige plus si pas d'exhibitorId - on affiche "Mes rendez-vous"
+  }, [isAuthenticated, navigate, searchParams]);
 
   useEffect(() => {
     if (isAuthenticated) {
       fetchAppointments();
-      fetchTimeSlots(exhibitorId);
+      // Ne fetch les time slots que si on a un exhibitorId
+      if (exhibitorId) {
+        fetchTimeSlots(exhibitorId);
+      }
     }
   }, [fetchAppointments, fetchTimeSlots, exhibitorId, isAuthenticated]);
 
@@ -317,6 +317,173 @@ export default function AppointmentCalendar() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Redirection vers la page de connexion...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Mode "Mes rendez-vous" - afficher tous les rendez-vous de l'utilisateur
+  if (isMyAppointmentsMode) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Bouton de retour */}
+          <div className="mb-6">
+            <Link to={ROUTES.DASHBOARD}>
+              <Button variant="ghost" size="sm">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Retour au Tableau de Bord
+              </Button>
+            </Link>
+          </div>
+
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex-1 min-w-0 mr-6">
+              <h2 className="text-2xl font-bold text-gray-900">
+                Mes Rendez-vous B2B
+              </h2>
+              <p className="text-gray-600 mt-1">
+                Consultez et gérez tous vos rendez-vous avec les exposants
+              </p>
+            </div>
+          </div>
+
+          {/* Liste des rendez-vous */}
+          <Card className="mb-8">
+            <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
+              <h3 className="font-semibold text-gray-900 flex items-center">
+                <Calendar className="h-5 w-5 mr-2 text-blue-600" />
+                Tous vos rendez-vous ({appointments.length})
+              </h3>
+            </div>
+            <div className="p-4">
+              {isLoading ? (
+                <div className="space-y-3">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="animate-pulse">
+                      <div className="h-20 bg-gray-200 rounded-lg"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : appointments.length === 0 ? (
+                <div className="text-center py-12">
+                  <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                  <h4 className="text-lg font-medium text-gray-900 mb-2">Aucun rendez-vous</h4>
+                  <p className="text-gray-600 mb-6">
+                    Vous n'avez pas encore de rendez-vous B2B.<br />
+                    Visitez les pages des exposants pour demander un rendez-vous.
+                  </p>
+                  <Link to="/exposants">
+                    <Button variant="default">
+                      <Users className="h-4 w-4 mr-2" />
+                      Voir les exposants
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {appointments.map((appointment) => {
+                    const StatusIcon = appointment.status === 'confirmed' ? Check : 
+                                      appointment.status === 'cancelled' ? X : Clock;
+                    return (
+                      <motion.div
+                        key={appointment.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-4 border rounded-lg hover:shadow-md transition-shadow"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className={`p-3 rounded-full ${
+                              appointment.status === 'confirmed' ? 'bg-green-100' :
+                              appointment.status === 'cancelled' ? 'bg-red-100' : 'bg-yellow-100'
+                            }`}>
+                              <StatusIcon className={`h-5 w-5 ${
+                                appointment.status === 'confirmed' ? 'text-green-600' :
+                                appointment.status === 'cancelled' ? 'text-red-600' : 'text-yellow-600'
+                              }`} />
+                            </div>
+                            <div>
+                              <h4 className="font-medium text-gray-900">
+                                {appointment.exhibitor?.companyName || appointment.exhibitor?.name || `Exposant`}
+                              </h4>
+                              <p className="text-sm text-gray-600">
+                                {appointment.timeSlot?.date ? new Date(appointment.timeSlot.date).toLocaleDateString('fr-FR', { 
+                                  weekday: 'long', day: 'numeric', month: 'long' 
+                                }) : 'Date à confirmer'}
+                                {appointment.timeSlot?.startTime && ` • ${appointment.timeSlot.startTime}`}
+                              </p>
+                              {appointment.message && (
+                                <p className="text-xs text-gray-500 mt-1 italic">"{appointment.message}"</p>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <Badge variant={getStatusColor(appointment.status)}>
+                              {getStatusLabel(appointment.status)}
+                            </Badge>
+                            {appointment.status === 'pending' && (
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => cancelAppointment(appointment.id)}
+                              >
+                                Annuler
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </Card>
+
+          {/* Statistiques */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="p-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-green-100 rounded-lg">
+                  <Check className="h-5 w-5 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {appointments.filter(a => a.status === 'confirmed').length}
+                  </p>
+                  <p className="text-sm text-gray-600">Confirmés</p>
+                </div>
+              </div>
+            </Card>
+            <Card className="p-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-yellow-100 rounded-lg">
+                  <Clock className="h-5 w-5 text-yellow-600" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {appointments.filter(a => a.status === 'pending').length}
+                  </p>
+                  <p className="text-sm text-gray-600">En attente</p>
+                </div>
+              </div>
+            </Card>
+            <Card className="p-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-red-100 rounded-lg">
+                  <X className="h-5 w-5 text-red-600" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {appointments.filter(a => a.status === 'cancelled').length}
+                  </p>
+                  <p className="text-sm text-gray-600">Annulés</p>
+                </div>
+              </div>
+            </Card>
+          </div>
         </div>
       </div>
     );

@@ -19,7 +19,7 @@ export interface User {
   visitor_level?: 'free' | 'premium' | 'vip';
   partner_tier?: 'museum' | 'silver' | 'gold' | 'platinium'; // Niveau partenaire
   profile: UserProfile;
-  status: 'pending' | 'active' | 'suspended' | 'rejected';
+  status: 'pending' | 'active' | 'suspended' | 'rejected' | 'pending_payment';
   projects?: PartnerProject[];
   createdAt: Date;
   updatedAt: Date;

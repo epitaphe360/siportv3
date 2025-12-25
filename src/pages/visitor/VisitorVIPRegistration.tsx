@@ -16,22 +16,23 @@ import { motion } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import { ROUTES } from '../../lib/routes';
 import { COUNTRIES } from '../../data/countries';
+import useAuthStore from '../../store/authStore';
 
 const vipVisitorSchema = z.object({
-  firstName: z.string().min(2, 'PrÃ©nom requis'),
+  firstName: z.string().min(2, 'Prénom requis'),
   lastName: z.string().min(2, 'Nom requis'),
   email: z.string().email('Email invalide'),
-  password: z.string().min(8, 'Minimum 8 caractÃ¨res').regex(
+  password: z.string().min(8, 'Minimum 8 caractères').regex(
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
     'Doit contenir majuscule, minuscule et chiffre'
   ),
   confirmPassword: z.string(),
-  phone: z.string().min(8, 'TÃ©lÃ©phone requis'),
+  phone: z.string().min(8, 'Téléphone requis'),
   country: z.string().min(2, 'Pays requis'),
   sector: z.string().min(2, 'Secteur requis'),
   position: z.string().min(2, 'Fonction requise'),
   company: z.string().min(2, 'Entreprise requise'),
-  photo: z.any().refine((files) => files?.length > 0, 'Photo obligatoire')
+  photo: z.any().optional() // Photo optionnelle - peut être ajoutée plus tard
 }).refine((data) => data.password === data.confirmPassword, {
   message: 'Les mots de passe ne correspondent pas',
   path: ['confirmPassword']
@@ -40,13 +41,13 @@ const vipVisitorSchema = z.object({
 type VIPVisitorForm = z.infer<typeof vipVisitorSchema>;
 
 const sectors = [
-  'AutoritÃ© Portuaire',
+  'Autorité Portuaire',
   'Transport Maritime',
   'Logistique',
   'Consulting',
   'Technologie',
   'Finance',
-  'MÃ©dia/Presse',
+  'Média/Presse',
   'Institutionnel',
   'Autre'
 ];
@@ -57,6 +58,7 @@ export default function VisitorVIPRegistration() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const navigate = useNavigate();
+  const { setUser } = useAuthStore();
 
   const {
     register,
@@ -74,13 +76,13 @@ export default function VisitorVIPRegistration() {
     if (file) {
       // Validate file type
       if (!file.type.startsWith('image/')) {
-        toast.error('Veuillez sÃ©lectionner une image');
+        toast.error('Veuillez sélectionner une image');
         return;
       }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        toast.error('La photo ne doit pas dÃ©passer 5MB');
+        toast.error('La photo ne doit pas dépasser 5MB');
         return;
       }
 
@@ -97,38 +99,47 @@ export default function VisitorVIPRegistration() {
   };
 
   const onSubmit = async (data: VIPVisitorForm) => {
+    console.log('🚀 onSubmit APPELÉ avec données:', JSON.stringify(data, null, 2));
     setIsSubmitting(true);
 
     try {
       const fullName = `${data.firstName} ${data.lastName}`.trim();
+      console.log('📝 Full name:', fullName);
 
-      // 1. Upload photo to Supabase Storage
+      // 1. Upload photo to Supabase Storage (OPTIONNEL - ne bloque pas)
       let photoUrl = '';
       if (photoFile) {
-        const fileExt = photoFile.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-        const filePath = `visitor-photos/${fileName}`;
+        console.log('📷 Upload photo en cours...');
+        try {
+          const fileExt = photoFile.name.split('.').pop();
+          const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+          const filePath = `visitor-photos/${fileName}`;
 
-        const { error: uploadError } = await supabase.storage
-          .from('public')
-          .upload(filePath, photoFile, {
-            cacheControl: '3600',
-            upsert: false
-          });
+          const { error: uploadError } = await supabase.storage
+            .from('public')
+            .upload(filePath, photoFile, {
+              cacheControl: '3600',
+              upsert: false
+            });
 
-        if (uploadError) {
-          throw new Error('Erreur lors du tÃ©lÃ©chargement de la photo');
+          if (uploadError) {
+            console.warn('⚠️ Photo upload échoué (non bloquant):', uploadError);
+          } else {
+            const { data: urlData } = supabase.storage
+              .from('public')
+              .getPublicUrl(filePath);
+            photoUrl = urlData.publicUrl;
+            console.log('✅ Photo uploadée:', photoUrl);
+          }
+        } catch (photoErr) {
+          console.warn('⚠️ Erreur photo (non bloquant):', photoErr);
         }
-
-        // Get public URL
-        const { data: urlData } = supabase.storage
-          .from('public')
-          .getPublicUrl(filePath);
-
-        photoUrl = urlData.publicUrl;
+      } else {
+        console.log('📷 Pas de photo sélectionnée');
       }
 
       // 2. Create Supabase Auth user with password
+      console.log('👤 Création compte auth...');
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
@@ -136,15 +147,27 @@ export default function VisitorVIPRegistration() {
           data: {
             name: fullName,
             type: 'visitor',
-            visitor_level: 'vip'
+            visitor_level: 'premium'
           }
         }
       });
 
-      if (authError) throw authError;
-      if (!authData.user) throw new Error('Ã‰chec crÃ©ation utilisateur');
+      if (authError) {
+        console.error('❌ Erreur auth:', authError);
+        throw authError;
+      }
+      if (!authData.user) {
+        console.error('❌ Pas de user créé');
+        throw new Error('Échec création utilisateur');
+      }
+      console.log('✅ Auth user créé:', authData.user.id);
+      console.log('📋 Session créée?', !!authData.session);
+      if (authData.session) {
+        console.log('📋 Session access_token:', authData.session.access_token?.substring(0, 20) + '...');
+      }
 
       // 3. Create user profile with EXPLICIT vip level and pending_payment status
+      console.log('📋 Création profil utilisateur...');
       const { error: userError } = await supabase
         .from('users')
         .insert([{
@@ -152,8 +175,8 @@ export default function VisitorVIPRegistration() {
           email: data.email,
           name: fullName,
           type: 'visitor',
-          visitor_level: 'vip', // âœ… EXPLICIT VIP
-          status: 'pending_payment', // âœ… En attente de paiement
+          visitor_level: 'premium',
+          status: 'pending_payment',
           profile: {
             firstName: data.firstName,
             lastName: data.lastName,
@@ -162,66 +185,108 @@ export default function VisitorVIPRegistration() {
             businessSector: data.sector,
             position: data.position,
             company: data.company,
-            photoUrl: photoUrl // âœ… Photo stockÃ©e
+            photoUrl: photoUrl
           }
         }]);
 
-      if (userError) throw userError;
-
-      // 4. Create payment request in database
-      const { error: paymentError } = await supabase
-        .from('payment_requests')
-        .insert([{
-          user_id: authData.user.id,
-          amount: 700, // Prix du Pass VIP Premium (700 EUR)
-          status: 'pending',
-          payment_method: null,
-          metadata: {
-            type: 'visitor_vip_upgrade',
-            level: 'vip',
-            created_from: 'vip_registration'
-          }
-        }]);
-
-      if (paymentError) {
-        console.warn('Erreur crÃ©ation demande paiement:', paymentError);
+      if (userError) {
+        console.error('❌ Erreur création profil:', userError);
+        throw userError;
       }
+      console.log('✅ Profil utilisateur créé avec succès');
 
-      // 6. Send payment instructions email âœ…
-      const { error: emailError } = await supabase.functions.invoke('send-visitor-welcome-email', {
-        body: {
-          email: data.email,
-          name: fullName,
-          level: 'vip',
-          userId: authData.user.id,
-          includePaymentInstructions: true // Email avec instructions de paiement
+      // 4. CRITICAL: Update local auth store BEFORE navigation
+      // This ensures ProtectedRoute sees the user as authenticated
+      // NOTE: visitor_level is 'standard' until payment is confirmed, then upgraded to 'premium'
+      const localUser = {
+        id: authData.user.id,
+        email: data.email,
+        name: fullName,
+        type: 'visitor' as const,
+        visitor_level: 'standard' as const, // NOT premium until payment is done
+        status: 'pending_payment' as const,
+        profile: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          phone: data.phone,
+          country: data.country,
+          company: data.company,
+          position: data.position,
+          businessSector: data.sector,
+          photoUrl: photoUrl,
+          bio: '',
+          interests: [],
+          objectives: [],
+          sectors: [],
+          products: [],
+          videos: [],
+          images: [],
+          participationObjectives: [],
+          thematicInterests: [],
+          collaborationTypes: [],
+          expertise: [],
+          visitObjectives: [],
+          competencies: []
+        },
+        createdAt: new Date().toISOString()
+      };
+      console.log('📦 Mise à jour du store local avec:', localUser.email);
+      setUser(localUser);
+
+      // 5. Create payment request in database (non bloquant)
+      try {
+        const { error: paymentError } = await supabase
+          .from('payment_requests')
+          .insert([{
+            user_id: authData.user.id,
+            amount: 700,
+            status: 'pending',
+            payment_method: null,
+            metadata: {
+              type: 'visitor_vip_upgrade',
+              level: 'premium',
+              created_from: 'vip_registration'
+            }
+          }]);
+
+        if (paymentError) {
+          console.warn('⚠️ Erreur payment_request (non bloquant):', paymentError);
         }
-      });
-
-      if (emailError) {
-        console.warn('Erreur envoi email paiement:', emailError);
+      } catch (e) {
+        console.warn('⚠️ Erreur payment_request (non bloquant):', e);
       }
 
-      // 7. Success - Redirect to payment page
-      toast.success('Compte crÃ©Ã© ! Veuillez finaliser le paiement pour activer votre accÃ¨s VIP.');
-
-      // 8. DO NOT log out - user needs to be logged in to pay
-      // await supabase.auth.signOut();
-
-      // Redirect to payment page with user info
-      setTimeout(() => {
-        navigate(ROUTES.VISITOR_PAYMENT, {
-          state: {
-            userId: authData.user.id,
+      // 5. Send email (non bloquant)
+      try {
+        await supabase.functions.invoke('send-visitor-welcome-email', {
+          body: {
             email: data.email,
             name: fullName,
-            fromRegistration: true
+            level: 'premium',
+            userId: authData.user.id,
+            includePaymentInstructions: true
           }
         });
-      }, 1500);
+      } catch (e) {
+        console.warn('⚠️ Erreur email (non bloquant):', e);
+      }
+
+      // 6. Success - Redirect to payment page
+      toast.success('Compte créé ! Redirection vers le paiement...');
+      console.log('🎉 SUCCÈS COMPLET - Redirection imminente...');
+
+      // 7. Wait for store to be persisted, then navigate
+      // The store update needs a tick to propagate through React
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      console.log('🔄 Navigation vers /visitor/payment via React Router');
+      console.log('📊 Store state - isAuthenticated:', useAuthStore.getState().isAuthenticated);
+      console.log('📊 Store state - user:', useAuthStore.getState().user?.email);
+      
+      navigate(ROUTES.VISITOR_PAYMENT, { replace: true });
 
     } catch (error: any) {
-      console.error('Erreur inscription VIP:', error);
+      console.error('❌ ERREUR INSCRIPTION VIP:', error);
       toast.error(error.message || 'Erreur lors de l\'inscription');
     } finally {
       setIsSubmitting(false);
@@ -250,14 +315,14 @@ export default function VisitorVIPRegistration() {
             Inscription Pass Premium VIP
           </h1>
           <p className="text-yellow-100 text-lg">
-            AccÃ¨s complet au salon avec badge photo sÃ©curisÃ©
+            Accès complet au salon avec badge photo sécurisé
           </p>
           <div className="mt-4 inline-flex items-center space-x-3 bg-yellow-800 px-6 py-3 rounded-full">
-            <span className="text-yellow-100 font-semibold">ðŸ‘‘ RDV B2B IllimitÃ©s</span>
-            <span className="text-yellow-200">â€¢</span>
-            <span className="text-yellow-100 font-semibold">ðŸŽ‰ Gala exclusif</span>
-            <span className="text-yellow-200">â€¢</span>
-            <span className="text-yellow-100 font-semibold">ðŸ¤ Networking premium</span>
+            <span className="text-yellow-100 font-semibold">💎 RDV B2B Illimités</span>
+            <span className="text-yellow-200">•</span>
+            <span className="text-yellow-100 font-semibold">🎉 Gala exclusif</span>
+            <span className="text-yellow-200">•</span>
+            <span className="text-yellow-100 font-semibold">🤝 Networking premium</span>
           </div>
         </motion.div>
 
@@ -274,9 +339,9 @@ export default function VisitorVIPRegistration() {
                 <label className="block text-center mb-4">
                   <div className="flex items-center justify-center space-x-2 mb-2">
                     <Camera className="h-5 w-5 text-yellow-600" />
-                    <span className="text-lg font-semibold text-gray-900">Photo d'identitÃ© *</span>
+                    <span className="text-lg font-semibold text-gray-900">Photo d'identité *</span>
                   </div>
-                  <p className="text-sm text-gray-600">Photo obligatoire pour badge VIP sÃ©curisÃ©</p>
+                  <p className="text-sm text-gray-600">Photo obligatoire pour badge VIP sécurisé</p>
                 </label>
 
                 {photoPreview ? (
@@ -295,7 +360,7 @@ export default function VisitorVIPRegistration() {
                       }}
                       className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transform translate-x-1/2 -translate-y-1/2"
                     >
-                      âœ•
+                      ✕
                     </button>
                   </div>
                 ) : (
@@ -303,7 +368,7 @@ export default function VisitorVIPRegistration() {
                     <div className="border-2 border-dashed border-yellow-400 rounded-lg p-8 text-center hover:bg-yellow-50 transition-colors">
                       <Upload className="h-12 w-12 mx-auto text-yellow-600 mb-3" />
                       <p className="text-sm font-semibold text-gray-700 mb-1">
-                        Cliquez pour tÃ©lÃ©charger votre photo
+                        Cliquez pour télécharger votre photo
                       </p>
                       <p className="text-xs text-gray-500">
                         Format: JPG, PNG (max 5MB)
@@ -312,7 +377,13 @@ export default function VisitorVIPRegistration() {
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={handlePhotoChange}
+                      onChange={(e) => {
+                        handlePhotoChange(e);
+                        // Aussi enregistrer dans react-hook-form
+                        if (e.target.files) {
+                          setValue('photo', e.target.files, { shouldValidate: true });
+                        }
+                      }}
                       className="hidden"
                     />
                   </label>
@@ -328,7 +399,7 @@ export default function VisitorVIPRegistration() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    PrÃ©nom *
+                    Prénom *
                   </label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -336,7 +407,7 @@ export default function VisitorVIPRegistration() {
                       type="text"
                       {...register('firstName')}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                      placeholder="Votre prÃ©nom"
+                      placeholder="Votre prénom"
                     />
                   </div>
                   {errors.firstName && (
@@ -394,7 +465,7 @@ export default function VisitorVIPRegistration() {
                       type="password"
                       {...register('password')}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                      placeholder="Minimum 8 caractÃ¨res"
+                      placeholder="Minimum 8 caractères"
                     />
                   </div>
                   {errors.password && (
@@ -425,7 +496,7 @@ export default function VisitorVIPRegistration() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    TÃ©lÃ©phone *
+                    Téléphone *
                   </label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -451,7 +522,7 @@ export default function VisitorVIPRegistration() {
                       {...register('country')}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 appearance-none bg-white"
                     >
-                      <option value="">SÃ©lectionnez</option>
+                      <option value="">Sélectionnez</option>
                       {COUNTRIES.map((country) => (
                         <option key={country.code} value={country.code}>
                           {country.name}
@@ -469,13 +540,13 @@ export default function VisitorVIPRegistration() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Secteur d'activitÃ© *
+                    Secteur d'activité *
                   </label>
                   <select
                     {...register('sector')}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   >
-                    <option value="">SÃ©lectionnez</option>
+                    <option value="">Sélectionnez</option>
                     {sectors.map((sector) => (
                       <option key={sector} value={sector}>{sector}</option>
                     ))}
@@ -527,24 +598,24 @@ export default function VisitorVIPRegistration() {
                 </h4>
                 <ul className="text-sm text-gray-700 space-y-2">
                   <li className="flex items-start">
-                    <span className="text-yellow-600 mr-2">âœ“</span>
-                    <span><strong>Rendez-vous B2B ILLIMITÃ‰S</strong> - Planifiez autant de meetings que souhaitÃ©</span>
+                    <span className="text-yellow-600 mr-2">✓</span>
+                    <span><strong>Rendez-vous B2B ILLIMITÉS</strong> - Planifiez autant de meetings que souhaité</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-yellow-600 mr-2">âœ“</span>
-                    <span><strong>Badge ultra-sÃ©curisÃ© avec photo</strong> - QR code JWT rotatif</span>
+                    <span className="text-yellow-600 mr-2">✓</span>
+                    <span><strong>Badge ultra-sécurisé avec photo</strong> - QR code JWT rotatif</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-yellow-600 mr-2">âœ“</span>
-                    <span><strong>AccÃ¨s zones VIP</strong> - Salons premium, networking area</span>
+                    <span className="text-yellow-600 mr-2">✓</span>
+                    <span><strong>Accès zones VIP</strong> - Salons premium, networking area</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-yellow-600 mr-2">âœ“</span>
-                    <span><strong>Gala de clÃ´ture exclusif</strong> - Ã‰vÃ©nement rÃ©seau premium</span>
+                    <span className="text-yellow-600 mr-2">✓</span>
+                    <span><strong>Gala de clôture exclusif</strong> - Événement réseau premium</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-yellow-600 mr-2">âœ“</span>
-                    <span><strong>Ateliers et confÃ©rences VIP</strong> - Contenus exclusifs</span>
+                    <span className="text-yellow-600 mr-2">✓</span>
+                    <span><strong>Ateliers et conférences VIP</strong> - Contenus exclusifs</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-yellow-600 mr-2">âœ“</span>
@@ -556,7 +627,7 @@ export default function VisitorVIPRegistration() {
               {/* Payment Info */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm text-blue-900">
-                  <strong>ðŸ’³ Paiement requis</strong> : AprÃ¨s crÃ©ation du compte, vous serez redirigÃ© vers la page de paiement sÃ©curisÃ© (700 EUR). Votre accÃ¨s VIP sera activÃ© immÃ©diatement aprÃ¨s validation du paiement.
+                  <strong>💳 Paiement requis</strong> : Après création du compte, vous serez redirigé vers la page de paiement sécurisé (700 EUR). Votre accès VIP sera activé immédiatement après validation du paiement.
                 </p>
               </div>
 
@@ -569,12 +640,12 @@ export default function VisitorVIPRegistration() {
                 {isSubmitting ? (
                   <>
                     <Loader className="animate-spin h-5 w-5 mr-2" />
-                    CrÃ©ation du compte VIP...
+                    Création du compte VIP...
                   </>
                 ) : (
                   <>
                     <Crown className="h-5 w-5 mr-2" />
-                    CrÃ©er mon compte VIP et payer
+                    Créer mon compte VIP et payer
                   </>
                 )}
               </Button>
@@ -582,7 +653,7 @@ export default function VisitorVIPRegistration() {
               {/* Free Pass Link */}
               <div className="text-center pt-4 border-t">
                 <p className="text-sm text-gray-600 mb-2">
-                  Vous cherchez un accÃ¨s gratuit au salon ?
+                  Vous cherchez un accès gratuit au salon ?
                 </p>
                 <Button
                   type="button"
@@ -590,7 +661,7 @@ export default function VisitorVIPRegistration() {
                   onClick={() => navigate(ROUTES.VISITOR_FREE_REGISTRATION)}
                   className="border-green-500 text-green-600 hover:bg-green-50"
                 >
-                  ðŸ†“ S'inscrire avec le Pass Gratuit
+                  🏆 S'inscrire avec le Pass Gratuit
                 </Button>
               </div>
             </form>

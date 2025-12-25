@@ -47,9 +47,17 @@ export async function initializeAuth() {
       // No active session
       // CRITICAL FIX: If store thinks we are logged in, but Supabase says no, we must logout
       // This prevents ghost sessions where localStorage has data but the token is invalid
-      if (useAuthStore.getState().isAuthenticated) {
+      // EXCEPTION: Don't logout if user was just created (within last 5 seconds)
+      const storedUser = useAuthStore.getState().user;
+      const createdAt = storedUser?.createdAt ? new Date(storedUser.createdAt).getTime() : 0;
+      const now = Date.now();
+      const wasJustCreated = (now - createdAt) < 5000; // Within 5 seconds
+      
+      if (useAuthStore.getState().isAuthenticated && !wasJustCreated) {
         console.warn('[AUTH] Session invalide ou expiree detectee au demarrage, nettoyage du store...');
         useAuthStore.getState().logout();
+      } else if (wasJustCreated) {
+        console.log('[AUTH] Utilisateur récemment créé, pas de déconnexion');
       }
       console.log('[AUTH] Aucune session active');
       return;

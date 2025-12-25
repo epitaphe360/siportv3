@@ -19,6 +19,7 @@ export const ROUTES = {
   OAUTH_CALLBACK: '/auth/callback',
   PROFILE: '/profile',
   PROFILE_DETAILED: '/profile/detailed',
+  PROFILE_MATCHING: '/profile/matching',
   DASHBOARD: '/dashboard',
   EXHIBITOR_PROFILE: '/exhibitor/profile',
   EXHIBITOR_DASHBOARD: '/exhibitor/dashboard',

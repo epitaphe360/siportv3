@@ -44,7 +44,7 @@ export default function LoginPage() {
       const { user } = useAuthStore.getState();
 
       // 🔴 CRITICAL: Block VIP visitors who haven't paid
-      if (user?.type === 'visitor' && user?.visitor_level === 'vip' && user?.status === 'pending_payment') {
+      if (user?.type === 'visitor' && (user?.visitor_level === 'vip' || user?.visitor_level === 'premium') && user?.status === 'pending_payment') {
         // Log out immediately
         await supabase.auth.signOut();
 

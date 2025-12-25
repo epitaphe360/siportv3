@@ -154,7 +154,12 @@ export function LevelBadge({ level, type, showIcon = true, size = 'md' }: LevelB
   };
 
   return (
-    <div className={`inline-flex items-center space-x-1 rounded-full font-semibold ${config.color} ${sizeClasses[size]}`}>
+    <div 
+      className={`inline-flex items-center space-x-1 rounded-full font-semibold ${config.color} ${sizeClasses[size]}`}
+      data-testid="level-badge"
+      data-level={level}
+      data-type={type}
+    >
       {showIcon && <span>{config.icon}</span>}
       <span>{config.label}</span>
     </div>

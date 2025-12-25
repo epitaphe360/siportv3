@@ -7,12 +7,12 @@ const LEVELS = [
   {
     key: 'free',
     title: 'Pass Gratuit',
-    description: 'Accès limité© Ã  la zone exposition, confÃ©rences publiques et networking de base.',
-    price: '0â‚¬',
+    description: 'Accès limité à la zone exposition, conférences publiques et networking de base.',
+    price: '0€',
     features: [
       'Zone exposition',
-      'ConfÃ©rences publiques',
-      'Networking limitÃ©',
+      'Conférences publiques',
+      'Networking limité',
       'Application mobile',
       'Inscription gratuite',
       '0 rendez-vous B2B'
@@ -21,16 +21,16 @@ const LEVELS = [
   {
     key: 'premium',
     title: 'Pass Premium VIP',
-    description: 'Accès VIP complet 3 jours All Inclusive - Tout Accès illimité© au salon.',
-    price: '700â‚¬',
+    description: 'Accès VIP complet 3 jours All Inclusive - Tout Accès illimité au salon.',
+    price: '700€',
     features: [
       'Invitation inauguration',
-      'Rendez-vous B2B illimité©s',
-      'Networking illimité©',
-      'Ateliers spÃ©cialisÃ©s',
-      'SoirÃ©e gala exclusive',
-      'ConfÃ©rences',
-      'DÃ©jeuners networking'
+      'Rendez-vous B2B illimités',
+      'Networking illimité',
+      'Ateliers spécialisés',
+      'Soirée gala exclusive',
+      'Conférences',
+      'Déjeuners networking'
     ]
   }
 ];
@@ -45,7 +45,7 @@ export default function VisitorSubscription() {
   const [loading, setLoading] = useState(false);
 
   async function handleSubscribe(level: string) {
-    // Si l'utilisateur n'est pas connecté©, rediriger vers l'inscription
+    // Si l'utilisateur n'est pas connecté, rediriger vers l'inscription
     if (!userId) {
       window.location.href = `/register?next=/visitor/subscription&level=${level}`;
       return;
@@ -53,7 +53,7 @@ export default function VisitorSubscription() {
 
     setLoading(true);
 
-    // Le niveau gratuit ne nÃ©cessite pas de paiement
+    // Le niveau gratuit ne nécessite pas de paiement
     if (level === 'free') {
       const { error } = await supabase
         .from('users')
@@ -64,12 +64,12 @@ export default function VisitorSubscription() {
       if (error) {
         setMessage('Erreur lors de l\'inscription gratuite.');
       } else {
-        setMessage('âœ… Inscription gratuite rÃ©ussie !');
+        setMessage('✓ Inscription gratuite réussie !');
       }
       return;
     }
 
-    // Pour le niveau premium : crÃ©er une demande de paiement par virement bancaire
+    // Pour le niveau premium : créer une demande de paiement par virement bancaire
     try {
       // VÃ©rifier si une demande pending existe dÃ©jÃ 
       const { data: existingRequests, error: checkError } = await supabase
@@ -79,19 +79,19 @@ export default function VisitorSubscription() {
         .eq('status', 'pending');
 
       if (checkError) {
-        console.error('Erreur vÃ©rification demande:', checkError);
-        setMessage(`âŒ Erreur lors de la vÃ©rification: ${checkError.message}`);
+        console.error('Erreur vérification demande:', checkError);
+        setMessage(`✗ Erreur lors de la vérification: ${checkError.message}`);
         setLoading(false);
         return;
       }
 
       if (existingRequests && existingRequests.length > 0) {
-        setMessage('âš ï¸ Vous avez dÃ©jÃ  une demande de paiement en attente. Consultez votre profil pour les instructions de virement.');
+        setMessage('⚠ Vous avez déjà une demande de paiement en attente. Consultez votre profil pour les instructions de virement.');
         setLoading(false);
         return;
       }
 
-      // CrÃ©er la demande de paiement
+      // Créer la demande de paiement
       const { data: request, error } = await supabase
         .from('payment_requests')
         .insert({
@@ -106,23 +106,23 @@ export default function VisitorSubscription() {
         .single();
 
       if (error) {
-        console.error('Erreur crÃ©ation demande:', error);
-        setMessage(`âŒ Erreur lors de la crÃ©ation de la demande: ${error.message}`);
+        console.error('Erreur création demande:', error);
+        setMessage(`✗ Erreur lors de la création de la demande: ${error.message}`);
         setLoading(false);
         return;
       }
 
-      setMessage(`âœ… Demande crÃ©Ã©e avec succÃ¨s ! Consultez les instructions de virement bancaire ci-dessous.`);
+      setMessage(`✓ Demande créée avec succès ! Consultez les instructions de virement bancaire ci-dessous.`);
       setLoading(false);
 
-      // Rediriger vers la page des instructions de paiement aprÃ¨s 2 secondes
+      // Rediriger vers la page des instructions de paiement après 2 secondes
       setTimeout(() => {
         window.location.href = `/visitor/payment-instructions?request_id=${request.id}`;
       }, 2000);
 
     } catch (err: any) {
       console.error('Erreur:', err);
-      setMessage(`âŒ Erreur: ${err.message || 'Erreur inconnue'}`);
+      setMessage(`✗ Erreur: ${err.message || 'Erreur inconnue'}`);
       setLoading(false);
     }
   }
@@ -130,7 +130,7 @@ export default function VisitorSubscription() {
   return (
     <div style={{maxWidth:800,margin:'auto',padding:32}}>
       <h1>Choisissez votre Pass Visiteur</h1>
-      <p>DÃ©couvrez les diffÃ©rents niveaux dâ€™Accès au Salon International des Ports dâ€™Afrique.</p>
+      <p>Découvrez les différents niveaux d'accès au Salon International des Ports d'Afrique.</p>
       <div style={{display:'flex',gap:24,flexWrap:'wrap'}}>
         {LEVELS.map(level => (
           <div key={level.key} style={{border:'1px solid #ccc',borderRadius:8,padding:24,width:220,background:selected===level.key?'#f0f8ff':'#fff'}}>
@@ -144,7 +144,7 @@ export default function VisitorSubscription() {
               disabled={loading}
               onClick={() => {
                 if (!isLogged) {
-                  // inviter Ã  crÃ©er un compte avant de souscrire
+                  // inviter à créer un compte avant de souscrire
                   window.location.href = `/register?next=/visitor/subscription&level=${level.key}`;
                   return;
                 }
@@ -153,7 +153,7 @@ export default function VisitorSubscription() {
                 handleSubscribe(level.key);
               }}
             >
-              {!isLogged ? 'CrÃ©er un compte' : (level.price==='0â‚¬' ? 'S\'inscrire' : 'Demander le Pass Premium')}
+              {!isLogged ? 'Créer un compte' : (level.price==='0€' ? 'S\'inscrire' : 'Demander le Pass Premium')}
             </button>
           </div>
         ))}

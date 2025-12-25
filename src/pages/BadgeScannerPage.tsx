@@ -141,7 +141,7 @@ export default function BadgeScannerPage() {
   };
 
   /**
-   * VÃ©rifie les permissions camÃ©ra
+   * Vérifie les permissions caméra
    */
   const checkCameraPermission = async () => {
     try {
@@ -158,7 +158,7 @@ export default function BadgeScannerPage() {
   };
 
   /**
-   * DÃ©marre le scanner QR
+   * Démarre le scanner QR
    */
   const startScanner = async () => {
     try {
@@ -189,9 +189,9 @@ export default function BadgeScannerPage() {
       toast.success('Scanner activé');
     } catch (err: any) {
       console.error('Erreur dÃ©marrage scanner:', err);
-      setError('Impossible d\'accÃ©der Ã  la camÃ©ra. VÃ©rifiez les permissions.');
-      toast.error('Erreur camÃ©ra', {
-        description: 'VÃ©rifiez que votre navigateur a accÃ¨s Ã  la camÃ©ra.'
+      toast.error('Impossible d\'accéder à la caméra. Vérifiez les permissions.');
+      toast.error('Erreur caméra', {
+        description: 'Vérifiez que votre navigateur a accès à la caméra.'
       });
 
       if (err.name === 'NotAllowedError') {
@@ -201,7 +201,7 @@ export default function BadgeScannerPage() {
   };
 
   /**
-   * ArrÃªte le scanner QR
+   * Arrête le scanner QR
    */
   const stopScanner = async () => {
     try {
@@ -209,10 +209,10 @@ export default function BadgeScannerPage() {
         await scannerRef.current.stop();
         scannerRef.current = null;
         setIsScanning(false);
-        toast.info('Scanner dÃ©sactivÃ©');
+        toast.info('Scanner désactivé');
       }
     } catch (err) {
-      console.error('Erreur arrÃªt scanner:', err);
+      console.error('Erreur arrêt scanner:', err);
     }
   };
 
@@ -287,7 +287,7 @@ export default function BadgeScannerPage() {
     try {
       const { supabase } = await import('../lib/supabase');
 
-      // Appeler la fonction scan_badge qui valide et incrÃ©mente le compteur
+      // Appeler la fonction scan_badge qui valide et incrémente le compteur
       const { data, error } = await supabase.rpc('scan_badge', {
         p_badge_code: badgeCode
       });
@@ -297,10 +297,10 @@ export default function BadgeScannerPage() {
       }
 
       if (!data) {
-        throw new Error('Badge non trouvÃ©');
+        throw new Error('Badge non trouvé');
       }
 
-      // CrÃ©er l'objet badge scannÃ©
+      // Créer l'objet badge scanné
       const scanned: ScannedBadge = {
         id: data.id,
         badgeCode: data.badge_code,
@@ -318,7 +318,7 @@ export default function BadgeScannerPage() {
         scannedAt: new Date()
       };
 
-      // Mettre Ã  jour l'Ã©tat
+      // Mettre à jour l'état
       setScannedBadge(scanned);
       setScanHistory(prev => [scanned, ...prev.slice(0, 49)]); // Garder les 50 derniers
 
@@ -340,12 +340,12 @@ export default function BadgeScannerPage() {
 
       // Messages d'erreur spÃ©cifiques
       if (err.message.includes('expired')) {
-        toast.error('Badge expirÃ©', {
+        toast.error('Badge expiré', {
           description: 'Ce badge n\'est plus valide'
         });
       } else if (err.message.includes('not active')) {
         toast.error('Badge inactif', {
-          description: 'Ce badge a Ã©tÃ© rÃ©voquÃ© ou n\'est pas actif'
+          description: 'Ce badge a été révoqué ou n\'est pas actif'
         });
       } else {
         toast.error('Badge invalide', {
@@ -376,10 +376,10 @@ export default function BadgeScannerPage() {
         created_at: new Date().toISOString()
       });
 
-      console.log('Lead enregistrÃ©:', badge.fullName);
+      console.log('Lead enregistré:', badge.fullName);
     } catch (err) {
       console.error('Erreur enregistrement lead:', err);
-      // Ne pas bloquer le scan si l'enregistrement du lead Ã©choue
+      // Ne pas bloquer le scan si l'enregistrement du lead échoue
     }
   };
 
@@ -399,7 +399,7 @@ export default function BadgeScannerPage() {
   };
 
   /**
-   * Reset du badge scannÃ© (pour en scanner un autre)
+   * Reset du badge scanné (pour en scanner un autre)
    */
   const resetScannedBadge = () => {
     setScannedBadge(null);
@@ -409,7 +409,7 @@ export default function BadgeScannerPage() {
   };
 
   /**
-   * Rendu de la badge scannÃ©
+   * Rendu de la badge scanné
    */
   const renderScannedBadge = (badge: ScannedBadge) => {
     const isValid = badge.status === 'active' && new Date(badge.validUntil) > new Date();
@@ -562,7 +562,7 @@ export default function BadgeScannerPage() {
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4 flex items-start">
                   <AlertCircle className="h-5 w-5 text-red-600 mr-3 flex-shrink-0 mt-0.5" />
                   <div className="text-sm text-red-800">
-                    <strong>AccÃ¨s camÃ©ra refusÃ©.</strong> Veuillez autoriser l'accÃ¨s Ã  la camÃ©ra dans les paramÃ¨tres de votre navigateur.
+                    <strong>Accès caméra refusé.</strong> Veuillez autoriser l'accès à la caméra dans les paramètres de votre navigateur.
                   </div>
                 </div>
               )}
@@ -598,7 +598,7 @@ export default function BadgeScannerPage() {
                     className="flex-1"
                     onClick={stopScanner}
                   >
-                    ArrÃªter le scanner
+                    Arrêter le scanner
                   </Button>
                 )}
               </div>
@@ -622,7 +622,7 @@ export default function BadgeScannerPage() {
               {scanHistory.length === 0 ? (
                 <div className="text-center py-12 text-gray-500">
                   <QrCode className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                  <p>Aucun badge scannÃ©</p>
+                  <p>Aucun badge scanné</p>
                 </div>
               ) : (
                 <div className="space-y-3 max-h-[600px] overflow-y-auto">

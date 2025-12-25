@@ -60,55 +60,73 @@ test.describe('🤝 PARTENAIRE - INSCRIPTION COMPLÈTE', () => {
   test('SCÉNARIO: Choix Offre -> Inscription -> Paiement -> Validation Admin -> Dashboard', async ({ page }) => {
     const testEmail = generateTestEmail();
 
-    // --- ÉTAPE 1: CHOIX DE L'OFFRE PARTENAIRE ---
-    console.log('📍 ÉTAPE 1: Choix de l\'offre partenaire');
-    await page.goto(`${BASE_URL}/partner/subscription`);
+    // --- ÉTAPE 1: PAGE PARTENARIAT - PRÉSENTATION DES OFFRES ---
+    console.log('📍 ÉTAPE 1: Page Plans d\'Abonnement Partenaire');
+    await page.goto(`${BASE_URL}/partnership`);
     await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(2000);
+
+    // 📸 SCREENSHOT 1: Page partenariat / plans d'abonnement
+    await page.screenshot({ path: 'screenshoots/inscription partenaire/1-page-partenariat.png', fullPage: true });
+    console.log('✅ Screenshot 1: Page partenariat capturé');
+
+    // Pause pour debugger
+    console.log('⏸️ PAUSE - Vérifiez la page partenariat...');
+    await page.waitForTimeout(3000);
+
+    // Scroll pour voir les offres
+    await page.evaluate(() => window.scrollTo(0, 500));
     await page.waitForTimeout(1000);
 
-    // Vérifier que les offres partenaires sont visibles
-    const hasPartnerOptions = await page.locator('text=/Musée|Silver|Gold|Platinium|Partenaire/i').first().isVisible({ timeout: 10000 });
-    expect(hasPartnerOptions).toBe(true);
+    // 📸 SCREENSHOT 1b: Offres partenaires visibles
+    await page.screenshot({ path: 'screenshoots/inscription partenaire/1b-offres-partenaires.png', fullPage: true });
+    console.log('✅ Screenshot 1b: Offres partenaires capturé');
 
-    // 📸 SCREENSHOT 1: Page choix offre partenaire
-    await page.screenshot({ path: 'screenshots/inscription-partenaire/1-choix-offre.png', fullPage: true });
-
-    // Scroll pour voir toutes les offres
-    await page.evaluate(() => window.scrollTo(0, 300));
-    await page.waitForTimeout(500);
-
-    // 📸 SCREENSHOT 1b: Toutes les offres visibles
-    await page.screenshot({ path: 'screenshots/inscription-partenaire/1b-toutes-offres.png', fullPage: true });
-
-    // Hover sur l'offre Gold
-    const goldCard = page.locator('text=/Gold|🥇/i').first();
-    if (await goldCard.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await goldCard.hover();
-      await page.waitForTimeout(500);
-    }
-
-    // 📸 SCREENSHOT 1c: Hover sur offre Gold
-    await page.screenshot({ path: 'screenshots/inscription-partenaire/1c-hover-gold.png', fullPage: true });
-
-    // Cliquer sur le bouton d'inscription pour une offre
-    const inscriptionBtn = page.locator('button:has-text("Devenir Partenaire"), button:has-text("Choisir"), button:has-text("Sélectionner"), a:has-text("S\'inscrire")').first();
-    if (await inscriptionBtn.isVisible()) {
-      await inscriptionBtn.click();
+    // --- ÉTAPE 2: NAVIGATION VERS INSCRIPTION PARTENAIRE ---
+    console.log('📍 ÉTAPE 2: Navigation vers inscription partenaire');
+    
+    // Chercher et cliquer sur bouton "Devenir Partenaire" ou similaire
+    const partnerBtn = page.locator('button:has-text("Devenir Partenaire"), a:has-text("Devenir Partenaire"), button:has-text("Contactez-nous")').first();
+    
+    if (await partnerBtn.isVisible({ timeout: 5000 }).catch(() => false)) {
+      console.log('🔘 Clic sur bouton Devenir Partenaire');
+      await partnerBtn.click();
+      await page.waitForTimeout(2000);
     } else {
-      // Aller directement à la page d'inscription partenaire
-      await page.goto(`${BASE_URL}/register`);
+      // Navigation directe vers inscription partenaire
+      console.log('➡️ Navigation directe vers /register/partner');
+      await page.goto(`${BASE_URL}/register/partner`);
+      await page.waitForTimeout(2000);
     }
 
-    // --- ÉTAPE 2: FORMULAIRE D'INSCRIPTION PARTENAIRE ---
-    console.log('📍 ÉTAPE 2: Formulaire d\'inscription partenaire');
+    // --- ÉTAPE 3: FORMULAIRE D'INSCRIPTION PARTENAIRE ---
+    console.log('📍 ÉTAPE 3: Page "Devenir Partenaire SIPORTS 2026"');
     await page.waitForLoadState('domcontentloaded');
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
 
-    // 📸 SCREENSHOT 2a: Page inscription vide
-    await page.screenshot({ path: 'screenshots/inscription-partenaire/2a-inscription-vide.png', fullPage: true });
+    // Vérifier qu'on est sur la page d'inscription
+    const registerTitle = page.locator('text=/Inscription|Register|Devenir Partenaire|SIPORTS 2026/i').first();
+    await expect(registerTitle).toBeVisible({ timeout: 10000 });
 
-    // Vérifier si c'est un wizard multi-étapes
-    const isWizard = await page.locator('button:has-text("Suivant")').isVisible({ timeout: 3000 }).catch(() => false);
+    // 📸 SCREENSHOT 2: Page inscription partenaire vide
+    await page.screenshot({ path: 'screenshoots/inscription partenaire/2-formulaire-inscription-vide.png', fullPage: true });
+    console.log('✅ Screenshot 2: Formulaire inscription vide capturé');
+
+    // Pause pour debugger
+    console.log('⏸️ PAUSE - Vérifiez le formulaire d\'inscription...');
+    await page.waitForTimeout(3000);
+
+    // Sélectionner le type de compte "Partenaire" si visible
+    const partnerRadio = page.locator('input[type="radio"][value="partner"], input[value="partner"], [data-testid="account-type-partner"]');
+    if (await partnerRadio.isVisible({ timeout: 3000 }).catch(() => false)) {
+      console.log('🔘 Sélection du type: Partenaire');
+      await partnerRadio.click();
+      await page.waitForTimeout(1000);
+      
+      // 📸 SCREENSHOT 2b: Type partenaire sélectionné
+      await page.screenshot({ path: 'screenshoots/inscription partenaire/2b-type-partenaire-selectionne.png', fullPage: true });
+      console.log('✅ Screenshot 2b: Type partenaire sélectionné capturé');
+    }
 
     if (isWizard) {
       // === WIZARD MULTI-ÉTAPES ===

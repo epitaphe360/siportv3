@@ -8,9 +8,9 @@ export default defineConfig({
   testDir: 'e2e',
   testMatch: ['**/*.spec.ts'],
   timeout: 30000, // 30 secondes par test (plus rapide)
-  workers: 3, // 3 workers en parallèle
+  workers: 1, // 1 worker pour éviter les conflits de screenshots
   retries: 0, // Pas de retry pour aller plus vite
-  fullyParallel: true, // Parallélisation complète
+  fullyParallel: false, // Pas de parallélisation
   maxFailures: 100, // Continuer plus longtemps pour voir tous les bugs
   reporter: [
     ['list'],
@@ -24,7 +24,8 @@ export default defineConfig({
     actionTimeout: 10000,
     navigationTimeout: 60000,
     trace: 'off', // Désactivé pour la vitesse
-    screenshot: 'only-on-failure',
+    screenshot: 'on', // Prendre tous les screenshots
+    screenshotDir: 'screenshoots/inscription partenaire',
     video: 'off',
   },
   webServer: {

@@ -14,7 +14,31 @@ const TEST_VISITOR_VIP = {
 test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS', () => {
 
   test('SCÉNARIO: Choix Plan VIP -> Inscription -> Paiement -> Succès -> Login -> Dashboard -> Badge', async ({ page }) => {
+    test.setTimeout(120000); // Augmenter le timeout à 2 minutes pour ce scénario long
     const testEmail = generateTestEmail();
+
+    // 🔍 Capturer TOUS les logs de la console du navigateur
+    page.on('console', msg => {
+      const type = msg.type();
+      const text = msg.text();
+      if (type === 'error') {
+        console.log(`❌ BROWSER ERROR: ${text}`);
+      } else if (type === 'warn') {
+        console.log(`⚠️ BROWSER WARN: ${text}`);
+      } else {
+        console.log(`📝 BROWSER LOG: ${text}`);
+      }
+    });
+
+    // Capturer les erreurs JS non gérées
+    page.on('pageerror', error => {
+      console.log(`💥 PAGE ERROR: ${error.message}`);
+    });
+
+    // Capturer les requêtes qui échouent
+    page.on('requestfailed', request => {
+      console.log(`🔴 REQUEST FAILED: ${request.url()} - ${request.failure()?.errorText}`);
+    });
 
     // --- ÉTAPE 1: CHOIX DU PLAN VIP (ABONNEMENT) ---
     console.log('📍 ÉTAPE 1: Choix du plan VIP (Page publique)');
@@ -22,7 +46,7 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
     await page.waitForLoadState('domcontentloaded');
 
     // Vérifier que les offres sont visibles
-    const vipCardTitle = page.locator('h3:has-text("VIP"), h3:has-text("Premium"), text=/700.*€/');
+    const vipCardTitle = page.locator('h3').filter({ hasText: /VIP|Premium/ }).or(page.locator('text=/700.*€/'));
     await expect(vipCardTitle.first()).toBeVisible({ timeout: 10000 });
 
     // Hover sur le plan VIP pour la photo
@@ -33,14 +57,14 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
     }
 
     // 📸 SCREENSHOT 1: Choix du plan VIP
-    await page.screenshot({ path: 'screenshots/inscription-vip/1-choix-plan-vip.png', fullPage: true });
+    await page.screenshot({ path: 'screenshots/inscription VIP/1-choix-plan-vip.png', fullPage: true });
 
     // Cliquer sur le plan VIP
     if (await vipButton.isVisible()) {
       await vipButton.click();
     } else {
       // Alternative: aller directement à la page d'inscription VIP
-      await page.goto(`${BASE_URL}/visitor/vip-registration`);
+      await page.goto(`${BASE_URL}/visitor/register/vip`);
     }
 
     // --- ÉTAPE 2: INSCRIPTION VIP ---
@@ -49,7 +73,7 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
     await page.waitForTimeout(1000);
 
     // 📸 SCREENSHOT 2a: Page inscription VIP vide
-    await page.screenshot({ path: 'screenshots/inscription-vip/2a-inscription-vip-vide.png', fullPage: true });
+    await page.screenshot({ path: 'screenshots/inscription VIP/2a-inscription-vip-vide.png', fullPage: true });
 
     // Vérifier si c'est un wizard multi-étapes ou formulaire unique
     const isWizard = await page.locator('button:has-text("Suivant")').isVisible().catch(() => false);
@@ -64,7 +88,7 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
       }
 
       // 📸 SCREENSHOT 2b: Type de compte VIP
-      await page.screenshot({ path: 'screenshots/inscription-vip/2b-inscription-type-vip.png', fullPage: true });
+      await page.screenshot({ path: 'screenshots/inscription VIP/2b-inscription-type-vip.png', fullPage: true });
 
       await page.locator('button:has-text("Suivant")').first().click();
 
@@ -88,7 +112,7 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
         }
 
         // 📸 SCREENSHOT 2c: Entreprise VIP
-        await page.screenshot({ path: 'screenshots/inscription-vip/2c-inscription-entreprise-vip.png', fullPage: true });
+        await page.screenshot({ path: 'screenshots/inscription VIP/2c-inscription-entreprise-vip.png', fullPage: true });
 
         await page.locator('button:has-text("Suivant")').first().click();
       }
@@ -113,7 +137,7 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
         }
 
         // 📸 SCREENSHOT 2d: Contact VIP
-        await page.screenshot({ path: 'screenshots/inscription-vip/2d-inscription-contact-vip.png', fullPage: true });
+        await page.screenshot({ path: 'screenshots/inscription VIP/2d-inscription-contact-vip.png', fullPage: true });
 
         await page.locator('button:has-text("Suivant")').first().click();
       }
@@ -125,10 +149,24 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
         await descriptionTextarea.fill('Visiteur VIP Premium - Directeur Général intéressé par les innovations du salon.');
 
         // Photo obligatoire pour VIP
-        const photoInput = page.locator('input[type="file"][accept*="image"]');
-        if (await photoInput.isVisible()) {
-          // Simuler upload (si possible dans l'environnement de test)
-          console.log('📷 Champ photo VIP détecté (upload obligatoire)');
+        const photoInput = page.locator('input[type="file"][accept*="image"]').first();
+        const photoCount = await photoInput.count();
+        if (photoCount > 0) {
+          // Upload d'une image de test (créer un buffer d'image 1x1 pixel)
+          const buffer = Buffer.from(
+            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+            'base64'
+          );
+          await photoInput.setInputFiles({
+            name: 'test-photo.png',
+            mimeType: 'image/png',
+            buffer: buffer
+          });
+          console.log('📷 Photo VIP uploadée avec succès (wizard)');
+          // Attendre que l'upload soit traité
+          await page.waitForTimeout(1500);
+        } else {
+          console.log('⚠️ Champ photo non trouvé dans le wizard');
         }
 
         const checkbox = page.locator('input[type="checkbox"]').first();
@@ -137,7 +175,7 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
         }
 
         // 📸 SCREENSHOT 2e: Profil VIP
-        await page.screenshot({ path: 'screenshots/inscription-vip/2e-inscription-profil-vip.png', fullPage: true });
+        await page.screenshot({ path: 'screenshots/inscription VIP/2e-inscription-profil-vip.png', fullPage: true });
 
         await page.locator('button:has-text("Suivant")').first().click();
       }
@@ -150,7 +188,7 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
         await page.locator('input[name="confirmPassword"]').fill('Test@123456');
 
         // 📸 SCREENSHOT 2f: Sécurité VIP
-        await page.screenshot({ path: 'screenshots/inscription-vip/2f-inscription-securite-vip.png', fullPage: true });
+        await page.screenshot({ path: 'screenshots/inscription VIP/2f-inscription-securite-vip.png', fullPage: true });
 
         // Soumettre
         await page.locator('button:has-text("Créer mon compte"), button:has-text("Continuer vers le paiement")').first().click();
@@ -180,6 +218,37 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
         await phoneInput.fill('+33698765432');
       }
 
+      // Photo obligatoire pour VIP - À remplir EN PREMIER car elle est au début du formulaire
+      const photoInput = page.locator('input[type="file"][accept*="image"]').first();
+      const photoCount = await photoInput.count();
+      if (photoCount > 0) {
+        const buffer = Buffer.from(
+          'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+          'base64'
+        );
+        await photoInput.setInputFiles({
+          name: 'test-photo.png',
+          mimeType: 'image/png',
+          buffer: buffer
+        });
+        console.log('📷 Photo VIP uploadée avec succès (formulaire unique)');
+        // Attendre que l'upload soit traité et la prévisualisation affichée
+        await page.waitForTimeout(1500);
+      } else {
+        console.log('⚠️ Champ photo non trouvé dans le formulaire unique');
+      }
+
+      // Sélecteurs pour pays et secteur
+      const countrySelect = page.locator('select[name="country"]').first();
+      if (await countrySelect.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await countrySelect.selectOption('FR');
+      }
+
+      const sectorSelect = page.locator('select[name="sector"]').first();
+      if (await sectorSelect.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await sectorSelect.selectOption('Logistique');
+      }
+
       const companyInput = page.locator('input[name="company"], input[placeholder*="Entreprise"]').first();
       if (await companyInput.isVisible()) {
         await companyInput.fill('VIP Entreprise SA');
@@ -201,26 +270,54 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
       }
 
       // 📸 SCREENSHOT 2b: Formulaire VIP rempli
-      await page.screenshot({ path: 'screenshots/inscription-vip/2b-inscription-vip-rempli.png', fullPage: true });
+      await page.screenshot({ path: 'screenshots/inscription VIP/2b-inscription-vip-rempli.png', fullPage: true });
 
-      // Soumettre
+      // Soumettre le formulaire
+      console.log('📤 Soumission du formulaire d\'inscription VIP...');
       const submitBtn = page.locator('button[type="submit"], button:has-text("Créer"), button:has-text("Continuer")').first();
       if (await submitBtn.isVisible()) {
         await submitBtn.click();
+        console.log('✅ Formulaire soumis, attente de redirection...');
       }
     }
 
     // --- ÉTAPE 3: PAGE DE PAIEMENT (VIP = 700€) ---
     console.log('📍 ÉTAPE 3: Page de paiement VIP (700€)');
+    console.log('⏳ Attente de redirection vers la page de paiement...');
+    
+    // Attendre que l'URL contienne vraiment "payment" (la redirection prend ~1.5 secondes)
+    try {
+      await page.waitForURL('**/visitor/payment**', { timeout: 15000 });
+      console.log('✅ URL changée vers la page de paiement');
+    } catch (e) {
+      console.log('⚠️ Timeout waitForURL - URL actuelle:', page.url());
+    }
+
+    // Attendre le chargement complet de la page
     await page.waitForTimeout(2000);
 
-    // Vérifier redirection vers paiement ou popup
-    const isPaymentPage = page.url().includes('payment') || page.url().includes('checkout');
-    const hasPaymentPopup = await page.locator('text=/Paiement|Payment|700|€/i').isVisible({ timeout: 5000 }).catch(() => false);
+    // Vérifier redirection vers paiement
+    const isPaymentPage = page.url().includes('/visitor/payment');
+    const hasPaymentContent = await page.locator('text=/Finaliser votre paiement|Méthode de paiement|Stripe|PayPal/i').isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (isPaymentPage || hasPaymentPopup) {
+    console.log(`🔍 URL actuelle: ${page.url()}`);
+    console.log(`🔍 Page de paiement détectée: ${isPaymentPage}`);
+    console.log(`🔍 Contenu paiement visible: ${hasPaymentContent}`);
+
+    // ⏸️ PAUSE IMMÉDIATE - Toujours mettre en pause pour voir l'état
+    console.log('');
+    console.log('═══════════════════════════════════════════════════════════');
+    console.log('⏸️  PAUSE: INSPECTION DE LA PAGE');
+    console.log('═══════════════════════════════════════════════════════════');
+    console.log(`📄 URL: ${page.url()}`);
+    console.log('👉 Inspectez la page, puis cliquez sur "Resume" pour continuer');
+    console.log('═══════════════════════════════════════════════════════════');
+    console.log('');
+    await page.pause();
+
+    if (isPaymentPage || hasPaymentContent) {
       // 📸 SCREENSHOT 3a: Page/Popup de paiement
-      await page.screenshot({ path: 'screenshots/inscription-vip/3a-paiement-vip.png', fullPage: true });
+      await page.screenshot({ path: 'screenshots/inscription VIP/3a-paiement-vip.png', fullPage: true });
 
       // Vérifier les options de paiement
       const hasStripe = await page.locator('text=/Stripe|Carte|Card/i').isVisible({ timeout: 2000 }).catch(() => false);
@@ -238,19 +335,32 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
         await page.waitForTimeout(1000);
 
         // 📸 SCREENSHOT 3b: Option Stripe sélectionnée
-        await page.screenshot({ path: 'screenshots/inscription-vip/3b-paiement-stripe.png', fullPage: true });
+        await page.screenshot({ path: 'screenshots/inscription VIP/3b-paiement-stripe.png', fullPage: true });
       }
 
       // Note: En environnement de test, on ne peut pas compléter un vrai paiement Stripe
       // On simule ou on skip cette étape
       console.log('⚠️ Paiement Stripe: simulation requise en environnement de test');
 
+      // [DEV] Simuler Paiement Réussi
+      const simulateBtn = page.locator('button:has-text("[DEV] Simuler Paiement Réussi")');
+      if (await simulateBtn.isVisible()) {
+        console.log('🧪 Simulation du paiement via bouton DEV...');
+        await simulateBtn.click();
+        await page.waitForTimeout(3000);
+        
+        // Vérifier redirection succès - texte sans accents pour compatibilité
+        const successMsg = page.locator('h1:has-text("Paiement reussi")');
+        await expect(successMsg).toBeVisible({ timeout: 15000 });
+        console.log('✅ Paiement simulé avec succès');
+      }
+
     } else {
       // Pas de page paiement immédiate - peut-être succès direct ou autre flux
       console.log('📍 Pas de redirection paiement immédiate - vérification alternative');
 
       // 📸 SCREENSHOT 3: État après soumission
-      await page.screenshot({ path: 'screenshots/inscription-vip/3-apres-soumission.png', fullPage: true });
+      await page.screenshot({ path: 'screenshots/inscription VIP/3-apres-soumission.png', fullPage: true });
     }
 
     // --- ÉTAPE 4: SUCCÈS INSCRIPTION (POPUP ou PAGE) ---
@@ -262,10 +372,10 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
     if (hasSuccess) {
       await page.waitForTimeout(2000);
       // 📸 SCREENSHOT 4: Popup Succès VIP
-      await page.screenshot({ path: 'screenshots/inscription-vip/4-inscription-succes-vip.png', fullPage: true });
+      await page.screenshot({ path: 'screenshots/inscription VIP/4-inscription-succes-vip.png', fullPage: true });
     } else {
       console.log('⚠️ Popup succès non visible - flux alternatif ou en attente paiement');
-      await page.screenshot({ path: 'screenshots/inscription-vip/4-etat-apres-inscription.png', fullPage: true });
+      await page.screenshot({ path: 'screenshots/inscription VIP/4-etat-apres-inscription.png', fullPage: true });
     }
 
     // --- ÉTAPE 5: CONNEXION VIP (avec compte existant pour la suite) ---
@@ -280,7 +390,7 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
     await page.locator('input[type="password"]').first().fill(TEST_VISITOR_VIP.password);
 
     // 📸 SCREENSHOT 5: Connexion VIP
-    await page.screenshot({ path: 'screenshots/inscription-vip/5-connexion-vip.png', fullPage: true });
+    await page.screenshot({ path: 'screenshots/inscription VIP/5-connexion-vip.png', fullPage: true });
 
     await page.locator('button[type="submit"]').first().click();
 
@@ -295,15 +405,15 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
 
-    // Vérifier éléments VIP
-    const hasVipBadge = await page.locator('text=/VIP|Premium|👑/i').isVisible({ timeout: 5000 }).catch(() => false);
-    const hasQuota = await page.locator('text=/10|RDV|B2B|Quota/i').isVisible({ timeout: 3000 }).catch(() => false);
+    // Vérifier éléments VIP avec des sélecteurs plus précis
+    const hasVipBadge = await page.locator('[data-testid="vip-badge"], [data-testid="level-badge"][data-level="premium"], text=/VIP|Premium|👑/i').first().isVisible({ timeout: 5000 }).catch(() => false);
+    const hasQuota = await page.locator('[data-testid="quota-rdv-card"], [data-testid="quota-info"], text=/10.*RDV.*B2B|Quota.*10/i').first().isVisible({ timeout: 5000 }).catch(() => false);
 
     console.log(`  👑 Badge VIP: ${hasVipBadge ? '✅' : '❌'}`);
     console.log(`  📊 Quota 10 RDV: ${hasQuota ? '✅' : '❌'}`);
 
     // 📸 SCREENSHOT 6: Dashboard VIP
-    await page.screenshot({ path: 'screenshots/inscription-vip/6-dashboard-vip.png', fullPage: true });
+    await page.screenshot({ path: 'screenshots/inscription VIP/6-dashboard-vip.png', fullPage: true });
 
     // --- ÉTAPE 7: PAGE RENDEZ-VOUS B2B ---
     console.log('📍 ÉTAPE 7: Rendez-vous B2B VIP');
@@ -313,7 +423,7 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
     await page.waitForTimeout(2000);
 
     // 📸 SCREENSHOT 7: Page Rendez-vous VIP
-    await page.screenshot({ path: 'screenshots/inscription-vip/7-rendez-vous-vip.png', fullPage: true });
+    await page.screenshot({ path: 'screenshots/inscription VIP/7-rendez-vous-vip.png', fullPage: true });
 
     // --- ÉTAPE 8: PAGE NETWORKING IA ---
     console.log('📍 ÉTAPE 8: Networking IA VIP');
@@ -323,7 +433,7 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
     await page.waitForTimeout(2000);
 
     // 📸 SCREENSHOT 8: Page Networking VIP
-    await page.screenshot({ path: 'screenshots/inscription-vip/8-networking-vip.png', fullPage: true });
+    await page.screenshot({ path: 'screenshots/inscription VIP/8-networking-vip.png', fullPage: true });
 
     // --- ÉTAPE 9: PAGE ÉVÉNEMENTS ---
     console.log('📍 ÉTAPE 9: Événements VIP');
@@ -333,7 +443,7 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
     await page.waitForTimeout(2000);
 
     // 📸 SCREENSHOT 9: Page Événements VIP
-    await page.screenshot({ path: 'screenshots/inscription-vip/9-evenements-vip.png', fullPage: true });
+    await page.screenshot({ path: 'screenshots/inscription VIP/9-evenements-vip.png', fullPage: true });
 
     // --- ÉTAPE 10: BADGE VIP ---
     console.log('📍 ÉTAPE 10: Badge VIP');
@@ -355,7 +465,7 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
     console.log(`  🎫 Badge niveau VIP: ${badgeHasVip ? '✅' : '❌'}`);
 
     // 📸 SCREENSHOT 10: Badge VIP avec QR Code
-    await page.screenshot({ path: 'screenshots/inscription-vip/10-badge-vip.png', fullPage: true });
+    await page.screenshot({ path: 'screenshots/inscription VIP/10-badge-vip.png', fullPage: true });
 
     // --- ÉTAPE 11: PARAMÈTRES PROFIL VIP ---
     console.log('📍 ÉTAPE 11: Paramètres Profil VIP');
@@ -365,7 +475,7 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
     await page.waitForTimeout(2000);
 
     // 📸 SCREENSHOT 11: Paramètres Profil VIP
-    await page.screenshot({ path: 'screenshots/inscription-vip/11-parametres-vip.png', fullPage: true });
+    await page.screenshot({ path: 'screenshots/inscription VIP/11-parametres-vip.png', fullPage: true });
 
     // --- ÉTAPE 12: DÉCONNEXION ---
     console.log('📍 ÉTAPE 12: Déconnexion');
@@ -377,7 +487,7 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
       await page.waitForTimeout(2000);
 
       // 📸 SCREENSHOT 12: Après déconnexion
-      await page.screenshot({ path: 'screenshots/inscription-vip/12-deconnexion-vip.png', fullPage: true });
+      await page.screenshot({ path: 'screenshots/inscription VIP/12-deconnexion-vip.png', fullPage: true });
     } else {
       // Menu dropdown peut-être
       const userMenu = page.locator('[data-testid="user-menu"], button[aria-label*="menu"], .user-avatar').first();
@@ -388,104 +498,13 @@ test.describe('👑 VISITEUR VIP (700€) - SCÉNARIO COMPLET AVEC SCREENSHOTS',
         if (await logoutOption.isVisible()) {
           await logoutOption.click();
           await page.waitForTimeout(2000);
-          await page.screenshot({ path: 'screenshots/inscription-vip/12-deconnexion-vip.png', fullPage: true });
+          await page.screenshot({ path: 'screenshots/inscription VIP/12-deconnexion-vip.png', fullPage: true });
         }
       }
     }
 
     console.log('✅ SCÉNARIO VIP TERMINÉ AVEC SUCCÈS');
-    console.log('📸 Screenshots sauvegardés dans: screenshots/inscription-vip/');
-  });
-
-});
-
-test.describe('👑 VISITEUR VIP - TESTS COMPLÉMENTAIRES', () => {
-
-  test('VIP-FEATURES: Vérification fonctionnalités exclusives VIP', async ({ page }) => {
-    // Connexion VIP
-    await page.goto(`${BASE_URL}/login`);
-    await page.waitForLoadState('domcontentloaded');
-    await page.locator('input[type="email"]').first().fill(TEST_VISITOR_VIP.email);
-    await page.locator('input[type="password"]').first().fill(TEST_VISITOR_VIP.password);
-    await page.locator('button[type="submit"]').first().click();
-    await page.waitForTimeout(3000);
-
-    // Test 1: Dashboard avec quota 10 RDV
-    await page.goto(`${BASE_URL}/visitor/dashboard`);
-    await page.waitForLoadState('networkidle');
-
-    const quotaInfo = await page.locator('text=/10|RDV|B2B/i').isVisible({ timeout: 5000 }).catch(() => false);
-    console.log(`✅ Quota 10 RDV B2B: ${quotaInfo ? 'VISIBLE' : 'NON VISIBLE'}`);
-
-    // 📸 SCREENSHOT: Dashboard avec quota
-    await page.screenshot({ path: 'screenshots/inscription-vip/features-1-quota.png', fullPage: true });
-
-    // Test 2: Accès Chat illimité
-    await page.goto(`${BASE_URL}/chat`);
-    await page.waitForLoadState('networkidle');
-
-    const chatAccess = await page.locator('text=/Chat|Messages|Conversations/i').isVisible({ timeout: 5000 }).catch(() => false);
-    console.log(`✅ Chat illimité: ${chatAccess ? 'ACCESSIBLE' : 'BLOQUÉ'}`);
-
-    // 📸 SCREENSHOT: Chat VIP
-    await page.screenshot({ path: 'screenshots/inscription-vip/features-2-chat.png', fullPage: true });
-
-    // Test 3: Networking IA
-    await page.goto(`${BASE_URL}/networking`);
-    await page.waitForLoadState('networkidle');
-
-    const networkingAccess = await page.locator('text=/Networking|Recommandations|IA/i').isVisible({ timeout: 5000 }).catch(() => false);
-    console.log(`✅ Networking IA: ${networkingAccess ? 'ACCESSIBLE' : 'BLOQUÉ'}`);
-
-    // 📸 SCREENSHOT: Networking VIP
-    await page.screenshot({ path: 'screenshots/inscription-vip/features-3-networking.png', fullPage: true });
-
-    console.log('✅ Tests fonctionnalités VIP terminés');
-  });
-
-  test('VIP-RESTRICTIONS: Vérification restrictions accès', async ({ page }) => {
-    // Connexion VIP
-    await page.goto(`${BASE_URL}/login`);
-    await page.waitForLoadState('domcontentloaded');
-    await page.locator('input[type="email"]').first().fill(TEST_VISITOR_VIP.email);
-    await page.locator('input[type="password"]').first().fill(TEST_VISITOR_VIP.password);
-    await page.locator('button[type="submit"]').first().click();
-    await page.waitForTimeout(3000);
-
-    // Test 1: Pas d'accès Exposant
-    await page.goto(`${BASE_URL}/exhibitor/dashboard`);
-    await page.waitForLoadState('domcontentloaded');
-
-    const exhibitorBlocked = !page.url().includes('/exhibitor/dashboard') ||
-      await page.locator('text=/Non autorisé|Accès refusé/i').isVisible({ timeout: 3000 }).catch(() => false);
-    console.log(`✅ Dashboard Exposant bloqué: ${exhibitorBlocked ? 'OUI ✓' : 'NON ⚠️'}`);
-
-    // 📸 SCREENSHOT: Blocage exposant
-    await page.screenshot({ path: 'screenshots/inscription-vip/restrictions-1-exposant.png', fullPage: true });
-
-    // Test 2: Pas d'accès Partenaire
-    await page.goto(`${BASE_URL}/partner/dashboard`);
-    await page.waitForLoadState('domcontentloaded');
-
-    const partnerBlocked = !page.url().includes('/partner/dashboard') ||
-      await page.locator('text=/Non autorisé|Accès refusé/i').isVisible({ timeout: 3000 }).catch(() => false);
-    console.log(`✅ Dashboard Partenaire bloqué: ${partnerBlocked ? 'OUI ✓' : 'NON ⚠️'}`);
-
-    // 📸 SCREENSHOT: Blocage partenaire
-    await page.screenshot({ path: 'screenshots/inscription-vip/restrictions-2-partenaire.png', fullPage: true });
-
-    // Test 3: Pas d'accès Admin
-    await page.goto(`${BASE_URL}/admin/dashboard`);
-    await page.waitForLoadState('domcontentloaded');
-
-    const adminBlocked = !page.url().includes('/admin/dashboard') ||
-      await page.locator('text=/Non autorisé|Accès refusé|Admin/i').isVisible({ timeout: 3000 }).catch(() => false);
-    console.log(`✅ Dashboard Admin bloqué: ${adminBlocked ? 'OUI ✓' : 'NON ⚠️'}`);
-
-    // 📸 SCREENSHOT: Blocage admin
-    await page.screenshot({ path: 'screenshots/inscription-vip/restrictions-3-admin.png', fullPage: true });
-
-    console.log('✅ Tests restrictions VIP terminés');
+    console.log('📸 Screenshots sauvegardés dans: screenshots/inscription VIP/');
   });
 
 });

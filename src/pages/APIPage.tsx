@@ -20,7 +20,7 @@ export default function APIPage() {
             API SIPORTS
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            IntÃ©grez les donnÃ©es de SIPORTS 2026 dans vos applications et systÃ¨mes d'information.
+            Intégrez les données de SIPORTS 2026 dans vos applications et systèmes d'information.
           </p>
         </div>
 
@@ -34,13 +34,13 @@ export default function APIPage() {
               API RESTful
             </h3>
             <p className="text-gray-600 mb-6">
-              Interface REST complÃ¨te pour accÃ©der aux donnÃ©es des exposants, visiteurs et Ã©vÃ©nements.
+              Interface REST complète pour accéder aux données des exposants, visiteurs et événements.
             </p>
             <ul className="text-left text-sm text-gray-600 space-y-1">
-              <li>â€¢ Endpoints documentÃ©s</li>
-              <li>â€¢ Format JSON standard</li>
-              <li>â€¢ Authentification JWT</li>
-              <li>â€¢ Rate limiting intelligent</li>
+              <li>• Endpoints documentés</li>
+              <li>• Format JSON standard</li>
+              <li>• Authentification JWT</li>
+              <li>• Rate limiting intelligent</li>
             </ul>
           </Card>
 
@@ -49,16 +49,16 @@ export default function APIPage() {
               <Zap className="h-8 w-8 text-green-600" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-4">
-              Temps rÃ©el
+              Temps réel
             </h3>
             <p className="text-gray-600 mb-6">
-              WebSockets pour les mises Ã  jour en temps rÃ©el des donnÃ©es et notifications.
+              WebSockets pour les mises à jour en temps réel des données et notifications.
             </p>
             <ul className="text-left text-sm text-gray-600 space-y-1">
-              <li>â€¢ Notifications push</li>
-              <li>â€¢ Mises Ã  jour live</li>
-              <li>â€¢ Ã‰vÃ©nements temps rÃ©el</li>
-              <li>â€¢ Synchronisation automatique</li>
+              <li>• Notifications push</li>
+              <li>• Mises à jour live</li>
+              <li>• Événements temps réel</li>
+              <li>• Synchronisation automatique</li>
             </ul>
           </Card>
 
@@ -67,16 +67,16 @@ export default function APIPage() {
               <Key className="h-8 w-8 text-purple-600" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-4">
-              SÃ©curitÃ©
+              Sécurité
             </h3>
             <p className="text-gray-600 mb-6">
-              Protocoles de sÃ©curitÃ© avancÃ©s pour protÃ©ger vos donnÃ©es et intÃ©grations.
+              Protocoles de sécurité avancés pour protéger vos données et intégrations.
             </p>
             <ul className="text-left text-sm text-gray-600 space-y-1">
-              <li>â€¢ Chiffrement SSL/TLS</li>
-              <li>â€¢ Authentification OAuth 2.0</li>
-              <li>â€¢ Gestion des permissions</li>
-              <li>â€¢ Audit logs complets</li>
+              <li>• Chiffrement SSL/TLS</li>
+              <li>• Authentification OAuth 2.0</li>
+              <li>• Gestion des permissions</li>
+              <li>• Audit logs complets</li>
             </ul>
           </Card>
         </div>
@@ -89,7 +89,7 @@ export default function APIPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                DonnÃ©es des Exposants
+                Données des Exposants
               </h3>
               <div className="bg-gray-100 p-4 rounded-lg font-mono text-sm mb-4">
                 <div className="text-green-600">GET /api/exhibitors</div>
@@ -98,7 +98,7 @@ export default function APIPage() {
                 <div className="text-purple-600">PUT /api/exhibitors/{'{id}'}</div>
               </div>
               <p className="text-gray-600">
-                AccÃ©dez aux informations des exposants, leurs produits et services.
+                Accédez aux informations des exposants, leurs produits et services.
               </p>
             </div>
             <div>
@@ -112,7 +112,7 @@ export default function APIPage() {
                 <div className="text-red-600">DELETE /api/appointments/{'{id}'}</div>
               </div>
               <p className="text-gray-600">
-                GÃ©rez les rendez-vous entre visiteurs et exposants.
+                Gérez les rendez-vous entre visiteurs et exposants.
               </p>
             </div>
           </div>
@@ -121,18 +121,18 @@ export default function APIPage() {
         {/* Getting Started */}
         <Card className="p-8 mb-12">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
-            DÃ©marrage Rapide
+            Démarrage Rapide
           </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                1. Obtenir une clÃ© API
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                1. Obtenir une clé API
               </h3>
               <p className="text-gray-600 mb-4">
-                Contactez notre Ã©quipe pour obtenir vos identifiants d'API.
+                Contactez notre équipe pour obtenir vos identifiants d'API.
               </p>
               <Button onClick={handleAPIRequest} className="mb-4">
-                Demander une clÃ© API
+                Demander une clé API
               </Button>
             </div>
             <div>
