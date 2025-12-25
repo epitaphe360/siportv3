@@ -1952,24 +1952,41 @@ export class SupabaseService {
   // ==================== TIME SLOTS ====================
   static async getTimeSlotsByExhibitor(exhibitorId: string): Promise<TimeSlot[]> {
     if (!this.checkSupabaseConnection()) return [];
+    if (!exhibitorId) {
+      console.warn('[TIME_SLOTS] Exhibitor ID is empty');
+      return [];
+    }
+
     const safeSupabase = supabase!;
     try {
+      console.log(`[TIME_SLOTS] Fetching slots for exhibitor: ${exhibitorId}`);
       const { data, error } = await safeSupabase
         .from('time_slots')
         .select('*')
-        .eq('exhibitor_id', exhibitorId);
-      if (error) throw error;
+        .eq('exhibitor_id', exhibitorId)
+        .order('slot_date', { ascending: true })
+        .order('start_time', { ascending: true });
+
+      if (error) {
+        console.error('[TIME_SLOTS] Supabase error:', {
+          code: (error as any)?.code,
+          message: (error as any)?.message,
+          details: (error as any)?.details,
+          hint: (error as any)?.hint,
+          status: (error as any)?.status
+        });
+        throw error;
+      }
+
+      console.log(`[TIME_SLOTS] Successfully fetched ${data?.length || 0} slots`);
       return data || [];
     } catch (error) {
-      try {
-        console.error('Erreur lors de la récupération des créneaux horaires:', {
-          message: (error as any)?.message || String(error),
-          details: (error as any)?.details || (error as any)?.hint || null,
-          raw: JSON.stringify(error)
-        });
-      } catch (e) {
-        console.error('Erreur lors de la récupération des créneaux horaires (raw):', error);
-      }
+      console.error('[TIME_SLOTS] Error fetching time slots:', {
+        exhibitorId,
+        message: (error as any)?.message || String(error),
+        details: (error as any)?.details || (error as any)?.hint || null,
+        status: (error as any)?.status || 'unknown'
+      });
       return [];
     }
   }
