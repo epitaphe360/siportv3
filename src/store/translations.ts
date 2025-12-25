@@ -278,6 +278,51 @@ export const allTranslations = {
     'support.description': 'Nous sommes là pour vous aider',
     'support.contact_form': 'Formulaire de Contact',
     'support.faq': 'Questions Fréquentes',
+    
+    // Detail Pages
+    'detail.overview': 'Aperçu',
+    'detail.contact': 'Nous Contacter',
+    'detail.book_appointment': 'Réserver un Rendez-vous',
+    'detail.add_favorite': 'Ajouter aux Favoris',
+    'detail.share': 'Partager',
+    'detail.products': 'Produits',
+    'detail.services': 'Services',
+    'detail.team': 'Équipe',
+    
+    // Networking Page
+    'networking.title': 'Réseautage IA',
+    'networking.description': 'Connexions intelligentes basées sur votre profil',
+    'networking.recommendations': 'Recommandations',
+    'networking.connections': 'Mes Connexions',
+    'networking.favorites': 'Mes Favoris',
+    'networking.find_matches': 'Trouver des correspondances',
+    'networking.compatibility': 'Compatibilité',
+    
+    // API Page
+    'api.title': 'API SIPORTS',
+    'api.description': 'Intégrez SIPORTS dans vos applications',
+    'api.documentation': 'Documentation API',
+    'api.authentication': 'Authentification',
+    'api.endpoints': 'Points de Terminaison',
+    'api.rate_limiting': 'Limitation de Débit',
+    'api.webhook': 'Webhooks',
+    'api.get_started': 'Commencer',
+    
+    // Badge Page
+    'badge.title': 'Mon Badge',
+    'badge.badge_info': 'Informations du Badge',
+    'badge.access_level': 'Niveau d\'Accès',
+    'badge.qr_code': 'Code QR',
+    'badge.download': 'Télécharger',
+    'badge.print': 'Imprimer',
+    'badge.share': 'Partager',
+    
+    // Enhanced Networking
+    'enhanced_networking.title': 'Réseautage Avancé',
+    'enhanced_networking.ai_matching': 'Appariement IA',
+    'enhanced_networking.analytics': 'Analytique',
+    'enhanced_networking.compatibility_score': 'Score de Compatibilité',
+    'enhanced_networking.mutual_connections': 'Connexions Mutuelles',
   },
   
   en: {
@@ -545,8 +590,52 @@ export const allTranslations = {
     'support.description': 'We are here to help you',
     'support.contact_form': 'Contact Form',
     'support.faq': 'Frequently Asked Questions',
-  
-  ar: {
+    
+    // Detail Pages
+    'detail.overview': 'Overview',
+    'detail.contact': 'Contact Us',
+    'detail.book_appointment': 'Book Appointment',
+    'detail.add_favorite': 'Add to Favorites',
+    'detail.share': 'Share',
+    'detail.products': 'Products',
+    'detail.services': 'Services',
+    'detail.team': 'Team',
+    
+    // Networking Page
+    'networking.title': 'AI Networking',
+    'networking.description': 'Smart connections based on your profile',
+    'networking.recommendations': 'Recommendations',
+    'networking.connections': 'My Connections',
+    'networking.favorites': 'My Favorites',
+    'networking.find_matches': 'Find Matches',
+    'networking.compatibility': 'Compatibility',
+    
+    // API Page
+    'api.title': 'SIPORTS API',
+    'api.description': 'Integrate SIPORTS into your applications',
+    'api.documentation': 'API Documentation',
+    'api.authentication': 'Authentication',
+    'api.endpoints': 'Endpoints',
+    'api.rate_limiting': 'Rate Limiting',
+    'api.webhook': 'Webhooks',
+    'api.get_started': 'Get Started',
+    
+    // Badge Page
+    'badge.title': 'My Badge',
+    'badge.badge_info': 'Badge Information',
+    'badge.access_level': 'Access Level',
+    'badge.qr_code': 'QR Code',
+    'badge.download': 'Download',
+    'badge.print': 'Print',
+    'badge.share': 'Share',
+    
+    // Enhanced Networking
+    'enhanced_networking.title': 'Advanced Networking',
+    'enhanced_networking.ai_matching': 'AI Matching',
+    'enhanced_networking.analytics': 'Analytics',
+    'enhanced_networking.compatibility_score': 'Compatibility Score',
+    'enhanced_networking.mutual_connections': 'Mutual Connections',
+  },
     'pages.exhibitors.title': 'العارضون',
     'pages.exhibitors.description': 'اكتشف الشركات والمنظمات في صناعة الموانئ',
     'pages.exhibitors.search': 'ابحث عن عارض',
@@ -811,8 +900,52 @@ export const allTranslations = {
     'support.description': 'نحن هنا لمساعدتك',
     'support.contact_form': 'نموذج الاتصال',
     'support.faq': 'الأسئلة الشائعة',
-  
-  es: {
+    
+    // Detail Pages
+    'detail.overview': 'نظرة عامة',
+    'detail.contact': 'تواصل معنا',
+    'detail.book_appointment': 'حجز موعد',
+    'detail.add_favorite': 'إضافة إلى المفضلات',
+    'detail.share': 'مشاركة',
+    'detail.products': 'المنتجات',
+    'detail.services': 'الخدمات',
+    'detail.team': 'الفريق',
+    
+    // Networking Page
+    'networking.title': 'الشبكات الذكية',
+    'networking.description': 'اتصالات ذكية بناءً على ملفك الشخصي',
+    'networking.recommendations': 'التوصيات',
+    'networking.connections': 'اتصالاتي',
+    'networking.favorites': 'مفضلاتي',
+    'networking.find_matches': 'العثور على مطابقات',
+    'networking.compatibility': 'التوافق',
+    
+    // API Page
+    'api.title': 'واجهة برمجة التطبيقات SIPORTS',
+    'api.description': 'دمج SIPORTS في تطبيقاتك',
+    'api.documentation': 'توثيق API',
+    'api.authentication': 'المصادقة',
+    'api.endpoints': 'نقاط النهاية',
+    'api.rate_limiting': 'تحديد المعدل',
+    'api.webhook': 'الخطافات الويب',
+    'api.get_started': 'ابدأ الآن',
+    
+    // Badge Page
+    'badge.title': 'شارتي',
+    'badge.badge_info': 'معلومات الشارة',
+    'badge.access_level': 'مستوى الوصول',
+    'badge.qr_code': 'رمز الاستجابة السريعة',
+    'badge.download': 'تحميل',
+    'badge.print': 'طباعة',
+    'badge.share': 'مشاركة',
+    
+    // Enhanced Networking
+    'enhanced_networking.title': 'الشبكات المتقدمة',
+    'enhanced_networking.ai_matching': 'المطابقة بالذكاء الاصطناعي',
+    'enhanced_networking.analytics': 'التحليلات',
+    'enhanced_networking.compatibility_score': 'درجة التوافق',
+    'enhanced_networking.mutual_connections': 'الاتصالات المتبادلة',
+  },
     'pages.exhibitors.title': 'Expositores',
     'pages.exhibitors.description': 'Descubre las empresas y organizaciones de la industria portuaria',
     'pages.exhibitors.search': 'Buscar un expositor',

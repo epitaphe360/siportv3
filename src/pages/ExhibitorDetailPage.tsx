@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from '../hooks/useTranslation';
 import {
   ArrowLeft,
   ExternalLink,
@@ -36,6 +37,7 @@ import { toast } from 'sonner';
 export default function ExhibitorDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { isAuthenticated } = useAuthStore();
   const { exhibitors, selectExhibitor, selectedExhibitor } = useExhibitorStore();
   const [activeTab, setActiveTab] = useState<keyof typeof CONFIG.tabIds>(CONFIG.tabIds.overview);

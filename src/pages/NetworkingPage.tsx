@@ -3,6 +3,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
+import { useTranslation } from '../hooks/useTranslation';
 import {
   Users, Brain, MessageCircle, Calendar, User as UserIcon, Plus, Zap, Search,
   Heart, CheckCircle, Clock, Eye, BarChart3, TrendingUp, Handshake, Star, Briefcase, Mic, Building2, UserPlus, MapPin,
@@ -29,6 +30,7 @@ import { LevelBadge } from '@/components/common/QuotaWidget';
 
 export default function NetworkingPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user, isAuthenticated } = useAuthStore();
   const {
     recommendations,

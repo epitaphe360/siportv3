@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import useAuthStore from '../store/authStore';
+import { useTranslation } from '../hooks/useTranslation';
 import {
   getUserBadge,
   generateBadgeFromUser,
@@ -12,6 +13,7 @@ import { UserBadge } from '../types';
 
 export default function BadgePage() {
   const { user } = useAuthStore();
+  const { t } = useTranslation();
   const [badge, setBadge] = useState<UserBadge | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

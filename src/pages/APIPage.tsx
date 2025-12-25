@@ -2,9 +2,11 @@ import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Code, Key, FileText, Zap } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from '../hooks/useTranslation';
 import { CONFIG, getSupportEmail, getSupportPhone, getSupportMessage, getApiUrl } from '../lib/config';
 
 export default function APIPage() {
+  const { t } = useTranslation();
   const handleAPIRequest = () => {
     toast.success(getSupportMessage('api'));
   };

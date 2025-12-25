@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import { useTranslation } from '../hooks/useTranslation';
 import {
   Users, Brain, MessageCircle, Calendar, Search, Filter,
   Heart, CheckCircle, Clock, Eye, BarChart3, TrendingUp, 
@@ -22,6 +23,7 @@ type TabType = 'recommendations' | 'connections' | 'messages' | 'qr-access' | 'a
 
 const EnhancedNetworkingPage: React.FC = () => {
   const { user, isAuthenticated } = useAuthStore();
+  const { t } = useTranslation();
   const {
     recommendations,
     isLoading,
