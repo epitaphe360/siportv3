@@ -365,7 +365,7 @@ export default function PartnersPage() {
                     <tr>
                       <td colSpan={7} className="text-center py-12">
                         <Crown className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <p className="text-gray-600">Aucun partenaire trouvÃ©</p>
+                        <p className="text-gray-600">{t('pages.partners.no_results')}</p>
                       </td>
                     </tr>
                   ) : (

@@ -289,17 +289,17 @@ export default function PartnersPage() {
               <Search className="h-12 w-12 text-gray-400" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Aucun partenaire trouvÃ©
+              {t('pages.partners.no_results')}
             </h3>
             <p className="text-gray-600 mb-4">
-              Essayez de modifier vos critÃ¨res de recherche
+              {t('pages.partners.try_modify')}
             </p>
             <Button variant="default" onClick={() => {
               setSearchTerm('');
               setSelectedTier('');
               setSelectedCountry('');
             }}>
-              RÃ©initialiser les filtres
+              {t('pages.partners.reset_filters')}
             </Button>
           </div>
         ) : (
