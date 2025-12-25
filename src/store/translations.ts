@@ -140,6 +140,21 @@ export const allTranslations = {
     'salon.conferences': 'Conférences & Panels',
     'salon.countries': 'Pays Représentés',
     
+    // Hero Section
+    'hero.title': 'SIPORTS 2026',
+    'hero.subtitle': 'Le Salon International Portuaire - Connectez, Innovez, Transformez',
+    'hero.countdown.title': 'Prochainement',
+    'hero.countdown.subtitle': 'Rejoignez-nous au Centre d\'Exhibition Mohammed VI',
+    'hero.stats.location': 'Maroc',
+    'hero.stats.participants': 'Participants Professionnels',
+    'hero.stats.exhibitors': 'Exposants Internationaux',
+    'hero.cta.exhibitor': 'Devenir Exposant',
+    'hero.cta.discover': 'Découvrir l\'Événement',
+    'time.days': 'Jours',
+    'time.hours': 'Heures',
+    'time.minutes': 'Minutes',
+    'time.seconds': 'Secondes',
+    
     // Actions communes
     'actions.save': 'Sauvegarder',
     'actions.cancel': 'Annuler',
@@ -526,7 +541,25 @@ export const allTranslations = {
     'salon.exhibitors': 'Exhibitors',
     'salon.visitors': 'Professional Visitors',
     'salon.conferences': 'Conferences & Panels',
-    'salon.countries': 'Countries Represented','actions.save': 'Save',
+    'salon.countries': 'Countries Represented',
+    
+    // Hero Section
+    'hero.title': 'SIPORTS 2026',
+    'hero.subtitle': 'The International Port Exhibition - Connect, Innovate, Transform',
+    'hero.countdown.title': 'Coming Soon',
+    'hero.countdown.subtitle': 'Join us at Mohammed VI Exhibition Center',
+    'hero.stats.location': 'Morocco',
+    'hero.stats.participants': 'Professional Participants',
+    'hero.stats.exhibitors': 'International Exhibitors',
+    'hero.cta.exhibitor': 'Become an Exhibitor',
+    'hero.cta.discover': 'Discover the Event',
+    'time.days': 'Days',
+    'time.hours': 'Hours',
+    'time.minutes': 'Minutes',
+    'time.seconds': 'Seconds',
+    
+    // Actions communes
+    'actions.save': 'Save',
     'actions.cancel': 'Cancel',
     'actions.edit': 'Edit',
     'actions.delete': 'Delete',
@@ -909,6 +942,23 @@ export const allTranslations = {
     'salon.visitors': 'الزوار المحترفون',
     'salon.conferences': 'المؤتمرات والجلسات',
     'salon.countries': 'الدول الممثلة',
+    
+    // Hero Section
+    'hero.title': 'سيبورتس 2026',
+    'hero.subtitle': 'المعرض الدولي للموانئ - الاتصال والابتكار والتحويل',
+    'hero.countdown.title': 'قريبا جدا',
+    'hero.countdown.subtitle': 'انضم إلينا في مركز معرض محمد السادس',
+    'hero.stats.location': 'المغرب',
+    'hero.stats.participants': 'المشاركون المحترفون',
+    'hero.stats.exhibitors': 'العارضون الدوليون',
+    'hero.cta.exhibitor': 'أصبح عارضا',
+    'hero.cta.discover': 'اكتشف الحدث',
+    'time.days': 'الأيام',
+    'time.hours': 'الساعات',
+    'time.minutes': 'الدقائق',
+    'time.seconds': 'الثواني',
+    
+    // Actions communes
     'actions.save': 'حفظ',
     'actions.cancel': 'إلغاء',
     'actions.edit': 'تعديل',
