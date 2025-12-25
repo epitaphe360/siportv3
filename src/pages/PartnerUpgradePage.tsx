@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from '../hooks/useTranslation';
 import {
   Crown,
   Check,
@@ -28,6 +29,7 @@ import {
 
 export default function PartnerUpgradePage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user } = useAuthStore();
   const [selectedTier, setSelectedTier] = useState<PartnerTier | null>(null);
 

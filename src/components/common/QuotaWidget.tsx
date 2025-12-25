@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from '../hooks/useTranslation';
 import { Progress } from '../ui/Progress';
 import { Badge } from '../ui/Badge';
 import { AlertCircle, CheckCircle, Crown, TrendingUp } from 'lucide-react';
@@ -113,6 +114,8 @@ interface LevelBadgeProps {
 }
 
 export function LevelBadge({ level, type, showIcon = true, size = 'md' }: LevelBadgeProps) {
+  const { t } = useTranslation();
+
   const getConfig = () => {
     if (type === 'visitor') {
       return level === 'premium' || level === 'vip'
@@ -132,10 +135,10 @@ export function LevelBadge({ level, type, showIcon = true, size = 'md' }: LevelB
 
     if (type === 'exhibitor') {
       const configs: Record<string, any> = {
-        basic_9: { label: '9m² Basic', color: 'bg-gradient-to-r from-slate-400 to-slate-600 text-white', icon: '📦' },
-        standard_18: { label: '18m² Standard', color: 'bg-gradient-to-r from-blue-400 to-blue-600 text-white', icon: '🏪' },
-        premium_36: { label: '36m² Premium', color: 'bg-gradient-to-r from-orange-400 to-orange-600 text-white', icon: '🏬' },
-        elite_54plus: { label: '54m²+ Elite', color: 'bg-gradient-to-r from-purple-500 to-purple-700 text-white', icon: '🏛️' }
+        basic_9: { label: t('exhibitor_levels.basic_9'), color: 'bg-gradient-to-r from-slate-400 to-slate-600 text-white', icon: '📦' },
+        standard_18: { label: t('exhibitor_levels.standard_18'), color: 'bg-gradient-to-r from-blue-400 to-blue-600 text-white', icon: '🏪' },
+        premium_36: { label: t('exhibitor_levels.premium_36'), color: 'bg-gradient-to-r from-orange-400 to-orange-600 text-white', icon: '🏬' },
+        elite_54plus: { label: t('exhibitor_levels.elite_54plus'), color: 'bg-gradient-to-r from-purple-500 to-purple-700 text-white', icon: '🏛️' }
       };
       return configs[level] || configs.basic_9;
     }

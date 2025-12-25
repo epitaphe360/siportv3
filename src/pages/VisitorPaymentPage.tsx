@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from '../hooks/useTranslation';
 import { Elements } from '@stripe/react-stripe-js';
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 import {
@@ -36,6 +37,7 @@ type PaymentMethod = 'stripe' | 'paypal' | 'cmi';
 export default function VisitorPaymentPage() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);

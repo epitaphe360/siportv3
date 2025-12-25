@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { SupabaseService } from '../services/supabaseService';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
+import { useTranslation } from '../hooks/useTranslation';
 import { 
   ArrowLeft,
   Users,
@@ -43,6 +44,7 @@ interface User {
 }
 
 export default function UserManagementPage() {
+  const { t } = useTranslation();
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState('');

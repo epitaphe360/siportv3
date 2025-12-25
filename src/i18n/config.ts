@@ -27,6 +27,12 @@ const resources = {
         news_desc: 'Actualités et nouveautés',
         subscriptions_desc: 'Gérez vos abonnements'
       },
+      exhibitor_levels: {
+        basic_9: '9m² Basic',
+        standard_18: '18m² Standard',
+        premium_36: '36m² Premium',
+        elite_54plus: '54m²+ Elite'
+      },
       auth: {
         login: 'Connexion',
         register: 'Inscription',
@@ -79,6 +85,12 @@ const resources = {
         news_desc: 'News and updates',
         subscriptions_desc: 'Manage your subscriptions'
       },
+      exhibitor_levels: {
+        basic_9: '9m² Basic',
+        standard_18: '18m² Standard',
+        premium_36: '36m² Premium',
+        elite_54plus: '54m²+ Elite'
+      },
       auth: {
         login: 'Login',
         register: 'Register',
@@ -130,6 +142,12 @@ const resources = {
         events_desc: 'Calendario de eventos',
         news_desc: 'Noticias y actualizaciones',
         subscriptions_desc: 'Gestiona tus suscripciones'
+      },
+      exhibitor_levels: {
+        basic_9: '9m² Básico',
+        standard_18: '18m² Estándar',
+        premium_36: '36m² Premium',
+        elite_54plus: '54m²+ Elite'
       },
       auth: {
         login: 'Iniciar sesión',

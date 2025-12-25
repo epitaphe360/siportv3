@@ -323,6 +323,28 @@ export const allTranslations = {
     'enhanced_networking.analytics': 'Analytique',
     'enhanced_networking.compatibility_score': 'Score de Compatibilité',
     'enhanced_networking.mutual_connections': 'Connexions Mutuelles',
+    
+    // Upgrade Pages
+    'upgrade.partner_title': 'Plans d\'Abonnement Partenaire',
+    'upgrade.partner_description': 'Élevez votre visibilité au SIPORTS 2026',
+    'upgrade.visitor_title': 'Mises à Jour de Visiteur',
+    'upgrade.visitor_description': 'Accédez aux fonctionnalités premium',
+    'upgrade.payment_method': 'Méthode de Paiement',
+    'upgrade.card': 'Carte de Crédit',
+    'upgrade.paypal': 'PayPal',
+    'upgrade.bank_transfer': 'Virement Bancaire',
+    'upgrade.amount': 'Montant',
+    'upgrade.total': 'Total',
+    
+    // User Management
+    'users.title': 'Gestion des Utilisateurs',
+    'users.total': 'Total des Utilisateurs',
+    'users.active': 'Utilisateurs Actifs',
+    'users.search': 'Rechercher des utilisateurs',
+    'users.filter': 'Filtrer par type',
+    'users.status': 'Statut',
+    'users.action': 'Actions',
+    'users.delete': 'Supprimer',
   },
   
   en: {
@@ -635,6 +657,28 @@ export const allTranslations = {
     'enhanced_networking.analytics': 'Analytics',
     'enhanced_networking.compatibility_score': 'Compatibility Score',
     'enhanced_networking.mutual_connections': 'Mutual Connections',
+    
+    // Upgrade Pages
+    'upgrade.partner_title': 'Partner Subscription Plans',
+    'upgrade.partner_description': 'Increase your visibility at SIPORTS 2026',
+    'upgrade.visitor_title': 'Visitor Upgrades',
+    'upgrade.visitor_description': 'Access premium features',
+    'upgrade.payment_method': 'Payment Method',
+    'upgrade.card': 'Credit Card',
+    'upgrade.paypal': 'PayPal',
+    'upgrade.bank_transfer': 'Bank Transfer',
+    'upgrade.amount': 'Amount',
+    'upgrade.total': 'Total',
+    
+    // User Management
+    'users.title': 'User Management',
+    'users.total': 'Total Users',
+    'users.active': 'Active Users',
+    'users.search': 'Search users',
+    'users.filter': 'Filter by type',
+    'users.status': 'Status',
+    'users.action': 'Actions',
+    'users.delete': 'Delete',
   },
     'pages.exhibitors.title': 'العارضون',
     'pages.exhibitors.description': 'اكتشف الشركات والمنظمات في صناعة الموانئ',
@@ -945,6 +989,28 @@ export const allTranslations = {
     'enhanced_networking.analytics': 'التحليلات',
     'enhanced_networking.compatibility_score': 'درجة التوافق',
     'enhanced_networking.mutual_connections': 'الاتصالات المتبادلة',
+    
+    // Upgrade Pages
+    'upgrade.partner_title': 'خطط الاشتراك للشركاء',
+    'upgrade.partner_description': 'زيادة رؤيتك في SIPORTS 2026',
+    'upgrade.visitor_title': 'ترقيات الزوار',
+    'upgrade.visitor_description': 'الوصول إلى الميزات المميزة',
+    'upgrade.payment_method': 'طريقة الدفع',
+    'upgrade.card': 'بطاقة الائتمان',
+    'upgrade.paypal': 'PayPal',
+    'upgrade.bank_transfer': 'تحويل بنكي',
+    'upgrade.amount': 'المبلغ',
+    'upgrade.total': 'الإجمالي',
+    
+    // User Management
+    'users.title': 'إدارة المستخدمين',
+    'users.total': 'إجمالي المستخدمين',
+    'users.active': 'المستخدمون النشطون',
+    'users.search': 'البحث عن المستخدمين',
+    'users.filter': 'التصفية حسب النوع',
+    'users.status': 'الحالة',
+    'users.action': 'الإجراءات',
+    'users.delete': 'حذف',
   },
     'pages.exhibitors.title': 'Expositores',
     'pages.exhibitors.description': 'Descubre las empresas y organizaciones de la industria portuaria',
@@ -1181,4 +1247,26 @@ export const allTranslations = {
     'partnership.silver': 'Socio Plata',
     'partnership.become': 'Conviértase en Socio',
     'partnership.contact': 'Contáctenos',
+    
+    // Upgrade Pages
+    'upgrade.partner_title': 'Planes de Suscripción para Socios',
+    'upgrade.partner_description': 'Aumenta tu visibilidad en SIPORTS 2026',
+    'upgrade.visitor_title': 'Actualizaciones de Visitante',
+    'upgrade.visitor_description': 'Accede a funciones premium',
+    'upgrade.payment_method': 'Método de Pago',
+    'upgrade.card': 'Tarjeta de Crédito',
+    'upgrade.paypal': 'PayPal',
+    'upgrade.bank_transfer': 'Transferencia Bancaria',
+    'upgrade.amount': 'Cantidad',
+    'upgrade.total': 'Total',
+    
+    // User Management
+    'users.title': 'Gestión de Usuarios',
+    'users.total': 'Total de Usuarios',
+    'users.active': 'Usuarios Activos',
+    'users.search': 'Buscar usuarios',
+    'users.filter': 'Filtrar por tipo',
+    'users.status': 'Estado',
+    'users.action': 'Acciones',
+    'users.delete': 'Eliminar',
 };

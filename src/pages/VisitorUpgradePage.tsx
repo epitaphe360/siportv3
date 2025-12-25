@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '../hooks/useTranslation';
 import {
   Crown,
   Check,
@@ -67,6 +68,7 @@ const testimonials = [
 export default function VisitorUpgradePage() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const isFree = user?.type === 'visitor' && (user.visitor_level === 'free' || !user.visitor_level);
 
   const handleUpgrade = () => {
