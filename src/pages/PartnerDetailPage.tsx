@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useTranslation } from '../hooks/useTranslation';
 import { ROUTES } from '../lib/routes';
 import { 
   ArrowLeft,
@@ -89,6 +90,7 @@ interface Partner {
 
 export default function PartnerDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const { t } = useTranslation();
   const [partner, setPartner] = useState<Partner | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [showContactModal, setShowContactModal] = useState(false);

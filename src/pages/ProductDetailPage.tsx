@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Product } from '../types';
+import { useTranslation } from '../hooks/useTranslation';
 import { ProductService } from '../services/products/productService';
 import { ROUTES } from '../lib/routes';
 import useAuthStore from '../store/authStore';
@@ -15,6 +16,7 @@ export default function ProductDetailPage() {
   const { exhibitorId, productId } = useParams<{ exhibitorId: string; productId: string }>();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthStore();
+  const { t } = useTranslation();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

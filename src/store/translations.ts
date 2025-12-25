@@ -345,6 +345,27 @@ export const allTranslations = {
     'users.status': 'Statut',
     'users.action': 'Actions',
     'users.delete': 'Supprimer',
+    
+    // Partner Detail Page
+    'partner_detail.about': 'À Propos',
+    'partner_detail.projects': 'Projets',
+    'partner_detail.contact_info': 'Informations de Contact',
+    'partner_detail.request_meeting': 'Demander une Réunion',
+    'partner_detail.back': 'Retour',
+    
+    // Product Detail Page
+    'product_detail.specifications': 'Spécifications',
+    'product_detail.price': 'Prix',
+    'product_detail.availability': 'Disponibilité',
+    'product_detail.request_demo': 'Demander une Démo',
+    'product_detail.contact_supplier': 'Contacter le Fournisseur',
+    
+    // Reset Password
+    'password.reset_title': 'Réinitialiser le Mot de Passe',
+    'password.reset_description': 'Entrez votre nouveau mot de passe',
+    'password.new_password': 'Nouveau Mot de Passe',
+    'password.confirm': 'Confirmer',
+    'password.error': 'Erreur lors de la réinitialisation',
   },
   
   en: {
@@ -679,7 +700,30 @@ export const allTranslations = {
     'users.status': 'Status',
     'users.action': 'Actions',
     'users.delete': 'Delete',
+    
+    // Partner Detail Page
+    'partner_detail.about': 'About',
+    'partner_detail.projects': 'Projects',
+    'partner_detail.contact_info': 'Contact Information',
+    'partner_detail.request_meeting': 'Request Meeting',
+    'partner_detail.back': 'Back',
+    
+    // Product Detail Page
+    'product_detail.specifications': 'Specifications',
+    'product_detail.price': 'Price',
+    'product_detail.availability': 'Availability',
+    'product_detail.request_demo': 'Request Demo',
+    'product_detail.contact_supplier': 'Contact Supplier',
+    
+    // Reset Password
+    'password.reset_title': 'Reset Password',
+    'password.reset_description': 'Enter your new password',
+    'password.new_password': 'New Password',
+    'password.confirm': 'Confirm',
+    'password.error': 'Error resetting password',
   },
+  
+  ar: {
     'pages.exhibitors.title': 'العارضون',
     'pages.exhibitors.description': 'اكتشف الشركات والمنظمات في صناعة الموانئ',
     'pages.exhibitors.search': 'ابحث عن عارض',
@@ -1011,6 +1055,27 @@ export const allTranslations = {
     'users.status': 'الحالة',
     'users.action': 'الإجراءات',
     'users.delete': 'حذف',
+    
+    // Partner Detail Page
+    'partner_detail.about': 'نبذة عن',
+    'partner_detail.projects': 'المشاريع',
+    'partner_detail.contact_info': 'معلومات الاتصال',
+    'partner_detail.request_meeting': 'طلب اجتماع',
+    'partner_detail.back': 'العودة',
+    
+    // Product Detail Page
+    'product_detail.specifications': 'المواصفات',
+    'product_detail.price': 'السعر',
+    'product_detail.availability': 'التوفر',
+    'product_detail.request_demo': 'طلب عرض توضيحي',
+    'product_detail.contact_supplier': 'التواصل مع المورد',
+    
+    // Reset Password
+    'password.reset_title': 'إعادة تعيين كلمة المرور',
+    'password.reset_description': 'أدخل كلمة المرور الجديدة',
+    'password.new_password': 'كلمة المرور الجديدة',
+    'password.confirm': 'تأكيد',
+    'password.error': 'خطأ في إعادة تعيين كلمة المرور',
   },
     'pages.exhibitors.title': 'Expositores',
     'pages.exhibitors.description': 'Descubre las empresas y organizaciones de la industria portuaria',
@@ -1269,4 +1334,25 @@ export const allTranslations = {
     'users.status': 'Estado',
     'users.action': 'Acciones',
     'users.delete': 'Eliminar',
+    
+    // Partner Detail Page
+    'partner_detail.about': 'Acerca de',
+    'partner_detail.projects': 'Proyectos',
+    'partner_detail.contact_info': 'Información de Contacto',
+    'partner_detail.request_meeting': 'Solicitar Reunión',
+    'partner_detail.back': 'Atrás',
+    
+    // Product Detail Page
+    'product_detail.specifications': 'Especificaciones',
+    'product_detail.price': 'Precio',
+    'product_detail.availability': 'Disponibilidad',
+    'product_detail.request_demo': 'Solicitar Demostración',
+    'product_detail.contact_supplier': 'Contactar al Proveedor',
+    
+    // Reset Password
+    'password.reset_title': 'Restablecer Contraseña',
+    'password.reset_description': 'Ingrese su nueva contraseña',
+    'password.new_password': 'Nueva Contraseña',
+    'password.confirm': 'Confirmar',
+    'password.error': 'Error al restablecer la contraseña',
 };
