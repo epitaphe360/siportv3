@@ -14,10 +14,10 @@ export default function AvailabilitySettingsPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            AccÃ¨s non autorisÃ©
+            Accès non autorisé
           </h3>
           <p className="text-gray-600">
-            Veuillez vous connecter pour accÃ©der Ã  cette page
+            Veuillez vous connecter pour accéder à cette page
           </p>
         </div>
       </div>
@@ -30,10 +30,10 @@ export default function AvailabilitySettingsPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            AccÃ¨s rÃ©servÃ©
+            Accès réservé
           </h3>
           <p className="text-gray-600">
-            Cette fonctionnalitÃ© est rÃ©servÃ©e aux exposants et partenaires
+            Cette fonctionnalité est réservée aux exposants et partenaires
           </p>
         </div>
       </div>
@@ -42,7 +42,7 @@ export default function AvailabilitySettingsPage() {
 
   const handleAvailabilityUpdate = (timeSlots: TimeSlot[]) => {
     // In a real app, this would save to the backend
-    toast.success(`${timeSlots.length} crÃ©neau${timeSlots.length !== 1 ? 'x' : ''} mis Ã  jour`);
+    toast.success(`${timeSlots.length} créneau${timeSlots.length !== 1 ? 'x' : ''} mis à jour`);
   };
 
   return (
@@ -51,10 +51,10 @@ export default function AvailabilitySettingsPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
-            Gestion des DisponibilitÃ©s
+            Gestion des Disponibilités
           </h1>
           <p className="text-gray-600 mt-2">
-            DÃ©finissez vos crÃ©neaux horaires pour permettre aux autres participants de prendre rendez-vous avec vous.
+            Définissez vos créneaux horaires pour permettre aux autres participants de prendre rendez-vous avec vous.
           </p>
           <div className="mt-4 flex items-center space-x-2">
             <Badge variant="info">
@@ -74,13 +74,13 @@ export default function AvailabilitySettingsPage() {
             </div>
             <div>
               <h3 className="font-semibold text-blue-900 mb-2">
-                Pourquoi dÃ©finir vos disponibilitÃ©s ?
+                Pourquoi définir vos disponibilités ?
               </h3>
               <ul className="text-sm text-blue-700 space-y-1">
-                <li>â€¢ Permettre aux visiteurs de rÃ©server des rendez-vous personnalisÃ©s</li>
-                <li>â€¢ AmÃ©liorer votre visibilitÃ© dans les recommandations IA</li>
-                <li>â€¢ Optimiser votre temps sur le salon SIPORTS 2026</li>
-                <li>â€¢ CrÃ©er des opportunitÃ©s de networking ciblÃ©es</li>
+                <li>â• Permettre aux visiteurs de réserver des rendez-vous personnalisés</li>
+                <li>â• Améliorer votre visibilité dans les recommandations IA</li>
+                <li>â• Optimiser votre temps sur le salon SIPORTS 2026</li>
+                <li>â• Créer des opportunités de networking ciblées</li>
               </ul>
             </div>
           </div>
@@ -101,14 +101,14 @@ export default function AvailabilitySettingsPage() {
             </div>
             <div>
               <h3 className="font-semibold text-green-900 mb-2">
-                Conseils pour optimiser vos disponibilitÃ©s
+                Conseils pour optimiser vos disponibilités
               </h3>
               <ul className="text-sm text-green-700 space-y-1">
-                <li>â€¢ DÃ©finissez des crÃ©neaux pendant les heures d'ouverture du salon (9h-18h)</li>
-                <li>â€¢ PrÃ©voyez des pauses entre vos rendez-vous pour les dÃ©placements</li>
-                <li>â€¢ Indiquez clairement le lieu de rencontre (stand, salle de rÃ©union, etc.)</li>
-                <li>â€¢ Mettez Ã  jour vos disponibilitÃ©s en temps rÃ©el si nÃ©cessaire</li>
-                <li>â€¢ Proposez diffÃ©rents types de rencontre (prÃ©sentiel, virtuel, hybride)</li>
+                <li>â• Définissez des créneaux pendant les heures d'ouverture du salon (9h-18h)</li>
+                <li>â• Prévoyez des pauses entre vos rendez-vous pour les déplacements</li>
+                <li>â• Indiquez clairement le lieu de rencontre (stand, salle de réunion, etc.)</li>
+                <li>â• Mettez à jour vos disponibilités en temps réel si nécessaire</li>
+                <li>â• Proposez différents types de rencontre (présentiel, virtuel, hybride)</li>
               </ul>
             </div>
           </div>

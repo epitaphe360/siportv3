@@ -24,7 +24,7 @@ export default function OAuthCallbackPage() {
         // Handle the OAuth callback and get user data
         await handleOAuthCallback();
 
-        toast.success('Connexion rÃ©ussie !');
+        toast.success('Connexion réussie !');
 
         // Redirect to dashboard after successful authentication
         navigate(ROUTES.DASHBOARD, { replace: true });

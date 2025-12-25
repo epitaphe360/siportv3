@@ -39,7 +39,7 @@ const ProfileEdit: React.FC = () => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return setError('Vous devez Ãªtre connectÃ©.');
+    if (!user) return setError('Vous devez être connecté.');
     setError(null);
     setLoading(true);
     try {
@@ -75,11 +75,11 @@ const ProfileEdit: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Ã‰diter le profil exposant</h1>
+      <h1 className="text-2xl font-bold mb-4">Éditer le profil exposant</h1>
       {error && <div className="text-red-600 mb-2">{error}</div>}
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium">Nom de la sociÃ©tÃ©</label>
+          <label className="block text-sm font-medium">Nom de la société</label>
           <input value={companyName} onChange={e => setCompanyName(e.target.value)} className="mt-1 block w-full" />
         </div>
         <div>

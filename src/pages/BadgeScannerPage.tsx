@@ -188,7 +188,7 @@ export default function BadgeScannerPage() {
       setIsScanning(true);
       toast.success('Scanner activé');
     } catch (err: any) {
-      console.error('Erreur dÃ©marrage scanner:', err);
+      console.error('Erreur démarrage scanner:', err);
       toast.error('Impossible d\'accéder à la caméra. Vérifiez les permissions.');
       toast.error('Erreur caméra', {
         description: 'Vérifiez que votre navigateur a accès à la caméra.'
@@ -338,7 +338,7 @@ export default function BadgeScannerPage() {
       console.error('Erreur validation badge:', err);
       playErrorSound();
 
-      // Messages d'erreur spÃ©cifiques
+      // Messages d'erreur spécifiques
       if (err.message.includes('expired')) {
         toast.error('Badge expiré', {
           description: 'Ce badge n\'est plus valide'

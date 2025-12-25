@@ -44,14 +44,14 @@ export default function ContactPage() {
 
     // Validation longueur minimale du message
     if (formData.message.trim().length < 10) {
-      toast.error('Le message doit contenir au moins 10 caractÃ¨res');
+      toast.error('Le message doit contenir au moins 10 caractères');
       return;
     }
 
     setIsLoading(true);
 
     try {
-      // Sauvegarde en base de donnÃ©es
+      // Sauvegarde en base de données
       const result = await SupabaseService.createContactMessage({
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
@@ -73,8 +73,8 @@ export default function ContactPage() {
           message: formData.message.trim()
         });
       } catch (emailError) {
-        console.warn('âš ï¸ Email non envoyÃ© (Edge Function manquante):', emailError);
-        // Ne pas bloquer l'utilisateur si l'email Ã©choue
+        console.warn('âš ï¸ Email non envoyé (Edge Function manquante):', emailError);
+        // Ne pas bloquer l'utilisateur si l'email échoue
       }
 
       // Navigation vers page de confirmation
@@ -88,7 +88,7 @@ export default function ContactPage() {
 
     } catch (error) {
       console.error('âŒ Erreur lors de l\'envoi du message:', error);
-      toast.error('Une erreur est survenue. Veuillez rÃ©essayer plus tard.');
+      toast.error('Une erreur est survenue. Veuillez réessayer plus tard.');
     } finally {
       setIsLoading(false);
     }
@@ -128,7 +128,7 @@ export default function ContactPage() {
                     required
                     disabled={isLoading}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                    placeholder="Votre prÃ©nom"
+                    placeholder="Votre prénom"
                   />
                 </div>
                 <div>
@@ -166,7 +166,7 @@ export default function ContactPage() {
 
               <div>
                 <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
-                  SociÃ©tÃ©
+                  Société
                 </label>
                 <input
                   type="text"
@@ -175,7 +175,7 @@ export default function ContactPage() {
                   onChange={handleChange}
                   disabled={isLoading}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                  placeholder="Nom de votre sociÃ©tÃ©"
+                  placeholder="Nom de votre société"
                 />
               </div>
 
@@ -191,7 +191,7 @@ export default function ContactPage() {
                   disabled={isLoading}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                 >
-                  <option value="">SÃ©lectionnez un sujet</option>
+                  <option value="">Sélectionnez un sujet</option>
                   <option value="exhibitor">Devenir exposant</option>
                   <option value="visitor">S'inscrire comme visiteur</option>
                   <option value="partnership">Partenariat</option>
@@ -213,10 +213,10 @@ export default function ContactPage() {
                   rows={6}
                   disabled={isLoading}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                  placeholder="Votre message (minimum 10 caractÃ¨res)..."
+                  placeholder="Votre message (minimum 10 caractères)..."
                 />
                 <p className="mt-1 text-sm text-gray-500">
-                  {formData.message.length} caractÃ¨res
+                  {formData.message.length} caractères
                 </p>
               </div>
 
@@ -283,7 +283,7 @@ export default function ContactPage() {
                     <Phone className="h-6 w-6 text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">TÃ©lÃ©phone</h3>
+                    <h3 className="font-semibold text-gray-900">Téléphone</h3>
                     <a
                       href="tel:+212123456789"
                       className="text-blue-600 hover:text-blue-800"
@@ -310,7 +310,7 @@ export default function ContactPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Dimanche</span>
-                  <span className="font-medium">FermÃ©</span>
+                  <span className="font-medium">Fermé</span>
                 </div>
               </div>
             </Card>
@@ -320,7 +320,7 @@ export default function ContactPage() {
                 Suivez-nous
               </h2>
               <p className="text-gray-600 mb-4">
-                Restez informÃ© des derniÃ¨res actualitÃ©s de SIPORTS 2026
+                Restez informé des dernières actualités de SIPORTS 2026
               </p>
               <div className="flex space-x-4">
                 <a

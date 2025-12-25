@@ -80,10 +80,10 @@ export default function NewsPage() {
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
-      'Ã‰vÃ©nement': 'bg-blue-100 text-blue-800',
+      'Événement': 'bg-blue-100 text-blue-800',
       'Innovation': 'bg-purple-100 text-purple-800',
       'Partenariat': 'bg-green-100 text-green-800',
-      'DurabilitÃ©': 'bg-emerald-100 text-emerald-800',
+      'Durabilité': 'bg-emerald-100 text-emerald-800',
       'Formation': 'bg-orange-100 text-orange-800',
       'Commerce': 'bg-indigo-100 text-indigo-800'
     };
@@ -98,11 +98,11 @@ export default function NewsPage() {
       if (result && result.success) {
         const { inserted, updated, total } = result.stats;
         toast.success(
-          `âœ… Synchronisation rÃ©ussie ! ${inserted} nouveaux articles, ${updated} mis Ã  jour sur ${total} trouvÃ©s`,
+          `âœ… Synchronisation réussie ! ${inserted} nouveaux articles, ${updated} mis à jour sur ${total} trouvés`,
           { id: 'sync-articles', duration: 5000 }
         );
       } else {
-        toast.success('Articles actualisÃ©s', { id: 'sync-articles' });
+        toast.success('Articles actualisés', { id: 'sync-articles' });
       }
     } catch (error: unknown) {
       console.error('Error syncing articles:', error);
@@ -124,10 +124,10 @@ export default function NewsPage() {
             className="text-center mb-8"
           >
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              ActualitÃ©s Portuaires SIPORTS
+              Actualités Portuaires SIPORTS
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Restez informÃ© des derniÃ¨res nouvelles du secteur portuaire et des actualitÃ©s SIPORTS 2026
+              Restez informé des dernières nouvelles du secteur portuaire et des actualités SIPORTS 2026
             </p>
             
             {/* Lien vers site officiel */}
@@ -152,7 +152,7 @@ export default function NewsPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Rechercher dans les actualitÃ©s..."
+                placeholder="Rechercher dans les actualités..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -200,7 +200,7 @@ export default function NewsPage() {
                       : 'bg-white text-gray-600 hover:bg-gray-100'
                   }`}
                 >
-                  Toutes les catÃ©gories
+                  Toutes les catégories
                 </button>
                 {categories.map((category) => (
                   <button
@@ -331,7 +331,7 @@ export default function NewsPage() {
         <div>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900">
-              {selectedCategory || searchTerm ? 'RÃ©sultats' : 'Toutes les ActualitÃ©s'} 
+              {selectedCategory || searchTerm ? 'Résultats' : 'Toutes les Actualités'} 
               ({filteredArticles.length})
             </h2>
             
@@ -344,7 +344,7 @@ export default function NewsPage() {
                   setSearchTerm(CONFIG.defaults.searchTerm);
                 }}
               >
-                RÃ©initialiser les filtres
+                Réinitialiser les filtres
               </Button>
             )}
           </div>
@@ -370,16 +370,16 @@ export default function NewsPage() {
                 <Search className="h-12 w-12 text-gray-400" />
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Aucune actualitÃ© trouvÃ©e
+                Aucune actualité trouvée
               </h3>
               <p className="text-gray-600 mb-4">
-                Essayez de modifier vos critÃ¨res de recherche
+                Essayez de modifier vos critères de recherche
               </p>
               <Button variant="default" onClick={() => {
                 setCategory(CONFIG.defaults.category);
                 setSearchTerm(CONFIG.defaults.searchTerm);
               }}>
-                Voir toutes les actualitÃ©s
+                Voir toutes les actualités
               </Button>
             </div>
           ) : (
@@ -501,11 +501,11 @@ export default function NewsPage() {
           <Card className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
             <div className="p-8 text-center">
               <h3 className="text-2xl font-bold mb-4">
-                Restez informÃ© des actualitÃ©s SIPORTS
+                Restez informé des actualités SIPORTS
               </h3>
               <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
-                Recevez les derniÃ¨res nouvelles du secteur portuaire et les actualitÃ©s 
-                exclusives de SIPORTS 2026 directement dans votre boÃ®te mail
+                Recevez les dernières nouvelles du secteur portuaire et les actualités 
+                exclusives de SIPORTS 2026 directement dans votre boîte mail
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
@@ -530,7 +530,7 @@ export default function NewsPage() {
                       toast.error('Veuillez saisir une adresse email valide');
                       return;
                     }
-                    toast.success(`Inscription newsletter rÃ©ussie !\nEmail: ${email}`);
+                    toast.success(`Inscription newsletter réussie !\nEmail: ${email}`);
                     emailInput.value = '';
                   }}
                 >
@@ -539,7 +539,7 @@ export default function NewsPage() {
               </div>
               
               <p className="text-xs text-blue-200 mt-4">
-                Newsletter hebdomadaire â€¢ DÃ©sabonnement facile â€¢ DonnÃ©es protÃ©gÃ©es
+                Newsletter hebdomadaire â• Désabonnement facile â• Données protégées
               </p>
             </div>
           </Card>
@@ -566,7 +566,7 @@ export default function NewsPage() {
                   'Intelligence artificielle',
                   'Automatisation',
                   'Blockchain maritime',
-                  'Ã‰nergies renouvelables',
+                  'Énergies renouvelables',
                   'Formation maritime',
                   'Partenariats internationaux'
                 ].map((topic, index) => (
@@ -598,7 +598,7 @@ export default function NewsPage() {
               <div className="text-2xl font-bold text-gray-900 mb-1">
                 {articles.length}
               </div>
-              <div className="text-sm text-gray-600">Articles PubliÃ©s</div>
+              <div className="text-sm text-gray-600">Articles Publiés</div>
             </Card>
 
             <Card className="text-center p-6">
@@ -618,7 +618,7 @@ export default function NewsPage() {
               <div className="text-2xl font-bold text-gray-900 mb-1">
                 {categories.length}
               </div>
-              <div className="text-sm text-gray-600">CatÃ©gories</div>
+              <div className="text-sm text-gray-600">Catégories</div>
             </Card>
 
             <Card className="text-center p-6">

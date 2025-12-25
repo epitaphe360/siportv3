@@ -61,7 +61,7 @@ export default function PaymentValidationPage() {
 
       if (error) throw error;
 
-      // Filtrer par type d'utilisateur cÃ´tÃ© client
+      // Filtrer par type d'utilisateur côté client
       let filteredData = data as PaymentRequest[];
       if (userTypeFilter !== 'all') {
         filteredData = filteredData.filter(
@@ -91,7 +91,7 @@ export default function PaymentValidationPage() {
 
       if (error) throw error;
 
-      alert('âœ… Paiement approuvÃ© avec succÃ¨s !');
+      alert('âœ… Paiement approuvé avec succès !');
       loadRequests();
     } catch (error: any) {
       alert(`âŒ Erreur: ${error.message}`);
@@ -114,7 +114,7 @@ export default function PaymentValidationPage() {
 
       if (error) throw error;
 
-      alert('âœ… Paiement rejetÃ©.');
+      alert('âœ… Paiement rejeté.');
       loadRequests();
     } catch (error: any) {
       alert(`âŒ Erreur: ${error.message}`);
@@ -155,8 +155,8 @@ export default function PaymentValidationPage() {
               >
                 {status === 'all' && 'Tous'}
                 {status === 'pending' && 'â³ En attente'}
-                {status === 'approved' && 'âœ… ApprouvÃ©s'}
-                {status === 'rejected' && 'âŒ RejetÃ©s'}
+                {status === 'approved' && 'âœ… Approuvés'}
+                {status === 'rejected' && 'âŒ Rejetés'}
               </button>
             ))}
           </div>
@@ -193,7 +193,7 @@ export default function PaymentValidationPage() {
         <div style={{ textAlign: 'center', padding: 48 }}>Chargement...</div>
       ) : requests.length === 0 ? (
         <div style={{ textAlign: 'center', padding: 48, color: '#666' }}>
-          Aucune demande Ã  afficher
+          Aucune demande à afficher
         </div>
       ) : (
         <div style={{ display: 'grid', gap: 16 }}>
@@ -255,7 +255,7 @@ export default function PaymentValidationPage() {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                 <div>
-                  <strong>Niveau demandÃ©:</strong>{' '}
+                  <strong>Niveau demandé:</strong>{' '}
                   {request.users.type === 'visitor' ? (
                     request.requested_level === 'premium' ? 'â­ Premium VIP' : request.requested_level
                   ) : (
@@ -268,7 +268,7 @@ export default function PaymentValidationPage() {
                   )}
                 </div>
                 <div>
-                  <strong>MÃ©thode:</strong>{' '}
+                  <strong>Méthode:</strong>{' '}
                   {request.payment_method === 'bank_transfer' ? 'ðŸ¦ Virement bancaire' : request.payment_method}
                 </div>
                 <div>
@@ -285,14 +285,14 @@ export default function PaymentValidationPage() {
                     color: '#fff'
                   }}>
                     {request.status === 'pending' && 'â³ En attente'}
-                    {request.status === 'approved' && 'âœ… ApprouvÃ©'}
-                    {request.status === 'rejected' && 'âŒ RejetÃ©'}
-                    {request.status === 'cancelled' && 'ðŸš« AnnulÃ©'}
+                    {request.status === 'approved' && 'âœ… Approuvé'}
+                    {request.status === 'rejected' && 'âŒ Rejeté'}
+                    {request.status === 'cancelled' && 'ðŸš« Annulé'}
                   </span>
                 </div>
                 {request.transfer_reference && (
                   <div>
-                    <strong>RÃ©fÃ©rence virement:</strong> {request.transfer_reference}
+                    <strong>Référence virement:</strong> {request.transfer_reference}
                   </div>
                 )}
               </div>
@@ -314,7 +314,7 @@ export default function PaymentValidationPage() {
 
               {request.validated_at && (
                 <div style={{ fontSize: 14, color: '#666', marginBottom: 16 }}>
-                  ValidÃ© le {new Date(request.validated_at).toLocaleDateString('fr-FR', {
+                  Validé le {new Date(request.validated_at).toLocaleDateString('fr-FR', {
                     day: 'numeric',
                     month: 'long',
                     year: 'numeric',

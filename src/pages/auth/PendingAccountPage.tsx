@@ -37,7 +37,7 @@ export default function PendingAccountPage() {
             </p>
 
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-left mb-8">
-              <h2 className="font-semibold text-yellow-800 mb-2">Rappel des prochaines Ã©tapes</h2>
+              <h2 className="font-semibold text-yellow-800 mb-2">Rappel des prochaines étapes</h2>
               <ul className="space-y-2 text-sm text-yellow-700">
                 <li className="flex items-start">
                   <User className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
@@ -48,19 +48,19 @@ export default function PendingAccountPage() {
                 <li className="flex items-start">
                   <Mail className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
                   <span>
-                    <strong>Activation :</strong> Vous recevrez un email dÃ¨s que votre compte sera activÃ©.
+                    <strong>Activation :</strong> Vous recevrez un email dès que votre compte sera activé.
                   </span>
                 </li>
               </ul>
             </div>
 
             <p className="text-sm text-gray-500 mb-6">
-              Merci de votre patience. Vous pouvez vous dÃ©connecter en toute sÃ©curitÃ©.
+              Merci de votre patience. Vous pouvez vous déconnecter en toute sécurité.
             </p>
 
             <Button onClick={logout} variant="outline" className="w-full">
               <LogOut className="h-4 w-4 mr-2" />
-              Se dÃ©connecter
+              Se déconnecter
             </Button>
           </div>
         </Card>

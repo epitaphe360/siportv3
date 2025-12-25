@@ -62,7 +62,7 @@ export default function UserManagementPage() {
       try {
         const data = await SupabaseService.getUsers();
         if (!data || data.length === 0) {
-          console.warn('Aucun utilisateur retournÃ© par Supabase. VÃ©rifiez les politiques RLS.');
+          console.warn('Aucun utilisateur retourné par Supabase. Vérifiez les politiques RLS.');
         }
         const transformedUsers: User[] = data.map(u => ({
           id: u.id,
@@ -105,12 +105,12 @@ export default function UserManagementPage() {
     URL.revokeObjectURL(url);
   };
 
-  // Handler pour ouvrir le modal de crÃ©ation
+  // Handler pour ouvrir le modal de création
   const handleCreateUser = () => {
     setShowCreateModal(true);
   };
 
-  // Handler pour voir le dÃ©tail utilisateur
+  // Handler pour voir le détail utilisateur
   const handleViewUser = (user: User) => {
     setViewUser(user);
   };
@@ -173,7 +173,7 @@ export default function UserManagementPage() {
       case 'active': return 'Actif';
       case 'pending': return 'En attente';
       case 'suspended': return 'Suspendu';
-      case 'rejected': return 'RejetÃ©';
+      case 'rejected': return 'Rejeté';
       default: return status;
     }
   };
@@ -200,11 +200,11 @@ export default function UserManagementPage() {
 
   const handleBulkAction = async (action: keyof typeof CONFIG.userActions) => {
     if (selectedUsers.length === 0) {
-      toast.error('Veuillez sÃ©lectionner au moins un utilisateur');
+      toast.error('Veuillez sélectionner au moins un utilisateur');
       return;
     }
 
-    const confirmMessage = `ÃŠtes-vous sÃ»r de vouloir ${
+    const confirmMessage = `Êtes-vous sûr de vouloir ${
       action === CONFIG.userActions.activate ? 'activer' : 
       action === CONFIG.userActions.suspend ? 'suspendre' : 'supprimer'
     } ${selectedUsers.length} utilisateur(s) ?`;
@@ -225,7 +225,7 @@ export default function UserManagementPage() {
         toast.success(getUserActionMessage(`${action === CONFIG.userActions.activate ? 'bulkActivated' : action === CONFIG.userActions.suspend ? 'bulkSuspended' : 'bulkDeleted'}` as keyof typeof CONFIG.messages.user));
       } catch {
         setIsLoading(false);
-        toast.error('Erreur lors de l\'action groupÃ©e');
+        toast.error('Erreur lors de l\'action groupée');
       }
     }
   };
@@ -346,7 +346,7 @@ export default function UserManagementPage() {
           </Card>
         </div>
 
-        {/* RÃ©partition par Type */}
+        {/* Répartition par Type */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="text-center p-6">
             <div className="bg-blue-100 p-3 rounded-lg w-12 h-12 mx-auto mb-3">
@@ -427,7 +427,7 @@ export default function UserManagementPage() {
               </div>
             </div>
 
-            {/* Filtres AvancÃ©s */}
+            {/* Filtres Avancés */}
             {showFilters && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
@@ -465,7 +465,7 @@ export default function UserManagementPage() {
                       <option value="active">Actifs</option>
                       <option value="pending">En attente</option>
                       <option value="suspended">Suspendus</option>
-                      <option value="rejected">RejetÃ©s</option>
+                      <option value="rejected">Rejetés</option>
                     </select>
                   </div>
                   
@@ -479,14 +479,14 @@ export default function UserManagementPage() {
                         setSelectedStatus('');
                       }}
                     >
-                      RÃ©initialiser
+                      Réinitialiser
                     </Button>
                   </div>
                 </div>
               </motion.div>
             )}
 
-            {/* Actions GroupÃ©es */}
+            {/* Actions Groupées */}
             {selectedUsers.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -495,7 +495,7 @@ export default function UserManagementPage() {
               >
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">
-                    {selectedUsers.length} utilisateur(s) sÃ©lectionnÃ©(s)
+                    {selectedUsers.length} utilisateur(s) sélectionné(s)
                   </span>
                   
                   <div className="flex space-x-2">
@@ -566,7 +566,7 @@ export default function UserManagementPage() {
                     Inscription
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    DerniÃ¨re ActivitÃ©
+                    Dernière Activité
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
@@ -689,7 +689,7 @@ export default function UserManagementPage() {
                               disabled={isLoading}
                             >
                               <UserCheck className="h-3 w-3 mr-1" />
-                              RÃ©activer
+                              Réactiver
                             </Button>
                           )}
                           
@@ -714,21 +714,21 @@ export default function UserManagementPage() {
             <div className="text-center py-12">
               <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Aucun utilisateur trouvÃ©
+                Aucun utilisateur trouvé
               </h3>
               <p className="text-gray-600 max-w-md mx-auto">
-                Si vous Ãªtes administrateur et que vous ne voyez aucun utilisateur, il est possible que les politiques de sÃ©curitÃ© (RLS) de la base de donnÃ©es restreignent l'accÃ¨s.
+                Si vous êtes administrateur et que vous ne voyez aucun utilisateur, il est possible que les politiques de sécurité (RLS) de la base de données restreignent l'accès.
               </p>
             </div>
           )}
         </Card>
       </div>
-      {/* Modal CrÃ©ation Utilisateur (mock) */}
+      {/* Modal Création Utilisateur (mock) */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">CrÃ©er un nouvel utilisateur</h2>
-            <p className="mb-4">(Formulaire Ã  implÃ©menter)</p>
+            <h2 className="text-xl font-bold mb-4">Créer un nouvel utilisateur</h2>
+            <p className="mb-4">(Formulaire à implémenter)</p>
             <Button variant="default" onClick={() => setShowCreateModal(false)}>Fermer</Button>
           </div>
         </div>
@@ -738,7 +738,7 @@ export default function UserManagementPage() {
       {viewUser && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">DÃ©tail utilisateur</h2>
+            <h2 className="text-xl font-bold mb-4">Détail utilisateur</h2>
             <div className="mb-2"><b>Nom :</b> {viewUser.name}</div>
             <div className="mb-2"><b>Email :</b> {viewUser.email}</div>
             <div className="mb-2"><b>Type :</b> {getUserTypeLabel(viewUser.type)}</div>

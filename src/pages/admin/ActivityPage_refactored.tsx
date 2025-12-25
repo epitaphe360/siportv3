@@ -47,7 +47,7 @@ export default function ActivityPage() {
       setError(null);
       try {
         const data = await apiService.getAll('activities');
-        // Enrichir les donnÃ©es avec la sÃ©vÃ©ritÃ© calculÃ©e
+        // Enrichir les données avec la sévérité calculée
         const enrichedData = (data as ActivityItem[]).map(activity => ({
           ...activity,
           severity: getSeverityFromType(activity.activity_type)
@@ -129,7 +129,7 @@ export default function ActivityPage() {
       case 'warning':
         return <Badge variant="warning">Avertissement</Badge>;
       case 'success':
-        return <Badge variant="success">SuccÃ¨s</Badge>;
+        return <Badge variant="success">Succès</Badge>;
       default:
         return <Badge variant="info">Info</Badge>;
     }
@@ -138,15 +138,15 @@ export default function ActivityPage() {
   const getActivityTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
       user_login: 'Connexion utilisateur',
-      user_logout: 'DÃ©connexion utilisateur',
+      user_logout: 'Déconnexion utilisateur',
       exhibitor_validation: 'Validation exposant',
-      content_moderation: 'ModÃ©ration contenu',
-      security_alert: 'Alerte sÃ©curitÃ©',
-      system_error: 'Erreur systÃ¨me',
+      content_moderation: 'Modération contenu',
+      security_alert: 'Alerte sécurité',
+      system_error: 'Erreur système',
       user_suspension: 'Suspension utilisateur',
       api_rate_limit: 'Limite API atteinte',
-      content_moderation_warning: 'Avertissement modÃ©ration',
-      system_backup_success: 'Sauvegarde rÃ©ussie'
+      content_moderation_warning: 'Avertissement modération',
+      system_backup_success: 'Sauvegarde réussie'
     };
     return labels[type] || type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
@@ -177,9 +177,9 @@ export default function ActivityPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Journal d'ActivitÃ©</h1>
+              <h1 className="text-3xl font-bold text-gray-900">Journal d'Activité</h1>
               <p className="text-gray-600 mt-2">
-                Suivi en temps rÃ©el des Ã©vÃ©nements et actions systÃ¨me
+                Suivi en temps réel des événements et actions système
               </p>
             </div>
             <Button variant="outline" onClick={() => window.location.reload()}>
@@ -195,7 +195,7 @@ export default function ActivityPage() {
             <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total ActivitÃ©s</p>
+                  <p className="text-sm font-medium text-gray-600">Total Activités</p>
                   <p className="text-3xl font-bold text-gray-900">{activities.length}</p>
                 </div>
                 <Activity className="h-8 w-8 text-blue-600" />
@@ -207,7 +207,7 @@ export default function ActivityPage() {
             <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">SuccÃ¨s</p>
+                  <p className="text-sm font-medium text-gray-600">Succès</p>
                   <p className="text-3xl font-bold text-green-600">
                     {activities.filter(a => a.severity === 'success').length}
                   </p>
@@ -256,7 +256,7 @@ export default function ActivityPage() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Rechercher une activitÃ©..."
+                    placeholder="Rechercher une activité..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -292,9 +292,9 @@ export default function ActivityPage() {
                     onChange={(e) => updateFilter('severity', e.target.value)}
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
                   >
-                    <option value="">Toutes les sÃ©vÃ©ritÃ©s</option>
+                    <option value="">Toutes les sévérités</option>
                     <option value="info">Info</option>
-                    <option value="success">SuccÃ¨s</option>
+                    <option value="success">Succès</option>
                     <option value="warning">Avertissement</option>
                     <option value="error">Erreur</option>
                   </select>
@@ -307,7 +307,7 @@ export default function ActivityPage() {
               <div className="mt-4">
                 <Button variant="outline" size="sm" onClick={resetFilters}>
                   <X className="h-4 w-4 mr-2" />
-                  RÃ©initialiser les filtres
+                  Réinitialiser les filtres
                 </Button>
               </div>
             )}
@@ -318,14 +318,14 @@ export default function ActivityPage() {
         <Card>
           <div className="p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
-              ActivitÃ©s rÃ©centes ({filteredActivities.length})
+              Activités récentes ({filteredActivities.length})
             </h2>
 
             <div className="space-y-4">
               {filteredActivities.length === 0 ? (
                 <div className="text-center py-12">
                   <Activity className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">Aucune activitÃ© trouvÃ©e</p>
+                  <p className="text-gray-600">Aucune activité trouvée</p>
                 </div>
               ) : (
                 filteredActivities.map((activity, index) => {

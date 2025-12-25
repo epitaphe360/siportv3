@@ -50,27 +50,27 @@ export default function PartnerPaymentSelectionPage() {
 
   const handleBankTransfer = async () => {
     if (!user) {
-      toast.error('Utilisateur non connectÃ©');
+      toast.error('Utilisateur non connecté');
       return;
     }
 
     setProcessing(true);
 
     try {
-      // CrÃ©er une demande de virement bancaire
+      // Créer une demande de virement bancaire
       const { requestId } = await createPartnerBankTransferRequest(
         user.id,
         tier,
         currentTier
       );
 
-      toast.success('Demande de virement crÃ©Ã©e avec succÃ¨s !');
+      toast.success('Demande de virement créée avec succès !');
 
       // Rediriger vers la page d'instructions de virement
       navigate(`/partner/bank-transfer?request_id=${requestId}&tier=${tier}`);
     } catch (error: any) {
       console.error('Error creating bank transfer request:', error);
-      toast.error('Erreur lors de la crÃ©ation de la demande');
+      toast.error('Erreur lors de la création de la demande');
     } finally {
       setProcessing(false);
     }
@@ -85,8 +85,8 @@ export default function PartnerPaymentSelectionPage() {
       color: 'blue',
       recommended: true,
       features: [
-        'Paiement sÃ©curisÃ© instantanÃ©',
-        'Activation immÃ©diate du compte',
+        'Paiement sécurisé instantané',
+        'Activation immédiate du compte',
         'Support Visa, Mastercard, Amex',
         'PayPal disponible',
         'CMI pour cartes marocaines'
@@ -100,10 +100,10 @@ export default function PartnerPaymentSelectionPage() {
       icon: Building2,
       color: 'green',
       features: [
-        'Virement bancaire sÃ©curisÃ©',
-        'DÃ©lai de traitement: 2-5 jours',
-        'IdÃ©al pour montants Ã©levÃ©s',
-        'SEPA ou SWIFT acceptÃ©s',
+        'Virement bancaire sécurisé',
+        'Délai de traitement: 2-5 jours',
+        'Idéal pour montants élevés',
+        'SEPA ou SWIFT acceptés',
         'Justificatif requis'
       ],
       action: handleBankTransfer
@@ -124,7 +124,7 @@ export default function PartnerPaymentSelectionPage() {
             {isUpgrade ? 'Upgrade vers' : 'Abonnement'} {tierInfo.displayName}
           </h1>
           <p className="text-xl text-gray-600">
-            Choisissez votre mÃ©thode de paiement
+            Choisissez votre méthode de paiement
           </p>
         </motion.div>
 
@@ -160,7 +160,7 @@ export default function PartnerPaymentSelectionPage() {
         {/* Payment Methods */}
         <div className="space-y-6 mb-8">
           <h3 className="text-xl font-semibold text-gray-900 text-center">
-            SÃ©lectionnez votre mode de paiement
+            Sélectionnez votre mode de paiement
           </h3>
 
           {paymentMethods.map((method, index) => (
@@ -188,7 +188,7 @@ export default function PartnerPaymentSelectionPage() {
                         <h4 className="font-bold text-gray-900 text-lg">{method.name}</h4>
                         {method.recommended && (
                           <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded">
-                            RecommandÃ©
+                            Recommandé
                           </span>
                         )}
                       </div>
@@ -237,7 +237,7 @@ export default function PartnerPaymentSelectionPage() {
                           {method.id === 'online' ? (
                             <>
                               <Zap className="mr-2 h-5 w-5" />
-                              Payer maintenant - Activation immÃ©diate
+                              Payer maintenant - Activation immédiate
                             </>
                           ) : (
                             <>
@@ -259,7 +259,7 @@ export default function PartnerPaymentSelectionPage() {
         {/* Security Badge */}
         <div className="mt-8 flex items-center justify-center text-sm text-gray-600">
           <Shield className="h-5 w-5 mr-2 text-green-600" />
-          <span>Paiement 100% sÃ©curisÃ© - Vos donnÃ©es sont cryptÃ©es</span>
+          <span>Paiement 100% sécurisé - Vos données sont cryptées</span>
         </div>
 
         {/* Cancel Button */}

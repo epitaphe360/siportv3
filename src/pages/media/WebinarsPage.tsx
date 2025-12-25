@@ -1,6 +1,6 @@
 ﻿/**
  * Page des Webinaires SIPORT
- * Affiche tous les webinaires sponsorisÃ©s disponibles en replay
+ * Affiche tous les webinaires sponsorisés disponibles en replay
  */
 
 import React, { useEffect, useState } from 'react';
@@ -78,7 +78,7 @@ export const WebinarsPage: React.FC = () => {
           className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-8 transition-colors"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Retour Ã  l'accueil
+          Retour à l'accueil
         </Link>
 
         {/* Header */}
@@ -92,7 +92,7 @@ export const WebinarsPage: React.FC = () => {
           </h1>
           
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            DÃ©couvrez nos webinaires sponsorisÃ©s en replay. Sessions exclusives avec les experts de l'industrie maritime et portuaire.
+            Découvrez nos webinaires sponsorisés en replay. Sessions exclusives avec les experts de l'industrie maritime et portuaire.
           </p>
         </div>
 
@@ -127,7 +127,7 @@ export const WebinarsPage: React.FC = () => {
           <Card className="p-6 bg-gradient-to-br from-pink-50 to-pink-100 border-pink-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-pink-600 font-medium mb-1">DurÃ©e Totale</p>
+                <p className="text-sm text-pink-600 font-medium mb-1">Durée Totale</p>
                 <p className="text-3xl font-bold text-pink-900">
                   {Math.floor(webinars.reduce((sum, w) => sum + (w.duration || 0), 0) / 3600)}h
                 </p>
@@ -168,7 +168,7 @@ export const WebinarsPage: React.FC = () => {
                 size="sm"
                 onClick={() => setFilter('recent')}
               >
-                RÃ©cents
+                Récents
               </Button>
               <Button
                 variant={filter === 'popular' ? 'default' : 'outline'}
@@ -183,7 +183,7 @@ export const WebinarsPage: React.FC = () => {
           {/* Categories */}
           {categories.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-2">
-              <span className="text-sm text-gray-600 mr-2">CatÃ©gories:</span>
+              <span className="text-sm text-gray-600 mr-2">Catégories:</span>
               <button
                 onClick={() => setSelectedCategory(null)}
                 className={`px-3 py-1 text-sm rounded-full transition-colors ${
@@ -304,7 +304,7 @@ export const WebinarsPage: React.FC = () => {
         {filteredWebinars.length > 0 ? (
           <>
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              {searchQuery || selectedCategory ? 'RÃ©sultats' : 'Tous les webinaires'}
+              {searchQuery || selectedCategory ? 'Résultats' : 'Tous les webinaires'}
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -323,12 +323,12 @@ export const WebinarsPage: React.FC = () => {
               <Play className="h-12 w-12 text-gray-400" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Aucun webinaire trouvÃ©
+              Aucun webinaire trouvé
             </h3>
             <p className="text-gray-600">
               {searchQuery || selectedCategory
                 ? 'Essayez de modifier vos filtres de recherche'
-                : 'Les webinaires seront bientÃ´t disponibles'}
+                : 'Les webinaires seront bientôt disponibles'}
             </p>
           </div>
         )}

@@ -58,11 +58,11 @@ export default function PartnerUpgradePage() {
             </div>
 
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              DÃ©veloppez votre visibilitÃ©
+              Développez votre visibilité
             </h1>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Choisissez le niveau partenaire qui correspond Ã  vos ambitions et
-              maximisez votre prÃ©sence au SIPORT 2026
+              Choisissez le niveau partenaire qui correspond à vos ambitions et
+              maximisez votre présence au SIPORT 2026
             </p>
           </motion.div>
         </div>
@@ -131,7 +131,7 @@ export default function PartnerUpgradePage() {
                       <div className="flex items-center justify-between text-sm">
                         <span className="flex items-center text-gray-600">
                           <Users className="h-4 w-4 mr-2" />
-                          Membres Ã©quipe
+                          Membres équipe
                         </span>
                         <span className="font-semibold">{tier.quotas.teamMembers}</span>
                       </div>
@@ -139,7 +139,7 @@ export default function PartnerUpgradePage() {
                       <div className="flex items-center justify-between text-sm">
                         <span className="flex items-center text-gray-600">
                           <FileText className="h-4 w-4 mr-2" />
-                          Fichiers mÃ©dia
+                          Fichiers média
                         </span>
                         <span className="font-semibold">{tier.quotas.mediaUploads}</span>
                       </div>
@@ -198,7 +198,7 @@ export default function PartnerUpgradePage() {
         {/* Detailed Features */}
         <div className="mt-16">
           <h2 className="text-3xl font-bold text-center mb-12">
-            FonctionnalitÃ©s dÃ©taillÃ©es par niveau
+            Fonctionnalités détaillées par niveau
           </h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -216,12 +216,12 @@ export default function PartnerUpgradePage() {
                     <div>
                       <h4 className="font-semibold text-sm text-gray-900 mb-2 flex items-center">
                         <Check className="h-4 w-4 text-green-600 mr-2" />
-                        FonctionnalitÃ©s incluses
+                        Fonctionnalités incluses
                       </h4>
                       <ul className="space-y-2">
                         {tier.features.map((feature, idx) => (
                           <li key={idx} className="text-sm text-gray-600 flex items-start">
-                            <span className="text-green-600 mr-2">â€¢</span>
+                            <span className="text-green-600 mr-2">â•</span>
                             <span>{feature}</span>
                           </li>
                         ))}
@@ -262,13 +262,13 @@ export default function PartnerUpgradePage() {
               Maximisez votre retour sur investissement
             </h2>
             <p className="text-lg text-blue-100 mb-6">
-              En moyenne, nos partenaires Gold et Platinium gÃ©nÃ¨rent 5x leur investissement
-              en nouveaux contrats et opportunitÃ©s business grÃ¢ce au SIPORT 2026.
+              En moyenne, nos partenaires Gold et Platinium génèrent 5x leur investissement
+              en nouveaux contrats et opportunités business grâce au SIPORT 2026.
             </p>
             <div className="grid grid-cols-3 gap-6 mt-8">
               <div>
                 <div className="text-4xl font-bold">500+</div>
-                <div className="text-blue-200 text-sm">Visiteurs qualifiÃ©s</div>
+                <div className="text-blue-200 text-sm">Visiteurs qualifiés</div>
               </div>
               <div>
                 <div className="text-4xl font-bold">150+</div>
@@ -293,19 +293,19 @@ export default function PartnerUpgradePage() {
               {
                 tier: 'Platinium',
                 company: 'TechCorp International',
-                quote: "Le niveau Platinium nous a permis d'obtenir une visibilitÃ© exceptionnelle. 87 rendez-vous qualifiÃ©s en 3 jours!",
+                quote: "Le niveau Platinium nous a permis d'obtenir une visibilité exceptionnelle. 87 rendez-vous qualifiés en 3 jours!",
                 author: 'Jean Dupont, CEO'
               },
               {
                 tier: 'Gold',
                 company: 'Innovation Solutions',
-                quote: "Le ROI a Ã©tÃ© immÃ©diat. Nous avons signÃ© 3 contrats majeurs dÃ¨s la premiÃ¨re semaine aprÃ¨s le salon.",
+                quote: "Le ROI a été immédiat. Nous avons signé 3 contrats majeurs dès la première semaine après le salon.",
                 author: 'Marie Martin, Directrice'
               },
               {
                 tier: 'Silver',
                 company: 'StartUp Tech',
-                quote: "Niveau Silver parfait pour une premiÃ¨re participation. Les analytics nous ont beaucoup aidÃ©s.",
+                quote: "Niveau Silver parfait pour une première participation. Les analytics nous ont beaucoup aidés.",
                 author: 'Ahmed Benali, Fondateur'
               }
             ].map((testimonial, idx) => (
@@ -319,7 +319,7 @@ export default function PartnerUpgradePage() {
                   </span>
                 </div>
                 <p className="text-gray-600 italic mb-4">"{testimonial.quote}"</p>
-                <p className="text-sm text-gray-500">â€” {testimonial.author}</p>
+                <p className="text-sm text-gray-500">â— {testimonial.author}</p>
               </Card>
             ))}
           </div>
@@ -328,26 +328,26 @@ export default function PartnerUpgradePage() {
         {/* FAQ Section */}
         <div className="mt-16">
           <h2 className="text-3xl font-bold text-center mb-12">
-            Questions frÃ©quentes
+            Questions fréquentes
           </h2>
 
           <div className="max-w-3xl mx-auto space-y-4">
             {[
               {
-                q: "Puis-je changer de niveau pendant l'Ã©vÃ©nement?",
-                a: "Oui, vous pouvez upgrader votre niveau Ã  tout moment. Le prix sera ajustÃ© au prorata."
+                q: "Puis-je changer de niveau pendant l'événement?",
+                a: "Oui, vous pouvez upgrader votre niveau à tout moment. Le prix sera ajusté au prorata."
               },
               {
-                q: "Les quotas sont-ils partagÃ©s entre les membres de l'Ã©quipe?",
-                a: "Oui, les quotas sont globaux pour votre organisation et partagÃ©s entre tous les membres."
+                q: "Les quotas sont-ils partagés entre les membres de l'équipe?",
+                a: "Oui, les quotas sont globaux pour votre organisation et partagés entre tous les membres."
               },
               {
                 q: "Que se passe-t-il si j'atteins mes quotas?",
                 a: "Vous recevrez une notification et pourrez soit upgrader votre niveau, soit attendre le renouvellement."
               },
               {
-                q: "Les analytics sont-elles en temps rÃ©el?",
-                a: "Pour Silver et Gold, les analytics sont mises Ã  jour toutes les heures. Platinium bÃ©nÃ©ficie d'analytics en temps rÃ©el avec IA."
+                q: "Les analytics sont-elles en temps réel?",
+                a: "Pour Silver et Gold, les analytics sont mises à jour toutes les heures. Platinium bénéficie d'analytics en temps réel avec IA."
               }
             ].map((faq, idx) => (
               <Card key={idx} className="p-6">
@@ -366,10 +366,10 @@ export default function PartnerUpgradePage() {
           className="mt-16 text-center"
         >
           <h2 className="text-3xl font-bold mb-4">
-            PrÃªt Ã  passer au niveau supÃ©rieur?
+            Prêt à passer au niveau supérieur?
           </h2>
           <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-            Rejoignez les leaders de l'industrie et maximisez votre prÃ©sence au SIPORT 2026
+            Rejoignez les leaders de l'industrie et maximisez votre présence au SIPORT 2026
           </p>
           <Button
             variant="default"

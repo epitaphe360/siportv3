@@ -35,7 +35,7 @@ export default function SupportPage() {
               Support Technique
             </h3>
             <p className="text-gray-600 mb-6">
-              ProblÃ¨mes techniques, bugs, ou difficultÃ©s d'utilisation de la plateforme.
+              Problèmes techniques, bugs, ou difficultés d'utilisation de la plateforme.
             </p>
             <Button onClick={() => handleSupportRequest('technical')} className="w-full">
               Contacter le Support
@@ -50,7 +50,7 @@ export default function SupportPage() {
               Support Commercial
             </h3>
             <p className="text-gray-600 mb-6">
-              Questions sur les tarifs, partenariats, ou informations sur l'Ã©vÃ©nement.
+              Questions sur les tarifs, partenariats, ou informations sur l'événement.
             </p>
             <Button onClick={() => handleSupportRequest('commercial')} variant="outline" className="w-full">
               Contact Commercial
@@ -65,7 +65,7 @@ export default function SupportPage() {
               Support Exposant
             </h3>
             <p className="text-gray-600 mb-6">
-              Aide pour la crÃ©ation de profil, gestion de stand, ou fonctionnalitÃ©s exposant.
+              Aide pour la création de profil, gestion de stand, ou fonctionnalités exposant.
             </p>
             <Button onClick={() => handleSupportRequest('exhibitor')} variant="outline" className="w-full">
               Support Exposant
@@ -76,32 +76,32 @@ export default function SupportPage() {
         {/* FAQ Section */}
         <Card className="p-8 mb-12">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
-            Questions FrÃ©quentes
+            Questions Fréquentes
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                ProblÃ¨mes de connexion
+                Problèmes de connexion
               </h3>
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-medium text-gray-900">J'ai oubliÃ© mon mot de passe</h4>
-                  <p className="text-gray-600 text-sm">Utilisez le lien "Mot de passe oubliÃ©" sur la page de connexion.</p>
+                  <h4 className="font-medium text-gray-900">J'ai oublié mon mot de passe</h4>
+                  <p className="text-gray-600 text-sm">Utilisez le lien "Mot de passe oublié" sur la page de connexion.</p>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900">Mon compte n'est pas activÃ©</h4>
-                  <p className="text-gray-600 text-sm">VÃ©rifiez vos emails ou contactez le support pour l'activation.</p>
+                  <h4 className="font-medium text-gray-900">Mon compte n'est pas activé</h4>
+                  <p className="text-gray-600 text-sm">Vérifiez vos emails ou contactez le support pour l'activation.</p>
                 </div>
               </div>
             </div>
             <div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                FonctionnalitÃ©s de la plateforme
+                Fonctionnalités de la plateforme
               </h3>
               <div className="space-y-4">
                 <div>
                   <h4 className="font-medium text-gray-900">Comment prendre un rendez-vous ?</h4>
-                  <p className="text-gray-600 text-sm">AccÃ©dez Ã  la section "Networking" et sÃ©lectionnez un exposant.</p>
+                  <p className="text-gray-600 text-sm">Accédez à la section "Networking" et sélectionnez un exposant.</p>
                 </div>
                 <div>
                   <h4 className="font-medium text-gray-900">Comment modifier mon profil ?</h4>
@@ -116,10 +116,10 @@ export default function SupportPage() {
         <Card className="p-8 text-center">
           <Phone className="h-16 w-16 text-blue-600 mx-auto mb-6" />
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Besoin d'aide immÃ©diate ?
+            Besoin d'aide immédiate ?
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Notre Ã©quipe de support est disponible pour rÃ©pondre Ã  toutes vos questions.
+            Notre équipe de support est disponible pour répondre à toutes vos questions.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div>

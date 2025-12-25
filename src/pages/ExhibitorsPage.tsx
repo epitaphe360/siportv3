@@ -44,7 +44,7 @@ export default function ExhibitorsPage() {
     fetchExhibitors();
   }, [fetchExhibitors]);
 
-  // Fonction pour gÃ©rer le clic sur le bouton RDV
+  // Fonction pour gérer le clic sur le bouton RDV
   const handleAppointmentClick = (exhibitorId: string) => {
     if (!isAuthenticated) {
       // Rediriger vers la page de connexion avec redirection vers les RDV

@@ -4,11 +4,11 @@ import useAuthStore from '../store/authStore';
 import { useTranslation } from '../hooks/useTranslation';
 
 export default function VisitorDashboardPage() {
-  const { user } = useAuthStore(); // user.id doit Ãªtre l'ID du visiteur connectÃ©
+  const { user } = useAuthStore(); // user.id doit être l'ID du visiteur connecté
   const { t } = useTranslation();
 
   if (!user) {
-    return <div>Veuillez vous connecter pour accÃ©der Ã  votre tableau de bord visiteur.</div>;
+    return <div>Veuillez vous connecter pour accéder à votre tableau de bord visiteur.</div>;
   }
 
   return (
