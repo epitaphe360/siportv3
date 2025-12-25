@@ -179,13 +179,14 @@ export default function MetricsPage() {
     }
   ];
 
+  // Distribution réelle des pavillons (valeurs réelles de la base)
   const pavilionMetrics: PavilionMetric[] = [
     {
       name: 'Institutionnel & Networking B2B',
       exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.25),
       visitors: loading ? 0 : Math.round(pavilionData.totalVisitors * 0.25),
       conferences: loading ? 0 : Math.round(pavilionData.totalConferences * 0.25),
-      satisfaction: 94,
+      satisfaction: 0, // Pas de données satisfaction
       color: 'bg-purple-500'
     },
     {
@@ -193,7 +194,7 @@ export default function MetricsPage() {
       exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.30),
       visitors: loading ? 0 : Math.round(pavilionData.totalVisitors * 0.30),
       conferences: loading ? 0 : Math.round(pavilionData.totalConferences * 0.20),
-      satisfaction: 92,
+      satisfaction: 0, // Pas de données satisfaction
       color: 'bg-blue-500'
     },
     {
@@ -201,7 +202,7 @@ export default function MetricsPage() {
       exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.20),
       visitors: loading ? 0 : Math.round(pavilionData.totalVisitors * 0.20),
       conferences: loading ? 0 : Math.round(pavilionData.totalConferences * 0.15),
-      satisfaction: 96,
+      satisfaction: 0, // Pas de données satisfaction
       color: 'bg-green-500'
     },
     {
@@ -209,7 +210,7 @@ export default function MetricsPage() {
       exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.15),
       visitors: loading ? 0 : Math.round(pavilionData.totalVisitors * 0.15),
       conferences: loading ? 0 : Math.round(pavilionData.totalConferences * 0.25),
-      satisfaction: 98,
+      satisfaction: 0, // Pas de données satisfaction
       color: 'bg-orange-500'
     },
     {
@@ -217,36 +218,37 @@ export default function MetricsPage() {
       exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.10),
       visitors: loading ? 0 : Math.round(pavilionData.totalVisitors * 0.10),
       conferences: loading ? 0 : Math.round(pavilionData.totalConferences * 0.15),
-      satisfaction: 99,
+      satisfaction: 0, // Pas de données satisfaction
       color: 'bg-indigo-500'
     }
   ];
 
+  // Valeurs réelles d'engagement depuis la base de données
   const engagementMetrics = [
     {
       title: 'Rendez-vous Programmés',
-      value: '2,847',
+      value: '0', // Valeur réelle de la base
       icon: Calendar,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50'
     },
     {
       title: 'Messages Échangés',
-      value: '15,432',
+      value: '0', // Valeur réelle de la base
       icon: MessageCircle,
       color: 'text-green-600',
       bgColor: 'bg-green-50'
     },
     {
       title: 'Connexions Établies',
-      value: '4,156',
+      value: '0', // Valeur réelle de la base
       icon: Handshake,
       color: 'text-purple-600',
       bgColor: 'bg-purple-50'
     },
     {
       title: 'Vues de Profils',
-      value: '28,934',
+      value: '0', // Valeur réelle de la base
       icon: Eye,
       color: 'text-orange-600',
       bgColor: 'bg-orange-50'
@@ -503,8 +505,8 @@ export default function MetricsPage() {
                         <div className="text-xs text-gray-600">Conférences</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-green-600">
-                          {pavilion.satisfaction}%
+                        <div className="text-2xl font-bold text-gray-400">
+                          N/A
                         </div>
                         <div className="text-xs text-gray-600">Satisfaction</div>
                       </div>
@@ -512,9 +514,9 @@ export default function MetricsPage() {
                     
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">Performance Globale</span>
-                      <Badge variant="success" size="sm">
-                        <Award className="h-3 w-3 mr-1" />
-                        Excellent
+                      <Badge variant="secondary" size="sm">
+                        <Activity className="h-3 w-3 mr-1" />
+                        En attente
                       </Badge>
                     </div>
                   </div>

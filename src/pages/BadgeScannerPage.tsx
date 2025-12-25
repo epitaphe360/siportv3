@@ -62,6 +62,7 @@ export default function BadgeScannerPage() {
 
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const videoRef = useRef<HTMLDivElement>(null);
+  const isProcessingRef = useRef<boolean>(false); // Protection contre scans multiples
 
   // Charger les stats et vérifier les permissions caméra au montage
   useEffect(() => {
@@ -80,42 +81,60 @@ export default function BadgeScannerPage() {
     try {
       const { supabase } = await import('../lib/supabase');
       
-      // Récupérer le total des scans (somme de tous les scan_count)
-      const { data: badges, error } = await supabase
+      // 1. Total des scans = somme de tous les scan_count
+      const { data: allBadges, error: badgesError } = await supabase
         .from('user_badges')
-        .select('scan_count, last_scanned_at')
-        .gt('scan_count', 0);
+        .select('scan_count, last_scanned_at, created_at');
       
-      if (error) {
-        console.error('Erreur chargement stats:', error);
+      if (badgesError) {
+        console.error('Erreur chargement stats:', badgesError);
         return;
       }
 
-      if (badges && badges.length > 0) {
-        const totalScans = badges.reduce((sum, b) => sum + (b.scan_count || 0), 0);
-        const uniqueVisitors = badges.length;
+      // 2. Calculer les stats
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      let totalScans = 0;
+      let uniqueVisitors = 0;
+      let todayScans = 0;
+      let lastScanTime: Date | undefined;
+
+      if (allBadges && allBadges.length > 0) {
+        // Total scans = somme de tous les scan_count
+        totalScans = allBadges.reduce((sum, b) => sum + (b.scan_count || 0), 0);
         
-        // Compter les scans d'aujourd'hui
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const todayScans = badges.filter(b => {
+        // Visiteurs uniques = badges avec au moins 1 scan
+        uniqueVisitors = allBadges.filter(b => (b.scan_count || 0) > 0).length;
+        
+        // Pour todayScans, on doit compter les scans faits aujourd'hui
+        // Comme on n'a que last_scanned_at, on compte les badges scannés aujourd'hui
+        // Note: Pour avoir le vrai nombre de scans aujourd'hui, il faudrait une table scan_logs
+        const scannedToday = allBadges.filter(b => {
           if (!b.last_scanned_at) return false;
           const scanDate = new Date(b.last_scanned_at);
           return scanDate >= today;
-        }).length;
-
-        // Trouver le dernier scan
-        const lastScan = badges
-          .filter(b => b.last_scanned_at)
-          .sort((a, b) => new Date(b.last_scanned_at).getTime() - new Date(a.last_scanned_at).getTime())[0];
-
-        setStats({
-          totalScans,
-          todayScans,
-          uniqueVisitors,
-          lastScanTime: lastScan?.last_scanned_at ? new Date(lastScan.last_scanned_at) : undefined
         });
+        todayScans = scannedToday.length;
+
+        // Dernier scan
+        const sortedByLastScan = allBadges
+          .filter(b => b.last_scanned_at)
+          .sort((a, b) => new Date(b.last_scanned_at!).getTime() - new Date(a.last_scanned_at!).getTime());
+        
+        if (sortedByLastScan.length > 0) {
+          lastScanTime = new Date(sortedByLastScan[0].last_scanned_at!);
+        }
       }
+
+      setStats({
+        totalScans,
+        todayScans,
+        uniqueVisitors,
+        lastScanTime
+      });
+      
+      console.log('Stats chargées:', { totalScans, todayScans, uniqueVisitors });
     } catch (err) {
       console.error('Erreur chargement stats:', err);
     }
@@ -153,19 +172,21 @@ export default function BadgeScannerPage() {
       const scanner = new Html5Qrcode('qr-reader');
       scannerRef.current = scanner;
 
-      // DÃ©marrer le scan
+      // Démarrer le scan avec paramètres optimisés pour écran de téléphone
       await scanner.start(
-        { facingMode: 'environment' }, // CamÃ©ra arriÃ¨re
+        { facingMode: 'environment' }, // Caméra arrière
         {
-          fps: 10,
-          qrbox: { width: 250, height: 250 }
+          fps: 15, // Plus rapide pour meilleure réactivité
+          qrbox: { width: 280, height: 280 }, // Zone de scan plus grande
+          aspectRatio: 1.0, // Format carré optimal pour QR codes
+          disableFlip: false // Permet de scanner QR codes inversés/miroir
         },
         onScanSuccess,
         onScanError
       );
 
       setIsScanning(true);
-      toast.success('Scanner activÃ©');
+      toast.success('Scanner activé');
     } catch (err: any) {
       console.error('Erreur dÃ©marrage scanner:', err);
       setError('Impossible d\'accÃ©der Ã  la camÃ©ra. VÃ©rifiez les permissions.');
@@ -196,13 +217,29 @@ export default function BadgeScannerPage() {
   };
 
   /**
-   * Callback succÃ¨s scan QR
+   * Callback succès scan QR - AVEC PROTECTION ANTI-DOUBLON
    */
   const onScanSuccess = async (decodedText: string) => {
-    console.log('QR Code scannÃ©:', decodedText);
+    // Protection contre les scans multiples
+    if (isProcessingRef.current) {
+      console.log('Scan ignoré - traitement en cours');
+      return;
+    }
+    
+    // Bloquer immédiatement les nouveaux scans
+    isProcessingRef.current = true;
+    console.log('QR Code scanné:', decodedText);
 
-    // ArrÃªter temporairement le scanner pour Ã©viter les scans multiples
-    await stopScanner();
+    // Arrêter le scanner IMMÉDIATEMENT
+    try {
+      if (scannerRef.current) {
+        await scannerRef.current.stop();
+        scannerRef.current = null;
+        setIsScanning(false);
+      }
+    } catch (e) {
+      console.error('Erreur arrêt scanner:', e);
+    }
 
     try {
       // Parser le QR code (format JSON attendu)
@@ -210,26 +247,26 @@ export default function BadgeScannerPage() {
       try {
         badgeData = JSON.parse(decodedText);
       } catch {
-        // Si ce n'est pas du JSON, considÃ©rer comme badge_code simple
+        // Si ce n'est pas du JSON, considérer comme badge_code simple
         badgeData = { badge_code: decodedText };
       }
 
       // Valider le badge via l'API
       await validateAndRecordScan(badgeData.badge_code || decodedText);
       
-      // Succès: on laisse le scanner arrêté pour afficher le résultat.
-      // L'utilisateur devra cliquer sur "Scanner un autre badge" pour relancer.
+      // Succès: recharger les stats depuis la DB
+      await loadScanStats();
       
     } catch (err: any) {
       console.error('Erreur traitement scan:', err);
       toast.error('Badge invalide', {
         description: err.message || 'Impossible de valider ce badge'
       });
-
-      // En cas d'erreur, on relance le scanner automatiquement après 2 secondes
+    } finally {
+      // Débloquer après 1 seconde pour éviter les doubles scans accidentels
       setTimeout(() => {
-        startScanner();
-      }, 2000);
+        isProcessingRef.current = false;
+      }, 1000);
     }
   };
 
@@ -285,17 +322,11 @@ export default function BadgeScannerPage() {
       setScannedBadge(scanned);
       setScanHistory(prev => [scanned, ...prev.slice(0, 49)]); // Garder les 50 derniers
 
-      // Mettre Ã  jour les stats
-      setStats(prev => ({
-        totalScans: prev.totalScans + 1,
-        todayScans: prev.todayScans + 1,
-        uniqueVisitors: prev.uniqueVisitors + (scanned.scanCount === 1 ? 1 : 0),
-        lastScanTime: new Date()
-      }));
+      // Note: Les stats sont rechargées depuis la DB dans onScanSuccess
 
       // Notification sonore et visuelle
       playSuccessSound();
-      toast.success('Badge validÃ©', {
+      toast.success('Badge validé', {
         description: `${scanned.fullName} - ${scanned.companyName || 'N/A'}`
       });
 
