@@ -296,13 +296,13 @@ export default function NetworkingPage() {
             >
               <div className="inline-flex items-center space-x-2 bg-blue-500/10 backdrop-blur-md border border-blue-500/20 rounded-full px-4 py-2 mb-8">
                 <Sparkles className="h-4 w-4 text-blue-400" />
-                <span className="text-blue-200 text-sm font-medium tracking-wide uppercase">PropulsÃ© par l'IA SIPORTS v3.0</span>
+                <span className="text-blue-200 text-sm font-medium tracking-wide uppercase">{t('networking.ai_powered')}</span>
               </div>
 
               <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 tracking-tight leading-none">
-                RÃ©seautage <br />
+                {t('networking.hero_title')} <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-400">
-                  Intelligent
+                  {t('networking.hero_subtitle')}
                 </span>
               </h1>
 
@@ -313,23 +313,24 @@ export default function NetworkingPage() {
 
               {/* Bloc connexion obligatoire style Glassmorphism */}
               <div className="max-w-lg mx-auto bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl">
-                <h2 className="text-2xl font-bold text-white mb-4">Connexion requise</h2>
+                <h2 className="text-2xl font-bold text-white mb-4">{t('networking.login_required')}</h2>
                 <p className="text-blue-100/70 mb-8 leading-relaxed">
-                  Le Hub de RÃ©seautage est rÃ©servÃ© aux membres inscrits. 
-                  Connectez-vous pour dÃ©couvrir vos recommandations personnalisÃ©es.
+                  {t('networking.hub_restricted')}
+                  {' '}
+                  {t('networking.discover_recommendations')}
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link to={ROUTES.LOGIN} className="flex-1">
                     <Button size="lg" className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white border-none shadow-lg shadow-blue-900/20">
                       <UserIcon className="h-4 w-4 mr-2" />
-                      Se connecter
+                      {t('networking.login_button')}
                     </Button>
                   </Link>
                   <Link to={ROUTES.VISITOR_SUBSCRIPTION} className="flex-1">
                     <Button variant="outline" size="lg" className="w-full border-white/20 text-white hover:bg-white/10 backdrop-blur-md">
                       <Plus className="h-4 w-4 mr-2" />
-                      S'inscrire
+                      {t('networking.signup_button')}
                     </Button>
                   </Link>
                 </div>
