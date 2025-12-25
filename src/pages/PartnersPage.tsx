@@ -226,7 +226,7 @@ export default function PartnersPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
           <Card>
             <div className="p-6 text-center">
-              <div className="text-4xl mb-2">ðŸ›ï¸</div>
+              <div className="text-4xl mb-2">🏛️</div>
               <div className="text-2xl font-bold text-gray-900">{partnerStats.museum}</div>
               <div className="text-sm text-gray-600">Museum</div>
               <div className="text-xs text-gray-500">$20k</div>
@@ -235,7 +235,7 @@ export default function PartnersPage() {
 
           <Card>
             <div className="p-6 text-center">
-              <div className="text-4xl mb-2">ðŸ¥ˆ</div>
+              <div className="text-4xl mb-2">🥈</div>
               <div className="text-2xl font-bold text-gray-900">{partnerStats.silver}</div>
               <div className="text-sm text-gray-600">Silver</div>
               <div className="text-xs text-gray-500">$48k</div>
@@ -244,7 +244,7 @@ export default function PartnersPage() {
 
           <Card>
             <div className="p-6 text-center">
-              <div className="text-4xl mb-2">ðŸ¥‡</div>
+              <div className="text-4xl mb-2">🥇</div>
               <div className="text-2xl font-bold text-gray-900">{partnerStats.gold}</div>
               <div className="text-sm text-gray-600">Gold</div>
               <div className="text-xs text-gray-500">$68k</div>
@@ -253,7 +253,7 @@ export default function PartnersPage() {
 
           <Card>
             <div className="p-6 text-center">
-              <div className="text-4xl mb-2">ðŸ’Ž</div>
+              <div className="text-4xl mb-2">💎</div>
               <div className="text-2xl font-bold text-gray-900">{partnerStats.platinium}</div>
               <div className="text-sm text-gray-600">Platinium</div>
               <div className="text-xs text-gray-500">$98k</div>
