@@ -136,17 +136,17 @@ export default function BadgePage() {
       </style>
 
       <div className="no-print" style={{ marginBottom: 32 }}>
-        <h1>ðŸŽ« Mon Badge d'AccÃ¨s</h1>
+        <h1>🎫 Mon Badge d'Accès</h1>
         <p style={{ color: '#666' }}>
           {badge
-            ? 'TÃ©lÃ©chargez ou imprimez votre badge pour accÃ©der au salon.'
-            : 'GÃ©nÃ©rez votre badge personnalisÃ© avec QR code pour accÃ©der au salon.'}
+            ? 'Téléchargez ou imprimez votre badge pour accéder au salon.'
+            : 'Générez votre badge personnalisé avec QR code pour accéder au salon.'}
         </p>
       </div>
 
       {error && (
         <div className="no-print" style={{ background: '#f8d7da', padding: 16, borderRadius: 8, marginBottom: 24, color: '#721c24' }}>
-          âš ï¸ {error}
+          ⚠️ {error}
         </div>
       )}
 
@@ -167,7 +167,7 @@ export default function BadgePage() {
               opacity: generating ? 0.6 : 1,
             }}
           >
-            {generating ? 'GÃ©nÃ©ration...' : 'âœ¨ GÃ©nÃ©rer mon badge'}
+            {generating ? 'Génération...' : '✨ Générer mon badge'}
           </button>
         </div>
       )}
@@ -189,7 +189,7 @@ export default function BadgePage() {
                 cursor: 'pointer',
               }}
             >
-              ðŸ“¥ TÃ©lÃ©charger PNG
+              📥 Télécharger PNG
             </button>
             <button
               onClick={handlePrintBadge}
@@ -204,7 +204,7 @@ export default function BadgePage() {
                 cursor: 'pointer',
               }}
             >
-              ðŸ–¨ï¸ Imprimer
+              🖨️ Imprimer
             </button>
             <button
               onClick={handleGenerateBadge}
@@ -221,7 +221,7 @@ export default function BadgePage() {
                 opacity: generating ? 0.6 : 1,
               }}
             >
-              {generating ? 'RÃ©gÃ©nÃ©ration...' : 'ðŸ”„ RÃ©gÃ©nÃ©rer'}
+              {generating ? 'Régénération...' : '📄 Régénérer'}
             </button>
           </div>
 

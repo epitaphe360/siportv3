@@ -178,11 +178,11 @@ export default function VisitorFreeRegistration() {
             Inscription Visiteur Gratuit
           </h1>
           <p className="text-green-100">
-            Recevez votre badge d'accÃ¨s gratuit par email
+            Recevez votre badge d'accès gratuit par email
           </p>
           <div className="mt-4 inline-flex items-center space-x-2 bg-green-800 px-4 py-2 rounded-full">
-            <span className="text-green-200 text-sm">âœ… AccÃ¨s salon</span>
-            <span className="text-green-200">â€¢</span>
+            <span className="text-green-200 text-sm">✅ Accès salon</span>
+            <span className="text-green-200">•</span>
             <span className="text-green-200 text-sm">âœ… Badge QR</span>
             <span className="text-green-200">â€¢</span>
             <span className="text-green-200 text-sm">âœ… Gratuit</span>
@@ -410,10 +410,10 @@ export default function VisitorFreeRegistration() {
                   <CheckCircle className="h-12 w-12 text-green-600" />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-3">
-                  Badge envoyÃ© !
+                  Badge envoyé !
                 </h2>
                 <p className="text-gray-600 mb-6">
-                  VÃ©rifiez votre email <strong>{watch('email')}</strong> pour recevoir votre badge d'accÃ¨s gratuit.
+                  Vérifiez votre email <strong>{watch('email')}</strong> pour recevoir votre badge d'accès gratuit.
                 </p>
                 <motion.div
                   initial={{ width: 0 }}

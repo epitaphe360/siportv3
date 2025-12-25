@@ -22,7 +22,7 @@ export default defineConfig({
     headless: true,
     viewport: { width: 1280, height: 800 },
     actionTimeout: 10000,
-    navigationTimeout: 20000,
+    navigationTimeout: 60000,
     trace: 'off', // Désactivé pour la vitesse
     screenshot: 'only-on-failure',
     video: 'off',

@@ -330,29 +330,10 @@ export default function RegisterPage() {
       // Afficher la modal de succès
       setShowSuccess(true);
 
-      // Rediriger selon le type de compte
+      // Rediriger vers la page de connexion après 4 secondes
       setTimeout(() => {
-        // Si un chemin de redirection `next` est présent, l'utiliser (ex: /visitor/subscription?level=premium)
-        if (nextPath && nextPath.startsWith('/')) {
-          navigate(nextPath, {
-            state: { 
-              message: 'Bienvenue sur SIPORTS 2026 !',
-              accountType: data.accountType,
-              email: data.email
-            }
-          });
-          return;
-        }
-
-        // Rediriger toujours vers la page de succès
-        navigate(ROUTES.SIGNUP_SUCCESS, {
-          state: { 
-            accountType: data.accountType,
-            email: data.email,
-            nextPath: nextPath
-          }
-        });
-      }, 2000);
+        navigate(ROUTES.LOGIN);
+      }, 4000);
     } catch (error) {
       console.error('Registration error:', error);
       toast.error((error as Error).message || 'Erreur lors de l\'inscription');
@@ -1163,14 +1144,12 @@ export default function RegisterPage() {
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: '100%' }}
-                  transition={{ duration: 3 }}
+                  transition={{ duration: 4 }}
                   className="h-1 bg-green-600 rounded-full"
                 />
 
                 <p className="text-xs text-gray-400 mt-3">
-                  {watchedAccountType === 'visitor' 
-                    ? 'Redirection vers votre tableau de bord...' 
-                    : 'Redirection automatique vers la page de connexion...'}
+                  Redirection automatique vers la page de connexion...
                 </p>
               </motion.div>
             </div>

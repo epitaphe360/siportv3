@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:5173';
+const BASE_URL = process.env.BASE_URL || 'http://localhost:9323';
 
 // Comptes de test pour les visiteurs VIP
 const TEST_VISITOR_VIP = {
