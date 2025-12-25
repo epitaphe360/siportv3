@@ -162,9 +162,99 @@ ON CONFLICT (user_id) DO UPDATE SET
   partnership_level = EXCLUDED.partnership_level;
 
 -- =====================================================
+-- ÉTAPE 3: Ajout des partenaires dans la table partners
+-- (pour affichage sur la page d'accueil et page partenaires)
+-- =====================================================
+
+-- Partenaire Musée
+INSERT INTO public.partners (id, name, type, category, description, logo_url, website, country, sector, verified, featured, sponsorship_level, contributions, established_year, employees)
+VALUES (
+  gen_random_uuid(),
+  'Musée Maritime du Maroc',
+  'museum',
+  'Institution Culturelle',
+  'Musée national dédié à l''histoire maritime du Maroc, présentant des collections uniques d''instruments de navigation et de maquettes de navires.',
+  'https://placehold.co/200x200/1e40af/ffffff?text=MMM',
+  'https://musee-maritime.ma',
+  'Maroc',
+  'Culture & Patrimoine',
+  true,
+  true,
+  'museum',
+  ARRAY['Exposition permanente', 'Visites guidées', 'Ateliers éducatifs'],
+  1985,
+  '50-100'
+)
+ON CONFLICT DO NOTHING;
+
+-- Partenaire Silver
+INSERT INTO public.partners (id, name, type, category, description, logo_url, website, country, sector, verified, featured, sponsorship_level, contributions, established_year, employees)
+VALUES (
+  gen_random_uuid(),
+  'Port Solutions Maroc',
+  'silver',
+  'Services Portuaires',
+  'Leader marocain des solutions portuaires innovantes, spécialisé dans l''optimisation des opérations de manutention.',
+  'https://placehold.co/200x200/6b7280/ffffff?text=PSM',
+  'https://portsolutions.ma',
+  'Maroc',
+  'Logistique & Manutention',
+  true,
+  false,
+  'silver',
+  ARRAY['Expertise technique', 'Formation', 'Support opérationnel'],
+  2010,
+  '100-500'
+)
+ON CONFLICT DO NOTHING;
+
+-- Partenaire Gold
+INSERT INTO public.partners (id, name, type, category, description, logo_url, website, country, sector, verified, featured, sponsorship_level, contributions, established_year, employees)
+VALUES (
+  gen_random_uuid(),
+  'Tanger Med Logistics',
+  'gold',
+  'Logistique Internationale',
+  'Partenaire logistique premium du port de Tanger Med, offrant des services de stockage et de distribution internationaux.',
+  'https://placehold.co/200x200/f59e0b/ffffff?text=TML',
+  'https://tangermedlogistics.ma',
+  'Maroc',
+  'Logistique & Transport',
+  true,
+  true,
+  'gold',
+  ARRAY['Logistique intégrée', 'Stockage premium', 'Distribution internationale', 'Tracking avancé'],
+  2007,
+  '500-1000'
+)
+ON CONFLICT DO NOTHING;
+
+-- Partenaire Platinium
+INSERT INTO public.partners (id, name, type, category, description, logo_url, website, country, sector, verified, featured, sponsorship_level, contributions, established_year, employees)
+VALUES (
+  gen_random_uuid(),
+  'Royal Maritime Group',
+  'platinium',
+  'Groupe Maritime',
+  'Groupe maritime d''excellence, sponsor principal de SIPORTS 2026. Leader dans le transport maritime et les services portuaires en Afrique.',
+  'https://placehold.co/200x200/8b5cf6/ffffff?text=RMG',
+  'https://royalmaritime.ma',
+  'Maroc',
+  'Transport Maritime',
+  true,
+  true,
+  'platinium',
+  ARRAY['Sponsor principal', 'Transport maritime', 'Services VIP', 'Networking exclusif', 'Gala officiel'],
+  1995,
+  '1000+'
+)
+ON CONFLICT DO NOTHING;
+
+-- =====================================================
 -- Vérification
 -- =====================================================
 
+-- Vérifier les comptes utilisateurs partenaires
 SELECT
   u.email,
   u.name,
@@ -179,6 +269,24 @@ FROM public.users u
 LEFT JOIN public.partner_profiles pp ON pp.user_id = u.id
 WHERE u.type = 'partner'
 ORDER BY u.partner_tier;
+
+-- Vérifier les partenaires dans la table partners (pour affichage public)
+SELECT
+  id,
+  name,
+  type,
+  sponsorship_level,
+  featured,
+  verified,
+  country
+FROM public.partners
+ORDER BY
+  CASE sponsorship_level
+    WHEN 'platinium' THEN 1
+    WHEN 'gold' THEN 2
+    WHEN 'silver' THEN 3
+    WHEN 'museum' THEN 4
+  END;
 
 -- =====================================================
 -- RÉSUMÉ DES COMPTES PARTENAIRES
