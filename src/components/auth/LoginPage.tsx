@@ -352,12 +352,12 @@ export default function LoginPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setEmail('partner-museum@test.siport.com');
+                        setEmail('partner-platinium@test.siport.com');
                         setPassword('Test@123456');
                       }}
                       className="text-[10px] h-7 bg-white"
                     >
-                      🏛️ Musée
+                      💎 Platinum
                     </Button>
                     <Button
                       type="button"
@@ -382,18 +382,6 @@ export default function LoginPage() {
                       className="text-[10px] h-7 bg-white"
                     >
                       🥇 Gold
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('partner-platinium@test.siport.com');
-                        setPassword('Test@123456');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      💎 Platinium
                     </Button>
                   </div>
                 </div>
