@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useTranslation } from '../hooks/useTranslation';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Progress } from '../ui/Progress';
 import { Badge } from '../ui/Badge';
 import { AlertCircle, CheckCircle, Crown, TrendingUp } from 'lucide-react';
