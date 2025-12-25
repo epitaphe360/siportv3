@@ -25,6 +25,7 @@ import { useTranslation, Language } from '@/utils/translations';
 import useAuthStore from '../../store/authStore';
 import { motion } from 'framer-motion';
 import { Building, Mail, Lock, User, Phone, Globe, Briefcase, MapPin, Languages, AlertCircle, Save } from 'lucide-react';
+import { sendPartnerPaymentInstructions } from '../../services/partnerSignupEmailService';
 
 // Validation renforcÃ©e du mot de passe
 const passwordSchema = z.string()
@@ -185,16 +186,33 @@ export default function PartnerSignUpPage() {
       }
 
       // @ts-expect-error - recaptchaToken sera ajoutÃ© Ã  authStore.signUp()
-      const { error } = await signUp({ email, password }, finalProfileData, recaptchaToken);
+      const result = await signUp({ email, password }, finalProfileData, recaptchaToken);
 
-      if (error) {
-        throw error;
+      if (result?.error) {
+        throw result.error;
+      }
+
+      // Envoyer l'email d'instructions de paiement
+      const userId = result?.user?.id;
+      if (userId) {
+        try {
+          await sendPartnerPaymentInstructions({
+            userId,
+            email,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            companyName: data.companyName
+          });
+        } catch (emailError) {
+          console.error('Erreur envoi email paiement:', emailError);
+          // Ne pas bloquer l'inscription si l'email échoue
+        }
       }
 
       // Supprimer le brouillon aprÃ¨s succÃ¨s
       clearLocalStorage();
 
-      toast.success(t.title || 'Inscription rÃ©ussie ! Votre compte est en attente de validation.');
+      toast.success(t.title || 'Inscription rÃ©ussie ! Consultez votre email pour les instructions de paiement.');
       navigate(ROUTES.SIGNUP_SUCCESS);
     } catch (error) {
       console.error("Sign up error:", error);
