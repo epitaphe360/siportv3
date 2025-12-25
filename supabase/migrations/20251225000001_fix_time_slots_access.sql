@@ -118,33 +118,18 @@ CREATE POLICY "Authenticated users can create time slots" ON time_slots
   TO authenticated
   WITH CHECK (true);
 
--- Allow exhibitors to update their own time slots
-CREATE POLICY "Exhibitors can update own time slots" ON time_slots
+-- Allow authenticated users to update any time slots (admin/exhibitor management)
+CREATE POLICY "Authenticated users can update time slots" ON time_slots
   FOR UPDATE
   TO authenticated
-  USING (
-    exhibitor_id IN (
-      SELECT id FROM exhibitors 
-      WHERE auth_user_id = auth.uid()
-    )
-  )
-  WITH CHECK (
-    exhibitor_id IN (
-      SELECT id FROM exhibitors 
-      WHERE auth_user_id = auth.uid()
-    )
-  );
+  USING (true)
+  WITH CHECK (true);
 
--- Allow exhibitors to delete their own time slots
-CREATE POLICY "Exhibitors can delete own time slots" ON time_slots
+-- Allow authenticated users to delete time slots
+CREATE POLICY "Authenticated users can delete time slots" ON time_slots
   FOR DELETE
   TO authenticated
-  USING (
-    exhibitor_id IN (
-      SELECT id FROM exhibitors 
-      WHERE auth_user_id = auth.uid()
-    )
-  );
+  USING (true);
 
 -- 5. Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_time_slots_exhibitor_id ON time_slots(exhibitor_id);
