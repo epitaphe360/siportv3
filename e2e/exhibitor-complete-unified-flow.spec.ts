@@ -258,6 +258,12 @@ test.describe('🏢 EXPOSANT - FLUX COMPLET UNIFIÉ', () => {
 
     console.log('📍 ÉTAPE 5: Connexion exposant après validation');
 
+    // PAUSE DEBUG AVANT CONNEXION
+    console.log('🐛 PAUSE DEBUG: Inspectez l\'état avant connexion');
+    console.log(`   Email: ${testEmail}`);
+    console.log(`   Password: ${exhibitorPassword}`);
+    await page.pause(); // Ouvre l'inspecteur Playwright
+
     // Connexion de l'exposant
     await page.locator('input[type="email"]').first().fill(testEmail);
     await page.locator('input[type="password"]').first().fill(exhibitorPassword);
@@ -265,6 +271,11 @@ test.describe('🏢 EXPOSANT - FLUX COMPLET UNIFIÉ', () => {
     
     await page.locator('button[type="submit"]').first().click();
     await page.waitForTimeout(3000);
+
+    // PAUSE DEBUG APRÈS CONNEXION
+    console.log('🐛 PAUSE DEBUG: Inspectez le résultat de la connexion');
+    console.log(`   URL actuelle: ${page.url()}`);
+    await page.pause(); // Ouvre l'inspecteur Playwright
 
     const isLoggedIn = !page.url().includes('login');
     console.log(`  🔐 Connexion exposant: ${isLoggedIn ? '✅ Réussie' : '❌ Échec'}`);
