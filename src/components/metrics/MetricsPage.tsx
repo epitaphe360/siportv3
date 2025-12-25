@@ -49,10 +49,10 @@ export default function MetricsPage() {
   const { user } = useAuthStore();
 
   const [realTimeMetrics, setRealTimeMetrics] = useState({
-    activeUsers: 1232,
-    onlineExhibitors: 85,
-    scheduledMeetings: 172,
-    messagesExchanged: 2500
+    activeUsers: 0,
+    onlineExhibitors: 0,
+    scheduledMeetings: 0,
+    messagesExchanged: 0
   });
 
   const [adminMetrics, setAdminMetrics] = useState({
@@ -91,6 +91,14 @@ export default function MetricsPage() {
           totalConferences: pavilionData.totalConferences,
           countries: pavilionData.countries
         });
+
+        // Load real-time metrics from database
+        setRealTimeMetrics({
+          activeUsers: adminData.totalUsers, // Tous les utilisateurs
+          onlineExhibitors: adminData.totalExhibitors, // Tous les exposants
+          scheduledMeetings: adminData.totalEvents, // Total événements
+          messagesExchanged: 0 // Pas encore de système de messagerie
+        });
       } catch (error) {
         console.error('Erreur lors du chargement des métriques:', error);
       } finally {
@@ -99,20 +107,6 @@ export default function MetricsPage() {
     };
 
     loadMetrics();
-  }, []);
-
-  useEffect(() => {
-    // Simulation de mise à jour en temps réel
-    const interval = setInterval(() => {
-      setRealTimeMetrics(prev => ({
-        activeUsers: prev.activeUsers + Math.floor(Math.random() * 10) - 5,
-        onlineExhibitors: prev.onlineExhibitors + Math.floor(Math.random() * 4) - 2,
-        scheduledMeetings: prev.scheduledMeetings + Math.floor(Math.random() * 3),
-        messagesExchanged: prev.messagesExchanged + Math.floor(Math.random() * 20)
-      }));
-    }, 5000);
-
-    return () => clearInterval(interval);
   }, []);
 
   // Rediriger si l'utilisateur n'est pas admin
