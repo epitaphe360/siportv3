@@ -36,7 +36,7 @@ interface AuthState {
 
   // Actions
   login: (email: string, password: string, options?: { rememberMe?: boolean }) => Promise<void>;
-  signUp: (credentials: { email: string, password: string }, profileData: Partial<UserProfile>, recaptchaToken?: string) => Promise<{ error: Error | null }>;
+  signUp: (credentials: { email: string, password: string }, profileData: Partial<UserProfile>, recaptchaToken?: string) => Promise<{ error: Error | null; user?: User | null }>;
   register: (userData: RegistrationData, recaptchaToken?: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   loginWithLinkedIn: () => Promise<void>;
@@ -176,7 +176,7 @@ const useAuthStore = create<AuthState>()(
           email: credentials.email,
           firstName: profileData.firstName || '',
           lastName: profileData.lastName || '',
-          companyName: profileData.company,
+          companyName: profileData.companyName || profileData.company || '',
           phone: profileData.phone || '',
           profileData: profileData
         });
@@ -194,10 +194,10 @@ const useAuthStore = create<AuthState>()(
         }
       }
 
-      return { error: null };
+      return { error: null, user: newUser };
     } catch (error) {
       console.error('❌ Erreur inscription:', error);
-      return { error: error as Error };
+      return { error: error as Error, user: null };
     }
   },
 

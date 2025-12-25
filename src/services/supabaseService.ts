@@ -677,12 +677,17 @@ export class SupabaseService {
         email,
         name: userData.name,
         type: userData.type,
+        status: userData.status || 'pending', // ✅ Inclure le status (pending_payment pour partners/exhibitors)
         profile: userData.profile
       };
 
       // ✅ Définir le niveau visiteur par défaut à 'free' pour les visiteurs
       if (userData.type === 'visitor') {
         userPayload.visitor_level = 'free';
+        // Les visiteurs gratuits sont actifs immédiatement
+        if (!userData.status) {
+          userPayload.status = 'active';
+        }
       }
 
       const { data: userProfile, error: userError } = await safeSupabase
