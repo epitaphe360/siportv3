@@ -17,7 +17,10 @@ export const FeaturedExhibitors: React.FC = () => {
   const { isAuthenticated } = useAuthStore();
   const { exhibitors, fetchExhibitors, isLoading } = useExhibitorStore();
   const { t } = useTranslation();
-  const featuredExhibitors = exhibitors.filter(e => e.featured).slice(0, 3);
+  // Show featured exhibitors, or all exhibitors if none are featured
+  const featuredExhibitors = exhibitors.filter(e => e.featured).slice(0, 3).length > 0
+    ? exhibitors.filter(e => e.featured).slice(0, 3)
+    : exhibitors.slice(0, 3);
 
   useEffect(() => {
     if (exhibitors.length === 0) {

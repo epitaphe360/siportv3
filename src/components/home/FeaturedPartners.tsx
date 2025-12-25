@@ -21,9 +21,9 @@ export const FeaturedPartners: React.FC = () => {
       setIsLoading(true);
       try {
         const data = await SupabaseService.getPartners();
-        // Filter for featured partners and take the first 3
+        // Filter for featured partners and take the first 3, or show all if none are featured
         const featured = data.filter(p => p.featured).slice(0, 3);
-        setPartners(featured);
+        setPartners(featured.length > 0 ? featured : data.slice(0, 3));
       } catch (error) {
         console.error('Erreur lors du chargement des partenaires:', error);
       } finally {
