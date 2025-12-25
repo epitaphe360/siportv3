@@ -72,18 +72,42 @@ async function populateData() {
     if (partnerUsers && partnerUsers.length > 0) {
       console.log('\n4️⃣  Création des enregistrements partners...');
       
-      const partners = partnerUsers.map(u => ({
-        user_id: u.id,
-        company_name: u.name,
-        partner_type: 'corporate',
-        partnership_level: 'silver',
-        sector: 'General',
-        description: `${u.name} - Strategic partnership`,
-        contact_info: { email: u.email, phone: '+212 6 00 00 00 00', name: u.name },
-        verified: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }));
+      const partners = partnerUsers.map(u => {
+        const email = u.email.toLowerCase();
+        let level = 'silver';
+        let type = 'corporate';
+        
+        if (email.includes('gold')) {
+          level = 'gold';
+          type = 'corporate';
+        } else if (email.includes('platinium') || email.includes('platinum')) {
+          level = 'platinium';
+          type = 'corporate';
+        } else if (email.includes('museum')) {
+          level = 'museum';
+          type = 'cultural';
+        } else if (email.includes('porttech')) {
+          level = 'gold';
+          type = 'tech';
+        } else if (email.includes('oceanfreight')) {
+          type = 'logistics';
+        } else if (email.includes('coastal')) {
+          type = 'services';
+        }
+        
+        return {
+          user_id: u.id,
+          company_name: u.name,
+          partner_type: type,
+          partnership_level: level,
+          sector: 'General',
+          description: `${u.name} - Strategic partnership`,
+          contact_info: { email: u.email, phone: '+212 6 00 00 00 00', name: u.name },
+          verified: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+      });
 
       // Faire des insertions par batch de 100
       for (let i = 0; i < partners.length; i += 100) {
