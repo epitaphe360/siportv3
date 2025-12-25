@@ -144,7 +144,7 @@ export const FeaturedPartners: React.FC = () => {
                   <div className="mb-4">
                     <Badge variant={getTierColor(partner.partner_tier)} className="uppercase tracking-wider font-bold">
                       <Award className="h-3 w-3 mr-1" />
-                      {t('home.partner_tier', { tier: getTierLabel(partner.partner_tier) })}
+                      {getTierLabel(partner.partner_tier)}
                     </Badge>
                   </div>
 
