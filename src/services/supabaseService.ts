@@ -1160,7 +1160,7 @@ export class SupabaseService {
             sender:sender_id(id, name)
           )
         `)
-        .contains('participants', [userId])
+        .or(`participant_1.eq.${userId},participant_2.eq.${userId}`)
         .order('updated_at', { ascending: false });
 
       if (error) throw error;
@@ -2015,8 +2015,7 @@ export class SupabaseService {
         max_bookings: (slotData as any).maxBookings ?? (slotData as any).max_bookings ?? 1,
         current_bookings: (slotData as any).currentBookings ?? (slotData as any).current_bookings ?? 0,
         available: ((slotData as any).currentBookings ?? 0) < ((slotData as any).maxBookings ?? 1),
-        location: (slotData as any).location || null,
-        description: (slotData as any).description || null
+        location: (slotData as any).location || null
       };
 
       const { data, error } = await safeSupabase
