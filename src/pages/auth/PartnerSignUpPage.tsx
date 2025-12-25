@@ -71,6 +71,7 @@ export default function PartnerSignUpPage() {
   const { signUp, loginWithGoogle, loginWithLinkedIn } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [validatedFormData, setValidatedFormData] = useState<PartnerSignUpFormValues | null>(null);
   const [language, setLanguage] = useState<Language>('fr');
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isLinkedInLoading, setIsLinkedInLoading] = useState(false);
@@ -158,11 +159,22 @@ export default function PartnerSignUpPage() {
     register('sectors');
   }, [register]);
 
-  const handlePreviewSubmit = () => {
+  // Quand le formulaire est valide, stocker les données et ouvrir la preview
+  const handlePreviewSubmit: SubmitHandler<PartnerSignUpFormValues> = (data) => {
+    setValidatedFormData(data);
     setShowPreview(true);
   };
 
-  const onSubmit: SubmitHandler<PartnerSignUpFormValues> = async (data) => {
+  // Fonction appelée depuis la modal de confirmation
+  const handleConfirmSubmit = async () => {
+    if (!validatedFormData) {
+      toast.error("Erreur: données du formulaire non disponibles");
+      return;
+    }
+    await onSubmit(validatedFormData);
+  };
+
+  const onSubmit = async (data: PartnerSignUpFormValues) => {
     setIsLoading(true);
     const { email, password, confirmPassword, acceptTerms, acceptPrivacy, sectors, ...profileData } = data;
 
@@ -184,7 +196,6 @@ export default function PartnerSignUpPage() {
         }
       }
 
-      // @ts-expect-error - recaptchaToken sera ajouté à authStore.signUp()
       const result = await signUp({ email, password }, finalProfileData, recaptchaToken);
 
       if (result?.error) {
@@ -192,7 +203,7 @@ export default function PartnerSignUpPage() {
       }
 
       // Envoyer l'email d'instructions de paiement
-      const userId = result?.user?.id;
+      const userId = result.user?.id;
       if (userId) {
         try {
           await sendPartnerPaymentInstructions({
@@ -538,8 +549,9 @@ export default function PartnerSignUpPage() {
           <PreviewModal
             isOpen={showPreview}
             onClose={() => setShowPreview(false)}
-            onConfirm={handleSubmit(onSubmit)}
-            data={watchedFields}
+            onConfirm={handleConfirmSubmit}
+            data={validatedFormData || watchedFields}
+            isLoading={isLoading}
           />
         </Card>
 
