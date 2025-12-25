@@ -305,33 +305,33 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      // FIX: Use correct column names matching the partners table schema
+      // FIX: Use correct column names matching the partners table schema (from createMissingTables.ts)
       const { data, error } = await safeSupabase
         .from('partners')
         .select(
-          `id, name, type, category, sector, description, logo_url, website, country, verified, featured, sponsorship_level, contributions, established_year, employees, created_at`
+          `id, company_name, partner_type, sector, description, logo_url, website, verified, featured, partnership_level, benefits, contact_info, created_at`
         )
-        .order('type');
+        .order('partner_type');
 
       if (error) throw error;
 
       return (data || []).map((partner: any) => ({
         id: partner.id,
-        name: partner.name,
-        partner_tier: partner.sponsorship_level,
-        category: partner.category || partner.type,
+        name: partner.company_name,
+        partner_tier: partner.partnership_level || partner.partner_type,
+        category: partner.partner_type,
         sector: partner.sector,
         description: partner.description || '',
         logo: partner.logo_url,
         website: partner.website,
-        country: partner.country || '',
+        country: partner.contact_info?.country || '',
         verified: partner.verified,
         featured: partner.featured,
-        contributions: partner.contributions || [],
-        establishedYear: partner.established_year || 2024,
-        employees: partner.employees || '1-10',
+        contributions: partner.benefits || [],
+        establishedYear: 2024, // Default as column missing
+        employees: '1-10', // Default as column missing
         createdAt: new Date(partner.created_at),
-        updatedAt: new Date(partner.created_at) // Fallback
+        updatedAt: new Date(partner.created_at)
       }));
     } catch (error) {
       // Log détaillé pour faciliter le debug (message, details, hint si disponibles)
@@ -357,7 +357,7 @@ export class SupabaseService {
       const { data, error } = await safeSupabase
         .from('partners')
         .select(
-          `id, name, type, category, sector, description, logo_url, website, country, verified, featured, sponsorship_level, contributions, established_year, employees, created_at,
+          `id, company_name, partner_type, sector, description, logo_url, website, verified, featured, partnership_level, benefits, contact_info, created_at,
            projects:partner_projects(*)`
         )
         .eq('id', id)
@@ -391,22 +391,22 @@ export class SupabaseService {
 
       return {
         id: data.id,
-        name: data.name,
-        sponsorshipLevel: data.sponsorship_level,
-        category: data.category || data.type,
+        name: data.company_name,
+        sponsorshipLevel: data.partnership_level || data.partner_type,
+        category: data.partner_type,
         description: data.description || '',
         longDescription: data.description || '',
         logo: data.logo_url,
         website: data.website,
-        country: data.country || 'Maroc',
-        contributions: data.contributions || [
+        country: data.contact_info?.country || 'Maroc',
+        contributions: data.benefits || [
           "Sponsoring Session Plénière",
           "Espace Networking Premium",
           "Visibilité Logo Multi-supports"
         ],
-        establishedYear: data.established_year || 2010,
-        employees: data.employees || '500-1000',
-        projects: dbProjects.length > 0 ? dbProjects : this.getMockProjects(data.id, data.name),
+        establishedYear: 2024,
+        employees: '500-1000',
+        projects: dbProjects.length > 0 ? dbProjects : this.getMockProjects(data.id, data.company_name),
       };
     } catch (error) {
       console.error('Erreur lors de la récupération du partenaire:', error);
