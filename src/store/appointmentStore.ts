@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { Appointment, TimeSlot } from '../types';
 import { SupabaseService } from '../services/supabaseService';
 import { supabase as supabaseClient, isSupabaseReady } from '../lib/supabase';
+import { generateDemoTimeSlots } from '../config/demoTimeSlots';
 
 // Helper pour vérifier si Supabase est configuré
 const getSupabaseClient = () => {
@@ -286,13 +287,15 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
         return;
       }
 
-      // Si aucune méthode n'est disponible, retourner un tableau vide
-      console.warn('Aucune méthode de récupération des créneaux disponible');
-      set({ timeSlots: [], isLoading: false });
+      // Si aucune méthode n'est disponible, charger les données de démonstration
+      console.warn('Aucune méthode de récupération des créneaux disponible - Chargement des données de démo');
+      const demoSlots = generateDemoTimeSlots();
+      set({ timeSlots: demoSlots, isLoading: false });
     } catch (err) {
       console.error('Erreur lors de la récupération des créneaux:', err);
-      set({ timeSlots: [], isLoading: false });
-      throw err;
+      // En cas d'erreur, charger les données de démonstration
+      const demoSlots = generateDemoTimeSlots();
+      set({ timeSlots: demoSlots, isLoading: false });
     }
   },
 

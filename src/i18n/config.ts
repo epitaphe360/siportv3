@@ -59,6 +59,128 @@ const resources = {
         delete: 'Supprimer',
         edit: 'Modifier',
         search: 'Rechercher'
+      },
+      partner: {
+        back_to_dashboard: 'Retour au tableau de bord',
+        priority: 'Prioritaire',
+        details: 'Détails',
+        status: {
+          upcoming: 'À venir',
+          draft: 'Brouillon'
+        },
+        events: {
+          title: 'Événements Sponsorisés',
+          subtitle: 'Gérez vos événements partenaires et suivez leur impact',
+          program: 'Programme Événements Partenaires',
+          available: 'Événements disponibles',
+          loading: 'Chargement des événements...',
+          none: 'Aucun événement disponible pour le moment.',
+          registered: 'inscrits',
+          capacity: 'Capacité'
+        },
+        leads: {
+          title: 'Leads & Prospects',
+          subtitle: 'Gérez vos leads qualifiés et suivez leur progression dans le pipeline commercial',
+          premium_program: 'Programme Leads Premium',
+          conversion_rate: '12% Taux de Conversion',
+          generated: 'Leads générés',
+          qualified: 'Leads qualifiés',
+          conversion: 'Taux de conversion',
+          estimated_value: 'Valeur estimée',
+          recent: 'Leads Récents',
+          exhibitor: 'Exposant',
+          visitor: 'Visiteur',
+          other: 'Autre',
+          connected: 'Connecté',
+          pending: 'En attente',
+          rejected: 'Rejeté',
+          active_followup: 'Suivi actif',
+          awaiting_response: 'En attente de réponse',
+          sources: {
+            events: 'Événements SIPORTS',
+            networking: 'Networking Partenaires',
+            referrals: 'Références Clients',
+            marketing: 'Campagnes Marketing'
+          },
+          funnel: {
+            generated: 'Leads Générés',
+            qualified: 'Qualifiés',
+            proposal: 'Proposition',
+            negotiation: 'Négociation',
+            conversion: 'Conversion'
+          },
+          tips: {
+            title: 'Conseils de Gestion des Leads',
+            qualification: 'Qualification Rapide',
+            qualification_desc: 'Contactez les leads chauds dans les 24h pour maximiser vos chances de conversion',
+            followup: 'Suivi Régulier',
+            followup_desc: "Planifiez des points de suivi hebdomadaires pour maintenir l'engagement",
+            personalization: 'Personnalisation',
+            personalization_desc: 'Adaptez vos propositions aux besoins spécifiques de chaque prospect',
+            measure: 'Mesure des Résultats',
+            measure_desc: 'Analysez régulièrement vos taux de conversion pour optimiser votre approche'
+          }
+        },
+        activity: {
+          title: 'Activité Partenaire',
+          subtitle: 'Suivez toutes vos interactions et engagements SIPORTS',
+          full_history: 'Historique Complet des Activités',
+          realtime: 'Temps Réel',
+          history: 'Historique des Activités',
+          no_activity: 'Aucune activité trouvée',
+          try_filters: 'Essayez de modifier vos filtres de recherche',
+          just_now: "À l'instant",
+          hours_ago: 'Il y a {{count}}h',
+          days_ago: 'Il y a {{count}}j',
+          stats: {
+            total: 'Activités totales',
+            today: "Aujourd'hui",
+            this_week: 'Cette semaine'
+          },
+          filter: {
+            all: 'Toutes les activités',
+            networking: 'Réseautage',
+            communication: 'Communication',
+            events: 'Événements',
+            sponsorship: 'Sponsoring',
+            engagement: 'Engagement',
+            content: 'Contenu',
+            meetings: 'Rendez-vous',
+            system: 'Système'
+          },
+          type: {
+            connection: 'Connexion',
+            message: 'Message',
+            event: 'Événement',
+            sponsorship: 'Sponsoring',
+            consultation: 'Consultation',
+            content: 'Contenu',
+            alert: 'Alerte',
+            meeting: 'Rendez-vous'
+          },
+          connection_established: 'Nouvelle connexion établie',
+          connected_with: 'Vous êtes maintenant connecté avec Port Solutions Inc.',
+          new_message: 'Nouveau message reçu',
+          message_from: 'TechMarine Solutions vous a envoyé un message',
+          event_participation: 'Participation à un événement',
+          participated_in: 'Vous avez participé à la conférence "Digital Transformation in Ports"',
+          sponsoring_activated: 'Sponsoring activé',
+          logo_displayed: "Votre logo est maintenant affiché sur la page d'accueil",
+          profile_viewed: 'Profil consulté',
+          views_today: "Votre profil a été consulté 15 fois aujourd'hui",
+          content_shared: 'Contenu partagé',
+          article_shared: 'Votre article "Innovation in Maritime Technology" a été partagé',
+          system_alert: 'Alerte système',
+          metrics_update: 'Mise à jour de vos métriques de performance disponible',
+          meeting_scheduled: 'Rendez-vous programmé',
+          meeting_confirmed: 'RDV confirmé avec LogiFlow Systems demain à 14h'
+        },
+        calendar: {
+          title: 'Calendrier des Rendez-vous',
+          create_slot: 'Nouveau Créneau',
+          slot_date_restriction: 'Les créneaux doivent être créés entre le 1er et le 3 avril 2026',
+          date_outside_salon: 'La date doit être comprise entre le 1er et le 3 avril 2026'
+        }
       }
     }
   },
@@ -117,6 +239,59 @@ const resources = {
         delete: 'Delete',
         edit: 'Edit',
         search: 'Search'
+      },
+      partner: {
+        back_to_dashboard: 'Back to dashboard',
+        priority: 'Priority',
+        details: 'Details',
+        status: {
+          upcoming: 'Upcoming',
+          draft: 'Draft'
+        },
+        events: {
+          title: 'Sponsored Events',
+          subtitle: 'Manage your partner events and track their impact',
+          program: 'Partner Events Program',
+          available: 'Available events',
+          loading: 'Loading events...',
+          none: 'No events available at the moment.',
+          registered: 'registered',
+          capacity: 'Capacity'
+        },
+        leads: {
+          title: 'Leads & Prospects',
+          subtitle: 'Manage your qualified leads and track their progress through the sales pipeline',
+          premium_program: 'Premium Leads Program',
+          conversion_rate: '12% Conversion Rate',
+          generated: 'Generated leads',
+          qualified: 'Qualified leads',
+          conversion: 'Conversion rate',
+          estimated_value: 'Estimated value',
+          recent: 'Recent Leads',
+          exhibitor: 'Exhibitor',
+          visitor: 'Visitor',
+          other: 'Other',
+          connected: 'Connected',
+          pending: 'Pending',
+          rejected: 'Rejected',
+          active_followup: 'Active follow-up',
+          awaiting_response: 'Awaiting response'
+        },
+        activity: {
+          title: 'Partner Activity',
+          subtitle: 'Track all your interactions and engagements at SIPORTS',
+          full_history: 'Complete Activity History',
+          realtime: 'Real-Time',
+          history: 'Activity History',
+          no_activity: 'No activity found',
+          try_filters: 'Try adjusting your search filters'
+        },
+        calendar: {
+          title: 'Appointment Calendar',
+          create_slot: 'New Slot',
+          slot_date_restriction: 'Slots must be created between April 1-3, 2026',
+          date_outside_salon: 'Date must be between April 1-3, 2026'
+        }
       }
     }
   },
