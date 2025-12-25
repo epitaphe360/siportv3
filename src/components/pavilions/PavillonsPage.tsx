@@ -426,7 +426,7 @@ export default function PavillonsPage() {
                 `${metrics.totalExhibitors}+`
               )}
             </div>
-            <div className="text-gray-600">Exposants</div>
+            <div className="text-gray-600">{t('salon.exhibitors')}</div>
           </Card>
 
           <Card className="text-center p-6">
@@ -440,7 +440,7 @@ export default function PavillonsPage() {
                 `${metrics.totalVisitors.toLocaleString()}+`
               )}
             </div>
-            <div className="text-gray-600">Visiteurs Professionnels</div>
+            <div className="text-gray-600">{t('salon.visitors')}</div>
           </Card>
 
           <Card className="text-center p-6">
@@ -454,7 +454,7 @@ export default function PavillonsPage() {
                 `${metrics.totalConferences}+`
               )}
             </div>
-            <div className="text-gray-600">Conférences & Panels</div>
+            <div className="text-gray-600">{t('salon.conferences')}</div>
           </Card>
 
           <Card className="text-center p-6">
@@ -468,7 +468,7 @@ export default function PavillonsPage() {
                 metrics.countries
               )}
             </div>
-            <div className="text-gray-600">Pays Représentés</div>
+            <div className="text-gray-600">{t('salon.countries')}</div>
           </Card>
         </motion.div>
       </div>

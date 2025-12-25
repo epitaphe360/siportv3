@@ -134,6 +134,12 @@ export const allTranslations = {
     'home.featured_exhibitors_title': 'Exposants à la Une',
     'home.featured_exhibitors_desc': 'Les meilleurs exposants du salon',
     
+    // Salon Statistics / Statistiques du Salon
+    'salon.exhibitors': 'Exposants',
+    'salon.visitors': 'Visiteurs Professionnels',
+    'salon.conferences': 'Conférences & Panels',
+    'salon.countries': 'Pays Représentés',
+    
     // Actions communes
     'actions.save': 'Sauvegarder',
     'actions.cancel': 'Annuler',
@@ -516,7 +522,11 @@ export const allTranslations = {
     'home.featured_exhibitors_title': 'Featured Exhibitors',
     'home.featured_exhibitors_desc': 'The best exhibitors of the show',
     
-    'actions.save': 'Save',
+    // Salon Statistics
+    'salon.exhibitors': 'Exhibitors',
+    'salon.visitors': 'Professional Visitors',
+    'salon.conferences': 'Conferences & Panels',
+    'salon.countries': 'Countries Represented','actions.save': 'Save',
     'actions.cancel': 'Cancel',
     'actions.edit': 'Edit',
     'actions.delete': 'Delete',
@@ -894,6 +904,11 @@ export const allTranslations = {
     'home.featured_exhibitors_title': 'العارضون المميزون',
     'home.featured_exhibitors_desc': 'أفضل العارضين في المعرض',
     
+    // Salon Statistics
+    'salon.exhibitors': 'العارضون',
+    'salon.visitors': 'الزوار المحترفون',
+    'salon.conferences': 'المؤتمرات والجلسات',
+    'salon.countries': 'الدول الممثلة',
     'actions.save': 'حفظ',
     'actions.cancel': 'إلغاء',
     'actions.edit': 'تعديل',
