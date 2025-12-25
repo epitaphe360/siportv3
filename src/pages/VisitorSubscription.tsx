@@ -7,7 +7,7 @@ const LEVELS = [
   {
     key: 'free',
     title: 'Pass Gratuit',
-    description: 'AccÃ¨s limitÃ© Ã  la zone exposition, confÃ©rences publiques et networking de base.',
+    description: 'Accès limité© Ã  la zone exposition, confÃ©rences publiques et networking de base.',
     price: '0â‚¬',
     features: [
       'Zone exposition',
@@ -21,12 +21,12 @@ const LEVELS = [
   {
     key: 'premium',
     title: 'Pass Premium VIP',
-    description: 'AccÃ¨s VIP complet 3 jours All Inclusive - Tout accÃ¨s illimitÃ© au salon.',
+    description: 'Accès VIP complet 3 jours All Inclusive - Tout Accès illimité© au salon.',
     price: '700â‚¬',
     features: [
       'Invitation inauguration',
-      'Rendez-vous B2B illimitÃ©s',
-      'Networking illimitÃ©',
+      'Rendez-vous B2B illimité©s',
+      'Networking illimité©',
       'Ateliers spÃ©cialisÃ©s',
       'SoirÃ©e gala exclusive',
       'ConfÃ©rences',
@@ -45,7 +45,7 @@ export default function VisitorSubscription() {
   const [loading, setLoading] = useState(false);
 
   async function handleSubscribe(level: string) {
-    // Si l'utilisateur n'est pas connectÃ©, rediriger vers l'inscription
+    // Si l'utilisateur n'est pas connecté©, rediriger vers l'inscription
     if (!userId) {
       window.location.href = `/register?next=/visitor/subscription&level=${level}`;
       return;
@@ -130,7 +130,7 @@ export default function VisitorSubscription() {
   return (
     <div style={{maxWidth:800,margin:'auto',padding:32}}>
       <h1>Choisissez votre Pass Visiteur</h1>
-      <p>DÃ©couvrez les diffÃ©rents niveaux dâ€™accÃ¨s au Salon International des Ports dâ€™Afrique.</p>
+      <p>DÃ©couvrez les diffÃ©rents niveaux dâ€™Accès au Salon International des Ports dâ€™Afrique.</p>
       <div style={{display:'flex',gap:24,flexWrap:'wrap'}}>
         {LEVELS.map(level => (
           <div key={level.key} style={{border:'1px solid #ccc',borderRadius:8,padding:24,width:220,background:selected===level.key?'#f0f8ff':'#fff'}}>
@@ -162,6 +162,7 @@ export default function VisitorSubscription() {
     </div>
   );
 }
+
 
 
 
