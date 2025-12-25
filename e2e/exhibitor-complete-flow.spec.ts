@@ -322,21 +322,227 @@ test.describe('🏢 EXPOSANT - DASHBOARD ET FONCTIONNALITÉS', () => {
     // Vérifier éléments du dashboard
     const hasDashboardTitle = await page.locator('text=/Dashboard|Tableau de bord|Exposant/i').isVisible({ timeout: 5000 }).catch(() => false);
     const hasStats = await page.locator('text=/Vues|RDV|Messages|Téléchargements/i').isVisible({ timeout: 3000 }).catch(() => false);
-    const hasCalendar = await page.locator('text=/Calendrier|Créneaux|Disponibilités/i').isVisible({ timeout: 3000 }).catch(() => false);
 
     console.log(`  📊 Dashboard: ${hasDashboardTitle ? '✅' : '❌'}`);
     console.log(`  📈 Statistiques: ${hasStats ? '✅' : '❌'}`);
-    console.log(`  📅 Calendrier: ${hasCalendar ? '✅' : '❌'}`);
 
-    // 📸 SCREENSHOT 6: Dashboard exposant complet
+    // 📸 SCREENSHOT 6: Dashboard exposant (avant popup)
     await page.screenshot({ path: 'screenshots/inscription-exposant/6-dashboard-exposant.png', fullPage: true });
+
+    // --- ÉTAPE 2b: POPUP CRÉATION MINI-SITE ---
+    console.log('📍 ÉTAPE 2b: Popup création Mini-Site');
+
+    // Attendre l'apparition de la popup de création mini-site (délai de 1.5s dans le code)
+    await page.waitForTimeout(2000);
+
+    // Vérifier si la popup de création mini-site apparaît
+    const miniSitePopup = page.locator('text=/Bienvenue sur SIPORTS|Créez votre Mini-Site/i');
+    const hasMiniSitePopup = await miniSitePopup.isVisible({ timeout: 5000 }).catch(() => false);
+
+    if (hasMiniSitePopup) {
+      console.log('  🎉 Popup Mini-Site détectée');
+
+      // 📸 SCREENSHOT 6a: Popup bienvenue mini-site
+      await page.screenshot({ path: 'screenshots/inscription-exposant/6a-popup-minisite-bienvenue.png', fullPage: true });
+
+      // Vérifier les 2 options disponibles
+      const hasAutoOption = await page.locator('text=/Création Automatique|Recommandé|IA/i').isVisible({ timeout: 2000 }).catch(() => false);
+      const hasManualOption = await page.locator('text=/Création Manuelle/i').isVisible({ timeout: 2000 }).catch(() => false);
+
+      console.log(`    🤖 Option Auto: ${hasAutoOption ? '✅' : '❌'}`);
+      console.log(`    📝 Option Manuelle: ${hasManualOption ? '✅' : '❌'}`);
+
+      // 📸 SCREENSHOT 6b: Options de création
+      await page.screenshot({ path: 'screenshots/inscription-exposant/6b-popup-minisite-options.png', fullPage: true });
+
+      // Cliquer sur "Création Manuelle"
+      const manualOption = page.locator('text=/Création Manuelle/i').first();
+      if (await manualOption.isVisible()) {
+        await manualOption.click();
+        await page.waitForTimeout(1000);
+
+        // 📸 SCREENSHOT 6c: Mode manuel sélectionné
+        await page.screenshot({ path: 'screenshots/inscription-exposant/6c-popup-minisite-manuel.png', fullPage: true });
+
+        // Cliquer sur "Commencer la Création"
+        const startBtn = page.locator('button:has-text("Commencer la Création"), button:has-text("Commencer")').first();
+        if (await startBtn.isVisible()) {
+          await startBtn.click();
+          await page.waitForTimeout(2000);
+        }
+      }
+
+      // --- ÉTAPE 2c: FORMULAIRE CRÉATION MINI-SITE ---
+      console.log('📍 ÉTAPE 2c: Formulaire création Mini-Site');
+
+      // Attendre la redirection vers l'éditeur de mini-site
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(1500);
+
+      // 📸 SCREENSHOT 6d: Page éditeur mini-site
+      await page.screenshot({ path: 'screenshots/inscription-exposant/6d-minisite-editeur-debut.png', fullPage: true });
+
+      // Remplir les informations du mini-site si formulaire visible
+      // Étape 1: Informations de l'entreprise
+      const companyNameInput = page.locator('input[name="companyName"], input[name="name"], input[placeholder*="Entreprise"]').first();
+      if (await companyNameInput.isVisible({ timeout: 3000 }).catch(() => false)) {
+        await companyNameInput.fill('Tech Expo SA - Solutions Logistiques');
+        console.log('    ✅ Nom entreprise rempli');
+      }
+
+      const taglineInput = page.locator('input[name="tagline"], input[name="slogan"], input[placeholder*="Slogan"]').first();
+      if (await taglineInput.isVisible()) {
+        await taglineInput.fill('Innovez votre chaîne logistique');
+      }
+
+      const descriptionInput = page.locator('textarea[name="description"], textarea[name="about"]').first();
+      if (await descriptionInput.isVisible()) {
+        await descriptionInput.fill('Tech Expo SA est leader dans les solutions logistiques innovantes pour le transport maritime et portuaire. Nous accompagnons les entreprises dans leur transformation digitale.');
+        console.log('    ✅ Description remplie');
+      }
+
+      // 📸 SCREENSHOT 6e: Informations entreprise remplies
+      await page.screenshot({ path: 'screenshots/inscription-exposant/6e-minisite-infos-entreprise.png', fullPage: true });
+
+      // Bouton suivant ou sauvegarder
+      const nextStepBtn = page.locator('button:has-text("Suivant"), button:has-text("Continuer"), button:has-text("Étape suivante")').first();
+      if (await nextStepBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await nextStepBtn.click();
+        await page.waitForTimeout(1500);
+
+        // 📸 SCREENSHOT 6f: Étape 2 - Thème/Couleurs
+        await page.screenshot({ path: 'screenshots/inscription-exposant/6f-minisite-theme.png', fullPage: true });
+
+        // Sélectionner un thème si disponible
+        const themeOption = page.locator('[data-theme], .theme-option, button:has-text("Bleu"), button:has-text("Vert")').first();
+        if (await themeOption.isVisible({ timeout: 2000 }).catch(() => false)) {
+          await themeOption.click();
+          await page.waitForTimeout(500);
+        }
+
+        // Continuer
+        if (await nextStepBtn.isVisible()) {
+          await nextStepBtn.click();
+          await page.waitForTimeout(1500);
+        }
+
+        // 📸 SCREENSHOT 6g: Étape 3 - Produits/Services
+        await page.screenshot({ path: 'screenshots/inscription-exposant/6g-minisite-produits.png', fullPage: true });
+
+        // Ajouter un produit si possible
+        const addProductBtn = page.locator('button:has-text("Ajouter un produit"), button:has-text("Nouveau produit"), button:has-text("+")').first();
+        if (await addProductBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+          await addProductBtn.click();
+          await page.waitForTimeout(1000);
+
+          // Remplir produit
+          const productNameInput = page.locator('input[name="productName"], input[placeholder*="Nom du produit"]').first();
+          if (await productNameInput.isVisible()) {
+            await productNameInput.fill('Solution TMS Maritime');
+          }
+
+          const productDescInput = page.locator('textarea[name="productDescription"]').first();
+          if (await productDescInput.isVisible()) {
+            await productDescInput.fill('Système de gestion du transport maritime avec tracking en temps réel.');
+          }
+
+          // 📸 SCREENSHOT 6h: Ajout produit
+          await page.screenshot({ path: 'screenshots/inscription-exposant/6h-minisite-ajout-produit.png', fullPage: true });
+
+          // Sauvegarder produit
+          const saveProductBtn = page.locator('button:has-text("Enregistrer"), button:has-text("Sauvegarder")').first();
+          if (await saveProductBtn.isVisible()) {
+            await saveProductBtn.click();
+            await page.waitForTimeout(1000);
+          }
+        }
+
+        // Continuer vers étape suivante
+        if (await nextStepBtn.isVisible()) {
+          await nextStepBtn.click();
+          await page.waitForTimeout(1500);
+        }
+
+        // 📸 SCREENSHOT 6i: Étape 4 - Médias/Images
+        await page.screenshot({ path: 'screenshots/inscription-exposant/6i-minisite-medias.png', fullPage: true });
+
+        // Continuer
+        if (await nextStepBtn.isVisible()) {
+          await nextStepBtn.click();
+          await page.waitForTimeout(1500);
+        }
+      }
+
+      // Finaliser / Publier le mini-site
+      const publishBtn = page.locator('button:has-text("Publier"), button:has-text("Terminer"), button:has-text("Finaliser")').first();
+      if (await publishBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
+        // 📸 SCREENSHOT 6j: Prévisualisation avant publication
+        await page.screenshot({ path: 'screenshots/inscription-exposant/6j-minisite-preview.png', fullPage: true });
+
+        await publishBtn.click();
+        await page.waitForTimeout(2000);
+
+        // 📸 SCREENSHOT 6k: Mini-site publié (succès)
+        await page.screenshot({ path: 'screenshots/inscription-exposant/6k-minisite-publie.png', fullPage: true });
+      }
+
+      // --- ÉTAPE 2d: AFFICHAGE DU MINI-SITE CRÉÉ ---
+      console.log('📍 ÉTAPE 2d: Affichage du Mini-Site');
+
+      // Aller voir le mini-site public
+      await page.goto(`${BASE_URL}/exhibitors`);
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(1500);
+
+      // 📸 SCREENSHOT 6l: Liste des exposants
+      await page.screenshot({ path: 'screenshots/inscription-exposant/6l-liste-exposants.png', fullPage: true });
+
+      // Chercher notre exposant dans la liste
+      const exhibitorCard = page.locator('text=/Tech Expo|exhibitor-9m/i').first();
+      if (await exhibitorCard.isVisible({ timeout: 3000 }).catch(() => false)) {
+        await exhibitorCard.click();
+        await page.waitForLoadState('networkidle');
+        await page.waitForTimeout(1500);
+
+        // 📸 SCREENSHOT 6m: Page mini-site de l'exposant
+        await page.screenshot({ path: 'screenshots/inscription-exposant/6m-minisite-public.png', fullPage: true });
+
+        // Scroll pour voir tout le mini-site
+        await page.evaluate(() => window.scrollTo(0, 500));
+        await page.waitForTimeout(500);
+
+        // 📸 SCREENSHOT 6n: Mini-site section produits
+        await page.screenshot({ path: 'screenshots/inscription-exposant/6n-minisite-produits-section.png', fullPage: true });
+
+        await page.evaluate(() => window.scrollTo(0, 1000));
+        await page.waitForTimeout(500);
+
+        // 📸 SCREENSHOT 6o: Mini-site section contact
+        await page.screenshot({ path: 'screenshots/inscription-exposant/6o-minisite-contact-section.png', fullPage: true });
+      }
+
+      // Retour au dashboard
+      console.log('📍 Retour au Dashboard');
+      await page.goto(`${BASE_URL}/exhibitor/dashboard`);
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(1500);
+
+      // 📸 SCREENSHOT 6p: Dashboard après création mini-site
+      await page.screenshot({ path: 'screenshots/inscription-exposant/6p-dashboard-apres-minisite.png', fullPage: true });
+
+    } else {
+      console.log('  ⚠️ Popup Mini-Site non visible (déjà créé ou désactivé)');
+    }
 
     // Scroll pour voir le calendrier
     await page.evaluate(() => window.scrollTo(0, 600));
     await page.waitForTimeout(500);
 
-    // 📸 SCREENSHOT 6b: Section calendrier
-    await page.screenshot({ path: 'screenshots/inscription-exposant/6b-dashboard-calendrier.png', fullPage: true });
+    const hasCalendar = await page.locator('text=/Calendrier|Créneaux|Disponibilités/i').isVisible({ timeout: 3000 }).catch(() => false);
+    console.log(`  📅 Calendrier: ${hasCalendar ? '✅' : '❌'}`);
+
+    // 📸 SCREENSHOT 6q: Section calendrier
+    await page.screenshot({ path: 'screenshots/inscription-exposant/6q-dashboard-calendrier.png', fullPage: true });
 
     // --- ÉTAPE 3: GESTION DES CRÉNEAUX CALENDRIER ---
     console.log('📍 ÉTAPE 3: Gestion des créneaux calendrier');
