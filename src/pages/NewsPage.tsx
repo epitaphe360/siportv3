@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from '../hooks/useTranslation';
+import { getArticleTranslationKeys } from '../utils/newsTranslations';
 import { 
   Search, 
   Filter, 
@@ -25,6 +26,20 @@ import { useNewsStore } from '../store/newsStore';
 import { motion } from 'framer-motion';
 import { CONFIG } from '../lib/config';
 
+// Helper function to translate article content
+function getTranslatedArticle(article: any, t: any) {
+  const keys = getArticleTranslationKeys(article.id);
+  if (keys) {
+    return {
+      ...article,
+      title: t(keys.titleKey),
+      excerpt: t(keys.excerptKey),
+      content: t(keys.contentKey)
+    };
+  }
+  return article;
+}
+
 export default function NewsPage() {
   const { t } = useTranslation();
   const {
@@ -47,10 +62,12 @@ export default function NewsPage() {
     fetchNews();
   }, [fetchNews]);
 
-  const filteredArticles = getFilteredArticles();
+  const filteredArticles = getFilteredArticles().map(a => getTranslatedArticle(a, t));
 
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('fr-FR', {
+    const currentLang = document.documentElement.lang || 'fr';
+    const locale = currentLang === 'ar' ? 'ar-MA' : currentLang === 'en' ? 'en-GB' : 'fr-FR';
+    return new Intl.DateTimeFormat(locale, {
       day: 'numeric',
       month: 'long',
       year: 'numeric'
@@ -58,7 +75,7 @@ export default function NewsPage() {
   };
 
   const formatReadTime = (minutes: number) => {
-    return `${minutes} min de lecture`;
+    return `${minutes} ${t('pages.news.min_read')}`;
   };
 
   const getCategoryColor = (category: string) => {
@@ -273,12 +290,12 @@ export default function NewsPage() {
                         </div>
                         
                         <div className="flex space-x-2">
-                          <Button variant="default" size="sm">
-                            <BookOpen className="h-4 w-4 mr-2" />
-                            <Link to={`/news/${article.id}`} className="flex items-center">
-                              Lire l'article
-                            </Link>
-                          </Button>
+                          <Link to={`/news/${article.id}`}>
+                            <Button variant="default" size="sm">
+                              <BookOpen className="h-4 w-4 mr-2" />
+                              {t('pages.news.read_more')}
+                            </Button>
+                          </Link>
                           <Button 
                             variant="outline" 
                             size="sm"
@@ -293,7 +310,7 @@ export default function NewsPage() {
                                 navigator.share(shareData);
                               } else {
                                 navigator.clipboard.writeText(shareData.url);
-                                toast.success('Lien copiÃ© dans le presse-papiers !');
+                                toast.success(t('contact.success'));
                               }
                             }}
                             title="Partager cet article"

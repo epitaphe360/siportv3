@@ -79,6 +79,36 @@ export const allTranslations = {
     'pages.news.read_more': 'Lire plus',
     'pages.news.published': 'Publié le',
     'pages.news.no_results': 'Aucune actualité trouvée',
+    'pages.news.min_read': 'min de lecture',
+    'pages.news.categories': 'Catégories',
+    'pages.news.all_categories': 'Toutes les catégories',
+    'pages.news.featured': 'En vedette',
+    'pages.news.trending': 'Tendance',
+    
+    // News Articles - French
+    'article.siports_2026': 'SIPORTS 2026 : Le Salon International des Ports et de la Logistique',
+    'article.siports_excerpt': 'Découvrez le plus grand événement portuaire d\'Afrique du Nord prévu pour 2026. Une occasion unique de réseautage et de découvertes.',
+    'article.siports_content': 'SIPORTS 2026 est le rendez-vous incontournable des professionnels du secteur portuaire et logistique. Cet événement majeur réunira les acteurs clés de l\'industrie maritime pour échanger sur les innovations, les défis et les opportunités du secteur.',
+    
+    'article.innovation_title': 'Innovation Portuaire : Les Technologies qui Transforment nos Ports',
+    'article.innovation_excerpt': 'Intelligence artificielle, automatisation, IoT : les ports modernes adoptent les technologies de pointe pour améliorer leur efficacité.',
+    'article.innovation_content': 'Les ports du monde entier investissent massivement dans les nouvelles technologies. De l\'automatisation des grues à l\'intelligence artificielle pour optimiser les flux, découvrez les innovations qui façonnent l\'avenir du secteur maritime.',
+    
+    'article.durability_title': 'Développement Durable : Les Ports s\'engagent pour l\'Environnement',
+    'article.durability_excerpt': 'Les initiatives écologiques se multiplient dans les ports pour réduire l\'empreinte carbone du transport maritime.',
+    'article.durability_content': 'Face aux enjeux climatiques, les ports adoptent des stratégies ambitieuses pour réduire leur impact environnemental. Énergies renouvelables, électrification des quais, gestion des déchets : tour d\'horizon des bonnes pratiques.',
+    
+    'article.mediterranean_title': 'Le Commerce Maritime en Méditerranée : Perspectives 2026',
+    'article.mediterranean_excerpt': 'Analyse des tendances du commerce maritime méditerranéen et des opportunités pour les acteurs du secteur.',
+    'article.mediterranean_content': 'La Méditerranée reste un carrefour stratégique pour le commerce mondial. Avec l\'évolution des routes commerciales et les nouveaux accords, le bassin méditerranéen offre de nombreuses opportunités de croissance.',
+    
+    'article.careers_title': 'Formation et Emploi : Les Métiers du Port de Demain',
+    'article.careers_excerpt': 'Le secteur portuaire recrute ! Découvrez les formations et les opportunités de carrière dans l\'industrie maritime.',
+    'article.careers_content': 'Le secteur portuaire est en pleine mutation et recherche de nouveaux talents. Des métiers traditionnels aux nouvelles spécialités liées à la digitalisation, les opportunités sont nombreuses pour ceux qui souhaitent faire carrière dans ce domaine.',
+    
+    'article.security_title': 'Sécurité Portuaire : Les Nouvelles Normes Internationales',
+    'article.security_excerpt': 'Les standards de sécurité évoluent pour répondre aux nouveaux défis du transport maritime mondial.',
+    'article.security_content': 'La sécurité reste une priorité absolue dans les installations portuaires. Cybersécurité, contrôle des accès, prévention des risques : découvrez les dernières réglementations et innovations en matière de sécurité portuaire.',
     
     // Dashboard Admin
     'admin.title': 'Administration',
@@ -518,6 +548,36 @@ export const allTranslations = {
     'pages.news.read_more': 'Read More',
     'pages.news.published': 'Published on',
     'pages.news.no_results': 'No news found',
+    'pages.news.min_read': 'min read',
+    'pages.news.categories': 'Categories',
+    'pages.news.all_categories': 'All Categories',
+    'pages.news.featured': 'Featured',
+    'pages.news.trending': 'Trending',
+    
+    // News Articles - English
+    'article.siports_2026': 'SIPORTS 2026: International Exhibition of Ports and Logistics',
+    'article.siports_excerpt': 'Discover the largest port event in North Africa planned for 2026. A unique opportunity for networking and discoveries.',
+    'article.siports_content': 'SIPORTS 2026 is the essential meeting point for professionals in the port and logistics sector. This major event will bring together key players in the maritime industry to exchange ideas on innovations, challenges and opportunities in the sector.',
+    
+    'article.innovation_title': 'Port Innovation: Technologies That Transform Our Ports',
+    'article.innovation_excerpt': 'Artificial intelligence, automation, IoT: modern ports adopt cutting-edge technologies to improve their efficiency.',
+    'article.innovation_content': 'Ports around the world are heavily investing in new technologies. From crane automation to artificial intelligence for optimizing flows, discover the innovations shaping the future of the maritime sector.',
+    
+    'article.durability_title': 'Sustainable Development: Ports Commit to the Environment',
+    'article.durability_excerpt': 'Ecological initiatives are multiplying in ports to reduce the carbon footprint of maritime transport.',
+    'article.durability_content': 'Facing climate challenges, ports are adopting ambitious strategies to reduce their environmental impact. Renewable energies, quay electrification, waste management: an overview of best practices.',
+    
+    'article.mediterranean_title': 'Maritime Trade in the Mediterranean: 2026 Perspectives',
+    'article.mediterranean_excerpt': 'Analysis of trends in Mediterranean maritime trade and opportunities for industry players.',
+    'article.mediterranean_content': 'The Mediterranean remains a strategic hub for world trade. With the evolution of trade routes and new agreements, the Mediterranean basin offers many growth opportunities.',
+    
+    'article.careers_title': 'Training and Employment: Port Jobs of Tomorrow',
+    'article.careers_excerpt': 'The port sector is hiring! Discover training programs and career opportunities in the maritime industry.',
+    'article.careers_content': 'The port sector is undergoing major changes and seeking new talent. From traditional occupations to new specialties related to digitalization, opportunities are numerous for those wishing to build a career in this field.',
+    
+    'article.security_title': 'Port Security: New International Standards',
+    'article.security_excerpt': 'Security standards are evolving to meet new challenges in global maritime transport.',
+    'article.security_content': 'Safety remains a top priority in port facilities. Cybersecurity, access control, risk prevention: discover the latest regulations and innovations in port security.',
     
     'admin.title': 'Administration',
     'admin.dashboard': 'Dashboard',
@@ -1168,6 +1228,36 @@ export const allTranslations = {
     'news.featured': 'المميز',
     'news.views': 'المشاهدات',
     'news.category': 'الفئة',
+    'news.read_more': 'اقرأ المزيد',
+    'news.published': 'نشر في',
+    'news.min_read': 'دقيقة قراءة',
+    'news.categories': 'الفئات',
+    'news.trending': 'الأكثر اتجاهاً',
+    
+    // News Articles - Arabic
+    'article.siports_2026': 'SIPORTS 2026: المعرض الدولي للموانئ واللوجستيات',
+    'article.siports_excerpt': 'اكتشف أكبر حدث بحري في شمال إفريقيا المقرر للعام 2026. فرصة فريدة للتواصل والاكتشاف.',
+    'article.siports_content': 'SIPORTS 2026 هي نقطة اللقاء الأساسية لمحترفي قطاع الموانئ واللوجستيات. هذا الحدث الرئيسي سيجمع بين اللاعبين الرئيسيين في الصناعة البحرية لتبادل الأفكار حول الابتكارات والتحديات والفرص في القطاع.',
+    
+    'article.innovation_title': 'ابتكار الموانئ: التقنيات التي تحول موانئنا',
+    'article.innovation_excerpt': 'الذكاء الاصطناعي والأتمتة وإنترنت الأشياء: الموانئ الحديثة تعتمد التقنيات المتقدمة لتحسين كفاءتها.',
+    'article.innovation_content': 'تستثمر الموانئ حول العالم بشكل كبير في التقنيات الجديدة. من أتمتة الرافعات إلى الذكاء الاصطناعي لتحسين تدفقات البضائع، اكتشف الابتكارات التي تشكل مستقبل القطاع البحري.',
+    
+    'article.durability_title': 'التنمية المستدامة: الموانئ تلتزم بحماية البيئة',
+    'article.durability_excerpt': 'تتزايد المبادرات البيئية في الموانئ للحد من الانبعاثات الكربونية من النقل البحري.',
+    'article.durability_content': 'في مواجهة التحديات المناخية، تتبنى الموانئ استراتيجيات طموحة للحد من تأثيرها البيئي. الطاقات المتجددة والشحن الكهربائي والإدارة المستدامة للنفايات: نظرة عامة على أفضل الممارسات.',
+    
+    'article.mediterranean_title': 'التجارة البحرية في البحر الأبيض المتوسط: آفاق 2026',
+    'article.mediterranean_excerpt': 'تحليل اتجاهات التجارة البحرية في البحر الأبيض المتوسط والفرص المتاحة لفاعلي الصناعة.',
+    'article.mediterranean_content': 'يبقى البحر الأبيض المتوسط مركزاً استراتيجياً للتجارة العالمية. مع تطور الطرق التجارية والاتفاقيات الجديدة، يقدم حوض البحر الأبيض المتوسط العديد من فرص النمو.',
+    
+    'article.careers_title': 'التدريب والتوظيف: مهن الموانئ في الغد',
+    'article.careers_excerpt': 'قطاع الموانئ يوظف! اكتشف برامج التدريب وفرص الوظائف في الصناعة البحرية.',
+    'article.careers_content': 'يشهد قطاع الموانئ تغييرات جذرية ويبحث عن مواهب جديدة. من المهن التقليدية إلى التخصصات الجديدة المرتبطة بالرقمنة، الفرص عديدة لمن يرغب في بناء مسيرة مهنية في هذا المجال.',
+    
+    'article.security_title': 'أمان الموانئ: المعايير الدولية الجديدة',
+    'article.security_excerpt': 'تتطور معايير الأمان للرد على التحديات الجديدة في النقل البحري العالمي.',
+    'article.security_content': 'تبقى السلامة أولوية قصوى في منشآت الموانئ. الأمن السيبراني وتحكم الوصول والوقاية من الأخطار: اكتشف أحدث القوانين والابتكارات في مجال أمان الموانئ.',
     
     // Partnership Page
     'partnership.title': 'شراكات SIPORTS 2026',

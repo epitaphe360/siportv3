@@ -1,5 +1,6 @@
 ﻿import { toast } from 'sonner';
 import { useTranslation } from '../hooks/useTranslation';
+import { getArticleTranslationKeys } from '../utils/newsTranslations';
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock, User, Eye, Share2, Bookmark, MessageCircle, Tag, ExternalLink, Download, Printer as Print, Globe, TrendingUp, BookOpen, Heart, Facebook, Twitter, Linkedin } from 'lucide-react';
