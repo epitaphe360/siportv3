@@ -2413,6 +2413,16 @@ export class SupabaseService {
     if (!this.checkSupabaseConnection()) return;
     const safeSupabase = supabase!;
     try {
+      // Step 1: Get the user_id from the registration request
+      const { data: request, error: fetchError } = await (safeSupabase as any)
+        .from('registration_requests')
+        .select('user_id, user_type')
+        .eq('id', requestId)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      // Step 2: Update the registration request
       const updateData: any = {
         status,
         reviewed_by: reviewedBy,
@@ -2426,6 +2436,36 @@ export class SupabaseService {
         .update(updateData)
         .eq('id', requestId);
       if (error) throw error;
+
+      // Step 3: CRITICAL FIX - Also update the user's status
+      if (request?.user_id) {
+        const newUserStatus = status === 'approved' ? 'active' : 'rejected';
+        const { error: userError } = await (safeSupabase as any)
+          .from('users')
+          .update({ status: newUserStatus })
+          .eq('id', request.user_id);
+
+        if (userError) {
+          console.error('Error updating user status:', userError);
+          // Don't throw - the registration request was updated successfully
+        }
+
+        // Step 4: If partner, also update partners table verified status
+        if (request.user_type === 'partner' && status === 'approved') {
+          await (safeSupabase as any)
+            .from('partners')
+            .update({ verified: true })
+            .eq('id', request.user_id);
+        }
+
+        // Step 5: If exhibitor, also update exhibitors table verified status
+        if (request.user_type === 'exhibitor' && status === 'approved') {
+          await (safeSupabase as any)
+            .from('exhibitors')
+            .update({ verified: true })
+            .eq('user_id', request.user_id);
+        }
+      }
     } catch (error) {
       console.error('Error updating registration request status:', error);
       throw error;
