@@ -155,6 +155,23 @@ export const allTranslations = {
     'time.minutes': 'Minutes',
     'time.seconds': 'Secondes',
     
+    // Login Page
+    'login.title': 'Connexion',
+    'login.subtitle': 'Accédez à votre espace SIPORTS',
+    'login.email': 'Adresse email',
+    'login.password': 'Mot de passe',
+    'login.remember_me': 'Se souvenir de moi',
+    'login.forgot_password': 'Mot de passe oublié ?',
+    'login.button': 'Se connecter',
+    'login.connecting': 'Connexion',
+    'login.demo_accounts': 'Connexion rapide - Comptes de démonstration',
+    'login.demo_admin': 'Admin Principal',
+    'login.demo_exhibitors': 'Exposants',
+    'login.demo_partners': 'Partenaires',
+    'login.demo_visitors': 'Visiteurs',
+    'login.demo_free': 'Gratuit',
+    'login.demo_vip': 'VIP',
+    
     // Actions communes
     'actions.save': 'Sauvegarder',
     'actions.cancel': 'Annuler',
@@ -558,6 +575,23 @@ export const allTranslations = {
     'time.minutes': 'Minutes',
     'time.seconds': 'Seconds',
     
+    // Login Page
+    'login.title': 'Login',
+    'login.subtitle': 'Access your SIPORTS account',
+    'login.email': 'Email address',
+    'login.password': 'Password',
+    'login.remember_me': 'Remember me',
+    'login.forgot_password': 'Forgot password?',
+    'login.button': 'Sign in',
+    'login.connecting': 'Signing in',
+    'login.demo_accounts': 'Quick login - Demo accounts',
+    'login.demo_admin': 'Main Admin',
+    'login.demo_exhibitors': 'Exhibitors',
+    'login.demo_partners': 'Partners',
+    'login.demo_visitors': 'Visitors',
+    'login.demo_free': 'Free',
+    'login.demo_vip': 'VIP',
+    
     // Actions communes
     'actions.save': 'Save',
     'actions.cancel': 'Cancel',
@@ -957,6 +991,23 @@ export const allTranslations = {
     'time.hours': 'الساعات',
     'time.minutes': 'الدقائق',
     'time.seconds': 'الثواني',
+    
+    // Login Page
+    'login.title': 'تسجيل الدخول',
+    'login.subtitle': 'الوصول إلى حسابك في SIPORTS',
+    'login.email': 'عنوان البريد الإلكتروني',
+    'login.password': 'كلمة المرور',
+    'login.remember_me': 'تذكرني',
+    'login.forgot_password': 'هل نسيت كلمة المرور؟',
+    'login.button': 'تسجيل الدخول',
+    'login.connecting': 'جاري التسجيل',
+    'login.demo_accounts': 'تسجيل دخول سريع - حسابات توضيحية',
+    'login.demo_admin': 'المسؤول الرئيسي',
+    'login.demo_exhibitors': 'العارضون',
+    'login.demo_partners': 'الشركاء',
+    'login.demo_visitors': 'الزوار',
+    'login.demo_free': 'مجاني',
+    'login.demo_vip': 'VIP',
     
     // Actions communes
     'actions.save': 'حفظ',

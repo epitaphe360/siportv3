@@ -15,8 +15,10 @@ import { Button } from '../ui/Button';
 import useAuthStore from '../../store/authStore';
 import { motion } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -161,10 +163,10 @@ export default function LoginPage() {
               </div>
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Connexion
+              {t('login.title')}
             </h2>
             <p className="text-gray-600">
-              Accédez à votre espace SIPORTS
+              {t('login.subtitle')}
             </p>
           </div>
 
@@ -184,7 +186,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Adresse email
+                {t('login.email')}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -202,7 +204,7 @@ export default function LoginPage() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Mot de passe
+                {t('login.password')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -235,7 +237,7 @@ export default function LoginPage() {
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                  Se souvenir de moi
+                  {t('login.remember_me')}
                 </label>
               </div>
 
@@ -243,7 +245,7 @@ export default function LoginPage() {
                 to={ROUTES.FORGOT_PASSWORD}
                 className="text-sm text-blue-600 hover:text-blue-500"
               >
-                Mot de passe oublié ?
+                {t('login.forgot_password')}
               </Link>
             </div>
 
@@ -255,10 +257,10 @@ export default function LoginPage() {
               {isLoading ? (
                 <>
                   <Loader className="animate-spin h-4 w-4 mr-2" />
-                  Connexion...
+                  {t('login.connecting')}
                 </>
               ) : (
-                'Se connecter'
+                t('login.button')
               )}
             </Button>
           </form>
@@ -266,7 +268,7 @@ export default function LoginPage() {
           {/* Quick Login Buttons */}
           <div className="mt-6 p-4 bg-blue-50 rounded-lg">
             <h4 className="text-sm font-medium text-blue-900 mb-3">
-              Connexion rapide - Comptes de démonstration :
+              {t('login.demo_accounts')}:
             </h4>
             {(import.meta.env.VITE_SHOW_DEMO_LOGINS !== 'false') && (
               <div className="space-y-4">
