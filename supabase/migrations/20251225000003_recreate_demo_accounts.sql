@@ -158,5 +158,26 @@ VALUES
   ('00000000-0000-0000-0000-000000000009', 'visitor-basic@test.siport.com', 'Basic Visitor', 'visitor', 'active', jsonb_build_object('visitor_level', 'basic'), NOW(), NOW()),
   ('00000000-0000-0000-0000-000000000010', 'visitor-free@test.siport.com', 'Free Visitor', 'visitor', 'active', jsonb_build_object('visitor_level', 'free'), NOW(), NOW());
 
+-- Step 3: Create exhibitor records (linking users to the exhibitors table)
+INSERT INTO public.exhibitors (user_id, company_name, category, sector, description, logo_url, website, verified, featured, contact_info, created_at, updated_at)
+VALUES 
+  ('00000000-0000-0000-0000-000000000002', 'ABB Marine & Ports', 'port-industry', 'Technology', 'Leader in maritime automation and port technology solutions', NULL, 'https://www.abb.com', true, true, jsonb_build_object('email', 'exhibitor-54m@test.siport.com', 'phone', '+212 6 12 34 56 78', 'address', '123 Tech Street, Casablanca', 'name', 'ABB Sales Team'), NOW(), NOW()),
+  ('00000000-0000-0000-0000-000000000003', 'Advanced Port Systems', 'port-industry', 'Automation', 'Cutting-edge automation systems for modern ports', NULL, 'https://www.advancedport.com', true, true, jsonb_build_object('email', 'exhibitor-36m@test.siport.com', 'phone', '+212 6 98 76 54 32', 'address', '456 Port Avenue, Tangier', 'name', 'APS Team'), NOW(), NOW()),
+  ('00000000-0000-0000-0000-000000000004', 'Maritime Equipment Co', 'port-equipment', 'Equipment', 'Premium maritime equipment supplier', NULL, 'https://www.maritimeequip.com', true, false, jsonb_build_object('email', 'exhibitor-18m@test.siport.com', 'phone', '+212 6 55 44 33 22', 'address', '789 Harbor Blvd, Rabat', 'name', 'Maritime Team'), NOW(), NOW()),
+  ('00000000-0000-0000-0000-000000000017', 'StartUp Port Innovations', 'port-innovation', 'IoT', 'Innovative IoT solutions for port operations', NULL, 'https://www.portinnovations.startup', false, false, jsonb_build_object('email', 'exhibitor-9m@test.siport.com', 'phone', '+212 6 11 22 33 44', 'address', '321 Innovation Park, Fez', 'name', 'StartUp Team'), NOW(), NOW());
+
+-- Step 4: Create partner records (if needed, link to partners table)
+INSERT INTO public.partners (user_id, company_name, level, description, logo_url, website, verified, contact_info, created_at, updated_at)
+VALUES 
+  ('00000000-0000-0000-0000-000000000005', 'Gold Partner Industries', 'gold', 'Premium partnership for port excellence', NULL, 'https://www.goldpartner.com', true, jsonb_build_object('email', 'partner-gold@test.siport.com', 'phone', '+212 6 99 88 77 66', 'address', '111 Gold Street, Casablanca'), NOW(), NOW()),
+  ('00000000-0000-0000-0000-000000000006', 'Silver Tech Group', 'silver', 'Technology partner for digital transformation', NULL, 'https://www.silvertech.com', true, jsonb_build_object('email', 'partner-silver@test.siport.com', 'phone', '+212 6 77 66 55 44', 'address', '222 Silver Ave, Marrakech'), NOW(), NOW()),
+  ('00000000-0000-0000-0000-000000000011', 'Platinium Global Corp', 'platinium', 'Global platinum partner', NULL, 'https://www.platinium-global.com', true, jsonb_build_object('email', 'partner-platinium@test.siport.com', 'phone', '+212 6 33 44 55 66', 'address', '333 Platinum Lane, Agadir'), NOW(), NOW()),
+  ('00000000-0000-0000-0000-000000000012', 'Museum Cultural Center', 'museum', 'Cultural partnership for heritage', NULL, 'https://www.museum-center.ma', true, jsonb_build_object('email', 'partner-museum@test.siport.com', 'phone', '+212 6 22 33 44 55', 'address', '444 Culture Way, Essaouira'), NOW(), NOW()),
+  ('00000000-0000-0000-0000-000000000013', 'PortTech Solutions', 'porttech', 'Port technology innovation partner', NULL, 'https://www.porttech-solutions.com', true, jsonb_build_object('email', 'partner-porttech@test.siport.com', 'phone', '+212 6 11 22 33 44', 'address', '555 Tech Drive, Tétouan'), NOW(), NOW()),
+  ('00000000-0000-0000-0000-000000000014', 'OceanFreight Logistics', 'oceanfreight', 'Maritime freight specialist', NULL, 'https://www.oceanfreight.logistics', true, jsonb_build_object('email', 'partner-oceanfreight@test.siport.com', 'phone', '+212 6 88 99 00 11', 'address', '666 Ocean Path, Safi'), NOW(), NOW()),
+  ('00000000-0000-0000-0000-000000000015', 'Coastal Maritime Services', 'coastal', 'Comprehensive maritime services', NULL, 'https://www.coastal-maritime.com', true, jsonb_build_object('email', 'partner-coastal@test.siport.com', 'phone', '+212 6 77 88 99 00', 'address', '777 Coastal Road, El Jadida'), NOW(), NOW());
+
 -- Verify accounts were created
 SELECT COUNT(*) as created_accounts FROM auth.users WHERE email LIKE '%@test.siport.com' OR email LIKE '%@siports.com';
+SELECT COUNT(*) as exhibitors_count FROM public.exhibitors;
+SELECT COUNT(*) as partners_count FROM public.partners;
