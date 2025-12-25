@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from '../../hooks/useTranslation';
 import { ROUTES } from '../../lib/routes';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -10,6 +11,7 @@ import { CheckCircle, Mail, User, Lock, Anchor, Clock } from 'lucide-react';
 export default function SignUpSuccessPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [countdown, setCountdown] = useState(10);
   
   const state = location.state as any;

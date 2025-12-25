@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from '../../hooks/useTranslation';
 import { ROUTES } from '../../lib/routes';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';

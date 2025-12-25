@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
+import { useTranslation } from '../../hooks/useTranslation';
 import { ROUTES } from '../../lib/routes';
 import { Loader } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -13,6 +14,7 @@ import { toast } from 'react-hot-toast';
 export default function OAuthCallbackPage() {
   const navigate = useNavigate();
   const { handleOAuthCallback } = useAuthStore();
+  const { t } = useTranslation();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {

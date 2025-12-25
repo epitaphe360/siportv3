@@ -1,12 +1,14 @@
 
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
+import { useTranslation } from '../../hooks/useTranslation';
 import { motion } from 'framer-motion';
 import { Clock, Mail, User, LogOut } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 
 export default function PendingAccountPage() {
   const { logout, user } = useAuthStore();
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">

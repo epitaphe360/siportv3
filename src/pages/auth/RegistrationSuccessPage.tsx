@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from '../../hooks/useTranslation';
 import { CheckCircle, Loader, Anchor } from 'lucide-react';
 import { ROUTES } from '../../lib/routes';
 
 export default function RegistrationSuccessPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const [countdown, setCountdown] = useState(5);
   
   const accountType = (location.state as any)?.accountType || 'visitor';
