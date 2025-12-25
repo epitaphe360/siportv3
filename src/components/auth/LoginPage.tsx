@@ -279,28 +279,28 @@ export default function LoginPage() {
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      setEmail('admin.siports@siports.com');
-                      setPassword('Admin123!');
+                      setEmail('admin@siport.com');
+                      setPassword('');
                     }}
                     className="text-xs bg-white hover:bg-blue-100 border-blue-200"
                   >
-                    👑 Admin Principal
+                    👑 {t('login.demo_admin')}
                   </Button>
                 </div>
 
-                {/* Exposants */}
+                {/* Exhibitors - Placeholder */}
                 <div>
-                  <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">🏢 Exposants</p>
+                  <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">🏢 {t('login.demo_exhibitors')}</p>
+                  <p className="text-[9px] text-blue-600 mb-2">
+                    {t('login.demo_accounts')} - Contactez l'administrateur
+                  </p>
                   <div className="grid grid-cols-2 gap-2">
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => {
-                        setEmail('exhibitor-9m@test.siport.com');
-                        setPassword('Admin123!');
-                      }}
-                      className="text-[10px] h-7 bg-white"
+                      disabled
+                      className="text-[10px] h-7 bg-gray-100 text-gray-500"
                     >
                       9m²
                     </Button>
@@ -308,11 +308,8 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => {
-                        setEmail('exhibitor-18m@test.siport.com');
-                        setPassword('Admin123!');
-                      }}
-                      className="text-[10px] h-7 bg-white"
+                      disabled
+                      className="text-[10px] h-7 bg-gray-100 text-gray-500"
                     >
                       18m²
                     </Button>
@@ -320,11 +317,8 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => {
-                        setEmail('exhibitor-36m@test.siport.com');
-                        setPassword('Admin123!');
-                      }}
-                      className="text-[10px] h-7 bg-white"
+                      disabled
+                      className="text-[10px] h-7 bg-gray-100 text-gray-500"
                     >
                       36m²
                     </Button>
@@ -332,54 +326,27 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => {
-                        setEmail('exhibitor-54m@test.siport.com');
-                        setPassword('Admin123!');
-                      }}
-                      className="text-[10px] h-7 bg-white"
+                      disabled
+                      className="text-[10px] h-7 bg-gray-100 text-gray-500"
                     >
                       54m²
                     </Button>
                   </div>
                 </div>
 
-                {/* Partenaires */}
+                {/* Partners - Placeholder */}
                 <div>
-                  <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">🤝 Partenaires</p>
+                  <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">🤝 {t('login.demo_partners')}</p>
+                  <p className="text-[9px] text-blue-600 mb-2">
+                    Demande d'accès - Contactez l'administrateur
+                  </p>
                   <div className="grid grid-cols-2 gap-2">
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => {
-                        setEmail('partner-museum@test.siport.com');
-                        setPassword('Admin123!');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      Musée
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('partner-silver@test.siport.com');
-                        setPassword('Admin123!');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      Silver
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('partner-gold@test.siport.com');
-                        setPassword('Admin123!');
-                      }}
-                      className="text-[10px] h-7 bg-white"
+                      disabled
+                      className="text-[8px] h-6 bg-gray-100 text-gray-500"
                     >
                       Gold
                     </Button>
@@ -387,46 +354,20 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => {
-                        setEmail('partner-platinium@test.siport.com');
-                        setPassword('Admin123!');
-                      }}
-                      className="text-[10px] h-7 bg-white"
+                      disabled
+                      className="text-[8px] h-6 bg-gray-100 text-gray-500"
                     >
-                      Platinium
+                      Silver
                     </Button>
                   </div>
                 </div>
 
-                {/* Visiteurs */}
+                {/* Visitors - Placeholder */}
                 <div>
-                  <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">👥 Visiteurs</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('visitor-free@test.siport.com');
-                        setPassword('Admin123!');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      Gratuit
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('visitor-vip@test.siport.com');
-                        setPassword('Admin123!');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      VIP
-                    </Button>
-                  </div>
+                  <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">👥 {t('login.demo_visitors')}</p>
+                  <p className="text-[9px] text-blue-600">
+                    Inscription libre disponible
+                  </p>
                 </div>
               </div>
             )}
