@@ -1189,7 +1189,7 @@ export class SupabaseService {
             sender:sender_id(id, name)
           )
         `)
-        .or(`participant_1.eq.${userId},participant_2.eq.${userId}`)
+        .contains('participants', [userId])
         .order('updated_at', { ascending: false });
 
       if (error) throw error;

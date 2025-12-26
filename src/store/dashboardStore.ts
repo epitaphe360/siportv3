@@ -46,18 +46,21 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
         miniSiteViews: 0
       };
 
-      // Compter les vues de profil (si table profile_views existe)
-      try {
-        const { count: profileViewsCount, error } = await supabase
-          .from('profile_views')
-          .select('*', { count: 'exact', head: true })
-          .eq('viewed_user_id', user.id);
-        
-        if (!error) {
-          stats.profileViews = profileViewsCount || 0;
+      // Compter les vues de profil (seulement pour exhibitors/partners - table profile_views peut ne pas exister)
+      const isExhibitorOrPartner = userProfile?.role === 'exhibitor' || userProfile?.role === 'partner';
+      if (isExhibitorOrPartner) {
+        try {
+          const { count: profileViewsCount, error } = await supabase
+            .from('profile_views')
+            .select('*', { count: 'exact', head: true })
+            .eq('viewed_user_id', user.id);
+          
+          if (!error) {
+            stats.profileViews = profileViewsCount || 0;
+          }
+        } catch (err) {
+          // Table profile_views non disponible - silencieux
         }
-      } catch (err) {
-        console.log('Table profile_views non disponible');
       }
 
       // Compter les connexions
@@ -87,7 +90,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
         const { data: conversations, error } = await supabase
           .from('conversations')
           .select('id')
-          .or(`participant_1.eq.${user.id},participant_2.eq.${user.id}`);
+          .contains('participants', [user.id]);
         
         if (!error && conversations) {
           const conversationIds = conversations.map(c => c.id);
@@ -107,32 +110,36 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
         console.log('Erreur lors du chargement des messages');
       }
 
-      // Compter les téléchargements de catalogue (si table downloads existe)
-      try {
-        const { count: downloadsCount, error } = await supabase
-          .from('downloads')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', user.id);
-        
-        if (!error) {
-          stats.catalogDownloads = downloadsCount || 0;
+      // Compter les téléchargements de catalogue (seulement pour exhibitors/partners - table downloads peut ne pas exister)
+      if (isExhibitorOrPartner) {
+        try {
+          const { count: downloadsCount, error } = await supabase
+            .from('downloads')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', user.id);
+          
+          if (!error) {
+            stats.catalogDownloads = downloadsCount || 0;
+          }
+        } catch (err) {
+          // Table downloads non disponible - silencieux
         }
-      } catch (err) {
-        console.log('Table downloads non disponible');
       }
 
-      // Compter les vues du mini-site (si table minisite_views existe)
-      try {
-        const { count: miniSiteViewsCount, error } = await supabase
-          .from('minisite_views')
-          .select('*', { count: 'exact', head: true })
-          .eq('exhibitor_id', user.id);
-        
-        if (!error) {
-          stats.miniSiteViews = miniSiteViewsCount || 0;
+      // Compter les vues du mini-site (seulement pour exhibitors - table minisite_views peut ne pas exister)
+      if (userProfile?.role === 'exhibitor') {
+        try {
+          const { count: miniSiteViewsCount, error } = await supabase
+            .from('minisite_views')
+            .select('*', { count: 'exact', head: true })
+            .eq('exhibitor_id', user.id);
+          
+          if (!error) {
+            stats.miniSiteViews = miniSiteViewsCount || 0;
+          }
+        } catch (err) {
+          // Table minisite_views non disponible - silencieux
         }
-      } catch (err) {
-        console.log('Table minisite_views non disponible');
       }
 
       // Récupérer les activités récentes

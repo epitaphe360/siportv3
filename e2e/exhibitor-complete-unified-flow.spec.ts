@@ -747,6 +747,26 @@ test.describe('🏢 EXPOSANT - FLUX COMPLET UNIFIÉ AVANCÉ', () => {
       console.log('  ⚠️ Éditeur Mini-Site non chargé - page peut être différente');
     }
 
+    // 📍 TRANSITION VERS CALENDRIER : Retour au tableau de bord puis navigation
+    console.log('  🔄 Retour au tableau de bord exposant...');
+    await page.goto(`${BASE_URL}/exhibitor/dashboard`);
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(3000);
+    
+    await page.screenshot({ path: 'screenshots/senario-exposant/24-retour-dashboard.png', fullPage: true });
+    console.log('  ✅ Retour au dashboard exposant');
+
+    // Chercher le lien vers le calendrier dans le menu/sidebar
+    const calendarLink = page.locator('a[href*="calendar"], a:has-text("Calendrier"), a:has-text("Créneaux"), button:has-text("Calendrier")').first();
+    if (await calendarLink.isVisible({ timeout: 3000 }).catch(() => false)) {
+      console.log('  📅 Navigation vers calendrier via menu...');
+      await calendarLink.click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(3000);
+    } else {
+      console.log('  📅 Navigation directe vers /calendar...');
+    }
+
     // =========================================================================
     // PARTIE 7: GESTION DES CRÉNEAUX (CALENDRIER)
     // =========================================================================

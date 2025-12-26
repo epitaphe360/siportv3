@@ -101,11 +101,20 @@ function generateReport(pages: Array<{name: string; description: string; feature
   console.log(`\n📊 Rapport HTML généré: ${reportPath}\n`);
 }
 
-// Fonction utilitaire pour prendre un screenshot
+// Fonction utilitaire pour prendre un screenshot avec timer
 async function takeScreenshot(page, name: string) {
   const filename = path.join(SCREENSHOT_DIR, `${name}.png`);
   await page.screenshot({ path: filename, fullPage: true });
   console.log(`✓ Screenshot: ${name}`);
+}
+
+// Fonction pour charger une page avec timer
+async function loadPageWithTimer(page, url: string): Promise<number> {
+  const startTime = Date.now();
+  await page.goto(url);
+  await page.waitForLoadState('networkidle');
+  const loadTime = Date.now() - startTime;
+  return loadTime;
 }
 
 // Rapport de présentation
@@ -172,109 +181,101 @@ test.describe('🏛️ PAGES PUBLIQUES ET INFORMATIONS - Présentation SIPORT', 
     console.log('1️⃣  Accueil - Page principale du salon');
     console.log('   📝 ' + pageDescriptions['01-home'].description);
     console.log('   ✨ Éléments clés: ' + pageDescriptions['01-home'].features.join(', '));
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    const time1 = await loadPageWithTimer(page, '/');
     await takeScreenshot(page, '01-home');
-    console.log('');
+    console.log(`   ⏱️  Temps de chargement: ${time1}ms\n`);
 
     // EXHIBITORS
     console.log('2️⃣  Annuaire des Exposants');
     console.log('   📝 ' + pageDescriptions['02-exhibitors'].description);
     console.log('   ✨ Éléments clés: ' + pageDescriptions['02-exhibitors'].features.join(', '));
-    await page.goto('/exhibitors');
-    await page.waitForLoadState('networkidle');
+    const time2 = await loadPageWithTimer(page, '/exhibitors');
     await takeScreenshot(page, '02-exhibitors');
-    console.log('');
+    console.log(`   ⏱️  Temps de chargement: ${time2}ms\n`);
 
     // PARTNERS
     console.log('3️⃣  Annuaire des Partenaires');
     console.log('   📝 ' + pageDescriptions['03-partners'].description);
     console.log('   ✨ Éléments clés: ' + pageDescriptions['03-partners'].features.join(', '));
-    await page.goto('/partners');
-    await page.waitForLoadState('networkidle');
+    const time3 = await loadPageWithTimer(page, '/partners');
     await takeScreenshot(page, '03-partners');
-    console.log('');
+    console.log(`   ⏱️  Temps de chargement: ${time3}ms\n`);
 
     // NEWS
     console.log('4️⃣  Actualités et Informations');
     console.log('   📝 ' + pageDescriptions['04-news'].description);
     console.log('   ✨ Éléments clés: ' + pageDescriptions['04-news'].features.join(', '));
-    await page.goto('/news');
-    await page.waitForLoadState('networkidle');
+    const time4 = await loadPageWithTimer(page, '/news');
     await takeScreenshot(page, '04-news');
-    console.log('');
+    console.log(`   ⏱️  Temps de chargement: ${time4}ms\n`);
 
     // NETWORKING
     console.log('5️⃣  Plateforme de Networking');
     console.log('   📝 ' + pageDescriptions['06-networking'].description);
     console.log('   ✨ Éléments clés: ' + pageDescriptions['06-networking'].features.join(', '));
-    await page.goto('/networking');
-    await page.waitForLoadState('networkidle');
+    const time5 = await loadPageWithTimer(page, '/networking');
     await takeScreenshot(page, '06-networking');
-    console.log('');
+    console.log(`   ⏱️  Temps de chargement: ${time5}ms\n`);
 
     // CONTACT
     console.log('6️⃣  Formulaire de Contact');
     console.log('   📝 ' + pageDescriptions['07-contact'].description);
     console.log('   ✨ Éléments clés: ' + pageDescriptions['07-contact'].features.join(', '));
-    await page.goto('/contact');
-    await page.waitForLoadState('networkidle');
+    const time6 = await loadPageWithTimer(page, '/contact');
     await takeScreenshot(page, '07-contact');
-    console.log('');
+    console.log(`   ⏱️  Temps de chargement: ${time6}ms\n`);
 
     // VENUE
     console.log('7️⃣  Localisation et Accès');
     console.log('   📝 ' + pageDescriptions['08-venue'].description);
     console.log('   ✨ Éléments clés: ' + pageDescriptions['08-venue'].features.join(', '));
-    await page.goto('/venue');
-    await page.waitForLoadState('networkidle');
+    const time7 = await loadPageWithTimer(page, '/venue');
     await takeScreenshot(page, '08-venue');
-    console.log('');
+    console.log(`   ⏱️  Temps de chargement: ${time7}ms\n`);
 
     // PARTNERSHIP
     console.log('8️⃣  Devenir Partenaire');
     console.log('   📝 ' + pageDescriptions['09-partnership'].description);
     console.log('   ✨ Éléments clés: ' + pageDescriptions['09-partnership'].features.join(', '));
-    await page.goto('/partnership');
-    await page.waitForLoadState('networkidle');
+    const time8 = await loadPageWithTimer(page, '/partnership');
     await takeScreenshot(page, '09-partnership');
-    console.log('');
+    console.log(`   ⏱️  Temps de chargement: ${time8}ms\n`);
 
     // SUPPORT
     console.log('9️⃣  Support et Assistance');
     console.log('   📝 ' + pageDescriptions['10-support'].description);
     console.log('   ✨ Éléments clés: ' + pageDescriptions['10-support'].features.join(', '));
-    await page.goto('/support');
-    await page.waitForLoadState('networkidle');
+    const time9 = await loadPageWithTimer(page, '/support');
     await takeScreenshot(page, '10-support');
-    console.log('');
+    console.log(`   ⏱️  Temps de chargement: ${time9}ms\n`);
 
     // PRIVACY
     console.log('🔐 Politique de Confidentialité');
     console.log('   📝 ' + pageDescriptions['11-privacy'].description);
     console.log('   ✨ Éléments clés: ' + pageDescriptions['11-privacy'].features.join(', '));
-    await page.goto('/privacy');
-    await page.waitForLoadState('networkidle');
+    const time10 = await loadPageWithTimer(page, '/privacy');
     await takeScreenshot(page, '11-privacy');
-    console.log('');
+    console.log(`   ⏱️  Temps de chargement: ${time10}ms\n`);
 
     // TERMS
     console.log('📜 Conditions d\'Utilisation');
     console.log('   📝 ' + pageDescriptions['12-terms'].description);
     console.log('   ✨ Éléments clés: ' + pageDescriptions['12-terms'].features.join(', '));
-    await page.goto('/terms');
-    await page.waitForLoadState('networkidle');
+    const time11 = await loadPageWithTimer(page, '/terms');
     await takeScreenshot(page, '12-terms');
-    console.log('');
+    console.log(`   ⏱️  Temps de chargement: ${time11}ms\n`);
 
     // COOKIES
     console.log('🍪 Gestion des Cookies');
     console.log('   📝 ' + pageDescriptions['13-cookies'].description);
     console.log('   ✨ Éléments clés: ' + pageDescriptions['13-cookies'].features.join(', '));
-    await page.goto('/cookies');
-    await page.waitForLoadState('networkidle');
+    const time12 = await loadPageWithTimer(page, '/cookies');
     await takeScreenshot(page, '13-cookies');
-    console.log('\n✅ Pages publiques capturées avec succès!\n');
+    console.log(`   ⏱️  Temps de chargement: ${time12}ms\n`);
+
+    const avgTime = Math.round((time1 + time2 + time3 + time4 + time5 + time6 + time7 + time8 + time9 + time10 + time11 + time12) / 12);
+    console.log(`\n📊 Temps moyen de chargement: ${avgTime}ms`);
+    console.log('✅ Pages publiques capturées avec succès!\n');
   });
 
   test('capture media library page', async ({ page }) => {
@@ -283,69 +284,84 @@ test.describe('🏛️ PAGES PUBLIQUES ET INFORMATIONS - Présentation SIPORT', 
     console.log('📚 Médiathèque - Accueil');
     console.log('   📝 Bibliothèque centralisée de contenus multimédias regroupant webinaires, podcasts, capsules vidéo et ressources pédagogiques.');
     console.log('   ✨ Éléments clés: Navigation thématique, Recherche, Filtrage par type de contenu, Recommandations');
-    await page.goto('/media');
-    await page.waitForLoadState('networkidle');
+    const mediaTime = await loadPageWithTimer(page, '/media');
     await takeScreenshot(page, '05-media');
+    console.log(`   ⏱️  Temps de chargement: ${mediaTime}ms`);
     console.log('✅ Capture effectuée\n');
   });
 
   test('capture auth pages', async ({ page }) => {
+    console.log('\n🔐 === CAPTURE DES PAGES D\'AUTHENTIFICATION ===\n');
+    
     // LOGIN
-    await page.goto('/login');
-    await page.waitForLoadState('networkidle');
+    console.log('🔓 Connexion');
+    const loginTime = await loadPageWithTimer(page, '/login');
     await takeScreenshot(page, '20-login');
+    console.log(`   ⏱️  Temps de chargement: ${loginTime}ms\n`);
 
     // REGISTER
-    await page.goto('/register');
-    await page.waitForLoadState('networkidle');
+    console.log('📝 Inscription');
+    const registerTime = await loadPageWithTimer(page, '/register');
     await takeScreenshot(page, '21-register');
+    console.log(`   ⏱️  Temps de chargement: ${registerTime}ms\n`);
 
     // FORGOT PASSWORD
-    await page.goto('/forgot-password');
-    await page.waitForLoadState('networkidle');
+    console.log('🔑 Mot de passe oublié');
+    const forgotTime = await loadPageWithTimer(page, '/forgot-password');
     await takeScreenshot(page, '22-forgot-password');
+    console.log(`   ⏱️  Temps de chargement: ${forgotTime}ms\n`);
 
     // UNAUTHORIZED
-    await page.goto('/unauthorized');
-    await page.waitForLoadState('networkidle');
+    console.log('❌ Non autorisé');
+    const unauthorizedTime = await loadPageWithTimer(page, '/unauthorized');
     await takeScreenshot(page, '23-unauthorized');
+    console.log(`   ⏱️  Temps de chargement: ${unauthorizedTime}ms\n`);
 
     // FORBIDDEN
-    await page.goto('/forbidden');
-    await page.waitForLoadState('networkidle');
+    console.log('🚫 Accès interdit');
+    const forbiddenTime = await loadPageWithTimer(page, '/forbidden');
     await takeScreenshot(page, '24-forbidden');
+    console.log(`   ⏱️  Temps de chargement: ${forbiddenTime}ms\n`);
   });
 
   test('capture registration pages', async ({ page }) => {
+    console.log('\n📋 === CAPTURE DES PAGES D\'INSCRIPTION ===\n');
+    
     // VISITOR FREE REGISTRATION
-    await page.goto('/visitor/register/free');
-    await page.waitForLoadState('networkidle');
+    console.log('👤 Inscription Visiteur Gratuit');
+    const time1 = await loadPageWithTimer(page, '/visitor/register/free');
     await takeScreenshot(page, '30-visitor-free-registration');
+    console.log(`   ⏱️  Temps de chargement: ${time1}ms\n`);
 
     // VISITOR VIP REGISTRATION
-    await page.goto('/visitor/register/vip');
-    await page.waitForLoadState('networkidle');
+    console.log('👑 Inscription Visiteur VIP');
+    const time2 = await loadPageWithTimer(page, '/visitor/register/vip');
     await takeScreenshot(page, '31-visitor-vip-registration');
+    console.log(`   ⏱️  Temps de chargement: ${time2}ms\n`);
 
     // EXHIBITOR REGISTRATION
-    await page.goto('/register/exhibitor');
-    await page.waitForLoadState('networkidle');
+    console.log('🏢 Inscription Exposant');
+    const time3 = await loadPageWithTimer(page, '/register/exhibitor');
     await takeScreenshot(page, '32-exhibitor-registration');
+    console.log(`   ⏱️  Temps de chargement: ${time3}ms\n`);
 
     // PARTNER REGISTRATION
-    await page.goto('/register/partner');
-    await page.waitForLoadState('networkidle');
+    console.log('🤝 Inscription Partenaire');
+    const time4 = await loadPageWithTimer(page, '/register/partner');
     await takeScreenshot(page, '33-partner-registration');
+    console.log(`   ⏱️  Temps de chargement: ${time4}ms\n`);
 
     // VISITOR SUBSCRIPTION
-    await page.goto('/visitor/subscription');
-    await page.waitForLoadState('networkidle');
+    console.log('💳 Abonnement Visiteur');
+    const time5 = await loadPageWithTimer(page, '/visitor/subscription');
     await takeScreenshot(page, '34-visitor-subscription');
+    console.log(`   ⏱️  Temps de chargement: ${time5}ms\n`);
 
     // PARTNER UPGRADE
-    await page.goto('/partner/upgrade');
-    await page.waitForLoadState('networkidle');
+    console.log('⬆️  Mise à jour Partenaire');
+    const time6 = await loadPageWithTimer(page, '/partner/upgrade');
     await takeScreenshot(page, '35-partner-upgrade');
+    console.log(`   ⏱️  Temps de chargement: ${time6}ms\n`);
   });
 
   test('capture media pages avec descriptions', async ({ page }) => {
@@ -378,73 +394,79 @@ test.describe('🏛️ PAGES PUBLIQUES ET INFORMATIONS - Présentation SIPORT', 
     console.log('🎓 Webinaires');
     console.log('   📝 ' + mediaDescriptions['40-webinars'].description);
     console.log('   ✨ Éléments clés: ' + mediaDescriptions['40-webinars'].features.join(', '));
-    await page.goto('/media/webinars');
-    await page.waitForLoadState('networkidle');
+    const time1 = await loadPageWithTimer(page, '/media/webinars');
     await takeScreenshot(page, '40-webinars');
-    console.log('');
+    console.log(`   ⏱️  Temps de chargement: ${time1}ms\n`);
 
     // PODCASTS
     console.log('🎙️  Podcasts');
     console.log('   📝 ' + mediaDescriptions['41-podcasts'].description);
     console.log('   ✨ Éléments clés: ' + mediaDescriptions['41-podcasts'].features.join(', '));
-    await page.goto('/media/podcasts');
-    await page.waitForLoadState('networkidle');
+    const time2 = await loadPageWithTimer(page, '/media/podcasts');
     await takeScreenshot(page, '41-podcasts');
-    console.log('');
+    console.log(`   ⏱️  Temps de chargement: ${time2}ms\n`);
 
     // INSIDE SIPORT
     console.log('🎬 Inside SIPORT - Coulisses');
     console.log('   📝 ' + mediaDescriptions['42-inside-siport'].description);
     console.log('   ✨ Éléments clés: ' + mediaDescriptions['42-inside-siport'].features.join(', '));
-    await page.goto('/media/inside-siport');
-    await page.waitForLoadState('networkidle');
+    const time3 = await loadPageWithTimer(page, '/media/inside-siport');
     await takeScreenshot(page, '42-inside-siport');
-    console.log('');
+    console.log(`   ⏱️  Temps de chargement: ${time3}ms\n`);
 
     // TESTIMONIALS
     console.log('💬 Témoignages');
     console.log('   📝 ' + mediaDescriptions['43-testimonials'].description);
     console.log('   ✨ Éléments clés: ' + mediaDescriptions['43-testimonials'].features.join(', '));
-    await page.goto('/media/testimonials');
-    await page.waitForLoadState('networkidle');
+    const time4 = await loadPageWithTimer(page, '/media/testimonials');
     await takeScreenshot(page, '43-testimonials');
-    console.log('');
+    console.log(`   ⏱️  Temps de chargement: ${time4}ms\n`);
 
     // BEST MOMENTS
     console.log('✨ Meilleurs Moments');
     console.log('   📝 ' + mediaDescriptions['44-best-moments'].description);
     console.log('   ✨ Éléments clés: ' + mediaDescriptions['44-best-moments'].features.join(', '));
-    await page.goto('/media/best-moments');
-    await page.waitForLoadState('networkidle');
+    const time5 = await loadPageWithTimer(page, '/media/best-moments');
     await takeScreenshot(page, '44-best-moments');
-    console.log('\n✅ Ressources médias capturées avec succès!\n');
+    console.log(`   ⏱️  Temps de chargement: ${time5}ms\n`);
+    
+    const avgTime = Math.round((time1 + time2 + time3 + time4 + time5) / 5);
+    console.log(`📊 Temps moyen des ressources médias: ${avgTime}ms`);
+    console.log('✅ Ressources médias capturées avec succès!\n');
   });
 
   test('capture other important pages', async ({ page }) => {
+    console.log('\n⭐ === CAPTURE D\'AUTRES PAGES IMPORTANTES ===\n');
+    
     // BADGE
-    await page.goto('/badge');
-    await page.waitForLoadState('networkidle');
+    console.log('🎫 Badge');
+    const time1 = await loadPageWithTimer(page, '/badge');
     await takeScreenshot(page, '50-badge');
+    console.log(`   ⏱️  Temps de chargement: ${time1}ms\n`);
 
     // BADGE DIGITAL
-    await page.goto('/badge/digital');
-    await page.waitForLoadState('networkidle');
+    console.log('📱 Badge Numérique');
+    const time2 = await loadPageWithTimer(page, '/badge/digital');
     await takeScreenshot(page, '51-badge-digital');
+    console.log(`   ⏱️  Temps de chargement: ${time2}ms\n`);
 
     // BADGE SCANNER
-    await page.goto('/badge/scanner');
-    await page.waitForLoadState('networkidle');
+    console.log('📱 Lecteur de Badge');
+    const time3 = await loadPageWithTimer(page, '/badge/scanner');
     await takeScreenshot(page, '52-badge-scanner');
+    console.log(`   ⏱️  Temps de chargement: ${time3}ms\n`);
 
     // AVAILABILITY SETTINGS
-    await page.goto('/availability/settings');
-    await page.waitForLoadState('networkidle');
+    console.log('⚙️  Paramètres de Disponibilité');
+    const time4 = await loadPageWithTimer(page, '/availability/settings');
     await takeScreenshot(page, '53-availability-settings');
+    console.log(`   ⏱️  Temps de chargement: ${time4}ms\n`);
 
     // API PAGE
-    await page.goto('/api');
-    await page.waitForLoadState('networkidle');
+    console.log('🔌 API');
+    const time5 = await loadPageWithTimer(page, '/api');
     await takeScreenshot(page, '54-api');
+    console.log(`   ⏱️  Temps de chargement: ${time5}ms\n`);
   });
 });
 

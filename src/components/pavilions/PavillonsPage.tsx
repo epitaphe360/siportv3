@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import { useTranslation } from '../../hooks/useTranslation';
 import {
   Building2,
   Users,
@@ -322,6 +323,8 @@ const pavilions: Pavilion[] = [
 ];
 
 export default function PavillonsPage() {
+  const { t } = useTranslation();
+  
   // Handler functions for pavilion actions
   const handleVirtualTour = (pavilion: Pavilion) => {
     // TODO: Implement real virtual tour navigation or modal
