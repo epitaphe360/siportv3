@@ -165,7 +165,10 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
                       Modifier les informations
                     </Button>
                     <Button
-                      onClick={onConfirm}
+                      onClick={() => {
+                        console.log('🔴 PreviewModal: Bouton "Confirmer et envoyer" cliqué!');
+                        onConfirm();
+                      }}
                       disabled={isLoading}
                       className="min-w-[200px]"
                     >

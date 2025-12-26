@@ -89,6 +89,13 @@ export default function ExhibitorSignUpPage() {
     mode: 'onChange',
   });
 
+  // Debug: Log validation errors quand ils changent
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      console.log('🔴 Erreurs de validation:', errors);
+    }
+  }, [errors]);
+
   const watchedFields = watch();
   
   // Auto-save functionality
@@ -174,10 +181,12 @@ export default function ExhibitorSignUpPage() {
   };
 
   const handlePreviewSubmit = () => {
+    console.log('🟡 handlePreviewSubmit: Ouverture preview modal');
     setShowPreview(true);
   };
 
   const onSubmit: SubmitHandler<ExhibitorSignUpFormValues> = async (data) => {
+    console.log('🟢 onSubmit APPELÉ! Données:', { email: data.email, firstName: data.firstName, company: data.companyName });
     setIsLoading(true);
     const { email, password, confirmPassword, acceptTerms, acceptPrivacy, sectors, standArea, subscriptionLevel, subscriptionPrice, ...profileData } = data;
 
