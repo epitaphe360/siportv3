@@ -50,6 +50,7 @@ const UserManagementPage = lazyRetry(() => import('./pages/UserManagementPage'))
 const ExhibitorSignUpPage = lazyRetry(() => import('./pages/auth/ExhibitorSignUpPage'));
 const PartnerSignUpPage = lazyRetry(() => import('./pages/auth/PartnerSignUpPage'));
 const SignUpSuccessPage = lazyRetry(() => import('./pages/auth/SignUpSuccessPage'));
+const SignupConfirmationPage = lazyRetry(() => import('./pages/auth/SignupConfirmationPage'));
 const PendingAccountPage = lazyRetry(() => import('./pages/auth/PendingAccountPage'));
 const OAuthCallbackPage = lazyRetry(() => import('./pages/auth/OAuthCallbackPage'));
 const SubscriptionPage = lazyRetry(() => import('./pages/SubscriptionPage'));
@@ -188,6 +189,7 @@ const App = () => {
             <Route path={ROUTES.VISITOR_FREE_REGISTRATION} element={<VisitorFreeRegistration />} />
             <Route path={ROUTES.VISITOR_VIP_REGISTRATION} element={<VisitorVIPRegistration />} />
             <Route path={ROUTES.SIGNUP_SUCCESS} element={<SignUpSuccessPage />} />
+            <Route path={ROUTES.SIGNUP_CONFIRMATION} element={<SignupConfirmationPage />} />
             <Route path={ROUTES.PENDING_ACCOUNT} element={<PendingAccountPage />} />
             <Route path={ROUTES.OAUTH_CALLBACK} element={<OAuthCallbackPage />} />
             <Route path={ROUTES.VISITOR_SUBSCRIPTION} element={<SubscriptionPage />} />

@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+﻿import { test, expect, Page } from '@playwright/test';
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:9323';
 
@@ -52,11 +52,11 @@ test.describe('👑 VISITEUR VIP - INSCRIPTION COMPLÈTE', () => {
   test.describe('Formulaire d\'inscription VIP', () => {
 
     test('VIP-REG-01: Page inscription VIP accessible', async ({ page }) => {
-      await page.goto(`${BASE_URL}/visitor/vip-registration`);
+      await page.goto(`${BASE_URL}/visitor/register/vip`);
       await page.waitForLoadState('domcontentloaded');
 
       // Vérifier titre et éléments de la page
-      const hasVipTitle = await page.locator('text=/VIP|Premium|700/i').isVisible({ timeout: 5000 });
+      const hasVipTitle = await page.getByText(/VIP|Premium|700/i).first().isVisible({ timeout: 5000 }).catch(() => false);
       expect(hasVipTitle).toBe(true);
 
       // Vérifier présence du formulaire
@@ -67,7 +67,7 @@ test.describe('👑 VISITEUR VIP - INSCRIPTION COMPLÈTE', () => {
     });
 
     test('VIP-REG-02: Tous les champs du formulaire sont présents', async ({ page }) => {
-      await page.goto(`${BASE_URL}/visitor/vip-registration`);
+      await page.goto(`${BASE_URL}/visitor/register/vip`);
       await page.waitForLoadState('domcontentloaded');
 
       // Vérifier champs obligatoires
@@ -94,7 +94,7 @@ test.describe('👑 VISITEUR VIP - INSCRIPTION COMPLÈTE', () => {
     });
 
     test('VIP-REG-03: Validation mot de passe fort', async ({ page }) => {
-      await page.goto(`${BASE_URL}/visitor/vip-registration`);
+      await page.goto(`${BASE_URL}/visitor/register/vip`);
       await page.waitForLoadState('domcontentloaded');
 
       const passwordInput = page.locator('input[type="password"]').first();
@@ -115,7 +115,7 @@ test.describe('👑 VISITEUR VIP - INSCRIPTION COMPLÈTE', () => {
     });
 
     test('VIP-REG-04: Validation email', async ({ page }) => {
-      await page.goto(`${BASE_URL}/visitor/vip-registration`);
+      await page.goto(`${BASE_URL}/visitor/register/vip`);
       await page.waitForLoadState('domcontentloaded');
 
       const emailInput = page.locator('input[type="email"]').first();
@@ -135,7 +135,7 @@ test.describe('👑 VISITEUR VIP - INSCRIPTION COMPLÈTE', () => {
     });
 
     test('VIP-REG-05: Upload photo obligatoire', async ({ page }) => {
-      await page.goto(`${BASE_URL}/visitor/vip-registration`);
+      await page.goto(`${BASE_URL}/visitor/register/vip`);
       await page.waitForLoadState('domcontentloaded');
 
       // Vérifier que l'upload photo est présent
@@ -153,7 +153,7 @@ test.describe('👑 VISITEUR VIP - INSCRIPTION COMPLÈTE', () => {
     });
 
     test('VIP-REG-06: Affichage prix 700€', async ({ page }) => {
-      await page.goto(`${BASE_URL}/visitor/vip-registration`);
+      await page.goto(`${BASE_URL}/visitor/register/vip`);
       await page.waitForLoadState('domcontentloaded');
 
       // Vérifier affichage du prix
@@ -455,3 +455,4 @@ test.describe('🚪 VISITEUR VIP - DÉCONNEXION', () => {
   });
 
 });
+

@@ -656,9 +656,26 @@ export class SupabaseService {
       }
 
       // 1. Créer l'utilisateur dans Supabase Auth
+      console.log('📝 Tentative de création utilisateur:', { email, type: userData.type });
+      
       const { data: authData, error: authError } = await safeSupabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: undefined, // Désactiver l'email de confirmation
+          data: {
+            name: userData.name,
+            type: userData.type
+          }
+        }
+      });
+
+      console.log('📝 Réponse signUp:', { 
+        user: authData?.user?.id, 
+        email: authData?.user?.email,
+        confirmed: authData?.user?.email_confirmed_at,
+        session: !!authData?.session,
+        error: authError 
       });
 
       if (authError) {
@@ -668,6 +685,11 @@ export class SupabaseService {
       if (!authData.user) {
         console.error('❌ Aucun utilisateur retourné par Auth');
         return null;
+      }
+      
+      // ⚠️ Vérifier si l'email n'est pas confirmé
+      if (!authData.user.email_confirmed_at) {
+        console.warn('⚠️ Email non confirmé! Session:', authData.session ? 'OUI' : 'NON');
       }
 
 

@@ -222,8 +222,8 @@ export default function PartnerSignUpPage() {
       // Supprimer le brouillon après succès
       clearLocalStorage();
 
-      toast.success(t.title || 'Inscription réussie ! Consultez votre email pour les instructions de paiement.');
-      navigate(ROUTES.SIGNUP_SUCCESS);
+      toast.success(t.title || 'Inscription réussie ! Consultez votre email pour confirmer votre compte.');
+      navigate(`${ROUTES.SIGNUP_CONFIRMATION}?email=${encodeURIComponent(email)}&type=partner`);
     } catch (error) {
       console.error("Sign up error:", error);
       toast.error((error as Error).message || "Une erreur s'est produite lors de l'inscription.");

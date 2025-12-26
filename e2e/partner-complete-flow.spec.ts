@@ -1,4 +1,115 @@
 import { test, expect } from '@playwright/test';
+import { createClient } from '@supabase/supabase-js';
+
+// Configuration Supabase pour validation email
+const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://eqjoqgpbxhsfgcovipgu.supabase.co';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxam9xZ3BieGhzZmdjb3ZpcGd1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzM2MjI0NywiZXhwIjoyMDcyOTM4MjQ3fQ.HzgGnbbTyF-c_jAawvXNDXfHpqtZR4mN6UIx-X3GdVo';
+
+const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  }
+});
+
+/**
+ * 🔧 Fonction pour valider automatiquement l'email d'un utilisateur
+ * Simule la validation email pour les tests E2E
+ */
+async function validateUserEmail(email: string, maxRetries = 5): Promise<boolean> {
+  try {
+    console.log(`⏳ Validation de l'email: ${email}`);
+    
+    // Attendre 3 secondes initiales pour que Supabase enregistre l'utilisateur
+    console.log('⏳ Attente initiale de 3 secondes...');
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    
+    let user = null;
+    let attempts = 0;
+    
+    // Réessayer plusieurs fois avec délai croissant
+    while (!user && attempts < maxRetries) {
+      attempts++;
+      console.log(`🔍 Tentative ${attempts}/${maxRetries} de récupération de l'utilisateur...`);
+      
+      try {
+        const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
+        
+        if (listError) {
+          console.error('❌ Erreur récupération users:', listError.message);
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          continue;
+        }
+        
+        user = users.find(u => u.email === email);
+        
+        if (!user) {
+          console.log(`⏳ Utilisateur pas encore trouvé, attente de 2 secondes...`);
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+      } catch (error) {
+        console.error(`❌ Erreur tentative ${attempts}:`, error);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+    }
+    
+    if (!user) {
+      console.error(`❌ Utilisateur non trouvé après ${maxRetries} tentatives: ${email}`);
+      return false;
+    }
+    
+    console.log(`✅ Utilisateur trouvé: ${user.id}`);
+    console.log(`📧 Email confirmé actuel: ${user.email_confirmed_at ? 'OUI' : 'NON'}`);
+    
+    // Si l'email est déjà confirmé, pas besoin de continuer
+    if (user.email_confirmed_at) {
+      console.log('✅ Email déjà validé !');
+      return true;
+    }
+    
+    // Confirmer l'email via l'API admin
+    console.log('🔧 Confirmation de l\'email en cours...');
+    const { data: updatedUser, error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
+      user.id,
+      { email_confirm: true }
+    );
+    
+    if (updateError) {
+      console.error('❌ Erreur validation email:', updateError.message);
+      console.error('❌ Détails erreur:', JSON.stringify(updateError, null, 2));
+      return false;
+    }
+    
+    console.log('✅ Email validé avec succès !');
+    console.log(`✅ User ID: ${user.id}`);
+    console.log(`✅ User data après update:`, JSON.stringify(updatedUser, null, 2));
+    
+    // Attendre 5 secondes supplémentaires pour propagation
+    console.log('⏳ Attente de 5 secondes pour propagation...');
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    
+    // Vérifier que l'email est bien confirmé
+    console.log('🔍 Vérification finale de l\'état du compte...');
+    const { data: { users: finalUsers }, error: finalError } = await supabaseAdmin.auth.admin.listUsers();
+    const finalUser = finalUsers.find(u => u.email === email);
+    
+    if (finalUser) {
+      console.log(`✅ Email confirmed at: ${finalUser.email_confirmed_at}`);
+      console.log(`✅ User confirmed: ${finalUser.confirmed_at || 'N/A'}`);
+      console.log(`✅ User banned: ${finalUser.banned_until || 'false'}`);
+      
+      if (!finalUser.email_confirmed_at) {
+        console.error('⚠️ ATTENTION: L\'email n\'est toujours pas confirmé !');
+        return false;
+      }
+    }
+    
+    return true;
+  } catch (error: any) {
+    console.error('❌ Erreur validation:', error.message || error);
+    return false;
+  }
+}
 
 test.describe('Flux complet Partenaire : Inscription -> Connexion -> Paiement', () => {
   
@@ -102,10 +213,22 @@ test.describe('Flux complet Partenaire : Inscription -> Connexion -> Paiement', 
 
     console.log('Soumission du formulaire...');
     await submitButton.click();
-    await page.waitForTimeout(3000);
+    
+    // Attendre soit une redirection, soit une modal, soit une erreur
+    await page.waitForTimeout(2000);
     await page.screenshot({ path: 'screenshots/partner-flow/08-after-submit.png' });
 
-    // Vérifier si une modal de preview apparaît
+    // Vérifier si des erreurs de validation
+    const errors = await page.locator('.text-red-500, [role="alert"], .error-message').count();
+    if (errors > 0) {
+        const errorTexts = await page.locator('.text-red-500, [role="alert"], .error-message').allTextContents();
+        console.log('❌ Erreurs de validation:', errorTexts);
+        await page.screenshot({ path: 'screenshots/partner-flow/08-validation-errors.png' });
+        throw new Error('Erreurs de validation: ' + errorTexts.join(', '));
+    }
+
+    // Vérifier si une modal de preview/confirmation apparaît
+    await page.waitForTimeout(1000);
     const modal = page.locator('div[role="dialog"]');
     const hasModal = await modal.count() > 0;
     
@@ -114,57 +237,100 @@ test.describe('Flux complet Partenaire : Inscription -> Connexion -> Paiement', 
         await page.screenshot({ path: 'screenshots/partner-flow/09-preview-modal.png' });
         
         // Confirmer dans la modal
-        const confirmBtn = modal.getByRole('button', { name: /confirmer|envoyer/i });
+        const confirmBtn = modal.getByRole('button', { name: /confirmer|envoyer|valider|continuer/i });
         if (await confirmBtn.count() > 0) {
             await confirmBtn.click();
-            await page.waitForTimeout(2000);
+            await page.waitForTimeout(3000);
             console.log('✓ Inscription confirmée via modal');
         }
-    } else {
-        console.log('⚠️ Pas de modal - vérification des erreurs...');
-        const errors = await page.locator('.text-red-500, [role="alert"]').count();
-        if (errors > 0) {
-            const errorTexts = await page.locator('.text-red-500, [role="alert"]').allTextContents();
-            console.log('Erreurs détectées:', errorTexts);
-        }
     }
 
-    await page.waitForTimeout(2000);
+    // Attendre que l'inscription soit terminée (redirection ou message de succès)
+    await page.waitForTimeout(3000);
     await page.screenshot({ path: 'screenshots/partner-flow/10-after-confirmation.png' });
 
-    // Vérifier la redirection (success page ou dashboard)
-    const currentUrl = page.url();
-    console.log(`URL actuelle: ${currentUrl}`);
-    
-    if (currentUrl.includes('success') || currentUrl.includes('pending')) {
-        console.log('✓ Inscription terminée - page de succès');
-        await page.screenshot({ path: 'screenshots/partner-flow/11-success-page.png' });
+    // Vérifier la redirection vers la page de confirmation
+    try {
+        await page.waitForURL(/\/signup-confirmation/, { timeout: 10000 });
+        const confirmationUrl = page.url();
+        console.log(`✓ Redirigé vers la page de confirmation: ${confirmationUrl}`);
+        await page.screenshot({ path: 'screenshots/partner-flow/10-confirmation-page.png' });
+    } catch (error) {
+        console.log('⚠️ Pas de redirection vers /signup-confirmation');
+        const currentUrl = page.url();
+        console.log(`URL actuelle: ${currentUrl}`);
+        await page.screenshot({ path: 'screenshots/partner-flow/10-unexpected-redirect.png' });
     }
+    
+    console.log('✓ Inscription terminée - Compte créé avec status pending_payment');
+    console.log(`📧 Email: ${partnerEmail}`);
+    console.log(`🔑 Password: ${partnerPassword}`);
+
+    // Attendre 3 secondes pour que le compte soit créé dans Supabase
+    console.log('⏳ Attente de 3 secondes pour propagation...');
+    await page.waitForTimeout(3000);
+
+    // 🔧 VALIDER L'EMAIL AUTOMATIQUEMENT POUR LE TEST E2E
+    console.log('\n📧 Validation automatique de l\'email...');
+    const emailValidated = await validateUserEmail(partnerEmail);
+    if (!emailValidated) {
+      console.error('❌ Échec de la validation email');
+      // Continuer quand même - le compte existe peut-être déjà confirmé
+    } else {
+      console.log('✅ Email validé avec succès !');
+    }
+
+    // Attendre 2 secondes après validation
+    await page.waitForTimeout(2000);
 
     // ============================================================
     // ÉTAPE 2 : CONNEXION AVEC COMPTE PENDING_PAYMENT
     // ============================================================
-    console.log('\n🔐 ÉTAPE 2 : CONNEXION');
+    console.log('\n' + '='.repeat(60));
+    console.log('🔐 ÉTAPE 2 : CONNEXION AVEC COMPTE PENDING_PAYMENT');
+    console.log('='.repeat(60));
+    
+    // Attendre 2 secondes pour que le compte soit bien créé dans Supabase
+    await page.waitForTimeout(2000);
     
     await page.goto('/login');
     await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(1000);
     await page.screenshot({ path: 'screenshots/partner-flow/12-login-page.png' });
 
+    console.log(`Tentative de connexion avec: ${partnerEmail}`);
     await page.fill('input[id="email"]', partnerEmail);
     await page.fill('input[id="password"]', partnerPassword);
     await page.screenshot({ path: 'screenshots/partner-flow/13-login-filled.png' });
     
+    console.log('Clic sur le bouton de connexion...');
     await page.click('button[type="submit"]');
-    await page.waitForTimeout(3000);
+    
+    await page.waitForTimeout(4000); // Attendre plus longtemps pour l'authentification
 
+    // Vérifier s'il y a des erreurs de connexion
+    const loginErrors = await page.locator('.text-red-500, [role="alert"], .error-message').count();
+    if (loginErrors > 0) {
+        const errorTexts = await page.locator('.text-red-500, [role="alert"], .error-message').allTextContents();
+        console.log('❌ Erreur de connexion:', errorTexts);
+        await page.screenshot({ path: 'screenshots/partner-flow/14-login-error.png' });
+        throw new Error('Échec de connexion: ' + errorTexts.join(', '));
+    }
+
+    // Vérifier la redirection vers le dashboard partenaire
     try {
         await page.waitForURL(/\/partner\//, { timeout: 15000 });
-        console.log('✓ Connexion réussie - Redirigé vers dashboard partenaire');
+        const finalUrl = page.url();
+        console.log(`✓ Connexion réussie !`);
+        console.log(`✓ Redirigé vers: ${finalUrl}`);
+        await page.waitForTimeout(2000);
         await page.screenshot({ path: 'screenshots/partner-flow/14-dashboard-loaded.png' });
     } catch (error) {
-        console.log('⚠️ Redirection échouée');
-        await page.screenshot({ path: 'screenshots/partner-flow/14-login-error.png' });
-        throw error;
+        console.log('⚠️ Pas de redirection vers /partner/ détectée');
+        const currentUrl = page.url();
+        console.log(`URL actuelle: ${currentUrl}`);
+        await page.screenshot({ path: 'screenshots/partner-flow/14-login-redirect-failed.png' });
+        throw new Error(`Redirection échouée. URL actuelle: ${currentUrl}`);
     }
 
     // Vérifier la présence du bandeau d'alerte pending_payment

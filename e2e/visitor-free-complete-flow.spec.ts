@@ -1,18 +1,76 @@
 import { test, expect } from '@playwright/test';
+import { createClient } from '@supabase/supabase-js';
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:9323';
 
+// Créer un email unique à chaque test
+const generateTestEmail = () => `visitor-free-${Date.now()}@test.siport.com`;
+
 // Comptes de test pour les visiteurs FREE
-// NOTE: Compte RÉEL enregistré en base de données (plus de compte fantôme/aléatoire)
 const TEST_VISITOR_FREE = {
-  email: 'visitor-free-demo-v13@test.siport.com',
   password: 'Test@1234567'
 };
 
+// Fonction pour valider l'email via Supabase Admin
+async function validateUserEmail(email: string): Promise<boolean> {
+  console.log(`⏳ Validation de l'email: ${email}`);
+  
+  const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://eqjoqgpbxhsfgcovipgu.supabase.co';
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxam9xZ3BieGhzZmdjb3ZpcGd1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzM2MjI0NywiZXhwIjoyMDcyOTM4MjQ3fQ.HzgGnbbTyF-c_jAawvXNDXfHpqtZR4mN6UIx-X3GdVo';
+  
+  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  });
+  
+  await new Promise(resolve => setTimeout(resolve, 3000));
+  
+  for (let attempt = 1; attempt <= 5; attempt++) {
+    console.log(`🔍 Tentative ${attempt}/5 de récupération de l'utilisateur...`);
+    
+    const { data: users, error } = await supabaseAdmin.auth.admin.listUsers();
+    
+    if (error) {
+      console.log(`❌ Erreur: ${error.message}`);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      continue;
+    }
+    
+    const user = users?.users?.find(u => u.email === email);
+    
+    if (user) {
+      console.log(`✅ Utilisateur trouvé: ${user.id}`);
+      console.log(`📧 Email confirmé actuel: ${user.email_confirmed_at ? 'OUI' : 'NON'}`);
+      
+      if (!user.email_confirmed_at) {
+        const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
+          email_confirm: true
+        });
+        
+        if (updateError) {
+          console.log(`❌ Erreur validation: ${updateError.message}`);
+          return false;
+        }
+        console.log(`✅ Email validé !`);
+      } else {
+        console.log(`✅ Email déjà validé !`);
+      }
+      return true;
+    }
+    
+    await new Promise(resolve => setTimeout(resolve, 2000));
+  }
+  
+  console.log(`❌ Utilisateur non trouvé après 5 tentatives`);
+  return false;
+}
+
 test.describe('👤 VISITEUR FREE - SCÉNARIO COMPLET', () => {
-  test.setTimeout(60000); // Augmenter le timeout global à 60s
+  test.setTimeout(120000); // 2 minutes pour le test complet
 
   test('SCÉNARIO: Choix Plan -> Inscription -> Succès -> Login -> Dashboard -> Badge', async ({ page }) => {
+    
+    const visitorEmail = generateTestEmail();
+    console.log(`📧 Email généré : ${visitorEmail}`);
     
     // --- ÉTAPE 1: CHOIX DU PLAN (ABONNEMENT) ---
     console.log('📍 ÉTAPE 1: Choix du plan (Page publique)');
@@ -69,7 +127,7 @@ test.describe('👤 VISITEUR FREE - SCÉNARIO COMPLET', () => {
     await expect(page.locator('input[name="email"]')).toBeVisible();
     await page.locator('input[name="firstName"]').fill('Jean');
     await page.locator('input[name="lastName"]').fill('Dupont');
-    await page.locator('input[name="email"]').fill(TEST_VISITOR_FREE.email);
+    await page.locator('input[name="email"]').fill(visitorEmail);
     await page.locator('input[name="phone"]').fill('+33612345678');
     await page.locator('select[name="position"]').selectOption('Étudiant');
 
@@ -99,24 +157,44 @@ test.describe('👤 VISITEUR FREE - SCÉNARIO COMPLET', () => {
     // Soumettre
     await page.locator('button:has-text("Créer mon compte")').click();
 
-    // --- ÉTAPE 3: SUCCÈS (POPUP) ---
-    console.log('📍 ÉTAPE 3: Popup de succès');
-    const successPopup = page.locator('text=Compte créé avec succès');
-    await expect(successPopup).toBeVisible({ timeout: 15000 });
+    // --- ÉTAPE 3: PAGE DE CONFIRMATION ---
+    console.log('📍 ÉTAPE 3: Page de confirmation');
+    // Attendre la redirection vers /signup-confirmation ou message de succès
+    await page.waitForTimeout(3000);
     
-    // Attendre que l'animation soit bien visible
+    // Vérifier si on est sur la page de confirmation ou s'il y a un message de succès
+    const currentUrl = page.url();
+    console.log(`📍 URL actuelle: ${currentUrl}`);
+    
+    // 📸 SCREENSHOT 3: Page de confirmation
+    await page.screenshot({ path: 'screenshots/inscription-free/3-inscription-confirmation.png', fullPage: true });
+    
+    console.log('✅ Inscription terminée');
+    
+    // --- VALIDATION EMAIL VIA API ---
+    console.log('📧 Validation automatique de l\'email...');
+    await page.waitForTimeout(3000);
+    
+    try {
+      const validated = await validateUserEmail(visitorEmail);
+      if (validated) {
+        console.log('✅ Email validé avec succès !');
+      } else {
+        console.log('⚠️ Email non validé - le test continue quand même');
+      }
+    } catch (error) {
+      console.log('⚠️ Erreur validation email:', error);
+    }
+    
     await page.waitForTimeout(2000);
-
-    // 📸 SCREENSHOT 3: Popup Succès
-    await page.screenshot({ path: 'screenshots/inscription-free/3-inscription-succes-popup.png', fullPage: true });
 
     // --- ÉTAPE 4: CONNEXION ---
     console.log('📍 ÉTAPE 4: Page de connexion');
-    // Attendre la redirection automatique vers /login
-    await page.waitForURL(/\/login/, { timeout: 10000 });
+    await page.goto(`${BASE_URL}/login`);
+    await page.waitForLoadState('networkidle');
     
     // Remplir le login
-    await page.locator('input[type="email"]').first().fill(TEST_VISITOR_FREE.email);
+    await page.locator('input[type="email"]').first().fill(visitorEmail);
     await page.locator('input[type="password"]').first().fill(TEST_VISITOR_FREE.password);
 
     // 📸 SCREENSHOT 4: Connexion

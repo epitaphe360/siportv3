@@ -455,7 +455,14 @@ export default function PartnerBankTransferPage() {
         {paymentRequest?.status === 'pending' && !paymentRequest.transfer_reference && (
           <Card className="p-6 mb-6">
             <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-              <UplJustificatif de virement <span className="text-red-500">*</span>
+              <Upload className="h-6 w-6 mr-2 text-blue-600" />
+              Soumettre votre preuve de paiement
+            </h3>
+
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="proof-upload" className="block text-sm font-medium text-gray-700 mb-2">
+                  Justificatif de virement <span className="text-red-500">*</span>
                 </label>
                 
                 {/* File Upload */}
@@ -521,30 +528,7 @@ export default function PartnerBankTransferPage() {
 
               <Button
                 onClick={handleSubmitProof}
-                disabled={uploading || !transferReference.trim() || (!selectedFile && !proofUrl.trim()
-                  Indiquez le numéro de référence ou de transaction fourni par votre banque
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  URL du justificatif (optionnel)
-                </label>
-                <input
-                  type="url"
-                  value={proofUrl}
-                  onChange={(e) => setProofUrl(e.target.value)}
-                  placeholder="https://... (lien vers Google Drive, Dropbox, etc.)"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Hébergez votre justificatif (PDF ou image) sur un service cloud et collez le lien ici
-                </p>
-              </div>
-
-              <Button
-                onClick={handleSubmitProof}
-                disabled={uploading || !transferReference.trim()}
+                disabled={uploading || !transferReference.trim() || (!selectedFile && !proofUrl.trim())}
                 className="w-full"
                 size="lg"
               >

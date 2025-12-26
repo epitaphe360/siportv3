@@ -71,6 +71,9 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
                 transition={{ duration: 0.2 }}
                 className="w-full max-w-3xl"
                 onClick={(e) => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="preview-modal-title"
               >
                 <Card className="relative">
                   {/* Header */}

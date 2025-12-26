@@ -171,15 +171,21 @@ const useAuthStore = create<AuthState>()(
       // Créer demande d'inscription pour exposants et partenaires
       if (profileData.role === 'exhibitor' || profileData.role === 'partner') {
 
-        await SupabaseService.createRegistrationRequest({
-          userType: profileData.role,
-          email: credentials.email,
-          firstName: profileData.firstName || '',
-          lastName: profileData.lastName || '',
-          companyName: profileData.companyName || profileData.company || '',
-          phone: profileData.phone || '',
-          profileData: profileData
-        });
+        // ✅ Ne pas bloquer l'inscription si la création de demande échoue (erreur RLS possible)
+        try {
+          await SupabaseService.createRegistrationRequest({
+            userType: profileData.role,
+            email: credentials.email,
+            firstName: profileData.firstName || '',
+            lastName: profileData.lastName || '',
+            companyName: profileData.companyName || profileData.company || '',
+            phone: profileData.phone || '',
+            profileData: profileData
+          });
+        } catch (regRequestError) {
+          console.warn('⚠️ Erreur création demande inscription (non bloquante):', regRequestError);
+          // Ne pas bloquer l'inscription - le compte est déjà créé
+        }
 
         // Envoyer email de notification
         try {
