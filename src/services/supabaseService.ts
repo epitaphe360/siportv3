@@ -1322,10 +1322,10 @@ export class SupabaseService {
         .from('mini_sites')
         .select('*')
         .eq('exhibitor_id', exhibitorId)
-        .single();
+        .maybeSingle();
 
       // Si pas trouvé, l'ID est peut-être l'exhibitor.id, donc chercher le user_id associé
-      if (error || !data) {
+      if (!data) {
         console.log('[MiniSite] Pas trouvé par exhibitor_id direct, recherche via exhibitors table...');
 
         // Chercher l'exhibitor pour obtenir son user_id
@@ -1333,7 +1333,7 @@ export class SupabaseService {
           .from('exhibitors')
           .select('user_id')
           .eq('id', exhibitorId)
-          .single();
+          .maybeSingle();
 
         if (exhibitor?.user_id) {
           // Chercher le mini-site avec le user_id de l'exposant
@@ -1341,7 +1341,7 @@ export class SupabaseService {
             .from('mini_sites')
             .select('*')
             .eq('exhibitor_id', exhibitor.user_id)
-            .single();
+            .maybeSingle();
 
           data = result.data;
           error = result.error;
@@ -1349,7 +1349,9 @@ export class SupabaseService {
       }
 
       if (error || !data) {
-        console.warn('Mini-site non trouvé:', error?.message || 'Aucune donnée');
+        if (error) {
+          console.warn('[MiniSite] Erreur:', error.message);
+        }
         return null;
       }
 
