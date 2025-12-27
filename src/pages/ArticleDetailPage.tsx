@@ -154,14 +154,14 @@ export default function ArticleDetailPage() {
       window.open(urls[platform as keyof typeof urls], '_blank', 'width=600,height=400');
     } else {
       navigator.clipboard.writeText(shareData.url);
-      toast.success('ðŸ”— Lien de l\'article copié dans le presse-papiers !');
+      toast.success('Lien de l\'article copié dans le presse-papiers !');
     }
   };
 
   const handleBookmark = () => {
   setIsBookmarked(!isBookmarked);
   const action = isBookmarked ? 'retiré des' : 'ajouté aux';
-  toast.success(`ðŸ“– Article ${action} favoris !`);
+  toast.success(`Article ${action} favoris !`);
   };
 
   const handleLike = () => {
@@ -174,7 +174,7 @@ export default function ArticleDetailPage() {
   };
 
   const handleDownloadPDF = () => {
-    toast('ðŸ“„ Génération du PDF en cours...', { icon: 'ðŸ“„' });
+    toast('Génération du PDF en cours...');
   };
 
   return (
@@ -504,9 +504,9 @@ export default function ArticleDetailPage() {
                   Expert en développement portuaire et innovation maritime. Contributeur régulier aux publications spécialisées du secteur.
                 </p>
                 <div className="flex items-center space-x-4 text-sm text-gray-500">
-                  <span>ðŸ“§ {article.author.toLowerCase().replace(' ', '.')}@siportevent.com</span>
-                  <span>ðŸ”— LinkedIn</span>
-                  <span>ðŸ“° 12 articles publiés</span>
+                  <span>{article.author.toLowerCase().replace(' ', '.')}@siportevent.com</span>
+                  <span>LinkedIn</span>
+                  <span>12 articles publiés</span>
                 </div>
               </div>
             </div>

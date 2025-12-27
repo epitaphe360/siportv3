@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { useTranslation } from '../../hooks/useTranslation';
 import { supabase } from '../../lib/supabase';
 import useAuthStore from '../../store/authStore';
@@ -254,10 +255,10 @@ export default function PaymentValidationPage() {
         }
       }
 
-      alert('✅ Paiement approuvé avec succès !');
+      toast.success('Paiement approuvé avec succès !');
       loadRequests();
     } catch (err: any) {
-      alert(`❌ Erreur: ${err.message}`);
+      toast.error(`Erreur: ${err.message}`);
     } finally {
       setProcessing(null);
     }
@@ -266,7 +267,7 @@ export default function PaymentValidationPage() {
   async function handleReject(requestId: string) {
     const notes = prompt('Raison du rejet (obligatoire):');
     if (!notes) {
-      alert('Veuillez indiquer une raison pour le rejet.');
+      toast.error('Veuillez indiquer une raison pour le rejet.');
       return;
     }
 
@@ -294,10 +295,10 @@ export default function PaymentValidationPage() {
         if (updateError) throw updateError;
       }
 
-      alert('✅ Demande rejetée.');
+      toast.success('Demande rejetée.');
       loadRequests();
     } catch (err: any) {
-      alert(`❌ Erreur: ${err.message}`);
+      toast.error(`Erreur: ${err.message}`);
     } finally {
       setProcessing(null);
     }

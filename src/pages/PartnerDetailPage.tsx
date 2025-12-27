@@ -588,8 +588,8 @@ export default function PartnerDetailPage() {
                           </div>
                         </div>
                         <div className="text-sm text-gray-600">
-                          <p>ðŸ“§ ahmed.mansouri@portcasablanca.ma</p>
-                          <p>ðŸ“± </p>
+                          <p> ahmed.mansouri@portcasablanca.ma</p>
+                          <p> </p>
                         </div>
                       </div>
                     </div>

@@ -97,7 +97,7 @@ export default function AvailabilitySettingsPage() {
         <Card className="p-6 mt-8 bg-green-50 border-green-200">
           <div className="flex items-start space-x-3">
             <div className="bg-green-100 p-2 rounded-lg">
-              <span className="text-2xl">ðŸ’¡</span>
+              <span className="text-2xl">
             </div>
             <div>
               <h3 className="font-semibold text-green-900 mb-2">

@@ -87,7 +87,7 @@ export default function RegistrationSuccessPage() {
               className="text-3xl font-bold text-center text-gray-900 mb-4"
             >
               {accountType === 'visitor'
-                ? 'ðŸŽ‰ Compte créé !'
+                ? ' Compte créé !'
                 : '✅ Inscription réussie !'}
             </motion.h1>
 

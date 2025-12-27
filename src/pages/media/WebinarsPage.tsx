@@ -262,13 +262,13 @@ export const WebinarsPage: React.FC = () => {
                       <p className="text-sm font-medium text-gray-700 mb-3">Intervenants:</p>
                       <div className="flex flex-wrap gap-3">
                         {filteredWebinars[0].speakers.map((speaker, idx) => (
-                          <div key={idx} className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow">
+                          <div key={`speaker-${idx}-${speaker?.name || 'unknown'}`} className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow">
                             <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
-                              {speaker.name.charAt(0)}
+                              {speaker?.name?.charAt(0) || 'S'}
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-gray-900">{speaker.name}</p>
-                              <p className="text-xs text-gray-600">{speaker.company}</p>
+                              <p className="text-sm font-medium text-gray-900">{speaker?.name || 'Intervenant'}</p>
+                              <p className="text-xs text-gray-600">{speaker?.company || ''}</p>
                             </div>
                           </div>
                         ))}

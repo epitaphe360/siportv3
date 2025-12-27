@@ -412,7 +412,7 @@ export default function PartnerBankTransferPage() {
         {/* Instructions Card */}
         <Card className="p-6 mb-6">
           <h3 className="text-xl font-bold text-gray-900 mb-4">
-            ðŸ“ {instructions.title}
+             {instructions.title}
           </h3>
 
           <div className="space-y-4">
@@ -607,7 +607,7 @@ export default function PartnerBankTransferPage() {
         {/* Support Contact */}
         <Card className="p-6 bg-gray-50">
           <h3 className="text-lg font-semibold text-gray-900 mb-3">
-            ðŸ’¡ Besoin d'aide ?
+             Besoin d'aide ?
           </h3>
           <div className="space-y-2 text-sm text-gray-700">
             <p>

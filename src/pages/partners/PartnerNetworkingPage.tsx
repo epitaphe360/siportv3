@@ -378,7 +378,7 @@ export const PartnerNetworkingPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 bg-white rounded-lg border border-purple-200">
                   <h4 className="font-medium text-purple-900 mb-2">
-                    ðŸŽ¯ Profils Prioritaires
+                     Profils Prioritaires
                   </h4>
                   <p className="text-sm text-purple-700">
                     3 contacts identifiés comme stratégiques pour vos objectifs business
@@ -387,7 +387,7 @@ export const PartnerNetworkingPage: React.FC = () => {
 
                 <div className="p-4 bg-white rounded-lg border border-purple-200">
                   <h4 className="font-medium text-purple-900 mb-2">
-                    ðŸ“ˆ Opportunités Sectorielles
+                     Opportunités Sectorielles
                   </h4>
                   <p className="text-sm text-purple-700">
                     Focus recommandé sur les secteurs Data & Technologie cette semaine

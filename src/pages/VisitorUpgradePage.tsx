@@ -49,19 +49,19 @@ const testimonials = [
     name: 'Ahmed Benali',
     role: 'Directeur Logistique, Port de Casablanca',
     content: 'Le Pass VIP a transformé ma participation. J\'ai obtenu 8 RDV stratégiques et signé 2 partenariats majeurs.',
-    avatar: 'ðŸ‘¨â€ðŸ’¼'
+    avatar: '
   },
   {
     name: 'Fatima El Amrani',
     role: 'CEO, Maritime Solutions',
     content: 'Les événements exclusifs VIP m\'ont permis de rencontrer les décideurs clés. ROI exceptionnel !',
-    avatar: 'ðŸ‘©â€ðŸ’¼'
+    avatar: '
   },
   {
     name: 'Jean-Pierre Dubois',
     role: 'Consultant Maritime',
     content: 'L\'accès au networking illimité vaut largement l\'investissement. Je recommande vivement.',
-    avatar: 'ðŸ‘¨â€ðŸ’¼'
+    avatar: '
   }
 ];
 
@@ -296,7 +296,7 @@ export default function VisitorUpgradePage() {
           <h2 className="text-3xl font-bold text-center mb-8">Questions fréquentes</h2>
           <div className="space-y-4">
             <Card className="p-6">
-              <h3 className="font-bold mb-2">ðŸ’³ Quels moyens de paiement acceptez-vous ?</h3>
+              <h3 className="font-bold mb-2"> Quels moyens de paiement acceptez-vous ?</h3>
               <p className="text-gray-600">Cartes bancaires (Visa, Mastercard), PayPal, et cartes marocaines (CMI).</p>
             </Card>
             <Card className="p-6">
@@ -304,7 +304,7 @@ export default function VisitorUpgradePage() {
               <p className="text-gray-600">Oui ! Votre compte est activé instantanément et vous recevez votre badge VIP par email.</p>
             </Card>
             <Card className="p-6">
-              <h3 className="font-bold mb-2">ðŸ”„ Puis-je annuler après paiement ?</h3>
+              <h3 className="font-bold mb-2"> Puis-je annuler après paiement ?</h3>
               <p className="text-gray-600">Remboursement complet possible jusqu'à 30 jours avant l'événement.</p>
             </Card>
           </div>

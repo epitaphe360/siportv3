@@ -67,19 +67,19 @@ export default function ContactSuccessPage() {
             </h2>
             <ul className="text-left space-y-3 text-gray-700">
               <li className="flex items-start">
-                <span className="text-blue-600 mr-2">âœ“</span>
+                <span className="text-blue-600 mr-2">✓</span>
                 <span>Votre message a été enregistré dans notre système{messageId ? ` (Réf: ${messageId.substring(0, 8)})` : ''}</span>
               </li>
               <li className="flex items-start">
-                <span className="text-blue-600 mr-2">âœ“</span>
+                <span className="text-blue-600 mr-2">✓</span>
                 <span>Vous recevrez une confirmation par email dans quelques instants</span>
               </li>
               <li className="flex items-start">
-                <span className="text-blue-600 mr-2">âœ“</span>
+                <span className="text-blue-600 mr-2">✓</span>
                 <span>Notre équipe vous répondra sous 24-48 heures ouvrées</span>
               </li>
               <li className="flex items-start">
-                <span className="text-blue-600 mr-2">âœ“</span>
+                <span className="text-blue-600 mr-2">✓</span>
                 <span>Vérifiez vos spams si vous ne recevez pas notre réponse</span>
               </li>
             </ul>

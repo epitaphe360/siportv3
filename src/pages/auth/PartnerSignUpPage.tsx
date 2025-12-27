@@ -186,7 +186,7 @@ export default function PartnerSignUpPage() {
     };
 
     try {
-      // ðŸ” Exécuter reCAPTCHA avant inscription
+      //  Exécuter reCAPTCHA avant inscription
       let recaptchaToken: string | undefined;
       if (isRecaptchaReady) {
         try {

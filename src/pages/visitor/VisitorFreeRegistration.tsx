@@ -254,7 +254,7 @@ export default function VisitorFreeRegistration() {
                   <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>
                 )}
                 <p className="text-xs text-gray-500 mt-1">
-                  ðŸ“§ Votre badge sera envoyé à cette adresse
+                   Votre badge sera envoyé à cette adresse
                 </p>
               </div>
 
@@ -389,7 +389,7 @@ export default function VisitorFreeRegistration() {
                   onClick={() => navigate(ROUTES.VISITOR_VIP_REGISTRATION)}
                   className="border-yellow-500 text-yellow-600 hover:bg-yellow-50"
                 >
-                  ðŸ‘‘ Passer au Pass VIP Premium
+                   Passer au Pass VIP Premium
                 </Button>
               </div>
             </form>

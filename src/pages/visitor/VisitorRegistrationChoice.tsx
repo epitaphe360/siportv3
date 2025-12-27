@@ -190,7 +190,7 @@ export default function VisitorRegistrationChoice() {
                 {/* Highlight */}
                 <div className="mt-4 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-300">
                   <p className="text-sm font-semibold text-gray-900 mb-2">
-                    ðŸŽ¯ Rendez-vous B2B ILLIMITÉS
+                     Rendez-vous B2B ILLIMITÉS
                   </p>
                   <p className="text-xs text-gray-700">
                     Planifiez autant de meetings stratégiques que vous le souhaitez avec les exposants et partenaires du salon.

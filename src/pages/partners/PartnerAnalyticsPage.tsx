@@ -236,9 +236,9 @@ export const PartnerAnalyticsPage: React.FC = () => {
                   <div key={month.month} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <span className="font-medium text-gray-900">{month.month}</span>
                     <div className="flex space-x-6 text-sm">
-                      <span className="text-blue-600">ðŸ‘ï¸ {formatNumber(month.views)}</span>
-                      <span className="text-green-600">ðŸ¤ {month.connections}</span>
-                      <span className="text-orange-600">ðŸŽ¯ {month.leads}</span>
+                      <span className="text-blue-600"> {formatNumber(month.views)}</span>
+                      <span className="text-green-600"> {month.connections}</span>
+                      <span className="text-orange-600"> {month.leads}</span>
                     </div>
                   </div>
                 ))}
@@ -326,7 +326,7 @@ export const PartnerAnalyticsPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="p-4 bg-white rounded-lg border border-green-200">
                 <h4 className="font-medium text-green-900 mb-2">
-                  ðŸ’° Retour sur Investissement
+                   Retour sur Investissement
                 </h4>
                 <p className="text-sm text-green-700">
                   Votre investissement initial de 50K€ a généré 142K€ de valeur ajoutée
@@ -335,7 +335,7 @@ export const PartnerAnalyticsPage: React.FC = () => {
 
               <div className="p-4 bg-white rounded-lg border border-green-200">
                 <h4 className="font-medium text-green-900 mb-2">
-                  ðŸ“ˆ Croissance Mensuelle
+                   Croissance Mensuelle
                 </h4>
                 <p className="text-sm text-green-700">
                   +15% de croissance mensuelle moyenne sur les 6 derniers mois
@@ -344,7 +344,7 @@ export const PartnerAnalyticsPage: React.FC = () => {
 
               <div className="p-4 bg-white rounded-lg border border-green-200">
                 <h4 className="font-medium text-green-900 mb-2">
-                  ðŸŽ¯ Objectifs Atteints
+                   Objectifs Atteints
                 </h4>
                 <p className="text-sm text-green-700">
                   89% des objectifs business fixés ont été dépassés

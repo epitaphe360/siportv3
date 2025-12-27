@@ -1,4 +1,5 @@
 ﻿import React, { useState } from 'react';
+import { toast } from 'sonner';
 import { useTranslation } from '../../hooks/useTranslation';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Upload, Video, Mic, Image as ImageIcon, FileText } from 'lucide-react';
@@ -55,11 +56,11 @@ export const PartnerMediaUploadPage: React.FC = () => {
         like_count: 0
       });
       
-      alert('Média uploadé avec succès ! Il sera visible après validation par l\'équipe SIPORT.');
+      toast.success('Média uploadé avec succès ! Il sera visible après validation par l\'équipe SIPORT.');
       navigate('/partner/media');
     } catch (error) {
       console.error('Erreur upload:', error);
-      alert('Erreur lors de l\'upload du média');
+      toast.error('Erreur lors de l\'upload du média');
     } finally {
       setLoading(false);
     }

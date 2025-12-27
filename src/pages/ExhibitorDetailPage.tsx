@@ -83,11 +83,17 @@ export default function ExhibitorDetailPage() {
   };
 
   const handleDownloadBrochure = () => {
-    // Simulate brochure download - replace with real download logic
-    const brochureUrl = 'https://example.com/brochure.pdf'; // Replace with actual brochure URL from exhibitor data
+    // Get brochure URL from exhibitor data
+    const brochureUrl = exhibitor?.brochure_url || exhibitor?.documents?.[0]?.url;
+
+    if (!brochureUrl) {
+      toast.error('Brochure non disponible pour cet exposant');
+      return;
+    }
+
     const link = document.createElement('a');
     link.href = brochureUrl;
-    link.download = `${exhibitor?.companyName}-brochure.pdf`;
+    link.download = `${exhibitor?.companyName || 'exposant'}-brochure.pdf`;
     link.target = '_blank';
     document.body.appendChild(link);
     link.click();

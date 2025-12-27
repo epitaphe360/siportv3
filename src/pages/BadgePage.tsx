@@ -1,5 +1,6 @@
 ﻿import React, { useEffect, useState, useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
+import { toast } from 'sonner';
 import useAuthStore from '../store/authStore';
 import { useTranslation } from '../hooks/useTranslation';
 import {
@@ -84,7 +85,7 @@ export default function BadgePage() {
       });
     } catch (err) {
       console.error('Error downloading badge:', err);
-      alert('Erreur lors du téléchargement. Veuillez faire une capture d\'écran du badge.');
+      toast.error('Erreur lors du téléchargement. Veuillez faire une capture d\'écran du badge.');
     }
   }
 

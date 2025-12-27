@@ -1,4 +1,5 @@
 import React from 'react';
+import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { 
   Users, 
@@ -127,31 +128,7 @@ export const NetworkingSection: React.FC = () => {
                 size="lg" 
                 className="w-full sm:w-auto"
                 onClick={() => {
-                  const aiAssistantData = {
-                    name: 'SIPORTS AI Assistant',
-                    version: '3.0',
-                    capabilities: [
-                      'Recommandations de contacts intelligentes',
-                      'Matching par secteur d\'activité',
-                      'Suggestions de rendez-vous optimales',
-                      'Analyse de compatibilité avancée',
-                      'Prédictions de succès commercial',
-                      'Optimisation d\'agenda automatique',
-                      'Traduction en temps réel',
-                      'Analyse de sentiment'
-                    ],
-                    stats: {
-                      accuracy: '92%',
-                      users: '6,300+',
-                      matches: '12,847',
-                      satisfaction: '94%',
-                      responseTime: '< 2 secondes'
-                    },
-                    languages: ['Français', 'Anglais', 'Arabe', 'Espagnol'],
-                    availability: '24/7 pendant SIPORTS'
-                  };
-                  
-                  alert(`🤖 ${aiAssistantData.name} v${aiAssistantData.version}\n\n📊 Statistiques:\n🎯 Précision: ${aiAssistantData.stats.accuracy}\n👥 Utilisateurs actifs: ${aiAssistantData.stats.users}\n🤝 Matches réalisés: ${aiAssistantData.stats.matches}\n⭐ Satisfaction: ${aiAssistantData.stats.satisfaction}\n⚡ Temps de réponse: ${aiAssistantData.stats.responseTime}\n\n🌐 Langues supportées: ${aiAssistantData.languages.join(', ')}\n⏰ Disponibilité: ${aiAssistantData.availability}\n\n🧠 Capacités IA avancées:\n${aiAssistantData.capabilities.map(cap => `• ${cap}`).join('\n')}\n\n🚀 Connectez-vous pour accéder à l'IA complète !`);
+                  toast.info('SIPORTS AI Assistant v3.0 - Connectez-vous pour accéder à l\'IA complète avec recommandations intelligentes, matching par secteur et optimisation d\'agenda !');
                 }}
               >
                 <Brain className="mr-2 h-5 w-5" />

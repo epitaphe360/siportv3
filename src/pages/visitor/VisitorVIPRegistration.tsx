@@ -618,7 +618,7 @@ export default function VisitorVIPRegistration() {
                     <span><strong>Ateliers et conférences VIP</strong> - Contenus exclusifs</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-yellow-600 mr-2">âœ“</span>
+                    <span className="text-yellow-600 mr-2">✓</span>
                     <span><strong>Tableau de bord complet</strong> - Gestion rendez-vous et networking</span>
                   </li>
                 </ul>

@@ -115,13 +115,13 @@ export default function MediaDetailPage() {
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {media.speakers.map((speaker: any, idx: number) => (
-                      <div key={idx} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                      <div key={`speaker-${idx}-${speaker?.name || 'unknown'}`} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-2xl border border-gray-100">
                         <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md">
-                          {speaker.name.charAt(0)}
+                          {speaker?.name?.charAt(0) || 'S'}
                         </div>
                         <div>
-                          <p className="font-bold text-gray-900">{speaker.name}</p>
-                          <p className="text-sm text-gray-500">{speaker.company}</p>
+                          <p className="font-bold text-gray-900">{speaker?.name || 'Intervenant'}</p>
+                          <p className="text-sm text-gray-500">{speaker?.company || ''}</p>
                         </div>
                       </div>
                     ))}

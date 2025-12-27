@@ -200,7 +200,7 @@ export default function ExhibitorSignUpPage() {
     };
 
     try {
-      // ðŸ” Exécuter reCAPTCHA avant inscription
+      //  Exécuter reCAPTCHA avant inscription
       let recaptchaToken: string | undefined;
       if (isRecaptchaReady) {
         try {
@@ -217,7 +217,7 @@ export default function ExhibitorSignUpPage() {
         throw error;
       }
 
-      // ðŸ’° Créer la demande de paiement
+      //  Créer la demande de paiement
       if (userData?.user?.id) {
         // Générer référence de paiement unique
         const paymentReference = `EXH-2026-${userData.user.id.substring(0, 8).toUpperCase()}`;
@@ -245,7 +245,7 @@ export default function ExhibitorSignUpPage() {
           // Ne pas bloquer l'inscription si la création de paiement échoue
         }
 
-        // ðŸ“§ Envoyer email avec instructions de paiement
+        //  Envoyer email avec instructions de paiement
         try {
           const { error: emailError } = await supabase.functions.invoke('send-exhibitor-payment-instructions', {
             body: {
