@@ -115,7 +115,7 @@ export default function VisitorUpgradePage() {
             <Card className="p-8 h-full border-2 border-gray-200 relative">
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Pass Gratuit</h3>
-                <div className="text-4xl font-extrabold text-gray-500">0â‚¬</div>
+                <div className="text-4xl font-extrabold text-gray-500">0€</div>
                 <p className="text-gray-600 mt-2">Accès limité</p>
               </div>
               <ul className="space-y-4 mb-8">
@@ -151,7 +151,7 @@ export default function VisitorUpgradePage() {
             <Card className="p-8 h-full border-4 border-yellow-400 bg-gradient-to-br from-yellow-50 to-white relative shadow-2xl">
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                 <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 px-6 py-2 rounded-full font-bold shadow-lg">
-                  â­ RECOMMANDÉ
+                  ⭐ RECOMMANDÉ
                 </div>
               </div>
               <div className="text-center mb-6 mt-4">
@@ -160,8 +160,8 @@ export default function VisitorUpgradePage() {
                   Pass Premium VIP
                 </h3>
                 <div className="flex items-center justify-center gap-3">
-                  <div className="text-2xl font-bold text-gray-400 line-through">950â‚¬</div>
-                  <div className="text-5xl font-extrabold text-yellow-600">700â‚¬</div>
+                  <div className="text-2xl font-bold text-gray-400 line-through">950€</div>
+                  <div className="text-5xl font-extrabold text-yellow-600">700€</div>
                 </div>
                 <p className="text-gray-700 mt-2 font-semibold">Accès complet 3 jours</p>
               </div>
@@ -277,8 +277,8 @@ export default function VisitorUpgradePage() {
           <Zap className="h-16 w-16 mx-auto mb-6 text-yellow-300" />
           <h2 className="text-4xl font-bold mb-4">ROI Garanti</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Nos membres VIP génèrent en moyenne <span className="font-bold text-yellow-300">15 000â‚¬</span> de
-            nouvelles opportunités commerciales lors du salon. Investissez 700â‚¬, récoltez des milliers.
+            Nos membres VIP génèrent en moyenne <span className="font-bold text-yellow-300">15 000€</span> de
+            nouvelles opportunités commerciales lors du salon. Investissez 700€, récoltez des milliers.
           </p>
           <Button
             onClick={handleUpgrade}

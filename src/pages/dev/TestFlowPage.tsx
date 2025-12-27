@@ -75,7 +75,7 @@ export default function TestFlowPage() {
           {log.map((e, idx) => (
             <div key={idx} style={{padding:'8px 6px',borderBottom: idx < log.length - 1 ? '1px dashed #eee' : 'none', display:'flex',justifyContent:'space-between'}}>
               <div>
-                <strong>#{e.attempt}</strong> â— créneau <em>{e.timeSlotId || '-'}</em>
+                <strong>#{e.attempt}</strong> ● créneau <em>{e.timeSlotId || '-'}</em>
                 <div style={{fontSize:13,color:'#444'}}>{e.message}</div>
               </div>
               <div style={{color: e.success ? 'green' : 'crimson', fontWeight:700, alignSelf:'center'}}>

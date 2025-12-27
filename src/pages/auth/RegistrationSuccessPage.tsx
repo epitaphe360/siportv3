@@ -88,7 +88,7 @@ export default function RegistrationSuccessPage() {
             >
               {accountType === 'visitor'
                 ? 'ðŸŽ‰ Compte créé !'
-                : 'âœ… Inscription réussie !'}
+                : '✅ Inscription réussie !'}
             </motion.h1>
 
             {/* Description */}

@@ -245,7 +245,7 @@ export const WebinarsPage: React.FC = () => {
                 {/* Content */}
                 <div className="md:w-1/2">
                   <Badge className="mb-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-                    â­ Ã€ la une
+                    ⭐ À la une
                   </Badge>
                   
                   <h2 className="text-3xl font-bold text-gray-900 mb-4">

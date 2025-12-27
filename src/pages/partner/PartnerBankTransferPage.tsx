@@ -444,7 +444,7 @@ export default function PartnerBankTransferPage() {
               </h4>
               <ul className="space-y-1 text-sm text-blue-800">
                 {instructions.additionalInfo.map((item, index) => (
-                  <li key={index}>â• {item}</li>
+                  <li key={index}>• {item}</li>
                 ))}
               </ul>
             </div>
@@ -592,7 +592,7 @@ export default function PartnerBankTransferPage() {
         {/* Features Included */}
         <Card className="p-6 mb-6">
           <h3 className="text-xl font-bold text-gray-900 mb-4">
-            âœ¨ Inclus dans votre abonnement {tierInfo.displayName}
+            ✨ Inclus dans votre abonnement {tierInfo.displayName}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {tierInfo.features.map((feature, index) => (

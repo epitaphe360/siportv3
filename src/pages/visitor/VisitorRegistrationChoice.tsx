@@ -121,7 +121,7 @@ export default function VisitorRegistrationChoice() {
                 {/* Info */}
                 <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
                   <p className="text-xs text-green-800">
-                    âœ… Aucun mot de passe requis â• Badge envoyé par email
+                    ✅ Aucun mot de passe requis • Badge envoyé par email
                   </p>
                 </div>
               </div>
@@ -229,43 +229,43 @@ export default function VisitorRegistrationChoice() {
                 <tbody className="divide-y divide-gray-200">
                   <tr className="hover:bg-gray-50">
                     <td className="px-6 py-4 text-sm text-gray-900">Accès au salon</td>
-                    <td className="px-6 py-4 text-center">âœ…</td>
-                    <td className="px-6 py-4 text-center">âœ…</td>
+                    <td className="px-6 py-4 text-center">✅</td>
+                    <td className="px-6 py-4 text-center">✅</td>
                   </tr>
                   <tr className="hover:bg-gray-50">
                     <td className="px-6 py-4 text-sm text-gray-900">Badge QR sécurisé</td>
-                    <td className="px-6 py-4 text-center">âœ… Simple</td>
-                    <td className="px-6 py-4 text-center">âœ… Avec photo</td>
+                    <td className="px-6 py-4 text-center">✅ Simple</td>
+                    <td className="px-6 py-4 text-center">✅ Avec photo</td>
                   </tr>
                   <tr className="hover:bg-gray-50">
                     <td className="px-6 py-4 text-sm text-gray-900">Conférences publiques</td>
-                    <td className="px-6 py-4 text-center">âœ…</td>
-                    <td className="px-6 py-4 text-center">âœ…</td>
+                    <td className="px-6 py-4 text-center">✅</td>
+                    <td className="px-6 py-4 text-center">✅</td>
                   </tr>
                   <tr className="hover:bg-gray-50 bg-yellow-50">
                     <td className="px-6 py-4 text-sm font-semibold text-gray-900">Rendez-vous B2B</td>
                     <td className="px-6 py-4 text-center text-gray-400">âŒ 0</td>
-                    <td className="px-6 py-4 text-center text-yellow-700 font-bold">âœ… ILLIMITÉS</td>
+                    <td className="px-6 py-4 text-center text-yellow-700 font-bold">✅ ILLIMITÉS</td>
                   </tr>
                   <tr className="hover:bg-gray-50">
                     <td className="px-6 py-4 text-sm text-gray-900">Tableau de bord</td>
                     <td className="px-6 py-4 text-center text-gray-400">âŒ</td>
-                    <td className="px-6 py-4 text-center">âœ…</td>
+                    <td className="px-6 py-4 text-center">✅</td>
                   </tr>
                   <tr className="hover:bg-gray-50">
                     <td className="px-6 py-4 text-sm text-gray-900">Zones VIP</td>
                     <td className="px-6 py-4 text-center text-gray-400">âŒ</td>
-                    <td className="px-6 py-4 text-center">âœ…</td>
+                    <td className="px-6 py-4 text-center">✅</td>
                   </tr>
                   <tr className="hover:bg-gray-50">
                     <td className="px-6 py-4 text-sm text-gray-900">Networking area</td>
                     <td className="px-6 py-4 text-center text-gray-400">âŒ</td>
-                    <td className="px-6 py-4 text-center">âœ…</td>
+                    <td className="px-6 py-4 text-center">✅</td>
                   </tr>
                   <tr className="hover:bg-gray-50">
                     <td className="px-6 py-4 text-sm text-gray-900">Gala de clôture</td>
                     <td className="px-6 py-4 text-center text-gray-400">âŒ</td>
-                    <td className="px-6 py-4 text-center">âœ…</td>
+                    <td className="px-6 py-4 text-center">✅</td>
                   </tr>
                   <tr className="bg-gray-50 font-semibold">
                     <td className="px-6 py-4 text-sm text-gray-900">Prix</td>

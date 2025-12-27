@@ -305,7 +305,7 @@ export const PartnerNetworkingPage: React.FC = () => {
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <Star className="h-4 w-4 mr-2 text-yellow-500" />
-                      <span>{opportunity.rating}/5 â• {opportunity.profileStrength}% profil complet</span>
+                      <span>{opportunity.rating}/5 • {opportunity.profileStrength}% profil complet</span>
                     </div>
                   </div>
 

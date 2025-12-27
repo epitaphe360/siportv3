@@ -516,7 +516,7 @@ export default function PartnerDetailPage() {
                   </div>
                   
                   <div className="text-center p-6 bg-blue-50 rounded-lg">
-                    <div className="text-3xl font-bold text-blue-600 mb-2">3.2Mâ‚¬</div>
+                    <div className="text-3xl font-bold text-blue-600 mb-2">3.2M€</div>
                     <div className="text-sm text-blue-700">Valeur Générée</div>
                   </div>
                   

@@ -124,7 +124,7 @@ export default function PartnerUpgradePage() {
                           Rendez-vous B2B
                         </span>
                         <span className="font-semibold">
-                          {tier.quotas.appointments === -1 ? 'âˆž' : tier.quotas.appointments}
+                          {tier.quotas.appointments === -1 ? '∞' : tier.quotas.appointments}
                         </span>
                       </div>
 
@@ -221,7 +221,7 @@ export default function PartnerUpgradePage() {
                       <ul className="space-y-2">
                         {tier.features.map((feature, idx) => (
                           <li key={idx} className="text-sm text-gray-600 flex items-start">
-                            <span className="text-green-600 mr-2">â•</span>
+                            <span className="text-green-600 mr-2">•</span>
                             <span>{feature}</span>
                           </li>
                         ))}
@@ -236,7 +236,7 @@ export default function PartnerUpgradePage() {
                       <ul className="space-y-2">
                         {tier.exclusivePerks.map((perk, idx) => (
                           <li key={idx} className="text-sm text-gray-600 flex items-start">
-                            <span className="text-yellow-600 mr-2">â˜…</span>
+                            <span className="text-yellow-600 mr-2">★</span>
                             <span>{perk}</span>
                           </li>
                         ))}
@@ -319,7 +319,7 @@ export default function PartnerUpgradePage() {
                   </span>
                 </div>
                 <p className="text-gray-600 italic mb-4">"{testimonial.quote}"</p>
-                <p className="text-sm text-gray-500">â— {testimonial.author}</p>
+                <p className="text-sm text-gray-500">● {testimonial.author}</p>
               </Card>
             ))}
           </div>

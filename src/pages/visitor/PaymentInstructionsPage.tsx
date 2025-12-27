@@ -74,7 +74,7 @@ export default function PaymentInstructionsPage() {
 
       if (error) throw error;
 
-      alert('âœ… Justificatif enregistré ! Votre paiement sera validé sous 24-48h.');
+      alert('✅ Justificatif enregistré ! Votre paiement sera validé sous 24-48h.');
       loadData();
     } catch (error: any) {
       alert(`âŒ Erreur: ${error.message}`);
@@ -99,7 +99,7 @@ export default function PaymentInstructionsPage() {
     <div style={{ maxWidth: 800, margin: 'auto', padding: 32 }}>
       <h1>ðŸ’³ Instructions de Paiement</h1>
       <p style={{ fontSize: 18, color: '#666' }}>
-        Pass Premium VIP - {amount.toFixed(2)}â‚¬
+        Pass Premium VIP - {amount.toFixed(2)}€
       </p>
 
       {paymentRequest?.status === 'pending' && (
@@ -110,7 +110,7 @@ export default function PaymentInstructionsPage() {
 
       {paymentRequest?.status === 'approved' && (
         <div style={{ background: '#d4edda', padding: 16, borderRadius: 8, marginBottom: 24 }}>
-          âœ… <strong>Paiement approuvé ! Vous avez maintenant accès au Pass Premium VIP.</strong>
+          ✅ <strong>Paiement approuvé ! Vous avez maintenant accès au Pass Premium VIP.</strong>
         </div>
       )}
 
@@ -229,7 +229,7 @@ export default function PaymentInstructionsPage() {
 
       {paymentRequest?.transfer_reference && (
         <div style={{ background: '#d1ecf1', padding: 16, borderRadius: 8 }}>
-          âœ… Justificatif soumis le {new Date(paymentRequest.transfer_date || '').toLocaleDateString('fr-FR')}
+          ✅ Justificatif soumis le {new Date(paymentRequest.transfer_date || '').toLocaleDateString('fr-FR')}
           <div style={{ marginTop: 8 }}>
             <strong>Référence :</strong> {paymentRequest.transfer_reference}
           </div>

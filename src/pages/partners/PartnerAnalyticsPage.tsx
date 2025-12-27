@@ -329,7 +329,7 @@ export const PartnerAnalyticsPage: React.FC = () => {
                   ðŸ’° Retour sur Investissement
                 </h4>
                 <p className="text-sm text-green-700">
-                  Votre investissement initial de 50Kâ‚¬ a généré 142Kâ‚¬ de valeur ajoutée
+                  Votre investissement initial de 50K€ a généré 142K€ de valeur ajoutée
                 </p>
               </div>
 

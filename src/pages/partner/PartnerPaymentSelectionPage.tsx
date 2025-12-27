@@ -145,7 +145,7 @@ export default function PartnerPaymentSelectionPage() {
           </div>
 
           <div className="border-t border-gray-300 pt-4 mt-4">
-            <h4 className="font-semibold text-gray-900 mb-3">âœ¨ Inclus dans votre abonnement:</h4>
+            <h4 className="font-semibold text-gray-900 mb-3">✨ Inclus dans votre abonnement:</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {tierInfo.features.map((feature, index) => (
                 <div key={index} className="flex items-center text-sm text-gray-700">

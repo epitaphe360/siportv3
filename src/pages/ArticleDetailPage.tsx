@@ -316,7 +316,7 @@ export default function ArticleDetailPage() {
               <p className="text-lg italic text-blue-900">
                 "L'avenir des ports se joue aujourd'hui dans leur capacité à intégrer les technologies émergentes tout en préservant leur efficacité opérationnelle."
               </p>
-              <footer className="text-blue-700 mt-2">â— {article.author}</footer>
+              <footer className="text-blue-700 mt-2">● {article.author}</footer>
             </blockquote>
 
             <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-3">
@@ -365,7 +365,7 @@ export default function ArticleDetailPage() {
                   <div className="text-sm text-gray-600">Gain d'efficacité</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">2.5Mâ‚¬</div>
+                  <div className="text-2xl font-bold text-purple-600">2.5M€</div>
                   <div className="text-sm text-gray-600">Investissement moyen</div>
                 </div>
               </div>
@@ -597,7 +597,7 @@ export default function ArticleDetailPage() {
                   size="lg" 
                   className="bg-white text-blue-600 hover:bg-blue-50"
                   onClick={() => {
-                    toast.success('âœ… Inscription newsletter confirmée.');
+                    toast.success('✅ Inscription newsletter confirmée.');
                   }}
                 >
                   S'abonner

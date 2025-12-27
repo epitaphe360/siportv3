@@ -238,7 +238,7 @@ export default function ExhibitorDetailPage() {
             {[
               { id: 'overview', label: 'Vue d\'ensemble', icon: Eye },
               { id: 'projects', label: 'Produits', icon: Package },
-              { id: 'impact', label: 'Ã€ propos', icon: Building2 },
+              { id: 'impact', label: 'À propos', icon: Building2 },
               { id: 'contact', label: 'Contact', icon: MessageCircle }
             ].map((tab) => (
               <button
@@ -430,7 +430,7 @@ export default function ExhibitorDetailPage() {
             <Card>
               <div className="p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Ã€ propos de {exhibitor.companyName}
+                  À propos de {exhibitor.companyName}
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

@@ -101,7 +101,7 @@ export default function MediaDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <Card className="p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Ã€ propos de ce contenu</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">À propos de ce contenu</h2>
               <p className="text-gray-600 leading-relaxed text-lg mb-8">
                 {media.description}
               </p>

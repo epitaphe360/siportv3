@@ -279,7 +279,7 @@ export const PartnerMediaPage: React.FC = () => {
                   <Award className="h-8 w-8 text-orange-600" />
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-gray-900">{mediaData.overview.mediaValue.toLocaleString()}â‚¬</p>
+                  <p className="text-2xl font-bold text-gray-900">{mediaData.overview.mediaValue.toLocaleString()}€</p>
                   <p className="text-sm text-gray-600">Valeur média</p>
                 </div>
               </div>

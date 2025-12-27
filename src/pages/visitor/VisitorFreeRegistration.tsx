@@ -90,7 +90,7 @@ export default function VisitorFreeRegistration() {
           email: data.email,
           name: fullName,
           type: 'visitor',
-          visitor_level: 'free', // âœ… EXPLICITE
+          visitor_level: 'free', // ✅ EXPLICITE
           status: 'pending', // En attente de validation email
           profile: {
             firstName: data.firstName,
@@ -183,9 +183,9 @@ export default function VisitorFreeRegistration() {
           <div className="mt-4 inline-flex items-center space-x-2 bg-green-800 px-4 py-2 rounded-full">
             <span className="text-green-200 text-sm">✅ Accès salon</span>
             <span className="text-green-200">•</span>
-            <span className="text-green-200 text-sm">âœ… Badge QR</span>
-            <span className="text-green-200">â•</span>
-            <span className="text-green-200 text-sm">âœ… Gratuit</span>
+            <span className="text-green-200 text-sm">✅ Badge QR</span>
+            <span className="text-green-200">•</span>
+            <span className="text-green-200 text-sm">✅ Gratuit</span>
           </div>
         </motion.div>
 
@@ -353,12 +353,12 @@ export default function VisitorFreeRegistration() {
 
               {/* Info */}
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <h4 className="font-semibold text-green-900 mb-2">âœ… Inclus dans votre pass gratuit</h4>
+                <h4 className="font-semibold text-green-900 mb-2">✅ Inclus dans votre pass gratuit</h4>
                 <ul className="text-sm text-green-700 space-y-1">
-                  <li>â• Accès au salon SIPORTS 2026</li>
-                  <li>â• Badge QR sécurisé envoyé par email</li>
-                  <li>â• Accès aux conférences publiques</li>
-                  <li>â• Pas de mot de passe requis</li>
+                  <li>• Accès au salon SIPORTS 2026</li>
+                  <li>• Badge QR sécurisé envoyé par email</li>
+                  <li>• Accès aux conférences publiques</li>
+                  <li>• Pas de mot de passe requis</li>
                 </ul>
               </div>
 
