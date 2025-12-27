@@ -188,7 +188,7 @@ export default function AppointmentCalendar() {
       }
 
       const slotData = {
-        userId: exhibitorId,
+        exhibitorId: exhibitorId,
         date: selectedDate,
         startTime: newSlotData.startTime,
         endTime: newSlotData.endTime,
@@ -374,7 +374,7 @@ export default function AppointmentCalendar() {
                     Vous n'avez pas encore de rendez-vous B2B.<br />
                     Visitez les pages des exposants pour demander un rendez-vous.
                   </p>
-                  <Link to="/exposants">
+                  <Link to={ROUTES.EXHIBITORS}>
                     <Button variant="default">
                       <Users className="h-4 w-4 mr-2" />
                       Voir les exposants
@@ -384,7 +384,8 @@ export default function AppointmentCalendar() {
               ) : (
                 <div className="space-y-4">
                   {appointments.map((appointment) => {
-                    const StatusIcon = appointment.status === 'confirmed' ? Check : 
+                    const slot = timeSlots.find(s => s.id === appointment.timeSlotId);
+                    const StatusIcon = appointment.status === 'confirmed' ? Check :
                                       appointment.status === 'cancelled' ? X : Clock;
                     return (
                       <motion.div
@@ -409,10 +410,10 @@ export default function AppointmentCalendar() {
                                 {appointment.exhibitor?.companyName || appointment.exhibitor?.name || `Exposant`}
                               </h4>
                               <p className="text-sm text-gray-600">
-                                {appointment.timeSlot?.date ? new Date(appointment.timeSlot.date).toLocaleDateString('fr-FR', { 
-                                  weekday: 'long', day: 'numeric', month: 'long' 
+                                {slot?.date ? new Date(slot.date).toLocaleDateString('fr-FR', {
+                                  weekday: 'long', day: 'numeric', month: 'long'
                                 }) : 'Date à confirmer'}
-                                {appointment.timeSlot?.startTime && ` • ${appointment.timeSlot.startTime}`}
+                                {slot?.startTime && ` • ${slot.startTime}`}
                               </p>
                               {appointment.message && (
                                 <p className="text-xs text-gray-500 mt-1 italic">"{appointment.message}"</p>
@@ -424,10 +425,10 @@ export default function AppointmentCalendar() {
                               {getStatusLabel(appointment.status)}
                             </Badge>
                             {appointment.status === 'pending' && (
-                              <Button 
-                                variant="outline" 
+                              <Button
+                                variant="outline"
                                 size="sm"
-                                onClick={() => cancelAppointment(appointment.id)}
+                                onClick={() => handleCancelAppointment(appointment.id)}
                               >
                                 Annuler
                               </Button>
@@ -682,8 +683,25 @@ export default function AppointmentCalendar() {
                 <div className="space-y-4">
                   {todayAppointments.map((appointment) => {
                     const slot = timeSlots.find(s => s.id === appointment.timeSlotId);
-                    if (!slot) return null;
-                    
+                    if (!slot) {
+                      return (
+                        <motion.div
+                          key={appointment.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="p-4 border border-orange-200 rounded-lg bg-orange-50"
+                        >
+                          <div className="flex items-center space-x-3">
+                            <AlertCircle className="h-5 w-5 text-orange-500" />
+                            <div>
+                              <p className="text-sm font-medium text-orange-700">Créneau non trouvé</p>
+                              <p className="text-xs text-orange-600">Le créneau de ce rendez-vous n'est plus disponible</p>
+                            </div>
+                          </div>
+                        </motion.div>
+                      );
+                    }
+
                     const MeetingIcon = getMeetingTypeIcon(appointment.meetingType);
                     
                     return (

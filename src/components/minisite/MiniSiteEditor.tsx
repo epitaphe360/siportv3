@@ -887,7 +887,7 @@ export default function MiniSiteEditor() {
                                 {section.content.features && section.content.features.length > 0 && (
                                   <div className="grid grid-cols-2 gap-4">
                                     {section.content.features.map((feature: string, index: number) => (
-                                      <div key={index} className="flex items-center space-x-2">
+                                      <div key={`${section.id}-feature-${index}-${feature.substring(0, 10)}`} className="flex items-center space-x-2">
                                         <div 
                                           className="w-2 h-2 rounded-full"
                                           style={{ backgroundColor: siteSettings.primaryColor }}
@@ -947,7 +947,7 @@ export default function MiniSiteEditor() {
                                 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                   {section.content.products?.map((product, index: number) => (
-                                    <div key={index} className="bg-white rounded-lg p-6 shadow-sm relative group">
+                                    <div key={product.id || `${section.id}-product-${index}`} className="bg-white rounded-lg p-6 shadow-sm relative group">
                                       <button
                                         onClick={() => removeProduct(section.id, index)}
                                         className="absolute top-2 right-2 p-1 bg-red-100 text-red-600 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
@@ -1072,7 +1072,7 @@ export default function MiniSiteEditor() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                   {section.content.articles?.map((article: any, index: number) => (
-                                    <div key={index} className="bg-white rounded-lg p-6 shadow-sm relative group">
+                                    <div key={article.id || `${section.id}-article-${index}`} className="bg-white rounded-lg p-6 shadow-sm relative group">
                                       <button
                                         onClick={() => {
                                           const currentArticles = section.content.articles ?? [];
