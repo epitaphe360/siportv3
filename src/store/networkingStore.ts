@@ -364,8 +364,8 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     const { user } = useAuthStore.getState();
     if (!user) return;
 
-    const permissions = getNetworkingPermissions(user.type, user.profile.passType || user.profile.status);
-    const eventPermissions = getEventAccessPermissions(user.type, user.profile.passType || user.profile.status);
+    const permissions = getNetworkingPermissions(user.type, user.profile?.passType || user.profile?.status || 'free');
+    const eventPermissions = getEventAccessPermissions(user.type, user.profile?.passType || user.profile?.status || 'free');
     
     set({ permissions, eventPermissions });
   },

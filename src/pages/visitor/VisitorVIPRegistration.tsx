@@ -111,7 +111,7 @@ export default function VisitorVIPRegistration() {
       if (photoFile) {
         console.log('📷 Upload photo en cours...');
         try {
-          const fileExt = photoFile.name.split('.').pop();
+          const fileExt = photoFile.name.split('.').pop() || 'jpg';
           const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
           const filePath = `visitor-photos/${fileName}`;
 

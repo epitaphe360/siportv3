@@ -1208,7 +1208,7 @@ export class SupabaseService {
           lastMessage: lastMessage ? {
             id: lastMessage.id,
             senderId: lastMessage.sender.id,
-            receiverId: conv.participants.find((id: string) => id !== lastMessage.sender.id),
+            receiverId: conv.participants.find((id: string) => id !== lastMessage.sender.id) || '',
             content: lastMessage.content,
             type: lastMessage.message_type,
             timestamp: new Date(lastMessage.created_at),
