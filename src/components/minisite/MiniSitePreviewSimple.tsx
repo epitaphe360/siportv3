@@ -209,12 +209,13 @@ export default function MiniSitePreviewSimple() {
                 <Eye className="h-4 w-4" />
                 {miniSiteData.views}
               </span>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={() => {
-                  navigator.clipboard.writeText(window.location.href);
-                  toast.success('Lien copié !');
+                  navigator.clipboard.writeText(window.location.href)
+                    .then(() => toast.success('Lien copié !'))
+                    .catch(() => toast.error('Impossible de copier'));
                 }}
               >
                 <Share2 className="h-4 w-4" />

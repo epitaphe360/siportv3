@@ -208,10 +208,13 @@ export default function PartnerBankTransferPage() {
   }
 
   function copyToClipboard(text: string, label: string) {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    toast.success(`${label} copié dans le presse-papier`);
-    setTimeout(() => setCopied(false), 2000);
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        setCopied(true);
+        toast.success(`${label} copié dans le presse-papier`);
+        setTimeout(() => setCopied(false), 2000);
+      })
+      .catch(() => toast.error('Impossible de copier'));
   }
 
   if (loading) {

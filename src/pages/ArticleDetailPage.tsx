@@ -149,12 +149,13 @@ export default function ArticleDetailPage() {
     };
 
     if (platform === 'native' && navigator.share) {
-      navigator.share(shareData);
+      navigator.share(shareData).catch(() => {});
     } else if (urls[platform as keyof typeof urls]) {
       window.open(urls[platform as keyof typeof urls], '_blank', 'width=600,height=400');
     } else {
-      navigator.clipboard.writeText(shareData.url);
-      toast.success('Lien de l\'article copié dans le presse-papiers !');
+      navigator.clipboard.writeText(shareData.url)
+        .then(() => toast.success('Lien de l\'article copié dans le presse-papiers !'))
+        .catch(() => toast.error('Impossible de copier le lien'));
     }
   };
 

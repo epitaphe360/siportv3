@@ -307,10 +307,11 @@ export default function NewsPage() {
                               };
                               
                               if (navigator.share) {
-                                navigator.share(shareData);
+                                navigator.share(shareData).catch(() => {});
                               } else {
-                                navigator.clipboard.writeText(shareData.url);
-                                toast.success(t('contact.success'));
+                                navigator.clipboard.writeText(shareData.url)
+                                  .then(() => toast.success(t('contact.success')))
+                                  .catch(() => toast.error('Impossible de copier'));
                               }
                             }}
                             title="Partager cet article"

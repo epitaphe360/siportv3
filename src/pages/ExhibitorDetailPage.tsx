@@ -75,10 +75,11 @@ export default function ExhibitorDetailPage() {
     };
 
     if (navigator.share) {
-      navigator.share(shareData);
+      navigator.share(shareData).catch(() => {});
     } else {
-      navigator.clipboard.writeText(shareData.url);
-      toast.success('Lien copié dans le presse-papiers !');
+      navigator.clipboard.writeText(shareData.url)
+        .then(() => toast.success('Lien copié dans le presse-papiers !'))
+        .catch(() => toast.error('Impossible de copier le lien'));
     }
   };
 

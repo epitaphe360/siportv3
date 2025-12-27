@@ -330,8 +330,9 @@ export const CountdownModal: React.FC<CountdownModalProps> = ({ isOpen, onClose 
                       url: window.location.origin
                     });
                   } else {
-                    navigator.clipboard.writeText(shareText);
-                    toast.success('🔗 Compte à rebours copié dans le presse-papiers !');
+                    navigator.clipboard.writeText(shareText)
+                      .then(() => toast.success('🔗 Compte à rebours copié dans le presse-papiers !'))
+                      .catch(() => toast.error('Impossible de copier'));
                   }
                 }}
               >
