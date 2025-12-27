@@ -42,8 +42,9 @@ const MediaManagerPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    navigator.clipboard.writeText(selectedImage);
-                    toast.success('URL copiée dans le presse-papier');
+                    navigator.clipboard.writeText(selectedImage)
+                      .then(() => toast.success('URL copiée dans le presse-papier'))
+                      .catch(() => toast.error('Impossible de copier'));
                   }}
                   className="bg-blue-500 text-white px-3 py-2 rounded-r-md text-sm"
                 >

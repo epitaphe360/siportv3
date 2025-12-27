@@ -335,8 +335,9 @@ export default function MiniSitePreview() {
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      navigator.clipboard.writeText(window.location.href);
-                      toast.success('Lien copié dans le presse-papiers');
+                      navigator.clipboard.writeText(window.location.href)
+                        .then(() => toast.success('Lien copié dans le presse-papiers'))
+                        .catch(() => toast.error('Impossible de copier le lien'));
                     }}
                     className="rounded-xl"
                   >

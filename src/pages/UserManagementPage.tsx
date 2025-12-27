@@ -244,7 +244,7 @@ export default function UserManagementPage() {
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffHours / 24);
 
-    if (diffHours < 1) return 'Ã€ l\'instant';
+    if (diffHours < 1) return 'À l\'instant';
     if (diffHours < 24) return `Il y a ${diffHours}h`;
     if (diffDays < 7) return `Il y a ${diffDays}j`;
     return formatDate(date);

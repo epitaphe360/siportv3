@@ -132,7 +132,7 @@ export default function PartnerPaymentSelectionPage() {
         <Card className="p-6 mb-8 bg-gradient-to-r from-purple-50 to-blue-50">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">
-              {isUpgrade ? 'â¬†ï¸ Montant de l\'upgrade' : 'ðŸ’° Montant total'}
+              {isUpgrade ? 'â¬†ï¸ Montant de l\'upgrade' : ' Montant total'}
             </h3>
             <div className="text-right">
               <div className="text-3xl font-bold text-purple-600">
@@ -145,7 +145,7 @@ export default function PartnerPaymentSelectionPage() {
           </div>
 
           <div className="border-t border-gray-300 pt-4 mt-4">
-            <h4 className="font-semibold text-gray-900 mb-3">âœ¨ Inclus dans votre abonnement:</h4>
+            <h4 className="font-semibold text-gray-900 mb-3">✨ Inclus dans votre abonnement:</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {tierInfo.features.map((feature, index) => (
                 <div key={index} className="flex items-center text-sm text-gray-700">

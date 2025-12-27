@@ -50,7 +50,7 @@ async function syncWithMiniSite(slot: TimeSlot, availableCount: number): Promise
       ...miniSite,
       availability_widget: {
         total_slots: availableCount,
-        next_available_date: slot.date.toISOString(),
+        next_available_date: slot.date ? new Date(slot.date).toISOString() : new Date().toISOString(),
         last_updated: new Date().toISOString(),
         slot_types: {
           'in-person': availableCount > 0,
@@ -228,8 +228,9 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
   // Fetch time slots for a specific exhibitor (userId)
   fetchTimeSlots: async (exhibitorId: string) => {
-    // Validation: exhibitorId must be a valid UUID
-    if (!exhibitorId || !exhibitorId.includes('-') || exhibitorId.length !== 36) {
+    // Validation: exhibitorId must be a valid UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!exhibitorId || !uuidRegex.test(exhibitorId)) {
       console.warn('[APPOINTMENT] Invalid exhibitorId format:', exhibitorId);
       set({ timeSlots: [], isLoading: false });
       return;
@@ -267,7 +268,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
         const transformedSlots = (data || []).map((slot: any) => ({
           id: slot.id,
           exhibitorId: slot.exhibitor_id,
-          date: new Date(slot.slot_date),
+          date: slot.slot_date ? new Date(slot.slot_date) : new Date(),
           startTime: slot.start_time,
           endTime: slot.end_time,
           duration: slot.duration,

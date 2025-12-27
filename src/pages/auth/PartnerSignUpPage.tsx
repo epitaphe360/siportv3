@@ -186,7 +186,7 @@ export default function PartnerSignUpPage() {
     };
 
     try {
-      // ðŸ” Exécuter reCAPTCHA avant inscription
+      //  Exécuter reCAPTCHA avant inscription
       let recaptchaToken: string | undefined;
       if (isRecaptchaReady) {
         try {
@@ -226,7 +226,7 @@ export default function PartnerSignUpPage() {
       navigate(`${ROUTES.SIGNUP_CONFIRMATION}?email=${encodeURIComponent(email)}&type=partner`);
     } catch (error) {
       console.error("Sign up error:", error);
-      toast.error((error as Error).message || "Une erreur s'est produite lors de l'inscription.");
+      toast.error(error instanceof Error ? error.message : "Une erreur s'est produite lors de l'inscription.");
     } finally {
       setIsLoading(false);
       setShowPreview(false);

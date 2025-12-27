@@ -164,8 +164,9 @@ export default function PendingAccountPage() {
   };
 
   const copyToClipboard = (text: string, label: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success(`${label} copie !`);
+    navigator.clipboard.writeText(text)
+      .then(() => toast.success(`${label} copie !`))
+      .catch(() => toast.error('Impossible de copier'));
   };
 
   const getStatusInfo = () => {

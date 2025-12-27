@@ -185,8 +185,12 @@ async function decodeJWT(token: string, secret: string): Promise<any> {
     throw new Error('Invalid JWT signature');
   }
 
-  const payload = JSON.parse(atob(payloadB64));
-  return payload;
+  try {
+    const payload = JSON.parse(atob(payloadB64));
+    return payload;
+  } catch (e) {
+    throw new Error('Invalid JWT payload format');
+  }
 }
 
 /**

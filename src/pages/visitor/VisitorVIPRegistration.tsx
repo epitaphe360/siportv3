@@ -111,7 +111,7 @@ export default function VisitorVIPRegistration() {
       if (photoFile) {
         console.log('📷 Upload photo en cours...');
         try {
-          const fileExt = photoFile.name.split('.').pop();
+          const fileExt = photoFile.name.split('.').pop() || 'jpg';
           const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
           const filePath = `visitor-photos/${fileName}`;
 
@@ -618,7 +618,7 @@ export default function VisitorVIPRegistration() {
                     <span><strong>Ateliers et conférences VIP</strong> - Contenus exclusifs</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-yellow-600 mr-2">âœ“</span>
+                    <span className="text-yellow-600 mr-2">✓</span>
                     <span><strong>Tableau de bord complet</strong> - Gestion rendez-vous et networking</span>
                   </li>
                 </ul>

@@ -16,7 +16,7 @@ export default function VisitorUpgrade() {
           <Button>Choisir Pass Gratuit</Button>
         </div>
         <div style={{padding:12,border:'1px solid #eaeaea',borderRadius:8}}>
-          <h3>Pass Premium VIP - 700â‚¬</h3>
+          <h3>Pass Premium VIP - 700€</h3>
           <p>RDV B2B illimités + Tous les avantages</p>
           <ul style={{fontSize:'12px',marginTop:'8px',textAlign:'left'}}>
             <li>Invitation inauguration</li>

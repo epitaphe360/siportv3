@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import useAuthStore from '../../store/authStore';
 import { BANK_TRANSFER_INFO, generatePaymentReference } from '../../config/bankTransferConfig';
+import { toast } from 'sonner';
 
 interface PaymentRequest {
   id: string;
@@ -56,7 +57,7 @@ export default function PaymentInstructionsPage() {
 
   async function handleSubmitProof() {
     if (!requestId || !reference) {
-      alert('Veuillez renseigner la référence du virement');
+      toast.error('Veuillez renseigner la référence du virement');
       return;
     }
 
@@ -74,10 +75,10 @@ export default function PaymentInstructionsPage() {
 
       if (error) throw error;
 
-      alert('âœ… Justificatif enregistré ! Votre paiement sera validé sous 24-48h.');
+      toast.success('Justificatif enregistré ! Votre paiement sera validé sous 24-48h.');
       loadData();
     } catch (error: any) {
-      alert(`âŒ Erreur: ${error.message}`);
+      toast.error(`Erreur: ${error.message}`);
     } finally {
       setUploading(false);
     }
@@ -97,9 +98,9 @@ export default function PaymentInstructionsPage() {
 
   return (
     <div style={{ maxWidth: 800, margin: 'auto', padding: 32 }}>
-      <h1>ðŸ’³ Instructions de Paiement</h1>
+      <h1> Instructions de Paiement</h1>
       <p style={{ fontSize: 18, color: '#666' }}>
-        Pass Premium VIP - {amount.toFixed(2)}â‚¬
+        Pass Premium VIP - {amount.toFixed(2)}€
       </p>
 
       {paymentRequest?.status === 'pending' && (
@@ -110,7 +111,7 @@ export default function PaymentInstructionsPage() {
 
       {paymentRequest?.status === 'approved' && (
         <div style={{ background: '#d4edda', padding: 16, borderRadius: 8, marginBottom: 24 }}>
-          âœ… <strong>Paiement approuvé ! Vous avez maintenant accès au Pass Premium VIP.</strong>
+          ✅ <strong>Paiement approuvé ! Vous avez maintenant accès au Pass Premium VIP.</strong>
         </div>
       )}
 
@@ -126,7 +127,7 @@ export default function PaymentInstructionsPage() {
       )}
 
       <div style={{ background: '#f8f9fa', padding: 24, borderRadius: 8, marginBottom: 24 }}>
-        <h2>ðŸ“‹ Informations Bancaires</h2>
+        <h2> Informations Bancaires</h2>
         <div style={{ marginBottom: 12 }}>
           <strong>Banque :</strong> {bankInfo.bankName}
         </div>
@@ -148,7 +149,7 @@ export default function PaymentInstructionsPage() {
       </div>
 
       <div style={{ background: '#e7f3ff', padding: 24, borderRadius: 8, marginBottom: 24 }}>
-        <h3>ðŸ“ Instructions</h3>
+        <h3> Instructions</h3>
         <ol>
           <li>Effectuez un virement de <strong>{amount.toFixed(2)} EUR</strong> sur le compte ci-dessus</li>
           <li><strong>IMPORTANT :</strong> Indiquez la référence <code>{referenceCode}</code> dans le libellé du virement</li>
@@ -161,7 +162,7 @@ export default function PaymentInstructionsPage() {
 
       {paymentRequest?.status === 'pending' && !paymentRequest.transfer_reference && (
         <div style={{ background: '#fff', padding: 24, borderRadius: 8, border: '1px solid #ddd' }}>
-          <h3>ðŸ“¤ Soumettre votre justificatif</h3>
+          <h3> Soumettre votre justificatif</h3>
 
           <div style={{ marginBottom: 16 }}>
             <label style={{ display: 'block', marginBottom: 8, fontWeight: 'bold' }}>
@@ -229,7 +230,7 @@ export default function PaymentInstructionsPage() {
 
       {paymentRequest?.transfer_reference && (
         <div style={{ background: '#d1ecf1', padding: 16, borderRadius: 8 }}>
-          âœ… Justificatif soumis le {new Date(paymentRequest.transfer_date || '').toLocaleDateString('fr-FR')}
+          ✅ Justificatif soumis le {new Date(paymentRequest.transfer_date || '').toLocaleDateString('fr-FR')}
           <div style={{ marginTop: 8 }}>
             <strong>Référence :</strong> {paymentRequest.transfer_reference}
           </div>
@@ -241,7 +242,7 @@ export default function PaymentInstructionsPage() {
 
       <div style={{ marginTop: 32, padding: 16, background: '#f8f9fa', borderRadius: 8 }}>
         <p style={{ margin: 0, fontSize: 14, color: '#666' }}>
-          <strong>ðŸ’¡ Besoin d'aide ?</strong> Contactez-nous à <a href={`mailto:${bankInfo.supportEmail}`}>{bankInfo.supportEmail}</a>
+          <strong> Besoin d'aide ?</strong> Contactez-nous à <a href={`mailto:${bankInfo.supportEmail}`}>{bankInfo.supportEmail}</a>
         </p>
       </div>
     </div>

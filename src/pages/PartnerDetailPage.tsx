@@ -229,11 +229,12 @@ export default function PartnerDetailPage() {
     };
 
     if (navigator.share) {
-      navigator.share(shareData);
+      navigator.share(shareData).catch(() => {});
     } else {
       // Fallback: copier le lien dans le presse-papiers
-      navigator.clipboard.writeText(shareData.url);
-      toast.success('Lien copié dans le presse-papiers !');
+      navigator.clipboard.writeText(shareData.url)
+        .then(() => toast.success('Lien copié dans le presse-papiers !'))
+        .catch(() => toast.error('Impossible de copier le lien'));
     }
   };
 
@@ -360,7 +361,7 @@ export default function PartnerDetailPage() {
                   <Calendar className="h-6 w-6 text-blue-600" />
                 </div>
                 <div className="text-2xl font-bold text-gray-900 mb-1">
-                  {new Date().getFullYear() - partner.establishedYear}+
+                  {partner.establishedYear ? Math.max(0, new Date().getFullYear() - partner.establishedYear) : 0}+
                 </div>
                 <div className="text-sm text-gray-600">Années d'expérience</div>
               </Card>
@@ -516,7 +517,7 @@ export default function PartnerDetailPage() {
                   </div>
                   
                   <div className="text-center p-6 bg-blue-50 rounded-lg">
-                    <div className="text-3xl font-bold text-blue-600 mb-2">3.2Mâ‚¬</div>
+                    <div className="text-3xl font-bold text-blue-600 mb-2">3.2M€</div>
                     <div className="text-sm text-blue-700">Valeur Générée</div>
                   </div>
                   
@@ -561,7 +562,7 @@ export default function PartnerDetailPage() {
                     
                     <div className="flex items-center space-x-3">
                       <Mail className="h-5 w-5 text-gray-400" />
-                      <span className="text-gray-700">contact@{partner.name.toLowerCase().replace(/\s+/g, '')}.com</span>
+                      <span className="text-gray-700">contact@{partner?.name?.toLowerCase().replace(/\s+/g, '') || 'contact'}.com</span>
                     </div>
                     
                     {partner.website && (
@@ -588,8 +589,8 @@ export default function PartnerDetailPage() {
                           </div>
                         </div>
                         <div className="text-sm text-gray-600">
-                          <p>ðŸ“§ ahmed.mansouri@portcasablanca.ma</p>
-                          <p>ðŸ“± </p>
+                          <p> ahmed.mansouri@portcasablanca.ma</p>
+                          <p> </p>
                         </div>
                       </div>
                     </div>

@@ -77,10 +77,10 @@ export default function AvailabilitySettingsPage() {
                 Pourquoi définir vos disponibilités ?
               </h3>
               <ul className="text-sm text-blue-700 space-y-1">
-                <li>â• Permettre aux visiteurs de réserver des rendez-vous personnalisés</li>
-                <li>â• Améliorer votre visibilité dans les recommandations IA</li>
-                <li>â• Optimiser votre temps sur le salon SIPORTS 2026</li>
-                <li>â• Créer des opportunités de networking ciblées</li>
+                <li>• Permettre aux visiteurs de réserver des rendez-vous personnalisés</li>
+                <li>• Améliorer votre visibilité dans les recommandations IA</li>
+                <li>• Optimiser votre temps sur le salon SIPORTS 2026</li>
+                <li>• Créer des opportunités de networking ciblées</li>
               </ul>
             </div>
           </div>
@@ -97,18 +97,18 @@ export default function AvailabilitySettingsPage() {
         <Card className="p-6 mt-8 bg-green-50 border-green-200">
           <div className="flex items-start space-x-3">
             <div className="bg-green-100 p-2 rounded-lg">
-              <span className="text-2xl">ðŸ’¡</span>
+              <span className="text-2xl">
             </div>
             <div>
               <h3 className="font-semibold text-green-900 mb-2">
                 Conseils pour optimiser vos disponibilités
               </h3>
               <ul className="text-sm text-green-700 space-y-1">
-                <li>â• Définissez des créneaux pendant les heures d'ouverture du salon (9h-18h)</li>
-                <li>â• Prévoyez des pauses entre vos rendez-vous pour les déplacements</li>
-                <li>â• Indiquez clairement le lieu de rencontre (stand, salle de réunion, etc.)</li>
-                <li>â• Mettez à jour vos disponibilités en temps réel si nécessaire</li>
-                <li>â• Proposez différents types de rencontre (présentiel, virtuel, hybride)</li>
+                <li>• Définissez des créneaux pendant les heures d'ouverture du salon (9h-18h)</li>
+                <li>• Prévoyez des pauses entre vos rendez-vous pour les déplacements</li>
+                <li>• Indiquez clairement le lieu de rencontre (stand, salle de réunion, etc.)</li>
+                <li>• Mettez à jour vos disponibilités en temps réel si nécessaire</li>
+                <li>• Proposez différents types de rencontre (présentiel, virtuel, hybride)</li>
               </ul>
             </div>
           </div>

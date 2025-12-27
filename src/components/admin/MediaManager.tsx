@@ -487,7 +487,7 @@ export default function MediaManager() {
                           <tr key={file.id} className="hover:bg-gray-50">
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="flex items-center">
-                                {file.metadata.mimetype.startsWith('image/') ? (
+                                {file.metadata?.mimetype?.startsWith('image/') ? (
                                   <ImageIcon className="h-5 w-5 text-blue-500 mr-3" />
                                 ) : (
                                   <File className="h-5 w-5 text-gray-500 mr-3" />
@@ -499,7 +499,7 @@ export default function MediaManager() {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="text-sm text-gray-500">
-                                {file.metadata.mimetype}
+                                {file.metadata?.mimetype || 'unknown'}
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">

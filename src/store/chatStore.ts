@@ -46,8 +46,13 @@ const loadChatData = async (userId: string) => {
     // Charger les messages pour chaque conversation
     const messages: Record<string, ChatMessage[]> = {};
     for (const conversation of conversations) {
-      const convMessages = await SupabaseService.getMessages(conversation.id);
-      messages[conversation.id] = convMessages;
+      try {
+        const convMessages = await SupabaseService.getMessages(conversation.id);
+        messages[conversation.id] = convMessages || [];
+      } catch (err) {
+        console.warn(`Failed to load messages for conversation ${conversation.id}:`, err);
+        messages[conversation.id] = [];
+      }
     }
 
     return {
@@ -126,7 +131,12 @@ export const useChatStore = create<ChatState>((set, get) => ({
       // Identifier l'expéditeur et le destinataire
       // Note: participants est un string[] (array d'IDs), pas un array d'objets
       const senderId = user.id;
-      const receiverId = conversation.participants.find(p => p !== senderId) || '';
+      const participants = conversation.participants || [];
+      const receiverId = participants.find(p => p !== senderId);
+
+      if (!receiverId) {
+        throw new Error('Destinataire non trouvé dans la conversation');
+      }
 
       // Envoyer via Supabase
       const sentMessage = await SupabaseService.sendMessage(

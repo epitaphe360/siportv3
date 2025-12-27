@@ -49,7 +49,8 @@ export async function initializeAuth() {
       // This prevents ghost sessions where localStorage has data but the token is invalid
       // EXCEPTION: Don't logout if user was just created (within last 5 seconds)
       const storedUser = useAuthStore.getState().user;
-      const createdAt = storedUser?.createdAt ? new Date(storedUser.createdAt).getTime() : 0;
+      const createdAtDate = storedUser?.createdAt ? new Date(storedUser.createdAt) : null;
+      const createdAt = createdAtDate && !isNaN(createdAtDate.getTime()) ? createdAtDate.getTime() : 0;
       const now = Date.now();
       const wasJustCreated = (now - createdAt) < 5000; // Within 5 seconds
       
@@ -64,7 +65,11 @@ export async function initializeAuth() {
     }
 
     // Get full user profile from database
-    const userProfile = await SupabaseService.getUserByEmail(session.user.email!);
+    if (!session.user.email) {
+      console.warn('[AUTH] Session sans email, impossible de récupérer le profil');
+      return;
+    }
+    const userProfile = await SupabaseService.getUserByEmail(session.user.email);
 
     if (userProfile) {
       // CRITICAL: Verification supplementaire pour les admins

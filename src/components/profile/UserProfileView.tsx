@@ -27,12 +27,12 @@ export default function UserProfileView({
 
   const handleConnect = () => {
     onConnect?.(user.id);
-    toast.success(`Demande de connexion envoyée à ${user.profile.firstName} ${user.profile.lastName}`);
+    toast.success(`Demande de connexion envoyée à ${user?.profile?.firstName || ''} ${user?.profile?.lastName || ''}`);
   };
 
   const handleMessage = () => {
-    onMessage?.(`${user.profile.firstName} ${user.profile.lastName}`);
-    toast.success(`Ouverture du chat avec ${user.profile.firstName} ${user.profile.lastName}`);
+    onMessage?.(`${user?.profile?.firstName || ''} ${user?.profile?.lastName || ''}`);
+    toast.success(`Ouverture du chat avec ${user?.profile?.firstName || ''} ${user?.profile?.lastName || ''}`);
   };
 
   const getUserTypeLabel = (type: string) => {
@@ -62,17 +62,17 @@ export default function UserProfileView({
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-4">
             <Avatar className="h-20 w-20 border-4 border-white">
-              <AvatarImage src={user.profile.avatar} alt={`${user.profile.firstName} ${user.profile.lastName}`} />
+              <AvatarImage src={user?.profile?.avatar} alt={`${user?.profile?.firstName || ''} ${user?.profile?.lastName || ''}`} />
               <AvatarFallback className="bg-white/20 text-white text-xl font-bold">
-                {user.profile.firstName[0]}{user.profile.lastName[0]}
+                {user?.profile?.firstName?.[0] || 'U'}{user?.profile?.lastName?.[0] || 'U'}
               </AvatarFallback>
             </Avatar>
             <div>
               <h1 className="text-2xl font-bold">
-                {user.profile.firstName} {user.profile.lastName}
+                {user?.profile?.firstName || ''} {user?.profile?.lastName || ''}
               </h1>
-              <p className="text-blue-100">{user.profile.position}</p>
-              <p className="text-blue-100">{user.profile.company}</p>
+              <p className="text-blue-100">{user?.profile?.position || ''}</p>
+              <p className="text-blue-100">{user?.profile?.company || ''}</p>
               <div className="flex items-center space-x-2 mt-2">
                 <Badge className={`${getUserTypeColor(user.type)} border-white/30`}>
                   {getUserTypeLabel(user.type)}

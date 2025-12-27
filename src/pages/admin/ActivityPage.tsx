@@ -368,20 +368,20 @@ export default function ActivityPage() {
 
                       <div className="flex items-center space-x-4 text-xs text-gray-500">
                         <span>{formatDate(activity.created_at)}</span>
-                        <span>â•</span>
+                        <span>•</span>
                         <span>{activity.metadata?.user || 'N/A'}</span>
                       </div>
 
                       {/* Détails supplémentaires */}
                       <div className="mt-2 text-xs text-gray-600">
                         {activity.activity_type === 'user_registration' && activity.metadata && (
-                          <span>ID: {activity.metadata.userId} â• Email: {activity.metadata.email}</span>
+                          <span>ID: {activity.metadata.userId} • Email: {activity.metadata.email}</span>
                         )}
                         {activity.activity_type === 'exhibitor_validation' && activity.metadata && (
-                          <span>Stand: {activity.metadata.standNumber} â• Catégorie: {activity.metadata.category}</span>
+                          <span>Stand: {activity.metadata.standNumber} • Catégorie: {activity.metadata.category}</span>
                         )}
                         {activity.activity_type === 'security_alert' && activity.metadata && (
-                          <span>IP: {activity.metadata.ipAddress} â• Tentatives: {activity.metadata.attempts}</span>
+                          <span>IP: {activity.metadata.ipAddress} • Tentatives: {activity.metadata.attempts}</span>
                         )}
                         {activity.activity_type === 'event_registration' && activity.metadata && (
                           <span>Inscriptions: {activity.metadata.registrations}/{activity.metadata.capacity}</span>

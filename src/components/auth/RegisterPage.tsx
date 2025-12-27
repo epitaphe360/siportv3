@@ -336,7 +336,7 @@ export default function RegisterPage() {
       }, 6000);
     } catch (error) {
       console.error('Registration error:', error);
-      toast.error((error as Error).message || 'Erreur lors de l\'inscription');
+      toast.error(error instanceof Error ? error.message : 'Erreur lors de l\'inscription');
     }
   };
 

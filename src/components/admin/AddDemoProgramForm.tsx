@@ -322,9 +322,11 @@ export default function AddDemoProgramPage() {
                       type="button"
                       variant="outline"
                       onClick={(e) => {
-                        const input = e.currentTarget.previousElementSibling as HTMLInputElement;
-                        addTag(input.value);
-                        input.value = '';
+                        const input = e.currentTarget.previousElementSibling as HTMLInputElement | null;
+                        if (input) {
+                          addTag(input.value);
+                          input.value = '';
+                        }
                       }}
                     >
                       Ajouter

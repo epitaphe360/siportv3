@@ -75,19 +75,26 @@ export default function ExhibitorDetailPage() {
     };
 
     if (navigator.share) {
-      navigator.share(shareData);
+      navigator.share(shareData).catch(() => {});
     } else {
-      navigator.clipboard.writeText(shareData.url);
-      toast.success('Lien copié dans le presse-papiers !');
+      navigator.clipboard.writeText(shareData.url)
+        .then(() => toast.success('Lien copié dans le presse-papiers !'))
+        .catch(() => toast.error('Impossible de copier le lien'));
     }
   };
 
   const handleDownloadBrochure = () => {
-    // Simulate brochure download - replace with real download logic
-    const brochureUrl = 'https://example.com/brochure.pdf'; // Replace with actual brochure URL from exhibitor data
+    // Get brochure URL from exhibitor data
+    const brochureUrl = exhibitor?.brochure_url || exhibitor?.documents?.[0]?.url;
+
+    if (!brochureUrl) {
+      toast.error('Brochure non disponible pour cet exposant');
+      return;
+    }
+
     const link = document.createElement('a');
     link.href = brochureUrl;
-    link.download = `${exhibitor?.companyName}-brochure.pdf`;
+    link.download = `${exhibitor?.companyName || 'exposant'}-brochure.pdf`;
     link.target = '_blank';
     document.body.appendChild(link);
     link.click();
@@ -238,7 +245,7 @@ export default function ExhibitorDetailPage() {
             {[
               { id: 'overview', label: 'Vue d\'ensemble', icon: Eye },
               { id: 'projects', label: 'Produits', icon: Package },
-              { id: 'impact', label: 'Ã€ propos', icon: Building2 },
+              { id: 'impact', label: 'À propos', icon: Building2 },
               { id: 'contact', label: 'Contact', icon: MessageCircle }
             ].map((tab) => (
               <button
@@ -308,7 +315,7 @@ export default function ExhibitorDetailPage() {
             </div>
 
             {/* Certifications */}
-            {exhibitor.certifications.length > 0 && (
+            {exhibitor.certifications?.length > 0 && (
               <Card>
                 <div className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -371,7 +378,7 @@ export default function ExhibitorDetailPage() {
                     transition={{ delay: index * 0.1 }}
                   >
                     <Card hover className="h-full">
-                      {product.images.length > 0 && (
+                      {product.images?.length > 0 && (
                         <img
                           src={product.images[0]}
                           alt={product.name}
@@ -430,7 +437,7 @@ export default function ExhibitorDetailPage() {
             <Card>
               <div className="p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Ã€ propos de {exhibitor.companyName}
+                  À propos de {exhibitor.companyName}
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

@@ -31,7 +31,7 @@ const ExhibitorProfileImageForm: React.FC<ExhibitorProfileImageFormProps> = ({
       await onSave(logoUrl);
     } catch (err: unknown) {
       console.error('Erreur lors de la sauvegarde:', err);
-      setError(err.message || 'Erreur lors de la sauvegarde du logo');
+      setError(err instanceof Error ? err.message : 'Erreur lors de la sauvegarde du logo');
     } finally {
       setIsSaving(false);
     }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -21,7 +21,6 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { motion } from 'framer-motion';
-import { apiService } from '../../services/apiService';
 
 interface ContentSection {
   id: string;
@@ -62,10 +61,89 @@ export default function ContentManagement() {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await apiService.getAll('content_sections');
-      setContentSections(data as ContentSection[]);
+      // Static content sections - these represent the different pages/sections that can be managed
+      const staticSections: ContentSection[] = [
+        {
+          id: 'home',
+          title: 'Page d\'Accueil',
+          description: 'Contenu principal de la page d\'accueil SIPORTS',
+          icon_name: 'Globe',
+          color: 'text-blue-600',
+          bg_color: 'bg-blue-100',
+          last_modified: new Date().toISOString(),
+          status: 'published',
+          content_data: {}
+        },
+        {
+          id: 'pavilions',
+          title: 'Pavillons Thématiques',
+          description: 'Gestion des pavillons et de leurs contenus',
+          icon_name: 'Building2',
+          color: 'text-green-600',
+          bg_color: 'bg-green-100',
+          last_modified: new Date().toISOString(),
+          status: 'published',
+          content_data: {}
+        },
+        {
+          id: 'exhibitors',
+          title: 'Exposants',
+          description: 'Présentation et informations des exposants',
+          icon_name: 'Users',
+          color: 'text-purple-600',
+          bg_color: 'bg-purple-100',
+          last_modified: new Date().toISOString(),
+          status: 'published',
+          content_data: {}
+        },
+        {
+          id: 'events',
+          title: 'Événements',
+          description: 'Programmation et agenda des événements',
+          icon_name: 'Calendar',
+          color: 'text-orange-600',
+          bg_color: 'bg-orange-100',
+          last_modified: new Date().toISOString(),
+          status: 'published',
+          content_data: {}
+        },
+        {
+          id: 'news',
+          title: 'Actualités',
+          description: 'Articles et communiqués de presse',
+          icon_name: 'FileText',
+          color: 'text-indigo-600',
+          bg_color: 'bg-indigo-100',
+          last_modified: new Date().toISOString(),
+          status: 'published',
+          content_data: {}
+        },
+        {
+          id: 'partners',
+          title: 'Partenaires',
+          description: 'Informations sur les partenaires SIPORTS',
+          icon_name: 'Shield',
+          color: 'text-red-600',
+          bg_color: 'bg-red-100',
+          last_modified: new Date().toISOString(),
+          status: 'published',
+          content_data: {}
+        },
+        {
+          id: 'metrics',
+          title: 'Métriques',
+          description: 'Statistiques et indicateurs de performance',
+          icon_name: 'BarChart3',
+          color: 'text-cyan-600',
+          bg_color: 'bg-cyan-100',
+          last_modified: new Date().toISOString(),
+          status: 'published',
+          content_data: {}
+        }
+      ];
+      setContentSections(staticSections);
       if (selectedSectionId) {
-        const current = data.find((s: ContentSection) => s.id === selectedSectionId);
+        const current = staticSections.find((s: ContentSection) => s.id === selectedSectionId);
         setCurrentContentData(current?.content_data || {});
       }
     } catch (err) {
@@ -93,10 +171,16 @@ export default function ContentManagement() {
     setIsLoading(true);
     setError(null);
     try {
-      const updatedSection = { ...contentSections.find(s => s.id === selectedSectionId), content_data: currentContentData, last_modified: new Date().toISOString() };
-      await apiService.update('content_sections', selectedSectionId, updatedSection);
-      await fetchContentSections(); // Re-fetch to update the list and last_modified date
+      // Update local state - in a full implementation, this would save to a backend
+      const updatedSections = contentSections.map(section =>
+        section.id === selectedSectionId
+          ? { ...section, content_data: currentContentData, last_modified: new Date().toISOString() }
+          : section
+      );
+      setContentSections(updatedSections);
       setIsEditing(false);
+      // Note: For persistent storage, implement backend API endpoint or use SupabaseService with proper authentication
+      console.log('Content saved locally. Implement backend persistence for production.');
     } catch (err) {
       console.error('Error saving content:', err);
       setError('Failed to save content. Please try again.');

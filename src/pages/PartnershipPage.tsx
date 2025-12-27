@@ -37,10 +37,10 @@ export default function PartnershipPage() {
               Visibilité maximale avec logo sur tous les supports de communication et présence dans les zones VIP.
             </p>
             <ul className="text-left text-sm text-gray-600 mb-6 space-y-2">
-              <li>â• Logo sur le site web principal</li>
-              <li>â• Présence dans les newsletters</li>
-              <li>â• Accès aux zones VIP</li>
-              <li>â• Stand dédié dans les pavillons</li>
+              <li>• Logo sur le site web principal</li>
+              <li>• Présence dans les newsletters</li>
+              <li>• Accès aux zones VIP</li>
+              <li>• Stand dédié dans les pavillons</li>
             </ul>
             <Button onClick={handleContact} className="w-full">
               Devenir Partenaire Premium
@@ -58,10 +58,10 @@ export default function PartnershipPage() {
               Participez aux conférences techniques et démontrez votre expertise auprès des professionnels du secteur.
             </p>
             <ul className="text-left text-sm text-gray-600 mb-6 space-y-2">
-              <li>â• Intervention dans les conférences</li>
-              <li>â• Présence dans le catalogue officiel</li>
-              <li>â• Accès aux données des participants</li>
-              <li>â• Support marketing personnalisé</li>
+              <li>• Intervention dans les conférences</li>
+              <li>• Présence dans le catalogue officiel</li>
+              <li>• Accès aux données des participants</li>
+              <li>• Support marketing personnalisé</li>
             </ul>
             <Button onClick={handleContact} variant="outline" className="w-full">
               Devenir Partenaire Technique
@@ -79,10 +79,10 @@ export default function PartnershipPage() {
               Couvrez l'événement et bénéficiez d'un accès privilégié aux informations et aux intervenants.
             </p>
             <ul className="text-left text-sm text-gray-600 mb-6 space-y-2">
-              <li>â• Accréditation presse complète</li>
-              <li>â• Accès aux conférences et ateliers</li>
-              <li>â• Communiqués de presse exclusifs</li>
-              <li>â• Photos et vidéos officielles</li>
+              <li>• Accréditation presse complète</li>
+              <li>• Accès aux conférences et ateliers</li>
+              <li>• Communiqués de presse exclusifs</li>
+              <li>• Photos et vidéos officielles</li>
             </ul>
             <Button onClick={handleContact} variant="outline" className="w-full">
               Devenir Partenaire Média
@@ -104,9 +104,9 @@ export default function PartnershipPage() {
                 SIPORTS 2026 rassemble plus de 500 exposants et 10 000 visiteurs professionnels du monde entier.
               </p>
               <ul className="text-gray-600 space-y-2">
-                <li>â• Exposition auprès de décideurs clés</li>
-                <li>â• Couverture médiatique internationale</li>
-                <li>â• Réseau professionnel étendu</li>
+                <li>• Exposition auprès de décideurs clés</li>
+                <li>• Couverture médiatique internationale</li>
+                <li>• Réseau professionnel étendu</li>
               </ul>
             </div>
             <div>
@@ -117,9 +117,9 @@ export default function PartnershipPage() {
                 Nos partenaires bénéficient d'un ROI démontré grâce à notre stratégie marketing ciblée.
               </p>
               <ul className="text-gray-600 space-y-2">
-                <li>â• Génération de leads qualifiés</li>
-                <li>â• Opportunités business concrètes</li>
-                <li>â• Image de marque renforcée</li>
+                <li>• Génération de leads qualifiés</li>
+                <li>• Opportunités business concrètes</li>
+                <li>• Image de marque renforcée</li>
               </ul>
             </div>
           </div>

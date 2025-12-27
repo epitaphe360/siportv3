@@ -585,7 +585,7 @@ export class SupabaseService {
     if (endTime && typeof endTime === 'string' && endTime.includes(':') && !endTime.includes('-') && !endTime.includes('T')) {
       const [hours, minutes] = endTime.split(':').map(Number);
       endDate = new Date(startDate);
-      endDate.setHours(hours || 0, minutes || 0, 0);
+      endDate.setHours(Number.isFinite(hours) ? hours : 0, Number.isFinite(minutes) ? minutes : 0, 0);
     } else {
       endDate = new Date(endTime || startTime);
     }
@@ -1207,8 +1207,8 @@ export class SupabaseService {
           participants: conv.participants,
           lastMessage: lastMessage ? {
             id: lastMessage.id,
-            senderId: lastMessage.sender.id,
-            receiverId: conv.participants.find((id: string) => id !== lastMessage.sender.id),
+            senderId: lastMessage.sender?.id || '',
+            receiverId: conv.participants.find((id: string) => id !== lastMessage.sender?.id) || '',
             content: lastMessage.content,
             type: lastMessage.message_type,
             timestamp: new Date(lastMessage.created_at),

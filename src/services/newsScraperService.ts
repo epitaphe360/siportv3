@@ -135,7 +135,7 @@ export class NewsScraperService {
 
       // If no title found, try the element's text content
       if (!title) {
-        title = element.textContent?.trim().split('\n')[0] || `Article ${index + 1}`;
+        title = element.textContent?.trim()?.split('\n')[0] || `Article ${index + 1}`;
       }
 
       // Extract excerpt/description

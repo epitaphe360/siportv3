@@ -208,10 +208,13 @@ export default function PartnerBankTransferPage() {
   }
 
   function copyToClipboard(text: string, label: string) {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    toast.success(`${label} copié dans le presse-papier`);
-    setTimeout(() => setCopied(false), 2000);
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        setCopied(true);
+        toast.success(`${label} copié dans le presse-papier`);
+        setTimeout(() => setCopied(false), 2000);
+      })
+      .catch(() => toast.error('Impossible de copier'));
   }
 
   if (loading) {
@@ -412,7 +415,7 @@ export default function PartnerBankTransferPage() {
         {/* Instructions Card */}
         <Card className="p-6 mb-6">
           <h3 className="text-xl font-bold text-gray-900 mb-4">
-            ðŸ“ {instructions.title}
+             {instructions.title}
           </h3>
 
           <div className="space-y-4">
@@ -444,7 +447,7 @@ export default function PartnerBankTransferPage() {
               </h4>
               <ul className="space-y-1 text-sm text-blue-800">
                 {instructions.additionalInfo.map((item, index) => (
-                  <li key={index}>â• {item}</li>
+                  <li key={index}>• {item}</li>
                 ))}
               </ul>
             </div>
@@ -592,7 +595,7 @@ export default function PartnerBankTransferPage() {
         {/* Features Included */}
         <Card className="p-6 mb-6">
           <h3 className="text-xl font-bold text-gray-900 mb-4">
-            âœ¨ Inclus dans votre abonnement {tierInfo.displayName}
+            ✨ Inclus dans votre abonnement {tierInfo.displayName}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {tierInfo.features.map((feature, index) => (
@@ -607,7 +610,7 @@ export default function PartnerBankTransferPage() {
         {/* Support Contact */}
         <Card className="p-6 bg-gray-50">
           <h3 className="text-lg font-semibold text-gray-900 mb-3">
-            ðŸ’¡ Besoin d'aide ?
+             Besoin d'aide ?
           </h3>
           <div className="space-y-2 text-sm text-gray-700">
             <p>

@@ -98,7 +98,7 @@ export default function NewsPage() {
       if (result && result.success) {
         const { inserted, updated, total } = result.stats;
         toast.success(
-          `âœ… Synchronisation réussie ! ${inserted} nouveaux articles, ${updated} mis à jour sur ${total} trouvés`,
+          `✅ Synchronisation réussie ! ${inserted} nouveaux articles, ${updated} mis à jour sur ${total} trouvés`,
           { id: 'sync-articles', duration: 5000 }
         );
       } else {
@@ -227,7 +227,7 @@ export default function NewsPage() {
         {featuredArticles.length > 0 && !selectedCategory && !searchTerm && (
           <div className="mb-12">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Ã€ la Une
+              À la Une
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {featuredArticles.slice(0, 2).map((article, index) => (
@@ -307,10 +307,11 @@ export default function NewsPage() {
                               };
                               
                               if (navigator.share) {
-                                navigator.share(shareData);
+                                navigator.share(shareData).catch(() => {});
                               } else {
-                                navigator.clipboard.writeText(shareData.url);
-                                toast.success(t('contact.success'));
+                                navigator.clipboard.writeText(shareData.url)
+                                  .then(() => toast.success(t('contact.success')))
+                                  .catch(() => toast.error('Impossible de copier'));
                               }
                             }}
                             title="Partager cet article"
@@ -539,7 +540,7 @@ export default function NewsPage() {
               </div>
               
               <p className="text-xs text-blue-200 mt-4">
-                Newsletter hebdomadaire â• Désabonnement facile â• Données protégées
+                Newsletter hebdomadaire • Désabonnement facile • Données protégées
               </p>
             </div>
           </Card>

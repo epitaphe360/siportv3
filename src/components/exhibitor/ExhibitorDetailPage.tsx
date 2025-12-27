@@ -333,11 +333,13 @@ export default function ExhibitorDetailPage() {
                 transition={{ delay: index * 0.1 }}
               >
                 <Card hover className="h-full">
-                  <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    className="w-full h-48 object-cover rounded-t-lg"
-                  />
+                  {product.images?.[0] && (
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      className="w-full h-48 object-cover rounded-t-lg"
+                    />
+                  )}
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-3">
                       <Badge variant="info" size="sm">
@@ -973,7 +975,16 @@ export default function ExhibitorDetailPage() {
             variant="outline" 
             className="rounded-full w-12 h-12 shadow-lg bg-white"
             onClick={() => {
-              const favorites = JSON.parse(localStorage.getItem('siports-favorites') || '[]');
+              let favorites: string[] = [];
+              try {
+                const stored = localStorage.getItem('siports-favorites');
+                if (stored) {
+                  favorites = JSON.parse(stored);
+                }
+              } catch (e) {
+                console.error('Failed to parse favorites:', e);
+                favorites = [];
+              }
               const isFavorite = favorites.includes(exhibitor.id);
 
               if (isFavorite) {

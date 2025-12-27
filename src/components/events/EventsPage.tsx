@@ -347,10 +347,11 @@ export default memo(function EventsPage() {
                                   url: window.location.href + '#event-' + event.id
                                 };
                                 if (navigator.share) {
-                                  navigator.share(shareData);
+                                  navigator.share(shareData).catch(() => {});
                                 } else {
-                                  navigator.clipboard.writeText(shareData.url);
-                                  toast.success("Lien de l'événement copié !");
+                                  navigator.clipboard.writeText(shareData.url)
+                                    .then(() => toast.success("Lien de l'événement copié !"))
+                                    .catch(() => toast.error('Impossible de copier'));
                                 }
                               }}
                               title="Partager cet événement"

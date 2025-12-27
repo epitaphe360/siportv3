@@ -298,7 +298,7 @@ export default function EventsPage() {
                         {event.title}
                       </h3>
                       <p className="text-sm text-gray-600 mb-2">
-                        {getEventTypeLabel(event.event_type)} â• {event.organizer}
+                        {getEventTypeLabel(event.event_type)} • {event.organizer}
                       </p>
                       {getStatusBadge(event.status)}
                     </div>

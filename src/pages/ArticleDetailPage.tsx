@@ -71,8 +71,8 @@ export default function ArticleDetailPage() {
         
         // Articles similaires
         const related = articles
-          .filter(a => a.id !== id && (a.category === foundArticle.category || 
-                      a.tags.some(tag => foundArticle.tags.includes(tag))))
+          .filter(a => a.id !== id && (a.category === foundArticle.category ||
+                      (foundArticle.tags && a.tags?.some(tag => foundArticle.tags?.includes(tag)))))
           .slice(0, 3);
         setRelatedArticles(related);
 
@@ -149,19 +149,20 @@ export default function ArticleDetailPage() {
     };
 
     if (platform === 'native' && navigator.share) {
-      navigator.share(shareData);
+      navigator.share(shareData).catch(() => {});
     } else if (urls[platform as keyof typeof urls]) {
       window.open(urls[platform as keyof typeof urls], '_blank', 'width=600,height=400');
     } else {
-      navigator.clipboard.writeText(shareData.url);
-      toast.success('ðŸ”— Lien de l\'article copié dans le presse-papiers !');
+      navigator.clipboard.writeText(shareData.url)
+        .then(() => toast.success('Lien de l\'article copié dans le presse-papiers !'))
+        .catch(() => toast.error('Impossible de copier le lien'));
     }
   };
 
   const handleBookmark = () => {
   setIsBookmarked(!isBookmarked);
   const action = isBookmarked ? 'retiré des' : 'ajouté aux';
-  toast.success(`ðŸ“– Article ${action} favoris !`);
+  toast.success(`Article ${action} favoris !`);
   };
 
   const handleLike = () => {
@@ -174,7 +175,7 @@ export default function ArticleDetailPage() {
   };
 
   const handleDownloadPDF = () => {
-    toast('ðŸ“„ Génération du PDF en cours...', { icon: 'ðŸ“„' });
+    toast('Génération du PDF en cours...');
   };
 
   return (
@@ -316,7 +317,7 @@ export default function ArticleDetailPage() {
               <p className="text-lg italic text-blue-900">
                 "L'avenir des ports se joue aujourd'hui dans leur capacité à intégrer les technologies émergentes tout en préservant leur efficacité opérationnelle."
               </p>
-              <footer className="text-blue-700 mt-2">â— {article.author}</footer>
+              <footer className="text-blue-700 mt-2">● {article.author}</footer>
             </blockquote>
 
             <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-3">
@@ -365,7 +366,7 @@ export default function ArticleDetailPage() {
                   <div className="text-sm text-gray-600">Gain d'efficacité</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">2.5Mâ‚¬</div>
+                  <div className="text-2xl font-bold text-purple-600">2.5M€</div>
                   <div className="text-sm text-gray-600">Investissement moyen</div>
                 </div>
               </div>
@@ -504,9 +505,9 @@ export default function ArticleDetailPage() {
                   Expert en développement portuaire et innovation maritime. Contributeur régulier aux publications spécialisées du secteur.
                 </p>
                 <div className="flex items-center space-x-4 text-sm text-gray-500">
-                  <span>ðŸ“§ {article.author.toLowerCase().replace(' ', '.')}@siportevent.com</span>
-                  <span>ðŸ”— LinkedIn</span>
-                  <span>ðŸ“° 12 articles publiés</span>
+                  <span>{article.author.toLowerCase().replace(' ', '.')}@siportevent.com</span>
+                  <span>LinkedIn</span>
+                  <span>12 articles publiés</span>
                 </div>
               </div>
             </div>
@@ -597,7 +598,7 @@ export default function ArticleDetailPage() {
                   size="lg" 
                   className="bg-white text-blue-600 hover:bg-blue-50"
                   onClick={() => {
-                    toast.success('âœ… Inscription newsletter confirmée.');
+                    toast.success('✅ Inscription newsletter confirmée.');
                   }}
                 >
                   S'abonner

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Camera,
@@ -68,7 +69,7 @@ export default function QRScanner() {
       setIsScanning(true);
     } catch (err) {
       console.error('Error starting scanner:', err);
-      alert('Impossible de démarrer la caméra');
+      toast.error('Impossible de démarrer la caméra');
     }
   };
 

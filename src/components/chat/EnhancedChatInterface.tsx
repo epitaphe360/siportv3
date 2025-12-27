@@ -385,7 +385,7 @@ export const EnhancedChatInterface: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   {(() => {
-                    const otherParticipant = activeConv.participants.find(p => p.id !== user?.id);
+                    const otherParticipant = (activeConv.participants || []).find(p => p.id !== user?.id);
                     return otherParticipant ? (
                       <>
                         <div className="relative">

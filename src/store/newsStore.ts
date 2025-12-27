@@ -176,7 +176,7 @@ export const useNewsStore = create<NewsState>((set, get) => ({
           tags: article.tags || [],
           featured: article.featured || false,
           image: article.image_url || undefined,
-          readTime: Math.ceil(article.content.split(' ').length / 200),
+          readTime: Math.ceil((article.content || '').split(' ').length / 200),
           source: 'siports' as const,
           views: article.views || 0
         }));

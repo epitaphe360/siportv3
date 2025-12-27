@@ -279,7 +279,7 @@ export const PartnerMediaPage: React.FC = () => {
                   <Award className="h-8 w-8 text-orange-600" />
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-gray-900">{mediaData.overview.mediaValue.toLocaleString()}â‚¬</p>
+                  <p className="text-2xl font-bold text-gray-900">{mediaData.overview.mediaValue.toLocaleString()}€</p>
                   <p className="text-sm text-gray-600">Valeur média</p>
                 </div>
               </div>
@@ -307,8 +307,8 @@ export const PartnerMediaPage: React.FC = () => {
                     </div>
                     <p className="text-gray-600 text-sm mb-2">{item.description}</p>
                     <div className="flex items-center space-x-4 text-sm text-gray-500">
-                      <span>ðŸ“… {item.date}</span>
-                      <span>ðŸ‘ï¸ {item.reach} téléspectateurs</span>
+                      <span> {item.date}</span>
+                      <span> {item.reach} téléspectateurs</span>
                       <span>â±ï¸ {item.duration}</span>
                     </div>
                   </div>
@@ -372,9 +372,9 @@ export const PartnerMediaPage: React.FC = () => {
                     </div>
                     <p className="text-gray-900 text-sm mb-1">{item.content}</p>
                     <div className="flex items-center space-x-4 text-sm text-gray-500">
-                      <span>ðŸ“… {item.date}</span>
-                      <span>ðŸ“Š {item.engagement}</span>
-                      <span>ðŸ‘ï¸ {item.reach} impressions</span>
+                      <span> {item.date}</span>
+                      <span> {item.engagement}</span>
+                      <span> {item.reach} impressions</span>
                     </div>
                   </div>
                   <ExternalLink className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
@@ -404,7 +404,7 @@ export const PartnerMediaPage: React.FC = () => {
                       </span>
                     </div>
                     <p className="text-gray-600 text-sm mb-2">{item.topic}</p>
-                    <span className="text-sm text-gray-500">ðŸ“… {item.date}</span>
+                    <span className="text-sm text-gray-500"> {item.date}</span>
                   </div>
                   <Calendar className="h-5 w-5 text-gray-400" />
                 </div>

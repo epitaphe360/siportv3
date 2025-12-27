@@ -136,6 +136,10 @@ export class StorageService {
       .from(bucket)
       .getPublicUrl(filePath);
 
+    if (!data?.publicUrl) {
+      throw new Error('Impossible de récupérer l\'URL publique du fichier');
+    }
+
     return data.publicUrl;
   }
 
