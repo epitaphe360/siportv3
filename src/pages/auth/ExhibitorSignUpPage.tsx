@@ -279,7 +279,7 @@ export default function ExhibitorSignUpPage() {
       navigate(ROUTES.PENDING_ACCOUNT);
     } catch (error) {
       console.error("Sign up error:", error);
-      toast.error((error as Error).message || "Une erreur s'est produite lors de l'inscription.");
+      toast.error(error instanceof Error ? error.message : "Une erreur s'est produite lors de l'inscription.");
     } finally {
       setIsLoading(false);
       setShowPreview(false);

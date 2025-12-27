@@ -92,7 +92,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       
     } catch (err: unknown) {
       console.error('Erreur upload:', err);
-      setError(err.message || 'Erreur lors du téléchargement');
+      setError(err instanceof Error ? err.message : 'Erreur lors du téléchargement');
     } finally {
       setIsUploading(false);
     }
@@ -119,7 +119,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           setSuccess(false);
         }, 3000);
       } catch (err: unknown) {
-        setError(err.message || 'Erreur lors de la suppression');
+        setError(err instanceof Error ? err.message : 'Erreur lors de la suppression');
       } finally {
         setIsUploading(false);
       }

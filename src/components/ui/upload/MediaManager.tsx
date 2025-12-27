@@ -96,7 +96,7 @@ const MediaManager: React.FC<MediaManagerProps> = ({
       setFiles(mediaFiles);
     } catch (err: unknown) {
       console.error('Erreur lors du chargement des fichiers:', err);
-      setError(err.message || 'Erreur lors du chargement des fichiers');
+      setError(err instanceof Error ? err.message : 'Erreur lors du chargement des fichiers');
     } finally {
       setLoading(false);
     }
@@ -126,7 +126,7 @@ const MediaManager: React.FC<MediaManagerProps> = ({
       await loadFiles();
     } catch (err: unknown) {
       console.error('Erreur lors du téléchargement:', err);
-      setError(err.message || 'Erreur lors du téléchargement des fichiers');
+      setError(err instanceof Error ? err.message : 'Erreur lors du téléchargement des fichiers');
     } finally {
       setUploading(false);
     }
@@ -141,7 +141,7 @@ const MediaManager: React.FC<MediaManagerProps> = ({
         await loadFiles();
       } catch (err: unknown) {
         console.error('Erreur lors de la suppression:', err);
-        setError(err.message || 'Erreur lors de la suppression du fichier');
+        setError(err instanceof Error ? err.message : 'Erreur lors de la suppression du fichier');
       }
     }
   };

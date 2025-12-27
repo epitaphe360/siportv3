@@ -29,6 +29,8 @@ export const lazyRetry = (componentImport: () => Promise<{ default: ComponentTyp
             for (const registration of registrations) {
               registration.unregister();
             }
+          }).catch(() => {
+            // Silently ignore service worker cleanup errors
           });
         }
         
