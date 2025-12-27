@@ -12,15 +12,30 @@ export const lazyRetry = (componentImport: () => Promise<{ default: ComponentTyp
     } catch (error) {
       // Don't log as error to avoid confusing users, just warn
       console.warn('Chunk load failed, attempting recovery:', error);
-      
+
+      // SSR safety check
+      if (typeof window === 'undefined') {
+        throw error;
+      }
+
       // If any error occurs during lazy load, we assume it's a deployment mismatch
       // and force a hard refresh to get the latest version of the app.
-      const lastRetry = window.sessionStorage.getItem('last-lazy-retry');
+      let lastRetry: string | null = null;
+      try {
+        lastRetry = window.sessionStorage.getItem('last-lazy-retry');
+      } catch {
+        // sessionStorage may not be available in private browsing
+      }
       const now = Date.now();
-      
+      const lastRetryTime = lastRetry ? parseInt(lastRetry, 10) : 0;
+
       // Only retry once every 5 seconds (reduced from 10)
-      if (!lastRetry || (now - parseInt(lastRetry)) > 5000) {
-        window.sessionStorage.setItem('last-lazy-retry', now.toString());
+      if (!lastRetry || isNaN(lastRetryTime) || (now - lastRetryTime) > 5000) {
+        try {
+          window.sessionStorage.setItem('last-lazy-retry', now.toString());
+        } catch {
+          // Ignore storage errors
+        }
         console.warn('Deployment mismatch detected. Refreshing app...');
         
         // Unregister service workers before reloading

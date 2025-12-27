@@ -218,7 +218,10 @@ export default function AddDemoProgramPage() {
                     required
                     min="1"
                     value={programData.capacity}
-                    onChange={(e) => handleChange('capacity', parseInt(e.target.value))}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value, 10);
+                      handleChange('capacity', isNaN(val) ? 0 : val);
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>

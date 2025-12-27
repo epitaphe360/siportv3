@@ -100,7 +100,7 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
     const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'number' ? parseInt(value) : value,
+      [name]: type === 'number' ? (parseInt(value, 10) || 0) : value,
     }));
   };
 
