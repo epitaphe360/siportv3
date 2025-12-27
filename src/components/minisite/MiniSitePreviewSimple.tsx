@@ -144,18 +144,41 @@ export default function MiniSitePreviewSimple() {
     );
   }
 
-  // Error
+  // Error - Mini-site non trouvé
   if (error || !miniSiteData || !exhibitorData) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-        <Card className="max-w-md w-full p-8 text-center">
-          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold mb-2">Mini-site introuvable</h2>
-          <p className="text-gray-600 mb-6">{error || 'Ce mini-site n\'existe pas.'}</p>
-          <Button onClick={() => navigate(ROUTES.EXHIBITORS)}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Retour aux exposants
-          </Button>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+        <Card className="max-w-lg w-full p-8 text-center shadow-xl border-0">
+          <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+            <Building2 className="h-10 w-10 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold mb-3 text-gray-800">Mini-site non disponible</h2>
+          <p className="text-gray-600 mb-6 leading-relaxed">
+            {error === 'Mini-site non trouvé' || !miniSiteData
+              ? "Cet exposant n'a pas encore créé son mini-site vitrine. Revenez bientôt pour découvrir leur présentation complète !"
+              : error || "Ce mini-site n'existe pas ou n'est plus disponible."}
+          </p>
+          
+          {/* Actions */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button onClick={() => navigate(ROUTES.EXHIBITORS)} variant="outline" className="group">
+              <ArrowLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-1" />
+              Voir tous les exposants
+            </Button>
+            <Button onClick={() => navigate(ROUTES.HOME)} className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+              <Sparkles className="h-4 w-4 mr-2" />
+              Découvrir SIPORTS 2026
+            </Button>
+          </div>
+          
+          {/* Message informatif pour exposants */}
+          <div className="mt-8 pt-6 border-t border-gray-200">
+            <p className="text-sm text-gray-500">
+              <span className="font-semibold text-blue-600">Vous êtes exposant ?</span>
+              <br />
+              Créez votre mini-site vitrine depuis votre tableau de bord pour présenter votre entreprise aux visiteurs.
+            </p>
+          </div>
         </Card>
       </div>
     );
