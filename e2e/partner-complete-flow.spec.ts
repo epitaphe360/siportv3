@@ -266,22 +266,10 @@ test.describe('Flux complet Partenaire : Inscription -> Connexion -> Paiement', 
     console.log(`📧 Email: ${partnerEmail}`);
     console.log(`🔑 Password: ${partnerPassword}`);
 
-    // Attendre 3 secondes pour que le compte soit créé dans Supabase
-    console.log('⏳ Attente de 3 secondes pour propagation...');
-    await page.waitForTimeout(3000);
-
-    // 🔧 VALIDER L'EMAIL AUTOMATIQUEMENT POUR LE TEST E2E
-    console.log('\n📧 Validation automatique de l\'email...');
-    const emailValidated = await validateUserEmail(partnerEmail);
-    if (!emailValidated) {
-      console.error('❌ Échec de la validation email');
-      // Continuer quand même - le compte existe peut-être déjà confirmé
-    } else {
-      console.log('✅ Email validé avec succès !');
-    }
-
-    // Attendre 2 secondes après validation
-    await page.waitForTimeout(2000);
+    // Attendre 5 secondes pour que le compte soit propagé dans Supabase
+    // Note: L'email est automatiquement confirmé par Supabase
+    console.log('⏳ Attente de 5 secondes pour propagation...');
+    await page.waitForTimeout(5000);
 
     // ============================================================
     // ÉTAPE 2 : CONNEXION AVEC COMPTE PENDING_PAYMENT
@@ -289,9 +277,6 @@ test.describe('Flux complet Partenaire : Inscription -> Connexion -> Paiement', 
     console.log('\n' + '='.repeat(60));
     console.log('🔐 ÉTAPE 2 : CONNEXION AVEC COMPTE PENDING_PAYMENT');
     console.log('='.repeat(60));
-    
-    // Attendre 2 secondes pour que le compte soit bien créé dans Supabase
-    await page.waitForTimeout(2000);
     
     await page.goto('/login');
     await page.waitForLoadState('networkidle');
