@@ -337,8 +337,8 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
             salonInfo: salonConfig ? {
               name: salonConfig.name || 'SIPORTS 2026',
               dates: {
-                start: new Date(salonConfig.start_time),
-                end: new Date(salonConfig.end_date)
+                start: salonConfig.start_time ? new Date(salonConfig.start_time) : new Date(),
+                end: salonConfig.end_date ? new Date(salonConfig.end_date) : new Date()
               },
               location: {
                 venue: salonConfig.venue || '',

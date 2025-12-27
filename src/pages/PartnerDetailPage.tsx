@@ -360,7 +360,7 @@ export default function PartnerDetailPage() {
                   <Calendar className="h-6 w-6 text-blue-600" />
                 </div>
                 <div className="text-2xl font-bold text-gray-900 mb-1">
-                  {new Date().getFullYear() - partner.establishedYear}+
+                  {partner.establishedYear ? Math.max(0, new Date().getFullYear() - partner.establishedYear) : 0}+
                 </div>
                 <div className="text-sm text-gray-600">Années d'expérience</div>
               </Card>

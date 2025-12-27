@@ -228,8 +228,9 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
   // Fetch time slots for a specific exhibitor (userId)
   fetchTimeSlots: async (exhibitorId: string) => {
-    // Validation: exhibitorId must be a valid UUID
-    if (!exhibitorId || !exhibitorId.includes('-') || exhibitorId.length !== 36) {
+    // Validation: exhibitorId must be a valid UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!exhibitorId || !uuidRegex.test(exhibitorId)) {
       console.warn('[APPOINTMENT] Invalid exhibitorId format:', exhibitorId);
       set({ timeSlots: [], isLoading: false });
       return;
