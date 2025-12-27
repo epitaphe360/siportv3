@@ -49,19 +49,19 @@ const testimonials = [
     name: 'Ahmed Benali',
     role: 'Directeur Logistique, Port de Casablanca',
     content: 'Le Pass VIP a transformé ma participation. J\'ai obtenu 8 RDV stratégiques et signé 2 partenariats majeurs.',
-    avatar: '
+    avatar: '👤'
   },
   {
     name: 'Fatima El Amrani',
     role: 'CEO, Maritime Solutions',
     content: 'Les événements exclusifs VIP m\'ont permis de rencontrer les décideurs clés. ROI exceptionnel !',
-    avatar: '
+    avatar: '👤'
   },
   {
     name: 'Jean-Pierre Dubois',
     role: 'Consultant Maritime',
     content: 'L\'accès au networking illimité vaut largement l\'investissement. Je recommande vivement.',
-    avatar: '
+    avatar: '👤'
   }
 ];
 
