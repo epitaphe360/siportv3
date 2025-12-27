@@ -16,7 +16,8 @@ import {
   Shield,
   Crown,
   User as UserIcon, // Renamed to avoid conflict with interface User
-  RefreshCw
+  RefreshCw,
+  AlertTriangle
 } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
