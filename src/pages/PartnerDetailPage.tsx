@@ -139,24 +139,45 @@ export default function PartnerDetailPage() {
 
   if (error || !partner) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center max-w-md px-4">
-          <div className="bg-red-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-            <AlertCircle className="h-8 w-8 text-red-600" />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-indigo-100 p-4">
+        <Card className="max-w-lg w-full p-8 text-center shadow-xl border-0">
+          <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center">
+            <Handshake className="h-10 w-10 text-white" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 mb-2">
-            Partenaire non trouvé
-          </h3>
-          <p className="text-gray-600 mb-6">
-            {error || "Le partenaire que vous recherchez n'existe pas ou a été supprimé."}
+          <h2 className="text-2xl font-bold mb-3 text-gray-800">
+            {t('partner.notFound', 'Partenaire non disponible')}
+          </h2>
+          <p className="text-gray-600 mb-6 leading-relaxed">
+            {error === "Partenaire non trouvé" 
+              ? t('partner.notFoundDesc', "Ce partenaire n'a pas encore complété son profil ou n'est pas encore visible publiquement. Revenez bientôt pour découvrir notre réseau de partenaires !")
+              : error || t('partner.notFoundGeneric', "Le partenaire que vous recherchez n'existe pas ou a été supprimé.")}
           </p>
-          <Link to={ROUTES.PARTNERS}>
-            <Button>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Retour aux partenaires
-            </Button>
-          </Link>
-        </div>
+          
+          {/* Actions */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link to={ROUTES.PARTNERS}>
+              <Button variant="outline" className="group w-full sm:w-auto">
+                <ArrowLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-1" />
+                {t('partner.backToList', 'Voir tous les partenaires')}
+              </Button>
+            </Link>
+            <Link to={ROUTES.HOME}>
+              <Button className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 w-full sm:w-auto">
+                <Crown className="h-4 w-4 mr-2" />
+                {t('partner.discoverSiports', 'Découvrir SIPORTS 2026')}
+              </Button>
+            </Link>
+          </div>
+          
+          {/* Message informatif */}
+          <div className="mt-8 pt-6 border-t border-gray-200">
+            <p className="text-sm text-gray-500">
+              <span className="font-semibold text-purple-600">{t('partner.areYouPartner', 'Vous êtes partenaire ?')}</span>
+              <br />
+              {t('partner.completeProfile', 'Complétez votre profil depuis votre tableau de bord pour apparaître dans notre annuaire des partenaires.')}
+            </p>
+          </div>
+        </Card>
       </div>
     );
   }
