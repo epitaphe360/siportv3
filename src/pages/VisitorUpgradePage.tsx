@@ -119,8 +119,8 @@ export default function VisitorUpgradePage() {
                 <p className="text-gray-600 mt-2">Accès limité</p>
               </div>
               <ul className="space-y-4 mb-8">
-                {freeFeatures.map((feature, index) => (
-                  <li key={index} className="flex items-start">
+                {freeFeatures.map((feature) => (
+                  <li key={feature.text} className="flex items-start">
                     <feature.icon
                       className={`h-5 w-5 mr-3 mt-0.5 flex-shrink-0 ${
                         feature.included ? 'text-green-500' : 'text-red-400'
@@ -166,8 +166,8 @@ export default function VisitorUpgradePage() {
                 <p className="text-gray-700 mt-2 font-semibold">Accès complet 3 jours</p>
               </div>
               <ul className="space-y-4 mb-8">
-                {vipFeatures.map((feature, index) => (
-                  <li key={index} className="flex items-start">
+                {vipFeatures.map((feature) => (
+                  <li key={feature.text} className="flex items-start">
                     <feature.icon
                       className={`h-5 w-5 mr-3 mt-0.5 flex-shrink-0 ${
                         feature.highlight ? 'text-yellow-500' : 'text-green-500'
@@ -249,7 +249,7 @@ export default function VisitorUpgradePage() {
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
               <motion.div
-                key={index}
+                key={testimonial.name}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2 * index }}

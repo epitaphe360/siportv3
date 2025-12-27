@@ -412,8 +412,8 @@ export default function ArticleDetailPage() {
             Mots-clés
           </h4>
           <div className="flex flex-wrap gap-2">
-            {article.tags.map((tag: string, index: number) => (
-              <Badge key={index} variant="info" size="sm" className="cursor-pointer hover:bg-blue-200">
+            {article.tags.map((tag: string) => (
+              <Badge key={tag} variant="info" size="sm" className="cursor-pointer hover:bg-blue-200">
                 #{tag}
               </Badge>
             ))}

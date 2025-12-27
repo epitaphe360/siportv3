@@ -63,7 +63,7 @@ export const TestimonialsPage: React.FC = () => {
               </div>
               <div className="flex space-x-1">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-6 h-6 fill-yellow-300 text-yellow-300" />
+                  <Star key={`star-${i}`} className="w-6 h-6 fill-yellow-300 text-yellow-300" />
                 ))}
               </div>
             </div>

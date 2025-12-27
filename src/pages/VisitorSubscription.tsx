@@ -137,7 +137,7 @@ export default function VisitorSubscription() {
             <h2>{level.title}</h2>
             <p>{level.description}</p>
             <ul>
-              {level.features.map((f,i)=>(<li key={i}>{f}</li>))}
+              {level.features.map((f)=>(<li key={f}>{f}</li>))}
             </ul>
             <div style={{fontWeight:'bold',fontSize:18,margin:'12px 0'}}>{level.price}</div>
             <button

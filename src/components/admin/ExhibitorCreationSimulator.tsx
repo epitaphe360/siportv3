@@ -542,8 +542,8 @@ export default function ExhibitorCreationSimulator() {
                     </div>
                     
                     <ul className="space-y-2">
-                      {pkg.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-center text-sm text-gray-700">
+                      {pkg.features.map((feature) => (
+                        <li key={feature} className="flex items-center text-sm text-gray-700">
                           <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
                           {feature}
                         </li>
@@ -606,7 +606,7 @@ export default function ExhibitorCreationSimulator() {
 
               <div className="space-y-4">
                 {formData.products.map((product, index) => (
-                  <div key={index} className="p-4 border border-gray-200 rounded-lg">
+                  <div key={`product-${product.name || index}`} className="p-4 border border-gray-200 rounded-lg">
                     <div className="flex items-center justify-between mb-4">
                       <h4 className="font-medium text-gray-900">Produit {index + 1}</h4>
                       <Button
@@ -728,8 +728,8 @@ export default function ExhibitorCreationSimulator() {
                 <Card className="p-4">
                   <h4 className="font-semibold text-gray-900 mb-3">Produits</h4>
                   <div className="space-y-1 text-sm">
-                    {formData.products.map((product, idx) => (
-                      <div key={idx}>• {product.name} ({product.category})</div>
+                    {formData.products.map((product) => (
+                      <div key={`preview-${product.name}`}>• {product.name} ({product.category})</div>
                     ))}
                     {formData.products.length === 0 && (
                       <div className="text-gray-500">Aucun produit ajouté</div>

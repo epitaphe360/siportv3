@@ -220,8 +220,8 @@ export default function UserProfileView({
               <Card className="p-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Centres d'intérêt</h3>
                 <div className="flex flex-wrap gap-2">
-                  {user.profile.interests.map((interest, index) => (
-                    <Badge key={index} variant="default">
+                  {user.profile.interests.map((interest) => (
+                    <Badge key={interest} variant="default">
                       {interest}
                     </Badge>
                   ))}
@@ -234,8 +234,8 @@ export default function UserProfileView({
               <Card className="p-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Secteurs d'activité</h3>
                 <div className="flex flex-wrap gap-2">
-                  {user.profile.sectors.map((sector, index) => (
-                    <Badge key={index} className="bg-blue-100 text-blue-800">
+                  {user.profile.sectors.map((sector) => (
+                    <Badge key={sector} className="bg-blue-100 text-blue-800">
                       {sector}
                     </Badge>
                   ))}
@@ -325,8 +325,8 @@ export default function UserProfileView({
               <Card className="p-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Objectifs à SIPORTS 2026</h3>
                 <div className="space-y-2">
-                  {user.profile.objectives.map((objective, index) => (
-                    <div key={index} className="flex items-start space-x-2">
+                  {user.profile.objectives.map((objective) => (
+                    <div key={objective} className="flex items-start space-x-2">
                       <Star className="h-4 w-4 text-yellow-500 mt-0.5 flex-shrink-0" />
                       <span className="text-gray-700">{objective}</span>
                     </div>

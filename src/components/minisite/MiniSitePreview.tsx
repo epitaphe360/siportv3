@@ -547,9 +547,9 @@ export default function MiniSitePreview() {
             {/* Features Grid - Modern Cards */}
             {((aboutSection?.content?.features || aboutSection?.content?.values) && (aboutSection.content.features?.length > 0 || aboutSection.content.values?.length > 0)) ? (
               <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-                  {(aboutSection.content.features || aboutSection.content.values).map((feature: string, index: number) => (
+                  {(aboutSection.content.features || aboutSection.content.values).map((feature: string) => (
                     <motion.div
-                      key={index}
+                      key={feature}
                       whileHover={{ y: -8, scale: 1.02 }}
                       transition={{ type: "spring", stiffness: 300 }}
                     >
@@ -567,9 +567,9 @@ export default function MiniSitePreview() {
                 </motion.div>
               ) : !hasConfiguredSections && (
                 <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-                  {['Qualité Premium', 'Service Client 24/7', 'Innovation Continue', 'Expertise Reconnue'].map((feature: string, index: number) => (
+                  {['Qualité Premium', 'Service Client 24/7', 'Innovation Continue', 'Expertise Reconnue'].map((feature: string) => (
                     <motion.div
-                      key={index}
+                      key={feature}
                       whileHover={{ y: -8, scale: 1.02 }}
                       transition={{ type: "spring", stiffness: 300 }}
                     >
@@ -601,9 +601,9 @@ export default function MiniSitePreview() {
                       </div>
                     )}
                     {aboutSection?.content?.images?.map((img: string, idx: number) => (
-                      <div key={idx} className="rounded-2xl overflow-hidden shadow-xl">
-                        <img 
-                          src={img} 
+                      <div key={`img-${img.slice(-20)}-${idx}`} className="rounded-2xl overflow-hidden shadow-xl">
+                        <img
+                          src={img}
                           alt={`Image ${idx + 1}`}
                           className="w-full h-64 md:h-80 object-cover"
                         />
@@ -623,7 +623,7 @@ export default function MiniSitePreview() {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                     {aboutSection.content.stats.map((stat: any, index: number) => (
                       <motion.div
-                        key={index}
+                        key={`stat-${stat.label || stat.value}-${index}`}
                         initial={{ opacity: 0, scale: 0.5 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         transition={{ delay: index * 0.1, duration: 0.5 }}
@@ -724,8 +724,8 @@ export default function MiniSitePreview() {
                         {/* Features */}
                         {product.features && product.features.length > 0 && (
                           <ul className="space-y-2 mb-4">
-                            {product.features.slice(0, 3).map((feature: string, idx: number) => (
-                              <li key={idx} className="flex items-center text-sm text-gray-600">
+                            {product.features.slice(0, 3).map((feature: string) => (
+                              <li key={feature} className="flex items-center text-sm text-gray-600">
                                 <CheckCircle2 className="h-4 w-4 mr-2 flex-shrink-0" style={{ color: theme.accentColor }} />
                                 <span className="line-clamp-1">{feature}</span>
                               </li>

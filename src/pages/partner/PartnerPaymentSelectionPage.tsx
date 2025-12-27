@@ -147,8 +147,8 @@ export default function PartnerPaymentSelectionPage() {
           <div className="border-t border-gray-300 pt-4 mt-4">
             <h4 className="font-semibold text-gray-900 mb-3">✨ Inclus dans votre abonnement:</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {tierInfo.features.map((feature, index) => (
-                <div key={index} className="flex items-center text-sm text-gray-700">
+              {tierInfo.features.map((feature) => (
+                <div key={feature} className="flex items-center text-sm text-gray-700">
                   <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
                   <span>{feature}</span>
                 </div>
@@ -194,8 +194,8 @@ export default function PartnerPaymentSelectionPage() {
                       </div>
                       <p className="text-sm text-gray-600 mb-3">{method.description}</p>
                       <div className="space-y-2">
-                        {method.features.map((feature, idx) => (
-                          <div key={idx} className="flex items-center text-sm text-gray-700">
+                        {method.features.map((feature) => (
+                          <div key={feature} className="flex items-center text-sm text-gray-700">
                             <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
                             <span>{feature}</span>
                           </div>

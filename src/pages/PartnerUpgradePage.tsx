@@ -219,8 +219,8 @@ export default function PartnerUpgradePage() {
                         Fonctionnalités incluses
                       </h4>
                       <ul className="space-y-2">
-                        {tier.features.map((feature, idx) => (
-                          <li key={idx} className="text-sm text-gray-600 flex items-start">
+                        {tier.features.map((feature) => (
+                          <li key={feature} className="text-sm text-gray-600 flex items-start">
                             <span className="text-green-600 mr-2">•</span>
                             <span>{feature}</span>
                           </li>
@@ -234,8 +234,8 @@ export default function PartnerUpgradePage() {
                         Avantages exclusifs
                       </h4>
                       <ul className="space-y-2">
-                        {tier.exclusivePerks.map((perk, idx) => (
-                          <li key={idx} className="text-sm text-gray-600 flex items-start">
+                        {tier.exclusivePerks.map((perk) => (
+                          <li key={perk} className="text-sm text-gray-600 flex items-start">
                             <span className="text-yellow-600 mr-2">★</span>
                             <span>{perk}</span>
                           </li>
@@ -308,8 +308,8 @@ export default function PartnerUpgradePage() {
                 quote: "Niveau Silver parfait pour une première participation. Les analytics nous ont beaucoup aidés.",
                 author: 'Ahmed Benali, Fondateur'
               }
-            ].map((testimonial, idx) => (
-              <Card key={idx} className="p-6">
+            ].map((testimonial) => (
+              <Card key={testimonial.company} className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-sm font-semibold text-gray-900">
                     {testimonial.company}
@@ -349,8 +349,8 @@ export default function PartnerUpgradePage() {
                 q: "Les analytics sont-elles en temps réel?",
                 a: "Pour Silver et Gold, les analytics sont mises à jour toutes les heures. Platinium bénéficie d'analytics en temps réel avec IA."
               }
-            ].map((faq, idx) => (
-              <Card key={idx} className="p-6">
+            ].map((faq) => (
+              <Card key={faq.q} className="p-6">
                 <h3 className="font-semibold text-gray-900 mb-2">{faq.q}</h3>
                 <p className="text-gray-600">{faq.a}</p>
               </Card>

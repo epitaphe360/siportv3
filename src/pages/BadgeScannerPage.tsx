@@ -634,8 +634,8 @@ export default function BadgeScannerPage() {
                 </div>
               ) : (
                 <div className="space-y-3 max-h-[600px] overflow-y-auto">
-                  {scanHistory.map((badge, index) => (
-                    <Card key={index} className="p-4 hover:shadow-md transition-shadow">
+                  {scanHistory.map((badge) => (
+                    <Card key={`badge-${badge.visitorId || badge.fullName}-${badge.scannedAt.getTime()}`} className="p-4 hover:shadow-md transition-shadow">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="font-semibold">{badge.fullName}</div>

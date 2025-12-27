@@ -359,7 +359,7 @@ export default function AppointmentCalendar() {
               {isLoading ? (
                 <div className="space-y-3">
                   {[1, 2, 3].map(i => (
-                    <div key={i} className="animate-pulse">
+                    <div key={`skeleton-${i}`} className="animate-pulse">
                       <div className="h-20 bg-gray-200 rounded-lg"></div>
                     </div>
                   ))}
@@ -572,7 +572,7 @@ export default function AppointmentCalendar() {
                 {isLoading ? (
                   <div className="space-y-3">
                     {[1, 2, 3].map(i => (
-                      <div key={i} className="animate-pulse">
+                      <div key={`skeleton-${i}`} className="animate-pulse">
                         <div className="h-16 bg-gray-200 rounded-lg"></div>
                       </div>
                     ))}

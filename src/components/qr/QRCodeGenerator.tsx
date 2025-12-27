@@ -139,8 +139,8 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
         </div>
         <p className="text-gray-600 mb-4">{userAccessLevel.description}</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          {userAccessLevel.capabilities.map((capability, index) => (
-            <div key={index} className="flex items-center text-sm text-gray-700">
+          {userAccessLevel.capabilities.map((capability) => (
+            <div key={capability} className="flex items-center text-sm text-gray-700">
               <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
               {capability}
             </div>

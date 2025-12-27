@@ -283,8 +283,8 @@ export default function ModerationPanel() {
                   <div className="mb-4">
                     <h4 className="font-medium text-gray-900 mb-2">Modifications apportées :</h4>
                     <div className="flex flex-wrap gap-2">
-                      {content.changes.map((change, idx) => (
-                        <Badge key={idx} variant="info" size="sm">
+                      {content.changes.map((change) => (
+                        <Badge key={change} variant="info" size="sm">
                           {change}
                         </Badge>
                       ))}

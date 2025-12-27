@@ -103,7 +103,7 @@ const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
         {/* Grille d'images */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4">
           {images.map((imageUrl, index) => (
-            <div key={index} className="relative group aspect-square">
+            <div key={`img-${imageUrl.slice(-30)}-${index}`} className="relative group aspect-square">
               <img
                 src={imageUrl}
                 alt={`Image ${index + 1}`}

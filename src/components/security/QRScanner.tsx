@@ -320,9 +320,9 @@ export default function QRScanner() {
           <Card className="p-6 bg-white/95 backdrop-blur">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Scans Récents</h3>
             <div className="space-y-2">
-              {recentScans.map((scan, index) => (
+              {recentScans.map((scan) => (
                 <div
-                  key={index}
+                  key={`scan-${scan.timestamp?.getTime() || scan.code}`}
                   className={`p-3 rounded-lg flex items-center justify-between ${
                     scan.valid ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
                   }`}

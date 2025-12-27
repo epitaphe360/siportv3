@@ -327,8 +327,8 @@ const EnhancedNetworkingPage: React.FC = () => {
                           <div>
                             <h4 className="font-medium text-gray-900 mb-2">Suggestions</h4>
                             <ul className="space-y-1">
-                              {aiInsights.suggestions.map((suggestion, index) => (
-                                <li key={index} className="text-sm text-gray-600 flex items-start">
+                              {aiInsights.suggestions.map((suggestion) => (
+                                <li key={suggestion} className="text-sm text-gray-600 flex items-start">
                                   <Target className="h-3 w-3 mr-2 mt-1 text-blue-500" />
                                   {suggestion}
                                 </li>
@@ -338,8 +338,8 @@ const EnhancedNetworkingPage: React.FC = () => {
                           <div>
                             <h4 className="font-medium text-gray-900 mb-2">Mots-clés Tendance</h4>
                             <div className="flex flex-wrap gap-2">
-                              {aiInsights.topKeywords.map((keyword, index) => (
-                                <Badge key={index} variant="success" className="text-xs">
+                              {aiInsights.topKeywords.map((keyword) => (
+                                <Badge key={keyword} variant="success" className="text-xs">
                                   {keyword}
                                 </Badge>
                               ))}

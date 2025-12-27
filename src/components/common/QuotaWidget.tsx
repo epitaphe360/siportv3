@@ -190,9 +190,9 @@ export function QuotaSummaryCard({ title, level, type, quotas, upgradeLink }: Qu
       </div>
 
       <div className="space-y-4">
-        {quotas.map((quota, index) => (
+        {quotas.map((quota) => (
           <QuotaWidget
-            key={index}
+            key={quota.label}
             label={quota.label}
             current={quota.current}
             limit={quota.limit}

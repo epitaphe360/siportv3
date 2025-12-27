@@ -527,8 +527,8 @@ export default function PartnersPage() {
                 <div className="mt-6">
                   <h3 className="text-sm font-semibold text-gray-700 mb-3">Contributions</h3>
                   <div className="flex flex-wrap gap-2">
-                    {selectedPartner.contributions.map((contribution, index) => (
-                      <Badge key={index} variant="info">{contribution}</Badge>
+                    {selectedPartner.contributions.map((contribution) => (
+                      <Badge key={contribution} variant="info">{contribution}</Badge>
                     ))}
                   </div>
                 </div>

@@ -352,8 +352,8 @@ export default function NetworkingPage() {
                 { icon: Building2, label: "Zone Lounge Business & VIP", desc: "Espaces de travail et de détente" },
                 { icon: Mic, label: "Sessions de pitch", desc: "Découvrez les innovations du secteur" },
                 { icon: Users, label: "Espaces d'échanges", desc: "Plus de 6000 professionnels attendus" }
-              ].map((item, idx) => (
-                <div key={idx} className="flex flex-col items-center p-8 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all group">
+              ].map((item) => (
+                <div key={item.label} className="flex flex-col items-center p-8 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all group">
                   <item.icon className="h-12 w-12 text-blue-400 mb-4 group-hover:scale-110 transition-transform" />
                   <span className="font-bold text-white text-lg mb-2">{item.label}</span>
                   <p className="text-blue-100/50 text-sm text-center">{item.desc}</p>
@@ -1263,8 +1263,8 @@ export default function NetworkingPage() {
                             Points Forts
                           </h4>
                           <ul className="space-y-3">
-                            {aiInsights.suggestions.slice(0, 2).map((s, i) => (
-                              <li key={i} className="text-sm text-slate-600 flex items-start">
+                            {aiInsights.suggestions.slice(0, 2).map((s) => (
+                              <li key={s} className="text-sm text-slate-600 flex items-start">
                                 <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-1.5 mr-3 flex-shrink-0"></span>
                                 {s}
                               </li>
@@ -1277,8 +1277,8 @@ export default function NetworkingPage() {
                             Recommandations
                           </h4>
                           <ul className="space-y-3">
-                            {aiInsights.suggestions.slice(2, 4).map((s, i) => (
-                              <li key={i} className="text-sm text-slate-600 flex items-start">
+                            {aiInsights.suggestions.slice(2, 4).map((s) => (
+                              <li key={s} className="text-sm text-slate-600 flex items-start">
                                 <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full mt-1.5 mr-3 flex-shrink-0"></span>
                                 {s}
                               </li>

@@ -217,7 +217,7 @@ export default function PublicAvailabilityCalendar({
           const isToday = day.toDateString() === new Date().toDateString();
           
           return (
-            <div key={index} className="border rounded-lg p-3">
+            <div key={day.toISOString()} className="border rounded-lg p-3">
               <div className={`text-center mb-2 pb-2 border-b ${isToday ? 'bg-blue-50' : ''}`}>
                 <div className="text-xs text-gray-500 uppercase">
                   {day.toLocaleDateString('fr-FR', { weekday: 'short' })}

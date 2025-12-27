@@ -828,9 +828,9 @@ export default function ExhibitorDashboard() {
                   Actions Rapides
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {quickActions.map((action, index) => (
-                    <motion.div 
-                      key={index} 
+                  {quickActions.map((action) => (
+                    <motion.div
+                      key={action.title}
                       className="group"
                       whileHover={{ scale: 1.02 }}
                       transition={{ duration: 0.2 }}

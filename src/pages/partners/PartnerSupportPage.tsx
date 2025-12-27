@@ -249,9 +249,9 @@ export const PartnerSupportPage: React.FC = () => {
           <div className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-6">Actions Rapides</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {supportData.quickActions.map((action, index) => (
+              {supportData.quickActions.map((action) => (
                 <button
-                  key={index}
+                  key={action.title}
                   className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors text-left"
                 >
                   <div className="flex items-center space-x-3 mb-2">

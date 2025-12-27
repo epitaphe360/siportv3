@@ -296,7 +296,7 @@ export default function AddDemoProgramPage() {
                   </label>
                   <div className="flex flex-wrap gap-2 mb-3">
                     {programData.tags.map((tag, index) => (
-                      <Badge key={index} variant="default" className="flex items-center space-x-1">
+                      <Badge key={`tag-${tag}-${index}`} variant="default" className="flex items-center space-x-1">
                         <span>{tag}</span>
                         <button
                           type="button"

@@ -505,15 +505,15 @@ export default function PavillonsPage() {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                           <div>
                             <h4 className="font-semibold text-gray-900 mb-3 flex items-center"><Target className="h-4 w-4 mr-2" />Objectifs</h4>
-                            <ul className="space-y-2">{pavilion.objectives.map((o, i) => <li key={i} className="text-sm text-gray-600 flex items-start"><div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2 mr-2 flex-shrink-0" />{o}</li>)}</ul>
+                            <ul className="space-y-2">{pavilion.objectives.map((o) => <li key={o} className="text-sm text-gray-600 flex items-start"><div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2 mr-2 flex-shrink-0" />{o}</li>)}</ul>
                           </div>
                           <div>
                             <h4 className="font-semibold text-gray-900 mb-3 flex items-center"><Lightbulb className="h-4 w-4 mr-2" />Fonctionnalités</h4>
-                            <ul className="space-y-2">{pavilion.features.map((f, i) => <li key={i} className="text-sm text-gray-600 flex items-start"><div className="w-1.5 h-1.5 bg-green-600 rounded-full mt-2 mr-2 flex-shrink-0" />{f}</li>)}</ul>
+                            <ul className="space-y-2">{pavilion.features.map((f) => <li key={f} className="text-sm text-gray-600 flex items-start"><div className="w-1.5 h-1.5 bg-green-600 rounded-full mt-2 mr-2 flex-shrink-0" />{f}</li>)}</ul>
                           </div>
                           <div>
                             <h4 className="font-semibold text-gray-900 mb-3 flex items-center"><Users className="h-4 w-4 mr-2" />Public Cible</h4>
-                            <div className="space-y-2">{pavilion.targetAudience.map((t, i) => <Badge key={i} variant="info" size="sm" className="mr-2 mb-2">{t}</Badge>)}</div>
+                            <div className="space-y-2">{pavilion.targetAudience.map((t) => <Badge key={t} variant="info" size="sm" className="mr-2 mb-2">{t}</Badge>)}</div>
                           </div>
                         </div>
 
@@ -575,8 +575,8 @@ export default function PavillonsPage() {
                                         </div>
                                         
                                         <div className="flex space-x-2">
-                                          {program.tags.map((tag, i) => (
-                                            <Badge key={i} variant="default" size="sm" className="text-xs">
+                                          {program.tags.map((tag) => (
+                                            <Badge key={tag} variant="default" size="sm" className="text-xs">
                                               {tag}
                                             </Badge>
                                           ))}

@@ -355,8 +355,8 @@ export default function MiniSitePreviewSimple() {
           {/* Features/Values - TOUJOURS AFFICHÉES */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {features.length > 0 ? (
-              features.map((feature: string, index: number) => (
-                <Card key={index} className="p-6 text-center hover:shadow-lg transition-shadow">
+              features.map((feature: string) => (
+                <Card key={feature} className="p-6 text-center hover:shadow-lg transition-shadow">
                   <div 
                     className="w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-4"
                     style={{ backgroundColor: `${theme.accentColor}15` }}
@@ -368,8 +368,8 @@ export default function MiniSitePreviewSimple() {
               ))
             ) : (
               // Valeurs par défaut si aucune feature
-              ['Innovation', 'Expertise', 'Qualité', 'Support'].map((feature, index) => (
-                <Card key={index} className="p-6 text-center hover:shadow-lg transition-shadow">
+              ['Innovation', 'Expertise', 'Qualité', 'Support'].map((feature) => (
+                <Card key={feature} className="p-6 text-center hover:shadow-lg transition-shadow">
                   <div 
                     className="w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-4"
                     style={{ backgroundColor: `${theme.accentColor}15` }}
@@ -395,11 +395,11 @@ export default function MiniSitePreviewSimple() {
                   />
                 </div>
               )}
-              {aboutSection?.content?.images?.map((img: string, idx: number) => (
-                <div key={idx} className="rounded-2xl overflow-hidden shadow-lg">
+              {aboutSection?.content?.images?.map((img: string) => (
+                <div key={`img-${img.slice(-20)}`} className="rounded-2xl overflow-hidden shadow-lg">
                   <img 
                     src={img} 
-                    alt={`Image ${idx + 1}`}
+                    alt="Image galerie"
                     className="w-full h-64 object-cover"
                     onError={(e) => (e.currentTarget.style.display = 'none')}
                   />
@@ -411,8 +411,8 @@ export default function MiniSitePreviewSimple() {
           {/* Stats */}
           {aboutSection?.content?.stats?.length > 0 && (
             <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-8 p-8 rounded-2xl" style={{ backgroundColor: `${theme.primaryColor}08` }}>
-              {aboutSection.content.stats.map((stat: any, index: number) => (
-                <div key={index} className="text-center">
+              {aboutSection.content.stats.map((stat: any) => (
+                <div key={`stat-${stat.label || stat.number}`} className="text-center">
                   <div className="text-4xl font-bold mb-1" style={{ color: theme.primaryColor }}>
                     {stat.number}
                   </div>
@@ -475,8 +475,8 @@ export default function MiniSitePreviewSimple() {
                     {/* Features */}
                     {product.features?.length > 0 && (
                       <ul className="space-y-1 mb-4">
-                        {product.features.slice(0, 3).map((f: string, i: number) => (
-                          <li key={i} className="flex items-center text-sm text-gray-600">
+                        {product.features.slice(0, 3).map((f: string) => (
+                          <li key={f} className="flex items-center text-sm text-gray-600">
                             <CheckCircle2 className="h-4 w-4 mr-2 flex-shrink-0" style={{ color: theme.accentColor }} />
                             <span className="line-clamp-1">{f}</span>
                           </li>

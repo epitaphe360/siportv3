@@ -101,8 +101,8 @@ export default function VisitorRegistrationChoice() {
 
                 {/* Features */}
                 <div className="space-y-3 mb-8">
-                  {freeFeatures.map((feature, idx) => (
-                    <div key={idx} className="flex items-start">
+                  {freeFeatures.map((feature) => (
+                    <div key={feature} className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
                       <span className="text-gray-700">{feature}</span>
                     </div>
@@ -168,7 +168,7 @@ export default function VisitorRegistrationChoice() {
                 {/* Features */}
                 <div className="space-y-3 mb-8">
                   {vipFeatures.map((feature, idx) => (
-                    <div key={idx} className="flex items-start">
+                    <div key={feature} className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-yellow-500 mr-3 flex-shrink-0 mt-0.5" />
                       <span className={idx === 1 ? "text-gray-900 font-semibold" : "text-gray-700"}>
                         {feature}

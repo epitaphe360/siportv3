@@ -356,7 +356,7 @@ export const EnhancedChatInterface: React.FC = () => {
                       <div className="flex items-center justify-between mt-2">
                         <div className="flex items-center space-x-1">
                           {conversation.lastMessage?.reactions?.map((reaction, index) => (
-                            <span key={index} className="text-xs">
+                            <span key={`${reaction.emoji}-${index}`} className="text-xs">
                               {reaction.emoji}
                             </span>
                           ))}
@@ -456,7 +456,7 @@ export const EnhancedChatInterface: React.FC = () => {
                         {(message as any).attachments && (message as any).attachments.length > 0 && (
                           <div className="mt-2 space-y-1">
                             {(message as any).attachments.map((attachment: any, index: number) => (
-                              <div key={index} className="flex items-center space-x-2 p-2 bg-white bg-opacity-20 rounded">
+                              <div key={`attachment-${attachment.name}-${index}`} className="flex items-center space-x-2 p-2 bg-white bg-opacity-20 rounded">
                                 <Paperclip className="h-3 w-3" />
                                 <span className="text-xs truncate">{attachment.name}</span>
                                 <span className="text-xs opacity-75">({attachment.size})</span>
@@ -483,8 +483,8 @@ export const EnhancedChatInterface: React.FC = () => {
                         {(message as any).reactions && (message as any).reactions.length > 0 && (
                           <div className="absolute -bottom-6 left-0 flex space-x-1">
                             {(message as any).reactions.map((reaction: any, index: number) => (
-                              <span 
-                                key={index}
+                              <span
+                                key={`reaction-${reaction.emoji}-${reaction.userName}-${index}`}
                                 className="bg-white border border-gray-200 rounded-full px-2 py-1 text-xs shadow-sm"
                                 title={reaction.userName}
                               >

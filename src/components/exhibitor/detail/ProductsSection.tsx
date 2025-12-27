@@ -91,8 +91,8 @@ export const ProductsSection: React.FC<ProductsSectionProps> = memo(({
                     {product.features && product.features.length > 0 && (
                       <div className="mb-4">
                         <ul className="space-y-1">
-                          {product.features.slice(0, 3).map((feature, idx) => (
-                            <li key={idx} className="text-sm text-gray-500 flex items-start">
+                          {product.features.slice(0, 3).map((feature) => (
+                            <li key={feature} className="text-sm text-gray-500 flex items-start">
                               <span className="mr-2">•</span>
                               <span>{feature}</span>
                             </li>

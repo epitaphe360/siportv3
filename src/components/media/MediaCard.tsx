@@ -119,9 +119,9 @@ export const MediaCard: React.FC<MediaCardProps> = ({
           {media.speakers && media.speakers.length > 0 && (
             <div className="mb-3">
               <div className="flex items-center flex-wrap gap-2">
-                {media.speakers.slice(0, 2).map((speaker, idx) => (
+                {media.speakers.slice(0, 2).map((speaker) => (
                   <div
-                    key={idx}
+                    key={speaker.name}
                     className="flex items-center space-x-1 text-xs bg-gray-100 px-2 py-1 rounded-full"
                   >
                     <Users className="h-3 w-3 text-gray-500" />

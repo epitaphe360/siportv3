@@ -90,7 +90,7 @@ export default function ProductDetailPage() {
               {product.images && product.images.length > 1 && (
                 <div className="mt-3 flex gap-2 overflow-x-auto">
                   {product.images.slice(1).map((img, idx) => (
-                    <img key={idx} src={img} alt={`${product.name}-${idx}`} className="w-20 h-16 object-cover rounded" />
+                    <img key={`img-${img.slice(-20)}-${idx}`} src={img} alt={`${product.name}-${idx}`} className="w-20 h-16 object-cover rounded" />
                   ))}
                 </div>
               )}
@@ -115,8 +115,8 @@ export default function ProductDetailPage() {
                 <Card className="p-4 mb-6">
                   <h3 className="font-semibold mb-2">Caractéristiques techniques</h3>
                   <ul className="list-disc pl-6 text-sm text-gray-700">
-                    {product.technicalSpecs.map((s, i) => (
-                      <li key={i}>{s.name}: {s.value}{s.unit ? ` ${s.unit}` : ''}</li>
+                    {product.technicalSpecs.map((s) => (
+                      <li key={`spec-${s.name}`}>{s.name}: {s.value}{s.unit ? ` ${s.unit}` : ''}</li>
                     ))}
                   </ul>
                 </Card>

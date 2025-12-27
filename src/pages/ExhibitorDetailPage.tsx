@@ -322,8 +322,8 @@ export default function ExhibitorDetailPage() {
                     Certifications & Accréditations
                   </h3>
                   <div className="flex flex-wrap gap-3">
-                    {exhibitor.certifications.map((cert, index) => (
-                      <div key={index} className="flex items-center space-x-2 bg-green-50 px-4 py-2 rounded-lg">
+                    {exhibitor.certifications.map((cert) => (
+                      <div key={cert} className="flex items-center space-x-2 bg-green-50 px-4 py-2 rounded-lg">
                         <Shield className="h-5 w-5 text-green-600" />
                         <span className="font-medium text-green-800">{cert}</span>
                       </div>
@@ -340,8 +340,8 @@ export default function ExhibitorDetailPage() {
                   Marchés Ciblés
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {exhibitor.markets.map((market, index) => (
-                    <Badge key={index} variant="info" size="sm">
+                  {exhibitor.markets.map((market) => (
+                    <Badge key={market} variant="info" size="sm">
                       <Globe className="h-3 w-3 mr-1" />
                       {market}
                     </Badge>

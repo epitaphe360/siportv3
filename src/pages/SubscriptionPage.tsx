@@ -473,8 +473,8 @@ export default function SubscriptionPage() {
               <div className="p-6 flex-grow">
                 <h4 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">Fonctionnalités</h4>
                 <ul className="space-y-3">
-                  {tier.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-start gap-3">
+                  {tier.features.map((feature) => (
+                    <li key={feature.name} className="flex items-start gap-3">
                       {feature.included ? (
                         <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                       ) : (
@@ -490,8 +490,8 @@ export default function SubscriptionPage() {
                 {/* Benefits */}
                 <h4 className="text-sm font-semibold text-gray-900 mt-6 mb-4 uppercase tracking-wider">Avantages</h4>
                 <ul className="space-y-2 mb-6">
-                  {tier.benefits.map((benefit, idx) => (
-                    <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
+                  {tier.benefits.map((benefit) => (
+                    <li key={benefit} className="text-sm text-gray-700 flex items-start gap-2">
                       <Star className="w-4 h-4 text-yellow-500 flex-shrink-0 mt-0.5" />
                       {benefit}
                     </li>

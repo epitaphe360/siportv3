@@ -317,8 +317,8 @@ export const PartnerNetworkingPage: React.FC = () => {
                     <div className="mb-4">
                       <h4 className="text-sm font-medium text-gray-900 mb-2">Centres d'intérêt :</h4>
                       <div className="flex flex-wrap gap-2">
-                        {opportunity.interests.slice(0, 3).map((interest, idx) => (
-                          <Badge key={idx} variant="info" size="sm">{interest}</Badge>
+                        {opportunity.interests.slice(0, 3).map((interest) => (
+                          <Badge key={interest} variant="info" size="sm">{interest}</Badge>
                         ))}
                         {opportunity.interests.length > 3 && (
                           <Badge variant="info" size="sm">+{opportunity.interests.length - 3}</Badge>

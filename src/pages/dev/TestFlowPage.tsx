@@ -73,7 +73,7 @@ export default function TestFlowPage() {
         <div style={{background:'#fff',padding:12,borderRadius:8,border:'1px solid #eaeaea'}}>
           {log.length === 0 && <div style={{color:'#666'}}>Aucune tentative enregistrée. Cliquez sur Â« Lancer le test Â».</div>}
           {log.map((e, idx) => (
-            <div key={idx} style={{padding:'8px 6px',borderBottom: idx < log.length - 1 ? '1px dashed #eee' : 'none', display:'flex',justifyContent:'space-between'}}>
+            <div key={`log-${e.attempt}-${idx}`} style={{padding:'8px 6px',borderBottom: idx < log.length - 1 ? '1px dashed #eee' : 'none', display:'flex',justifyContent:'space-between'}}>
               <div>
                 <strong>#{e.attempt}</strong> ● créneau <em>{e.timeSlotId || '-'}</em>
                 <div style={{fontSize:13,color:'#444'}}>{e.message}</div>
