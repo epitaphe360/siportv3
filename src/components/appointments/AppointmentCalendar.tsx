@@ -24,7 +24,7 @@ import { isDateInSalonRange, getMinSlotDate, getMaxSlotDate, DEFAULT_SALON_CONFI
 
 export default function AppointmentCalendar() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user: authUser } = useAuthStore();
   const {
     appointments,
     timeSlots,
@@ -240,11 +240,9 @@ export default function AppointmentCalendar() {
     
     try {
       // Pré-vérification du quota côté client
-      const auth = await import('../../store/authStore');
       const { getVisitorQuota } = await import('../../config/quotas');
-      const user = auth?.default?.getState ? auth.default.getState().user : null;
-      const visitorId = user?.id || 'user1';
-      const visitorLevel = user?.visitor_level || user?.profile?.visitor_level || 'free';
+      const visitorId = authUser?.id || 'user1';
+      const visitorLevel = authUser?.visitor_level || authUser?.profile?.visitor_level || 'free';
       const quota = getVisitorQuota(visitorLevel);
       const confirmedCount = appointments.filter(a => a.visitorId === visitorId && a.status === 'confirmed').length;
       if (confirmedCount >= quota) {

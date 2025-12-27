@@ -109,7 +109,7 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
         };
       });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error instanceof Error ? error.message : String(error) : 'Failed to update status';
+      const errorMessage = error instanceof Error ? error.message : String(error);
       set({ isUpdating: null, error: errorMessage });
       // Optionnel: Revert state on error
     }

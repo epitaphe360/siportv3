@@ -975,7 +975,16 @@ export default function ExhibitorDetailPage() {
             variant="outline" 
             className="rounded-full w-12 h-12 shadow-lg bg-white"
             onClick={() => {
-              const favorites = JSON.parse(localStorage.getItem('siports-favorites') || '[]');
+              let favorites: string[] = [];
+              try {
+                const stored = localStorage.getItem('siports-favorites');
+                if (stored) {
+                  favorites = JSON.parse(stored);
+                }
+              } catch (e) {
+                console.error('Failed to parse favorites:', e);
+                favorites = [];
+              }
               const isFavorite = favorites.includes(exhibitor.id);
 
               if (isFavorite) {

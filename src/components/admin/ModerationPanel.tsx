@@ -341,16 +341,16 @@ export default function ModerationPanel() {
                     
                     <Button
                       variant="outline"
-                      onClick={() => navigate(`/minisite/${content.exhibitorId}`)}
+                      onClick={() => navigate(ROUTES.MINISITE_PREVIEW.replace(':exhibitorId', content.exhibitorId))}
                       aria-label={`Prévisualiser ${content.exhibitorName}`}
                     >
                       <Eye className="h-4 w-4 mr-2" />
                       Prévisualiser
                     </Button>
-                    
+
                     <Button
                       variant="outline"
-                      onClick={() => navigate(`/exhibitors/${content.exhibitorId}`)}
+                      onClick={() => navigate(ROUTES.EXHIBITOR_DETAIL.replace(':id', content.exhibitorId))}
                       aria-label={`Contacter ${content.exhibitorName}`}
                     >
                       <MessageCircle className="h-4 w-4 mr-2" />
