@@ -1041,7 +1041,7 @@ export default function ExhibitorDashboard() {
               <div className="space-y-2 text-sm text-gray-700 bg-gray-50 p-4 rounded-lg">
                 <div className="flex justify-between">
                   <span className="font-medium">Entreprise :</span>
-                  <span>{user?.profile.company}</span>
+                  <span>{user?.profile?.company || 'N/A'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Contact :</span>

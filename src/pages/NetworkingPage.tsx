@@ -119,7 +119,8 @@ export default function NetworkingPage() {
     } else {
       // If no user object provided, try to find it in recommendations
       const foundUser = recommendations.find(rec =>
-        `${rec.recommendedUser.profile.firstName} ${rec.recommendedUser.profile.lastName}` === userName &&
+        rec.recommendedUser?.profile &&
+        `${rec.recommendedUser.profile.firstName || ''} ${rec.recommendedUser.profile.lastName || ''}` === userName &&
         rec.recommendedUser.profile.company === company
       )?.recommendedUser;
 

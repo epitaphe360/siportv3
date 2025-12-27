@@ -167,7 +167,7 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
 
     // Check permissions
     if (!get().checkActionPermission('connect')) {
-      const errorMessage = getPermissionErrorMessage(user.type, user.profile.passType || user.profile.status, 'connection');
+      const errorMessage = getPermissionErrorMessage(user.type, user.profile?.passType || user.profile?.status || 'free', 'connection');
       toast.error(errorMessage);
       return;
     }

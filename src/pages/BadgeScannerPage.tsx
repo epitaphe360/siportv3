@@ -122,8 +122,8 @@ export default function BadgeScannerPage() {
           .filter(b => b.last_scanned_at && !isNaN(new Date(b.last_scanned_at).getTime()))
           .sort((a, b) => new Date(b.last_scanned_at!).getTime() - new Date(a.last_scanned_at!).getTime());
         
-        if (sortedByLastScan.length > 0) {
-          lastScanTime = new Date(sortedByLastScan[0].last_scanned_at!);
+        if (sortedByLastScan.length > 0 && sortedByLastScan[0].last_scanned_at) {
+          lastScanTime = new Date(sortedByLastScan[0].last_scanned_at);
         }
       }
 
