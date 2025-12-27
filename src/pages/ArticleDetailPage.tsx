@@ -71,8 +71,8 @@ export default function ArticleDetailPage() {
         
         // Articles similaires
         const related = articles
-          .filter(a => a.id !== id && (a.category === foundArticle.category || 
-                      a.tags.some(tag => foundArticle.tags.includes(tag))))
+          .filter(a => a.id !== id && (a.category === foundArticle.category ||
+                      (foundArticle.tags && a.tags?.some(tag => foundArticle.tags?.includes(tag)))))
           .slice(0, 3);
         setRelatedArticles(related);
 

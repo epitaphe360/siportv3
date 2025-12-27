@@ -333,11 +333,13 @@ export default function ExhibitorDetailPage() {
                 transition={{ delay: index * 0.1 }}
               >
                 <Card hover className="h-full">
-                  <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    className="w-full h-48 object-cover rounded-t-lg"
-                  />
+                  {product.images?.[0] && (
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      className="w-full h-48 object-cover rounded-t-lg"
+                    />
+                  )}
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-3">
                       <Badge variant="info" size="sm">

@@ -314,7 +314,7 @@ export default function ExhibitorDetailPage() {
             </div>
 
             {/* Certifications */}
-            {exhibitor.certifications.length > 0 && (
+            {exhibitor.certifications?.length > 0 && (
               <Card>
                 <div className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -377,7 +377,7 @@ export default function ExhibitorDetailPage() {
                     transition={{ delay: index * 0.1 }}
                   >
                     <Card hover className="h-full">
-                      {product.images.length > 0 && (
+                      {product.images?.length > 0 && (
                         <img
                           src={product.images[0]}
                           alt={product.name}

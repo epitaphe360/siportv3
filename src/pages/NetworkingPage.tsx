@@ -691,7 +691,7 @@ export default function NetworkingPage() {
                                 <Avatar className="h-20 w-20 border-4 border-white shadow-xl">
                                   <AvatarImage src={profile.profile.avatar} alt={`${profile.profile.firstName} ${profile.profile.lastName}`} />
                                   <AvatarFallback className="bg-gradient-to-br from-slate-800 to-slate-900 text-white font-black text-xl">
-                                    {profile.profile.firstName[0]}{profile.profile.lastName[0]}
+                                    {profile.profile?.firstName?.[0] || 'U'}{profile.profile?.lastName?.[0] || 'U'}
                                   </AvatarFallback>
                                 </Avatar>
                                 <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-lg">
@@ -723,7 +723,7 @@ export default function NetworkingPage() {
                               <div className="flex items-start space-x-3">
                                 <Sparkles className={`h-4 w-4 mt-0.5 flex-shrink-0 ${getCompatibilityColor(rec.score)}`} />
                                 <p className="text-xs text-slate-700 leading-relaxed font-medium">
-                                  {rec.reasons[0]}
+                                  {rec.reasons?.[0] || 'Correspondance de profil'}
                                 </p>
                               </div>
                             </div>
@@ -936,7 +936,7 @@ export default function NetworkingPage() {
                             <Avatar className="h-16 w-16 border-2 border-slate-100">
                               <AvatarImage src={profile.profile.avatar} />
                               <AvatarFallback className="bg-slate-100 text-slate-600 font-bold">
-                                {profile.profile.firstName[0]}{profile.profile.lastName[0]}
+                                {profile.profile?.firstName?.[0] || 'U'}{profile.profile?.lastName?.[0] || 'U'}
                               </AvatarFallback>
                             </Avatar>
                             <div className="flex-1 min-w-0">

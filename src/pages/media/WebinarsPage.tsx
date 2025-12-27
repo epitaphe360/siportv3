@@ -286,7 +286,7 @@ export const WebinarsPage: React.FC = () => {
                     </div>
                     <div className="flex items-center space-x-1">
                       <Users className="h-4 w-4" />
-                      <span>{filteredWebinars[0].views_count.toLocaleString()} vues</span>
+                      <span>{(filteredWebinars[0].views_count || 0).toLocaleString()} vues</span>
                     </div>
                   </div>
 

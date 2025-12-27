@@ -131,7 +131,7 @@ export default function AvailabilityCalendar({ user, showBooking = false, onBook
         )
       );
 
-      toast.success(`Rendez-vous réservé avec ${user.profile.firstName} ${user.profile.lastName} le ${formatDate(slot.date)} à ${slot.startTime}`);
+      toast.success(`Rendez-vous réservé avec ${user?.profile?.firstName || ''} ${user?.profile?.lastName || ''} le ${formatDate(slot.date)} à ${slot.startTime}`);
       onBookSlot?.(slot);
     } catch {
       toast.error('Erreur lors de la réservation');
@@ -154,7 +154,7 @@ export default function AvailabilityCalendar({ user, showBooking = false, onBook
         <div>
           <h3 className="text-lg font-semibold text-gray-900 flex items-center">
             <Calendar className="h-5 w-5 mr-2 text-blue-600" />
-            Disponibilités de {user.profile.firstName}
+            Disponibilités de {user?.profile?.firstName || 'l\'utilisateur'}
           </h3>
           <p className="text-sm text-gray-600 mt-1">
             {user.type === 'partner' ? 'Partenaire' : 'Exposant'} • {timeSlots.filter(s => s.available).length} créneau{timeSlots.filter(s => s.available).length !== 1 ? 'x' : ''} disponible{timeSlots.filter(s => s.available).length !== 1 ? 's' : ''}

@@ -492,12 +492,12 @@ export default function ProfilePage() {
                   </div>
                 ) : (
                   <div className="flex flex-wrap gap-2">
-                    {user.profile.interests.map((interest) => (
+                    {user?.profile?.interests?.map((interest) => (
                       <Badge key={interest} variant="info" size="sm">
                         {interest}
                       </Badge>
                     ))}
-                    {user.profile.interests.length === 0 && (
+                    {(!user?.profile?.interests || user.profile.interests.length === 0) && (
                       <p className="text-gray-500 text-sm">Aucun centre d'intérêt renseigné</p>
                     )}
                   </div>
@@ -541,13 +541,13 @@ export default function ProfilePage() {
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    {user.profile.objectives.map((objective) => (
+                    {user?.profile?.objectives?.map((objective) => (
                       <div key={objective} className="flex items-center space-x-2">
                         <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
                         <span className="text-sm text-gray-700">{objective}</span>
                       </div>
                     ))}
-                    {user.profile.objectives.length === 0 && (
+                    {(!user?.profile?.objectives || user.profile.objectives.length === 0) && (
                       <p className="text-gray-500 text-sm">Aucun objectif renseigné</p>
                     )}
                   </div>

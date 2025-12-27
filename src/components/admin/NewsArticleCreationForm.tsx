@@ -40,7 +40,7 @@ export default function NewsArticleCreationForm() {
     title: '',
     excerpt: '',
     content: '',
-    author: user?.profile.firstName + ' ' + user?.profile.lastName || '',
+    author: (user?.profile?.firstName || '') + ' ' + (user?.profile?.lastName || ''),
     category: '',
     tags: [],
     featured: false,
