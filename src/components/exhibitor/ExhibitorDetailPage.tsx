@@ -231,7 +231,7 @@ export default function ExhibitorDetailPage() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {exhibitor.miniSite?.hero?.stats.map((stat, index) => (
                 <motion.div
-                  key={index}
+                  key={`stat-${stat.label || stat.number}-${index}`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 + index * 0.1 }}
@@ -269,7 +269,7 @@ export default function ExhibitorDetailPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {exhibitor.miniSite?.about?.features.map((feature, index) => (
               <motion.div
-                key={index}
+                key={feature}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -295,8 +295,8 @@ export default function ExhibitorDetailPage() {
               Certifications & Accréditations
             </h3>
             <div className="flex flex-wrap justify-center gap-4">
-              {exhibitor.miniSite?.about?.certifications.map((cert, index) => (
-                <Badge key={index} variant="success" className="px-4 py-2">
+              {exhibitor.miniSite?.about?.certifications.map((cert) => (
+                <Badge key={cert} variant="success" className="px-4 py-2">
                   <Award className="h-4 w-4 mr-2" />
                   {cert}
                 </Badge>
@@ -523,7 +523,7 @@ export default function ExhibitorDetailPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {exhibitor.miniSite.gallery.map((image, index) => (
               <motion.div
-                key={index}
+                key={`gallery-${image.slice(-30)}-${index}`}
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
@@ -561,7 +561,7 @@ export default function ExhibitorDetailPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {exhibitor.miniSite.testimonials.map((testimonial, index) => (
               <motion.div
-                key={index}
+                key={testimonial.name}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -584,7 +584,7 @@ export default function ExhibitorDetailPage() {
                     
                     <div className="flex items-center mb-3">
                       {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 text-yellow-500 fill-current" />
+                        <Star key={`star-${i}`} className="h-4 w-4 text-yellow-500 fill-current" />
                       ))}
                     </div>
                     

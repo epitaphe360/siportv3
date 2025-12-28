@@ -684,9 +684,9 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
                       {/* Quick Replies */}
                       {message.quickReplies && (
                         <div className="mt-3 space-y-1">
-                          {message.quickReplies.map((reply, idx) => (
+                          {message.quickReplies.map((reply) => (
                             <button
-                              key={idx}
+                              key={reply}
                               onClick={() => handleQuickReply(reply)}
                               className="block w-full text-left px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs transition-colors"
                             >
@@ -699,9 +699,9 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
                       {/* Suggestions */}
                       {message.suggestions && (
                         <div className="mt-3 space-y-2">
-                          {message.suggestions.map((suggestion, idx) => (
+                          {message.suggestions.map((suggestion) => (
                             <button
-                              key={idx}
+                              key={suggestion.title}
                               onClick={() => handleSuggestionClick(suggestion.action)}
                               className="flex items-center space-x-2 w-full p-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs transition-colors"
                             >
@@ -774,9 +774,9 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
                   "Mes statistiques", 
                   "Contact support",
                   "Infos pratiques"
-                ].map((suggestion, idx) => (
+                ].map((suggestion) => (
                   <button
-                    key={idx}
+                    key={suggestion}
                     onClick={() => handleQuickReply(suggestion)}
                     className="px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded text-xs transition-colors"
                   >

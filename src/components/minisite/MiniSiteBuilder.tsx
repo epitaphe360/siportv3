@@ -489,8 +489,8 @@ export default function MiniSiteBuilder() {
                                 <p className="text-gray-600 mb-6">{(section.content as AboutContent).description}</p>
                                 {(section.content as AboutContent).features.length > 0 && (
                                   <div className="grid grid-cols-2 gap-4">
-                                    {(section.content as AboutContent).features.map((feature: string, index: number) => (
-                                      <div key={index} className="flex items-center space-x-2">
+                                    {(section.content as AboutContent).features.map((feature: string) => (
+                                      <div key={feature} className="flex items-center space-x-2">
                                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: siteSettings.primaryColor }}></div>
                                         <span className="text-sm text-gray-700">{feature}</span>
                                       </div>
@@ -504,14 +504,14 @@ export default function MiniSiteBuilder() {
                               <div className="p-8 bg-gray-50">
                                 <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">{(section.content as ProductsContent).title}</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                  {(section.content as ProductsContent).products.map((product: Product, index: number) => (
-                                    <div key={index} className="bg-white rounded-lg p-6 shadow-sm">
+                                  {(section.content as ProductsContent).products.map((product: Product) => (
+                                    <div key={`product-${product.name}`} className="bg-white rounded-lg p-6 shadow-sm">
                                       <img src={product.image} alt={product.name} className="w-full h-32 object-cover rounded-lg mb-4" />
                                       <h3 className="font-semibold text-gray-900 mb-2">{product.name}</h3>
                                       <p className="text-gray-600 text-sm mb-4">{product.description}</p>
                                       <div className="flex flex-wrap gap-1">
-                                        {product.features.map((feature: string, idx: number) => (
-                                          <Badge key={idx} variant="info" size="sm">{feature}</Badge>
+                                        {product.features.map((feature: string) => (
+                                          <Badge key={feature} variant="info" size="sm">{feature}</Badge>
                                         ))}
                                       </div>
                                     </div>

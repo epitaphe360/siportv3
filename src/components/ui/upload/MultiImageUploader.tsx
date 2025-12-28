@@ -175,8 +175,8 @@ const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
       {layout === 'grid' ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4">
           {images.map((img, index) => (
-            <div 
-              key={index} 
+            <div
+              key={`img-${img.slice(-30)}-${index}`}
               className="relative group aspect-square border rounded-lg overflow-hidden"
               draggable={!disabled}
               onDragStart={(e) => handleDragStart(e, index)}
@@ -236,8 +236,8 @@ const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
       ) : (
         <div className="flex overflow-x-auto gap-4 pb-4 mb-4">
           {images.map((img, index) => (
-            <div 
-              key={index} 
+            <div
+              key={`img-${img.slice(-30)}-${index}`}
               className="relative group flex-shrink-0 w-40 h-40 border rounded-lg overflow-hidden"
               draggable={!disabled}
               onDragStart={(e) => handleDragStart(e, index)}

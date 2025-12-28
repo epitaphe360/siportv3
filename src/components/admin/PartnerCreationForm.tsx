@@ -684,8 +684,8 @@ export default function PartnerCreationForm() {
                     <div>
                       <div><strong>Contributions :</strong></div>
                       <ul className="mt-1 space-y-1">
-                        {formData.contributions.map((contrib, idx) => (
-                          <li key={idx} className="text-gray-600">• {contrib}</li>
+                        {formData.contributions.map((contrib) => (
+                          <li key={contrib} className="text-gray-600">• {contrib}</li>
                         ))}
                       </ul>
                     </div>

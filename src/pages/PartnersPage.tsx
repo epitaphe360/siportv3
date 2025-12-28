@@ -273,7 +273,7 @@ export default function PartnersPage() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="animate-pulse">
+              <div key={`skeleton-${i}`} className="animate-pulse">
                 <div className="bg-white rounded-lg p-6 h-80">
                   <div className="h-4 bg-gray-200 rounded mb-4"></div>
                   <div className="h-20 bg-gray-200 rounded mb-4"></div>
@@ -363,8 +363,8 @@ export default function PartnersPage() {
                             Contributions :
                           </h4>
                           <div className="flex flex-wrap gap-1">
-                            {partner.contributions.slice(0, 3).map((contribution, idx) => (
-                              <Badge key={idx} variant="info" size="sm">
+                            {partner.contributions.slice(0, 3).map((contribution) => (
+                              <Badge key={contribution} variant="info" size="sm">
                                 {contribution}
                               </Badge>
                             ))}

@@ -115,6 +115,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     if (!video) return;
 
     const newVolume = parseFloat(e.target.value);
+    if (isNaN(newVolume)) return;
     video.volume = newVolume;
     setVolume(newVolume);
     setIsMuted(newVolume === 0);
@@ -125,6 +126,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     if (!video) return;
 
     const newTime = parseFloat(e.target.value);
+    if (isNaN(newTime)) return;
     video.currentTime = newTime;
     setCurrentTime(newTime);
   };

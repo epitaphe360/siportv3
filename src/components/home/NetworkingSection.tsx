@@ -75,7 +75,7 @@ export const NetworkingSection: React.FC = () => {
               </div>
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
                 {t('home.networking_title').split('bons').map((part, i) => (
-                  i === 0 ? part : <span key={i} className="text-blue-600">bons{part}</span>
+                  i === 0 ? part : <span key={`part-${i}`} className="text-blue-600">bons{part}</span>
                 ))}
               </h2>
               <p className="text-lg text-gray-600 mb-8">

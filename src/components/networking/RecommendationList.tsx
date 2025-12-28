@@ -76,8 +76,8 @@ const RecommendationList: React.FC = memo(() => {
               <div className="mb-4">
                 <h4 className="font-semibold text-sm mb-2">Principales raisons de se connecter :</h4>
                 <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                  {rec.reasons.slice(0, 3).map((reason, index) => (
-                    <li key={index}>{reason}</li>
+                  {rec.reasons.slice(0, 3).map((reason) => (
+                    <li key={reason}>{reason}</li>
                   ))}
                 </ul>
               </div>

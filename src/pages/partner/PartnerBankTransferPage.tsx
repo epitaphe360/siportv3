@@ -422,8 +422,8 @@ export default function PartnerBankTransferPage() {
             <div>
               <h4 className="font-semibold text-gray-900 mb-2">Étapes à suivre:</h4>
               <ol className="list-decimal list-inside space-y-2 text-gray-700">
-                {instructions.steps.map((step, index) => (
-                  <li key={index}>{step}</li>
+                {instructions.steps.map((step) => (
+                  <li key={step}>{step}</li>
                 ))}
               </ol>
             </div>
@@ -434,8 +434,8 @@ export default function PartnerBankTransferPage() {
                 Points importants:
               </h4>
               <ul className="space-y-1 text-sm text-red-800">
-                {instructions.important.map((item, index) => (
-                  <li key={index}>{item}</li>
+                {instructions.important.map((item) => (
+                  <li key={item}>{item}</li>
                 ))}
               </ul>
             </div>
@@ -446,8 +446,8 @@ export default function PartnerBankTransferPage() {
                 Informations complémentaires:
               </h4>
               <ul className="space-y-1 text-sm text-blue-800">
-                {instructions.additionalInfo.map((item, index) => (
-                  <li key={index}>• {item}</li>
+                {instructions.additionalInfo.map((item) => (
+                  <li key={item}>• {item}</li>
                 ))}
               </ul>
             </div>
@@ -598,8 +598,8 @@ export default function PartnerBankTransferPage() {
             ✨ Inclus dans votre abonnement {tierInfo.displayName}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {tierInfo.features.map((feature, index) => (
-              <div key={index} className="flex items-center text-gray-700">
+            {tierInfo.features.map((feature) => (
+              <div key={feature} className="flex items-center text-gray-700">
                 <Check className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
                 <span>{feature}</span>
               </div>

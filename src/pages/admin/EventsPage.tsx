@@ -342,8 +342,8 @@ export default function EventsPage() {
                     <div className="mb-4">
                       <h4 className="text-sm font-medium text-gray-900 mb-2">Intervenants :</h4>
                       <div className="space-y-1">
-                        {event.speakers.slice(0, 2).map((speaker, idx) => (
-                          <div key={idx} className="text-sm text-gray-600">
+                        {event.speakers.slice(0, 2).map((speaker) => (
+                          <div key={speaker.name} className="text-sm text-gray-600">
                             {speaker.name} - {speaker.company}
                           </div>
                         ))}

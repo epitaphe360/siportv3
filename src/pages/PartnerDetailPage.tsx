@@ -425,8 +425,8 @@ export default function PartnerDetailPage() {
                   Contributions au Salon SIPORTS 2026
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {partner.contributions.map((contribution, index) => (
-                    <div key={index} className="flex items-center space-x-3 p-4 bg-blue-50 rounded-lg">
+                  {partner.contributions.map((contribution) => (
+                    <div key={contribution} className="flex items-center space-x-3 p-4 bg-blue-50 rounded-lg">
                       <div className="bg-blue-100 p-2 rounded-lg">
                         <Handshake className="h-5 w-5 text-blue-600" />
                       </div>
@@ -769,8 +769,8 @@ export default function PartnerDetailPage() {
               <div className="mb-6">
                 <h4 className="font-semibold text-gray-900 mb-3">Technologies Utilisées</h4>
                 <div className="flex flex-wrap gap-2">
-                  {selectedProject.technologies.map((tech: string, index: number) => (
-                    <Badge key={index} variant="info" size="sm">
+                  {selectedProject.technologies.map((tech: string) => (
+                    <Badge key={tech} variant="info" size="sm">
                       {tech}
                     </Badge>
                   ))}
@@ -781,8 +781,8 @@ export default function PartnerDetailPage() {
               <div className="mb-8">
                 <h4 className="font-semibold text-gray-900 mb-4">Chronologie du Projet</h4>
                 <div className="space-y-4">
-                  {selectedProject.timeline.map((phase: Project['timeline'][0], index: number) => (
-                    <div key={index} className="flex items-start space-x-4">
+                  {selectedProject.timeline.map((phase: Project['timeline'][0]) => (
+                    <div key={phase.phase} className="flex items-start space-x-4">
                       <div className={`w-4 h-4 rounded-full mt-1 ${
                         phase.status === 'completed' ? 'bg-green-500' :
                         phase.status === 'current' ? 'bg-blue-500' : 'bg-gray-300'
@@ -803,8 +803,8 @@ export default function PartnerDetailPage() {
               <div className="mb-6">
                 <h4 className="font-semibold text-gray-900 mb-3">Partenaires du Projet</h4>
                 <div className="flex flex-wrap gap-2">
-                  {selectedProject.partners.map((partnerName: string, index: number) => (
-                    <Badge key={index} variant="success" size="sm">
+                  {selectedProject.partners.map((partnerName: string) => (
+                    <Badge key={partnerName} variant="success" size="sm">
                       <Handshake className="h-3 w-3 mr-1" />
                       {partnerName}
                     </Badge>
@@ -816,8 +816,8 @@ export default function PartnerDetailPage() {
               <div className="mb-6">
                 <h4 className="font-semibold text-gray-900 mb-3">Documents & Ressources</h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  {selectedProject.documents.map((doc: Project['documents'][0], index: number) => (
-                    <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                  {selectedProject.documents.map((doc: Project['documents'][0]) => (
+                    <div key={doc.name} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
                       <FileText className="h-5 w-5 text-blue-600" />
                       <div>
                         <p className="font-medium text-gray-900 text-sm">{doc.name}</p>
@@ -835,7 +835,7 @@ export default function PartnerDetailPage() {
                 <div className="grid grid-cols-3 gap-3">
                   {selectedProject.gallery.map((image: string, index: number) => (
                     <img
-                      key={index}
+                      key={`gallery-${image.slice(-20)}-${index}`}
                       src={image}
                       alt={`Projet ${index + 1}`}
                       className="w-full h-24 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform"                      onError={(e) => {

@@ -70,7 +70,7 @@ export const FeaturedExhibitors: React.FC = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="animate-pulse">
+              <div key={`skeleton-${i}`} className="animate-pulse">
                 <div className="bg-white rounded-lg p-6 h-80">
                   <div className="h-4 bg-gray-200 rounded mb-4"></div>
                   <div className="h-20 bg-gray-200 rounded mb-4"></div>

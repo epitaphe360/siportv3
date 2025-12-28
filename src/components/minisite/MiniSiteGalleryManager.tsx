@@ -212,8 +212,8 @@ export default function MiniSiteGalleryManager({
         <div className="space-y-4">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {images.map((imageUrl, index) => (
-              <div 
-                key={index}
+              <div
+                key={`gallery-${imageUrl.slice(-30)}-${index}`}
                 className={`relative aspect-square rounded-lg overflow-hidden border-2 cursor-pointer
                   ${selectedImageIndex === index ? 'border-blue-500 ring-2 ring-blue-300' : 'border-gray-200 hover:border-gray-300'}`}
                 onClick={() => handleSelectImage(index)}

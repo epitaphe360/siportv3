@@ -63,6 +63,7 @@ export default function BadgeScannerPage() {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const videoRef = useRef<HTMLDivElement>(null);
   const isProcessingRef = useRef<boolean>(false); // Protection contre scans multiples
+  const permissionListenerRef = useRef<{ result: PermissionStatus; handler: () => void } | null>(null);
 
   // Charger les stats et vérifier les permissions caméra au montage
   useEffect(() => {
@@ -71,6 +72,11 @@ export default function BadgeScannerPage() {
 
     return () => {
       stopScanner();
+      // Cleanup permission listener
+      if (permissionListenerRef.current) {
+        permissionListenerRef.current.result.removeEventListener('change', permissionListenerRef.current.handler);
+        permissionListenerRef.current = null;
+      }
     };
   }, []);
 
@@ -148,9 +154,12 @@ export default function BadgeScannerPage() {
       const result = await navigator.permissions.query({ name: 'camera' as PermissionName });
       setCameraPermission(result.state);
 
-      result.addEventListener('change', () => {
+      // Store listener ref for cleanup
+      const handler = () => {
         setCameraPermission(result.state);
-      });
+      };
+      result.addEventListener('change', handler);
+      permissionListenerRef.current = { result, handler };
     } catch (err) {
       console.warn('Permission API not supported:', err);
       setCameraPermission('prompt');
@@ -187,14 +196,13 @@ export default function BadgeScannerPage() {
 
       setIsScanning(true);
       toast.success('Scanner activé');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur démarrage scanner:', err);
-      toast.error('Impossible d\'accéder à la caméra. Vérifiez les permissions.');
       toast.error('Erreur caméra', {
-        description: 'Vérifiez que votre navigateur a accès à la caméra.'
+        description: 'Impossible d\'accéder à la caméra. Vérifiez les permissions.'
       });
 
-      if (err.name === 'NotAllowedError') {
+      if (err instanceof Error && err.name === 'NotAllowedError') {
         setCameraPermission('denied');
       }
     }
@@ -626,8 +634,8 @@ export default function BadgeScannerPage() {
                 </div>
               ) : (
                 <div className="space-y-3 max-h-[600px] overflow-y-auto">
-                  {scanHistory.map((badge, index) => (
-                    <Card key={index} className="p-4 hover:shadow-md transition-shadow">
+                  {scanHistory.map((badge) => (
+                    <Card key={`badge-${badge.visitorId || badge.fullName}-${badge.scannedAt.getTime()}`} className="p-4 hover:shadow-md transition-shadow">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="font-semibold">{badge.fullName}</div>
