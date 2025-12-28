@@ -1,9 +1,10 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Play, CheckCircle, XCircle, Clock, Eye, TrendingUp, BarChart3 } from 'lucide-react';
+import { ArrowLeft, Play, CheckCircle, XCircle, Clock, Eye, TrendingUp, BarChart3, Plus } from 'lucide-react';
 import { mediaService } from '../../../services/mediaService';
 import type { MediaContent } from '../../../types/media';
+import { ROUTES } from '../../../lib/routes';
 
 export const MediaManagementPage: React.FC = () => {
   const [media, setMedia] = useState<MediaContent[]>([]);
@@ -86,8 +87,18 @@ export const MediaManagementPage: React.FC = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Retour au dashboard
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900">Gestion des Médias</h1>
-          <p className="mt-2 text-gray-600">Validez, modérez et gérez tous les contenus médias</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Gestion des Médias</h1>
+              <p className="mt-2 text-gray-600">Validez, modérez et gérez tous les contenus médias</p>
+            </div>
+            <Link to={ROUTES.ADMIN_MEDIA_CREATE}>
+              <button className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg transition-all">
+                <Plus className="w-5 h-5" />
+                Créer Nouveau Média
+              </button>
+            </Link>
+          </div>
         </div>
 
         {/* Stats Cards */}

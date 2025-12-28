@@ -150,15 +150,22 @@ test.describe('Flux complet Partenaire : Inscription -> Connexion -> Paiement', 
     
     // Secteurs d'activité (MultiSelect)
     console.log('Sélection des secteurs...');
-    const sectorsInput = page.getByPlaceholder(/secteurs d'activité/i);
+    const sectorsInput = page.getByPlaceholder(/sélectionnez vos secteurs/i);
     await sectorsInput.click();
     await page.waitForTimeout(500);
     
     // Sélectionner "Logistique et Transport"
-    const logisticsOption = page.locator('button:has-text("Logistique et Transport")');
+    const logisticsOption = page.locator('[role="option"]:has-text("Logistique"), button:has-text("Logistique et Transport")').first();
     if (await logisticsOption.count() > 0) {
         await logisticsOption.click();
         console.log('✓ Secteur sélectionné: Logistique et Transport');
+    } else {
+        // Fallback: chercher tout élément cliquable avec ce texte
+        const altOption = page.locator('text=Logistique').first();
+        if (await altOption.isVisible()) {
+            await altOption.click();
+            console.log('✓ Secteur sélectionné via fallback');
+        }
     }
     await page.keyboard.press('Escape');
     await page.waitForTimeout(300);

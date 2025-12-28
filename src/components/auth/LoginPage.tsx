@@ -262,155 +262,75 @@ export default function LoginPage() {
           </form>
 
           {/* Quick Login Buttons */}
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-            <h4 className="text-sm font-medium text-blue-900 mb-3">
-              {t('login.demo_accounts')}:
+          <div className="mt-6 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+            <h4 className="text-sm font-semibold text-blue-900 mb-4 flex items-center">
+              <span className="mr-2">🚀</span>
+              {t('login.demo_accounts')}
             </h4>
             {(import.meta.env.VITE_SHOW_DEMO_LOGINS !== 'false') && (
-              <div className="space-y-4">
-                {/* Admin */}
-                <div className="grid grid-cols-1 gap-2">
+              <div className="space-y-3">
+                {/* Visiteur */}
+                <div className="bg-white rounded-lg p-3 shadow-sm">
+                  <p className="text-xs font-semibold text-gray-700 mb-2 flex items-center">
+                    👥 Visiteur
+                  </p>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      setEmail('admin@siport.com');
-                      setPassword('Admin123!');
+                      setEmail('demo.visitor@siports.com');
+                      setPassword('Demo2026!');
                     }}
-                    className="text-xs bg-white hover:bg-blue-100 border-blue-200"
+                    className="w-full text-xs bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 border-0 shadow-sm"
                   >
-                    👑 {t('login.demo_admin')}
+                    ✅ Compte Visiteur
                   </Button>
                 </div>
 
-                {/* Exhibitors */}
-                <div>
-                  <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">🏢 {t('login.demo_exhibitors')}</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('exhibitor-9m@test.siport.com');
-                        setPassword('Test@123456');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      Stand 9m²
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('exhibitor-18m@test.siport.com');
-                        setPassword('Test@123456');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      Stand 18m²
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('exhibitor-36m@test.siport.com');
-                        setPassword('Test@123456');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      Stand 36m²
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('exhibitor-54m@test.siport.com');
-                        setPassword('Test@123456');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      Stand 54m²
-                    </Button>
-                  </div>
+                {/* Exposant */}
+                <div className="bg-white rounded-lg p-3 shadow-sm">
+                  <p className="text-xs font-semibold text-gray-700 mb-2 flex items-center">
+                    🏢 Exposant
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setEmail('demo.exhibitor@siports.com');
+                      setPassword('Demo2026!');
+                    }}
+                    className="w-full text-xs bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 border-0 shadow-sm"
+                  >
+                    ✅ Compte Exposant
+                  </Button>
                 </div>
 
-                {/* Partners */}
-                <div>
-                  <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">🤝 {t('login.demo_partners')}</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('partner-platinium@test.siport.com');
-                        setPassword('Test@123456');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      💎 Platinum
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('partner-silver@test.siport.com');
-                        setPassword('Test@123456');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      🥈 Silver
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('partner-gold@test.siport.com');
-                        setPassword('Test@123456');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      🥇 Gold
-                    </Button>
-                  </div>
+                {/* Partenaire */}
+                <div className="bg-white rounded-lg p-3 shadow-sm">
+                  <p className="text-xs font-semibold text-gray-700 mb-2 flex items-center">
+                    🤝 Partenaire
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setEmail('demo.partner@siports.com');
+                      setPassword('Demo2026!');
+                    }}
+                    className="w-full text-xs bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 border-0 shadow-sm"
+                  >
+                    ✅ Compte Partenaire
+                  </Button>
                 </div>
 
-                {/* Visitors */}
-                <div>
-                  <p className="text-[10px] font-semibold text-blue-700 uppercase mb-1">👥 {t('login.demo_visitors')}</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('visitor-free@test.siport.com');
-                        setPassword('Test@123456');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      Gratuit
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEmail('visitor-vip@test.siport.com');
-                        setPassword('Test@123456');
-                      }}
-                      className="text-[10px] h-7 bg-white"
-                    >
-                      VIP
-                    </Button>
-                  </div>
+                {/* Note */}
+                <div className="mt-3 p-2 bg-blue-100/50 rounded-lg">
+                  <p className="text-[10px] text-blue-800 text-center">
+                    💡 <strong>Mot de passe:</strong> Demo2026!
+                  </p>
                 </div>
               </div>
             )}

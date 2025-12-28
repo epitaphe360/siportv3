@@ -119,6 +119,7 @@ const MediaDetailPage = lazyRetry(() => import('./pages/media/MediaDetailPage').
 
 // Admin Media pages
 const MediaManagementPage = lazyRetry(() => import('./pages/admin/media/MediaManagementPage'));
+const CreateMediaPage = lazyRetry(() => import('./pages/admin/media/CreateMediaPage'));
 
 // Partner Media pages
 const PartnerMediaUploadPage = lazyRetry(() => import('./pages/partners/PartnerMediaUploadPage'));
@@ -301,6 +302,7 @@ const App = () => {
 
             {/* Admin Media routes - protected */}
             <Route path={ROUTES.ADMIN_MEDIA_MANAGE} element={<ProtectedRoute requiredRole="admin"><MediaManagementPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_MEDIA_CREATE} element={<ProtectedRoute requiredRole="admin"><CreateMediaPage /></ProtectedRoute>} />
 
             {/* 404 catch-all route - must be last */}
             <Route path="*" element={<div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">

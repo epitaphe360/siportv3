@@ -13,7 +13,8 @@ import {
   Loader,
   DollarSign,
   Package,
-  X
+  X,
+  ChevronDown
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Card } from '../ui/Card';
@@ -39,7 +40,7 @@ interface NewExhibitorForm {
   position: string;
   
   // Informations commerciales
-  packageType: 'basic' | 'premium' | 'vip';
+  packageType: 'base' | 'standard' | 'premium' | 'elite';
   standSize: string;
   contractValue: string;
   paymentStatus: 'pending' | 'partial' | 'completed';
@@ -67,8 +68,8 @@ export default function ExhibitorCreationSimulator() {
     email: '',
     phone: '',
     position: '',
-    packageType: 'basic',
-    standSize: '18m²',
+    packageType: 'base',
+    standSize: '9m²',
     contractValue: '',
     paymentStatus: 'pending',
     products: []
@@ -95,25 +96,32 @@ export default function ExhibitorCreationSimulator() {
 
   const packages = [
     {
-      type: 'basic',
-      name: 'Package Basic',
-      price: '18,000€',
+      type: 'base',
+      name: 'Exposant 9m² (Base)',
+      price: 'Gratuit',
+      standSize: '9m²',
+      features: ['Profil d\'exposant public', 'Logo sur le site', 'Présentation courte', 'Formulaire de contact', 'Tableau de bord exposant']
+    },
+    {
+      type: 'standard',
+      name: 'Exposant 18m² (Standard)',
+      price: 'Sur devis',
       standSize: '18m²',
-      features: ['Stand standard', 'Listing exposants', 'Accès networking', '2 badges exposant']
+      features: ['Mini-site personnalisé', '15 rendez-vous', 'Store produits', 'URL personnalisée', 'Support standard']
     },
     {
       type: 'premium',
-      name: 'Package Premium',
-      price: '45,000€',
+      name: 'Exposant 36m² (Premium)',
+      price: 'Sur devis',
       standSize: '36m²',
-      features: ['Stand premium', 'Mini-site personnalisé', 'Conférences', '5 badges exposant', 'Networking VIP']
+      features: ['Mise en avant "À la Une"', '30 rendez-vous', 'Accès API limité', 'Badge virtuel', 'Support prioritaire']
     },
     {
-      type: 'vip',
-      name: 'Package VIP',
-      price: '85,000€',
-      standSize: '54m²',
-      features: ['Stand VIP', 'Branding premium', 'Keynote speaker', '10 badges exposant', 'Soirée exclusive']
+      type: 'elite',
+      name: 'Exposant 54m²+ (Elite)',
+      price: 'Sur devis',
+      standSize: '54m²+',
+      features: ['Mise en avant permanente', 'Rendez-vous illimités', 'Accès API complet', 'Support VIP 24/7', 'Priorité algorithmique']
     }
   ];
 
@@ -137,6 +145,7 @@ export default function ExhibitorCreationSimulator() {
         throw new Error('Utilisateur non connecté');
       }
 
+      // Création de l'exposant dans Supabase
       // 1. Créer d'abord l'utilisateur pour l'exposant
       const userData = {
         email: formData.email,
@@ -217,8 +226,8 @@ export default function ExhibitorCreationSimulator() {
         email: '',
         phone: '',
         position: '',
-        packageType: 'basic',
-        standSize: '18m²',
+        packageType: 'base',
+        standSize: '9m²',
         contractValue: '',
         paymentStatus: 'pending',
         products: []
@@ -273,7 +282,7 @@ export default function ExhibitorCreationSimulator() {
             animate={{ opacity: 1, y: 0 }}
           >
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Simulateur de Création d'Exposant
+              Création d'Exposant
             </h1>
             <p className="text-gray-600">
               Créez un nouveau dossier exposant pour SIPORTS 2026
@@ -376,14 +385,106 @@ export default function ExhibitorCreationSimulator() {
                     Pays *
                   </label>
                   <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input
-                      type="text"
+                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
+                    <select
                       value={formData.country}
                       onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Pays de l'entreprise"
-                    />
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white cursor-pointer"
+                    >
+                      <option value="">Sélectionnez un pays</option>
+                      <optgroup label="Afrique du Nord & Moyen-Orient">
+                        <option value="Algérie">🇩🇿 Algérie</option>
+                        <option value="Maroc">🇲🇦 Maroc</option>
+                        <option value="Tunisie">🇹🇳 Tunisie</option>
+                        <option value="Égypte">🇪🇬 Égypte</option>
+                        <option value="Libye">🇱🇾 Libye</option>
+                        <option value="Mauritanie">🇲🇷 Mauritanie</option>
+                        <option value="Arabie Saoudite">🇸🇦 Arabie Saoudite</option>
+                        <option value="Émirats Arabes Unis">🇦🇪 Émirats Arabes Unis</option>
+                        <option value="Qatar">🇶🇦 Qatar</option>
+                        <option value="Koweït">🇰🇼 Koweït</option>
+                        <option value="Bahreïn">🇧🇭 Bahreïn</option>
+                        <option value="Oman">🇴🇲 Oman</option>
+                        <option value="Jordanie">🇯🇴 Jordanie</option>
+                        <option value="Liban">🇱🇧 Liban</option>
+                        <option value="Irak">🇮🇶 Irak</option>
+                        <option value="Syrie">🇸🇾 Syrie</option>
+                        <option value="Palestine">🇵🇸 Palestine</option>
+                        <option value="Yémen">🇾🇪 Yémen</option>
+                      </optgroup>
+                      <optgroup label="Europe">
+                        <option value="France">🇫🇷 France</option>
+                        <option value="Allemagne">🇩🇪 Allemagne</option>
+                        <option value="Espagne">🇪🇸 Espagne</option>
+                        <option value="Italie">🇮🇹 Italie</option>
+                        <option value="Royaume-Uni">🇬🇧 Royaume-Uni</option>
+                        <option value="Belgique">🇧🇪 Belgique</option>
+                        <option value="Pays-Bas">🇳🇱 Pays-Bas</option>
+                        <option value="Suisse">🇨🇭 Suisse</option>
+                        <option value="Portugal">🇵🇹 Portugal</option>
+                        <option value="Grèce">🇬🇷 Grèce</option>
+                        <option value="Turquie">🇹🇷 Turquie</option>
+                        <option value="Pologne">🇵🇱 Pologne</option>
+                        <option value="Autriche">🇦🇹 Autriche</option>
+                        <option value="Suède">🇸🇪 Suède</option>
+                        <option value="Norvège">🇳🇴 Norvège</option>
+                        <option value="Danemark">🇩🇰 Danemark</option>
+                        <option value="Finlande">🇫🇮 Finlande</option>
+                        <option value="Irlande">🇮🇪 Irlande</option>
+                        <option value="Russie">🇷🇺 Russie</option>
+                      </optgroup>
+                      <optgroup label="Afrique Subsaharienne">
+                        <option value="Sénégal">🇸🇳 Sénégal</option>
+                        <option value="Côte d'Ivoire">🇨🇮 Côte d'Ivoire</option>
+                        <option value="Nigeria">🇳🇬 Nigeria</option>
+                        <option value="Ghana">🇬🇭 Ghana</option>
+                        <option value="Cameroun">🇨🇲 Cameroun</option>
+                        <option value="Kenya">🇰🇪 Kenya</option>
+                        <option value="Afrique du Sud">🇿🇦 Afrique du Sud</option>
+                        <option value="Éthiopie">🇪🇹 Éthiopie</option>
+                        <option value="Tanzanie">🇹🇿 Tanzanie</option>
+                        <option value="Mali">🇲🇱 Mali</option>
+                        <option value="Burkina Faso">🇧🇫 Burkina Faso</option>
+                        <option value="Niger">🇳🇪 Niger</option>
+                        <option value="Gabon">🇬🇦 Gabon</option>
+                        <option value="Congo">🇨🇬 Congo</option>
+                        <option value="RD Congo">🇨🇩 RD Congo</option>
+                        <option value="Angola">🇦🇴 Angola</option>
+                        <option value="Mozambique">🇲🇿 Mozambique</option>
+                      </optgroup>
+                      <optgroup label="Asie">
+                        <option value="Chine">🇨🇳 Chine</option>
+                        <option value="Japon">🇯🇵 Japon</option>
+                        <option value="Corée du Sud">🇰🇷 Corée du Sud</option>
+                        <option value="Inde">🇮🇳 Inde</option>
+                        <option value="Singapour">🇸🇬 Singapour</option>
+                        <option value="Malaisie">🇲🇾 Malaisie</option>
+                        <option value="Indonésie">🇮🇩 Indonésie</option>
+                        <option value="Thaïlande">🇹🇭 Thaïlande</option>
+                        <option value="Vietnam">🇻🇳 Vietnam</option>
+                        <option value="Philippines">🇵🇭 Philippines</option>
+                        <option value="Pakistan">🇵🇰 Pakistan</option>
+                        <option value="Bangladesh">🇧🇩 Bangladesh</option>
+                        <option value="Iran">🇮🇷 Iran</option>
+                      </optgroup>
+                      <optgroup label="Amériques">
+                        <option value="États-Unis">🇺🇸 États-Unis</option>
+                        <option value="Canada">🇨🇦 Canada</option>
+                        <option value="Mexique">🇲🇽 Mexique</option>
+                        <option value="Brésil">🇧🇷 Brésil</option>
+                        <option value="Argentine">🇦🇷 Argentine</option>
+                        <option value="Chili">🇨🇱 Chili</option>
+                        <option value="Colombie">🇨🇴 Colombie</option>
+                        <option value="Pérou">🇵🇪 Pérou</option>
+                        <option value="Venezuela">🇻🇪 Venezuela</option>
+                        <option value="Cuba">🇨🇺 Cuba</option>
+                      </optgroup>
+                      <optgroup label="Océanie">
+                        <option value="Australie">🇦🇺 Australie</option>
+                        <option value="Nouvelle-Zélande">🇳🇿 Nouvelle-Zélande</option>
+                      </optgroup>
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
                   </div>
                 </div>
 
@@ -528,7 +629,7 @@ export default function ExhibitorCreationSimulator() {
                     onClick={() => {
                       setFormData({
                         ...formData,
-                        packageType: pkg.type as 'basic' | 'premium' | 'vip',
+                        packageType: pkg.type as 'base' | 'standard' | 'premium' | 'elite',
                         standSize: pkg.standSize,
                         contractValue: pkg.price
                       });
