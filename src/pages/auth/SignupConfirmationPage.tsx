@@ -11,7 +11,85 @@ export default function SignupConfirmationPage() {
   const [searchParams] = useSearchParams();
   const email = searchParams.get('email') || '';
   const userType = searchParams.get('type') || 'visitor';
+  const userLevel = searchParams.get('level') || '';
   const [countdown, setCountdown] = useState(60);
+
+  // Messages personnalisés selon le type
+  const getTitle = () => {
+    if (userType === 'exhibitor') return 'Inscription Exposant Réussie !';
+    if (userType === 'partner') return 'Inscription Partenaire Réussie !';
+    if (userLevel === 'free') return 'Badge Gratuit Envoyé !';
+    if (userLevel === 'premium') return 'Inscription VIP Réussie !';
+    return 'Inscription réussie !';
+  };
+
+  const getDescription = () => {
+    if (userType === 'exhibitor') return 'Votre demande de compte exposant a été enregistrée';
+    if (userType === 'partner') return 'Votre demande de compte partenaire a été enregistrée';
+    if (userLevel === 'free') return 'Votre badge d\'accès gratuit vous a été envoyé par email';
+    if (userLevel === 'premium') return 'Votre compte VIP a été créé avec succès';
+    return 'Votre compte a été créé avec succès';
+  };
+
+  const getInstructions = () => {
+    if (userLevel === 'free') {
+      return [
+        {
+          step: 1,
+          title: 'Ouvrez votre boîte email',
+          description: 'Recherchez l\'email contenant votre badge QR gratuit'
+        },
+        {
+          step: 2,
+          title: 'Téléchargez votre badge',
+          description: 'Cliquez sur le badge pour le sauvegarder ou l\'imprimer'
+        },
+        {
+          step: 3,
+          title: 'Présentez-vous au salon',
+          description: 'Montrez votre badge QR à l\'entrée pour accéder gratuitement'
+        }
+      ];
+    }
+
+    if (userType === 'exhibitor' || userType === 'partner') {
+      return [
+        {
+          step: 1,
+          title: 'Vérifiez votre email',
+          description: 'Cliquez sur le lien de confirmation dans l\'email'
+        },
+        {
+          step: 2,
+          title: 'Validation administrative',
+          description: 'Votre compte sera examiné par notre équipe (24-48h)'
+        },
+        {
+          step: 3,
+          title: 'Accès complet',
+          description: 'Vous recevrez un email une fois votre compte validé'
+        }
+      ];
+    }
+
+    return [
+      {
+        step: 1,
+        title: 'Ouvrez votre boîte email',
+        description: 'Recherchez notre message de confirmation'
+      },
+      {
+        step: 2,
+        title: 'Cliquez sur le lien de confirmation',
+        description: 'Validez votre adresse email'
+      },
+      {
+        step: 3,
+        title: 'Connectez-vous',
+        description: 'Utilisez vos identifiants pour accéder à votre compte'
+      }
+    ];
+  };
 
   useEffect(() => {
     if (countdown > 0) {
@@ -56,10 +134,10 @@ export default function SignupConfirmationPage() {
             className="text-center mb-8"
           >
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Inscription réussie !
+              {getTitle()}
             </h1>
             <p className="text-gray-600">
-              Votre compte a été créé avec succès
+              {getDescription()}
             </p>
           </motion.div>
 
@@ -95,44 +173,20 @@ export default function SignupConfirmationPage() {
             transition={{ delay: 0.5 }}
             className="space-y-4 mb-8"
           >
-            <div className="flex items-start gap-3">
-              <div className="bg-gray-100 rounded-full p-1 mt-1 flex-shrink-0">
-                <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">
-                  1
+            {getInstructions().map((instruction) => (
+              <div key={instruction.step} className="flex items-start gap-3">
+                <div className="bg-gray-100 rounded-full p-1 mt-1 flex-shrink-0">
+                  <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">
+                    {instruction.step}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-700">
+                    <strong>{instruction.title}</strong> {instruction.description && `- ${instruction.description}`}
+                  </p>
                 </div>
               </div>
-              <div>
-                <p className="text-sm text-gray-700">
-                  <strong>Ouvrez votre boîte email</strong> et recherchez notre message
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <div className="bg-gray-100 rounded-full p-1 mt-1 flex-shrink-0">
-                <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">
-                  2
-                </div>
-              </div>
-              <div>
-                <p className="text-sm text-gray-700">
-                  <strong>Cliquez sur le lien de confirmation</strong> dans l'email
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <div className="bg-gray-100 rounded-full p-1 mt-1 flex-shrink-0">
-                <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">
-                  3
-                </div>
-              </div>
-              <div>
-                <p className="text-sm text-gray-700">
-                  <strong>Connectez-vous</strong> avec vos identifiants
-                </p>
-              </div>
-            </div>
+            ))}
           </motion.div>
 
           {/* Statut pour partner/exhibitor */}
@@ -147,11 +201,34 @@ export default function SignupConfirmationPage() {
                 <Clock className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
                 <div>
                   <h4 className="font-medium text-amber-900 mb-1">
-                    Compte en attente de validation
+                    Validation en cours
                   </h4>
                   <p className="text-sm text-amber-700">
-                    Après confirmation de votre email, votre compte sera créé avec un statut "En attente de paiement". 
-                    Vous pourrez accéder à votre tableau de bord avec des options limitées en attendant la validation du paiement.
+                    Votre demande de compte {userType === 'exhibitor' ? 'exposant' : 'partenaire'} sera examinée par notre équipe dans les 24-48 heures. 
+                    Vous recevrez un email de confirmation une fois votre compte validé.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Message pour visiteur gratuit */}
+          {userLevel === 'free' && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6"
+            >
+              <div className="flex items-start gap-3">
+                <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h4 className="font-medium text-green-900 mb-1">
+                    Badge envoyé par email
+                  </h4>
+                  <p className="text-sm text-green-700">
+                    Votre badge d'accès gratuit avec QR code a été envoyé à votre adresse email. 
+                    Imprimez-le ou affichez-le sur votre smartphone à l'entrée du salon.
                   </p>
                 </div>
               </div>
@@ -165,21 +242,23 @@ export default function SignupConfirmationPage() {
             transition={{ delay: 0.7 }}
             className="flex flex-col sm:flex-row gap-4"
           >
-            <Button
-              onClick={handleResendEmail}
-              variant="outline"
-              className="flex-1 flex items-center justify-center gap-2"
-              disabled={countdown > 0}
-            >
-              <RefreshCw className={`h-4 w-4 ${countdown > 0 ? 'opacity-50' : ''}`} />
-              {countdown > 0 ? `Renvoyer (${countdown}s)` : 'Renvoyer l\'email'}
-            </Button>
+            {userLevel !== 'free' && (
+              <Button
+                onClick={handleResendEmail}
+                variant="outline"
+                className="flex-1 flex items-center justify-center gap-2"
+                disabled={countdown > 0}
+              >
+                <RefreshCw className={`h-4 w-4 ${countdown > 0 ? 'opacity-50' : ''}`} />
+                {countdown > 0 ? `Renvoyer (${countdown}s)` : 'Renvoyer l\'email'}
+              </Button>
+            )}
 
             <Button
-              onClick={() => navigate(ROUTES.LOGIN)}
+              onClick={() => userLevel === 'free' ? navigate(ROUTES.HOME) : navigate(ROUTES.LOGIN)}
               className="flex-1 flex items-center justify-center gap-2"
             >
-              Aller à la connexion
+              {userLevel === 'free' ? 'Retour à l\'accueil' : 'Aller à la connexion'}
               <ArrowRight className="h-4 w-4" />
             </Button>
           </motion.div>

@@ -143,10 +143,8 @@ export default function VisitorFreeRegistration() {
       toast.success('Inscription réussie ! Vérifiez votre email.');
 
       setTimeout(() => {
-        navigate(ROUTES.HOME, {
-          state: { message: 'Vérifiez votre email pour recevoir votre badge gratuit !' }
-        });
-      }, 6000);
+        navigate(`${ROUTES.SIGNUP_CONFIRMATION}?email=${encodeURIComponent(data.email)}&type=visitor&level=free`);
+      }, 3000);
 
     } catch (error: any) {
       console.error('Erreur inscription:', error);

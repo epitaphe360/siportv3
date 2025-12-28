@@ -330,10 +330,10 @@ export default function RegisterPage() {
       // Afficher la modal de succès
       setShowSuccess(true);
 
-      // Rediriger vers la page de connexion après 6 secondes (pour laisser le temps de lire/screenshot)
+      // Rediriger vers la page de confirmation après 3 secondes
       setTimeout(() => {
-        navigate(ROUTES.LOGIN);
-      }, 6000);
+        navigate(`${ROUTES.SIGNUP_CONFIRMATION}?email=${encodeURIComponent(data.email)}&type=${data.accountType}`);
+      }, 3000);
     } catch (error) {
       console.error('Registration error:', error);
       toast.error(error instanceof Error ? error.message : 'Erreur lors de l\'inscription');
