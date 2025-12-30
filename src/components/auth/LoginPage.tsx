@@ -274,6 +274,9 @@ export default function LoginPage() {
                   <p className="text-xs font-semibold text-gray-700 mb-2 flex items-center">
                     👥 Visiteur
                   </p>
+                  <p className="text-[10px] text-gray-600 mb-2 font-mono">
+                    📧 demo.visitor@siports.com
+                  </p>
                   <Button
                     type="button"
                     variant="outline"
@@ -293,6 +296,9 @@ export default function LoginPage() {
                   <p className="text-xs font-semibold text-gray-700 mb-2 flex items-center">
                     🏢 Exposant
                   </p>
+                  <p className="text-[10px] text-gray-600 mb-2 font-mono">
+                    📧 demo.exhibitor@siports.com
+                  </p>
                   <Button
                     type="button"
                     variant="outline"
@@ -311,6 +317,9 @@ export default function LoginPage() {
                 <div className="bg-white rounded-lg p-3 shadow-sm">
                   <p className="text-xs font-semibold text-gray-700 mb-2 flex items-center">
                     🤝 Partenaire
+                  </p>
+                  <p className="text-[10px] text-gray-600 mb-2 font-mono">
+                    📧 demo.partner@siports.com
                   </p>
                   <Button
                     type="button"
