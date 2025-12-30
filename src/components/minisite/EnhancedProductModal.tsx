@@ -58,10 +58,24 @@ export default function EnhancedProductModal({ product: rawProduct, theme, onClo
     ...rawProduct,
     isNew: rawProduct.is_new ?? rawProduct.isNew,
     inStock: rawProduct.in_stock ?? rawProduct.inStock ?? true,
+    certified: rawProduct.certified ?? false,
     deliveryTime: rawProduct.delivery_time ?? rawProduct.deliveryTime,
     originalPrice: rawProduct.original_price ?? rawProduct.originalPrice,
     videoUrl: rawProduct.video_url ?? rawProduct.videoUrl,
+    documents: rawProduct.documents ?? [],
+    specifications: rawProduct.specifications ?? '',
   };
+
+  // DEBUG - Afficher les données reçues
+  console.log('EnhancedProductModal - Product data:', {
+    name: product.name,
+    isNew: product.isNew,
+    certified: product.certified,
+    inStock: product.inStock,
+    deliveryTime: product.deliveryTime,
+    videoUrl: product.videoUrl,
+    documents: product.documents,
+  });
 
   // Préparer la galerie d'images
   const images = product.images?.length > 0 
