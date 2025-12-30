@@ -335,10 +335,32 @@ export default function LoginPage() {
                   </Button>
                 </div>
 
+                {/* Admin */}
+                <div className="bg-white rounded-lg p-3 shadow-sm">
+                  <p className="text-xs font-semibold text-gray-700 mb-2 flex items-center">
+                    ⚙️ Administrateur
+                  </p>
+                  <p className="text-[10px] text-gray-600 mb-2 font-mono">
+                    📧 admin@siports.com
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setEmail('admin@siports.com');
+                      setPassword('Admin2026!');
+                    }}
+                    className="w-full text-xs bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 border-0 shadow-sm"
+                  >
+                    ✅ Compte Admin
+                  </Button>
+                </div>
+
                 {/* Note */}
                 <div className="mt-3 p-2 bg-blue-100/50 rounded-lg">
                   <p className="text-[10px] text-blue-800 text-center">
-                    💡 <strong>Mot de passe:</strong> Demo2026!
+                    💡 <strong>Mot de passe:</strong> Demo2026! (Admin2026! pour admin)
                   </p>
                 </div>
               </div>
