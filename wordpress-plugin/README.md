@@ -1,21 +1,33 @@
-# 🎨 SIPORTS Articles - Plugin Elementor Pro
+# 🎨 SIPORTS Articles & Médias - Plugin Elementor Pro
 
 ## 📋 Vue d'ensemble
 
-Ce plugin permet d'**afficher les articles SIPORTS** sur n'importe quel site WordPress avec **Elementor Pro** via des shortcodes et un widget dédié.
+Ce plugin permet d'**afficher les articles ET les médias SIPORTS** (webinaires, podcasts, capsules, etc.) sur n'importe quel site WordPress avec **Elementor Pro** via des shortcodes et des widgets dédiés.
 
 ---
 
 ## ✨ Fonctionnalités
 
+### Articles
 - ✅ **Shortcode WordPress** : `[article id="uuid"]`
 - ✅ **Widget Elementor Pro** : Glisser-déposer dans l'éditeur
 - ✅ **API REST** : Récupération des articles depuis Supabase
 - ✅ **Cache intelligent** : 1 heure de cache automatique
 - ✅ **3 layouts** : Full, Compact, Minimal
+- ✅ **Options d'affichage** : Image, extrait, contenu, tags, meta
+
+### Médias (NOUVEAU)
+- ✅ **Shortcode WordPress** : `[media id="uuid"]`
+- ✅ **Widget Elementor Pro** : Widget dédié pour les médias
+- ✅ **6 types de médias** : Webinaires, Podcasts, Capsules, Live Studio, Best Moments, Testimonials
+- ✅ **Players intégrés** : Vidéo HTML5 et Audio HTML5
+- ✅ **Statistiques** : Vues, likes, partages
+- ✅ **Lecture automatique** : Option autoplay
+- ✅ **Badges colorés** : Badge par type de média
+
+### Commun
 - ✅ **Responsive** : Mobile, tablette, desktop
 - ✅ **Dark mode** : Support automatique
-- ✅ **Options d'affichage** : Image, extrait, contenu, tags, meta
 - ✅ **SEO optimisé** : Balises sémantiques
 
 ---
@@ -47,14 +59,16 @@ Ce plugin permet d'**afficher les articles SIPORTS** sur n'importe quel site Wor
 
 ## 🚀 Utilisation
 
-### Méthode 1 : Shortcode WordPress
+### Méthode 1 : Shortcodes WordPress
 
-#### Usage basique
+#### 📝 Shortcode Article
+
+**Usage basique**
 ```php
 [article id="00000000-0000-0000-0000-000000000401"]
 ```
 
-#### Avec options
+**Avec options**
 ```php
 [article 
   id="00000000-0000-0000-0000-000000000401" 
@@ -67,7 +81,7 @@ Ce plugin permet d'**afficher les articles SIPORTS** sur n'importe quel site Wor
 ]
 ```
 
-#### Options disponibles
+**Options disponibles**
 
 | Option | Valeurs | Défaut | Description |
 |--------|---------|--------|-------------|
@@ -81,9 +95,54 @@ Ce plugin permet d'**afficher les articles SIPORTS** sur n'importe quel site Wor
 
 ---
 
-### Méthode 2 : Widget Elementor Pro
+#### 🎥 Shortcode Média (NOUVEAU)
 
-#### Dans l'éditeur Elementor :
+**Usage basique**
+```php
+[media id="00000000-0000-0000-0000-000000000501"]
+```
+
+**Avec options**
+```php
+[media 
+  id="00000000-0000-0000-0000-000000000501" 
+  layout="full" 
+  show_thumbnail="yes" 
+  show_description="yes" 
+  show_tags="yes" 
+  show_stats="yes"
+  autoplay="no"
+]
+```
+
+**Options disponibles**
+
+| Option | Valeurs | Défaut | Description |
+|--------|---------|--------|-------------|
+| `id` | UUID | *requis* | ID du média depuis le Dashboard Marketing |
+| `layout` | full, compact, minimal | full | Type d'affichage |
+| `show_thumbnail` | yes, no | yes | Afficher la vignette |
+| `show_description` | yes, no | yes | Afficher la description |
+| `show_tags` | yes, no | yes | Afficher les tags |
+| `show_stats` | yes, no | yes | Afficher les statistiques (vues/likes/partages) |
+| `autoplay` | yes, no | no | Démarrer automatiquement le média |
+
+**Types de médias supportés :**
+
+| Type | Badge | Description | Player |
+|------|-------|-------------|--------|
+| webinar | 🎥 Webinaire | Webinaires sponsorisés en replay | Vidéo HTML5 |
+| podcast | 🎙️ Podcast | SIPORT Talks - Épisodes audio | Audio HTML5 |
+| capsule_inside | 📹 Capsule Inside | Capsules vidéo Inside SIPORT | Vidéo HTML5 |
+| live_studio | 🔴 Live Studio | Meet The Leaders - Interviews | Vidéo HTML5 |
+| best_moments | ⭐ Best Moments | Meilleurs moments du salon | Vidéo HTML5 |
+| testimonial | 💬 Témoignage | Témoignages vidéo | Vidéo HTML5 |
+
+---
+
+### Méthode 2 : Widgets Elementor Pro
+
+#### 📝 Widget "SIPORTS Article"
 
 1. **Ouvrir une page** avec Elementor
 2. **Chercher** "SIPORTS Article" dans les widgets
@@ -97,6 +156,22 @@ Ce plugin permet d'**afficher les articles SIPORTS** sur n'importe quel site Wor
    - Taille du titre
    - Bordures
    - Ombres
+6. **Publier** la page
+
+#### 🎥 Widget "SIPORTS Média" (NOUVEAU)
+
+1. **Ouvrir une page** avec Elementor
+2. **Chercher** "SIPORTS Média" dans les widgets
+3. **Glisser-déposer** le widget sur la page
+4. **Configurer** :
+   - Entrez l'**ID du média**
+   - Choisissez le **layout**
+   - Activez/désactivez les options (vignette, description, stats)
+   - Activez la **lecture automatique** si besoin
+5. **Personnaliser le style** :
+   - Couleur du titre et description
+   - Rayon de bordure
+   - Ombre de la boîte
 6. **Publier** la page
 
 #### Exemple de configuration :

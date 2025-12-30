@@ -637,6 +637,24 @@ export default function MarketingDashboard() {
                       </div>
                     </div>
 
+                    {/* Shortcode */}
+                    <div className="mb-3 p-2 bg-gray-50 rounded border border-gray-200">
+                      <div className="flex items-center justify-between gap-2">
+                        <code className="text-xs text-blue-600 font-mono flex-1 overflow-x-auto">
+                          [media id="{item.id}"]
+                        </code>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => copyShortcode(`[media id="${item.id}"]`)}
+                          className="flex-shrink-0"
+                        >
+                          <Copy className="h-3 w-3 mr-1" />
+                          Copier
+                        </Button>
+                      </div>
+                    </div>
+
                     {/* Actions */}
                     <div className="flex gap-2">
                       <Button
