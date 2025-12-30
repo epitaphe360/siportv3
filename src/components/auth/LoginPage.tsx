@@ -357,8 +357,68 @@ export default function LoginPage() {
                   </Button>
                 </div>
 
+                {/* Exposants avec créneaux */}
+                <div className="col-span-2 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg p-3 border border-purple-200">
+                  <p className="text-xs font-semibold text-purple-800 mb-2">
+                    🏢 Exposants avec créneaux de démo
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('exhibitor-9m@test.siport.com');
+                        setPassword('Demo2026!');
+                      }}
+                      className="text-[10px] h-8 bg-white hover:bg-purple-50 border-purple-200"
+                    >
+                      🚢 TechMarine
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('exhibitor-18m@test.siport.com');
+                        setPassword('Demo2026!');
+                      }}
+                      className="text-[10px] h-8 bg-white hover:bg-purple-50 border-purple-200"
+                    >
+                      🌊 OceanLogistics
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('exhibitor-36m@test.siport.com');
+                        setPassword('Demo2026!');
+                      }}
+                      className="text-[10px] h-8 bg-white hover:bg-purple-50 border-purple-200"
+                    >
+                      ⚙️ PortTech
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEmail('exhibitor-54m@test.siport.com');
+                        setPassword('Demo2026!');
+                      }}
+                      className="text-[10px] h-8 bg-white hover:bg-purple-50 border-purple-200"
+                    >
+                      🌐 Global Ship.
+                    </Button>
+                  </div>
+                  <p className="text-[9px] text-purple-600 mt-2 text-center">
+                    Créneaux: 30 déc, 31 déc, 2 janv, 4 janv
+                  </p>
+                </div>
+
                 {/* Note */}
-                <div className="mt-3 p-2 bg-blue-100/50 rounded-lg">
+                <div className="col-span-2 p-2 bg-blue-100/50 rounded-lg">
                   <p className="text-[10px] text-blue-800 text-center">
                     💡 <strong>Mot de passe:</strong> Demo2026! (Admin2026! pour admin)
                   </p>
