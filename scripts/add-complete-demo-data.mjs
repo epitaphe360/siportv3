@@ -60,34 +60,32 @@ async function addCompleteDemoData() {
 
     console.log('✅ Nettoyage terminé');
 
-    // 4. Créer des créneaux horaires (time_slots)
-    console.log('\n📅 Création des créneaux horaires...');
+    // 4. Créer des créneaux horaires (time_slots) pour SIPORTS 2026
+    console.log('\n📅 Création des créneaux horaires (1-3 avril 2026)...');
     
-    const now = new Date();
+    const eventDates = ['2026-04-01', '2026-04-02', '2026-04-03'];
     const timeSlots = [];
 
-    // Pour chaque exposant, créer plusieurs créneaux
+    // Pour chaque exposant, créer plusieurs créneaux sur les 3 jours de l'événement
     exhibitors.forEach((exhibitor, index) => {
-      // Créneau hier (passé)
-      const yesterday = new Date(now);
-      yesterday.setDate(yesterday.getDate() - 1);
+      // 1er avril - Créneau matin
       timeSlots.push({
         exhibitor_id: exhibitor.id,
-        slot_date: yesterday.toISOString().split('T')[0],
+        slot_date: eventDates[0],
         start_time: '10:00',
         end_time: '10:30',
         duration: 30,
         type: 'in-person',
         max_bookings: 1,
-        current_bookings: 1,
-        available: false,
+        current_bookings: index === 0 ? 1 : 0,
+        available: index !== 0,
         location: `Stand ${exhibitor.company_name}`
       });
 
-      // Créneau aujourd'hui
+      // 1er avril - Créneau après-midi
       timeSlots.push({
         exhibitor_id: exhibitor.id,
-        slot_date: now.toISOString().split('T')[0],
+        slot_date: eventDates[0],
         start_time: '14:00',
         end_time: '14:45',
         duration: 45,
@@ -98,12 +96,10 @@ async function addCompleteDemoData() {
         location: `Stand ${exhibitor.company_name}`
       });
 
-      // Créneau demain
-      const tomorrow = new Date(now);
-      tomorrow.setDate(tomorrow.getDate() + 1);
+      // 2 avril - Créneau matin
       timeSlots.push({
         exhibitor_id: exhibitor.id,
-        slot_date: tomorrow.toISOString().split('T')[0],
+        slot_date: eventDates[1],
         start_time: '11:00',
         end_time: '12:00',
         duration: 60,
@@ -114,12 +110,10 @@ async function addCompleteDemoData() {
         location: `Stand ${exhibitor.company_name}`
       });
 
-      // Créneau dans 3 jours
-      const in3Days = new Date(now);
-      in3Days.setDate(in3Days.getDate() + 3);
+      // 2 avril - Créneau visio
       timeSlots.push({
         exhibitor_id: exhibitor.id,
-        slot_date: in3Days.toISOString().split('T')[0],
+        slot_date: eventDates[1],
         start_time: '09:30',
         end_time: '10:15',
         duration: 45,
@@ -130,13 +124,11 @@ async function addCompleteDemoData() {
         location: 'Visioconférence'
       });
 
-      // Créneaux VIP - dans 5 jours
+      // 3 avril - Créneaux VIP
       if (index < 2) {
-        const in5Days = new Date(now);
-        in5Days.setDate(in5Days.getDate() + 5);
         timeSlots.push({
           exhibitor_id: exhibitor.id,
-          slot_date: in5Days.toISOString().split('T')[0],
+          slot_date: eventDates[2],
           start_time: '15:00',
           end_time: '16:00',
           duration: 60,
@@ -164,7 +156,7 @@ async function addCompleteDemoData() {
     // Débug: afficher un créneau exemple
     console.log('Exemple de créneau créé:', JSON.stringify(createdSlots[0], null, 2));
 
-    // 5. Créer les rendez-vous
+    // 5. Créer les rendez-vous pour SIPORTS 2026 (1-3 avril)
     console.log('\n📝 Création des rendez-vous...');
     
     const appointments = [];
@@ -172,31 +164,35 @@ async function addCompleteDemoData() {
     // Utiliser visiteur VIP pour tous les rendez-vous (visitor-free n'a pas le droit)
     const vipVisitor = visitors.find(v => v.email === 'visitor-vip@test.siport.com') || visitors[1] || visitors[0];
     
-    // Rendez-vous passé (hier avec TechMarine)
-    const slotYesterday = createdSlots.find(s => 
-      s.exhibitor_id === exhibitors[0].id && String(s.start_time).includes('10:00')
+    // Rendez-vous 1er avril matin avec TechMarine (10h00)
+    const slot1erAvrilMatin = createdSlots.find(s => 
+      s.exhibitor_id === exhibitors[0].id && 
+      s.slot_date === eventDates[0] &&
+      String(s.start_time).includes('10:00')
     );
-    console.log('Slot yesterday found:', slotYesterday ? 'Oui' : 'Non');
-    if (slotYesterday) {
+    console.log('Slot 1er avril matin found:', slot1erAvrilMatin ? 'Oui' : 'Non');
+    if (slot1erAvrilMatin) {
       appointments.push({
-        time_slot_id: slotYesterday.id,
+        time_slot_id: slot1erAvrilMatin.id,
         exhibitor_id: exhibitors[0].id,
         visitor_id: vipVisitor.id,
         status: 'confirmed',
-        notes: 'Rendez-vous réalisé - Discussion sur SmartPort PMS',
+        notes: 'Discussion sur SmartPort PMS - SIPORTS 2026',
         message: 'Je souhaite en savoir plus sur vos solutions de gestion portuaire',
         meeting_type: 'in-person'
       });
     }
 
-    // Rendez-vous aujourd'hui (avec OceanLogistics)
-    const slotToday = createdSlots.find(s => 
-      s.exhibitor_id === exhibitors[1].id && String(s.start_time).includes('14:00')
+    // Rendez-vous 1er avril après-midi avec OceanLogistics (14h00)
+    const slot1erAvrilApresMidi = createdSlots.find(s => 
+      s.exhibitor_id === exhibitors[1].id && 
+      s.slot_date === eventDates[0] &&
+      String(s.start_time).includes('14:00')
     );
-    console.log('Slot today found:', slotToday ? 'Oui' : 'Non');
-    if (slotToday) {
+    console.log('Slot 1er avril après-midi found:', slot1erAvrilApresMidi ? 'Oui' : 'Non');
+    if (slot1erAvrilApresMidi) {
       appointments.push({
-        time_slot_id: slotToday.id,
+        time_slot_id: slot1erAvrilApresMidi.id,
         exhibitor_id: exhibitors[1].id,
         visitor_id: vipVisitor.id,
         status: 'confirmed',
@@ -206,14 +202,16 @@ async function addCompleteDemoData() {
       });
     }
 
-    // Rendez-vous demain (avec PortTech)
-    const slotTomorrow = createdSlots.find(s => 
-      s.exhibitor_id === exhibitors[2].id && String(s.start_time).includes('11:00')
+    // Rendez-vous 2 avril matin avec PortTech (11h00)
+    const slot2Avril = createdSlots.find(s => 
+      s.exhibitor_id === exhibitors[2].id && 
+      s.slot_date === eventDates[1] &&
+      String(s.start_time).includes('11:00')
     );
-    console.log('Slot tomorrow found:', slotTomorrow ? 'Oui' : 'Non');
-    if (slotTomorrow) {
+    console.log('Slot 2 avril found:', slot2Avril ? 'Oui' : 'Non');
+    if (slot2Avril) {
       appointments.push({
-        time_slot_id: slotTomorrow.id,
+        time_slot_id: slot2Avril.id,
         exhibitor_id: exhibitors[2].id,
         visitor_id: vipVisitor.id,
         status: 'confirmed',
@@ -223,14 +221,16 @@ async function addCompleteDemoData() {
       });
     }
 
-    // Rendez-vous dans 3 jours (avec Global Shipping - EN ATTENTE)
-    const slotIn3Days = createdSlots.find(s => 
-      s.exhibitor_id === exhibitors[3].id && String(s.start_time).includes('09:30')
+    // Rendez-vous 2 avril visio avec Global Shipping (09h30 - EN ATTENTE)
+    const slot2AvrilVisio = createdSlots.find(s => 
+      s.exhibitor_id === exhibitors[3].id && 
+      s.slot_date === eventDates[1] &&
+      String(s.start_time).includes('09:30')
     );
-    console.log('Slot in 3 days found:', slotIn3Days ? 'Oui' : 'Non');
-    if (slotIn3Days) {
+    console.log('Slot 2 avril visio found:', slot2AvrilVisio ? 'Oui' : 'Non');
+    if (slot2AvrilVisio) {
       appointments.push({
-        time_slot_id: slotIn3Days.id,
+        time_slot_id: slot2AvrilVisio.id,
         exhibitor_id: exhibitors[3].id,
         visitor_id: vipVisitor.id,
         status: 'pending',
@@ -240,27 +240,31 @@ async function addCompleteDemoData() {
       });
     }
 
-    // Rendez-vous VIP supplémentaires (dans 5 jours)
+    // Rendez-vous VIP 3 avril (sessions VIP avec exposants premium)
     const slotVip1 = createdSlots.find(s => 
-      s.exhibitor_id === exhibitors[0].id && String(s.start_time).includes('15:00')
+      s.exhibitor_id === exhibitors[0].id && 
+      s.slot_date === eventDates[2] &&
+      String(s.start_time).includes('15:00')
     );
-    console.log('Slot VIP1 found:', slotVip1 ? 'Oui' : 'Non');
+    console.log('Slot VIP1 (3 avril) found:', slotVip1 ? 'Oui' : 'Non');
     if (slotVip1) {
       appointments.push({
         time_slot_id: slotVip1.id,
         exhibitor_id: exhibitors[0].id,
         visitor_id: vipVisitor.id,
         status: 'confirmed',
-        notes: 'Session VIP - Présentation exclusive dirigeants',
+        notes: 'Session VIP - Présentation exclusive dirigeants - 3 avril',
         message: 'Rendez-vous VIP pour discussion stratégique',
         meeting_type: 'hybrid'
       });
     }
 
     const slotVip2 = createdSlots.find(s => 
-      s.exhibitor_id === exhibitors[1].id && String(s.start_time).includes('15:00')
+      s.exhibitor_id === exhibitors[1].id && 
+      s.slot_date === eventDates[2] &&
+      String(s.start_time).includes('15:00')
     );
-    console.log('Slot VIP2 found:', slotVip2 ? 'Oui' : 'Non');
+    console.log('Slot VIP2 (3 avril) found:', slotVip2 ? 'Oui' : 'Non');
     if (slotVip2) {
       appointments.push({
         time_slot_id: slotVip2.id,
