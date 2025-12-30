@@ -110,6 +110,9 @@ export const ROUTES = {
   // Admin payment
   ADMIN_PAYMENT_VALIDATION: '/admin/payment-validation',
 
+  // Marketing Dashboard
+  MARKETING_DASHBOARD: '/marketing/dashboard',
+
   // Media Routes - Nouvelles fonctionnalités
   MEDIA_LIBRARY: '/media',
   WEBINARS: '/media/webinars',

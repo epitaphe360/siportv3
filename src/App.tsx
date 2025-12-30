@@ -80,6 +80,7 @@ const AddDemoProgramPage = lazyRetry(() => import('./pages/admin/AddDemoProgramP
 const ContentManagementPage = lazyRetry(() => import('./pages/admin/ContentManagementPage'));
 const CreateUserPage = lazyRetry(() => import('./pages/admin/CreateUserPage'));
 const AdminPartnersPage = lazyRetry(() => import('./pages/admin/PartnersPage'));
+const MarketingDashboard = lazyRetry(() => import('./pages/MarketingDashboard'));
 
 // New pages for footer links
 const ContactPage = lazyRetry(() => import('./pages/ContactPage'));
@@ -270,6 +271,7 @@ const App = () => {
             <Route path={ROUTES.ADMIN_CREATE_PAVILION} element={<ProtectedRoute requiredRole="admin"><CreatePavilionPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_PAVILION_ADD_DEMO} element={<ProtectedRoute requiredRole="admin"><AddDemoProgramPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_CONTENT} element={<ProtectedRoute requiredRole="admin"><ContentManagementPage /></ProtectedRoute>} />
+            <Route path={ROUTES.MARKETING_DASHBOARD} element={<ProtectedRoute requiredRole="admin"><MarketingDashboard /></ProtectedRoute>} />
 
             {/* New routes for footer links */}
             <Route path={ROUTES.CONTACT} element={<ContactPage />} />
