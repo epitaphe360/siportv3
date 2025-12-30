@@ -7,8 +7,8 @@ ALTER TABLE products
 ADD COLUMN IF NOT EXISTS image text;
 
 -- Ajouter les colonnes pour les nouvelles fonctionnalités
+-- Note: la colonne 'images' existe déjà en text[], on ne la recrée pas
 ALTER TABLE products
-ADD COLUMN IF NOT EXISTS images jsonb DEFAULT '[]'::jsonb,
 ADD COLUMN IF NOT EXISTS video_url text,
 ADD COLUMN IF NOT EXISTS is_new boolean DEFAULT false,
 ADD COLUMN IF NOT EXISTS in_stock boolean DEFAULT true,
@@ -18,14 +18,15 @@ ADD COLUMN IF NOT EXISTS original_price text,
 ADD COLUMN IF NOT EXISTS documents jsonb DEFAULT '[]'::jsonb;
 
 -- Migrer les données de 'image' vers 'images' si la colonne contient des données
+-- La colonne images est de type text[], on utilise array_append
 UPDATE products
-SET images = jsonb_build_array(image)
+SET images = ARRAY[image]::text[]
 WHERE image IS NOT NULL 
   AND image != '' 
-  AND (images::text = '[]' OR images IS NULL);
+  AND (images IS NULL OR array_length(images, 1) IS NULL);
 
 -- Commentaires sur les nouvelles colonnes
-COMMENT ON COLUMN products.images IS 'Tableau d''URLs d''images du produit (JSONB array)';
+COMMENT ON COLUMN products.images IS 'Tableau d''URLs d''images du produit (text[] array - compatible avec le schema existant)';
 COMMENT ON COLUMN products.video_url IS 'URL de la vidéo de démonstration (YouTube, Vimeo, etc.)';
 COMMENT ON COLUMN products.is_new IS 'Indique si le produit est nouveau';
 COMMENT ON COLUMN products.in_stock IS 'Indique si le produit est en stock';
