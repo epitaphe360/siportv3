@@ -2,6 +2,10 @@
 -- Date: 2025-12-29
 -- Description: Ajout de champs pour la modal produit améliorée
 
+-- Créer la colonne 'image' si elle n'existe pas (pour compatibilité)
+ALTER TABLE products
+ADD COLUMN IF NOT EXISTS image text;
+
 -- Ajouter les colonnes pour les nouvelles fonctionnalités
 ALTER TABLE products
 ADD COLUMN IF NOT EXISTS images jsonb DEFAULT '[]'::jsonb,
@@ -12,6 +16,13 @@ ADD COLUMN IF NOT EXISTS certified boolean DEFAULT false,
 ADD COLUMN IF NOT EXISTS delivery_time text,
 ADD COLUMN IF NOT EXISTS original_price text,
 ADD COLUMN IF NOT EXISTS documents jsonb DEFAULT '[]'::jsonb;
+
+-- Migrer les données de 'image' vers 'images' si la colonne contient des données
+UPDATE products
+SET images = jsonb_build_array(image)
+WHERE image IS NOT NULL 
+  AND image != '' 
+  AND (images = '[]'::jsonb OR images IS NULL);
 
 -- Commentaires sur les nouvelles colonnes
 COMMENT ON COLUMN products.images IS 'Tableau d''URLs d''images du produit (JSONB array)';
@@ -36,9 +47,11 @@ CREATE INDEX IF NOT EXISTS idx_products_certified ON products(certified) WHERE c
 --   "url": "https://example.com/document.pdf"
 -- }
 
--- Note: Cette migration est NON-DESTRUCTIVE
--- Les colonnes existantes 'price', 'description', 'features', 'specifications' sont conservées
--- Les nouveaux champs sont des ajouts, pas des remplacements
+-- Note: Cette migration gère automatiquement la transition
+-- - Crée la colonne 'image' si elle n'existe pas
+-- - Migre les données de 'image' vers 'images' si des données existent
+-- - Les colonnes existantes sont conservées
+-- - Les nouveaux champs sont des ajouts, pas des remplacements
 
 -- Vérification de la structure finale
 SELECT 
