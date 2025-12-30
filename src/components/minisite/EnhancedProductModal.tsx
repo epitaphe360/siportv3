@@ -46,12 +46,22 @@ const SafeImage: React.FC<{ src?: string; alt: string; className?: string; fallb
   return <img src={src} alt={alt} className={className} onError={() => setError(true)} />;
 };
 
-export default function EnhancedProductModal({ product, theme, onClose, onContactClick }: EnhancedProductModalProps) {
+export default function EnhancedProductModal({ product: rawProduct, theme, onClose, onContactClick }: EnhancedProductModalProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<'overview' | 'features' | 'specs'>('overview');
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [imageZoom, setImageZoom] = useState(false);
+
+  // Mapper snake_case vers camelCase
+  const product = {
+    ...rawProduct,
+    isNew: rawProduct.is_new ?? rawProduct.isNew,
+    inStock: rawProduct.in_stock ?? rawProduct.inStock ?? true,
+    deliveryTime: rawProduct.delivery_time ?? rawProduct.deliveryTime,
+    originalPrice: rawProduct.original_price ?? rawProduct.originalPrice,
+    videoUrl: rawProduct.video_url ?? rawProduct.videoUrl,
+  };
 
   // Préparer la galerie d'images
   const images = product.images?.length > 0 
