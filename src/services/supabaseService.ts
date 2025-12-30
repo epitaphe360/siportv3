@@ -1462,7 +1462,7 @@ export class SupabaseService {
         .from('mini_sites')
         .select('view_count')
         .eq('exhibitor_id', userId)
-        .single();
+        .maybeSingle();
 
       if (currentData) {
         // Incrémenter les vues
