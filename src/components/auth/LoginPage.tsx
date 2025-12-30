@@ -337,6 +337,19 @@ export default function LoginPage() {
           </div>
 
           {/* Demo Credentials */}
+          <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold text-gray-900">🚀 Accès rapide - Démo</p>
+                <p className="text-xs text-gray-600">Testez toutes les fonctionnalités</p>
+              </div>
+              <Link to={ROUTES.DEMO_ACCOUNTS}>
+                <Button variant="outline" className="text-sm bg-white hover:bg-gray-50">
+                  Voir les comptes
+                </Button>
+              </Link>
+            </div>
+          </div>
 
           {/* Sign Up Link */}
           <div className="mt-6 text-center">

@@ -12,6 +12,7 @@ const HomePage = lazyRetry(() => import('./pages/HomePage'));
 const ExhibitorsPage = lazyRetry(() => import('./pages/ExhibitorsPage'));
 const NetworkingPage = lazyRetry(() => import('./pages/NetworkingPage'));
 const LoginPage = lazyRetry(() => import('./components/auth/LoginPage'));
+const DemoAccountsPage = lazyRetry(() => import('./pages/DemoAccountsPage'));
 const RegisterPage = lazyRetry(() => import('./components/auth/RegisterPage'));
 const ForgotPasswordPage = lazyRetry(() => import('./pages/ForgotPasswordPage'));
 const ProfilePage = lazyRetry(() => import('./components/profile/ProfilePage'));
@@ -182,6 +183,7 @@ const App = () => {
             <Route path={ROUTES.NETWORKING} element={<NetworkingPage />} />
             <Route path={ROUTES.EVENTS} element={<EventsPage />} />
             <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+            <Route path={ROUTES.DEMO_ACCOUNTS} element={<DemoAccountsPage />} />
             <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
             <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
             <Route path={ROUTES.REGISTER_VISITOR} element={<RegisterPage />} />

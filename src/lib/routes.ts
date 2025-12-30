@@ -9,6 +9,7 @@ export const ROUTES = {
   NETWORKING: '/networking',
   EVENTS: '/events',
   LOGIN: '/login',
+  DEMO_ACCOUNTS: '/demo',
   FORGOT_PASSWORD: '/forgot-password',
   REGISTER: '/register',
   REGISTER_VISITOR: '/register/visitor',
