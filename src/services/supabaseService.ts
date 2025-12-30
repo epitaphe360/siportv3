@@ -353,11 +353,12 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      // FIX: Use correct column names matching the partners table schema
+      // Récupérer toutes les données enrichies depuis la base de données
       const { data, error } = await safeSupabase
         .from('partners')
         .select(
           `id, company_name, partner_type, sector, description, logo_url, website, verified, featured, partnership_level, benefits, contact_info, created_at,
+           mission, vision, values_list, certifications, awards, social_media, key_figures, testimonials, news, expertise, clients, video_url, gallery, established_year, employees, country,
            projects:partner_projects(*)`
         )
         .eq('id', id)
@@ -389,8 +390,11 @@ export class SupabaseService {
         gallery: p.gallery || []
       }));
 
-      // Enrichir les données du partenaire pour une page "En savoir plus" plus complète
-      const enrichedData = this.getEnrichedPartnerData(data.id, data.company_name, data.sector);
+      // Utiliser les données de la base de données, avec fallback sur les données générées
+      const fallbackData = this.getEnrichedPartnerData(data.id, data.company_name, data.sector);
+      
+      // Vérifier si les données enrichies existent dans la base
+      const hasDbEnrichedData = data.mission || data.vision || (data.values_list && data.values_list.length > 0);
 
       return {
         id: data.id,
@@ -400,10 +404,10 @@ export class SupabaseService {
         category: data.partner_type,
         sector: data.sector || 'Maritime',
         description: data.description || '',
-        longDescription: data.description || enrichedData.longDescription,
+        longDescription: data.description || fallbackData.longDescription,
         logo: data.logo_url,
         website: data.website,
-        country: data.contact_info?.country || 'Maroc',
+        country: data.country || data.contact_info?.country || 'Maroc',
         verified: data.verified ?? true,
         featured: data.featured ?? false,
         contributions: data.benefits || [
@@ -411,23 +415,23 @@ export class SupabaseService {
           "Espace Networking Premium",
           "Visibilité Logo Multi-supports"
         ],
-        establishedYear: data.contact_info?.establishedYear || 2010,
-        employees: data.contact_info?.employees || '500-1000',
+        establishedYear: data.established_year || data.contact_info?.establishedYear || 2010,
+        employees: data.employees || data.contact_info?.employees || '500-1000',
         projects: dbProjects.length > 0 ? dbProjects : this.getMockProjects(data.id, data.company_name),
-        // Nouvelles données enrichies
-        mission: enrichedData.mission,
-        vision: enrichedData.vision,
-        values: enrichedData.values,
-        certifications: enrichedData.certifications,
-        awards: enrichedData.awards,
-        socialMedia: enrichedData.socialMedia,
-        keyFigures: enrichedData.keyFigures,
-        testimonials: enrichedData.testimonials,
-        news: enrichedData.news,
-        expertise: enrichedData.expertise,
-        clients: enrichedData.clients,
-        videoUrl: enrichedData.videoUrl,
-        gallery: enrichedData.gallery,
+        // Données enrichies depuis la base de données (avec fallback)
+        mission: data.mission || fallbackData.mission,
+        vision: data.vision || fallbackData.vision,
+        values: data.values_list || fallbackData.values,
+        certifications: data.certifications || fallbackData.certifications,
+        awards: data.awards || fallbackData.awards,
+        socialMedia: data.social_media || fallbackData.socialMedia,
+        keyFigures: data.key_figures || fallbackData.keyFigures,
+        testimonials: data.testimonials || fallbackData.testimonials,
+        news: data.news || fallbackData.news,
+        expertise: data.expertise || fallbackData.expertise,
+        clients: data.clients || fallbackData.clients,
+        videoUrl: data.video_url || fallbackData.videoUrl,
+        gallery: data.gallery || fallbackData.gallery,
       };
     } catch (error) {
       console.error('Erreur lors de la récupération du partenaire:', error);
