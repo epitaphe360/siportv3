@@ -1105,16 +1105,23 @@ export default function PartnerDetailPage() {
               {/* Graphique simplifié */}
               <div className="mt-8 p-6 bg-gray-50 rounded-xl">
                 <h4 className="font-semibold text-gray-900 mb-4">Performance par trimestre</h4>
-                <div className="flex items-end space-x-4 h-32">
-                  {[65, 78, 85, 92].map((value, index) => (
-                    <div key={index} className="flex-1 flex flex-col items-center">
+                <div className="flex items-end space-x-4 h-40">
+                  {[
+                    { value: 65, label: 'T1' },
+                    { value: 78, label: 'T2' },
+                    { value: 85, label: 'T3' },
+                    { value: 92, label: 'T4' }
+                  ].map((item, index) => (
+                    <div key={index} className="flex-1 flex flex-col items-center justify-end h-full">
+                      <div className="text-xs font-semibold text-gray-700 mb-1">{item.value}%</div>
                       <motion.div
                         initial={{ height: 0 }}
-                        animate={{ height: `${value}%` }}
+                        animate={{ height: `${item.value}%` }}
                         transition={{ duration: 0.8, delay: index * 0.2 }}
-                        className="w-full bg-gradient-to-t from-blue-600 to-indigo-500 rounded-t-lg"
+                        className="w-full bg-gradient-to-t from-blue-600 to-indigo-500 rounded-t-lg min-h-[20px]"
+                        style={{ height: `${item.value}%` }}
                       />
-                      <span className="text-xs text-gray-600 mt-2">T{index + 1}</span>
+                      <span className="text-sm font-medium text-gray-700 mt-2">{item.label}</span>
                     </div>
                   ))}
                 </div>
