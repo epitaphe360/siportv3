@@ -22,7 +22,7 @@ UPDATE products
 SET images = jsonb_build_array(image)
 WHERE image IS NOT NULL 
   AND image != '' 
-  AND (images = '[]'::jsonb OR images IS NULL);
+  AND (images::text = '[]' OR images IS NULL);
 
 -- Commentaires sur les nouvelles colonnes
 COMMENT ON COLUMN products.images IS 'Tableau d''URLs d''images du produit (JSONB array)';
