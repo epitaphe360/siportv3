@@ -13,7 +13,9 @@ import {
   Download,
   Calendar,
   Tag,
-  Filter
+  Filter,
+  FileText,
+  Copy
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -40,13 +42,31 @@ interface MediaItem {
   duration?: number;
 }
 
+interface ArticleItem {
+  id: string;
+  title: string;
+  content: string;
+  excerpt: string;
+  author: string;
+  published: boolean;
+  published_at: string | null;
+  category: string | null;
+  tags: string[];
+  image_url: string | null;
+  created_at: string;
+  shortcode: string;
+}
+
+type ContentTab = 'media' | 'articles';
 type MediaType = 'all' | 'webinar' | 'capsule_inside' | 'podcast' | 'live_studio' | 'best_moments' | 'testimonial';
 type MediaStatus = 'all' | 'draft' | 'published' | 'archived';
 
 export default function MarketingDashboard() {
   const { t } = useTranslation();
   const { user } = useAuthStore();
+  const [activeTab, setActiveTab] = useState<ContentTab>('media');
   const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
+  const [articles, setArticles] = useState<ArticleItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState<MediaType>('all');
   const [filterStatus, setFilterStatus] = useState<MediaStatus>('all');
@@ -67,6 +87,7 @@ export default function MarketingDashboard() {
   // Charger les médias
   useEffect(() => {
     loadMedia();
+    loadArticles();
   }, []);
 
   const loadMedia = async () => {
@@ -84,6 +105,28 @@ export default function MarketingDashboard() {
       toast.error('Erreur de chargement');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadArticles = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('news_articles')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      
+      // Ajouter le shortcode à chaque article
+      const articlesWithShortcode = (data || []).map(article => ({
+        ...article,
+        shortcode: `[article id="${article.id}"]`
+      }));
+      
+      setArticles(articlesWithShortcode);
+    } catch (error: any) {
+      console.error('Erreur chargement articles:', error);
+      toast.error('Erreur de chargement des articles');
     }
   };
 
@@ -188,6 +231,62 @@ export default function MarketingDashboard() {
     }
   };
 
+  // Publier/dépublier un article
+  const toggleArticlePublish = async (article: ArticleItem) => {
+    try {
+      const newStatus = !article.published;
+      
+      const { error } = await supabase
+        .from('news_articles')
+        .update({ 
+          published: newStatus,
+          published_at: newStatus ? new Date().toISOString() : null
+        })
+        .eq('id', article.id);
+
+      if (error) throw error;
+
+      setArticles(prev =>
+        prev.map(a => a.id === article.id ? { ...a, published: newStatus } : a)
+      );
+
+      toast.success(
+        newStatus 
+          ? '✅ Article publié' 
+          : '📝 Article mis en brouillon'
+      );
+    } catch (error: any) {
+      console.error('Erreur toggle publish:', error);
+      toast.error('Erreur de mise à jour');
+    }
+  };
+
+  // Supprimer un article
+  const deleteArticle = async (article: ArticleItem) => {
+    if (!confirm(`Supprimer "${article.title}" ?`)) return;
+
+    try {
+      const { error } = await supabase
+        .from('news_articles')
+        .delete()
+        .eq('id', article.id);
+
+      if (error) throw error;
+
+      setArticles(prev => prev.filter(a => a.id !== article.id));
+      toast.success('🗑️ Article supprimé');
+    } catch (error: any) {
+      console.error('Erreur suppression:', error);
+      toast.error('Erreur de suppression');
+    }
+  };
+
+  // Copier le shortcode
+  const copyShortcode = (shortcode: string) => {
+    navigator.clipboard.writeText(shortcode);
+    toast.success('📋 Shortcode copié !');
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'podcast': return <Mic className="h-5 w-5" />;
@@ -232,10 +331,63 @@ export default function MarketingDashboard() {
             📊 Dashboard Marketing
           </h1>
           <p className="text-gray-600 mt-2">
-            Gérez vos médias : webinaires, podcasts, capsules vidéo
+            Gérez vos médias et articles pour siportevent.com
           </p>
         </div>
 
+        {/* Onglets */}
+        <div className="mb-6 border-b border-gray-200">
+          <nav className="-mb-px flex space-x-8">
+            <button
+              onClick={() => setActiveTab('media')}
+              className={`
+                py-4 px-1 border-b-2 font-medium text-sm
+                ${activeTab === 'media'
+                  ? 'border-blue-600 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }
+              `}
+            >
+              <div className="flex items-center space-x-2">
+                <Video className="h-5 w-5" />
+                <span>Médias</span>
+                <Badge variant="secondary">{stats.total}</Badge>
+              </div>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab('articles')}
+              className={`
+                py-4 px-1 border-b-2 font-medium text-sm
+                ${activeTab === 'articles'
+                  ? 'border-blue-600 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }
+              `}
+            >
+              <div className="flex items-center space-x-2">
+                <Image className="h-5 w-5" />
+                <span>Articles</span>
+                <Badge variant="secondary">{articles.length}</Badge>
+              </div>
+            </button>
+          </nav>
+        </div>
+
+        {/* Contenu selon l'onglet actif */}
+        {activeTab === 'media' ? (
+          renderMediaTab()
+        ) : (
+          renderArticlesTab()
+        )}
+      </div>
+    </div>
+  );
+
+  // Render Media Tab
+  function renderMediaTab() {
+    return (
+      <>
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           <Card className="p-4">
@@ -529,9 +681,162 @@ export default function MarketingDashboard() {
             onClose={() => setShowUploadModal(false)}
           />
         )}
-      </div>
-    </div>
-  );
+      </>
+    );
+  }
+
+  // Render Articles Tab
+  function renderArticlesTab() {
+    const publishedArticles = articles.filter(a => a.published);
+    const draftArticles = articles.filter(a => !a.published);
+
+    return (
+      <>
+        {/* Stats Articles */}
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <Card className="p-4">
+            <div className="text-2xl font-bold">{articles.length}</div>
+            <div className="text-sm text-gray-600">Total</div>
+          </Card>
+          <Card className="p-4">
+            <div className="text-2xl font-bold text-green-600">{publishedArticles.length}</div>
+            <div className="text-sm text-gray-600">Publiés</div>
+          </Card>
+          <Card className="p-4">
+            <div className="text-2xl font-bold text-orange-600">{draftArticles.length}</div>
+            <div className="text-sm text-gray-600">Brouillons</div>
+          </Card>
+        </div>
+
+        {/* Info Shortcodes */}
+        <Card className="p-4 mb-6 bg-blue-50 border-blue-200">
+          <div className="flex items-start space-x-3">
+            <Tag className="h-5 w-5 text-blue-600 mt-0.5" />
+            <div>
+              <h3 className="font-medium text-blue-900">Utilisation des shortcodes</h3>
+              <p className="text-sm text-blue-700 mt-1">
+                Copiez le shortcode d'un article et collez-le dans n'importe quelle page de siportevent.com. 
+                L'article s'affichera automatiquement avec sa mise en forme.
+              </p>
+              <p className="text-xs text-blue-600 mt-2">
+                Exemple : <code className="bg-blue-100 px-2 py-1 rounded">[article id="abc-123"]</code>
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Liste des articles */}
+        <div className="space-y-4">
+          {articles.map((article) => (
+            <motion.div
+              key={article.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <Card className="p-6 hover:shadow-lg transition-shadow">
+                <div className="flex items-start space-x-4">
+                  {/* Image */}
+                  {article.image_url && (
+                    <img
+                      src={article.image_url}
+                      alt={article.title}
+                      className="w-32 h-32 object-cover rounded-lg"
+                    />
+                  )}
+
+                  {/* Contenu */}
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900">
+                          {article.title}
+                        </h3>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {article.excerpt}
+                        </p>
+                      </div>
+                      <Badge variant={article.published ? 'default' : 'secondary'}>
+                        {article.published ? '✅ Publié' : '📝 Brouillon'}
+                      </Badge>
+                    </div>
+
+                    {/* Tags */}
+                    {article.tags && article.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {article.tags.map((tag, idx) => (
+                          <Badge key={idx} variant="outline" className="text-xs">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Shortcode */}
+                    <div className="bg-gray-50 rounded p-3 mb-3">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sm text-gray-700 font-mono">
+                          {article.shortcode}
+                        </code>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => copyShortcode(article.shortcode)}
+                        >
+                          📋 Copier
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Meta info */}
+                    <div className="flex items-center space-x-4 text-xs text-gray-500 mb-3">
+                      <span>👤 {article.author}</span>
+                      {article.category && <span>📁 {article.category}</span>}
+                      <span>📅 {new Date(article.created_at).toLocaleDateString('fr-FR')}</span>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        size="sm"
+                        variant={article.published ? 'outline' : 'default'}
+                        onClick={() => toggleArticlePublish(article)}
+                      >
+                        {article.published ? (
+                          <>
+                            <EyeOff className="h-4 w-4 mr-1" />
+                            Dépublier
+                          </>
+                        ) : (
+                          <>
+                            <Eye className="h-4 w-4 mr-1" />
+                            Publier
+                          </>
+                        )}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => deleteArticle(article)}
+                      >
+                        <Trash2 className="h-4 w-4 text-red-600" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+
+          {articles.length === 0 && (
+            <Card className="p-12 text-center">
+              <Image className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-600">Aucun article pour le moment</p>
+            </Card>
+          )}
+        </div>
+      </>
+    );
+  }
 }
 
 // Modal d'upload
