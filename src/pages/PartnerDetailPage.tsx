@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+﻿import { useEffect, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTranslation } from '../hooks/useTranslation';
@@ -25,7 +25,31 @@ import {
   Crown,
   Handshake,
   FileText,
-  AlertCircle
+  AlertCircle,
+  Play,
+  Image as ImageIcon,
+  Briefcase,
+  Shield,
+  Linkedin,
+  Twitter,
+  Facebook,
+  Instagram,
+  Youtube,
+  Sparkles,
+  Zap,
+  Heart,
+  ThumbsUp,
+  ChevronRight,
+  Quote,
+  BarChart3,
+  PieChart,
+  Activity,
+  Clock,
+  BookOpen,
+  Layers,
+  Network,
+  Lightbulb,
+  GraduationCap
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -73,6 +97,7 @@ interface Partner {
   type: 'platinum' | 'gold' | 'silver' | 'bronze' | 'institutional';
   category: string;
   description: string;
+  longDescription?: string;
   logo: string;
   website?: string;
   country: string;
@@ -84,6 +109,26 @@ interface Partner {
   establishedYear: number;
   employees: string;
   projects: Project[];
+  // Nouveaux champs pour enrichir la page
+  mission?: string;
+  vision?: string;
+  values?: string[];
+  certifications?: string[];
+  awards?: Array<{ name: string; year: number; issuer: string }>;
+  socialMedia?: {
+    linkedin?: string;
+    twitter?: string;
+    facebook?: string;
+    instagram?: string;
+    youtube?: string;
+  };
+  keyFigures?: Array<{ label: string; value: string; icon: string }>;
+  testimonials?: Array<{ quote: string; author: string; role: string; avatar?: string }>;
+  news?: Array<{ title: string; date: Date; excerpt: string; image?: string }>;
+  expertise?: string[];
+  clients?: string[];
+  videoUrl?: string;
+  gallery?: string[];
 }
 
 // Les données du partenaire sont maintenant chargées depuis Supabase
@@ -95,7 +140,10 @@ export default function PartnerDetailPage() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [showContactModal, setShowContactModal] = useState(false);
   const [showProjectModal, setShowProjectModal] = useState(false);
-  const [activeTab, setActiveTab] = useState<keyof typeof CONFIG.tabIds>(CONFIG.tabIds.overview);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showGalleryModal, setShowGalleryModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<string>('overview');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

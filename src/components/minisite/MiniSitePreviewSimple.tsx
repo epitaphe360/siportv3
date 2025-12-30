@@ -25,14 +25,29 @@ import {
   ExternalLink,
   Eye,
   Package,
-  X
+  X,
+  ChevronLeft,
+  ChevronRight,
+  ZoomIn,
+  FileText,
+  List,
+  Settings,
+  Info,
+  Download,
+  Truck,
+  Award,
+  TrendingUp,
+  Play,
+  Copy,
+  Check
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { SupabaseService } from '../../services/supabaseService';
 import { toast } from 'sonner';
+import EnhancedProductModal from './EnhancedProductModal';
 
 interface MiniSiteData {
   id: string;
@@ -687,115 +702,19 @@ export default function MiniSitePreviewSimple() {
         </div>
       </footer>
 
-      {/* Modal Produit */}
-      {selectedProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedProduct(null)}>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header avec image */}
-            <div className="relative h-64 bg-gray-100">
-              <SafeImage 
-                src={selectedProduct.image || selectedProduct.images?.[0]}
-                alt={selectedProduct.name}
-                className="w-full h-full object-cover"
-                fallback={
-                  <div className="w-full h-full flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${theme.primaryColor}20, ${theme.secondaryColor}20)` }}>
-                    <Package className="h-20 w-20" style={{ color: theme.primaryColor }} />
-                  </div>
-                }
-              />
-              {/* Bouton fermer */}
-              <button
-                onClick={() => setSelectedProduct(null)}
-                className="absolute top-4 right-4 p-2 bg-white/90 hover:bg-white rounded-full shadow-lg transition-colors"
-              >
-                <X className="h-5 w-5 text-gray-700" />
-              </button>
-              {/* Badge catégorie */}
-              {selectedProduct.category && (
-                <div className="absolute bottom-4 left-4">
-                  <Badge style={{ backgroundColor: theme.accentColor, color: 'white' }}>
-                    {selectedProduct.category}
-                  </Badge>
-                </div>
-              )}
-            </div>
-
-            {/* Contenu */}
-            <div className="p-6 overflow-y-auto max-h-[calc(90vh-16rem)]">
-              <h2 className="text-2xl font-bold mb-2" style={{ color: theme.primaryColor }}>
-                {selectedProduct.name}
-              </h2>
-              
-              {/* Prix */}
-              <div className="text-xl font-bold mb-4" style={{ color: theme.accentColor }}>
-                {selectedProduct.price || 'Sur devis'}
-              </div>
-
-              {/* Description */}
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                {selectedProduct.description || 'Aucune description disponible.'}
-              </p>
-
-              {/* Caractéristiques */}
-              {selectedProduct.features?.length > 0 && (
-                <div className="mb-6">
-                  <h3 className="font-semibold mb-3 text-gray-800">Caractéristiques</h3>
-                  <ul className="space-y-2">
-                    {selectedProduct.features.map((feature: string, idx: number) => (
-                      <li key={idx} className="flex items-start gap-2 text-gray-600">
-                        <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: theme.accentColor }} />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {/* Spécifications */}
-              {selectedProduct.specifications && Object.keys(selectedProduct.specifications).length > 0 && (
-                <div className="mb-6">
-                  <h3 className="font-semibold mb-3 text-gray-800">Spécifications</h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    {Object.entries(selectedProduct.specifications).map(([key, value]) => (
-                      <div key={key} className="bg-gray-50 p-3 rounded-lg">
-                        <span className="text-sm text-gray-500">{key}</span>
-                        <p className="font-medium text-gray-800">{String(value)}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className="flex gap-3 pt-4 border-t">
-                <Button 
-                  className="flex-1"
-                  style={{ backgroundColor: theme.primaryColor }}
-                  onClick={() => {
-                    document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
-                    setSelectedProduct(null);
-                  }}
-                >
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  Demander un devis
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setSelectedProduct(null)}
-                >
-                  Fermer
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      )}
+      {/* Modal Produit Améliorée */}
+      <AnimatePresence>
+        {selectedProduct && (
+          <EnhancedProductModal
+            product={selectedProduct}
+            theme={theme}
+            onClose={() => setSelectedProduct(null)}
+            onContactClick={() => {
+              document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
