@@ -384,6 +384,36 @@ export default function PartnerDetailPage() {
                   Partager
                 </Button>
               </div>
+              
+              {/* Réseaux sociaux */}
+              {partner.socialMedia && (
+                <div className="flex items-center space-x-3 mt-4">
+                  {partner.socialMedia.linkedin && (
+                    <a href={partner.socialMedia.linkedin} target="_blank" rel="noopener noreferrer" 
+                       className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors">
+                      <Linkedin className="h-4 w-4" />
+                    </a>
+                  )}
+                  {partner.socialMedia.twitter && (
+                    <a href={partner.socialMedia.twitter} target="_blank" rel="noopener noreferrer"
+                       className="p-2 bg-sky-100 text-sky-600 rounded-lg hover:bg-sky-200 transition-colors">
+                      <Twitter className="h-4 w-4" />
+                    </a>
+                  )}
+                  {partner.socialMedia.facebook && (
+                    <a href={partner.socialMedia.facebook} target="_blank" rel="noopener noreferrer"
+                       className="p-2 bg-indigo-100 text-indigo-600 rounded-lg hover:bg-indigo-200 transition-colors">
+                      <Facebook className="h-4 w-4" />
+                    </a>
+                  )}
+                  {partner.socialMedia.youtube && (
+                    <a href={partner.socialMedia.youtube} target="_blank" rel="noopener noreferrer"
+                       className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors">
+                      <Youtube className="h-4 w-4" />
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           </motion.div>
         </div>
@@ -391,108 +421,575 @@ export default function PartnerDetailPage() {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Navigation Tabs */}
-        <div className="mb-8">
-          <nav className="flex space-x-8">
+        {/* Navigation Tabs - Plus d'onglets */}
+        <div className="mb-8 overflow-x-auto">
+          <nav className="flex space-x-2 md:space-x-4 min-w-max pb-2">
             {[
               { id: 'overview', label: 'Vue d\'ensemble', icon: Eye },
+              { id: 'about', label: 'À propos', icon: Building2 },
+              { id: 'expertise', label: 'Expertise', icon: Lightbulb },
               { id: 'projects', label: 'Projets', icon: Target },
-              { id: 'impact', label: 'Impact & ROI', icon: TrendingUp },
+              { id: 'gallery', label: 'Galerie', icon: ImageIcon },
+              { id: 'news', label: 'Actualités', icon: BookOpen },
+              { id: 'impact', label: 'Impact', icon: TrendingUp },
               { id: 'contact', label: 'Contact', icon: MessageCircle }
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as keyof typeof CONFIG.tabIds)}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium transition-all ${
                   activeTab === tab.id
-                    ? 'bg-blue-100 text-blue-700'
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/25'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }`}
               >
-                <tab.icon className="h-5 w-5" />
-                <span>{tab.label}</span>
+                <tab.icon className="h-4 w-4" />
+                <span className="hidden sm:inline">{tab.label}</span>
               </button>
             ))}
           </nav>
         </div>
 
         {/* Tab Content */}
-        {activeTab === CONFIG.tabIds.overview && (
+        {activeTab === 'overview' && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="space-y-8"
           >
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <Card className="text-center p-6">
-                <div className="bg-blue-100 p-3 rounded-lg w-12 h-12 mx-auto mb-3">
-                  <Calendar className="h-6 w-6 text-blue-600" />
+            {/* Hero Stats avec chiffres clés */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {(partner.keyFigures || [
+                { label: "Années d'expérience", value: `${partner.establishedYear ? new Date().getFullYear() - partner.establishedYear : 15}+`, icon: "Calendar" },
+                { label: "Employés", value: partner.employees || "500+", icon: "Users" },
+                { label: "Projets réalisés", value: `${partner.projects?.length || 50}+`, icon: "Target" },
+                { label: "Satisfaction client", value: "98%", icon: "ThumbsUp" }
+              ]).map((stat, index) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Card className="relative overflow-hidden group hover:shadow-xl transition-all duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 group-hover:from-blue-500/10 group-hover:to-purple-500/10 transition-all" />
+                    <div className="relative p-6 text-center">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white mb-3 shadow-lg">
+                        {stat.icon === 'Calendar' && <Calendar className="h-6 w-6" />}
+                        {stat.icon === 'Users' && <Users className="h-6 w-6" />}
+                        {stat.icon === 'Target' && <Target className="h-6 w-6" />}
+                        {stat.icon === 'ThumbsUp' && <ThumbsUp className="h-6 w-6" />}
+                        {stat.icon === 'TrendingUp' && <TrendingUp className="h-6 w-6" />}
+                        {stat.icon === 'Globe' && <Globe className="h-6 w-6" />}
+                      </div>
+                      <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-1">
+                        {stat.value}
+                      </div>
+                      <div className="text-sm text-gray-600 font-medium">{stat.label}</div>
+                    </div>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Description longue avec vidéo */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <Card className="lg:col-span-2 p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                  <Building2 className="h-5 w-5 mr-2 text-blue-600" />
+                  Qui sommes-nous ?
+                </h3>
+                <p className="text-gray-700 leading-relaxed text-lg mb-6">
+                  {partner.longDescription || partner.description}
+                </p>
+                
+                {/* Mission & Vision */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                  {partner.mission && (
+                    <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+                      <div className="flex items-center mb-2">
+                        <Target className="h-5 w-5 text-blue-600 mr-2" />
+                        <h4 className="font-semibold text-blue-900">Notre Mission</h4>
+                      </div>
+                      <p className="text-sm text-blue-800">{partner.mission}</p>
+                    </div>
+                  )}
+                  {partner.vision && (
+                    <div className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-100">
+                      <div className="flex items-center mb-2">
+                        <Eye className="h-5 w-5 text-purple-600 mr-2" />
+                        <h4 className="font-semibold text-purple-900">Notre Vision</h4>
+                      </div>
+                      <p className="text-sm text-purple-800">{partner.vision}</p>
+                    </div>
+                  )}
                 </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">
-                  {partner.establishedYear ? Math.max(0, new Date().getFullYear() - partner.establishedYear) : 0}+
-                </div>
-                <div className="text-sm text-gray-600">Années d'expérience</div>
               </Card>
 
-              <Card className="text-center p-6">
-                <div className="bg-green-100 p-3 rounded-lg w-12 h-12 mx-auto mb-3">
-                  <Users className="h-6 w-6 text-green-600" />
-                </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">
-                  {partner.employees}
-                </div>
-                <div className="text-sm text-gray-600">Employés</div>
-              </Card>
-
-              <Card className="text-center p-6">
-                <div className="bg-purple-100 p-3 rounded-lg w-12 h-12 mx-auto mb-3">
-                  <Award className="h-6 w-6 text-purple-600" />
-                </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">
-                  {partner.projects.length}
-                </div>
-                <div className="text-sm text-gray-600">Projets actifs</div>
-              </Card>
-
-              <Card className="text-center p-6">
-                <div className="bg-orange-100 p-3 rounded-lg w-12 h-12 mx-auto mb-3">
-                  <TrendingUp className="h-6 w-6 text-orange-600" />
-                </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">
-                  285%
-                </div>
-                <div className="text-sm text-gray-600">ROI Partenariat</div>
+              {/* Vidéo de présentation */}
+              <Card className="p-0 overflow-hidden">
+                {partner.videoUrl ? (
+                  <div className="relative aspect-video bg-gray-900 rounded-xl overflow-hidden">
+                    <button
+                      onClick={() => setShowVideoModal(true)}
+                      className="absolute inset-0 flex items-center justify-center group"
+                    >
+                      <img 
+                        src={partner.gallery?.[0] || `https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=600`}
+                        alt="Video thumbnail"
+                        className="absolute inset-0 w-full h-full object-cover opacity-70"
+                      />
+                      <div className="relative z-10 w-20 h-20 rounded-full bg-white/90 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
+                        <Play className="h-8 w-8 text-blue-600 ml-1" />
+                      </div>
+                      <div className="absolute bottom-4 left-4 right-4 text-white">
+                        <p className="font-medium">Découvrez {partner.name}</p>
+                        <p className="text-sm text-white/80">Vidéo de présentation</p>
+                      </div>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="aspect-video bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center">
+                    <div className="text-center text-white p-6">
+                      <Sparkles className="h-12 w-12 mx-auto mb-3 opacity-80" />
+                      <p className="font-semibold">Vidéo bientôt disponible</p>
+                    </div>
+                  </div>
+                )}
               </Card>
             </div>
 
-            {/* Contributions */}
-            <Card>
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Contributions au Salon SIPORTS 2026
+            {/* Valeurs */}
+            {partner.values && partner.values.length > 0 && (
+              <Card className="p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                  <Heart className="h-5 w-5 mr-2 text-red-500" />
+                  Nos Valeurs
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {partner.contributions.map((contribution) => (
-                    <div key={contribution} className="flex items-center space-x-3 p-4 bg-blue-50 rounded-lg">
-                      <div className="bg-blue-100 p-2 rounded-lg">
-                        <Handshake className="h-5 w-5 text-blue-600" />
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                  {partner.values.map((value, index) => (
+                    <motion.div
+                      key={value}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="text-center p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl hover:shadow-md transition-shadow"
+                    >
+                      <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
+                        {index + 1}
                       </div>
-                      <span className="font-medium text-gray-900">{contribution}</span>
-                    </div>
+                      <span className="text-sm font-medium text-gray-800">{value}</span>
+                    </motion.div>
                   ))}
                 </div>
+              </Card>
+            )}
+
+            {/* Certifications & Récompenses */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Certifications */}
+              {partner.certifications && partner.certifications.length > 0 && (
+                <Card className="p-6">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <Shield className="h-5 w-5 mr-2 text-green-600" />
+                    Certifications
+                  </h3>
+                  <div className="space-y-3">
+                    {partner.certifications.map((cert) => (
+                      <div key={cert} className="flex items-center p-3 bg-green-50 rounded-lg border border-green-100">
+                        <CheckCircle className="h-5 w-5 text-green-600 mr-3 flex-shrink-0" />
+                        <span className="text-sm font-medium text-green-900">{cert}</span>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              )}
+
+              {/* Récompenses */}
+              {partner.awards && partner.awards.length > 0 && (
+                <Card className="p-6">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <Award className="h-5 w-5 mr-2 text-yellow-600" />
+                    Récompenses
+                  </h3>
+                  <div className="space-y-3">
+                    {partner.awards.map((award) => (
+                      <div key={award.name} className="flex items-start p-3 bg-yellow-50 rounded-lg border border-yellow-100">
+                        <Star className="h-5 w-5 text-yellow-600 mr-3 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-yellow-900">{award.name}</p>
+                          <p className="text-xs text-yellow-700">{award.issuer} • {award.year}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              )}
+            </div>
+
+            {/* Témoignages */}
+            {partner.testimonials && partner.testimonials.length > 0 && (
+              <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50">
+                <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                  <Quote className="h-5 w-5 mr-2 text-blue-600" />
+                  Ce que disent nos partenaires
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {partner.testimonials.map((testimonial, index) => (
+                    <motion.div
+                      key={testimonial.author}
+                      initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.2 }}
+                      className="bg-white p-6 rounded-xl shadow-sm"
+                    >
+                      <Quote className="h-8 w-8 text-blue-200 mb-4" />
+                      <p className="text-gray-700 italic mb-4">"{testimonial.quote}"</p>
+                      <div className="flex items-center">
+                        {testimonial.avatar && (
+                          <img 
+                            src={testimonial.avatar} 
+                            alt={testimonial.author}
+                            className="w-12 h-12 rounded-full mr-3 object-cover"
+                          />
+                        )}
+                        <div>
+                          <p className="font-semibold text-gray-900">{testimonial.author}</p>
+                          <p className="text-sm text-gray-600">{testimonial.role}</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </Card>
+            )}
+
+            {/* Contributions SIPORTS */}
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <Handshake className="h-5 w-5 mr-2 text-indigo-600" />
+                Contributions au Salon SIPORTS 2026
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {partner.contributions.map((contribution) => (
+                  <motion.div 
+                    key={contribution} 
+                    whileHover={{ scale: 1.02 }}
+                    className="flex items-center space-x-3 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-indigo-100 cursor-pointer"
+                  >
+                    <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-2 rounded-lg">
+                      <Zap className="h-5 w-5 text-white" />
+                    </div>
+                    <span className="font-medium text-indigo-900">{contribution}</span>
+                  </motion.div>
+                ))}
               </div>
             </Card>
           </motion.div>
         )}
 
-        {activeTab === CONFIG.tabIds.projects && (
+        {/* Onglet À propos */}
+        {activeTab === 'about' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-8"
+          >
+            <Card className="p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">À propos de {partner.name}</h2>
+              <div className="prose prose-lg max-w-none">
+                <p className="text-gray-700 leading-relaxed mb-6">{partner.longDescription || partner.description}</p>
+                
+                {partner.mission && (
+                  <div className="my-8 p-6 bg-blue-50 rounded-2xl border-l-4 border-blue-500">
+                    <h3 className="text-lg font-bold text-blue-900 mb-2">Notre Mission</h3>
+                    <p className="text-blue-800">{partner.mission}</p>
+                  </div>
+                )}
+                
+                {partner.vision && (
+                  <div className="my-8 p-6 bg-purple-50 rounded-2xl border-l-4 border-purple-500">
+                    <h3 className="text-lg font-bold text-purple-900 mb-2">Notre Vision</h3>
+                    <p className="text-purple-800">{partner.vision}</p>
+                  </div>
+                )}
+              </div>
+            </Card>
+
+            {/* Timeline historique */}
+            <Card className="p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <Clock className="h-5 w-5 mr-2 text-blue-600" />
+                Notre Histoire
+              </h3>
+              <div className="relative">
+                <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 to-indigo-600" />
+                <div className="space-y-8 pl-12">
+                  {[
+                    { year: partner.establishedYear || 2010, event: "Création de l'entreprise", desc: "Fondation avec une vision claire de transformation digitale" },
+                    { year: (partner.establishedYear || 2010) + 5, event: "Expansion internationale", desc: "Ouverture de bureaux dans 5 nouveaux pays" },
+                    { year: 2023, event: "Partenariat SIPORTS", desc: "Début de la collaboration stratégique avec SIPORTS" },
+                    { year: 2026, event: "SIPORTS 2026", desc: "Partenaire officiel du salon international" }
+                  ].map((item, index) => (
+                    <motion.div
+                      key={item.year}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.15 }}
+                      className="relative"
+                    >
+                      <div className="absolute -left-12 w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shadow-lg">
+                        {index + 1}
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-xl">
+                        <span className="text-sm font-bold text-blue-600">{item.year}</span>
+                        <h4 className="text-lg font-semibold text-gray-900">{item.event}</h4>
+                        <p className="text-gray-600 text-sm">{item.desc}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </Card>
+
+            {/* Clients référents */}
+            {partner.clients && partner.clients.length > 0 && (
+              <Card className="p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                  <Briefcase className="h-5 w-5 mr-2 text-green-600" />
+                  Ils nous font confiance
+                </h3>
+                <div className="flex flex-wrap gap-3">
+                  {partner.clients.map((client) => (
+                    <Badge key={client} variant="info" size="md" className="px-4 py-2">
+                      {client}
+                    </Badge>
+                  ))}
+                </div>
+              </Card>
+            )}
+          </motion.div>
+        )}
+
+        {/* Onglet Expertise */}
+        {activeTab === 'expertise' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-8"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Domaines d'expertise */}
+              <Card className="p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                  <Layers className="h-5 w-5 mr-2 text-blue-600" />
+                  Nos Domaines d'Expertise
+                </h3>
+                <div className="space-y-4">
+                  {(partner.expertise || [
+                    "Digitalisation portuaire",
+                    "Intelligence artificielle",
+                    "Internet des objets (IoT)",
+                    "Développement durable",
+                    "Gestion logistique"
+                  ]).map((exp, index) => (
+                    <motion.div
+                      key={exp}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="flex items-center p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100 hover:shadow-md transition-shadow"
+                    >
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mr-4">
+                        <Lightbulb className="h-5 w-5 text-white" />
+                      </div>
+                      <span className="font-medium text-gray-800">{exp}</span>
+                      <ChevronRight className="h-5 w-5 text-gray-400 ml-auto" />
+                    </motion.div>
+                  ))}
+                </div>
+              </Card>
+
+              {/* Technologies */}
+              <Card className="p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                  <Network className="h-5 w-5 mr-2 text-purple-600" />
+                  Technologies Maîtrisées
+                </h3>
+                <div className="flex flex-wrap gap-3">
+                  {["React", "Node.js", "Python", "TensorFlow", "AWS", "Docker", "Kubernetes", "PostgreSQL", "MongoDB", "IoT Sensors", "Blockchain", "Machine Learning"].map((tech) => (
+                    <Badge key={tech} variant="info" className="px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 border-purple-200">
+                      {tech}
+                    </Badge>
+                  ))}
+                </div>
+                
+                <div className="mt-8">
+                  <h4 className="font-semibold text-gray-900 mb-4">Niveau de maturité technologique</h4>
+                  <div className="space-y-4">
+                    {[
+                      { name: "IA & Machine Learning", level: 95 },
+                      { name: "IoT & Capteurs", level: 88 },
+                      { name: "Cloud & DevOps", level: 92 },
+                      { name: "Blockchain", level: 75 }
+                    ].map((skill) => (
+                      <div key={skill.name}>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span className="font-medium text-gray-700">{skill.name}</span>
+                          <span className="text-blue-600 font-bold">{skill.level}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2.5">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${skill.level}%` }}
+                            transition={{ duration: 1, ease: "easeOut" }}
+                            className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2.5 rounded-full"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </Card>
+            </div>
+
+            {/* Certifications */}
+            {partner.certifications && partner.certifications.length > 0 && (
+              <Card className="p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                  <GraduationCap className="h-5 w-5 mr-2 text-green-600" />
+                  Certifications & Accréditations
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {partner.certifications.map((cert) => (
+                    <div key={cert} className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 text-center">
+                      <Shield className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                      <p className="text-sm font-medium text-green-900">{cert}</p>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            )}
+          </motion.div>
+        )}
+
+        {/* Onglet Galerie */}
+        {activeTab === 'gallery' && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Galerie Photos</h2>
+              <Badge variant="info">{partner.gallery?.length || 6} photos</Badge>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {(partner.gallery || [
+                "https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=800",
+                "https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=800",
+                "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=800",
+                "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800",
+                "https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=800",
+                "https://images.unsplash.com/photo-1504309092620-4d0ec726efa4?w=800"
+              ]).map((image, index) => (
+                <motion.div
+                  key={image}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="relative aspect-video rounded-xl overflow-hidden cursor-pointer group"
+                  onClick={() => {
+                    setSelectedImage(image);
+                    setShowGalleryModal(true);
+                  }}
+                >
+                  <img
+                    src={image}
+                    alt={`Gallery ${index + 1}`}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                    <Eye className="h-8 w-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Onglet Actualités */}
+        {activeTab === 'news' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Dernières Actualités</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {(partner.news || [
+                {
+                  title: "Nouveau partenariat stratégique",
+                  date: new Date('2024-12-15'),
+                  excerpt: "Signature d'un accord majeur pour la digitalisation des opérations portuaires.",
+                  image: "https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=400"
+                },
+                {
+                  title: "Innovation technologique",
+                  date: new Date('2024-11-20'),
+                  excerpt: "Lancement de notre nouvelle plateforme Smart Terminal.",
+                  image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400"
+                },
+                {
+                  title: "Prix de l'Excellence",
+                  date: new Date('2024-10-05'),
+                  excerpt: "Reconnaissance pour notre engagement dans l'innovation maritime.",
+                  image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400"
+                }
+              ]).map((news, index) => (
+                <motion.div
+                  key={news.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.15 }}
+                >
+                  <Card hover className="h-full overflow-hidden">
+                    {news.image && (
+                      <img
+                        src={news.image}
+                        alt={news.title}
+                        className="w-full h-48 object-cover"
+                      />
+                    )}
+                    <div className="p-5">
+                      <span className="text-sm text-blue-600 font-medium">
+                        {formatDate(new Date(news.date))}
+                      </span>
+                      <h3 className="text-lg font-bold text-gray-900 mt-2 mb-3">{news.title}</h3>
+                      <p className="text-gray-600 text-sm">{news.excerpt}</p>
+                      <Button variant="ghost" size="sm" className="mt-4 text-blue-600">
+                        Lire plus <ChevronRight className="h-4 w-4 ml-1" />
+                      </Button>
+                    </div>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {activeTab === 'projects' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Nos Projets</h2>
+              <Badge variant="success">{partner.projects?.length || 0} projets</Badge>
+            </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {partner.projects.map((project, index) => (
                 <motion.div
@@ -501,43 +998,39 @@ export default function PartnerDetailPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card hover className="h-full">
-                    <img
-                      src={project.image}
-                      alt={project.name}
-                      className="w-full h-48 object-cover rounded-t-lg"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.onerror = null;
-                        target.src = `https://placehold.co/600x400/e2e8f0/64748b?text=${encodeURIComponent(project.name)}`;
-                      }}
-                    />
+                  <Card hover className="h-full overflow-hidden">
+                    <div className="relative">
+                      <img
+                        src={project.image}
+                        alt={project.name}
+                        className="w-full h-48 object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null;
+                          target.src = `https://placehold.co/600x400/e2e8f0/64748b?text=${encodeURIComponent(project.name)}`;
+                        }}
+                      />
+                      <Badge className={`absolute top-3 right-3 ${getStatusColor(project.status)}`} size="sm">
+                        {getStatusLabel(project.status)}
+                      </Badge>
+                    </div>
                     <div className="p-6">
-                      <div className="flex items-center justify-between mb-3">
-                        <Badge className={getStatusColor(project.status)} size="sm">
-                          {getStatusLabel(project.status)}
-                        </Badge>
-                        <span className="text-sm text-gray-500">
-                          {formatDate(project.startDate)}
-                        </span>
-                      </div>
-                      
                       <h3 className="text-xl font-semibold text-gray-900 mb-3">
                         {project.name}
                       </h3>
                       
-                      <p className="text-gray-600 mb-4 line-clamp-3">
+                      <p className="text-gray-600 mb-4 line-clamp-2">
                         {project.description}
                       </p>
                       
-                      <div className="grid grid-cols-3 gap-4 mb-4">
+                      <div className="grid grid-cols-3 gap-4 mb-4 p-3 bg-gray-50 rounded-lg">
                         <div className="text-center">
                           <div className="text-lg font-bold text-blue-600">
                             {project.kpis.progress}%
                           </div>
                           <div className="text-xs text-gray-600">Avancement</div>
                         </div>
-                        <div className="text-center">
+                        <div className="text-center border-x border-gray-200">
                           <div className="text-lg font-bold text-green-600">
                             {project.kpis.satisfaction}%
                           </div>
@@ -553,7 +1046,7 @@ export default function PartnerDetailPage() {
                       
                       <Button 
                         variant="default"
-                        className="w-full"
+                        className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
                         onClick={() => handleViewProjectDetails(project)}
                       >
                         <Eye className="h-4 w-4 mr-2" />
@@ -567,102 +1060,162 @@ export default function PartnerDetailPage() {
           </motion.div>
         )}
 
-        {activeTab === CONFIG.tabIds.impact && (
+        {activeTab === 'impact' && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
-            <Card>
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6">
-                  Impact du Partenariat SIPORTS 2026
-                </h3>
+            <Card className="p-8">
+              <h3 className="text-2xl font-bold text-gray-900 mb-8 flex items-center">
+                <BarChart3 className="h-6 w-6 mr-3 text-blue-600" />
+                Impact du Partenariat SIPORTS 2026
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div className="text-center p-8 bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl">
+                  <Activity className="h-10 w-10 text-green-600 mx-auto mb-4" />
+                  <div className="text-4xl font-bold text-green-600 mb-2">285%</div>
+                  <div className="text-green-700 font-medium">ROI Global</div>
+                </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="text-center p-6 bg-green-50 rounded-lg">
-                    <div className="text-3xl font-bold text-green-600 mb-2">285%</div>
-                    <div className="text-sm text-green-700">ROI Global</div>
-                  </div>
-                  
-                  <div className="text-center p-6 bg-blue-50 rounded-lg">
-                    <div className="text-3xl font-bold text-blue-600 mb-2">3.2M€</div>
-                    <div className="text-sm text-blue-700">Valeur Générée</div>
-                  </div>
-                  
-                  <div className="text-center p-6 bg-purple-50 rounded-lg">
-                    <div className="text-3xl font-bold text-purple-600 mb-2">94%</div>
-                    <div className="text-sm text-purple-700">Satisfaction</div>
-                  </div>
+                <div className="text-center p-8 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl">
+                  <TrendingUp className="h-10 w-10 text-blue-600 mx-auto mb-4" />
+                  <div className="text-4xl font-bold text-blue-600 mb-2">3.2M€</div>
+                  <div className="text-blue-700 font-medium">Valeur Générée</div>
+                </div>
+                
+                <div className="text-center p-8 bg-gradient-to-br from-purple-50 to-pink-100 rounded-2xl">
+                  <PieChart className="h-10 w-10 text-purple-600 mx-auto mb-4" />
+                  <div className="text-4xl font-bold text-purple-600 mb-2">94%</div>
+                  <div className="text-purple-700 font-medium">Satisfaction</div>
+                </div>
+              </div>
+
+              {/* Graphique simplifié */}
+              <div className="mt-8 p-6 bg-gray-50 rounded-xl">
+                <h4 className="font-semibold text-gray-900 mb-4">Performance par trimestre</h4>
+                <div className="flex items-end space-x-4 h-32">
+                  {[65, 78, 85, 92].map((value, index) => (
+                    <div key={index} className="flex-1 flex flex-col items-center">
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: `${value}%` }}
+                        transition={{ duration: 0.8, delay: index * 0.2 }}
+                        className="w-full bg-gradient-to-t from-blue-600 to-indigo-500 rounded-t-lg"
+                      />
+                      <span className="text-xs text-gray-600 mt-2">T{index + 1}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </Card>
           </motion.div>
         )}
 
-        {activeTab === CONFIG.tabIds.contact && (
+        {activeTab === 'contact' && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
-            <Card>
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6">
-                  Informations de Contact
-                </h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Card className="p-8">
+              <h3 className="text-2xl font-bold text-gray-900 mb-8">
+                Informations de Contact
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <h4 className="font-semibold text-gray-900 text-lg">Coordonnées</h4>
+                  
                   <div className="space-y-4">
-                    <div className="flex items-center space-x-3">
-                      <Building2 className="h-5 w-5 text-gray-400" />
-                      <span className="text-gray-700">{partner.name}</span>
+                    <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl">
+                      <div className="p-3 bg-blue-100 rounded-lg">
+                        <Building2 className="h-5 w-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Entreprise</p>
+                        <p className="font-medium text-gray-900">{partner.name}</p>
+                      </div>
                     </div>
                     
-                    <div className="flex items-center space-x-3">
-                      <MapPin className="h-5 w-5 text-gray-400" />
-                      <span className="text-gray-700">{partner.country}</span>
+                    <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl">
+                      <div className="p-3 bg-green-100 rounded-lg">
+                        <MapPin className="h-5 w-5 text-green-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Localisation</p>
+                        <p className="font-medium text-gray-900">{partner.country}</p>
+                      </div>
                     </div>
                     
-                    <div className="flex items-center space-x-3">
-                      <Phone className="h-5 w-5 text-gray-400" />
-                      <span className="text-gray-700">+44 20 7123 4567</span>
+                    <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl">
+                      <div className="p-3 bg-purple-100 rounded-lg">
+                        <Phone className="h-5 w-5 text-purple-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Téléphone</p>
+                        <p className="font-medium text-gray-900">+212 5 22 XX XX XX</p>
+                      </div>
                     </div>
                     
-                    <div className="flex items-center space-x-3">
-                      <Mail className="h-5 w-5 text-gray-400" />
-                      <span className="text-gray-700">contact@{partner?.name?.toLowerCase().replace(/\s+/g, '') || 'contact'}.com</span>
+                    <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl">
+                      <div className="p-3 bg-orange-100 rounded-lg">
+                        <Mail className="h-5 w-5 text-orange-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Email</p>
+                        <p className="font-medium text-gray-900">contact@{partner?.name?.toLowerCase().replace(/\s+/g, '') || 'contact'}.com</p>
+                      </div>
                     </div>
                     
                     {partner.website && (
-                      <div className="flex items-center space-x-3">
-                        <Globe className="h-5 w-5 text-gray-400" />
-                        <a href={partner.website} className="text-blue-600 hover:text-blue-700">
-                          {partner.website}
-                        </a>
+                      <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl">
+                        <div className="p-3 bg-indigo-100 rounded-lg">
+                          <Globe className="h-5 w-5 text-indigo-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500">Site web</p>
+                          <a href={partner.website} className="font-medium text-blue-600 hover:underline">
+                            {partner.website}
+                          </a>
+                        </div>
                       </div>
                     )}
                   </div>
-                  
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-4">Contact SIPORTS</h4>
-                    <div className="space-y-3">
-                      <div className="p-4 bg-blue-50 rounded-lg">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <div className="h-10 w-10 bg-blue-600 rounded-full flex items-center justify-center">
-                            <Users className="h-5 w-5 text-white" />
-                          </div>
-                          <div>
-                            <p className="font-medium text-gray-900">Ahmed El Mansouri</p>
-                            <p className="text-sm text-gray-600">Directeur Partenariats</p>
-                          </div>
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          <p> ahmed.mansouri@portcasablanca.ma</p>
-                          <p> </p>
-                        </div>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold text-gray-900 text-lg mb-4">Contact SIPORTS</h4>
+                  <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100">
+                    <div className="flex items-center space-x-4 mb-4">
+                      <div className="h-14 w-14 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+                        <Users className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-gray-900">Ahmed El Mansouri</p>
+                        <p className="text-sm text-gray-600">Directeur Partenariats</p>
                       </div>
                     </div>
+                    <div className="space-y-2 text-sm text-gray-700">
+                      <p className="flex items-center">
+                        <Mail className="h-4 w-4 mr-2 text-blue-600" />
+                        ahmed.mansouri@portcasablanca.ma
+                      </p>
+                      <p className="flex items-center">
+                        <Phone className="h-4 w-4 mr-2 text-blue-600" />
+                        +212 5 22 XX XX XX
+                      </p>
+                    </div>
+                    
+                    <Button 
+                      variant="default" 
+                      className="w-full mt-6 bg-gradient-to-r from-blue-600 to-indigo-600"
+                      onClick={handleContact}
+                    >
+                      <MessageCircle className="h-4 w-4 mr-2" />
+                      Envoyer un message
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -670,6 +1223,55 @@ export default function PartnerDetailPage() {
           </motion.div>
         )}
       </div>
+
+      {/* Modal Vidéo */}
+      {showVideoModal && partner.videoUrl && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setShowVideoModal(false)}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative w-full max-w-4xl aspect-video"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowVideoModal(false)}
+              className="absolute -top-12 right-0 text-white hover:text-gray-300"
+            >
+              <ArrowLeft className="h-8 w-8" />
+            </button>
+            <iframe
+              src={partner.videoUrl}
+              className="w-full h-full rounded-xl"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </motion.div>
+        </div>
+      )}
+
+      {/* Modal Galerie */}
+      {showGalleryModal && selectedImage && (
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4" onClick={() => setShowGalleryModal(false)}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative max-w-5xl w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowGalleryModal(false)}
+              className="absolute -top-12 right-0 text-white hover:text-gray-300"
+            >
+              <ArrowLeft className="h-8 w-8" />
+            </button>
+            <img
+              src={selectedImage}
+              alt="Gallery"
+              className="w-full h-auto max-h-[80vh] object-contain rounded-xl"
+            />
+          </motion.div>
+        </div>
+      )}
 
       {/* Modal Détails Projet */}
       {showProjectModal && selectedProject && (
