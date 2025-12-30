@@ -564,9 +564,14 @@ export default function AppointmentCalendar() {
             {/* Time Slots */}
             <Card className="lg:col-span-2">
               <div className="p-4 border-b border-gray-200">
-                <h3 className="font-semibold text-gray-900">
-                  Créneaux disponibles - {formatDate(selectedDate)}
-                </h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-gray-900">
+                    Créneaux disponibles - {formatDate(selectedDate)}
+                  </h3>
+                  <Badge variant="info" className="bg-blue-100 text-blue-800">
+                    Événement : 1-3 avril 2026
+                  </Badge>
+                </div>
               </div>
               <div className="p-4">
                 {isLoading ? (
@@ -874,6 +879,9 @@ export default function AppointmentCalendar() {
                       onChange={(e) => setNewSlotData({...newSlotData, date: e.target.value})}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
+                    <p className="mt-1 text-xs text-blue-600 font-medium">
+                      ⚠️ Uniquement les 1, 2 et 3 avril 2026 (3 jours de l'événement)
+                    </p>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4">

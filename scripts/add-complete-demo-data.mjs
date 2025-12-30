@@ -161,20 +161,27 @@ async function addCompleteDemoData() {
 
     console.log(`✅ ${createdSlots.length} créneaux créés`);
 
+    // Débug: afficher un créneau exemple
+    console.log('Exemple de créneau créé:', JSON.stringify(createdSlots[0], null, 2));
+
     // 5. Créer les rendez-vous
     console.log('\n📝 Création des rendez-vous...');
     
     const appointments = [];
 
+    // Utiliser visiteur VIP pour tous les rendez-vous (visitor-free n'a pas le droit)
+    const vipVisitor = visitors.find(v => v.email === 'visitor-vip@test.siport.com') || visitors[1] || visitors[0];
+    
     // Rendez-vous passé (hier avec TechMarine)
     const slotYesterday = createdSlots.find(s => 
-      s.exhibitor_id === exhibitors[0].id && s.start_time === '10:00'
+      s.exhibitor_id === exhibitors[0].id && String(s.start_time).includes('10:00')
     );
+    console.log('Slot yesterday found:', slotYesterday ? 'Oui' : 'Non');
     if (slotYesterday) {
       appointments.push({
         time_slot_id: slotYesterday.id,
         exhibitor_id: exhibitors[0].id,
-        visitor_id: visitors[0].id,
+        visitor_id: vipVisitor.id,
         status: 'confirmed',
         notes: 'Rendez-vous réalisé - Discussion sur SmartPort PMS',
         message: 'Je souhaite en savoir plus sur vos solutions de gestion portuaire',
@@ -184,13 +191,14 @@ async function addCompleteDemoData() {
 
     // Rendez-vous aujourd'hui (avec OceanLogistics)
     const slotToday = createdSlots.find(s => 
-      s.exhibitor_id === exhibitors[1].id && s.start_time === '14:00'
+      s.exhibitor_id === exhibitors[1].id && String(s.start_time).includes('14:00')
     );
+    console.log('Slot today found:', slotToday ? 'Oui' : 'Non');
     if (slotToday) {
       appointments.push({
         time_slot_id: slotToday.id,
         exhibitor_id: exhibitors[1].id,
-        visitor_id: visitors[0].id,
+        visitor_id: vipVisitor.id,
         status: 'confirmed',
         notes: 'Présentation des solutions logistiques',
         message: 'Intéressé par vos solutions de tracking',
@@ -200,13 +208,14 @@ async function addCompleteDemoData() {
 
     // Rendez-vous demain (avec PortTech)
     const slotTomorrow = createdSlots.find(s => 
-      s.exhibitor_id === exhibitors[2].id && s.start_time === '11:00'
+      s.exhibitor_id === exhibitors[2].id && String(s.start_time).includes('11:00')
     );
+    console.log('Slot tomorrow found:', slotTomorrow ? 'Oui' : 'Non');
     if (slotTomorrow) {
       appointments.push({
         time_slot_id: slotTomorrow.id,
         exhibitor_id: exhibitors[2].id,
-        visitor_id: visitors[0].id,
+        visitor_id: vipVisitor.id,
         status: 'confirmed',
         notes: 'Démo complète PortTech Industries - Solutions premium',
         message: 'Rendez-vous pour une démonstration complète',
@@ -216,13 +225,14 @@ async function addCompleteDemoData() {
 
     // Rendez-vous dans 3 jours (avec Global Shipping - EN ATTENTE)
     const slotIn3Days = createdSlots.find(s => 
-      s.exhibitor_id === exhibitors[3].id && s.start_time === '09:30'
+      s.exhibitor_id === exhibitors[3].id && String(s.start_time).includes('09:30')
     );
+    console.log('Slot in 3 days found:', slotIn3Days ? 'Oui' : 'Non');
     if (slotIn3Days) {
       appointments.push({
         time_slot_id: slotIn3Days.id,
         exhibitor_id: exhibitors[3].id,
-        visitor_id: visitors[0].id,
+        visitor_id: vipVisitor.id,
         status: 'pending',
         notes: 'En attente de confirmation - Global Shipping Alliance',
         message: 'Souhait de discuter partenariat international',
@@ -230,37 +240,37 @@ async function addCompleteDemoData() {
       });
     }
 
-    // Rendez-vous VIP visiteur 2 (dans 5 jours)
-    if (visitors.length > 1) {
-      const slotVip1 = createdSlots.find(s => 
-        s.exhibitor_id === exhibitors[0].id && s.start_time === '15:00'
-      );
-      if (slotVip1) {
-        appointments.push({
-          time_slot_id: slotVip1.id,
-          exhibitor_id: exhibitors[0].id,
-          visitor_id: visitors[1].id,
-          status: 'confirmed',
-          notes: 'Session VIP - Présentation exclusive dirigeants',
-          message: 'Rendez-vous VIP pour discussion stratégique',
-          meeting_type: 'hybrid'
-        });
-      }
+    // Rendez-vous VIP supplémentaires (dans 5 jours)
+    const slotVip1 = createdSlots.find(s => 
+      s.exhibitor_id === exhibitors[0].id && String(s.start_time).includes('15:00')
+    );
+    console.log('Slot VIP1 found:', slotVip1 ? 'Oui' : 'Non');
+    if (slotVip1) {
+      appointments.push({
+        time_slot_id: slotVip1.id,
+        exhibitor_id: exhibitors[0].id,
+        visitor_id: vipVisitor.id,
+        status: 'confirmed',
+        notes: 'Session VIP - Présentation exclusive dirigeants',
+        message: 'Rendez-vous VIP pour discussion stratégique',
+        meeting_type: 'hybrid'
+      });
+    }
 
-      const slotVip2 = createdSlots.find(s => 
-        s.exhibitor_id === exhibitors[1].id && s.start_time === '15:00'
-      );
-      if (slotVip2) {
-        appointments.push({
-          time_slot_id: slotVip2.id,
-          exhibitor_id: exhibitors[1].id,
-          visitor_id: visitors[1].id,
-          status: 'confirmed',
-          notes: 'Session VIP - Partenariat stratégique',
-          message: 'Discussion opportunités de collaboration',
-          meeting_type: 'hybrid'
-        });
-      }
+    const slotVip2 = createdSlots.find(s => 
+      s.exhibitor_id === exhibitors[1].id && String(s.start_time).includes('15:00')
+    );
+    console.log('Slot VIP2 found:', slotVip2 ? 'Oui' : 'Non');
+    if (slotVip2) {
+      appointments.push({
+        time_slot_id: slotVip2.id,
+        exhibitor_id: exhibitors[1].id,
+        visitor_id: vipVisitor.id,
+        status: 'confirmed',
+        notes: 'Session VIP - Partenariat stratégique',
+        message: 'Discussion opportunités de collaboration',
+        meeting_type: 'hybrid'
+      });
     }
 
     const { data: createdAppointments, error: appointmentsError } = await supabase
