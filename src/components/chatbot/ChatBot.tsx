@@ -55,6 +55,8 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
   const [isMinimized, setIsMinimized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  console.log('🤖 ChatBot rendered - isOpen:', isOpen); // Debug log
+
   // Initialiser la conversation
   useEffect(() => {
     if (isOpen && messages.length === 0) {
@@ -619,7 +621,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
       initial={{ opacity: 0, scale: 0.8, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.8, y: 20 }}
-      className={`fixed bottom-4 right-4 z-50 ${
+      className={`fixed bottom-4 right-4 z-[9998] ${
         isMinimized ? 'w-80 h-16' : 'w-80 h-96'
       } transition-all duration-300`}
     >

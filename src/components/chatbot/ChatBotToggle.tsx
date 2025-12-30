@@ -13,17 +13,24 @@ export const ChatBotToggle: React.FC<ChatBotToggleProps> = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
+  console.log('🤖 ChatBotToggle rendered'); // Debug log
+
   return (
     <motion.div
-      className="fixed bottom-4 right-4 z-40"
+      className="fixed bottom-4 right-4 z-[9999]"
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
     >
       <button
-        onClick={onClick}
+        onClick={() => {
+          console.log('🤖 ChatBot button clicked'); // Debug log
+          onClick();
+        }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className="relative bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+        aria-label="Ouvrir le chatbot SIPORTS"
+        title="Assistant SIPORTS"
       >
         {/* Icône principale */}
         <div className="relative">
