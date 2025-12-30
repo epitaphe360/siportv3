@@ -250,17 +250,26 @@ export default function BadgeScannerPage() {
     }
 
     try {
-      // Parser le QR code (format JSON attendu)
-      let badgeData: any;
+      // 🔄 NOUVEAU: Passer directement le QR data brut
+      // La fonction validate_scanned_badge détecte automatiquement le type:
+      // - Badge statique: code simple (ex: "F29F85-81739C")
+      // - Badge dynamique: JWT complet (ex: "eyJhbGciOi...")
+      // - Badge JSON: parse et extrait le token/badge_code
+      
+      let qrData = decodedText;
+      
+      // Si c'est du JSON, extraire le token ou badge_code
       try {
-        badgeData = JSON.parse(decodedText);
+        const parsed = JSON.parse(decodedText);
+        qrData = parsed.token || parsed.badge_code || parsed.qr_data || decodedText;
+        console.log('📋 QR JSON parsé, extracted:', qrData.substring(0, 30) + '...');
       } catch {
-        // Si ce n'est pas du JSON, considérer comme badge_code simple
-        badgeData = { badge_code: decodedText };
+        // Pas du JSON, c'est un code brut (statique ou JWT direct)
+        console.log('📋 QR brut (non-JSON):', qrData.substring(0, 30) + '...');
       }
 
-      // Valider le badge via l'API
-      await validateAndRecordScan(badgeData.badge_code || decodedText);
+      // Valider le badge (supporte statique ET dynamique)
+      await validateAndRecordScan(qrData);
       
       // Succès: recharger les stats depuis la DB
       await loadScanStats();
@@ -290,39 +299,49 @@ export default function BadgeScannerPage() {
 
   /**
    * Valide et enregistre un scan de badge
+   * 🔄 SUPPORTE BADGES STATIQUES ET DYNAMIQUES (JWT 30s)
    */
-  const validateAndRecordScan = async (badgeCode: string) => {
+  const validateAndRecordScan = async (qrData: string) => {
     try {
       const { supabase } = await import('../lib/supabase');
 
-      // Appeler la fonction scan_badge qui valide et incrémente le compteur
-      const { data, error } = await supabase.rpc('scan_badge', {
-        p_badge_code: badgeCode
+      console.log('🔍 Validation badge, longueur:', qrData.length, 'premiers chars:', qrData.substring(0, 20));
+
+      // Appeler la fonction universelle validate_scanned_badge
+      // Elle détecte automatiquement si c'est un badge statique ou un JWT dynamique
+      const { data, error } = await supabase.rpc('validate_scanned_badge', {
+        p_qr_data: qrData
       });
 
       if (error) {
+        console.error('❌ Erreur RPC:', error);
         throw new Error(error.message);
       }
 
-      if (!data) {
-        throw new Error('Badge non trouvé');
+      console.log('📦 Réponse validation:', data);
+
+      if (!data || !data.success) {
+        throw new Error(data?.error || data?.message || 'Badge non trouvé');
       }
+
+      const userInfo = data.user || {};
+      const badgeType = data.badge_type === 'dynamic' ? '🔄 Dynamique (JWT 30s)' : '📌 Statique';
 
       // Créer l'objet badge scanné
       const scanned: ScannedBadge = {
         id: data.id,
         badgeCode: data.badge_code,
-        fullName: data.full_name,
-        companyName: data.company_name,
-        email: data.email,
-        phone: data.phone,
-        avatarUrl: data.avatar_url, // Photo pour vérification d'identité
-        userType: data.user_type,
-        userLevel: data.user_level,
-        accessLevel: data.access_level,
+        fullName: userInfo.full_name || 'Utilisateur',
+        companyName: userInfo.company_name || '',
+        email: userInfo.email || '',
+        phone: userInfo.phone || '',
+        avatarUrl: userInfo.avatar_url || '', // Photo pour vérification d'identité
+        userType: userInfo.user_type || 'visitor',
+        userLevel: userInfo.user_level || 'free',
+        accessLevel: data.access_level || userInfo.user_level,
         validUntil: data.valid_until,
         status: data.status,
-        scanCount: data.scan_count,
+        scanCount: data.scan_count || 0,
         scannedAt: new Date()
       };
 
@@ -332,11 +351,13 @@ export default function BadgeScannerPage() {
 
       // Note: Les stats sont rechargées depuis la DB dans onScanSuccess
 
-      // Notification sonore et visuelle
+      // Notification sonore et visuelle avec type de badge
       playSuccessSound();
-      toast.success('Badge validé', {
-        description: `${scanned.fullName} - ${scanned.companyName || 'N/A'}`
+      toast.success(`✅ Badge ${badgeType}`, {
+        description: `${scanned.fullName} - ${scanned.companyName || scanned.userType + ' ' + scanned.userLevel}`
       });
+
+      console.log('✅ Badge validé avec succès:', scanned);
 
       // Enregistrer le lead si l'utilisateur est un exposant/partenaire
       if (user && (user.type === 'exhibitor' || user.type === 'partner')) {
