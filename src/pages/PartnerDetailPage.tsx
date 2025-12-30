@@ -138,10 +138,12 @@ export default function PartnerDetailPage() {
   const { t } = useTranslation();
   const [partner, setPartner] = useState<Partner | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedNews, setSelectedNews] = useState<{ title: string; date: Date; excerpt: string; image?: string } | null>(null);
   const [showContactModal, setShowContactModal] = useState(false);
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showGalleryModal, setShowGalleryModal] = useState(false);
+  const [showNewsModal, setShowNewsModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [isLoading, setIsLoading] = useState(true);
@@ -969,7 +971,15 @@ export default function PartnerDetailPage() {
                       </span>
                       <h3 className="text-lg font-bold text-gray-900 mt-2 mb-3">{news.title}</h3>
                       <p className="text-gray-600 text-sm">{news.excerpt}</p>
-                      <Button variant="ghost" size="sm" className="mt-4 text-blue-600">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="mt-4 text-blue-600 hover:text-blue-700 hover:bg-blue-50 cursor-pointer"
+                        onClick={() => {
+                          setSelectedNews(news);
+                          setShowNewsModal(true);
+                        }}
+                      >
                         Lire plus <ChevronRight className="h-4 w-4 ml-1" />
                       </Button>
                     </div>
@@ -1245,6 +1255,120 @@ export default function PartnerDetailPage() {
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
+          </motion.div>
+        </div>
+      )}
+
+      {/* Modal Article / News */}
+      {showNewsModal && selectedNews && (
+        <div 
+          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" 
+          onClick={() => setShowNewsModal(false)}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Image de l'article */}
+            {selectedNews.image && (
+              <div className="relative">
+                <img
+                  src={selectedNews.image}
+                  alt={selectedNews.title}
+                  className="w-full h-64 object-cover rounded-t-2xl"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-t-2xl" />
+                <button
+                  onClick={() => setShowNewsModal(false)}
+                  className="absolute top-4 right-4 p-2 bg-white/20 backdrop-blur-sm hover:bg-white/40 rounded-full transition-colors"
+                >
+                  <ArrowLeft className="h-5 w-5 text-white" />
+                </button>
+              </div>
+            )}
+            
+            {/* Contenu de l'article */}
+            <div className="p-6">
+              {!selectedNews.image && (
+                <button
+                  onClick={() => setShowNewsModal(false)}
+                  className="mb-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <ArrowLeft className="h-5 w-5 text-gray-600" />
+                </button>
+              )}
+              
+              <div className="flex items-center gap-2 mb-4">
+                <Badge variant="primary" className="bg-blue-100 text-blue-700">
+                  <BookOpen className="h-3 w-3 mr-1" />
+                  Article
+                </Badge>
+                <span className="text-sm text-gray-500">
+                  {formatDate(new Date(selectedNews.date))}
+                </span>
+              </div>
+              
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                {selectedNews.title}
+              </h2>
+              
+              <div className="prose prose-blue max-w-none">
+                <p className="text-gray-700 leading-relaxed mb-4">
+                  {selectedNews.excerpt}
+                </p>
+                
+                {/* Contenu étendu généré */}
+                <p className="text-gray-600 leading-relaxed mb-4">
+                  Cette actualité témoigne de l'engagement continu de {partner.name} dans l'innovation et le développement du secteur portuaire. 
+                  Notre équipe travaille sans relâche pour apporter des solutions innovantes qui répondent aux défis actuels du secteur maritime.
+                </p>
+                
+                <p className="text-gray-600 leading-relaxed mb-4">
+                  Ce projet s'inscrit dans notre stratégie globale de transformation digitale et de développement durable, 
+                  en ligne avec notre mission : "{partner.mission?.substring(0, 100)}..."
+                </p>
+                
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mt-6">
+                  <h4 className="font-semibold text-gray-900 mb-2 flex items-center">
+                    <Sparkles className="h-4 w-4 mr-2 text-blue-600" />
+                    Points clés
+                  </h4>
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li className="flex items-start">
+                      <CheckCircle className="h-4 w-4 mr-2 text-green-500 mt-0.5 flex-shrink-0" />
+                      Innovation technologique au service du secteur portuaire
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-4 w-4 mr-2 text-green-500 mt-0.5 flex-shrink-0" />
+                      Engagement pour le développement durable
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-4 w-4 mr-2 text-green-500 mt-0.5 flex-shrink-0" />
+                      Partenariats stratégiques renforcés
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
+              {/* Actions */}
+              <div className="flex items-center justify-between mt-6 pt-6 border-t">
+                <div className="flex items-center gap-4">
+                  <Button variant="outline" size="sm" className="text-gray-600">
+                    <Share2 className="h-4 w-4 mr-2" />
+                    Partager
+                  </Button>
+                </div>
+                <Button 
+                  variant="default"
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600"
+                  onClick={() => setShowNewsModal(false)}
+                >
+                  Fermer
+                </Button>
+              </div>
+            </div>
           </motion.div>
         </div>
       )}
