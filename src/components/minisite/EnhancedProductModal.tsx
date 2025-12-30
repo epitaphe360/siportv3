@@ -258,7 +258,9 @@ export default function EnhancedProductModal({ product: rawProduct, theme, onClo
               {/* Prix */}
               <div className="flex items-baseline gap-3 mb-2">
                 <span className="text-3xl font-bold" style={{ color: theme.accentColor }}>
-                  {product.price || 'Sur devis'}
+                  {typeof product.price === 'number' 
+                    ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(product.price)
+                    : product.price || 'Sur devis'}
                 </span>
                 {product.originalPrice && (
                   <span className="text-lg text-gray-400 line-through">{product.originalPrice}</span>
