@@ -6,13 +6,18 @@
 -- Activer l'extension UUID si nécessaire
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- SÉCURITÉ: Crée une table `profiles` minimale si elle n'existe pas (évite l'erreur 42P01)
-DO $$
+-- Helper: retourne le nom réel de la table de profils (profiles ou profils), crée une table "profiles" minimale seulement si les deux manquent
+CREATE OR REPLACE FUNCTION get_profile_table() RETURNS text AS $$
+DECLARE
+  t text;
 BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'profiles'
-  ) THEN
-    CREATE TABLE profiles (
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'profiles') THEN
+    t := 'profiles';
+  ELSIF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'profils') THEN
+    t := 'profils';
+  ELSE
+    -- Aucune table de profil existante : créer une table minimale "profiles" pour compatibilité
+    EXECUTE 'CREATE TABLE profiles (
       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
       user_id UUID UNIQUE,
       full_name TEXT,
@@ -20,25 +25,46 @@ BEGIN
       company TEXT,
       created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-    );
+    )';
+    t := 'profiles';
     RAISE NOTICE '✅ Table profiles créée (minimale)';
+  END IF;
+  RETURN t;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Table de secours: admin_users (si la colonne 'role' n'existe pas, on peut y ajouter des admins)
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'admin_users') THEN
+    CREATE TABLE admin_users (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      user_id UUID UNIQUE NOT NULL,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    );
+    RAISE NOTICE '✅ Table admin_users créée (fallback pour vérif roles)';
   ELSE
-    RAISE NOTICE 'ℹ️ Table profiles déjà présente, aucune action';
+    RAISE NOTICE 'ℹ️ Table admin_users existante, aucune action';
   END IF;
 END $$;
+
 
 -- =====================================================
 -- ÉTAPE 1: CRÉER OU MODIFIER LES TABLES
 -- =====================================================
 
 -- Table: mini_sites (créer si n'existe pas, sinon ajouter colonnes manquantes)
-CREATE TABLE IF NOT EXISTS mini_sites (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  exhibitor_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-  title TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+DO $$
+DECLARE p_table text := get_profile_table();
+BEGIN
+  EXECUTE format('CREATE TABLE IF NOT EXISTS mini_sites (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    exhibitor_id UUID REFERENCES %I(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  )', p_table);
+END $$;
 
 -- Ajouter les colonnes manquantes à mini_sites
 DO $$ 
@@ -107,99 +133,56 @@ CREATE INDEX IF NOT EXISTS idx_site_templates_category ON site_templates(categor
 CREATE INDEX IF NOT EXISTS idx_site_templates_popularity ON site_templates(popularity DESC);
 
 -- Table: site_images
-CREATE TABLE IF NOT EXISTS site_images (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  exhibitor_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-  url TEXT NOT NULL,
-  name TEXT NOT NULL,
-  size INTEGER NOT NULL,
-  storage_path TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE INDEX IF NOT EXISTS idx_site_images_exhibitor ON site_images(exhibitor_id);
-
--- Table: user_profiles (utilise la table profiles existante, ajoute colonnes manquantes)
--- On ajoute juste les colonnes pour le networking si elles n'existent pas
-DO $$ 
+DO $$
+DECLARE p_table text := get_profile_table();
 BEGIN
-  -- Ajouter interests si n'existe pas
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_name = 'profiles' AND column_name = 'interests'
-  ) THEN
-    ALTER TABLE profiles ADD COLUMN interests TEXT[] DEFAULT '{}';
-    RAISE NOTICE '✅ Colonne interests ajoutée à profiles';
-  END IF;
-
-  -- Ajouter looking_for si n'existe pas
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_name = 'profiles' AND column_name = 'looking_for'
-  ) THEN
-    ALTER TABLE profiles ADD COLUMN looking_for TEXT[] DEFAULT '{}';
-    RAISE NOTICE '✅ Colonne looking_for ajoutée à profiles';
-  END IF;
-
-  -- Ajouter offering si n'existe pas
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_name = 'profiles' AND column_name = 'offering'
-  ) THEN
-    ALTER TABLE profiles ADD COLUMN offering TEXT[] DEFAULT '{}';
-    RAISE NOTICE '✅ Colonne offering ajoutée à profiles';
-  END IF;
-
-  -- Ajouter linkedin si n'existe pas
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_name = 'profiles' AND column_name = 'linkedin'
-  ) THEN
-    ALTER TABLE profiles ADD COLUMN linkedin TEXT;
-    RAISE NOTICE '✅ Colonne linkedin ajoutée à profiles';
-  END IF;
-
-  -- Ajouter bio si n'existe pas
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_name = 'profiles' AND column_name = 'bio'
-  ) THEN
-    ALTER TABLE profiles ADD COLUMN bio TEXT;
-    RAISE NOTICE '✅ Colonne bio ajoutée à profiles';
-  END IF;
-
-  -- Ajouter industry si n'existe pas
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_name = 'profiles' AND column_name = 'industry'
-  ) THEN
-    ALTER TABLE profiles ADD COLUMN industry TEXT;
-    RAISE NOTICE '✅ Colonne industry ajoutée à profiles';
-  END IF;
-
-  -- Ajouter location si n'existe pas
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_name = 'profiles' AND column_name = 'location'
-  ) THEN
-    ALTER TABLE profiles ADD COLUMN location TEXT;
-    RAISE NOTICE '✅ Colonne location ajoutée à profiles';
-  END IF;
+  EXECUTE format('CREATE TABLE IF NOT EXISTS site_images (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    exhibitor_id UUID REFERENCES %I(id) ON DELETE CASCADE,
+    url TEXT NOT NULL,
+    name TEXT NOT NULL,
+    size INTEGER NOT NULL,
+    storage_path TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  )', p_table);
+  EXECUTE 'CREATE INDEX IF NOT EXISTS idx_site_images_exhibitor ON site_images(exhibitor_id)';
 END $$;
 
--- Index sur profiles (ajout seulement si manquants)
-CREATE INDEX IF NOT EXISTS idx_profiles_industry ON profiles(industry);
-CREATE INDEX IF NOT EXISTS idx_profiles_interests ON profiles USING GIN(interests);
+-- Table: user_profiles (utilise la table réelle de profils -> profiles ou profils) et ajoute colonnes manquantes
+DO $$
+DECLARE p_table text := get_profile_table();
+BEGIN
+  EXECUTE format('ALTER TABLE %I ADD COLUMN IF NOT EXISTS interests TEXT[] DEFAULT ''{}''', p_table);
+  EXECUTE format('ALTER TABLE %I ADD COLUMN IF NOT EXISTS looking_for TEXT[] DEFAULT ''{}''', p_table);
+  EXECUTE format('ALTER TABLE %I ADD COLUMN IF NOT EXISTS offering TEXT[] DEFAULT ''{}''', p_table);
+  EXECUTE format('ALTER TABLE %I ADD COLUMN IF NOT EXISTS linkedin TEXT', p_table);
+  EXECUTE format('ALTER TABLE %I ADD COLUMN IF NOT EXISTS bio TEXT', p_table);
+  EXECUTE format('ALTER TABLE %I ADD COLUMN IF NOT EXISTS industry TEXT', p_table);
+  EXECUTE format('ALTER TABLE %I ADD COLUMN IF NOT EXISTS location TEXT', p_table);
+  RAISE NOTICE '✅ Colonnes networking ajoutées à %', p_table;
+END $$;
+
+-- Index sur la table de profils (création dynamique selon nom réel)
+DO $$
+DECLARE p_table text := get_profile_table();
+BEGIN
+  EXECUTE format('CREATE INDEX IF NOT EXISTS idx_%I_industry ON %I(industry)', p_table, p_table);
+  EXECUTE format('CREATE INDEX IF NOT EXISTS idx_%I_interests ON %I USING GIN(interests)', p_table, p_table);
+END $$;
 
 -- Table: networking_interactions
-CREATE TABLE IF NOT EXISTS networking_interactions (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  from_user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-  to_user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
-  type TEXT NOT NULL,
-  timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  metadata JSONB DEFAULT '{}'::jsonb
-);
+DO $$
+DECLARE p_table text := get_profile_table();
+BEGIN
+  EXECUTE format('CREATE TABLE IF NOT EXISTS networking_interactions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    from_user_id UUID REFERENCES %I(id) ON DELETE CASCADE,
+    to_user_id UUID REFERENCES %I(id) ON DELETE CASCADE,
+    type TEXT NOT NULL,
+    timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    metadata JSONB DEFAULT ''{}''::jsonb
+  )', p_table, p_table);
+END $$;
 
 -- Ajouter la contrainte CHECK si elle n'existe pas
 DO $$
@@ -221,13 +204,17 @@ CREATE INDEX IF NOT EXISTS idx_networking_type ON networking_interactions(type);
 CREATE INDEX IF NOT EXISTS idx_networking_timestamp ON networking_interactions(timestamp DESC);
 
 -- Table: match_scores
-CREATE TABLE IF NOT EXISTS match_scores (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id_1 UUID REFERENCES profiles(id) ON DELETE CASCADE,
-  user_id_2 UUID REFERENCES profiles(id) ON DELETE CASCADE,
-  score_boost INTEGER DEFAULT 0,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+DO $$
+DECLARE p_table text := get_profile_table();
+BEGIN
+  EXECUTE format('CREATE TABLE IF NOT EXISTS match_scores (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id_1 UUID REFERENCES %I(id) ON DELETE CASCADE,
+    user_id_2 UUID REFERENCES %I(id) ON DELETE CASCADE,
+    score_boost INTEGER DEFAULT 0,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  )', p_table, p_table);
+END $$;
 
 -- Ajouter la contrainte UNIQUE si elle n'existe pas
 DO $$
@@ -366,6 +353,7 @@ $$ LANGUAGE plpgsql;
 
 -- POLICIES: mini_sites
 DO $$
+DECLARE p_table text := get_profile_table();
 BEGIN
   PERFORM create_policy_if_not_exists(
     'mini_sites',
@@ -375,23 +363,23 @@ BEGIN
   );
 
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'mini_sites' AND policyname = 'Exhibitors can view own mini sites') THEN
-    CREATE POLICY "Exhibitors can view own mini sites" ON mini_sites FOR SELECT
-    USING (auth.uid() IN (SELECT user_id FROM profiles WHERE id = exhibitor_id));
+    EXECUTE format('CREATE POLICY %I ON %I FOR SELECT USING (auth.uid() IN (SELECT user_id FROM %I WHERE id = exhibitor_id))',
+      'Exhibitors can view own mini sites', 'mini_sites', p_table);
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'mini_sites' AND policyname = 'Exhibitors can create own mini sites') THEN
-    CREATE POLICY "Exhibitors can create own mini sites" ON mini_sites FOR INSERT
-    WITH CHECK (auth.uid() IN (SELECT user_id FROM profiles WHERE id = exhibitor_id));
+    EXECUTE format('CREATE POLICY %I ON %I FOR INSERT WITH CHECK (auth.uid() IN (SELECT user_id FROM %I WHERE id = exhibitor_id))',
+      'Exhibitors can create own mini sites', 'mini_sites', p_table);
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'mini_sites' AND policyname = 'Exhibitors can update own mini sites') THEN
-    CREATE POLICY "Exhibitors can update own mini sites" ON mini_sites FOR UPDATE
-    USING (auth.uid() IN (SELECT user_id FROM profiles WHERE id = exhibitor_id));
+    EXECUTE format('CREATE POLICY %I ON %I FOR UPDATE USING (auth.uid() IN (SELECT user_id FROM %I WHERE id = exhibitor_id))',
+      'Exhibitors can update own mini sites', 'mini_sites', p_table);
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'mini_sites' AND policyname = 'Exhibitors can delete own mini sites') THEN
-    CREATE POLICY "Exhibitors can delete own mini sites" ON mini_sites FOR DELETE
-    USING (auth.uid() IN (SELECT user_id FROM profiles WHERE id = exhibitor_id));
+    EXECUTE format('CREATE POLICY %I ON %I FOR DELETE USING (auth.uid() IN (SELECT user_id FROM %I WHERE id = exhibitor_id))',
+      'Exhibitors can delete own mini sites', 'mini_sites', p_table);
   END IF;
 END $$;
 
@@ -406,64 +394,65 @@ END $$;
 
 -- POLICIES: site_images
 DO $$
+DECLARE p_table text := get_profile_table();
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'site_images' AND policyname = 'Exhibitors can view own images') THEN
-    CREATE POLICY "Exhibitors can view own images" ON site_images FOR SELECT
-    USING (auth.uid() IN (SELECT user_id FROM profiles WHERE id = exhibitor_id));
+    EXECUTE format('CREATE POLICY %I ON %I FOR SELECT USING (auth.uid() IN (SELECT user_id FROM %I WHERE id = exhibitor_id))',
+      'Exhibitors can view own images', 'site_images', p_table);
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'site_images' AND policyname = 'Exhibitors can upload images') THEN
-    CREATE POLICY "Exhibitors can upload images" ON site_images FOR INSERT
-    WITH CHECK (auth.uid() IN (SELECT user_id FROM profiles WHERE id = exhibitor_id));
+    EXECUTE format('CREATE POLICY %I ON %I FOR INSERT WITH CHECK (auth.uid() IN (SELECT user_id FROM %I WHERE id = exhibitor_id))',
+      'Exhibitors can upload images', 'site_images', p_table);
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'site_images' AND policyname = 'Exhibitors can delete own images') THEN
-    CREATE POLICY "Exhibitors can delete own images" ON site_images FOR DELETE
-    USING (auth.uid() IN (SELECT user_id FROM profiles WHERE id = exhibitor_id));
+    EXECUTE format('CREATE POLICY %I ON %I FOR DELETE USING (auth.uid() IN (SELECT user_id FROM %I WHERE id = exhibitor_id))',
+      'Exhibitors can delete own images', 'site_images', p_table);
   END IF;
 END $$;
 
--- POLICIES: profiles (table existante)
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
-
+-- POLICIES: profiles (table existante, nom détecté dynamiquement)
 DO $$
+DECLARE p_table text := get_profile_table();
 BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'profiles' AND policyname = 'Anyone can view profiles') THEN
-    CREATE POLICY "Anyone can view profiles" ON profiles FOR SELECT
-    TO authenticated USING (true);
+  EXECUTE format('ALTER TABLE %I ENABLE ROW LEVEL SECURITY', p_table);
+
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = p_table AND policyname = 'Anyone can view profiles') THEN
+    EXECUTE format('CREATE POLICY %I ON %I FOR SELECT TO authenticated USING (true)', 'Anyone can view profiles', p_table);
   END IF;
 
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'profiles' AND policyname = 'Users can create own profile') THEN
-    CREATE POLICY "Users can create own profile" ON profiles FOR INSERT
-    WITH CHECK (auth.uid() = user_id);
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = p_table AND policyname = 'Users can create own profile') THEN
+    EXECUTE format('CREATE POLICY %I ON %I FOR INSERT WITH CHECK (auth.uid() = user_id)', 'Users can create own profile', p_table);
   END IF;
 
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'profiles' AND policyname = 'Users can update own profile') THEN
-    CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE
-    USING (auth.uid() = user_id);
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = p_table AND policyname = 'Users can update own profile') THEN
+    EXECUTE format('CREATE POLICY %I ON %I FOR UPDATE USING (auth.uid() = user_id)', 'Users can update own profile', p_table);
   END IF;
 END $$;
 
 -- POLICIES: networking_interactions
 DO $$
+DECLARE p_table text := get_profile_table();
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'networking_interactions' AND policyname = 'Users can view own interactions') THEN
-    CREATE POLICY "Users can view own interactions" ON networking_interactions FOR SELECT
-    USING (auth.uid() IN (SELECT user_id FROM profiles WHERE id = from_user_id OR id = to_user_id));
+    EXECUTE format('CREATE POLICY %I ON %I FOR SELECT USING (auth.uid() IN (SELECT user_id FROM %I WHERE id = from_user_id OR id = to_user_id))',
+      'Users can view own interactions', 'networking_interactions', p_table);
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'networking_interactions' AND policyname = 'Users can create interactions') THEN
-    CREATE POLICY "Users can create interactions" ON networking_interactions FOR INSERT
-    WITH CHECK (auth.uid() IN (SELECT user_id FROM profiles WHERE id = from_user_id));
+    EXECUTE format('CREATE POLICY %I ON %I FOR INSERT WITH CHECK (auth.uid() IN (SELECT user_id FROM %I WHERE id = from_user_id))',
+      'Users can create interactions', 'networking_interactions', p_table);
   END IF;
 END $$;
 
 -- POLICIES: match_scores
 DO $$
+DECLARE p_table text := get_profile_table();
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'match_scores' AND policyname = 'Users can view own match scores') THEN
-    CREATE POLICY "Users can view own match scores" ON match_scores FOR SELECT
-    USING (auth.uid() IN (SELECT user_id FROM profiles WHERE id = user_id_1 OR id = user_id_2));
+    EXECUTE format('CREATE POLICY %I ON %I FOR SELECT USING (auth.uid() IN (SELECT user_id FROM %I WHERE id = user_id_1 OR id = user_id_2))',
+      'Users can view own match scores', 'match_scores', p_table);
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'match_scores' AND policyname = 'System can manage match scores') THEN
@@ -481,13 +470,29 @@ BEGIN
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'speed_networking_sessions' AND policyname = 'Admins can create sessions') THEN
-    CREATE POLICY "Admins can create sessions" ON speed_networking_sessions FOR INSERT
-    TO authenticated WITH CHECK (EXISTS (SELECT 1 FROM profiles WHERE user_id = auth.uid() AND role IN ('admin', 'organizer')));
+    DO $$
+    DECLARE p_table text := get_profile_table(); role_exists boolean;
+    BEGIN
+      SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name = p_table AND column_name = 'role') INTO role_exists;
+      IF role_exists THEN
+        EXECUTE format('CREATE POLICY %I ON %I FOR INSERT TO authenticated WITH CHECK (EXISTS (SELECT 1 FROM %I WHERE user_id = auth.uid() AND role IN (''admin'', ''organizer'')))', 'Admins can create sessions', 'speed_networking_sessions', p_table);
+      ELSE
+        EXECUTE format('CREATE POLICY %I ON %I FOR INSERT TO authenticated WITH CHECK (EXISTS (SELECT 1 FROM admin_users WHERE user_id = auth.uid()))', 'Admins can create sessions', 'speed_networking_sessions');
+      END IF;
+    END $$;
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'speed_networking_sessions' AND policyname = 'Admins can update sessions') THEN
-    CREATE POLICY "Admins can update sessions" ON speed_networking_sessions FOR UPDATE
-    TO authenticated USING (EXISTS (SELECT 1 FROM profiles WHERE user_id = auth.uid() AND role IN ('admin', 'organizer')));
+    DO $$
+    DECLARE p_table text := get_profile_table(); role_exists boolean;
+    BEGIN
+      SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name = p_table AND column_name = 'role') INTO role_exists;
+      IF role_exists THEN
+        EXECUTE format('CREATE POLICY %I ON %I FOR UPDATE TO authenticated USING (EXISTS (SELECT 1 FROM %I WHERE user_id = auth.uid() AND role IN (''admin'', ''organizer'')))', 'Admins can update sessions', 'speed_networking_sessions', p_table);
+      ELSE
+        EXECUTE format('CREATE POLICY %I ON %I FOR UPDATE TO authenticated USING (EXISTS (SELECT 1 FROM admin_users WHERE user_id = auth.uid()))', 'Admins can update sessions', 'speed_networking_sessions');
+      END IF;
+    END $$;
   END IF;
 END $$;
 
@@ -500,13 +505,29 @@ BEGIN
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'networking_rooms' AND policyname = 'Admins can create rooms') THEN
-    CREATE POLICY "Admins can create rooms" ON networking_rooms FOR INSERT
-    TO authenticated WITH CHECK (EXISTS (SELECT 1 FROM profiles WHERE user_id = auth.uid() AND role IN ('admin', 'organizer')));
+    DO $$
+    DECLARE p_table text := get_profile_table(); role_exists boolean;
+    BEGIN
+      SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name = p_table AND column_name = 'role') INTO role_exists;
+      IF role_exists THEN
+        EXECUTE format('CREATE POLICY %I ON %I FOR INSERT TO authenticated WITH CHECK (EXISTS (SELECT 1 FROM %I WHERE user_id = auth.uid() AND role IN (''admin'', ''organizer'')))', 'Admins can create rooms', 'networking_rooms', p_table);
+      ELSE
+        EXECUTE format('CREATE POLICY %I ON %I FOR INSERT TO authenticated WITH CHECK (EXISTS (SELECT 1 FROM admin_users WHERE user_id = auth.uid()))', 'Admins can create rooms', 'networking_rooms');
+      END IF;
+    END $$;
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'networking_rooms' AND policyname = 'Admins can update rooms') THEN
-    CREATE POLICY "Admins can update rooms" ON networking_rooms FOR UPDATE
-    TO authenticated USING (EXISTS (SELECT 1 FROM profiles WHERE user_id = auth.uid() AND role IN ('admin', 'organizer')));
+    DO $$
+    DECLARE p_table text := get_profile_table(); role_exists boolean;
+    BEGIN
+      SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name = p_table AND column_name = 'role') INTO role_exists;
+      IF role_exists THEN
+        EXECUTE format('CREATE POLICY %I ON %I FOR UPDATE TO authenticated USING (EXISTS (SELECT 1 FROM %I WHERE user_id = auth.uid() AND role IN (''admin'', ''organizer'')))', 'Admins can update rooms', 'networking_rooms', p_table);
+      ELSE
+        EXECUTE format('CREATE POLICY %I ON %I FOR UPDATE TO authenticated USING (EXISTS (SELECT 1 FROM admin_users WHERE user_id = auth.uid()))', 'Admins can update rooms', 'networking_rooms');
+      END IF;
+    END $$;
   END IF;
 END $$;
 
