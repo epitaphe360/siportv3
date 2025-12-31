@@ -22,6 +22,7 @@
     "build:mobile": "npm run build && npx cap build",
     "metrics-server": "node server/metrics-server.js",
     "exhibitors-server": "node server/exhibitors-server.js",
+    "seed:templates": "npx tsx scripts/seed-site-templates.ts",
     "mobile:init": "npx @capacitor/cli create",
     "mobile:add-ios": "npx cap add ios",
     "mobile:add-android": "npx cap add android",
