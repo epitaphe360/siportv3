@@ -98,6 +98,17 @@ export const ROUTES = {
   VISITOR_FREE_REGISTRATION: '/visitor/register/free',
   VISITOR_VIP_REGISTRATION: '/visitor/register/vip',
   BADGE: '/badge',
+
+  // Mini-Site Builder
+  CREATE_MINI_SITE: '/exhibitor/mini-site/create',
+  EDIT_MINI_SITE: '/exhibitor/mini-site/:siteId/edit',
+  MINI_SITE_VIEW: '/mini-sites/:siteId',
+
+  // Networking & Matchmaking
+  NETWORKING_MATCHMAKING: '/networking/matchmaking',
+  NETWORKING_ROOMS: '/networking/rooms/:eventId',
+  SPEED_NETWORKING: '/networking/speed/:sessionId',
+  INTERACTION_HISTORY: '/networking/history',
   BADGE_DIGITAL: '/badge/digital',
   BADGE_SCANNER: '/badge/scanner',
   SECURITY_SCANNER: '/security/scanner',
