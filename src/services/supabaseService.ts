@@ -1620,7 +1620,7 @@ export class SupabaseService {
           .from('exhibitors')
           .select('id, company_name, logo_url, description, website, contact_info')
           .eq('user_id', exhibitorId)
-          .single();
+          .maybeSingle();
 
         data = result.data;
         error = result.error;
@@ -2135,7 +2135,7 @@ export class SupabaseService {
           .from('exhibitors')
           .select('id')
           .eq('user_id', exhibitorIdOrUserId)
-          .single();
+          .maybeSingle();
 
         if (exhibitor) {
           console.log(`[TIME_SLOTS] Resolved exhibitor_id from user_id:`, { userId: exhibitorIdOrUserId, exhibitorId: exhibitor.id });
@@ -2211,7 +2211,7 @@ export class SupabaseService {
             .from('exhibitors')
             .select('id')
             .eq('user_id', userId)
-            .single();
+            .maybeSingle();
           
           if (exhError || !exhibitor) {
             console.error('❌ [CREATE_SLOT] Exhibitor introuvable pour userId:', userId, exhError);
