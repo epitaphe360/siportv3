@@ -110,14 +110,14 @@ const UnauthorizedPage = lazyRetry(() => import('./pages/UnauthorizedPage'));
 const ForbiddenPage = lazyRetry(() => import('./pages/ForbiddenPage'));
 
 // Media pages
-const WebinarsPage = lazyRetry(() => import('./pages/media/WebinarsPage').then(m => ({ default: m.WebinarsPage })));
-const PodcastsPage = lazyRetry(() => import('./pages/media/PodcastsPage').then(m => ({ default: m.PodcastsPage })));
-const CapsulesPage = lazyRetry(() => import('./pages/media/CapsulesPage').then(m => ({ default: m.CapsulesPage })));
-const LiveStudioPage = lazyRetry(() => import('./pages/media/LiveStudioPage').then(m => ({ default: m.LiveStudioPage })));
-const BestMomentsPage = lazyRetry(() => import('./pages/media/BestMomentsPage').then(m => ({ default: m.BestMomentsPage })));
-const TestimonialsPage = lazyRetry(() => import('./pages/media/TestimonialsPage').then(m => ({ default: m.TestimonialsPage })));
-const MediaLibraryPage = lazyRetry(() => import('./pages/media/MediaLibraryPage').then(m => ({ default: m.MediaLibraryPage })));
-const MediaDetailPage = lazyRetry(() => import('./pages/media/MediaDetailPage').then(m => ({ default: m.MediaDetailPage })));
+const WebinarsPage = lazyRetry(() => import('./pages/media/WebinarsPage'));
+const PodcastsPage = lazyRetry(() => import('./pages/media/PodcastsPage'));
+const CapsulesPage = lazyRetry(() => import('./pages/media/CapsulesPage'));
+const LiveStudioPage = lazyRetry(() => import('./pages/media/LiveStudioPage'));
+const BestMomentsPage = lazyRetry(() => import('./pages/media/BestMomentsPage'));
+const TestimonialsPage = lazyRetry(() => import('./pages/media/TestimonialsPage'));
+const MediaLibraryPage = lazyRetry(() => import('./pages/media/MediaLibraryPage'));
+const MediaDetailPage = lazyRetry(() => import('./pages/media/MediaDetailPage'));
 
 // Admin Media pages
 const MediaManagementPage = lazyRetry(() => import('./pages/admin/media/MediaManagementPage'));

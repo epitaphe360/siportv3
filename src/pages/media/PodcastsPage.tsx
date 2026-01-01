@@ -188,5 +188,4 @@ export const PodcastsPage: React.FC = () => {
   );
 };
 
-
-
+export default PodcastsPage;

@@ -130,3 +130,5 @@ export const CapsulesPage: React.FC = () => {
 
 
 
+
+export default CapsulesPage;
