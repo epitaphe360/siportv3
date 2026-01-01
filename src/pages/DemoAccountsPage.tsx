@@ -305,3 +305,4 @@ export const DemoAccountsPage: React.FC = () => {
     </div>
   );
 };
+export default DemoAccountsPage;

@@ -382,3 +382,4 @@ export const LiveStudioDetailPage: React.FC = () => {
     </div>
   );
 };
+export default LiveStudioDetailPage;

@@ -304,3 +304,4 @@ export const WebinarDetailPage: React.FC = () => {
     </div>
   );
 };
+export default WebinarDetailPage;

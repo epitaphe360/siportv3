@@ -330,3 +330,4 @@ export const PodcastEpisodeDetailPage: React.FC = () => {
     </div>
   );
 };
+export default PodcastEpisodeDetailPage;

@@ -389,3 +389,4 @@ export const BestMomentsDetailPage: React.FC = () => {
     </div>
   );
 };
+export default BestMomentsDetailPage;
