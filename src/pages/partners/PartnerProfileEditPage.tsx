@@ -225,15 +225,17 @@ export const PartnerProfileEditPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Niveau de sponsoring</label>
-                    <select value={formData.sponsorLevel} onChange={(e) => handleInputChange('sponsorLevel', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                      <option value="">-- Aucun --</option>
-                      <option value="principal">Sponsor Principal</option>
-                      <option value="gold">Gold</option>
-                      <option value="silver">Silver</option>
-                      <option value="bronze">Bronze</option>
-                    </select>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Niveau de sponsoring
+                      <span className="ml-2 text-xs text-gray-500">(Défini par l'administrateur)</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      value={formData.sponsorLevel || "Aucun niveau défini"} 
+                      disabled
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
+                      title="Seul l'administrateur peut modifier le niveau de sponsoring"
+                    />
                   </div>
 
                   <div className="md:col-span-2">
