@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ROUTES } from '../../../lib/routes';
+import { ROUTES } from '../../lib/routes';
 import {
   CheckCircle,
   XCircle,
@@ -14,13 +14,13 @@ import {
   FileText,
   AlertCircle
 } from 'lucide-react';
-import { Card } from '../../../components/ui/Card';
-import { Button } from '../../../components/ui/Button';
-import { Badge } from '../../../components/ui/Badge';
+import { Card } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
 import { toast } from 'sonner';
-import { supabase } from '../../../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import { motion } from 'framer-motion';
-import { useAuthStore } from '../../../store/authStore';
+import { useAuthStore } from '../../store/authStore';
 
 interface PendingMedia {
   id: string;
