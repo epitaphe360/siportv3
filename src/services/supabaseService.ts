@@ -2140,7 +2140,23 @@ export class SupabaseService {
       }
 
       console.log(`[TIME_SLOTS] Successfully fetched ${data?.length || 0} slots`);
-      return data || [];
+
+      // Transform DB rows to TimeSlot interface (snake_case → camelCase)
+      const transformed = (data || []).map((row: any) => ({
+        id: row.id,
+        userId: row.exhibitor_id || row.user_id,
+        date: row.slot_date || row.date,
+        startTime: row.start_time || row.startTime,
+        endTime: row.end_time || row.endTime,
+        duration: row.duration || 0,
+        type: row.type || 'in-person',
+        maxBookings: row.max_bookings || row.maxBookings || 1,
+        currentBookings: row.current_bookings || row.currentBookings || 0,
+        available: row.available !== undefined ? row.available : true,
+        location: row.location || undefined
+      }));
+
+      return transformed;
     } catch (error) {
       console.error('[TIME_SLOTS] Error fetching time slots:', {
         exhibitorId,
