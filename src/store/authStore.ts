@@ -427,14 +427,35 @@ const useAuthStore = create<AuthState>()(
     set({ isLoading: true });
 
     try {
+      // ✅ Fusionner les données de manière robuste
+      const mergedProfile = {
+        ...user.profile,
+        ...profileData
+      };
+
+      // ✅ Envoyer la mise à jour vers Supabase
       const updatedUser = await SupabaseService.updateUser(user.id, {
         ...user,
-        profile: { ...user.profile, ...profileData }
+        profile: mergedProfile
       });
 
+      if (!updatedUser) {
+        throw new Error('Impossible de mettre à jour le profil - réponse vide du serveur');
+      }
+
+      // ✅ Mettre à jour le store avec les données mises à jour
       set({ user: updatedUser, isLoading: false });
+
+      // ✅ Vérifier que les données sont bien sauvegardées
+      console.log('✅ Profil mis à jour avec succès:', {
+        sectors: updatedUser.profile.sectors?.length || 0,
+        interests: updatedUser.profile.interests?.length || 0,
+        objectives: updatedUser.profile.objectives?.length || 0,
+        bio: updatedUser.profile.bio?.substring(0, 50) || 'vide'
+      });
     } catch (error: unknown) {
       set({ isLoading: false });
+      console.error('❌ Erreur mise à jour profil:', error);
       throw error instanceof Error ? error : new Error('Erreur lors de la mise à jour du profil');
     }
   }

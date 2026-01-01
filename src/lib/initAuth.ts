@@ -69,9 +69,19 @@ export async function initializeAuth() {
       console.warn('[AUTH] Session sans email, impossible de récupérer le profil');
       return;
     }
+    
+    console.log('[AUTH] Rechargement du profil pour:', session.user.email);
     const userProfile = await SupabaseService.getUserByEmail(session.user.email);
 
     if (userProfile) {
+      // ✅ DEBUG: Vérifier que les données de réseautage sont bien chargées
+      console.log('[AUTH] Profil chargé:', {
+        email: userProfile.email,
+        sectors: userProfile.profile?.sectors?.length || 0,
+        interests: userProfile.profile?.interests?.length || 0,
+        bio: userProfile.profile?.bio?.substring(0, 50) || 'vide'
+      });
+      
       // CRITICAL: Verification supplementaire pour les admins
       if (userProfile.type === 'admin') {
         // Verifier que utilisateur est reellement admin dans la DB
