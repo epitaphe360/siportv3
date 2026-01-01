@@ -105,6 +105,9 @@ const PartnerProfileEditPage = lazyRetry(() => import('./pages/partners/PartnerP
 const PartnerSatisfactionPage = lazyRetry(() => import('./pages/partners/PartnerSatisfactionPage'));
 const PartnerSupportPageComponent = lazyRetry(() => import('./pages/partners/PartnerSupportPage'));
 
+// Admin media approval
+const PartnerMediaApprovalPage = lazyRetry(() => import('./pages/admin/PartnerMediaApprovalPage'));
+
 // Error pages
 const UnauthorizedPage = lazyRetry(() => import('./pages/UnauthorizedPage'));
 const ForbiddenPage = lazyRetry(() => import('./pages/ForbiddenPage'));
@@ -126,6 +129,7 @@ const CreateMediaPage = lazyRetry(() => import('./pages/admin/media/CreateMediaP
 // Partner Media pages
 const PartnerMediaUploadPage = lazyRetry(() => import('./pages/partners/PartnerMediaUploadPage'));
 const PartnerMediaAnalyticsPage = lazyRetry(() => import('./pages/partners/PartnerMediaAnalyticsPage'));
+const PartnerMediaLibraryPage = lazyRetry(() => import('./pages/partners/PartnerMediaLibraryPage'));
 
 import { ChatBot } from './components/chatbot/ChatBot';
 import { ChatBotToggle } from './components/chatbot/ChatBotToggle';
@@ -304,10 +308,12 @@ const App = () => {
             {/* Partner Media routes - protected */}
             <Route path={ROUTES.PARTNER_MEDIA_UPLOAD} element={<ProtectedRoute requiredRole="partner"><PartnerMediaUploadPage /></ProtectedRoute>} />
             <Route path={ROUTES.PARTNER_MEDIA_ANALYTICS} element={<ProtectedRoute requiredRole="partner"><PartnerMediaAnalyticsPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_MEDIA_LIBRARY} element={<ProtectedRoute requiredRole="partner"><PartnerMediaLibraryPage /></ProtectedRoute>} />
 
             {/* Admin Media routes - protected */}
             <Route path={ROUTES.ADMIN_MEDIA_MANAGE} element={<ProtectedRoute requiredRole="admin"><MediaManagementPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_MEDIA_CREATE} element={<ProtectedRoute requiredRole="admin"><CreateMediaPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_PARTNER_MEDIA_APPROVAL} element={<ProtectedRoute requiredRole="admin"><PartnerMediaApprovalPage /></ProtectedRoute>} />
 
             {/* 404 catch-all route - must be last */}
             <Route path="*" element={<div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">

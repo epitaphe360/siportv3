@@ -19,7 +19,8 @@ import {
   TrendingUp,
   Eye,
   MessageCircle,
-  Video
+  Video,
+  CheckCircle
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
@@ -714,6 +715,26 @@ export default function AdminDashboard() {
                       <div className="flex-1">
                         <div className="font-semibold">Gérer Contenus Médias</div>
                         <div className="text-xs text-pink-100">Webinaires, Podcasts, Capsules, Talks...</div>
+                      </div>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </motion.div>
+                </Link>
+
+                <Link to={ROUTES.ADMIN_PARTNER_MEDIA_APPROVAL} className="block">
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
+                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
+                        <CheckCircle className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold">Valider Médias Partenaires</div>
+                        <div className="text-xs text-orange-100">Approuver les contenus soumis</div>
                       </div>
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

@@ -50,13 +50,14 @@ export const PartnerMediaUploadPage: React.FC = () => {
     try {
       await mediaService.createMedia({
         ...formData,
-        partner_id: user.id,
-        status: 'pending', // En attente de validation admin
+        created_by_type: 'partner',
+        created_by_id: user.id,
+        status: 'pending_approval', // En attente de validation admin
         view_count: 0,
         like_count: 0
       });
       
-      toast.success('Média uploadé avec succès ! Il sera visible après validation par l\'équipe SIPORT.');
+      toast.success('Média soumis avec succès ! Il sera visible après validation par l\'équipe SIPORT.');
       navigate('/partner/media');
     } catch (error) {
       console.error('Erreur upload:', error);
@@ -77,8 +78,24 @@ export const PartnerMediaUploadPage: React.FC = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Retour à ma bibliothèque
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900">Uploader un Média</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Soumettre un Média</h1>
           <p className="mt-2 text-gray-600">Partagez vos contenus avec la communauté SIPORT</p>
+          
+          {/* Avertissement validation */}
+          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-start">
+              <Upload className="w-5 h-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-blue-900 mb-1">
+                  Validation requise
+                </h3>
+                <p className="text-sm text-blue-700">
+                  Votre média sera soumis à l'équipe SIPORT pour validation avant d'être publié. 
+                  Vous serez notifié une fois la validation effectuée.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Form */}
