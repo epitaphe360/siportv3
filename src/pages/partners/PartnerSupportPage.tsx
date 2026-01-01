@@ -409,5 +409,4 @@ export const PartnerSupportPage: React.FC = () => {
   );
 };
 
-
-
+export default PartnerSupportPage;

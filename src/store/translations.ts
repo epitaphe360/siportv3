@@ -127,6 +127,8 @@ export const allTranslations = {
     'admin.reject': 'Rejeter',
     'admin.edit': 'Modifier',
     'admin.delete': 'Supprimer',
+    'admin.edit_profile': 'Modifier le profil',
+    'admin.media_management': 'Gestion des médias',
     
     // Dashboard Visitor
     'visitor.dashboard': 'Mon espace',
@@ -632,6 +634,8 @@ export const allTranslations = {
     'admin.reject': 'Reject',
     'admin.edit': 'Edit',
     'admin.delete': 'Delete',
+    'admin.edit_profile': 'Edit Profile',
+    'admin.media_management': 'Media Management',
     
     'visitor.dashboard': 'My Space',
     'visitor.my_profile': 'My Profile',
@@ -1101,6 +1105,8 @@ export const allTranslations = {
     'admin.reject': 'الرفض',
     'admin.edit': 'تعديل',
     'admin.delete': 'حذف',
+    'admin.edit_profile': 'تعديل الملف الشخصي',
+    'admin.media_management': 'إدارة الوسائط',
     
     'visitor.dashboard': 'مساحتي',
     'visitor.my_profile': 'ملفي الشخصي',

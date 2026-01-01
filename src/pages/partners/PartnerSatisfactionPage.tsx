@@ -284,5 +284,4 @@ export const PartnerSatisfactionPage: React.FC = () => {
   );
 };
 
-
-
+export default PartnerSatisfactionPage;

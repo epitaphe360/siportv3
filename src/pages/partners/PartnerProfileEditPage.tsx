@@ -580,3 +580,4 @@ export const PartnerProfileEditPage: React.FC = () => {
     </div>
   );
 };
+export default PartnerProfileEditPage;

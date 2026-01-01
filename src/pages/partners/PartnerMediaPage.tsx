@@ -417,5 +417,4 @@ export const PartnerMediaPage: React.FC = () => {
   );
 };
 
-
-
+export default PartnerMediaPage;
