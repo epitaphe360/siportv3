@@ -7,12 +7,31 @@
 -- 1. PARTNER_PROFILES: Restrictions RLS
 -- ============================================
 
+-- Activer RLS sur la table si ce n'est pas déjà fait
+ALTER TABLE public.partner_profiles ENABLE ROW LEVEL SECURITY;
+
 -- Supprimer les anciennes politiques si elles existent
 DROP POLICY IF EXISTS "Partners can update their own profile" ON public.partner_profiles;
 DROP POLICY IF EXISTS "Partners can update own profile" ON public.partner_profiles;
+DROP POLICY IF EXISTS "Partners can update profile except partnership_level" ON public.partner_profiles;
+DROP POLICY IF EXISTS "Admins can update all partner profile fields" ON public.partner_profiles;
 
--- Nouvelle politique: Les partenaires peuvent mettre à jour leur profil SAUF partnership_level
-CREATE POLICY "Partners can update profile except partnership_level"
+-- Politique de lecture pour les partenaires
+CREATE POLICY "Partners can view own profile"
+  ON public.partner_profiles
+  FOR SELECT
+  TO authenticated
+  USING (
+    user_id = auth.uid() 
+    OR EXISTS (
+      SELECT 1 FROM public.users 
+      WHERE id = auth.uid() 
+      AND type = 'admin'
+    )
+  );
+
+-- Politique: Les partenaires peuvent mettre à jour leur profil (le trigger bloquera partnership_level)
+CREATE POLICY "Partners can update own profile"
   ON public.partner_profiles
   FOR UPDATE
   TO authenticated
@@ -23,34 +42,14 @@ CREATE POLICY "Partners can update profile except partnership_level"
       WHERE id = auth.uid() 
       AND type = 'partner'
     )
-  )
-  WITH CHECK (
-    user_id = auth.uid()
-    AND EXISTS (
-      SELECT 1 FROM public.users 
-      WHERE id = auth.uid() 
-      AND type = 'partner'
-    )
-    -- IMPORTANT: Empêcher la modification de partnership_level par les partenaires
-    AND (
-      (NEW.partnership_level IS NULL AND OLD.partnership_level IS NULL)
-      OR (NEW.partnership_level = OLD.partnership_level)
-    )
   );
 
--- Politique: Seuls les administrateurs peuvent modifier partnership_level
-CREATE POLICY "Admins can update all partner profile fields"
+-- Politique: Les administrateurs peuvent tout faire
+CREATE POLICY "Admins can manage all partner profiles"
   ON public.partner_profiles
-  FOR UPDATE
+  FOR ALL
   TO authenticated
   USING (
-    EXISTS (
-      SELECT 1 FROM public.users 
-      WHERE id = auth.uid() 
-      AND type = 'admin'
-    )
-  )
-  WITH CHECK (
     EXISTS (
       SELECT 1 FROM public.users 
       WHERE id = auth.uid() 
@@ -67,24 +66,22 @@ DO $$
 BEGIN
   IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'partners' AND table_schema = 'public') THEN
     
-    -- Supprimer les anciennes politiques
-    DROP POLICY IF EXISTS "Partners can update own data" ON public.partners;
+    -- Activer RLS
+    EXECUTE 'ALTER TABLE public.partners ENABLE ROW LEVEL SECURITY';
     
-    -- Politique: Les partenaires peuvent mettre à jour SAUF sponsorship_level
+    -- Supprimer les anciennes politiques
+    EXECUTE 'DROP POLICY IF EXISTS "Partners can update own data" ON public.partners';
+    EXECUTE 'DROP POLICY IF EXISTS "Partners can update except sponsorship_level" ON public.partners';
+    
+    -- Politique: Les partenaires peuvent mettre à jour leurs données
+    -- Le trigger bloquera la modification de sponsorship_level
     EXECUTE '
-      CREATE POLICY "Partners can update except sponsorship_level"
+      CREATE POLICY "Partners can update own partner data"
         ON public.partners
         FOR UPDATE
         TO authenticated
         USING (
           user_id = auth.uid()
-        )
-        WITH CHECK (
-          user_id = auth.uid()
-          AND (
-            (NEW.sponsorship_level IS NULL AND OLD.sponsorship_level IS NULL)
-            OR (NEW.sponsorship_level = OLD.sponsorship_level)
-          )
         )
     ';
     
@@ -106,16 +103,29 @@ COMMENT ON COLUMN public.partner_profiles.partnership_level IS
 -- Créer une fonction de validation pour bloquer les tentatives de modification
 CREATE OR REPLACE FUNCTION public.prevent_partner_level_modification()
 RETURNS TRIGGER AS $$
+DECLARE
+  is_admin BOOLEAN;
 BEGIN
-  -- Si l'utilisateur n'est pas admin et tente de modifier partnership_level
-  IF OLD.partnership_level IS DISTINCT FROM NEW.partnership_level THEN
-    -- Vérifier si l'utilisateur actuel est un admin
-    IF NOT EXISTS (
-      SELECT 1 FROM public.users 
-      WHERE id = auth.uid() 
-      AND type = 'admin'
-    ) THEN
+  -- Vérifier si l'utilisateur actuel est un admin
+  SELECT EXISTS (
+    SELECT 1 FROM public.users 
+    WHERE id = auth.uid() 
+    AND type = 'admin'
+  ) INTO is_admin;
+  
+  -- Si l'utilisateur n'est pas admin et tente de modifier partnership_level/sponsorship_level
+  IF NOT is_admin THEN
+    -- Pour partner_profiles
+    IF TG_TABLE_NAME = 'partner_profiles' AND 
+       OLD.partnership_level IS DISTINCT FROM NEW.partnership_level THEN
       RAISE EXCEPTION 'Seuls les administrateurs peuvent modifier le niveau de partenariat'
+        USING HINT = 'Contactez un administrateur pour modifier votre niveau de sponsoring';
+    END IF;
+    
+    -- Pour partners
+    IF TG_TABLE_NAME = 'partners' AND 
+       OLD.sponsorship_level IS DISTINCT FROM NEW.sponsorship_level THEN
+      RAISE EXCEPTION 'Seuls les administrateurs peuvent modifier le niveau de sponsoring'
         USING HINT = 'Contactez un administrateur pour modifier votre niveau de sponsoring';
     END IF;
   END IF;
