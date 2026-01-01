@@ -21,6 +21,7 @@ export default function MediaDetailPage() {
   const [media, setMedia] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showTranscript, setShowTranscript] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     const fetchMedia = async () => {
@@ -43,6 +44,18 @@ export default function MediaDetailPage() {
 
     fetchMedia();
   }, [id, navigate]);
+
+  const handlePlayMedia = () => {
+    if (media?.media_url) {
+      // Si c'est une vidéo ou audio avec URL, on peut soit ouvrir dans une nouvelle fenêtre
+      // soit afficher un lecteur intégré (à implémenter selon vos besoins)
+      setIsPlaying(true);
+      window.open(media.media_url, '_blank');
+      toast.success('Lecture en cours...');
+    } else {
+      toast.error('URL du média non disponible');
+    }
+  };
 
   const handleDownloadResources = () => {
     if (media?.resources_url) {
@@ -113,6 +126,7 @@ export default function MediaDetailPage() {
             <Button 
               size="lg" 
               className="relative z-10 w-20 h-20 rounded-full bg-blue-600 hover:bg-blue-700 hover:scale-110 transition-all shadow-xl"
+              onClick={handlePlayMedia}
             >
               <Play className="h-10 w-10 text-white ml-1" />
             </Button>
