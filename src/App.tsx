@@ -134,6 +134,7 @@ import { ROUTES } from './lib/routes';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { initializeAuth } from './lib/initAuth';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import DevSubscriptionSwitcher from './components/dev/DevSubscriptionSwitcher';
 
 // Import cleanup functions for dev debugging (not used in production)
 if (import.meta.env.DEV) {
@@ -334,6 +335,10 @@ const App = () => {
           hasUnreadMessages={false}
         />
       )}
+
+      {/* Dev Tools - Subscription Switcher (Development Only) */}
+      {import.meta.env.DEV && <DevSubscriptionSwitcher />}
+
       <Toaster position="top-right" />
     </div>
     </ErrorBoundary>
