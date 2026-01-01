@@ -2104,29 +2104,52 @@ export class SupabaseService {
   }
 
   // ==================== TIME SLOTS ====================
-  static async getTimeSlotsByExhibitor(exhibitorId: string): Promise<TimeSlot[]> {
+  static async getTimeSlotsByExhibitor(exhibitorIdOrUserId: string): Promise<TimeSlot[]> {
     if (!this.checkSupabaseConnection()) return [];
     
     // Validate UUID format (must be 36 chars with hyphens)
-    if (!exhibitorId || !exhibitorId.includes('-') || exhibitorId.length !== 36) {
-      console.warn('[TIME_SLOTS] Invalid exhibitorId format:', exhibitorId);
+    if (!exhibitorIdOrUserId || !exhibitorIdOrUserId.includes('-') || exhibitorIdOrUserId.length !== 36) {
+      console.warn('[TIME_SLOTS] Invalid ID format:', exhibitorIdOrUserId);
       return [];
     }
 
-    if (!exhibitorId) {
-      console.warn('[TIME_SLOTS] Exhibitor ID is empty');
+    if (!exhibitorIdOrUserId) {
+      console.warn('[TIME_SLOTS] ID is empty');
       return [];
     }
 
     const safeSupabase = supabase!;
     try {
-      console.log(`[TIME_SLOTS] Fetching slots for exhibitor: ${exhibitorId}`);
-      const { data, error } = await safeSupabase
+      // D'abord, essayer de récupérer directement avec exhibitor_id
+      console.log(`[TIME_SLOTS] Fetching slots for: ${exhibitorIdOrUserId}`);
+      let { data, error } = await safeSupabase
         .from('time_slots')
         .select('*')
-        .eq('exhibitor_id', exhibitorId)
+        .eq('exhibitor_id', exhibitorIdOrUserId)
         .order('slot_date', { ascending: true })
         .order('start_time', { ascending: true });
+
+      // Si pas de résultats, vérifier si c'est un user_id et essayer de résoudre l'exhibitor_id
+      if (!error && (!data || data.length === 0)) {
+        const { data: exhibitor } = await safeSupabase
+          .from('exhibitors')
+          .select('id')
+          .eq('user_id', exhibitorIdOrUserId)
+          .single();
+
+        if (exhibitor) {
+          console.log(`[TIME_SLOTS] Resolved exhibitor_id from user_id:`, { userId: exhibitorIdOrUserId, exhibitorId: exhibitor.id });
+          const result = await safeSupabase
+            .from('time_slots')
+            .select('*')
+            .eq('exhibitor_id', exhibitor.id)
+            .order('slot_date', { ascending: true })
+            .order('start_time', { ascending: true });
+          
+          data = result.data;
+          error = result.error;
+        }
+      }
 
       if (error) {
         console.error('[TIME_SLOTS] Supabase error:', {
@@ -2177,9 +2200,36 @@ export class SupabaseService {
     if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
     const safeSupabase = supabase!;
     try {
+      // Résoudre l'exhibitor_id depuis le userId si nécessaire
+      let exhibitorId = (slotData as any).exhibitorId || null;
+      
+      if (!exhibitorId) {
+        const userId = (slotData as any).userId;
+        if (userId) {
+          // Récupérer l'exhibitor_id correspondant au user_id
+          const { data: exhibitor, error: exhError } = await safeSupabase
+            .from('exhibitors')
+            .select('id')
+            .eq('user_id', userId)
+            .single();
+          
+          if (exhError || !exhibitor) {
+            console.error('❌ [CREATE_SLOT] Exhibitor introuvable pour userId:', userId, exhError);
+            throw new Error(`Aucun exposant trouvé pour l'utilisateur ${userId}. Veuillez d'abord créer un profil exposant.`);
+          }
+          
+          exhibitorId = exhibitor.id;
+          console.log('✅ [CREATE_SLOT] Exhibitor résolu:', { userId, exhibitorId });
+        }
+      }
+
+      if (!exhibitorId) {
+        throw new Error('exhibitor_id ou userId requis pour créer un créneau');
+      }
+
       // Map frontend slotData to DB column names to handle schema differences
       const insertPayload: any = {
-        exhibitor_id: (slotData as any).userId || (slotData as any).exhibitorId || null,
+        exhibitor_id: exhibitorId,
         slot_date: (slotData as any).date || (slotData as any).slot_date || null,
         start_time: (slotData as any).startTime || (slotData as any).start_time || null,
         end_time: (slotData as any).endTime || (slotData as any).end_time || null,
