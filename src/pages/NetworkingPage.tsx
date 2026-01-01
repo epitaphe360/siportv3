@@ -82,11 +82,7 @@ export default function NetworkingPage() {
   }, [isAuthenticated, user, fetchRecommendations]);
 
   const handleSearch = async () => {
-    if (!searchTerm.trim() && !searchFilters.sector && !searchFilters.userType && !searchFilters.location) {
-      toast.error('Veuillez saisir un terme de recherche ou sélectionner au moins un filtre');
-      return;
-    }
-    
+    // Permettre la recherche sans filtres obligatoires (affiche tous les résultats si aucun filtre)
     setIsSearching(true);
     try {
       const results = await SupabaseService.searchUsers({
