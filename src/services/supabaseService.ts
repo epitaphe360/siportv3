@@ -2191,13 +2191,27 @@ export class SupabaseService {
         location: (slotData as any).location || null
       };
 
+      // LOG DÉTAILLÉ POUR DEBUG
+      console.log('🔍 [CREATE_SLOT] Payload à insérer:', JSON.stringify(insertPayload, null, 2));
+
       const { data, error } = await safeSupabase
         .from('time_slots')
         .insert([insertPayload])
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ [CREATE_SLOT] Erreur Supabase:', {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          payload: insertPayload
+        });
+        throw error;
+      }
+
+      console.log('✅ [CREATE_SLOT] Créneau créé avec succès:', data);
 
       // Transform returned DB row into TimeSlot interface expected by frontend
       const created: any = data;
@@ -2215,6 +2229,7 @@ export class SupabaseService {
         location: created.location
       };
 
+      console.log('✅ [CREATE_SLOT] Transformation réussie:', transformed);
       return transformed;
     } catch (error) {
       try {
