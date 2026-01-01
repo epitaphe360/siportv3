@@ -1,14 +1,16 @@
 ﻿import React, { useEffect, useState } from 'react';
 import { useTranslation } from '../../hooks/useTranslation';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Mic, Play, Clock, Eye, ArrowLeft, Search, Filter } from 'lucide-react';
 import { mediaService } from '../../services/mediaService';
 import { MediaContent } from '../../types/media';
 import { MediaCard } from '../../components/media/MediaCard';
 import { Button } from '../../components/ui/Button';
 import { ROUTES } from '../../lib/routes';
+import { toast } from 'sonner';
 
 export const PodcastsPage: React.FC = () => {
+  const navigate = useNavigate();
   const [podcasts, setPodcasts] = useState<MediaContent[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -119,7 +121,16 @@ export const PodcastsPage: React.FC = () => {
             </div>
             <p className="text-gray-700 mb-6">{featuredPodcast.description}</p>
             <div className="flex items-center space-x-6">
-              <Button className="bg-purple-600 hover:bg-purple-700">
+              <Button 
+                className="bg-purple-600 hover:bg-purple-700"
+                onClick={() => {
+                  if (featuredPodcast.media_url) {
+                    navigate(`${ROUTES.MEDIA_DETAIL.replace(':id', featuredPodcast.id)}`);
+                  } else {
+                    toast.error('Audio non disponible pour ce podcast');
+                  }
+                }}
+              >
                 <Play className="w-4 h-4 mr-2" />
                 Écouter maintenant
               </Button>

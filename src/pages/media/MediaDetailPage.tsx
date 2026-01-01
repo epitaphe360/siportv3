@@ -20,6 +20,7 @@ export default function MediaDetailPage() {
   const navigate = useNavigate();
   const [media, setMedia] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showTranscript, setShowTranscript] = useState(false);
 
   useEffect(() => {
     const fetchMedia = async () => {
@@ -42,6 +43,41 @@ export default function MediaDetailPage() {
 
     fetchMedia();
   }, [id, navigate]);
+
+  const handleDownloadResources = () => {
+    if (media?.resources_url) {
+      window.open(media.resources_url, '_blank');
+      toast.success('Téléchargement des ressources en cours...');
+    } else {
+      toast.error('Aucune ressource disponible pour ce média');
+    }
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: media?.title || 'Contenu SIPORT',
+          text: media?.description || '',
+          url: url,
+        });
+        toast.success('Partagé avec succès');
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') {
+          console.error('Error sharing:', err);
+        }
+      }
+    } else {
+      await navigator.clipboard.writeText(url);
+      toast.success('Lien copié dans le presse-papier');
+    }
+  };
+
+  const handleToggleFavorite = () => {
+    // TODO: Implémenter la logique de favoris avec le backend
+    toast.success('Ajouté aux favoris');
+  };
 
   if (isLoading) {
     return (
@@ -142,9 +178,18 @@ export default function MediaDetailPage() {
               <p className="text-blue-800/80 italic">
                 "La transformation digitale des ports marocains s'accélère avec l'adoption massive de l'IA et de la 5G. Ce webinaire explore comment ces technologies optimisent la chaîne logistique et renforcent la compétitivité du secteur maritime national..."
               </p>
-              <Button variant="link" className="mt-4 p-0 text-blue-600 font-bold">
-                Lire la transcription complète
+              <Button 
+                variant="link" 
+                className="mt-4 p-0 text-blue-600 font-bold"
+                onClick={() => setShowTranscript(!showTranscript)}
+              >
+                {showTranscript ? 'Masquer' : 'Lire'} la transcription complète
               </Button>
+              {showTranscript && media?.transcript && (
+                <div className="mt-4 p-4 bg-blue-50 rounded-lg text-sm text-gray-700">
+                  {media.transcript}
+                </div>
+              )}
             </Card>
           </div>
 
@@ -152,16 +197,19 @@ export default function MediaDetailPage() {
           <div className="space-y-6">
             <Card className="p-6">
               <div className="space-y-4">
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200">
+                <Button 
+                  className="w-full bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200"
+                  onClick={handleDownloadResources}
+                >
                   <Download className="h-4 w-4 mr-2" />
                   Télécharger les ressources
                 </Button>
                 <div className="flex gap-2">
-                  <Button variant="outline" className="flex-1">
+                  <Button variant="outline" className="flex-1" onClick={handleShare}>
                     <Share2 className="h-4 w-4 mr-2" />
                     Partager
                   </Button>
-                  <Button variant="outline" className="flex-1">
+                  <Button variant="outline" className="flex-1" onClick={handleToggleFavorite}>
                     <Heart className="h-4 w-4 mr-2" />
                     Favoris
                   </Button>
