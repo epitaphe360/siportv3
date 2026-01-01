@@ -68,17 +68,30 @@ export default function PublicAvailabilityCalendar({
     try {
       const duration = calculateDuration(newSlot.startTime, newSlot.endTime);
 
+      // Normaliser les dates pour comparaison (format YYYY-MM-DD)
+      const normalizeDate = (date: string | Date): string => {
+        if (date instanceof Date) {
+          return date.toISOString().split('T')[0];
+        }
+        return String(date).split('T')[0]; // Supprime l'heure si présente
+      };
+
+      const newSlotDate = normalizeDate(newSlot.date);
+
       // Vérifier les créneaux qui se chevauchent
-      const overlapping = timeSlots.find(slot =>
-        slot.date === newSlot.date && (
+      const overlapping = timeSlots.find(slot => {
+        const slotDate = normalizeDate(slot.date);
+
+        // Même date ET chevauchement horaire
+        return slotDate === newSlotDate && (
           (newSlot.startTime >= slot.startTime && newSlot.startTime < slot.endTime) ||
           (newSlot.endTime > slot.startTime && newSlot.endTime <= slot.endTime) ||
           (newSlot.startTime <= slot.startTime && newSlot.endTime >= slot.endTime)
-        )
-      );
+        );
+      });
 
       if (overlapping) {
-        toast.error('Ce créneau chevauche un créneau existant');
+        toast.error(`⚠️ Ce créneau chevauche un créneau existant (${overlapping.startTime} - ${overlapping.endTime})`);
         setIsLoading(false);
         return;
       }
