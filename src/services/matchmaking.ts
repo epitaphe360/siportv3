@@ -91,7 +91,7 @@ export class MatchmakingService {
         .from('user_profiles')
         .select('*')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (userError || !userProfile) {
         throw new Error('User profile not found');
@@ -144,7 +144,7 @@ export class MatchmakingService {
         .from('user_profiles')
         .select('*')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (error || !userProfile) throw new Error('User profile not found');
 

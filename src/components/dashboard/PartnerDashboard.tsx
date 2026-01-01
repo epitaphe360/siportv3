@@ -98,7 +98,7 @@ export default function PartnerDashboard() {
           .from('partner_profiles')
           .select('id')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
         if (error && error.code !== 'PGRST116') {
           console.error('Erreur vérification profil:', error);

@@ -75,7 +75,7 @@ export default function PartnerBankTransferPage() {
         .select('*')
         .eq('id', requestId)
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
 

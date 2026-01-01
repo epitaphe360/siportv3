@@ -28,7 +28,7 @@ export async function getUserBadge(userId: string): Promise<UserBadge | null> {
       .from('user_badges')
       .select('*')
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
 
     if (error) {
       if (error.code === 'PGRST116') {

@@ -43,7 +43,7 @@ export default function PaymentInstructionsPage() {
           .select('*')
           .eq('id', requestId)
           .eq('user_id', user?.id)
-          .single();
+          .maybeSingle();
 
         if (request) setPaymentRequest(request);
       }

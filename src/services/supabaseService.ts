@@ -1154,7 +1154,7 @@ export class SupabaseService {
         .select('id')
         .eq('event_id', eventId)
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (existing) {
         throw new Error('Vous êtes déjà inscrit à cet événement');
@@ -1232,7 +1232,7 @@ export class SupabaseService {
         .select('id')
         .eq('event_id', eventId)
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (!existing) {
         throw new Error('Vous n\'êtes pas inscrit à cet événement');
@@ -1532,7 +1532,7 @@ export class SupabaseService {
           .from('exhibitors')
           .select('id')
           .eq('user_id', exhibitorId)
-          .single();
+          .maybeSingle();
 
         if (exhibitor?.id) {
           const result = await safeSupabase
@@ -1644,7 +1644,7 @@ export class SupabaseService {
         .from('exhibitors')
         .select('id, company_name, logo_url, description, website, contact_info, user_id')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
 
