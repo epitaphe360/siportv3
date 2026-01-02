@@ -12,7 +12,7 @@ interface Webinar {
   id: string;
   title: string;
   description: string;
-  content_url: string;
+  video_url: string;
   thumbnail_url?: string;
   duration?: number;
   category?: string;
@@ -130,12 +130,21 @@ export const WebinarDetailPage: React.FC = () => {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Video Player */}
-            <VideoStreamPlayer
-              src={webinar.content_url}
-              poster={webinar.thumbnail_url}
-              title={webinar.title}
-              isLive={false}
-            />
+            {webinar.video_url ? (
+              <VideoStreamPlayer
+                src={webinar.video_url}
+                poster={webinar.thumbnail_url}
+                title={webinar.title}
+                isLive={false}
+              />
+            ) : (
+              <div className="bg-gray-100 rounded-lg aspect-video flex items-center justify-center">
+                <div className="text-center">
+                  <Play className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-600">Vidéo non disponible</p>
+                </div>
+              </div>
+            )}
 
             {/* Title & Actions */}
             <div>
@@ -163,12 +172,14 @@ export const WebinarDetailPage: React.FC = () => {
                   <Share2 className="h-4 w-4 mr-2" />
                   Partager
                 </Button>
-                <Button variant="outline" size="sm" asChild>
-                  <a href={webinar.content_url} download>
-                    <Download className="h-4 w-4 mr-2" />
-                    Télécharger
-                  </a>
-                </Button>
+                {webinar.video_url && (
+                  <Button variant="outline" size="sm" asChild>
+                    <a href={webinar.video_url} download>
+                      <Download className="h-4 w-4 mr-2" />
+                      Télécharger
+                    </a>
+                  </Button>
+                )}
               </div>
 
               {/* Stats */}
