@@ -210,7 +210,7 @@ export const FeaturedExhibitors: React.FC = () => {
                           
                           toast.success(`💬 Contact : ${contactData.company} — ${contactData.contact}`);
                         }}
-                        title="Contacter directement"
+                        title={t('ui.contact_directly')}
                       >
                         <MessageCircle className="h-4 w-4" />
                       </Button>

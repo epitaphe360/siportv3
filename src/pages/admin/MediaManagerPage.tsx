@@ -58,7 +58,7 @@ const MediaManagerPage: React.FC = () => {
 
       <AdminMediaManager 
         onImageSelect={handleImageSelect}
-        title="Gestionnaire de médias administrateur"
+        title={t('admin_media.manager_title')}
         showUploadButton={true}
         maxSelections={1}
       />

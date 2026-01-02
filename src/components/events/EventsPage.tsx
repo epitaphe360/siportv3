@@ -354,7 +354,7 @@ export default memo(function EventsPage() {
                                     .catch(() => toast.error('Impossible de copier'));
                                 }
                               }}
-                              title="Partager cet événement"
+                              title={t('ui.share_event')}
                             >
                               <ExternalLink className="h-4 w-4" />
                             </Button>

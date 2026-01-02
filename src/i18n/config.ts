@@ -81,7 +81,15 @@ const resources = {
         quick_actions: 'Actions rapides',
         notifications: 'Notifications',
         settings: 'Paramètres',
-        logout: 'Déconnexion'
+        logout: 'Déconnexion',
+        your_quotas: 'Vos Quotas',
+        exhibitor_quotas: 'Vos Quotas Exposant',
+        visit_activity_7days: 'Activité de Visite (7 derniers jours)',
+        appointment_status: 'Statut des Rendez-vous',
+        interest_areas: 'Centres d\'Intérêt',
+        visitor_engagement_7days: 'Engagement Visiteurs (7 derniers jours)',
+        brand_exposure_7days: 'Exposition de Marque (7 derniers jours)',
+        engagement_channels: 'Canaux d\'Engagement'
       },
       admin: {
         title: 'Administration',
@@ -514,16 +522,6 @@ const resources = {
         tags_example: 'innovation, technologie, digital',
         reject_reason: 'Expliquez pourquoi ce média est rejeté...'
       },
-      dashboard: {
-        your_quotas: 'Vos Quotas',
-        exhibitor_quotas: 'Vos Quotas Exposant',
-        visit_activity_7days: 'Activité de Visite (7 derniers jours)',
-        appointment_status: 'Statut des Rendez-vous',
-        interest_areas: 'Centres d\'Intérêt',
-        visitor_engagement_7days: 'Engagement Visiteurs (7 derniers jours)',
-        brand_exposure_7days: 'Exposition de Marque (7 derniers jours)',
-        engagement_channels: 'Canaux d\'Engagement'
-      },
       social: {
         follow_facebook: 'Suivez-nous sur Facebook',
         follow_twitter: 'Suivez-nous sur Twitter',
@@ -619,7 +617,15 @@ const resources = {
         quick_actions: 'Quick Actions',
         notifications: 'Notifications',
         settings: 'Settings',
-        logout: 'Logout'
+        logout: 'Logout',
+        your_quotas: 'Your Quotas',
+        exhibitor_quotas: 'Your Exhibitor Quotas',
+        visit_activity_7days: 'Visit Activity (Last 7 days)',
+        appointment_status: 'Appointment Status',
+        interest_areas: 'Interest Areas',
+        visitor_engagement_7days: 'Visitor Engagement (Last 7 days)',
+        brand_exposure_7days: 'Brand Exposure (Last 7 days)',
+        engagement_channels: 'Engagement Channels'
       },
       admin: {
         title: 'Administration',
@@ -1052,16 +1058,6 @@ const resources = {
         tags_example: 'innovation, technology, digital',
         reject_reason: 'Explain why this media is rejected...'
       },
-      dashboard: {
-        your_quotas: 'Your Quotas',
-        exhibitor_quotas: 'Your Exhibitor Quotas',
-        visit_activity_7days: 'Visit Activity (Last 7 days)',
-        appointment_status: 'Appointment Status',
-        interest_areas: 'Areas of Interest',
-        visitor_engagement_7days: 'Visitor Engagement (Last 7 days)',
-        brand_exposure_7days: 'Brand Exposure (Last 7 days)',
-        engagement_channels: 'Engagement Channels'
-      },
       social: {
         follow_facebook: 'Follow us on Facebook',
         follow_twitter: 'Follow us on Twitter',
@@ -1157,7 +1153,15 @@ const resources = {
         quick_actions: 'Acciones Rápidas',
         notifications: 'Notificaciones',
         settings: 'Configuración',
-        logout: 'Cerrar Sesión'
+        logout: 'Cerrar Sesión',
+        your_quotas: 'Tus Cuotas',
+        exhibitor_quotas: 'Tus Cuotas de Expositor',
+        visit_activity_7days: 'Actividad de Visita (Últimos 7 días)',
+        appointment_status: 'Estado de Citas',
+        interest_areas: 'Áreas de Interés',
+        visitor_engagement_7days: 'Compromiso de Visitantes (Últimos 7 días)',
+        brand_exposure_7days: 'Exposición de Marca (Últimos 7 días)',
+        engagement_channels: 'Canales de Compromiso'
       },
       admin: {
         title: 'Administración',
@@ -1590,16 +1594,6 @@ const resources = {
         tags_example: 'innovación, tecnología, digital',
         reject_reason: 'Explica por qué este medio es rechazado...'
       },
-      dashboard: {
-        your_quotas: 'Tus Cuotas',
-        exhibitor_quotas: 'Tus Cuotas de Expositor',
-        visit_activity_7days: 'Actividad de Visita (Últimos 7 días)',
-        appointment_status: 'Estado de Citas',
-        interest_areas: 'Áreas de Interés',
-        visitor_engagement_7days: 'Compromiso de Visitantes (Últimos 7 días)',
-        brand_exposure_7days: 'Exposición de Marca (Últimos 7 días)',
-        engagement_channels: 'Canales de Compromiso'
-      },
       social: {
         follow_facebook: 'Síguenos en Facebook',
         follow_twitter: 'Síguenos en Twitter',
@@ -1695,7 +1689,15 @@ const resources = {
         quick_actions: 'إجراءات سريعة',
         notifications: 'الإشعارات',
         settings: 'الإعدادات',
-        logout: 'تسجيل الخروج'
+        logout: 'تسجيل الخروج',
+        your_quotas: 'حصصك',
+        exhibitor_quotas: 'حصص العارض',
+        visit_activity_7days: 'نشاط الزيارة (آخر 7 أيام)',
+        appointment_status: 'حالة المواعيد',
+        interest_areas: 'مجالات الاهتمام',
+        visitor_engagement_7days: 'تفاعل الزوار (آخر 7 أيام)',
+        brand_exposure_7days: 'التعرض للعلامة التجارية (آخر 7 أيام)',
+        engagement_channels: 'قنوات التفاعل'
       },
       admin: {
         title: 'الإدارة',
@@ -2127,16 +2129,6 @@ const resources = {
         duration_example: 'مثل: 3600',
         tags_example: 'الابتكار، التكنولوجيا، رقمي',
         reject_reason: 'اشرح لماذا تم رفض هذا الوسائط...'
-      },
-      dashboard: {
-        your_quotas: 'حصصك',
-        exhibitor_quotas: 'حصص العارض',
-        visit_activity_7days: 'نشاط الزيارة (آخر 7 أيام)',
-        appointment_status: 'حالة المواعيد',
-        interest_areas: 'مجالات الاهتمام',
-        visitor_engagement_7days: 'تفاعل الزوار (آخر 7 أيام)',
-        brand_exposure_7days: 'التعرض للعلامة التجارية (آخر 7 أيام)',
-        engagement_channels: 'قنوات المشاركة'
       },
       social: {
         follow_facebook: 'تابعنا على فيسبوك',

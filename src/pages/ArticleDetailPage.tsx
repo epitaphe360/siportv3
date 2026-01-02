@@ -616,7 +616,7 @@ export default function ArticleDetailPage() {
             variant="default"
             className="rounded-full w-12 h-12 shadow-lg"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            title="Retour en haut"
+            title={t('ui.back_to_top')}
           >
             <ArrowLeft className="h-5 w-5 rotate-90" />
           </Button>
@@ -625,7 +625,7 @@ export default function ArticleDetailPage() {
             variant="default" 
             className="rounded-full w-12 h-12 shadow-lg bg-white"
             onClick={() => handleShare('native')}
-            title="Partager l'article"
+            title={t('ui.share_article')}
           >
             <Share2 className="h-5 w-5" />
           </Button>

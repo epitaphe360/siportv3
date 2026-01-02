@@ -200,7 +200,7 @@ export const PartnerProfileEditPage: React.FC = () => {
         <div className="space-y-4">
           {/* 1. Informations de base */}
           <Card>
-            <SectionHeader title="Informations de base" section="basic" icon={Building2} optional={false} />
+            <SectionHeader title={t('partner_edit.basic_info')} section="basic" icon={Building2} optional={false} />
             {expandedSections.basic && (
               <div className="p-6 border-t">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -234,7 +234,7 @@ export const PartnerProfileEditPage: React.FC = () => {
                       value={formData.sponsorLevel || "Aucun niveau défini"} 
                       disabled
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
-                      title="Seul l'administrateur peut modifier le niveau de sponsoring"
+                      title={t('partner_edit.admin_only')}
                     />
                   </div>
 
@@ -266,7 +266,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 2. Contact */}
           <Card>
-            <SectionHeader title="Informations de contact" section="contact" icon={Mail} />
+            <SectionHeader title={t('partner_edit.contact_info')} section="contact" icon={Mail} />
             {expandedSections.contact && (
               <div className="p-6 border-t">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -336,7 +336,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 4. Catégories */}
           <Card>
-            <SectionHeader title="Secteurs & Services" section="categories" icon={Award} />
+            <SectionHeader title={t('partner_edit.sectors_services')} section="categories" icon={Award} />
             {expandedSections.categories && (
               <div className="p-6 border-t">
                 <div className="space-y-6">
@@ -374,7 +374,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 5. Expertise */}
           <Card>
-            <SectionHeader title="Notre Expertise" section="expertise" icon={TrendingUp} />
+            <SectionHeader title={t('partner_edit.expertise')} section="expertise" icon={TrendingUp} />
             {expandedSections.expertise && (
               <div className="p-6 border-t">
                 <textarea value={formData.expertise} onChange={(e) => handleInputChange('expertise', e.target.value)} rows={6}
@@ -386,7 +386,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 6. Projets */}
           <Card>
-            <SectionHeader title="Projets & Réalisations" section="projects" icon={FileText} />
+            <SectionHeader title={t('partner_edit.projects')} section="projects" icon={FileText} />
             {expandedSections.projects && (
               <div className="p-6 border-t space-y-4">
                 {formData.projects.map((proj, i) => (
@@ -418,7 +418,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 7. Galerie */}
           <Card>
-            <SectionHeader title="Galerie Photos" section="gallery" icon={ImageIcon} />
+            <SectionHeader title={t('partner_edit.gallery')} section="gallery" icon={ImageIcon} />
             {expandedSections.gallery && (
               <div className="p-6 border-t">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
@@ -441,7 +441,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 8. Actualités */}
           <Card>
-            <SectionHeader title="Actualités & Annonces" section="news" icon={Calendar} />
+            <SectionHeader title={t('partner_edit.news')} section="news" icon={Calendar} />
             {expandedSections.news && (
               <div className="p-6 border-t space-y-4">
                 {formData.news.map((item, i) => (
@@ -473,7 +473,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 9. Métriques */}
           <Card>
-            <SectionHeader title="Impact & Métriques" section="metrics" icon={TrendingUp} />
+            <SectionHeader title={t('partner_edit.metrics')} section="metrics" icon={TrendingUp} />
             {expandedSections.metrics && (
               <div className="p-6 border-t">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -504,7 +504,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 10. Timeline */}
           <Card>
-            <SectionHeader title="Historique & Timeline" section="timeline" icon={Calendar} />
+            <SectionHeader title={t('partner_edit.timeline')} section="timeline" icon={Calendar} />
             {expandedSections.timeline && (
               <div className="p-6 border-t space-y-4">
                 {formData.timeline.map((item, i) => (
@@ -534,7 +534,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 11. Équipe */}
           <Card>
-            <SectionHeader title="Notre Équipe" section="team" icon={Users} />
+            <SectionHeader title={t('partner_edit.team')} section="team" icon={Users} />
             {expandedSections.team && (
               <div className="p-6 border-t space-y-4">
                 {formData.team.map((member, i) => (

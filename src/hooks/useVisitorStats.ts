@@ -16,7 +16,7 @@ interface VisitorStats {
 
 /**
  * Hook personnalisé pour calculer dynamiquement les statistiques du visiteur
- * Remplace les données mockées hardcodées
+ * Priorité: Lire depuis user.profile.stats, puis fallback sur les calculs dynamiques
  */
 export const useVisitorStats = (): VisitorStats => {
   const { user } = useAuthStore();
@@ -24,6 +24,23 @@ export const useVisitorStats = (): VisitorStats => {
   const { registeredEvents, events } = useEventStore();
 
   return useMemo(() => {
+    // ✅ PRIORITÉ 1: Lire depuis user.profile.stats si disponible
+    const profileStats = user?.profile?.stats;
+    
+    if (profileStats && typeof profileStats === 'object') {
+      // Utiliser les stats du profil si elles existent
+      return {
+        appointmentsBooked: profileStats.appointments || 0,
+        exhibitorsVisited: profileStats.exhibitorsVisited || profileStats.profileViews || 0,
+        eventsAttended: profileStats.eventsAttended || 0,
+        connectionsRequested: profileStats.connections || 0,
+        connections: profileStats.connections || 0,
+        bookmarks: profileStats.bookmarks || profileStats.favorites || 0,
+        messagesSent: profileStats.messagesSent || profileStats.messages || 0
+      };
+    }
+
+    // ⚠️ FALLBACK: Calculer dynamiquement si profile.stats n'existe pas
     // Filtrer les rendez-vous confirmés pour l'utilisateur actuel
     const confirmedAppointments = appointments.filter(
       (a) => a.visitorId === user?.id && a.status === 'confirmed'
@@ -61,5 +78,5 @@ export const useVisitorStats = (): VisitorStats => {
       bookmarks: bookmarksCount,
       messagesSent: messagesCount
     };
-  }, [appointments, events, registeredEvents, user?.id]);
+  }, [appointments, events, registeredEvents, user?.id, user?.profile?.stats]);
 };
