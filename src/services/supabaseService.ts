@@ -2244,6 +2244,18 @@ export class SupabaseService {
     if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
     const safeSupabase = supabase!;
     try {
+      // Validation: la date ne doit pas être dans le passé
+      const slotDate = (slotData as any).date || (slotData as any).slot_date;
+      if (slotDate) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const [year, month, day] = String(slotDate).split('T')[0].split('-').map(Number);
+        const parsedDate = new Date(year, month - 1, day);
+        if (parsedDate < today) {
+          throw new Error('Impossible de créer un créneau pour une date passée');
+        }
+      }
+
       // Résoudre l'exhibitor_id depuis le userId si nécessaire
       let exhibitorId = (slotData as any).exhibitorId || null;
       
