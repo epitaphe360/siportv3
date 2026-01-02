@@ -145,8 +145,22 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
   },
 
   generateRecommendations: async (userId: string) => {
-    toast.info(`Génération de recommandations pour l'utilisateur ${userId}...`);
-    await get().fetchRecommendations();
+    set({ isLoading: true, error: null });
+    try {
+      // Re-fetch fresh recommendations
+      await get().fetchRecommendations();
+      
+      // Optionally reload AI insights if available
+      if (get().recommendations.length > 0) {
+        await get().loadAIInsights();
+      }
+    } catch (error) {
+      console.error('Erreur lors de la génération des recommandations:', error);
+      set({ error: 'Erreur lors de la génération des recommandations' });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
   },
 
   markAsContacted: (recommendedUserId: string) => {

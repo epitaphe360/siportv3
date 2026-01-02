@@ -630,17 +630,28 @@ export default function NetworkingPage() {
                 </div>
 
                 <Button
-                  onClick={() => {
+                  onClick={async () => {
                     if (user) {
-                      generateRecommendations(user.id);
-                      toast.success('IA activée, recommandations générées !');
+                      toast.loading('Génération des recommandations IA en cours...');
+                      try {
+                        await generateRecommendations(user.id);
+                        toast.dismiss();
+                        toast.success('✨ Recommandations IA générées avec succès !');
+                      } catch (error) {
+                        toast.dismiss();
+                        toast.error('Erreur lors de la génération des recommandations');
+                        console.error('Erreur generateRecommendations:', error);
+                      }
+                    } else {
+                      toast.error('Vous devez être connecté');
                     }
                   }}
+                  disabled={isLoading}
                   size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-12 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-12 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Zap className="h-5 w-5 mr-3" />
-                  Générer mes Recommandations
+                  {isLoading ? 'Génération en cours...' : 'Générer mes Recommandations'}
                 </Button>
               </Card>
             ) : (
