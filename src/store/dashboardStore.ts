@@ -36,119 +36,128 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
 
       if (profileError) throw profileError;
 
-      // Calculer les statistiques
-      // PRIORITÉ: Lire depuis profile.stats si disponible (données de démo)
-      const profileStats = userProfile?.profile?.stats;
+      // Calculer les statistiques RÉELLES depuis les tables (pas depuis profile.stats)
+      // Les profile.stats sont des données de démo, on les ignore
+      const isExhibitorOrPartner = userProfile?.role === 'exhibitor' || userProfile?.role === 'partner';
       
       const stats: DashboardStats = {
-        profileViews: profileStats?.profileViews || 0,
-        connections: profileStats?.connections || 0,
-        appointments: profileStats?.appointments || 0,
-        messages: profileStats?.messages || 0,
-        catalogDownloads: profileStats?.catalogDownloads || 0,
-        miniSiteViews: profileStats?.miniSiteViews || 0
+        profileViews: 0,
+        connections: 0,
+        appointments: 0,
+        messages: 0,
+        catalogDownloads: 0,
+        miniSiteViews: 0
       };
 
-      // Si pas de stats dans le profil, essayer de les compter depuis les tables
-      if (!profileStats) {
-        // Compter les vues de profil (seulement pour exhibitors/partners)
-        const isExhibitorOrPartner = userProfile?.role === 'exhibitor' || userProfile?.role === 'partner';
-        if (isExhibitorOrPartner) {
-          try {
-            const { count: profileViewsCount, error } = await supabase
-              .from('profile_views')
-              .select('*', { count: 'exact', head: true })
-              .eq('viewed_user_id', user.id);
-            
-            if (!error) {
-              stats.profileViews = profileViewsCount || 0;
-            }
-          } catch (err) {
-            console.log('Table profile_views non disponible');
-          }
-        }
-
-        // Compter les connexions
+      // TOUJOURS compter depuis les vraies tables pour avoir les données exactes
+      // Compter les vues de profil (seulement pour exhibitors/partners)
+      if (isExhibitorOrPartner) {
         try {
-          const { count: connectionsCount, error } = await supabase
-            .from('connections')
+          const { count: profileViewsCount, error } = await supabase
+            .from('profile_views')
             .select('*', { count: 'exact', head: true })
-            .or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`);
+            .eq('viewed_user_id', user.id);
           
           if (!error) {
-            stats.connections = connectionsCount || 0;
+            stats.profileViews = profileViewsCount || 0;
           }
         } catch (err) {
-          console.log('Erreur lors du chargement des connexions');
+          console.log('Table profile_views non disponible');
         }
+      }
 
-        // Compter les rendez-vous
-        try {
-          const { count: appointmentsCount } = await supabase
-            .from('appointments')
-            .select('*', { count: 'exact', head: true })
-            .or(`exhibitor_id.eq.${user.id},visitor_id.eq.${user.id}`);
+      // Compter les connexions
+      try {
+        const { count: connectionsCount, error } = await supabase
+          .from('connections')
+          .select('*', { count: 'exact', head: true })
+          .or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`);
+        
+        if (!error) {
+          stats.connections = connectionsCount || 0;
+        }
+      } catch (err) {
+        console.log('Erreur lors du chargement des connexions');
+      }
+
+      // Compter les rendez-vous POUR CET UTILISATEUR UNIQUEMENT
+      try {
+        // Pour exhibitors/partners: compter les RDV qu'ils reçoivent
+        // Pour visitors: compter les RDV qu'ils ont demandés
+        
+        const query = supabase
+          .from('appointments')
+          .select('*', { count: 'exact', head: true });
+        
+        if (isExhibitorOrPartner) {
+          // Pour les exposants: seulement les RDV où ils sont l'exhibitor
+          query.eq('exhibitor_id', user.id);
+          } else {
+            // Pour les visiteurs: seulement les RDV où ils sont le visitor
+            query.eq('visitor_id', user.id);
+          }
+          
+          const { count: appointmentsCount } = await query;
           
           stats.appointments = appointmentsCount || 0;
-        } catch (err) {
-          console.log('Erreur lors du chargement des rendez-vous');
-        }
+      } catch (err) {
+        console.log('Erreur lors du chargement des rendez-vous');
+      }
 
-        // Compter les messages non lus
+      // Compter les messages non lus POUR CET UTILISATEUR
+      try {
+        const { data: conversations, error } = await supabase
+          .from('conversations')
+          .select('id')
+          .contains('participants', [user.id]);
+        
+        if (!error && conversations) {
+          const conversationIds = conversations.map(c => c.id);
+          if (conversationIds.length > 0) {
+            const { count: messagesCount, error: msgError } = await supabase
+              .from('messages')
+              .select('*', { count: 'exact', head: true })
+              .in('conversation_id', conversationIds)
+              .not('read_by', 'cs', `{${user.id}}`);
+            
+            if (!msgError) {
+              stats.messages = messagesCount || 0;
+            }
+          }
+        }
+      } catch (err) {
+        console.log('Erreur lors du chargement des messages');
+      }
+
+      // Compter les téléchargements de catalogue (seulement pour exhibitors/partners)
+      if (isExhibitorOrPartner) {
         try {
-          const { data: conversations, error } = await supabase
-            .from('conversations')
-            .select('id')
-            .contains('participants', [user.id]);
+        const { count: downloadsCount, error } = await supabase
+          .from('downloads')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id);
           
-          if (!error && conversations) {
-            const conversationIds = conversations.map(c => c.id);
-            if (conversationIds.length > 0) {
-              const { count: messagesCount, error: msgError } = await supabase
-                .from('messages')
-                .select('*', { count: 'exact', head: true })
-                .in('conversation_id', conversationIds)
-                .not('read_by', 'cs', `{${user.id}}`);
-              
-              if (!msgError) {
-                stats.messages = messagesCount || 0;
-              }
-            }
+          if (!error) {
+            stats.catalogDownloads = downloadsCount || 0;
           }
         } catch (err) {
-          console.log('Erreur lors du chargement des messages');
+          console.log('Table downloads non disponible');
         }
+      }
 
-        // Compter les téléchargements de catalogue (seulement pour exhibitors/partners)
-        if (isExhibitorOrPartner) {
-          try {
-            const { count: downloadsCount, error } = await supabase
-              .from('downloads')
-              .select('*', { count: 'exact', head: true })
-              .eq('user_id', user.id);
-            
-            if (!error) {
-              stats.catalogDownloads = downloadsCount || 0;
-            }
-          } catch (err) {
-            console.log('Table downloads non disponible');
+      // Compter les vues du mini-site (seulement pour exhibitors)
+      if (userProfile?.role === 'exhibitor') {
+        try {
+          const { count: miniSiteViewsCount, error } = await supabase
+            .from('minisite_views')
+            .select('*', { count: 'exact', head: true })
+            .eq('exhibitor_id', user.id);
+          
+          if (!error) {
+            stats.miniSiteViews = miniSiteViewsCount || 0;
           }
-        }
-
-        // Compter les vues du mini-site (seulement pour exhibitors)
-        if (userProfile?.role === 'exhibitor') {
-          try {
-            const { count: miniSiteViewsCount, error } = await supabase
-              .from('minisite_views')
-              .select('*', { count: 'exact', head: true })
-              .eq('exhibitor_id', user.id);
-            
-            if (!error) {
-              stats.miniSiteViews = miniSiteViewsCount || 0;
-            }
-          } catch (err) {
-            console.log('Table minisite_views non disponible');
-          }
+        } catch (err) {
+          console.log('Table minisite_views non disponible');
         }
       }
 
