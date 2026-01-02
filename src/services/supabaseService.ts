@@ -2275,13 +2275,14 @@ export class SupabaseService {
               .from('exhibitors')
               .insert({
                 user_id: userId,
-                company: user.profile?.company || 'Company',
+                company_name: user.profile?.company || 'Company',
                 sector: user.profile?.sector || 'Technology',
                 description: 'Profil créé automatiquement',
-                contact_email: user.email,
+                contact_info: { email: user.email },
                 stand_number: 'TBD',
                 stand_area: 18,
-                level: 'standard_18'
+                category: 'port-industry',
+                verified: false
               })
               .select('id')
               .single();
