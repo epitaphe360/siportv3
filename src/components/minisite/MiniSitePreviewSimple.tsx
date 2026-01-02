@@ -423,9 +423,38 @@ export default function MiniSitePreviewSimple() {
               features.map((feature: string, index: number) => {
                 const featureIcons = [Sparkles, Star, Award, CheckCircle2];
                 const FeatureIcon = featureIcons[index % featureIcons.length];
+                const [isExpanded, setIsExpanded] = React.useState(false);
+                
+                // Descriptions génériques basées sur les domaines courants
+                const getFeatureDescription = (title: string) => {
+                  const lowerTitle = title.toLowerCase();
+                  if (lowerTitle.includes('transformation') || lowerTitle.includes('digital')) {
+                    return "Accompagnement complet dans la digitalisation de vos processus et infrastructures pour optimiser votre compétitivité.";
+                  }
+                  if (lowerTitle.includes('cyber') || lowerTitle.includes('sécurité')) {
+                    return "Protection avancée de vos systèmes et données contre les menaces cybernétiques avec des solutions de pointe.";
+                  }
+                  if (lowerTitle.includes('big data') || lowerTitle.includes('analytics')) {
+                    return "Exploitation intelligente de vos données massives pour des décisions stratégiques éclairées et prédictives.";
+                  }
+                  if (lowerTitle.includes('intelligence') || lowerTitle.includes('ia') || lowerTitle.includes('ai')) {
+                    return "Intégration d'algorithmes d'apprentissage automatique pour automatiser et optimiser vos opérations.";
+                  }
+                  if (lowerTitle.includes('cloud')) {
+                    return "Infrastructure cloud évolutive et sécurisée pour une flexibilité maximale et une réduction des coûts.";
+                  }
+                  if (lowerTitle.includes('blockchain')) {
+                    return "Technologie blockchain pour une traçabilité transparente et des transactions sécurisées et décentralisées.";
+                  }
+                  return "Solution complète et personnalisée adaptée à vos besoins spécifiques et enjeux métiers.";
+                };
                 
                 return (
-                  <Card key={feature} className="p-8 text-center hover:shadow-2xl transition-all duration-300 group bg-white/80 backdrop-blur-sm border-2 border-transparent hover:border-blue-200 hover:-translate-y-2 relative overflow-hidden">
+                  <Card 
+                    key={feature} 
+                    className="p-8 text-center hover:shadow-2xl transition-all duration-300 group bg-white/80 backdrop-blur-sm border-2 border-transparent hover:border-blue-200 hover:-translate-y-2 relative overflow-hidden cursor-pointer"
+                    onClick={() => setIsExpanded(!isExpanded)}
+                  >
                     <div 
                       className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                       style={{ background: `linear-gradient(135deg, ${theme.primaryColor}05, ${theme.accentColor}05)` }}
@@ -438,6 +467,9 @@ export default function MiniSitePreviewSimple() {
                         <FeatureIcon className="h-8 w-8 text-white" />
                       </div>
                       <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-blue-600 transition-colors">{feature}</h3>
+                      {isExpanded && (
+                        <p className="text-sm text-gray-600 mt-3 leading-relaxed">{getFeatureDescription(feature)}</p>
+                      )}
                       <div className="h-1 w-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto mt-4 transform origin-center transition-all duration-300 group-hover:w-full"></div>
                     </div>
                   </Card>
