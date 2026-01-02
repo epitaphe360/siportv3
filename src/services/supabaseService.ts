@@ -2017,8 +2017,7 @@ export class SupabaseService {
 	        is_read: false
 	      }]);
 	    } catch (error) {
-	      // Ne pas bloquer l'exécution si la notification échoue
-	      console.warn('⚠️ Échec création notification (non bloquant):', error);
+	      console.error('❌ Erreur création notification:', error);
 	    }
 	  }
 	
