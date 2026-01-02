@@ -50,6 +50,12 @@ export const allTranslations = {
     'pages.exhibitors.view_profile': 'Voir le profil',
     'pages.exhibitors.no_results': 'Aucun exposant trouvé',
     
+    // Exhibitor Levels
+    'exhibitor_levels.basic_9': '9m² Basique',
+    'exhibitor_levels.standard_18': '18m² Standard',
+    'exhibitor_levels.premium_36': '36m² Premium',
+    'exhibitor_levels.elite_54plus': '54m²+ Élite',
+    
     'pages.partners.title': 'Partenaires',
     'pages.partners.description': 'Les organisations qui soutiennent SIPORTS 2026',
     'pages.partners.search': 'Chercher un partenaire',
@@ -558,6 +564,12 @@ export const allTranslations = {
     'pages.exhibitors.view_profile': 'View Profile',
     'pages.exhibitors.no_results': 'No exhibitors found',
     
+    // Exhibitor Levels
+    'exhibitor_levels.basic_9': '9m² Basic',
+    'exhibitor_levels.standard_18': '18m² Standard',
+    'exhibitor_levels.premium_36': '36m² Premium',
+    'exhibitor_levels.elite_54plus': '54m²+ Elite',
+    
     'pages.partners.title': 'Partners',
     'pages.partners.description': 'Organizations supporting SIPORTS 2026',
     'pages.partners.search': 'Search for a partner',
@@ -1058,6 +1070,12 @@ export const allTranslations = {
     'pages.exhibitors.contact': 'اتصال',
     'pages.exhibitors.view_profile': 'عرض الملف الشخصي',
     'pages.exhibitors.no_results': 'لم يتم العثور على عارضين',
+    
+    // Exhibitor Levels
+    'exhibitor_levels.basic_9': 'أساسي 9م²',
+    'exhibitor_levels.standard_18': 'قياسي 18م²',
+    'exhibitor_levels.premium_36': 'بريميوم 36م²',
+    'exhibitor_levels.elite_54plus': 'نخبة 54م²+',
     
     'pages.partners.title': 'الشركاء',
     'pages.partners.description': 'المنظمات التي تدعم SIPORTS 2026',
