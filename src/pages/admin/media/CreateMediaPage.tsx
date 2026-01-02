@@ -154,7 +154,7 @@ export const CreateMediaPage: React.FC = () => {
               value={formData.title}
               onChange={(e) => handleChange('title', e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Ex: Webinaire - Innovation Portuaire 2026"
+              placeholder={t('admin_media.create_title_example')}
               required
             />
           </div>
@@ -169,7 +169,7 @@ export const CreateMediaPage: React.FC = () => {
               onChange={(e) => handleChange('description', e.target.value)}
               rows={4}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Description détaillée du contenu..."
+              placeholder={t('admin_media.create_description_placeholder')}
             />
           </div>
 
@@ -232,7 +232,7 @@ export const CreateMediaPage: React.FC = () => {
                 value={formData.duration}
                 onChange={(e) => handleChange('duration', parseInt(e.target.value))}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Ex: 3600"
+                placeholder={t('admin_media.duration_example')}
                 min="0"
               />
             </div>
@@ -264,7 +264,7 @@ export const CreateMediaPage: React.FC = () => {
               value={formData.tags}
               onChange={(e) => handleChange('tags', e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="innovation, technologie, digital"
+              placeholder={t('admin_media.tags_example')}
             />
           </div>
 
