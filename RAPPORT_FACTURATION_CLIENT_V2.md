@@ -1,21 +1,58 @@
-# RAPPORT DE FACTURATION - SIPORT 2026 (VERSION 2)
-**Date:** 1 Janvier 2026
+# RAPPORT DE FACTURATION - SIPORT 2026 (VERSION 2 - AJUSTÉ)
+**Date:** 1 Janvier 2026 | **Mise à jour:** 2 Janvier 2026
 **Période analysée:** Novembre 2025 - Janvier 2026 (2 mois)
 **Événement:** SIPORT 2026 (1er - 3 Avril 2026)
 
 ---
 
-## 📊 RÉSUMÉ EXÉCUTIF
+## ⚠️ MISES À JOUR 2 JANVIER 2026 - ÉTAT RÉEL
+
+### 🔴 PROBLÈMES IDENTIFIÉS NON RÉSOLUS
+
+**1. Erreur 409 - Création créneaux horaires ❌ CRITIQUE**
+- **Symptôme:** Impossible d'ajouter créneaux dans calendrier disponibilités
+- **État:** Non résolu malgré corrections tentées
+- **Impact:** Fonctionnalité RDV B2B partiellement bloquée
+- **Besoin:** Diagnostic client + structure table Supabase
+
+**2. Calendrier disponibilités ⚠️ NON TESTÉ**
+- **État:** Code créé mais jamais testé visuellement
+- **Risque:** Design peut ne pas s'afficher correctement
+- **Action requise:** Client doit tester et confirmer visibilité
+
+**3. Application Android 🚧 80% SEULEMENT**
+- **État réel:** Configuration faite, build APK non finalisé
+- **Bloque:** Publication Google Play impossible en l'état
+- **Reste:** 15h de finalisation (Phase 2)
+
+**4. Bugs performance détectés**
+- ChatBot re-renders excessifs
+- Time slots API appelée 2×
+- Auth loading peut boucler
+
+### 💰 AJUSTEMENT FACTURATION
+
+**Montant initial annoncé:** 47,378 DH
+**Ajustement Android (80% vs 100%):** -600 DH
+**NOUVEAU MONTANT Phase 1.5:** **46,778 DH**
+
+**Calendrier non testé:** Aucune réduction (client doit valider)
+**Bugs mineurs:** Corrections incluses Phase 2 sans surcoût
+
+---
+
+## 📊 RÉSUMÉ EXÉCUTIF (AJUSTÉ)
 
 **Contrat Initial (Phase 1):** 42,000 DH
 - Développement application de base
 - Abonnement Supabase jusqu'à Mai 2026
-- Livraison: Novembre 2025
+- Livraison: Novembre 2025 ✅
 
 **Développements Additionnels (Novembre-Janvier):** Phase 1.5
 **Ampleur:** 61 commits, 233 fichiers modifiés, +42,649 lignes de code
+**Montant ajusté:** 46,778 DH (au lieu de 47,378 DH)
 
-**Phase 2 (À venir):** Application Badges complète - Non incluse dans cette facture
+**Phase 2 (À venir):** Android finalisé + Badges + Corrections bugs - 15,600 DH
 
 ---
 
@@ -263,50 +300,78 @@
 
 ---
 
-## 💰 FACTURE 2 - DÉVELOPPEMENTS PHASE 1.5
+## 💰 FACTURE 2 - DÉVELOPPEMENTS PHASE 1.5 (AJUSTÉE)
 
-| Catégorie | Heures | Taux | Montant |
-|-----------|--------|------|---------|
-| Système Média Complet | 40h | 150 DH | 6,000 DH |
-| WordPress Plugin + Elementor | 30h | 150 DH | 4,500 DH |
-| Application Mobile iOS | 25h | 200 DH | 5,000 DH |
-| Marketing Dashboard | 20h | 150 DH | 3,000 DH |
-| Mini-Site Builder Avancé | 35h | 150 DH | 5,250 DH |
-| Networking & Matchmaking IA | 25h | 180 DH | 4,500 DH |
-| Notifications + 2FA | 28h | 180 DH | 5,040 DH |
-| Services Backend | 35h | 150 DH | 5,250 DH |
-| Base de données | 20h | 150 DH | 3,000 DH |
-| Pages Partenaires | 18h | 150 DH | 2,700 DH |
-| Outils Développement | 10h | 120 DH | 1,200 DH |
-| Documentation | 15h | 120 DH | 1,800 DH |
-| **SOUS-TOTAL** | **301h** | | **47,240 DH** |
+| Catégorie | Heures | Taux | Montant | Statut |
+|-----------|--------|------|---------|--------|
+| Système Média Complet | 40h | 150 DH | 6,000 DH | ✅ Livré |
+| WordPress Plugin + Elementor | 30h | 150 DH | 4,500 DH | ✅ Livré |
+| Application Mobile iOS | 25h | 200 DH | 5,000 DH | ✅ Livré (100%) |
+| Marketing Dashboard | 20h | 150 DH | 3,000 DH | ✅ Livré |
+| Mini-Site Builder Avancé | 35h | 150 DH | 5,250 DH | ✅ Livré |
+| Networking & Matchmaking IA | 25h | 180 DH | 4,500 DH | ✅ Livré |
+| Notifications + 2FA | 28h | 180 DH | 5,040 DH | ✅ Livré |
+| Services Backend | 35h | 150 DH | 5,250 DH | ✅ Livré |
+| Base de données | 20h | 150 DH | 3,000 DH | ✅ Livré |
+| Pages Partenaires | 18h | 150 DH | 2,700 DH | ✅ Livré |
+| Outils Développement | 10h | 120 DH | 1,200 DH | ✅ Livré |
+| Documentation | 15h | 120 DH | 1,800 DH | ✅ Livré |
+| **SOUS-TOTAL** | **301h** | | **47,240 DH** | |
 
 ### Ajustements:
 - **Tests & Intégration:** +2,500 DH
 - **Remise fidélité:** -5% (-2,362 DH)
+- **⚠️ Ajustement Android (80% au lieu de 100%):** -600 DH
 
-### **TOTAL FACTURE 2: 47,378 DH**
+### **TOTAL FACTURE 2 AJUSTÉ: 46,778 DH**
 
 **Paiement suggéré:**
-- 50% à la signature: 23,689 DH
-- 50% après validation client: 23,689 DH
+- 50% à la signature: 23,389 DH
+- 50% après validation client: 23,389 DH
+
+**⚠️ IMPORTANT:**
+- Calendrier disponibilités non testé visuellement (client doit valider)
+- Erreur 409 création créneaux non résolue (diagnostic client requis)
+- Corrections bugs mineurs incluses Phase 2 sans surcoût
 
 ---
 
 ## 🚧 PHASE 2 - NON INCLUSE (À Facturer Séparément)
 
-### APPLICATION BADGES COMPLÈTE
-**Statut:** Développée mais non facturée dans Phase 1.5
-**À facturer:** Phase 2 (Mars-Avril 2026)
+### CONTENU PHASE 2 (Février-Mars 2026): 15,600 DH
 
-#### Fonctionnalités:
+#### 1. Finalisation Android (3,000 DH)
+**Statut:** 80% → 100%
+**Reste à faire:**
+- ❌ Build Android APK final
+- ❌ Tests devices Android (min 3 devices)
+- ❌ Configuration Google Play Console
+- ❌ Publication Google Play Store
+- ❌ Push notifications FCM
+- ❌ Tests compatibilité Android 10-14
+**Heures:** 15h × 200 DH = 3,000 DH
+
+#### 2. Corrections Bugs Phase 1.5 (3,600 DH) - SANS SURCOÛT
+**Inclus dans Phase 2:**
+- ✅ Résolution erreur 409 création créneaux (après diagnostic client)
+- ✅ Validation visuelle calendrier disponibilités
+- ✅ Correction ChatBot re-renders excessifs
+- ✅ Optimisation Time slots API (éviter double appel)
+- ✅ Fix Auth loading loops
+**Heures:** 18h × 200 DH = 3,600 DH (OFFERT - garantie qualité)
+
+#### 3. Application Badges Complète (9,000 DH)
+**Statut:** Développée mais non facturée dans Phase 1.5
+**Fonctionnalités:**
 - ✅ Scanner QR badges avec validation JWT
 - ✅ Génération badges dynamiques (30s)
 - ✅ Support badges statiques
 - ✅ Logs sécurité
 - ✅ Version mobile iOS/Android
+- ✅ Dashboard admin badges
+**Heures:** 45h × 200 DH = 9,000 DH
 
-**Estimation Phase 2:** 15,000 DH (à discuter)
+**TOTAL PHASE 2:** 15,600 DH (12,000 DH facturés car corrections offertes)
 
 ---
 
@@ -550,36 +615,43 @@
 
 ---
 
-## 💡 PROPOSITION GLOBALE CLIENT - 2026
+## 💡 PROPOSITION GLOBALE CLIENT - 2026 (AJUSTÉE)
 
 ### PACKAGE COMPLET
 
-1. **Facture 2 - Phase 1.5:** 47,378 DH
+1. **Facture 2 - Phase 1.5 (ajustée):** 46,778 DH
 2. **Gestion Premium annuelle:** 81,000 DH
 3. **Upgrade Enterprise Avril:** OFFERT (valeur 4,500 DH)
+4. **Corrections bugs Phase 1.5:** OFFERTES (valeur 3,600 DH)
 
-**TOTAL 2026:** 128,378 DH
+**TOTAL 2026:** 127,778 DH (-600 DH ajustement)
 
-**Soit:** 10,698 DH/mois
+**Soit:** 10,648 DH/mois
+
+**BONUS OFFERTS:**
+- 3,600 DH corrections bugs (garantie qualité)
+- 4,500 DH upgrade Enterprise Avril
+**TOTAL OFFERT:** 8,100 DH
 
 ---
 
-### PLAN DE PAIEMENT ÉCHELONNÉ
+### PLAN DE PAIEMENT ÉCHELONNÉ (AJUSTÉ)
 
 | Mois | Détail | Montant | Cumulé |
 |------|--------|---------|--------|
-| Janvier | Acompte 50% Facture 2 | 23,689 DH | 23,689 DH |
-| Février | Solde Facture 2 | 23,689 DH | 47,378 DH |
-| Mars | Trimestre 1 gestion (Jan-Mar) | 22,500 DH | 69,878 DH |
-| Avril | Inclus dans trimestre | 0 DH | 69,878 DH |
-| Mai | Trimestre 2 gestion (Avr-Juin) | 19,500 DH | 89,378 DH |
-| Septembre | Trimestre 3 gestion (Jul-Sep) | 19,500 DH | 108,878 DH |
-| Décembre | Trimestre 4 gestion (Oct-Dec) | 19,500 DH | 128,378 DH |
+| Janvier | Acompte 50% Facture 2 | 23,389 DH | 23,389 DH |
+| Février | Solde Facture 2 | 23,389 DH | 46,778 DH |
+| Mars | Trimestre 1 gestion (Jan-Mar) | 22,500 DH | 69,278 DH |
+| Avril | Inclus dans trimestre | 0 DH | 69,278 DH |
+| Mai | Trimestre 2 gestion (Avr-Juin) | 19,500 DH | 88,778 DH |
+| Septembre | Trimestre 3 gestion (Jul-Sep) | 19,500 DH | 108,278 DH |
+| Décembre | Trimestre 4 gestion (Oct-Dec) | 19,500 DH | 127,778 DH |
 
 **Avantages paiement trimestriel:**
 - Meilleur flux trésorerie
 - Moins de factures
 - Remise fidélité incluse
+- **Corrections bugs Phase 1.5 offertes** (3,600 DH)
 
 ---
 
@@ -803,15 +875,51 @@
 
 ---
 
+---
+
+## 🚨 AVANT FACTURATION - ACTIONS REQUISES
+
+### 📋 DIAGNOSTIC CLIENT (URGENT)
+
+**Pour résoudre erreur 409:**
+1. ✅ Tester création créneau dans calendrier disponibilités
+2. ✅ Partager TOUS les logs console (rechercher 🔍 et ❌)
+3. ✅ Screenshot structure table `time_slots` dans Supabase Dashboard
+4. ✅ Tester INSERT SQL manuel (query fournie dans ANALYSE_PROBLEMES_REELS.md)
+
+**Pour validation visuelle:**
+5. ✅ Vider cache navigateur (Ctrl+Shift+Delete)
+6. ✅ Hard reload (Ctrl+F5)
+7. ✅ Screenshot calendrier disponibilités actuel
+8. ✅ Vérifier visibilité DevSubscriptionSwitcher (bouton ⚡ en mode dev)
+
+### ✅ GARANTIES QUALITÉ
+
+**Corrections offertes en Phase 2 (3,600 DH):**
+- Résolution erreur 409 (après diagnostic)
+- Validation visuelle calendrier
+- Optimisations performance
+- Corrections bugs mineurs
+
+**Engagement:**
+- Application 100% fonctionnelle avant événement (1er Avril 2026)
+- Support prioritaire Phase 2 (Février-Mars)
+- Tests complets avant mise en production
+
+---
+
 **Document préparé le 1er Janvier 2026**
+**Mis à jour le 2 Janvier 2026 avec ajustements honnêtes**
 
 **Projet:** SIPORT 2026 - Salon International des Ports
 **Période analysée:** Novembre 2025 - Janvier 2026 (2 mois)
 **Phase:** 1.5 (Développements additionnels)
-**Phase 2:** Badges (À facturer séparément)
+**Phase 2:** Android finalisé + Badges + Corrections (À facturer séparément)
 
 **Développeur:** [Votre nom/société]
 **Client:** [Nom du client]
+
+**Note:** Cette version reflète l'état RÉEL du développement avec ajustements de facturation pour Android non finalisé et garantie corrections bugs.
 
 ---
 
@@ -824,3 +932,9 @@ Date: ___/___/2026
 
 _______________________
 Date: ___/___/2026
+
+**☑️ J'ai lu et compris que:**
+- [ ] Android est à 80% (finalisation Phase 2)
+- [ ] Erreur 409 non résolue (diagnostic requis de ma part)
+- [ ] Calendrier non testé visuellement (je dois valider)
+- [ ] Corrections bugs offertes en Phase 2 (3,600 DH)

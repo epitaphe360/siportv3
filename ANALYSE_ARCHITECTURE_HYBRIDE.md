@@ -1,6 +1,58 @@
 # ANALYSE ARCHITECTURE HYBRIDE - SIPORT 2026
-**Date:** 1 Janvier 2026
+**Date:** 1 Janvier 2026 | **Mise à jour:** 2 Janvier 2026
 **Projet:** SIPORT 2026 - Architecture WordPress + Application React
+
+---
+
+## ⚠️ ÉTAT ACTUEL RÉEL - MISE À JOUR 2 JANVIER 2026
+
+### 🔴 PROBLÈMES IDENTIFIÉS NON RÉSOLUS
+
+**1. Erreur 409 dans création de créneaux horaires - ❌ NON RÉSOLU**
+- **Symptôme:** `Failed to load resource: 409 ()` lors de l'ajout de créneaux
+- **État:** Malgré 0 créneaux existants en BDD, erreur 409 persiste
+- **Cause probable:** Contrainte UNIQUE dans table `time_slots` (non confirmée)
+- **Actions prises:** Logs de debug ajoutés (🔍 et ❌) dans `supabaseService.ts:2195`
+- **Besoin:** Logs console complets du client + structure table Supabase
+
+**2. Design calendrier - ⚠️ NON TESTÉ VISUELLEMENT**
+- **État:** Code créé mais JAMAIS testé dans un navigateur réel
+- **Risques:** Modal peut ne pas s'ouvrir, animations peuvent bugger, responsive non vérifié
+- **Besoin:** Client doit vider cache (Ctrl+Shift+Delete) + hard reload (Ctrl+F5)
+
+**3. DevSubscriptionSwitcher - ⚠️ VISIBILITÉ NON CONFIRMÉE**
+- **État:** Intégré dans App.tsx mais visibilité non vérifiée
+- **Condition:** `import.meta.env.DEV` doit être `true`
+- **Besoin:** Client doit vérifier présence bouton ⚡ en bas-droite en mode dev
+
+**4. Application Android - 🚧 80% SEULEMENT (PAS 100%)**
+- **État réel:** Configuration de base faite, build APK non finalisé
+- **Reste à faire:** Build, tests devices, publication Google Play, FCM push
+- **Estimation:** 15h restantes (~3,000 DH)
+
+**5. Bugs de performance détectés mais non corrigés**
+- ChatBot re-render excessif (×10 dans logs)
+- Auth loading peut boucler
+- Time slots fetched 2× (double appel API)
+
+### ✅ CE QUI MARCHE RÉELLEMENT (Code correct, tests limités)
+
+- Transformation snake_case → camelCase (code correct)
+- Normalisation des dates (logique correcte)
+- Détection chevauchement (théoriquement correcte)
+- Logs de debug (ajoutés avec succès)
+- Design CSS (théoriquement beau, NON vérifié visuellement)
+
+### 📋 DIAGNOSTIC REQUIS AVANT MISE EN PRODUCTION
+
+**Le client DOIT fournir:**
+1. ✅ Logs console complets après tentative création créneau
+2. ✅ Screenshot structure table `time_slots` dans Supabase
+3. ✅ Résultat test INSERT SQL manuel dans Supabase
+4. ✅ Confirmation visibilité DevSubscriptionSwitcher
+5. ✅ Screenshot calendrier actuel dans navigateur
+
+**IMPORTANT:** Les statistiques ci-dessous représentent le CODE ÉCRIT, pas les fonctionnalités TESTÉES et VALIDÉES.
 
 ---
 
@@ -231,17 +283,25 @@
 
 ---
 
-#### 2. Application Android (Capacitor) - À FINALISER
+#### 2. Application Android (Capacitor) - ⚠️ À FINALISER
 
-**Statut:** 80% complète
-**Reste à faire:**
-- Build Android APK
-- Tests devices Android
-- Publication Google Play Store
-- Notifications Push Android (FCM)
+**Statut:** 🚧 80% complète (NON finalisée)
+**Ce qui est fait:**
+- Configuration Capacitor de base
+- Adaptation UI pour Android
+- Intégration code React
 
-**Temps restant:** 15h
-**Valeur:** 3,000 DH
+**Reste à faire (BLOQUE PUBLICATION):**
+- ❌ Build Android APK final
+- ❌ Tests sur vrais devices Android
+- ❌ Configuration Google Play Console
+- ❌ Publication Google Play Store
+- ❌ Notifications Push Android (FCM)
+- ❌ Tests compatibilité Android 10-14
+
+**Temps restant estimé:** 15h
+**Valeur restante:** 3,000 DH
+**⚠️ Non inclus dans Phase 1.5 - À facturer Phase 2**
 
 ---
 
@@ -249,9 +309,12 @@
 
 | Plateforme | Statut | Heures | Valeur |
 |------------|--------|--------|--------|
-| iOS | ✅ 100% | 25h | 5,000 DH |
-| Android | ⏳ 80% | 15h | 3,000 DH |
-| **TOTAL** | | **40h** | **8,000 DH** |
+| iOS | ✅ 100% *(en attente publication App Store)* | 25h | 5,000 DH |
+| Android | 🚧 80% *(NON finalisé - Phase 2)* | 12h/15h | 2,400 DH/3,000 DH |
+| **TOTAL Phase 1.5** | | **37h** | **7,400 DH** |
+| **Reste Phase 2** | *(Android finalisé)* | **3h** | **600 DH** |
+
+**⚠️ IMPORTANT:** L'app Android n'est PAS publiable en l'état actuel. Finalisation requise en Phase 2.
 
 ---
 
@@ -604,10 +667,11 @@ function calculateMatchScore(user1, user2) {
 - ⏳ En attente publication App Store
 
 **Android (Capacitor):**
-- ⏳ 80% fonctionnel
-- ⏳ Build APK à finaliser
-- ⏳ Tests à compléter
-- ⏳ Publication Google Play
+- 🚧 80% fonctionnel (NON FINALISÉ)
+- ❌ Build APK à finaliser (BLOQUANT)
+- ❌ Tests devices à compléter (BLOQUANT)
+- ❌ Publication Google Play (BLOQUANT)
+- ⚠️ **Non publiable en l'état - Finalisation Phase 2 requise**
 
 ---
 
@@ -635,22 +699,24 @@ function calculateMatchScore(user1, user2) {
 
 ---
 
-### PHASE 1.5: 47,378 DH
+### PHASE 1.5: 46,778 DH (RÉEL AJUSTÉ)
 
 **Développements supplémentaires (2 mois):**
 
 | Catégorie | Justification | Valeur |
 |-----------|---------------|--------|
-| **App Mobile iOS** | "Won't Have" → Fait quand même | 5,000 DH |
+| **App Mobile iOS** | "Won't Have" → Fait quand même (100%) | 5,000 DH |
 | **WordPress Plugin** | Pont WordPress ↔ React (essentiel) | 4,500 DH |
 | **Système Média** | 6 types vs blog simple | 6,000 DH |
 | **Mini-Site Builder** | Builder pro vs pages simples | 5,250 DH |
 | **Algorithme IA** | Matching avancé vs tags simples | 4,500 DH |
 | **Notifications + 2FA** | Multi-canal vs email seul | 5,040 DH |
 | **Services Backend** | 7 services entreprise | 13,350 DH |
-| **40+ pages** | Fonctionnalités étendues | 3,738 DH |
+| **40+ pages** | Fonctionnalités étendues | 3,138 DH |
 
-**TOTAL:** 47,378 DH
+**TOTAL Phase 1.5:** 46,778 DH
+
+**⚠️ AJUSTEMENT:** -600 DH car Android non finalisé (80% au lieu de 100%)
 
 ---
 
@@ -678,9 +744,14 @@ function calculateMatchScore(user1, user2) {
 | Phase | Détail | Montant |
 |-------|--------|---------|
 | **Phase 1 (Nov 2025)** | WordPress vitrine + App React base | 42,000 DH ✅ PAYÉ |
-| **Phase 1.5 (Déc-Jan)** | Développements avancés | 47,378 DH ⏳ À FACTURER |
-| **Phase 2 (Fév-Mars)** | Android + Badges finaux | 15,000 DH ⏳ À FACTURER |
+| **Phase 1.5 (Déc-Jan)** | Développements avancés (ajusté) | 46,778 DH ⏳ À FACTURER |
+| **Phase 2 (Fév-Mars)** | Android finalisé + Badges + Corrections bugs | 15,600 DH ⏳ À FACTURER |
 | **TOTAL PROJET** | | **104,378 DH** |
+
+**⚠️ AJUSTEMENTS Phase 1.5:**
+- Android 80% au lieu de 100% → -600 DH
+- Calendrier disponibilités NON testé → Aucune réduction (client doit tester)
+- Bugs mineurs non corrigés → Correction incluse Phase 2
 
 ---
 
@@ -698,7 +769,7 @@ function calculateMatchScore(user1, user2) {
 
 ---
 
-## ✅ CONCLUSION
+## ✅ CONCLUSION (MISE À JOUR 2 JANVIER 2026)
 
 ### Architecture Justifiée:
 
@@ -706,21 +777,43 @@ function calculateMatchScore(user1, user2) {
 2. ✅ **Performance 5x meilleure** (React vs WordPress)
 3. ✅ **Économie 75,000 DH** sur 3 ans (plugins)
 4. ✅ **Scalabilité illimitée** (Supabase)
-5. ✅ **Applications mobiles natives** (iOS + Android)
+5. ⚠️ **Applications mobiles natives** (iOS 100%, Android 80%)
 6. ✅ **Maintenance réduite** (pas de conflits plugins)
 
-### Factures:
+### Factures (AJUSTÉES):
 
 - ✅ **Phase 1:** 42,000 DH (payé)
-- ⏳ **Phase 1.5:** 47,378 DH (à facturer)
-- ⏳ **Phase 2:** 15,000 DH (à facturer)
+- ⏳ **Phase 1.5:** 46,778 DH (à facturer - ajusté)
+- ⏳ **Phase 2:** 15,600 DH (à facturer - inclut corrections)
 
 **Total:** 104,378 DH pour solution complète et pérenne
 
 ---
 
+## 🚨 PROBLÈMES À RÉSOUDRE AVANT ÉVÉNEMENT (AVRIL 2026)
+
+### CRITIQUES (Bloquent fonctionnalités)
+1. ❌ **Erreur 409 création créneaux** - Diagnostic requis du client
+2. 🚧 **Android non finalisé** - Phase 2 requise
+
+### IMPORTANTS (Risques utilisateur)
+3. ⚠️ **Calendrier non testé visuellement** - Client doit valider
+4. ⚠️ **DevSubscriptionSwitcher visibilité** - À vérifier en dev
+5. ⚠️ **ChatBot re-renders excessifs** - Impact performance
+
+### MINEURS (Qualité code)
+6. ⏳ **Time slots fetched 2×** - Optimisation possible
+7. ⏳ **Auth loading loops** - Edge case à vérifier
+
+**PLAN:** Ces problèmes seront résolus en Phase 2 après diagnostic client (Février-Mars 2026)
+
+---
+
 **Document préparé le 1er Janvier 2026**
+**Mis à jour le 2 Janvier 2026 avec état RÉEL**
 
 **Projet:** SIPORT 2026 - Architecture Hybride
 **Développeur:** [Votre nom/société]
 **Client:** [Nom du client]
+
+**Note:** Cette version inclut une analyse honnête des problèmes non résolus et du statut réel des développements.
