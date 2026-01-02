@@ -2208,11 +2208,18 @@ export class SupabaseService {
 
       console.log(`[TIME_SLOTS] Successfully fetched ${data?.length || 0} slots`);
 
+      // Helper pour parser une date sans décalage UTC
+      const parseLocalDate = (dateStr: string | Date): string => {
+        if (!dateStr) return '';
+        // Garder juste la partie YYYY-MM-DD pour éviter le décalage UTC
+        return String(dateStr).split('T')[0];
+      };
+
       // Transform DB rows to TimeSlot interface (snake_case → camelCase)
       const transformed = (data || []).map((row: any) => ({
         id: row.id,
         userId: row.exhibitor_id || row.user_id,
-        date: row.slot_date || row.date,
+        date: parseLocalDate(row.slot_date || row.date),
         startTime: row.start_time || row.startTime,
         endTime: row.end_time || row.endTime,
         duration: row.duration || 0,
@@ -2357,12 +2364,20 @@ export class SupabaseService {
 
       console.log('✅ [CREATE_SLOT] Créneau créé avec succès:', data);
 
+      // Helper pour parser une date sans décalage UTC
+      const parseLocalDateString = (dateStr: string | Date): Date => {
+        if (dateStr instanceof Date) return dateStr;
+        // Format YYYY-MM-DD -> créer une date à minuit heure locale
+        const [year, month, day] = String(dateStr).split('T')[0].split('-').map(Number);
+        return new Date(year, month - 1, day);
+      };
+
       // Transform returned DB row into TimeSlot interface expected by frontend
       const created: any = data;
       const transformed: TimeSlot = {
         id: created.id,
         userId: created.exhibitor_id || created.user_id,
-        date: created.slot_date ? new Date(created.slot_date) : (created.date ? new Date(created.date) : new Date()),
+        date: created.slot_date ? parseLocalDateString(created.slot_date) : (created.date ? parseLocalDateString(created.date) : new Date()),
         startTime: created.start_time || created.startTime,
         endTime: created.end_time || created.endTime,
         duration: created.duration || 0,
