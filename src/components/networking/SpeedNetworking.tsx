@@ -51,7 +51,7 @@ export const SpeedNetworking: React.FC<SpeedNetworkingProps> = ({ sessionId }) =
         .from('speed_networking_sessions')
         .select('*')
         .eq('id', sessionId)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       setSession(data);

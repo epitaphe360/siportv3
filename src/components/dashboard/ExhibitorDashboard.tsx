@@ -73,7 +73,7 @@ export default function ExhibitorDashboard() {
           .from('users')
           .select('minisite_created')
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
 

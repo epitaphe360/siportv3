@@ -32,7 +32,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
         .from('users')
         .select('*')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
       if (profileError) throw profileError;
 

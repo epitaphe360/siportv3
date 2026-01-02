@@ -31,7 +31,7 @@ export default function PaymentSuccessPage() {
       .from('users')
       .select('*')
       .eq('id', user.id)
-      .single();
+      .maybeSingle();
     
     if (data) {
       setUser({
@@ -60,7 +60,7 @@ export default function PaymentSuccessPage() {
         .from('users')
         .select('status, visitor_level')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
       if (userError) {
         console.error('Error fetching user:', userError);

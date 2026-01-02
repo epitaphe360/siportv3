@@ -46,7 +46,7 @@ export const WebinarDetailPage: React.FC = () => {
         .select('*')
         .eq('id', id)
         .eq('type', 'webinar')
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       setWebinar(data);

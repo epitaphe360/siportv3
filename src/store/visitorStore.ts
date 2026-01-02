@@ -203,7 +203,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
             .from('users')
             .select('*')
             .eq('id', user.id)
-            .single();
+            .maybeSingle();
 
           if (profileError) throw profileError;
 
@@ -272,7 +272,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
           const { data: salonConfig, error: salonError } = await supabaseClient
             .from('salon_config')
             .select('*')
-            .single();
+            .maybeSingle();
 
           if (salonError) console.warn('Erreur lors de la récupération des infos salon:', salonError);
 
@@ -423,7 +423,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
           .from('users')
           .select('*')
           .eq('id', exhibitorId)
-          .single();
+          .maybeSingle();
 
         if (exhibitor) {
           const newFavorite: FavoriteExhibitor = {

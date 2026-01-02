@@ -45,7 +45,7 @@ export const CapsuleDetailPage: React.FC = () => {
         .select('*')
         .eq('id', id)
         .eq('type', 'capsule_inside')
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       setCapsule(data);

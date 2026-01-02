@@ -58,7 +58,7 @@ export const SiteBuilder: React.FC<SiteBuilderProps> = ({ siteId, templateId, on
         .from('mini_sites')
         .select('*')
         .eq('id', id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       if (data) {
@@ -77,7 +77,7 @@ export const SiteBuilder: React.FC<SiteBuilderProps> = ({ siteId, templateId, on
         .from('site_templates')
         .select('*')
         .eq('id', id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       if (data) {

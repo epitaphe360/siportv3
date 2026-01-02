@@ -48,7 +48,7 @@ export const TestimonialDetailPage: React.FC = () => {
         .select('*')
         .eq('id', id)
         .eq('type', 'testimonial')
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       setTestimonial(data);
