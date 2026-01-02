@@ -264,7 +264,7 @@ const resources = {
           awaiting_response: 'En attente de réponse',
           sources: {
             events: 'Événements SIPORTS',
-            networking: 'Networking Partenaires',
+            networking: 'Réseautage Partenaires',
             referrals: 'Références Clients',
             marketing: 'Campagnes Marketing'
           },
@@ -683,7 +683,31 @@ const resources = {
           pending: 'Pending',
           rejected: 'Rejected',
           active_followup: 'Active follow-up',
-          awaiting_response: 'Awaiting response'
+          awaiting_response: 'Awaiting response',
+          sources: {
+            events: 'SIPORTS Events',
+            networking: 'Partner Networking',
+            referrals: 'Client Referrals',
+            marketing: 'Marketing Campaigns'
+          },
+          funnel: {
+            generated: 'Generated Leads',
+            qualified: 'Qualified',
+            proposal: 'Proposal',
+            negotiation: 'Negotiation',
+            conversion: 'Conversion'
+          },
+          tips: {
+            title: 'Lead Management Tips',
+            qualification: 'Quick Qualification',
+            qualification_desc: 'Contact hot leads within 24h to maximize your conversion chances',
+            followup: 'Regular Follow-up',
+            followup_desc: 'Schedule weekly follow-up points to maintain engagement',
+            personalization: 'Personalization',
+            personalization_desc: 'Adapt your proposals to each prospect\'s specific needs',
+            measure: 'Results Measurement',
+            measure_desc: 'Regularly analyze your conversion rates to optimize your approach'
+          }
         },
         activity: {
           title: 'Partner Activity',
@@ -692,7 +716,52 @@ const resources = {
           realtime: 'Real-Time',
           history: 'Activity History',
           no_activity: 'No activity found',
-          try_filters: 'Try adjusting your search filters'
+          try_filters: 'Try adjusting your search filters',
+          just_now: 'Just now',
+          hours_ago: '{{count}}h ago',
+          days_ago: '{{count}}d ago',
+          stats: {
+            total: 'Total activities',
+            today: 'Today',
+            this_week: 'This week'
+          },
+          filter: {
+            all: 'All activities',
+            networking: 'Networking',
+            communication: 'Communication',
+            events: 'Events',
+            sponsorship: 'Sponsorship',
+            engagement: 'Engagement',
+            content: 'Content',
+            meetings: 'Meetings',
+            system: 'System'
+          },
+          type: {
+            connection: 'Connection',
+            message: 'Message',
+            event: 'Event',
+            sponsorship: 'Sponsorship',
+            consultation: 'Consultation',
+            content: 'Content',
+            alert: 'Alert',
+            meeting: 'Meeting'
+          },
+          connection_established: 'New connection established',
+          connected_with: 'You are now connected with Port Solutions Inc.',
+          new_message: 'New message received',
+          message_from: 'TechMarine Solutions sent you a message',
+          event_participation: 'Event participation',
+          participated_in: 'You participated in the conference "Digital Transformation in Ports"',
+          sponsoring_activated: 'Sponsorship activated',
+          logo_displayed: 'Your logo is now displayed on the homepage',
+          profile_viewed: 'Profile viewed',
+          views_today: 'Your profile was viewed 15 times today',
+          content_shared: 'Content shared',
+          article_shared: 'Your article "Innovation in Maritime Technology" was shared',
+          system_alert: 'System alert',
+          metrics_update: 'Performance metrics update available',
+          meeting_scheduled: 'Meeting scheduled',
+          meeting_confirmed: 'Meeting confirmed with LogiFlow Systems tomorrow at 2pm'
         },
         calendar: {
           title: 'Appointment Calendar',
