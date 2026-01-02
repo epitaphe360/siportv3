@@ -794,21 +794,71 @@ export default function PartnerDetailPage() {
                     "Internet des objets (IoT)",
                     "Développement durable",
                     "Gestion logistique"
-                  ]).map((exp, index) => (
-                    <motion.div
-                      key={exp}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-center p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100 hover:shadow-md transition-shadow"
-                    >
-                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mr-4">
-                        <Lightbulb className="h-5 w-5 text-white" />
-                      </div>
-                      <span className="font-medium text-gray-800">{exp}</span>
-                      <ChevronRight className="h-5 w-5 text-gray-400 ml-auto" />
-                    </motion.div>
-                  ))}
+                  ]).map((exp, index) => {
+                    const [isExpanded, setIsExpanded] = React.useState(false);
+                    
+                    // Descriptions génériques basées sur les domaines courants
+                    const getExpertiseDescription = (title: string) => {
+                      const lowerTitle = title.toLowerCase();
+                      if (lowerTitle.includes('transformation') || lowerTitle.includes('digital')) {
+                        return "Accompagnement complet dans la digitalisation de vos processus et infrastructures pour optimiser votre compétitivité.";
+                      }
+                      if (lowerTitle.includes('cyber') || lowerTitle.includes('sécurité')) {
+                        return "Protection avancée de vos systèmes et données contre les menaces cybernétiques avec des solutions de pointe.";
+                      }
+                      if (lowerTitle.includes('big data') || lowerTitle.includes('analytics')) {
+                        return "Exploitation intelligente de vos données massives pour des décisions stratégiques éclairées et prédictives.";
+                      }
+                      if (lowerTitle.includes('intelligence') || lowerTitle.includes('ia') || lowerTitle.includes('ai')) {
+                        return "Intégration d'algorithmes d'apprentissage automatique pour automatiser et optimiser vos opérations portuaires.";
+                      }
+                      if (lowerTitle.includes('cloud')) {
+                        return "Infrastructure cloud évolutive et sécurisée pour une flexibilité maximale et une réduction des coûts.";
+                      }
+                      if (lowerTitle.includes('blockchain')) {
+                        return "Technologie blockchain pour une traçabilité transparente et des transactions sécurisées et décentralisées.";
+                      }
+                      if (lowerTitle.includes('iot') || lowerTitle.includes('objets')) {
+                        return "Solutions IoT innovantes pour connecter, surveiller et optimiser vos équipements et infrastructures en temps réel.";
+                      }
+                      if (lowerTitle.includes('durable') || lowerTitle.includes('environnement')) {
+                        return "Stratégies de développement durable intégrant réduction d'empreinte carbone et optimisation énergétique.";
+                      }
+                      if (lowerTitle.includes('logistique') || lowerTitle.includes('supply')) {
+                        return "Optimisation de la chaîne logistique portuaire avec des outils de gestion avancés et prédictifs.";
+                      }
+                      return "Solution complète et personnalisée adaptée à vos besoins spécifiques et enjeux métiers.";
+                    };
+                    
+                    return (
+                      <motion.div
+                        key={exp}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100 hover:shadow-md transition-all cursor-pointer"
+                        onClick={() => setIsExpanded(!isExpanded)}
+                      >
+                        <div className="flex items-center">
+                          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mr-4 flex-shrink-0">
+                            <Lightbulb className="h-5 w-5 text-white" />
+                          </div>
+                          <span className="font-medium text-gray-800 flex-1">{exp}</span>
+                          <ChevronRight className={`h-5 w-5 text-gray-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                        </div>
+                        {isExpanded && (
+                          <motion.p 
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="mt-3 ml-14 text-sm text-gray-600 leading-relaxed"
+                          >
+                            {getExpertiseDescription(exp)}
+                          </motion.p>
+                        )}
+                      </motion.div>
+                    );
+                  })}
                 </div>
               </Card>
 
