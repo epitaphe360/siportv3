@@ -2263,7 +2263,7 @@ export class SupabaseService {
             // Créer automatiquement l'exhibitor si il n'existe pas
             const { data: user } = await safeSupabase
               .from('users')
-              .select('email, profile')
+              .select('id, email, name, profile')
               .eq('id', userId)
               .single();
             
@@ -2271,14 +2271,19 @@ export class SupabaseService {
               throw new Error(`Utilisateur ${userId} introuvable`);
             }
             
+            const companyName = user.profile?.company || user.profile?.companyName || user.name || 'Exposant';
+            const userName = user.profile?.firstName && user.profile?.lastName 
+              ? `${user.profile.firstName} ${user.profile.lastName}` 
+              : user.name || 'Contact';
+            
             const { data: newExhibitor, error: createError } = await safeSupabase
               .from('exhibitors')
               .insert({
                 user_id: userId,
-                company_name: user.profile?.company || user.name || 'Company',
+                company_name: companyName,
                 sector: user.profile?.sector || 'Maritime Services',
                 description: 'Profil créé automatiquement',
-                contact_info: { email: user.email, name: user.name },
+                contact_info: { email: user.email, name: userName },
                 category: 'port-industry',
                 verified: false,
                 featured: false
