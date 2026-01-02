@@ -148,6 +148,7 @@ export default function PartnerDetailPage() {
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expandedExpertise, setExpandedExpertise] = useState<{ [key: number]: boolean }>({});
 
   useEffect(() => {
     const loadPartner = async () => {
@@ -795,7 +796,7 @@ export default function PartnerDetailPage() {
                     "Développement durable",
                     "Gestion logistique"
                   ]).map((exp, index) => {
-                    const [isExpanded, setIsExpanded] = React.useState(false);
+                    const isExpanded = expandedExpertise[index] || false;
                     
                     // Descriptions génériques basées sur les domaines courants
                     const getExpertiseDescription = (title: string) => {
@@ -837,7 +838,7 @@ export default function PartnerDetailPage() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
                         className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100 hover:shadow-md transition-all cursor-pointer"
-                        onClick={() => setIsExpanded(!isExpanded)}
+                        onClick={() => setExpandedExpertise(prev => ({ ...prev, [index]: !prev[index] }))}
                       >
                         <div className="flex items-center">
                           <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mr-4 flex-shrink-0">
