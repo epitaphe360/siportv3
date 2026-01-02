@@ -518,10 +518,16 @@ export default function MiniSitePreview() {
       )}
 
       {/* About Section - Modern Design */}
-      <section id="about" className="py-24 bg-white relative overflow-hidden">
+      <section id="about" className="py-24 bg-gradient-to-br from-slate-50 via-white to-blue-50/30 relative overflow-hidden">
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 w-96 h-96 opacity-5" style={{ background: `radial-gradient(circle, ${theme.primaryColor} 0%, transparent 70%)` }} />
         <div className="absolute bottom-0 left-0 w-96 h-96 opacity-5" style={{ background: `radial-gradient(circle, ${theme.secondaryColor} 0%, transparent 70%)` }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-4xl opacity-[0.03]">
+          <div className="w-full h-full" style={{ 
+            backgroundImage: `radial-gradient(circle, ${theme.accentColor} 1px, transparent 1px)`,
+            backgroundSize: '30px 30px'
+          }} />
+        </div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div
@@ -532,58 +538,127 @@ export default function MiniSitePreview() {
           >
             {/* Section Header */}
             <motion.div variants={itemVariants} className="text-center mb-16">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-sm font-medium mb-4">
-                <Building2 className="h-4 w-4" />
+              <motion.div 
+                initial={{ scale: 0.8, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 border border-blue-200/50 text-blue-700 text-sm font-semibold mb-6 shadow-sm"
+              >
+                <Sparkles className="h-4 w-4" />
                 À propos de nous
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ color: theme.primaryColor }}>
+              </motion.div>
+              <h2 className="text-4xl md:text-6xl font-black mb-6 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent leading-tight">
                 {aboutSection?.content?.title || 'Notre Histoire'}
               </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                {aboutSection?.content?.description || aboutSection?.content?.text || exhibitorData.description || 'Nous sommes fiers de participer à SIPORTS 2026 et de présenter nos solutions innovantes.'}
-              </p>
+              <div className="max-w-4xl mx-auto">
+                <p className="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium mb-8">
+                  {aboutSection?.content?.description || aboutSection?.content?.text || exhibitorData.description || 'Nous sommes fiers de participer à SIPORTS 2026 et de présenter nos solutions innovantes.'}
+                </p>
+                
+                {/* Certification Badges */}
+                <motion.div 
+                  variants={itemVariants}
+                  className="flex flex-wrap items-center justify-center gap-4 mb-8"
+                >
+                  <Badge className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-lg hover:shadow-xl transition-shadow">
+                    <Award className="h-4 w-4 mr-2" />
+                    ISO 9001
+                  </Badge>
+                  <Badge className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-600 text-white border-0 shadow-lg hover:shadow-xl transition-shadow">
+                    <Award className="h-4 w-4 mr-2" />
+                    ISO 27001
+                  </Badge>
+                  <Badge className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white border-0 shadow-lg hover:shadow-xl transition-shadow">
+                    <Star className="h-4 w-4 mr-2" />
+                    Certifié depuis 2008
+                  </Badge>
+                </motion.div>
+              </div>
             </motion.div>
 
-            {/* Features Grid - Modern Cards */}
+            {/* Features Grid - Modern Cards with Icons */}
             {((aboutSection?.content?.features || aboutSection?.content?.values) && (aboutSection.content.features?.length > 0 || aboutSection.content.values?.length > 0)) ? (
-              <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-                  {(aboutSection.content.features || aboutSection.content.values).map((feature: string) => (
-                    <motion.div
-                      key={feature}
-                      whileHover={{ y: -8, scale: 1.02 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      <Card className="p-6 h-full bg-gradient-to-br from-white to-gray-50 border-0 shadow-lg hover:shadow-xl transition-all group">
-                        <div 
-                          className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110"
-                          style={{ backgroundColor: `${theme.accentColor}15` }}
-                        >
-                          <CheckCircle2 className="h-7 w-7" style={{ color: theme.accentColor }} />
-                        </div>
-                        <h3 className="font-bold text-gray-900 text-lg">{feature}</h3>
-                      </Card>
-                    </motion.div>
-                  ))}
+              <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+                  {(aboutSection.content.features || aboutSection.content.values).map((feature: string, index: number) => {
+                    // Icônes dynamiques basées sur le contenu
+                    const featureIcons = [Sparkles, Star, Award, CheckCircle2];
+                    const FeatureIcon = featureIcons[index % featureIcons.length];
+                    
+                    return (
+                      <motion.div
+                        key={feature}
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1, duration: 0.5 }}
+                        whileHover={{ y: -12, scale: 1.03 }}
+                        viewport={{ once: true }}
+                      >
+                        <Card className="p-8 h-full bg-white/80 backdrop-blur-sm border-2 border-transparent hover:border-blue-200 shadow-xl hover:shadow-2xl transition-all duration-300 group relative overflow-hidden">
+                          {/* Gradient overlay on hover */}
+                          <div 
+                            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                            style={{ background: `linear-gradient(135deg, ${theme.primaryColor}05, ${theme.accentColor}05)` }}
+                          />
+                          
+                          <div className="relative z-10">
+                            <div 
+                              className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 shadow-lg"
+                              style={{ 
+                                background: `linear-gradient(135deg, ${theme.primaryColor}, ${theme.accentColor})`,
+                              }}
+                            >
+                              <FeatureIcon className="h-8 w-8 text-white" />
+                            </div>
+                            <h3 className="font-bold text-gray-900 text-xl mb-2 group-hover:text-blue-600 transition-colors">{feature}</h3>
+                            <div className="h-1 w-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mt-4 transform origin-left transition-all duration-300 group-hover:w-full"></div>
+                          </div>
+                        </Card>
+                      </motion.div>
+                    );
+                  })}
                 </motion.div>
               ) : !hasConfiguredSections && (
-                <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-                  {['Qualité Premium', 'Service Client 24/7', 'Innovation Continue', 'Expertise Reconnue'].map((feature: string) => (
-                    <motion.div
-                      key={feature}
-                      whileHover={{ y: -8, scale: 1.02 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      <Card className="p-6 h-full bg-gradient-to-br from-white to-gray-50 border-0 shadow-lg hover:shadow-xl transition-all group">
-                        <div 
-                          className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110"
-                          style={{ backgroundColor: `${theme.accentColor}15` }}
-                        >
-                          <CheckCircle2 className="h-7 w-7" style={{ color: theme.accentColor }} />
-                        </div>
-                        <h3 className="font-bold text-gray-900 text-lg">{feature}</h3>
-                      </Card>
-                    </motion.div>
-                  ))}
+                <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+                  {[
+                    { title: 'Intelligence Artificielle Maritime', icon: Sparkles },
+                    { title: 'Plateforme IoT intégrée', icon: Star },
+                    { title: 'Support technique 24/7', icon: Users },
+                    { title: 'Déploiement international', icon: Globe }
+                  ].map((feature, index) => {
+                    const FeatureIcon = feature.icon;
+                    
+                    return (
+                      <motion.div
+                        key={feature.title}
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1, duration: 0.5 }}
+                        whileHover={{ y: -12, scale: 1.03 }}
+                        viewport={{ once: true }}
+                      >
+                        <Card className="p-8 h-full bg-white/80 backdrop-blur-sm border-2 border-transparent hover:border-blue-200 shadow-xl hover:shadow-2xl transition-all duration-300 group relative overflow-hidden">
+                          {/* Gradient overlay on hover */}
+                          <div 
+                            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                            style={{ background: `linear-gradient(135deg, ${theme.primaryColor}05, ${theme.accentColor}05)` }}
+                          />
+                          
+                          <div className="relative z-10">
+                            <div 
+                              className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 shadow-lg"
+                              style={{ 
+                                background: `linear-gradient(135deg, ${theme.primaryColor}, ${theme.accentColor})`,
+                              }}
+                            >
+                              <FeatureIcon className="h-8 w-8 text-white" />
+                            </div>
+                            <h3 className="font-bold text-gray-900 text-xl mb-2 group-hover:text-blue-600 transition-colors">{feature.title}</h3>
+                            <div className="h-1 w-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mt-4 transform origin-left transition-all duration-300 group-hover:w-full"></div>
+                          </div>
+                        </Card>
+                      </motion.div>
+                    );
+                  })}
                 </motion.div>
               )}
 
