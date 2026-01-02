@@ -477,7 +477,7 @@ export default function MiniSitePreviewSimple() {
 
           {/* Image About */}
           {(aboutSection?.content?.image || aboutSection?.content?.images?.length > 0) && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className={`grid grid-cols-1 gap-6 ${(aboutSection?.content?.images?.length > 0 || (aboutSection?.content?.image && aboutSection?.content?.images?.length > 0)) ? 'md:grid-cols-2' : 'md:grid-cols-1 max-w-2xl mx-auto'}`}>
               {aboutSection?.content?.image && (
                 <div className="rounded-2xl overflow-hidden shadow-lg">
                   <img 

@@ -665,7 +665,7 @@ export default function MiniSitePreview() {
               {/* About Image - If provided */}
               {(aboutSection?.content?.image || (aboutSection?.content?.images && aboutSection.content.images.length > 0)) && (
                 <motion.div variants={itemVariants} className="mb-16">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className={`grid grid-cols-1 gap-6 ${(aboutSection?.content?.images && aboutSection.content.images.length > 0) ? 'md:grid-cols-2' : 'md:grid-cols-1 max-w-3xl mx-auto'}`}>
                     {aboutSection?.content?.image && (
                       <div className="rounded-2xl overflow-hidden shadow-xl">
                         <img 
