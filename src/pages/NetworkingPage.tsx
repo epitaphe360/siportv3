@@ -1249,11 +1249,21 @@ export default function NetworkingPage() {
                   </p>
                   <Button 
                     onClick={loadAIInsights} 
+                    disabled={isLoading}
                     size="lg" 
-                    className="bg-white text-slate-900 hover:bg-blue-50 px-10 py-4 rounded-2xl font-black shadow-xl transition-all transform hover:scale-105"
+                    className="bg-white text-slate-900 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed px-10 py-4 rounded-2xl font-black shadow-xl transition-all transform hover:scale-105"
                   >
-                    <Brain className="h-5 w-5 mr-3" />
-                    Lancer l'Analyse IA
+                    {isLoading ? (
+                      <>
+                        <div className="h-5 w-5 mr-3 border-2 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
+                        Analyse en cours...
+                      </>
+                    ) : (
+                      <>
+                        <Brain className="h-5 w-5 mr-3" />
+                        Lancer l'Analyse IA
+                      </>
+                    )}
                   </Button>
                 </div>
                 
@@ -1288,13 +1298,13 @@ export default function NetworkingPage() {
                     
                     <div className="h-[400px] w-full">
                       <ResponsiveContainer width="100%" height="100%">
-                        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={[
-                          { subject: 'Portuaire', A: 120, fullMark: 150 },
-                          { subject: 'Logistique', A: 98, fullMark: 150 },
-                          { subject: 'Technologie', A: 86, fullMark: 150 },
-                          { subject: 'Finance', A: 65, fullMark: 150 },
-                          { subject: 'Formation', A: 45, fullMark: 150 },
-                          { subject: 'Institutionnel', A: 90, fullMark: 150 },
+                        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={aiInsights.sectorData || [
+                          { subject: 'Portuaire', A: 0, fullMark: 10 },
+                          { subject: 'Logistique', A: 0, fullMark: 10 },
+                          { subject: 'Technologie', A: 0, fullMark: 10 },
+                          { subject: 'Finance', A: 0, fullMark: 10 },
+                          { subject: 'Formation', A: 0, fullMark: 10 },
+                          { subject: 'Institutionnel', A: 0, fullMark: 10 },
                         ]}>
                           <PolarGrid stroke="#e2e8f0" />
                           <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 12, fontWeight: 700 }} />
@@ -1374,11 +1384,11 @@ export default function NetworkingPage() {
                         <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
                           <h4 className="font-black text-slate-900 mb-4 flex items-center">
                             <CheckCircle className="h-4 w-4 text-emerald-500 mr-2" />
-                            Points Forts
+                            Analyse de Votre Réseau
                           </h4>
                           <ul className="space-y-3">
-                            {aiInsights.suggestions.slice(0, 2).map((s) => (
-                              <li key={s} className="text-sm text-slate-600 flex items-start">
+                            {aiInsights.suggestions.slice(0, Math.ceil(aiInsights.suggestions.length / 2)).map((s, idx) => (
+                              <li key={idx} className="text-sm text-slate-600 flex items-start">
                                 <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-1.5 mr-3 flex-shrink-0"></span>
                                 {s}
                               </li>
@@ -1391,12 +1401,15 @@ export default function NetworkingPage() {
                             Recommandations
                           </h4>
                           <ul className="space-y-3">
-                            {aiInsights.suggestions.slice(2, 4).map((s) => (
-                              <li key={s} className="text-sm text-slate-600 flex items-start">
+                            {aiInsights.suggestions.slice(Math.ceil(aiInsights.suggestions.length / 2)).map((s, idx) => (
+                              <li key={idx} className="text-sm text-slate-600 flex items-start">
                                 <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full mt-1.5 mr-3 flex-shrink-0"></span>
                                 {s}
                               </li>
                             ))}
+                            {aiInsights.suggestions.length === 0 && (
+                              <li className="text-sm text-slate-400 italic">Aucune recommandation pour le moment</li>
+                            )}
                           </ul>
                         </div>
                       </div>

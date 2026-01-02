@@ -14,27 +14,127 @@ import {
 } from '@/lib/networkingPermissions';
 
 // Types
+interface SectorData {
+  subject: string;
+  A: number;
+  fullMark: number;
+}
+
 interface AIInsights {
   summary: string;
   suggestions: string[];
   topKeywords: string[];
+  sectorData?: SectorData[];
+  networkStats?: {
+    totalConnections: number;
+    totalFavorites: number;
+    pendingCount: number;
+  };
 }
 
 // AI Insights will be fetched from backend
 const generateAIInsights = async (userId: string): Promise<AIInsights> => {
   try {
-    // Call to AI service would be here
-    const insights = await SupabaseService.getNetworkingInsights?.(userId);
-    return insights || {
-      summary: "Analyse de votre réseau en cours...",
-      suggestions: ["Connectez-vous avec plus d'exposants", "Participez aux événements recommandés"],
-      topKeywords: ["Réseautage", "Opportunités"],
-    };
-  } catch {
+    // Récupérer les données réelles de l'utilisateur
+    const [connections, favorites, pendingConns] = await Promise.all([
+      SupabaseService.getUserConnections(userId).catch(() => []),
+      SupabaseService.getUserFavorites(userId).catch(() => []),
+      SupabaseService.getPendingConnections(userId).catch(() => [])
+    ]);
+
+    // Récupérer tous les utilisateurs pour analyser le réseau
+    const allUsers = await SupabaseService.getUsers().catch(() => []);
+    
+    // Analyser les secteurs des connexions
+    const connectedUsers = allUsers.filter(u => connections.includes(u.id));
+    const sectors = connectedUsers.map(u => u.profile?.sector).filter(Boolean);
+    const sectorCounts = sectors.reduce((acc, sector) => {
+      acc[sector!] = (acc[sector!] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const topSectors = Object.entries(sectorCounts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 3)
+      .map(([sector]) => sector);
+
+    // Générer les données pour le graphique radar
+    const allSectors = ['Portuaire', 'Logistique', 'Technologie', 'Finance', 'Formation', 'Institutionnel'];
+    const sectorData: SectorData[] = allSectors.map(sector => ({
+      subject: sector,
+      A: sectorCounts[sector] || 0,
+      fullMark: Math.max(...Object.values(sectorCounts), 10),
+    }));
+
+    // Générer un résumé intelligent
+    const totalConnections = connections.length;
+    const totalFavorites = favorites.length;
+    const pendingCount = pendingConns.length;
+    
+    let summary = `Votre réseau compte ${totalConnections} connexion${totalConnections > 1 ? 's' : ''} active${totalConnections > 1 ? 's' : ''}`;
+    if (topSectors.length > 0) {
+      summary += ` principalement dans ${topSectors.length > 1 ? 'les secteurs' : 'le secteur'} ${topSectors.join(', ')}`;
+    }
+    summary += `. Vous avez ${totalFavorites} favori${totalFavorites > 1 ? 's' : ''} et ${pendingCount} demande${pendingCount > 1 ? 's' : ''} en attente.`;
+
+    // Générer des suggestions intelligentes
+    const suggestions: string[] = [];
+    if (totalConnections < 10) {
+      suggestions.push("💡 Développez votre réseau en contactant au moins 10 professionnels du salon");
+    }
+    if (pendingCount > 0) {
+      suggestions.push(`⏳ ${pendingCount} demande${pendingCount > 1 ? 's' : ''} de connexion en attente de validation`);
+    }
+    if (totalFavorites > 0 && totalConnections < totalFavorites) {
+      suggestions.push("🎯 Transformez vos favoris en connexions actives pour enrichir vos échanges");
+    }
+    if (topSectors.length > 0) {
+      const otherSectors = allUsers
+        .filter(u => u.profile?.sector && !topSectors.includes(u.profile.sector))
+        .map(u => u.profile!.sector!)
+        .filter((v, i, a) => a.indexOf(v) === i)
+        .slice(0, 2);
+      if (otherSectors.length > 0) {
+        suggestions.push(`🌐 Explorez de nouveaux secteurs: ${otherSectors.join(', ')}`);
+      }
+    }
+    if (suggestions.length === 0) {
+      suggestions.push("🚀 Explorez les recommandations personnalisées pour agrandir votre réseau");
+    }
+
+    // Mots-clés basés sur les profils connectés
+    const keywords = topSectors.length > 0 ? topSectors : ["Réseautage", "Business", "Innovation"];
+
     return {
-      summary: "Développez votre réseau professionnel.",
-      suggestions: ["Explorez les profils d'exposants", "Participez aux événements"],
-      topKeywords: ["Networking", "Connections"],
+      summary,
+      suggestions,
+      topKeywords: keywords,
+      sectorData,
+      networkStats: {
+        totalConnections,
+        totalFavorites,
+        pendingCount,
+      },
+    };
+  } catch (error) {
+    console.error('Erreur lors de la génération des insights:', error);
+    return {
+      summary: "Développez votre réseau professionnel en explorant les profils disponibles.",
+      suggestions: ["Explorez les profils d'exposants", "Ajoutez des contacts en favoris", "Participez aux événements du salon"],
+      topKeywords: ["Networking", "Connections", "Opportunités"],
+      sectorData: [
+        { subject: 'Portuaire', A: 0, fullMark: 10 },
+        { subject: 'Logistique', A: 0, fullMark: 10 },
+        { subject: 'Technologie', A: 0, fullMark: 10 },
+        { subject: 'Finance', A: 0, fullMark: 10 },
+        { subject: 'Formation', A: 0, fullMark: 10 },
+        { subject: 'Institutionnel', A: 0, fullMark: 10 },
+      ],
+      networkStats: {
+        totalConnections: 0,
+        totalFavorites: 0,
+        pendingCount: 0,
+      },
     };
   }
 };
@@ -448,16 +548,41 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
 
   loadAIInsights: async () => {
     const { user } = useAuthStore.getState();
-    if (!user) return;
+    if (!user) {
+      toast.error('Vous devez être connecté pour accéder aux insights.');
+      return;
+    }
 
-    set({ isLoading: true });
+    set({ isLoading: true, aiInsights: null });
+    
     try {
+      // S'assurer que les données de base sont chargées
+      const state = get();
+      if (state.connections.length === 0) {
+        await state.loadConnections();
+      }
+      if (state.favorites.length === 0) {
+        await state.loadFavorites();
+      }
+      if (state.pendingConnections.length === 0) {
+        await state.loadPendingConnections();
+      }
+      
+      // Générer les insights
       const insights = await generateAIInsights(user.id);
       set({ aiInsights: insights, isLoading: false });
-      toast.success('Insights IA générés avec succès !');
+      toast.success('✨ Insights IA générés avec succès !');
     } catch (error) {
-      set({ isLoading: false });
-      toast.error('Erreur lors de la génération des insights.');
+      console.error('Erreur lors de la génération des insights:', error);
+      set({ 
+        isLoading: false,
+        aiInsights: {
+          summary: "Une erreur s'est produite lors de l'analyse de votre réseau. Veuillez réessayer.",
+          suggestions: ["Vérifiez votre connexion", "Réessayez dans quelques instants"],
+          topKeywords: ["Erreur"],
+        }
+      });
+      toast.error('❌ Erreur lors de la génération des insights.');
     }
   },
 
