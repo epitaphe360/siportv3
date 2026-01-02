@@ -31,6 +31,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 import { LevelBadge, QuotaSummaryCard } from '../common/QuotaWidget';
 import { motion } from 'framer-motion';
 import { useVisitorStore } from '../../store/visitorStore';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 // OPTIMIZATION: Memoized VisitorDashboard to prevent unnecessary re-renders
 export default memo(function VisitorDashboard() {
@@ -270,14 +271,9 @@ export default memo(function VisitorDashboard() {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl shadow-2xl p-8 mb-6 relative overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-800 rounded-2xl shadow-2xl p-8 mb-6 relative overflow-hidden">
               {/* Background Pattern */}
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute inset-0" style={{
-                  backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-                  backgroundSize: '40px 40px'
-                }}></div>
-              </div>
+              <MoroccanPattern className="opacity-15" color="rgba(255,255,255,0.4)" scale={0.8} />
 
               <div className="relative flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center space-x-4">

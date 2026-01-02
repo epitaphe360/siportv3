@@ -37,6 +37,7 @@ import { getPartnerQuota, getPartnerTierConfig } from '../../config/partnerTiers
 import PartnerProfileCreationModal from '../partner/PartnerProfileCreationModal';
 import { supabase } from '../../lib/supabase';
 import type { PartnerTier } from '../../config/partnerTiers';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 export default function PartnerDashboard() {
   // ✅ CORRECTION: Tous les hooks DOIVENT être appelés avant tout return conditionnel
@@ -348,14 +349,9 @@ export default function PartnerDashboard() {
           transition={{ duration: 0.6 }}
           className="mb-8"
         >
-          <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-2xl shadow-2xl p-8 mb-6 relative overflow-hidden">
+          <div className="bg-gradient-to-r from-amber-600 via-orange-600 to-red-700 rounded-2xl shadow-2xl p-8 mb-6 relative overflow-hidden">
             {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0" style={{
-                backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-                backgroundSize: '40px 40px'
-              }}></div>
-            </div>
+            <MoroccanPattern className="opacity-15" color="rgba(255,255,255,0.4)" scale={0.8} />
 
             <div className="relative flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center space-x-4">

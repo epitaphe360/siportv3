@@ -24,6 +24,7 @@ import { Users, FileText, Award, Scan } from 'lucide-react';
 import { MiniSiteSetupModal } from '../exhibitor/MiniSiteSetupModal';
 import { supabase } from '../../lib/supabase';
 import { LineChartCard, BarChartCard, PieChartCard } from './charts';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 // Animation variants
 const containerVariants = {
@@ -484,16 +485,11 @@ export default function ExhibitorDashboard() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 rounded-2xl shadow-2xl mx-4 mt-4 mb-6 relative overflow-hidden"
+        className="bg-gradient-to-r from-emerald-700 via-teal-600 to-blue-700 rounded-2xl shadow-2xl mx-4 mt-4 mb-6 relative overflow-hidden"
       >
         {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-            backgroundSize: '40px 40px'
-          }}></div>
-        </div>
-
+        <MoroccanPattern className="opacity-15" color="rgba(255,255,255,0.4)" scale={0.8} />
+        
         <div className="relative max-w-7xl mx-auto px-6 py-8">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center space-x-4">

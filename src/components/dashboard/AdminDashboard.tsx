@@ -34,6 +34,7 @@ import { useNewsStore } from '../../store/newsStore';
 import { toast } from 'sonner';
 import { StatCard, LineChartCard, BarChartCard, PieChartCard } from './charts';
 import { useTranslation } from '../../hooks/useTranslation';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 export default function AdminDashboard() {
   const { t } = useTranslation();
@@ -246,8 +247,11 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 rounded-2xl shadow-2xl p-8 mb-6">
-              <div className="flex items-center justify-between">
+            <div className="bg-gradient-to-r from-slate-800 via-slate-900 to-black rounded-2xl shadow-2xl p-8 mb-6 relative overflow-hidden">
+              {/* Background Pattern */}
+              <MoroccanPattern className="opacity-10" color="rgba(255,255,255,0.3)" scale={0.8} />
+              
+              <div className="relative flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
                     <Shield className="h-10 w-10 text-white" />
