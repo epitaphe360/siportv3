@@ -68,6 +68,29 @@ export default function NetworkingPage() {
   const [isSearching, setIsSearching] = React.useState(false);
   const [selectedUserProfile, setSelectedUserProfile] = React.useState<User | null>(null);
 
+  // Helper function to get display name
+  const getDisplayName = (user: User): string => {
+    if (!user) return 'Utilisateur';
+    
+    // Try profile firstName + lastName
+    if (user.profile?.firstName || user.profile?.lastName) {
+      const firstName = user.profile.firstName || '';
+      const lastName = user.profile.lastName || '';
+      const fullName = `${firstName} ${lastName}`.trim();
+      if (fullName) return fullName;
+    }
+    
+    // Try profile company/companyName
+    if (user.profile?.company) return user.profile.company;
+    if (user.profile?.companyName) return user.profile.companyName;
+    
+    // Try user.name
+    if (user.name) return user.name;
+    
+    // Fallback to email
+    return user.email || 'Utilisateur';
+  };
+
   React.useEffect(() => {
     if (isAuthenticated && user) {
       fetchRecommendations();
@@ -193,7 +216,7 @@ export default function NetworkingPage() {
     // Try to call the canonical booking flow
     appointmentStore.bookAppointment(selectedTimeSlot, appointmentMessage)
       .then(() => {
-        toast.success(`Demande de RDV envoyée à ${selectedExhibitorForRDV.profile.firstName} ${selectedExhibitorForRDV.profile.lastName}`);
+        toast.success(`Demande de RDV envoyée à ${getDisplayName(selectedExhibitorForRDV)}`);
         setShowAppointmentModal(false);
         setSelectedExhibitorForRDV(null);
         setSelectedTimeSlot('');
@@ -697,7 +720,7 @@ export default function NetworkingPage() {
                             <div className="flex justify-between items-start mb-6">
                               <div className="relative">
                                 <Avatar className="h-20 w-20 border-4 border-white shadow-xl">
-                                  <AvatarImage src={profile.profile.avatar} alt={`${profile.profile.firstName} ${profile.profile.lastName}`} />
+                                  <AvatarImage src={profile.profile.avatar} alt={getDisplayName(profile)} />
                                   <AvatarFallback className="bg-gradient-to-br from-slate-800 to-slate-900 text-white font-black text-xl">
                                     {profile.profile?.firstName?.[0] || 'U'}{profile.profile?.lastName?.[0] || 'U'}
                                   </AvatarFallback>
@@ -713,7 +736,7 @@ export default function NetworkingPage() {
                             <div className="mb-6">
                               <div className="flex items-center space-x-2 mb-1">
                                 <h4 className="font-black text-xl text-slate-900 group-hover:text-blue-600 transition-colors truncate">
-                                  {`${profile.profile.firstName} ${profile.profile.lastName}`}
+                                  {getDisplayName(profile)}
                                 </h4>
                                 {profile.visitor_level && (
                                   <LevelBadge level={profile.visitor_level} type="visitor" size="sm" />
@@ -771,7 +794,7 @@ export default function NetworkingPage() {
                               ) : (
                                 <Button
                                   size="sm"
-                                  onClick={() => handleConnect(profile.id, `${profile.profile.firstName} ${profile.profile.lastName}`)}
+                                  onClick={() => handleConnect(profile.id, getDisplayName(profile))}
                                   className="w-full bg-slate-900 hover:bg-slate-800 text-white shadow-lg rounded-xl h-11 font-bold"
                                 >
                                   <UserPlus className="h-4 w-4 mr-2" />
@@ -782,7 +805,7 @@ export default function NetworkingPage() {
                             
                             <div className="flex items-center space-x-2">
                               <button
-                                onClick={() => handleFavoriteToggle(profile.id, `${profile.profile.firstName} ${profile.profile.lastName}`, isFavorite)}
+                                onClick={() => handleFavoriteToggle(profile.id, getDisplayName(profile), isFavorite)}
                                 className={`p-2.5 rounded-xl border transition-all ${
                                   isFavorite 
                                     ? 'bg-rose-50 border-rose-200 text-rose-500' 
@@ -792,7 +815,7 @@ export default function NetworkingPage() {
                                 <Heart className={`h-5 w-5 ${isFavorite ? 'fill-current' : ''}`} />
                               </button>
                               <button
-                                onClick={() => handleViewProfile(`${profile.profile.firstName} ${profile.profile.lastName}`, profile.profile.company || '', profile)}
+                                onClick={() => handleViewProfile(getDisplayName(profile), profile.profile?.company || profile.profile?.companyName || '', profile)}
                                 className="p-2.5 rounded-xl border bg-white border-slate-200 text-slate-400 hover:text-blue-600 hover:border-blue-200 transition-all"
                               >
                                 <Eye className="h-5 w-5" />
@@ -949,10 +972,10 @@ export default function NetworkingPage() {
                             </Avatar>
                             <div className="flex-1 min-w-0">
                               <h4 className="font-black text-slate-900 truncate">
-                                {`${profile.profile.firstName} ${profile.profile.lastName}`}
+                                {getDisplayName(profile)}
                               </h4>
-                              <p className="text-xs font-bold text-blue-600 uppercase tracking-wider truncate">{profile.profile.position}</p>
-                              <p className="text-xs text-slate-400 truncate">{profile.profile.company}</p>
+                              <p className="text-xs font-bold text-blue-600 uppercase tracking-wider truncate">{profile.profile?.position || profile.type}</p>
+                              <p className="text-xs text-slate-400 truncate">{profile.profile?.company || profile.profile?.companyName || ''}</p>
                             </div>
                           </div>
 
@@ -960,7 +983,7 @@ export default function NetworkingPage() {
                             <Button 
                               size="sm" 
                               variant="outline"
-                              onClick={() => handleViewProfile(`${profile.profile.firstName} ${profile.profile.lastName}`, profile.profile.company || '', profile)}
+                              onClick={() => handleViewProfile(getDisplayName(profile), profile.profile?.company || profile.profile?.companyName || '', profile)}
                               className="flex-1 rounded-xl border-slate-200 h-10 font-bold"
                             >
                               <Eye className="h-4 w-4 mr-2" />
@@ -977,7 +1000,7 @@ export default function NetworkingPage() {
                             ) : (
                               <Button
                                 size="sm"
-                                onClick={() => handleConnect(profile.id, `${profile.profile.firstName} ${profile.profile.lastName}`)}
+                                onClick={() => handleConnect(profile.id, getDisplayName(profile))}
                                 className="flex-1 bg-slate-900 text-white rounded-xl h-10 font-bold"
                               >
                                 <UserPlus className="h-4 w-4 mr-2" />
@@ -1057,6 +1080,90 @@ export default function NetworkingPage() {
                 </div>
               </div>
             </div>
+
+            {/* Demandes en attente */}
+            {pendingConnections.length > 0 && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-2xl font-black text-slate-900 flex items-center gap-3">
+                    <Clock className="h-6 w-6 text-amber-500" />
+                    Demandes en attente ({pendingConnections.length})
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {pendingConnections.map((request: any) => {
+                    const requester = request.requester;
+                    if (!requester) return null;
+
+                    return (
+                      <Card key={request.id} className="p-6 bg-amber-50/50 border-2 border-amber-100 rounded-[2rem] hover:shadow-xl transition-all">
+                        <div className="flex items-start gap-4 mb-4">
+                          <Avatar className="h-14 w-14 border-2 border-amber-200">
+                            <AvatarImage src={requester.profile?.avatar} />
+                            <AvatarFallback className="bg-amber-100 text-amber-700 font-bold">
+                              {getDisplayName(requester).substring(0, 2).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-black text-slate-900 truncate">{getDisplayName(requester)}</h4>
+                            <p className="text-xs font-bold text-amber-600 uppercase tracking-wider truncate">
+                              {requester.profile?.position || requester.type}
+                            </p>
+                            <p className="text-xs text-slate-500 truncate">
+                              {requester.profile?.company || requester.profile?.companyName || ''}
+                            </p>
+                          </div>
+                        </div>
+                        {request.message && (
+                          <p className="text-sm text-slate-600 mb-4 p-3 bg-white rounded-xl italic">
+                            "{request.message}"
+                          </p>
+                        )}
+                        <div className="flex gap-3">
+                          <Button
+                            size="sm"
+                            onClick={async () => {
+                              try {
+                                await SupabaseService.acceptConnectionRequest(request.id);
+                                toast.success(`Connexion acceptée avec ${getDisplayName(requester)}`);
+                                // Recharger les données
+                                const store = useNetworkingStore.getState();
+                                await store.loadConnections();
+                                await store.loadPendingConnections();
+                              } catch (error) {
+                                toast.error('Erreur lors de l\'acceptation');
+                              }
+                            }}
+                            className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold"
+                          >
+                            <CheckCircle className="h-4 w-4 mr-2" />
+                            Accepter
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={async () => {
+                              try {
+                                await SupabaseService.rejectConnectionRequest(request.id);
+                                toast.info('Demande refusée');
+                                // Recharger les données
+                                const store = useNetworkingStore.getState();
+                                await store.loadPendingConnections();
+                              } catch (error) {
+                                toast.error('Erreur lors du refus');
+                              }
+                            }}
+                            className="flex-1 border-2 border-slate-200 hover:bg-red-50 hover:border-red-200 hover:text-red-600 rounded-xl font-bold"
+                          >
+                            Refuser
+                          </Button>
+                        </div>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Liste des connexions - Style Moderne */}
             {connections.length === 0 ? (
@@ -1478,7 +1585,7 @@ export default function NetworkingPage() {
               user={selectedUserProfile}
               showBooking={true}
               onClose={() => setSelectedUserProfile(null)}
-              onConnect={(userId) => handleConnect(userId, `${selectedUserProfile.profile.firstName} ${selectedUserProfile.profile.lastName}`)}
+              onConnect={(userId) => handleConnect(userId, getDisplayName(selectedUserProfile))}
               onMessage={(userName) => handleMessage(userName, selectedUserProfile.profile.company || '')}
             />
           </div>

@@ -46,11 +46,21 @@ interface DailyUsage {
   lastReset: Date;
 }
 
+interface PendingConnection {
+  id: string;
+  requester_id: string;
+  addressee_id: string;
+  status: string;
+  created_at: string;
+  message?: string;
+  requester: any; // User object
+}
+
 interface NetworkingState {
   recommendations: NetworkingRecommendation[];
   connections: string[]; // Array of user IDs
   favorites: string[]; // Array of user IDs
-  pendingConnections: string[]; // Array of user IDs
+  pendingConnections: PendingConnection[]; // Array of pending connection objects
   aiInsights: AIInsights | null;
   isLoading: boolean;
   error: string | null;

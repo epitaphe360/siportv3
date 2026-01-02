@@ -1935,10 +1935,17 @@ export class SupabaseService {
     try {
       let query = safeSupabase.from('users').select('*');
 
+      // Par défaut, afficher uniquement les exposants, visiteurs et partenaires (pas les admins)
+      // Si aucun userType spécifié, afficher tous les types professionnels
+      if (!filters.userType && !filters.searchTerm && !filters.sector && !filters.location) {
+        // Aucun filtre = afficher tous les exposants et partenaires
+        query = query.in('type', ['exhibitor', 'partner', 'visitor']);
+      }
+
       // Filtre par terme de recherche (nom, entreprise, poste)
       if (filters.searchTerm && filters.searchTerm.trim()) {
         const term = filters.searchTerm.trim().toLowerCase();
-        query = query.or(`profile->>firstName.ilike.%${term}%,profile->>lastName.ilike.%${term}%,profile->>company.ilike.%${term}%,profile->>position.ilike.%${term}%`);
+        query = query.or(`profile->>firstName.ilike.%${term}%,profile->>lastName.ilike.%${term}%,profile->>company.ilike.%${term}%,profile->>companyName.ilike.%${term}%,profile->>position.ilike.%${term}%,name.ilike.%${term}%`);
       }
 
       // Filtre par secteur
@@ -1956,16 +1963,24 @@ export class SupabaseService {
         query = query.eq('profile->>country', filters.location);
       }
 
-      // Limite
-      if (filters.limit) {
-        query = query.limit(filters.limit);
-      }
+      // Exclure les utilisateurs sans profil valide
+      query = query.not('profile', 'is', null);
+
+      // Limite (par défaut 50 si pas de filtre, 100 avec filtres)
+      const defaultLimit = filters.limit || 100;
+      query = query.limit(defaultLimit);
 
       const { data, error } = await query;
 
       if (error) throw error;
 
-      return (data || []).map(this.transformUserDBToUser);
+      // Filtrer les résultats côté client pour s'assurer d'avoir des données valides
+      const users = (data || [])
+        .map(this.transformUserDBToUser)
+        .filter(u => u && (u.profile?.firstName || u.profile?.company || u.profile?.companyName || u.name));
+
+      console.log(`✅ Recherche utilisateurs: ${users.length} résultats trouvés`);
+      return users;
     } catch (error) {
       console.error('Erreur lors de la recherche d\'utilisateurs:', error);
       return [];
@@ -2068,6 +2083,28 @@ export class SupabaseService {
 	      return true;
 	    } catch (error) {
 	      console.error('Erreur lors de l\'acceptation de la demande:', error);
+	      return false;
+	    }
+	  }
+
+	  /**
+	   * Refuse une demande de connexion
+	   */
+	  static async rejectConnectionRequest(connectionId: string): Promise<boolean> {
+	    if (!this.checkSupabaseConnection()) return false;
+	
+	    const safeSupabase = supabase!;
+	    try {
+	      const { error } = await safeSupabase
+	        .from('connections')
+	        .delete()
+	        .eq('id', connectionId);
+	
+	      if (error) throw error;
+	
+	      return true;
+	    } catch (error) {
+	      console.error('Erreur lors du refus de la demande:', error);
 	      return false;
 	    }
 	  }
