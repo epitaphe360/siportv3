@@ -518,81 +518,162 @@ export default function MiniSitePreviewSimple() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════ */}
-      {/* SECTION PRODUITS */}
+      {/* SECTION PRODUITS - Enhanced Modern Design */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
-      <section id="products" className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          {/* Header */}
+      <section id="products" className="py-20 bg-gradient-to-br from-slate-50 via-white to-blue-50/30 relative overflow-hidden">
+        {/* Decorative Background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 right-10 w-72 h-72 bg-gradient-to-br from-blue-200/20 to-purple-200/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 left-10 w-64 h-64 bg-gradient-to-br from-indigo-200/20 to-pink-200/20 rounded-full blur-3xl" />
+        </div>
+
+        <div className="max-w-6xl mx-auto px-6 relative">
+          {/* Header - Enhanced */}
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-medium mb-4">
-              <Package className="h-4 w-4" />
-              Nos solutions
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: theme.primaryColor }}>
+            <Badge className="px-6 py-2.5 rounded-full bg-gradient-to-r from-emerald-500/10 via-green-500/10 to-teal-500/10 border-2 border-emerald-200/50 mb-6">
+              <Sparkles className="h-4 w-4 mr-2 text-emerald-600" />
+              <span className="text-emerald-700 font-bold">Nos Solutions Premium</span>
+            </Badge>
+            <h2 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
               Produits & Services
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Découvrez notre gamme de solutions innovantes
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Découvrez notre gamme complète de solutions innovantes pour transformer votre activité
             </p>
           </div>
 
-          {/* Products Grid */}
+          {/* Products Grid - Enhanced Cards */}
           {products.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {products.map((product) => (
-                <Card key={product.id} className="overflow-hidden hover:shadow-xl transition-shadow">
-                  {/* Image */}
-                  <div className="h-48 bg-gray-100">
+                <Card 
+                  key={product.id} 
+                  className="overflow-hidden hover:shadow-2xl transition-all duration-300 border-4 border-gray-100 hover:border-blue-200 group relative"
+                >
+                  {/* Animated border effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-pink-500/20 transition-all duration-500 pointer-events-none rounded-lg" />
+                  
+                  {/* Image with enhanced overlay */}
+                  <div className="h-56 bg-gray-100 relative overflow-hidden">
                     <SafeImage 
                       src={product.image || product.images?.[0]}
                       alt={product.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transform group-hover:scale-110 group-hover:rotate-1 transition-all duration-700"
                       fallback={
-                        <div className="w-full h-full flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${theme.primaryColor}20, ${theme.secondaryColor}20)` }}>
-                          <Package className="h-16 w-16" style={{ color: theme.primaryColor }} />
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100">
+                          <div className="bg-gradient-to-br from-blue-500 to-indigo-600 w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg">
+                            <Package className="h-8 w-8 text-white" />
+                          </div>
                         </div>
                       }
                     />
+                    
+                    {/* Dark overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                    
+                    {/* Stock & Category Badges */}
+                    <div className="absolute top-3 left-3 right-3 flex items-start justify-between gap-2">
+                      {/* Stock Badge */}
+                      {product.inStock !== false && (
+                        <Badge className="px-3 py-1 text-xs font-bold shadow-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0">
+                          <CheckCircle2 className="h-3 w-3 mr-1" />
+                          En stock
+                        </Badge>
+                      )}
+                      
+                      {/* Category Badge */}
+                      {product.category && (
+                        <Badge className="px-3 py-1 text-xs font-bold shadow-lg bg-gradient-to-r from-blue-500 to-cyan-600 text-white border-0">
+                          {product.category}
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                   
-                  {/* Content */}
-                  <div className="p-6">
-                    {product.category && (
-                      <Badge className="mb-3" style={{ backgroundColor: theme.accentColor, color: 'white' }}>
-                        {product.category}
-                      </Badge>
-                    )}
-                    <h3 className="text-xl font-bold mb-2">{product.name}</h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">{product.description}</p>
+                  {/* Content - Enhanced */}
+                  <div className="p-6 relative z-10">
+                    <h3 className="text-xl font-black mb-3 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">
+                      {product.name}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed">
+                      {product.description}
+                    </p>
                     
-                    {/* Features */}
+                    {/* Features with modern styling */}
                     {product.features?.length > 0 && (
-                      <ul className="space-y-1 mb-4">
+                      <div className="space-y-2 mb-4">
                         {product.features.slice(0, 3).map((f: string) => (
-                          <li key={f} className="flex items-center text-sm text-gray-600">
-                            <CheckCircle2 className="h-4 w-4 mr-2 flex-shrink-0" style={{ color: theme.accentColor }} />
-                            <span className="line-clamp-1">{f}</span>
-                          </li>
+                          <div key={f} className="flex items-center gap-2 text-sm text-gray-700 bg-gray-50 p-2 rounded-lg group-hover:bg-blue-50 transition-colors">
+                            <div className="bg-gradient-to-br from-blue-500 to-indigo-600 w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 shadow-sm">
+                              <CheckCircle2 className="h-3 w-3 text-white" />
+                            </div>
+                            <span className="font-medium line-clamp-1">{f}</span>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
                     )}
                     
-                    {/* Price */}
-                    <div className="flex items-center justify-between pt-4 border-t">
-                      <span className="font-bold text-lg" style={{ color: theme.primaryColor }}>
-                        {product.price || 'Sur devis'}
-                      </span>
-                      <Button size="sm" variant="outline" onClick={() => setSelectedProduct(product)}>En savoir +</Button>
+                    {/* Price & CTA - Enhanced */}
+                    <div className="flex items-center justify-between pt-4 border-t-2 border-gray-100 group-hover:border-blue-200 transition-colors">
+                      <div className="flex-1">
+                        {product.price ? (
+                          <div className="flex flex-col">
+                            <span className="text-xs text-gray-500 font-medium">À partir de</span>
+                            <span className="font-black text-2xl bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                              {product.price}
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col">
+                            <span className="text-xs text-gray-500 font-medium">Tarif</span>
+                            <span className="font-bold text-gray-700">Sur devis</span>
+                          </div>
+                        )}
+                      </div>
+                      <Button 
+                        size="sm" 
+                        className="rounded-xl px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                        onClick={() => setSelectedProduct(product)}
+                      >
+                        <span className="mr-1">En savoir +</span>
+                        <ExternalLink className="h-3 w-3" />
+                      </Button>
                     </div>
                   </div>
                 </Card>
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 bg-gray-50 rounded-2xl">
-              <Package className="h-16 w-16 mx-auto text-gray-300 mb-4" />
-              <p className="text-gray-500">Aucun produit n'a encore été ajouté</p>
+            <div className="text-center py-16 bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-3xl border-2 border-dashed border-gray-300">
+              <div className="bg-gradient-to-br from-gray-100 to-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Package className="h-10 w-10 text-gray-400" />
+              </div>
+              <p className="text-gray-500 font-medium">Aucun produit n'a encore été ajouté</p>
             </div>
+          )}
+
+          {/* Call to Action - Enhanced */}
+          {products.length > 0 && (
+            <Card className="mt-12 p-6 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-2 border-blue-200 shadow-xl">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="text-left flex-1">
+                  <h3 className="text-xl font-bold text-gray-900 mb-1">
+                    💬 Besoin d'une solution personnalisée ?
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Notre équipe d'experts est à votre disposition
+                  </p>
+                </div>
+                <Button
+                  size="lg"
+                  className="rounded-xl px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                  onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  <MessageCircle className="h-5 w-5 mr-2" />
+                  Contactez-nous
+                </Button>
+              </div>
+            </Card>
           )}
         </div>
       </section>

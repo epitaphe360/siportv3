@@ -641,7 +641,7 @@ export default function PartnerDashboard() {
           {/* Graphique ligne: Exposition de marque (7 jours) */}
           <div className="mb-6">
             <LineChartCard
-              title="Exposition de Marque (7 derniers jours)"
+              title={t('dashboard.brand_exposure_7days')}
               data={brandExposureData}
               dataKeys={[
                 { key: 'impressions', color: '#8b5cf6', name: 'Impressions' },
@@ -654,7 +654,7 @@ export default function PartnerDashboard() {
           {/* Grille: Graphique circulaire + Barres */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <PieChartCard
-              title="Canaux d'Engagement"
+              title={t('dashboard.engagement_channels')}
               data={engagementChannelsData}
               height={300}
             />

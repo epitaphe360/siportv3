@@ -42,7 +42,7 @@ export const Footer: React.FC = memo(() => {
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="p-2 bg-white/10 rounded-lg text-white/80 hover:text-white hover:bg-siports-primary transition-all duration-200"
-                title="Suivez-nous sur Facebook"
+                title={t('social.follow_facebook')}
               >
                 <Facebook className="h-5 w-5" />
               </a>
@@ -51,7 +51,7 @@ export const Footer: React.FC = memo(() => {
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="p-2 bg-white/10 rounded-lg text-white/80 hover:text-white hover:bg-siports-primary transition-all duration-200"
-                title="Suivez-nous sur Twitter"
+                title={t('social.follow_twitter')}
               >
                 <Twitter className="h-5 w-5" />
               </a>
@@ -60,7 +60,7 @@ export const Footer: React.FC = memo(() => {
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="p-2 bg-white/10 rounded-lg text-white/80 hover:text-white hover:bg-siports-primary transition-all duration-200"
-                title="Suivez-nous sur LinkedIn"
+                title={t('social.follow_linkedin')}
               >
                 <Linkedin className="h-5 w-5" />
               </a>
@@ -69,7 +69,7 @@ export const Footer: React.FC = memo(() => {
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="p-2 bg-white/10 rounded-lg text-white/80 hover:text-white hover:bg-siports-primary transition-all duration-200"
-                title="Chaîne YouTube SIPORTS"
+                title={t('social.youtube_channel')}
               >
                 <Youtube className="h-5 w-5" />
               </a>

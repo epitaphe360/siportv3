@@ -355,7 +355,7 @@ export default memo(function VisitorDashboard() {
             className="mb-8"
           >
             <QuotaSummaryCard
-              title="Vos Quotas"
+              title={t('dashboard.your_quotas')}
               level={userLevel}
               type="visitor"
               quotas={[
@@ -548,7 +548,7 @@ export default memo(function VisitorDashboard() {
             {/* Graphique ligne: Activité des visites (7 jours) */}
             <div className="mb-6">
               <LineChartCard
-                title="Activité de Visite (7 derniers jours)"
+                title={t('dashboard.visit_activity_7days')}
                 data={visitActivityData}
                 dataKeys={[
                   { key: 'visites', color: '#3b82f6', name: 'Visites' },
@@ -561,12 +561,12 @@ export default memo(function VisitorDashboard() {
             {/* Grille: Graphique circulaire + Barres */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <PieChartCard
-                title="Statut des Rendez-vous"
+                title={t('dashboard.appointment_status')}
                 data={appointmentStatusData}
                 height={300}
               />
               <BarChartCard
-                title="Centres d'Intérêt"
+                title={t('dashboard.interest_areas')}
                 data={interestAreasData}
                 dataKey="value"
                 color="#3b82f6"

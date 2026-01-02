@@ -955,7 +955,7 @@ export default function ExhibitorDetailPage() {
           <Button 
             variant="outline" 
             className="rounded-full w-12 h-12 shadow-lg bg-white"
-            title="Informations de contact"
+            title={t('ui.contact_info')}
             onClick={() => {
               const email = exhibitor.contactInfo?.email || 'contact@portsolutions.com';
               window.open(`mailto:${email}?subject=Demande de contact - ${exhibitor.companyName}`, '_blank');
@@ -966,7 +966,7 @@ export default function ExhibitorDetailPage() {
           <Button 
             variant="outline" 
             className="rounded-full w-12 h-12 shadow-lg bg-white"
-            title="Prendre rendez-vous"
+            title={t('ui.book_appointment')}
             onClick={() => handleAppointmentClick(exhibitor.id)}
           >
             <Calendar className="h-5 w-5" />
@@ -997,7 +997,7 @@ export default function ExhibitorDetailPage() {
                 toast.success(`Favoris mis à jour — ajouté: ${exhibitor.companyName}`);
               }
             }}
-            title="Ajouter/Retirer des favoris"
+            title={t('ui.add_remove_favorite')}
           >
             <Heart className="h-5 w-5" />
           </Button>

@@ -620,7 +620,7 @@ export default function ExhibitorDashboard() {
         {/* Quota Summary Card */}
         <div className="mb-8">
           <QuotaSummaryCard
-            title="Vos Quotas Exposant"
+            title={t('dashboard.exhibitor_quotas')}
             level={getExhibitorLevelByArea(user?.profile?.standArea || 9)}
             type="exhibitor"
             quotas={[
@@ -788,7 +788,7 @@ export default function ExhibitorDashboard() {
 
           {/* Row 1: Engagement visiteurs */}
           <LineChartCard
-            title="Engagement Visiteurs (7 derniers jours)"
+            title={t('dashboard.visitor_engagement_7days')}
             data={visitorEngagementData}
             dataKeys={[
               { key: 'visits', color: '#3b82f6', name: 'Visites' },

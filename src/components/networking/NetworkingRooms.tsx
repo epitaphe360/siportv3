@@ -206,7 +206,7 @@ export const NetworkingRooms: React.FC<NetworkingRoomsProps> = ({ eventId }) => 
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Rechercher une salle..."
+              placeholder={t('networking.search_room')}
               className="w-full pl-10 pr-4 py-2 border rounded-lg"
             />
           </div>
