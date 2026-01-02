@@ -284,16 +284,28 @@ export function generateQRData(badge: UserBadge): string {
 export function getBadgeColor(accessLevel: string): string {
   switch (accessLevel) {
     case 'admin':
-      return '#dc3545'; // Rouge
+      return '#F44336'; // Rouge
+    case 'security':
+      return '#FF9800'; // Orange
     case 'exhibitor':
-      return '#007bff'; // Bleu
-    case 'partner':
-      return '#6f42c1'; // Violet
+      return '#4CAF50'; // Vert
+    case 'visitor_premium':
     case 'vip':
-      return '#ffd700'; // Or
+    case 'partner_gold':
+      return '#FFD700'; // Or
+    case 'partner_museum':
+      return '#3F51B5'; // Indigo
+    case 'partner_silver':
+      return '#C0C0C0'; // Argent
+    case 'partner_platinium':
+      return '#E0E0E0'; // Platine
+    case 'partner':
+      return '#6f42c1'; // Violet (fallback)
+    case 'visitor_free':
+      return '#9E9E9E'; // Gris
     case 'standard':
     default:
-      return '#28a745'; // Vert
+      return '#28a745'; // Vert par défaut
   }
 }
 
@@ -304,12 +316,25 @@ export function getAccessLevelLabel(accessLevel: string): string {
   switch (accessLevel) {
     case 'admin':
       return 'Administrateur';
+    case 'security':
+      return 'Sécurité';
     case 'exhibitor':
       return 'Exposant';
+    case 'visitor_premium':
+    case 'vip':
+      return 'Visiteur VIP';
+    case 'visitor_free':
+      return 'Visiteur';
+    case 'partner_museum':
+      return 'Partenaire Musée';
+    case 'partner_silver':
+      return 'Partenaire Silver';
+    case 'partner_gold':
+      return 'Partenaire Gold';
+    case 'partner_platinium':
+      return 'Partenaire Platinum';
     case 'partner':
       return 'Partenaire';
-    case 'vip':
-      return 'VIP Premium';
     case 'standard':
     default:
       return 'Standard';

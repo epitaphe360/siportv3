@@ -2279,7 +2279,7 @@ export class SupabaseService {
                 sector: user.profile?.sector || 'Technology',
                 description: 'Profil créé automatiquement',
                 contact_email: user.email,
-                booth_number: 'TBD',
+                stand_number: 'TBD',
                 stand_area: 18,
                 level: 'standard_18'
               })
