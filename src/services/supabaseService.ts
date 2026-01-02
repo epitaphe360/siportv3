@@ -2258,12 +2258,45 @@ export class SupabaseService {
             .maybeSingle();
           
           if (exhError || !exhibitor) {
-            console.error('❌ [CREATE_SLOT] Exhibitor introuvable pour userId:', userId, exhError);
-            throw new Error(`Aucun exposant trouvé pour l'utilisateur ${userId}. Veuillez d'abord créer un profil exposant.`);
+            console.warn('⚠️ [CREATE_SLOT] Exhibitor introuvable pour userId:', userId, 'création automatique...');
+            
+            // Créer automatiquement l'exhibitor si il n'existe pas
+            const { data: user } = await safeSupabase
+              .from('users')
+              .select('email, profile')
+              .eq('id', userId)
+              .single();
+            
+            if (!user) {
+              throw new Error(`Utilisateur ${userId} introuvable`);
+            }
+            
+            const { data: newExhibitor, error: createError } = await safeSupabase
+              .from('exhibitors')
+              .insert({
+                user_id: userId,
+                company: user.profile?.company || 'Company',
+                sector: user.profile?.sector || 'Technology',
+                description: 'Profil créé automatiquement',
+                contact_email: user.email,
+                booth_number: 'TBD',
+                stand_area: 18,
+                level: 'standard_18'
+              })
+              .select('id')
+              .single();
+            
+            if (createError || !newExhibitor) {
+              console.error('❌ [CREATE_SLOT] Erreur création auto exhibitor:', createError);
+              throw new Error(`Impossible de créer le profil exposant pour ${userId}`);
+            }
+            
+            exhibitorId = newExhibitor.id;
+            console.log('✅ [CREATE_SLOT] Exhibitor créé automatiquement:', { userId, exhibitorId });
+          } else {
+            exhibitorId = exhibitor.id;
+            console.log('✅ [CREATE_SLOT] Exhibitor résolu:', { userId, exhibitorId });
           }
-          
-          exhibitorId = exhibitor.id;
-          console.log('✅ [CREATE_SLOT] Exhibitor résolu:', { userId, exhibitorId });
         }
       }
 
