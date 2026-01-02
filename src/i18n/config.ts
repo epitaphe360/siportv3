@@ -18,7 +18,7 @@ const resources = {
         subscriptions: 'Abonnements',
         appointments: 'Rendez-vous',
         chat: 'Messagerie',
-        networking: 'Networking',
+        networking: 'Réseautage',
         profile: 'Mon Profil'
       },
       menu: {
@@ -61,7 +61,7 @@ const resources = {
         search: 'Rechercher',
         view: 'Voir',
         download: 'Télécharger',
-        upload: 'Upload',
+        upload: 'Téléverser',
         close: 'Fermer',
         confirm: 'Confirmer',
         back: 'Retour',
@@ -87,7 +87,7 @@ const resources = {
         title: 'Administration',
         users: 'Utilisateurs',
         moderation: 'Modération',
-        analytics: 'Analytics',
+        analytics: 'Analyses',
         reports: 'Rapports',
         settings: 'Paramètres',
         logs: 'Journaux',
@@ -118,15 +118,15 @@ const resources = {
         events: 'Événements',
         appointments: 'Mes rendez-vous',
         favorites: 'Mes favoris',
-        networking: 'Networking',
+        networking: 'Réseautage',
         badge: 'Mon badge',
-        subscription: 'Abonnement Premium',
+        subscription: 'Abonnement Privilège',
         level: 'Niveau',
-        upgrade: 'Passer Premium',
+        upgrade: 'Passer Privilège',
         my_appointments: 'Mes rendez-vous',
         my_favorites: 'Mes favoris',
         my_tickets: 'Mes billets',
-        upgrade_required: 'Upgrade requis',
+        upgrade_required: 'Mise à niveau requise',
         schedule_appointment: 'Planifier un rendez-vous',
         appointment_confirmed: 'Rendez-vous confirmé',
         appointment_declined: 'Rendez-vous refusé',
@@ -198,7 +198,7 @@ const resources = {
         audit_logs: 'Journaux d\'audit'
       },
       analytics: {
-        title: 'Analytics',
+        title: 'Analyses',
         overview: 'Vue d\'ensemble',
         visitors: 'Visiteurs',
         pageviews: 'Pages vues',
@@ -247,7 +247,7 @@ const resources = {
         leads: {
           title: 'Leads & Prospects',
           subtitle: 'Gérez vos leads qualifiés et suivez leur progression dans le pipeline commercial',
-          premium_program: 'Programme Leads Premium',
+          premium_program: 'Programme Leads Privilège',
           conversion_rate: '12% Taux de Conversion',
           generated: 'Leads générés',
           qualified: 'Leads qualifiés',
@@ -406,7 +406,7 @@ const resources = {
         level_info: 'Niveau',
         valid_dates: 'Valide du 1er au 3 avril 2026',
         access_granted: 'Accès autorisé',
-        upgrade_to_premium: 'Passer Premium pour plus d\'avantages'
+        upgrade_to_premium: 'Passer Privilège pour plus d\'avantages'
       },
       forms: {
         required: 'Requis',
@@ -793,7 +793,7 @@ const resources = {
         subscriptions: 'Suscripciones',
         appointments: 'Citas',
         chat: 'Mensajes',
-        networking: 'Networking',
+        networking: 'Contactos',
         profile: 'Mi Perfil'
       },
       menu: {
@@ -862,7 +862,7 @@ const resources = {
         title: 'Administración',
         users: 'Usuarios',
         moderation: 'Moderación',
-        analytics: 'Analíticas',
+        analytics: 'Análisis',
         reports: 'Informes',
         settings: 'Configuración',
         logs: 'Registros',
@@ -893,11 +893,11 @@ const resources = {
         events: 'Eventos',
         appointments: 'Mis Citas',
         favorites: 'Mis Favoritos',
-        networking: 'Networking',
+        networking: 'Contactos',
         badge: 'Mi Credencial',
-        subscription: 'Suscripción Premium',
+        subscription: 'Suscripción Privilegio',
         level: 'Nivel',
-        upgrade: 'Actualizar a Premium',
+        upgrade: 'Actualizar a Privilegio',
         my_appointments: 'Mis Citas',
         my_favorites: 'Mis Favoritos',
         my_tickets: 'Mis Boletos',
@@ -1059,7 +1059,7 @@ const resources = {
         level_info: 'Nivel',
         valid_dates: 'Válido del 1 al 3 de abril de 2026',
         access_granted: 'Acceso Concedido',
-        upgrade_to_premium: 'Actualizar a Premium para más beneficios'
+        upgrade_to_premium: 'Actualizar a Privilegio para más beneficios'
       },
       forms: {
         required: 'Requerido',
