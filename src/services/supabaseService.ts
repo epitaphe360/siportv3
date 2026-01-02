@@ -2003,14 +2003,22 @@ export class SupabaseService {
 	
 	    const safeSupabase = supabase!;
 	    try {
+	      // Utiliser la nouvelle structure de notifications avec title et category
 	      await safeSupabase.from('notifications').insert([{
 	        user_id: userId,
+	        title: type === 'connection' ? 'Nouvelle connexion' : 
+	               type === 'event' ? 'Événement' : 
+	               type === 'message' ? 'Nouveau message' : 'Notification',
 	        message: message,
-	        type: type,
-	        read: false
+	        type: type === 'connection' ? 'info' : 
+	              type === 'event' ? 'info' : 
+	              type === 'message' ? 'info' : 'info',
+	        category: type,
+	        is_read: false
 	      }]);
 	    } catch (error) {
-	      console.error('Erreur lors de la création de la notification:', error);
+	      // Ne pas bloquer l'exécution si la notification échoue
+	      console.warn('⚠️ Échec création notification (non bloquant):', error);
 	    }
 	  }
 	
