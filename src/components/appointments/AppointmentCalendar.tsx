@@ -68,6 +68,20 @@ export default function AppointmentCalendar() {
   // Mode "Mes rendez-vous" si pas d'exhibitorId
   const isMyAppointmentsMode = !exhibitorId;
 
+  // Filtrer les rendez-vous pour l'utilisateur connecté seulement
+  const userAppointments = appointments.filter(app => {
+    if (!authUser?.id) return false;
+    // Pour les visiteurs: afficher leurs rendez-vous
+    if (authUser.type === 'visitor') {
+      return app.visitorId === authUser.id;
+    }
+    // Pour les exposants: afficher les rendez-vous qu'ils reçoivent
+    if (authUser.type === 'exhibitor') {
+      return app.exhibitorId === authUser.id;
+    }
+    return false;
+  });
+
   // Vérification d'authentification
   useEffect(() => {
     if (!isAuthenticated) {
@@ -301,7 +315,7 @@ export default function AppointmentCalendar() {
     return slotDate.toDateString() === selectedDate.toDateString();
   });
 
-  const todayAppointments = appointments.filter(appointment => {
+  const todayAppointments = userAppointments.filter(appointment => {
     const slot = timeSlots.find(s => s.id === appointment.timeSlotId);
     if (!slot) return false;
     const slotDate = new Date(slot.date);
@@ -352,7 +366,7 @@ export default function AppointmentCalendar() {
             <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
               <h3 className="font-semibold text-gray-900 flex items-center">
                 <Calendar className="h-5 w-5 mr-2 text-blue-600" />
-                Tous vos rendez-vous ({appointments.length})
+                Tous vos rendez-vous ({userAppointments.length})
               </h3>
             </div>
             <div className="p-4">
@@ -364,7 +378,7 @@ export default function AppointmentCalendar() {
                     </div>
                   ))}
                 </div>
-              ) : appointments.length === 0 ? (
+              ) : userAppointments.length === 0 ? (
                 <div className="text-center py-12">
                   <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
                   <h4 className="text-lg font-medium text-gray-900 mb-2">Aucun rendez-vous</h4>
@@ -381,7 +395,7 @@ export default function AppointmentCalendar() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {appointments.map((appointment) => {
+                  {userAppointments.map((appointment) => {
                     const slot = timeSlots.find(s => s.id === appointment.timeSlotId);
                     const StatusIcon = appointment.status === 'confirmed' ? Check :
                                       appointment.status === 'cancelled' ? X : Clock;
@@ -450,7 +464,7 @@ export default function AppointmentCalendar() {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-gray-900">
-                    {appointments.filter(a => a.status === 'confirmed').length}
+                    {userAppointments.filter(a => a.status === 'confirmed').length}
                   </p>
                   <p className="text-sm text-gray-600">Confirmés</p>
                 </div>
@@ -463,7 +477,7 @@ export default function AppointmentCalendar() {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-gray-900">
-                    {appointments.filter(a => a.status === 'pending').length}
+                    {userAppointments.filter(a => a.status === 'pending').length}
                   </p>
                   <p className="text-sm text-gray-600">En attente</p>
                 </div>
@@ -476,7 +490,7 @@ export default function AppointmentCalendar() {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-gray-900">
-                    {appointments.filter(a => a.status === 'cancelled').length}
+                    {userAppointments.filter(a => a.status === 'cancelled').length}
                   </p>
                   <p className="text-sm text-gray-600">Annulés</p>
                 </div>
