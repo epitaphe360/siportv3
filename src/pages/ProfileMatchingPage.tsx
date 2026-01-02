@@ -244,7 +244,12 @@ export default function ProfileMatchingPage() {
         });
       }
 
-      toast.success('Profil mis à jour avec succès ! Votre matching IA sera plus précis.');
+      toast.success('✅ Profil mis à jour avec succès ! Redirection vers votre réseau...');
+      
+      // Redirection vers la page réseau avec déclenchement automatique de la génération
+      setTimeout(() => {
+        navigate(ROUTES.NETWORKING + '?generate=true');
+      }, 1500);
     } catch (error) {
       console.error('❌ Erreur lors de la mise à jour:', error);
       toast.error('Erreur lors de la mise à jour du profil');
