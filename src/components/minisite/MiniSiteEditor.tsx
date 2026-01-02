@@ -123,19 +123,30 @@ export default function MiniSiteEditor() {
         products: [
           {
             id: '1',
-            name: 'SmartPort Management',
-            description: 'Plateforme complète de gestion portuaire',
+            name: 'Système IA Maritime',
+            description: 'Plateforme intelligente d\'optimisation des opérations portuaires avec IA prédictive',
             image: 'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=400',
-            features: ['Analytics temps réel', 'API intégrée', 'Multi-langues'],
-            price: 'Sur devis'
+            features: ['Analytics prédictifs en temps réel', 'Automatisation IA', 'Intégration API complète'],
+            price: 'Sur devis',
+            inStock: true
           },
           {
             id: '2',
-            name: 'Port Analytics',
-            description: 'Outils d\'analyse et de reporting avancés',
+            name: 'Plateforme IoT Connectée',
+            description: 'Solution IoT de supervision et monitoring des équipements portuaires',
             image: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=400',
-            features: ['Dashboards personnalisés', 'Prédictions IA', 'Export données'],
-            price: 'À partir de 5000€'
+            features: ['Capteurs intelligents', 'Maintenance prédictive', 'Alertes instantanées'],
+            price: 'À partir de 15 000€',
+            inStock: true
+          },
+          {
+            id: '3',
+            name: 'Support Premium 24/7',
+            description: 'Assistance technique dédiée et formation continue de vos équipes',
+            image: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400',
+            features: ['Équipe dédiée multilingue', 'Intervention sous 2h', 'Formation personnalisée'],
+            price: '2 500€/mois',
+            inStock: true
           }
         ]
       },

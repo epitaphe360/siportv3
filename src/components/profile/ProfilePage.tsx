@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
+import { useTranslation } from '../../hooks/useTranslation';
 import {
   User, 
   Building2, 
@@ -164,7 +165,7 @@ export default function ProfilePage() {
                         type="button"
                         className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
                         onClick={() => fileInputRef.current?.click()}
-                        title="Changer la photo de profil"
+                        title={t('profile.change_photo')}
                         style={{ zIndex: 2 }}
                       >
                         <Camera className="h-4 w-4" />
@@ -447,7 +448,7 @@ export default function ProfilePage() {
                       onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                       rows={4}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Parlez-nous de vous et de votre expertise..."
+                      placeholder={t('profile.about_placeholder')}
                     />
                   ) : (
                     <p className="text-gray-900">{user.profile.bio || 'Aucune biographie renseignée'}</p>
