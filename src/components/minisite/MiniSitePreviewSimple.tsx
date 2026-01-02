@@ -106,6 +106,7 @@ export default function MiniSitePreviewSimple() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+  const [expandedFeatures, setExpandedFeatures] = useState<{ [key: number]: boolean }>({});
 
   // Parallax
   const { scrollY } = useScroll();
@@ -423,7 +424,7 @@ export default function MiniSitePreviewSimple() {
               features.map((feature: string, index: number) => {
                 const featureIcons = [Sparkles, Star, Award, CheckCircle2];
                 const FeatureIcon = featureIcons[index % featureIcons.length];
-                const [isExpanded, setIsExpanded] = React.useState(false);
+                const isExpanded = expandedFeatures[index] || false;
                 
                 // Descriptions génériques basées sur les domaines courants
                 const getFeatureDescription = (title: string) => {
@@ -453,7 +454,7 @@ export default function MiniSitePreviewSimple() {
                   <Card 
                     key={feature} 
                     className="p-8 text-center hover:shadow-2xl transition-all duration-300 group bg-white/80 backdrop-blur-sm border-2 border-transparent hover:border-blue-200 hover:-translate-y-2 relative overflow-hidden cursor-pointer"
-                    onClick={() => setIsExpanded(!isExpanded)}
+                    onClick={() => setExpandedFeatures(prev => ({ ...prev, [index]: !prev[index] }))}
                   >
                     <div 
                       className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
