@@ -28,10 +28,10 @@ const resources = {
         subscriptions_desc: 'Gérez vos abonnements'
       },
       exhibitor_levels: {
-        basic_9: '9m² Basic',
+        basic_9: '9m² Basique',
         standard_18: '18m² Standard',
         premium_36: '36m² Premium',
-        elite_54plus: '54m²+ Elite'
+        elite_54plus: '54m²+ Élite'
       },
       auth: {
         login: 'Connexion',
@@ -806,7 +806,7 @@ const resources = {
         basic_9: '9m² Básico',
         standard_18: '18m² Estándar',
         premium_36: '36m² Premium',
-        elite_54plus: '54m²+ Elite'
+        elite_54plus: '54m²+ Élite'
       },
       auth: {
         login: 'Iniciar sesión',
