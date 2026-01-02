@@ -1688,7 +1688,71 @@ export default function PartnerDetailPage() {
                   <Share2 className="h-4 w-4 mr-2" />
                   Partager
                 </Button>
-                <Button variant="default">
+                <Button 
+                  variant="default"
+                  onClick={() => {
+                    if (selectedProject) {
+                      // Créer un rapport complet
+                      const report = `
+==============================================
+RAPPORT DE PROJET COMPLET
+==============================================
+
+Projet: ${selectedProject.name}
+Client: ${selectedProject.client}
+Statut: ${getStatusLabel(selectedProject.status)}
+Période: ${formatDate(new Date(selectedProject.startDate))} - ${formatDate(new Date(selectedProject.endDate))}
+
+DESCRIPTION
+${selectedProject.description}
+
+INDICATEURS CLÉS (KPIs)
+- Avancement: ${selectedProject.kpis.progress}%
+- Satisfaction: ${selectedProject.kpis.satisfaction}%
+- ROI: ${selectedProject.kpis.roi}%
+
+BUDGET
+${selectedProject.budget}
+
+TECHNOLOGIES
+${selectedProject.technologies.join(', ')}
+
+ÉQUIPE
+${selectedProject.team.map(m => `- ${m.name} (${m.role})`).join('\n')}
+
+JALONS PRINCIPAUX
+${selectedProject.milestones.map(m => `- ${m.title} (${m.date}) ${m.completed ? '✓ Complété' : '○ En cours'}`).join('\n')}
+
+DÉFIS ET SOLUTIONS
+${selectedProject.challenges.map(c => `
+Défi: ${c.challenge}
+Solution: ${c.solution}
+`).join('\n')}
+
+TÉMOIGNAGE CLIENT
+"${selectedProject.testimonial.text}"
+- ${selectedProject.testimonial.author}, ${selectedProject.testimonial.role}
+
+==============================================
+Rapport généré le ${new Date().toLocaleDateString('fr-FR')}
+==============================================
+                      `;
+                      
+                      // Créer et télécharger le fichier
+                      const blob = new Blob([report], { type: 'text/plain' });
+                      const url = URL.createObjectURL(blob);
+                      const link = document.createElement('a');
+                      link.href = url;
+                      link.download = `Rapport_${selectedProject.name.replace(/\s+/g, '_')}_${Date.now()}.txt`;
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                      URL.revokeObjectURL(url);
+                      
+                      toast.success('Rapport téléchargé avec succès');
+                    }
+                  }}
+                >
                   <Download className="h-4 w-4 mr-2" />
                   Rapport Complet
                 </Button>
