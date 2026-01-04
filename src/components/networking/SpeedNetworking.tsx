@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Video, Clock, Users, Play, Pause, SkipForward, UserPlus } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Badge } from '../ui/badge';
+import { Button } from '../ui/Button';
+import { Badge } from '../ui/Badge';
 import { SpeedNetworkingService } from '../../services/speedNetworking';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';

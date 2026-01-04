@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
-import { Button } from '../ui/button';
+import { Button } from '../ui/Button';
 import { SectionEditor } from './SectionEditor';
 import { ImageLibrary } from './ImageLibrary';
 import { SEOEditor } from './SEOEditor';

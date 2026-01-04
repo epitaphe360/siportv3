@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, X, Star, Sparkles, TrendingUp } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Badge } from '../ui/badge';
+import { Button } from '../ui/Button';
+import { Badge } from '../ui/Badge';
 import { supabase } from '../../lib/supabase';
 import type { SiteTemplate } from '../../types/site-builder';
 import toast from 'react-hot-toast';

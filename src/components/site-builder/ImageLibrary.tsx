@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Upload, Search, Trash2, Grid3x3, List } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from '../ui/Button';
 import { supabase } from '../../lib/supabase';
 import toast from 'react-hot-toast';
 

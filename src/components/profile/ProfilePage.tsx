@@ -28,6 +28,7 @@ import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import useAuthStore from '../../store/authStore';
 import { motion } from 'framer-motion';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 export default function ProfilePage() {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -142,9 +143,11 @@ export default function ProfilePage() {
             animate={{ opacity: 1, x: 0 }}
             className="lg:col-span-1"
           >
-            <Card className="text-center">
+            <Card className="text-center border-t-4 border-t-siports-gold">
               <div className="relative">
-                <div className="h-32 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-t-lg"></div>
+                <div className="h-32 bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent rounded-t-lg relative overflow-hidden">
+                   <MoroccanPattern className="opacity-10" color="white" scale={0.5} />
+                </div>
                 <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
                   <div className="relative">
                     <div className="h-24 w-24 bg-white rounded-full flex items-center justify-center shadow-lg">
