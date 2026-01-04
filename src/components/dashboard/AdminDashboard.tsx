@@ -59,21 +59,24 @@ export default function AdminDashboard() {
     { name: 'Juin', users: 510, exhibitors: 78, visitors: 395 },
   ];
 
+  // Utiliser les vraies données depuis adminMetrics au lieu de valeurs hardcodées
   const activityData = [
-    { name: 'Connexions', value: 2840 },
-    { name: 'RDV Créés', value: 172 },
-    { name: 'Messages', value: 2500 },
-    { name: 'Documents', value: 720 },
+    { name: 'Connexions', value: adminMetrics.totalConnections || 0 },
+    { name: 'RDV Créés', value: adminMetrics.totalAppointments || 0 },
+    { name: 'Messages', value: adminMetrics.totalMessages || 0 },
+    { name: 'Documents', value: adminMetrics.totalDownloads || 0 },
   ];
 
+  // Données de trafic hebdomadaire - Actuellement hardcodées car nécessite une table d'analytics
+  // TODO: Créer une table 'analytics_daily' pour stocker les visites et pageviews par jour
   const trafficData = [
-    { name: 'Lun', visits: 1200, pageViews: 3400 },
-    { name: 'Mar', visits: 1800, pageViews: 4200 },
-    { name: 'Mer', visits: 1600, pageViews: 3800 },
-    { name: 'Jeu', visits: 2100, pageViews: 5200 },
-    { name: 'Ven', visits: 2400, pageViews: 6100 },
-    { name: 'Sam', visits: 1400, pageViews: 2900 },
-    { name: 'Dim', visits: 900, pageViews: 1800 },
+    { name: 'Lun', visits: 0, pageViews: 0 },
+    { name: 'Mar', visits: 0, pageViews: 0 },
+    { name: 'Mer', visits: 0, pageViews: 0 },
+    { name: 'Jeu', visits: 0, pageViews: 0 },
+    { name: 'Ven', visits: 0, pageViews: 0 },
+    { name: 'Sam', visits: 0, pageViews: 0 },
+    { name: 'Dim', visits: 0, pageViews: 0 },
   ];
 
   // Métriques administrateur récupérées depuis Supabase

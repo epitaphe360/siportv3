@@ -5,9 +5,10 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist'] },
+  { ignores: ['dist', 'android', 'ios', 'coverage', 'public', 'node_modules', '**/*.d.ts'] },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
@@ -33,7 +34,28 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-expressions': 'off',
       'prefer-const': 'warn',
     },
+  },
+  // Node.js scripts and config files
+  {
+    files: ['scripts/**/*.{js,mjs,cjs,ts}', 'server/**/*.{js,mjs,cjs,ts}', '*.{js,mjs,cjs,ts}', '**/*.config.{js,ts,mjs,cjs}'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+      ecmaVersion: 2022,
+      sourceType: 'module',
     },
+    rules: {
+      '@typescript-eslint/no-var-requires': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      'no-undef': 'off',
+      'no-useless-escape': 'off',
+      'no-empty': 'off',
+      'no-console': 'off',
+      'no-process-exit': 'off'
+    }
+  },
   // File-specific overrides
   {
     files: ['src/lib/supabase.ts'],

@@ -53,19 +53,20 @@ export default function AvailabilitySettingsPage() {
   const totalApps = appointments.length;
 
   // Calculer les pourcentages réels
-  const confirmedPercent = totalApps > 0 ? (confirmedApps / totalApps) * 100 : 0;
-  const pendingPercent = totalApps > 0 ? (pendingApps / totalApps) * 100 : 0;
-  const completedPercent = totalApps > 0 ? (completedApps / totalApps) * 100 : 0;
+  const confirmedPercent = totalApps > 0 ? ((confirmedApps / totalApps) * 100).toFixed(1) : '0.0';
+  const pendingPercent = totalApps > 0 ? ((pendingApps / totalApps) * 100).toFixed(1) : '0.0';
+  const completedPercent = totalApps > 0 ? ((completedApps / totalApps) * 100).toFixed(1) : '0.0';
 
-  // Mock Data for Analytics (as per request visual)
+  // Données d'engagement hebdomadaire - remplacées par 0 car nécessite une table d'analytics
+  // TODO: Créer une table 'weekly_analytics' pour stocker les visites et interactions par jour
   const engagementData = [
     { name: 'Lun', visits: 0, interactions: 0 },
-    { name: 'Mar', visits: 1, interactions: 0 },
-    { name: 'Mer', visits: 2, interactions: 1 },
-    { name: 'Jeu', visits: 3, interactions: 2 },
-    { name: 'Ven', visits: 4, interactions: 3 },
-    { name: 'Sam', visits: 2, interactions: 1 },
-    { name: 'Dim', visits: 1, interactions: 0 },
+    { name: 'Mar', visits: 0, interactions: 0 },
+    { name: 'Mer', visits: 0, interactions: 0 },
+    { name: 'Jeu', visits: 0, interactions: 0 },
+    { name: 'Ven', visits: 0, interactions: 0 },
+    { name: 'Sam', visits: 0, interactions: 0 },
+    { name: 'Dim', visits: 0, interactions: 0 },
   ];
 
   // Utiliser les vraies données dynamiques
