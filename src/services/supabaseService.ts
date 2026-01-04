@@ -1937,14 +1937,18 @@ export class SupabaseService {
 
       // Par défaut, afficher uniquement les exposants, visiteurs et partenaires (pas les admins)
       // Si aucun userType spécifié, afficher tous les types professionnels
-      if (!filters.userType && !filters.searchTerm && !filters.sector && !filters.location) {
-        // Aucun filtre = afficher tous les exposants et partenaires
+      const hasSearchTerm = filters.searchTerm && filters.searchTerm.trim();
+      const hasSector = filters.sector && filters.sector.trim();
+      const hasLocation = filters.location && filters.location.trim();
+      
+      if (!filters.userType) {
+        // Toujours exclure les admins si aucun type spécifié
         query = query.in('type', ['exhibitor', 'partner', 'visitor']);
       }
 
       // Filtre par terme de recherche (nom, entreprise, poste)
-      if (filters.searchTerm && filters.searchTerm.trim()) {
-        const term = `%${filters.searchTerm.trim().toLowerCase()}%`;
+      if (hasSearchTerm) {
+        const term = `%${filters.searchTerm!.trim().toLowerCase()}%`;
         // Utiliser un filtre OR plus simple et lisible
         query = query.or(
           `profile->>firstName.ilike.${term},` +
@@ -1958,7 +1962,7 @@ export class SupabaseService {
       }
 
       // Filtre par secteur
-      if (filters.sector) {
+      if (hasSector) {
         query = query.eq('profile->>sector', filters.sector);
       }
 
@@ -1968,7 +1972,7 @@ export class SupabaseService {
       }
 
       // Filtre par localisation (pays)
-      if (filters.location) {
+      if (hasLocation) {
         query = query.eq('profile->>country', filters.location);
       }
 
