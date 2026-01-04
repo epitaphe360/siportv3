@@ -1987,14 +1987,10 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      console.log(`🔍 Recherche brute: ${data?.length || 0} résultats de la DB`);
-
       // Filtrer les résultats côté client pour s'assurer d'avoir des données valides
       const transformedUsers = (data || []).map(this.transformUserDBToUser);
-      console.log(`🔄 Après transformation: ${transformedUsers.length} utilisateurs`);
       
       const users = transformedUsers.filter(u => u && (u.profile?.firstName || u.profile?.company || u.profile?.companyName || u.name));
-      console.log(`✅ Après filtre final: ${users.length} utilisateurs valides`);
 
       return users;
     } catch (error) {
@@ -2181,7 +2177,6 @@ export class SupabaseService {
     const safeSupabase = supabase!;
     try {
       // D'abord, essayer de récupérer directement avec exhibitor_id
-      console.log(`[TIME_SLOTS] Fetching slots for: ${exhibitorIdOrUserId}`);
       let { data, error } = await safeSupabase
         .from('time_slots')
         .select('*')
@@ -2198,7 +2193,6 @@ export class SupabaseService {
           .maybeSingle();
 
         if (exhibitor) {
-          console.log(`[TIME_SLOTS] Resolved exhibitor_id from user_id:`, { userId: exhibitorIdOrUserId, exhibitorId: exhibitor.id });
           const result = await safeSupabase
             .from('time_slots')
             .select('*')
@@ -2212,17 +2206,9 @@ export class SupabaseService {
       }
 
       if (error) {
-        console.error('[TIME_SLOTS] Supabase error:', {
-          code: (error as any)?.code,
-          message: (error as any)?.message,
-          details: (error as any)?.details,
-          hint: (error as any)?.hint,
-          status: (error as any)?.status
-        });
+        console.error('[TIME_SLOTS] Error fetching slots:', error.message);
         throw error;
       }
-
-      console.log(`[TIME_SLOTS] Successfully fetched ${data?.length || 0} slots`);
 
       // Helper pour parser une date sans décalage UTC
       const parseLocalDate = (dateStr: string | Date): string => {
