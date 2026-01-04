@@ -32,7 +32,7 @@ const MetricsPage = lazyRetry(() => import('./components/metrics/MetricsPage'));
 const DetailedProfilePage = lazyRetry(() => import('./components/profile/DetailedProfilePage'));
 const ProfileMatchingPage = lazyRetry(() => import('./pages/ProfileMatchingPage'));
 const VisitorDashboard = lazyRetry(() => import('./components/visitor/VisitorDashboard'));
-const TestFlowPage = lazyRetry(() => import('./pages/dev/TestFlowPage'));
+
 const VisitorProfileSettings = lazyRetry(() => import('./components/visitor/VisitorProfileSettings'));
 const AdminDashboard = lazyRetry(() => import('./components/dashboard/AdminDashboard'));
 const ExhibitorDashboard = lazyRetry(() => import('./components/dashboard/ExhibitorDashboard'));
@@ -231,8 +231,7 @@ const App = () => {
             <Route path={ROUTES.UNAUTHORIZED} element={<UnauthorizedPage />} />
             <Route path={ROUTES.FORBIDDEN} element={<ForbiddenPage />} />
 
-            {/* SECURED: Dev route now requires admin role */}
-            <Route path={ROUTES.DEV_TEST_FLOW} element={<ProtectedRoute requiredRole="admin"><TestFlowPage /></ProtectedRoute>} />
+
             <Route path={ROUTES.VISITOR_SETTINGS} element={<ProtectedRoute requiredRole="visitor"><VisitorProfileSettings /></ProtectedRoute>} />
             {/* BUG FIX: Route VISITOR_SUBSCRIPTION dupliquée - supprimée car déjà définie ligne 180 comme route publique */}
             <Route path={ROUTES.VISITOR_UPGRADE} element={<ProtectedRoute requiredRole="visitor"><VisitorUpgradePage /></ProtectedRoute>} />

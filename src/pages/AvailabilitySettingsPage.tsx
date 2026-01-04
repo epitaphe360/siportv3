@@ -4,27 +4,24 @@ import { useTranslation } from '../hooks/useTranslation';
 import { Badge } from '@/components/ui/Badge';
 import useAuthStore from '@/store/authStore';
 import AvailabilityManager from '@/components/availability/AvailabilityManager';
+import PersonalAppointmentsCalendar from '@/components/calendar/PersonalAppointmentsCalendar';
 import { useAppointmentStore } from '@/store/appointmentStore';
 import { toast } from 'sonner';
 import { 
-  Calendar, Clock, Users, BarChart3, PieChart, Activity, 
-  CheckCircle, XCircle, AlertCircle, ChevronLeft, ChevronRight,
-  LayoutDashboard, CalendarDays, MessageSquare, Download, Eye
+  Calendar, Clock, BarChart3, 
+  CheckCircle, XCircle
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart as RePieChart, Pie, Cell
 } from 'recharts';
-import { format, startOfWeek, addDays, isSameDay, parseISO } from 'date-fns';
-import { fr } from 'date-fns/locale';
 
 export default function AvailabilitySettingsPage() {
   const { t } = useTranslation();
   const { user } = useAuthStore();
   const { appointments, timeSlots, fetchAppointments, fetchTimeSlots } = useAppointmentStore();
   const [activeTab, setActiveTab] = useState<'availability' | 'appointments' | 'analytics'>('availability');
-  const [currentWeek, setCurrentWeek] = useState(new Date(2025, 11, 29)); // Start week of Dec 29, 2025 as per request
 
   useEffect(() => {
     if (user) {
@@ -34,16 +31,6 @@ export default function AvailabilitySettingsPage() {
   }, [user, fetchAppointments, fetchTimeSlots]);
 
   if (!user) return null;
-
-  // Stats for Availability
-  const totalSlots = timeSlots.length;
-  const thisWeekSlots = timeSlots.filter(slot => {
-    const slotDate = new Date(slot.date);
-    const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 });
-    const weekEnd = addDays(weekStart, 6);
-    return slotDate >= weekStart && slotDate <= weekEnd;
-  }).length;
-  const availableSlots = timeSlots.filter(slot => slot.currentBookings < slot.maxBookings).length;
 
   // Stats for Appointments
   const confirmedApps = appointments.filter(a => a.status === 'confirmed').length;
@@ -82,8 +69,6 @@ export default function AvailabilitySettingsPage() {
     { name: 'Messages', value: 0.6 },
     { name: 'Connexions', value: 0.3 },
   ];
-
-  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(startOfWeek(currentWeek, { weekStartsOn: 1 }), i));
 
   return (
     <div className="min-h-screen bg-gray-50/50">
@@ -126,79 +111,14 @@ export default function AvailabilitySettingsPage() {
           {/* AVAILABILITY TAB */}
           {activeTab === 'availability' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <Card className="p-6 bg-white border-l-4 border-blue-500 shadow-sm">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Total créneaux</p>
-                      <h3 className="text-3xl font-bold text-gray-900 mt-2">{totalSlots}</h3>
-                    </div>
-                    <div className="p-2 bg-blue-50 rounded-lg">
-                      <Calendar className="w-6 h-6 text-blue-600" />
-                    </div>
-                  </div>
-                </Card>
-                <Card className="p-6 bg-white border-l-4 border-indigo-500 shadow-sm">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Cette semaine</p>
-                      <h3 className="text-3xl font-bold text-gray-900 mt-2">{thisWeekSlots}</h3>
-                    </div>
-                    <div className="p-2 bg-indigo-50 rounded-lg">
-                      <CalendarDays className="w-6 h-6 text-indigo-600" />
-                    </div>
-                  </div>
-                </Card>
-                <Card className="p-6 bg-white border-l-4 border-green-500 shadow-sm">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Places disponibles</p>
-                      <h3 className="text-3xl font-bold text-gray-900 mt-2">{availableSlots}</h3>
-                    </div>
-                    <div className="p-2 bg-green-50 rounded-lg">
-                      <Users className="w-6 h-6 text-green-600" />
-                    </div>
-                  </div>
-                </Card>
-              </div>
-
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50">
-                  <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Semaine du {format(currentWeek, 'd MMMM yyyy', { locale: fr })}</h2>
-                    <p className="text-sm text-gray-500">Gérez vos créneaux horaires pour cette semaine</p>
-                  </div>
-                  <div className="flex space-x-2">
-                    <button className="p-2 hover:bg-white rounded-lg border border-transparent hover:border-gray-200 transition-colors">
-                      <ChevronLeft className="w-5 h-5 text-gray-600" />
-                    </button>
-                    <button className="p-2 hover:bg-white rounded-lg border border-transparent hover:border-gray-200 transition-colors">
-                      <ChevronRight className="w-5 h-5 text-gray-600" />
-                    </button>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-7 divide-x divide-gray-200 border-b border-gray-200">
-                  {weekDays.map((day, i) => (
-                    <div key={i} className="p-4 text-center bg-gray-50">
-                      <p className="text-xs font-medium text-gray-500 uppercase">{format(day, 'EEE', { locale: fr })}.</p>
-                      <p className="text-lg font-bold text-gray-900">{format(day, 'd')}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="p-6">
-                  {/* Integration of existing AvailabilityManager */}
-                  <AvailabilityManager 
-                    userId={user.id} 
-                    userType={user.type as any} 
-                    onAvailabilityUpdate={() => {
-                      fetchTimeSlots(user.id);
-                      toast.success("Disponibilités mises à jour");
-                    }}
-                  />
-                </div>
-              </div>
+              <AvailabilityManager 
+                userId={user.id} 
+                userType={user.type as any} 
+                onAvailabilityUpdate={() => {
+                  fetchTimeSlots(user.id);
+                  toast.success("Disponibilités mises à jour");
+                }}
+              />
             </motion.div>
           )}
 
@@ -252,51 +172,7 @@ export default function AvailabilitySettingsPage() {
                 </Card>
               </div>
 
-              <Card className="bg-white shadow-sm border border-gray-200">
-                <div className="p-6 border-b border-gray-200">
-                  <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <h2 className="text-lg font-semibold text-gray-900">Mes Rendez-vous</h2>
-                    <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg">
-                      {['Tous', 'En attente', 'Confirmés', 'Annulés'].map((filter) => (
-                        <button key={filter} className="px-3 py-1.5 text-sm font-medium rounded-md hover:bg-white hover:shadow-sm transition-all text-gray-600">
-                          {filter}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="p-0">
-                  <div className="flex items-center justify-between p-4 bg-gray-50 border-b border-gray-200">
-                    <button className="flex items-center text-sm text-gray-600 hover:text-gray-900">
-                      <ChevronLeft className="w-4 h-4 mr-1" /> Semaine précédente
-                    </button>
-                    <span className="font-medium text-gray-900">Semaine du {format(currentWeek, 'dd/MM/yyyy')}</span>
-                    <button className="flex items-center text-sm text-gray-600 hover:text-gray-900">
-                      Semaine suivante <ChevronRight className="w-4 h-4 ml-1" />
-                    </button>
-                  </div>
-
-                  <div className="grid grid-cols-7 divide-x divide-gray-200 border-b border-gray-200">
-                    {weekDays.map((day, i) => (
-                      <div key={i} className="p-3 text-center bg-gray-50">
-                        <p className="text-xs font-medium text-gray-500 uppercase">{format(day, 'EEE', { locale: fr })}.</p>
-                        <p className="text-lg font-bold text-gray-900">{format(day, 'd')}</p>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="grid grid-cols-7 divide-x divide-gray-200 min-h-[200px]">
-                    {weekDays.map((day, i) => (
-                      <div key={i} className="p-2">
-                        <div className="flex flex-col items-center justify-center h-full text-gray-400 text-sm">
-                          <p>Aucun RDV</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </Card>
+              <PersonalAppointmentsCalendar userType={user.type as any} />
             </motion.div>
           )}
 
