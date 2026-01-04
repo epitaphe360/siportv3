@@ -16,6 +16,7 @@ import { Button } from '../ui/Button';
 import useAuthStore from '../../store/authStore';
 import { LanguageSelector } from '../ui/LanguageSelector';
 import { useTranslation } from '../../hooks/useTranslation';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 // OPTIMIZATION: Memoized Header component to prevent unnecessary re-renders
 export const Header: React.FC = memo(() => {
@@ -65,8 +66,12 @@ export const Header: React.FC = memo(() => {
     { name: 'Bibliothèque Média', href: ROUTES.MEDIA_LIBRARY, description: 'Tous les contenus médias', icon: Play },
   ];
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50 border-t-4 border-t-siports-gold relative">
+      {/* Subtle Pattern Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.03]">
+        <MoroccanPattern className="w-full h-full text-siports-primary" scale={0.5} />
+      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to={ROUTES.HOME} className="flex items-center space-x-2">
