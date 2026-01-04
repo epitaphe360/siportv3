@@ -19,10 +19,12 @@ import { useEventStore } from '../../store/eventStore';
 import useAuthStore from '../../store/authStore';
 import { ROUTES } from '../../lib/routes';
 import { motion } from 'framer-motion';
+import { useTranslation } from '../../hooks/useTranslation';
 
 // OPTIMIZATION: Memoized EventsPage to prevent unnecessary re-renders
 export default memo(function EventsPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const {
     events,
     featuredEvents,

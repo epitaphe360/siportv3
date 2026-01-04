@@ -19,13 +19,8 @@ export class PavilionMetricsService {
   static async getMetrics(): Promise<PavilionMetrics> {
     // Si Supabase n'est pas configuré, retourner les valeurs par défaut
     if (!isSupabaseReady() || !supabase) {
-      console.info('🔄 Utilisation des métriques de pavilions par défaut (mode développement)');
-      console.info('ℹ️ Supabase configuré:', isSupabaseReady());
-      console.info('ℹ️ Client Supabase disponible:', !!supabase);
       return defaultPavilionMetrics;
     }
-
-    console.info('🚀 Récupération des vraies métriques de pavilions depuis Supabase...');
 
     try {
       // Récupérer les métriques depuis Supabase
@@ -59,18 +54,10 @@ export class PavilionMetricsService {
         countries: Math.max(uniqueCountries, 1)
       };
 
-      console.info('✅ Métriques de pavilions récupérées depuis Supabase:', metrics);
-      console.info('📊 Détails des requêtes pavilions:');
-      console.info('- Total exposants:', exhibitorsResult.count);
-      console.info('- Total visiteurs:', visitorsResult.count);
-      console.info('- Total conférences/événements:', eventsResult.count);
-      console.info('- Pays représentés:', uniqueCountries);
-
       return metrics;
 
     } catch (error) {
-      console.error('❌ Erreur lors de la récupération des métriques de pavilions:', error);
-      console.info('🔄 Retour aux métriques de pavilions par défaut');
+      console.error('Erreur lors de la récupération des métriques de pavilions:', error);
       return defaultPavilionMetrics;
     }
   }
