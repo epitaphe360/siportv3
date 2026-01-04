@@ -50,13 +50,19 @@ export default function MediaDetailPage() {
       e.preventDefault();
       e.stopPropagation();
     }
-    console.log('🎬 Play button clicked', { media_url: media?.media_url });
     
-    if (media?.media_url) {
-      // Si c'est une vidéo ou audio avec URL, on peut soit ouvrir dans une nouvelle fenêtre
-      // soit afficher un lecteur intégré (à implémenter selon vos besoins)
+    // Support video_url OU media_url
+    const mediaUrl = media?.video_url || media?.audio_url || media?.media_url;
+    console.log('🎬 Play button clicked', { 
+      video_url: media?.video_url,
+      audio_url: media?.audio_url,
+      media_url: media?.media_url,
+      using: mediaUrl 
+    });
+    
+    if (mediaUrl) {
       setIsPlaying(true);
-      window.open(media.media_url, '_blank');
+      window.open(mediaUrl, '_blank');
       toast.success('Lecture en cours...');
     } else {
       toast.error('URL du média non disponible');
@@ -68,14 +74,35 @@ export default function MediaDetailPage() {
       e.preventDefault();
       e.stopPropagation();
     }
-    console.log('📥 Download button clicked', { resources_url: media?.resources_url });
+    console.log('📥 Download button clicked', { 
+      resources_url: media?.resources_url,
+      transcript: media?.transcript ? 'exists' : 'none'
+    });
     
+    // Si resources_url existe, l'utiliser
     if (media?.resources_url) {
       window.open(media.resources_url, '_blank');
       toast.success('Téléchargement des ressources en cours...');
-    } else {
-      toast.error('Aucune ressource disponible pour ce média');
+      return;
     }
+    
+    // Sinon, télécharger la transcription si disponible
+    if (media?.transcript) {
+      const blob = new Blob([media.transcript], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `transcription-${media.title.toLowerCase().replace(/\s+/g, '-')}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success('Transcription téléchargée');
+      return;
+    }
+    
+    // Sinon, afficher un message informatif
+    toast.info('Aucune ressource téléchargeable pour ce contenu. Contactez le support pour plus d\'informations.');
   };
 
   const handleShare = async (e?: React.MouseEvent) => {
