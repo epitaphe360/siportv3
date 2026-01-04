@@ -240,32 +240,46 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     const { user } = useAuthStore.getState();
     if (!user) {
       set({ error: 'User not authenticated.', isLoading: false });
+      console.log('❌ No user authenticated');
       return;
     }
     set({ isLoading: true, error: null });
     try {
+      console.log('🔄 Fetching all users...');
       const allUsers = await SupabaseService.getUsers();
+      console.log(`📊 Got ${allUsers.length} users`);
+      
+      console.log('🤖 Generating recommendations for user:', user.id, user.type);
       const recommendations = await RecommendationService.generateRecommendations(user, allUsers);
+      console.log(`✨ Generated ${recommendations.length} recommendations`);
+      
       set({ recommendations, isLoading: false });
     } catch (e) {
       const error = e instanceof Error ? e.message : 'An unknown error occurred.';
       set({ error, isLoading: false });
-      console.error("Failed to fetch recommendations:", error);
+      console.error("❌ Failed to fetch recommendations:", error, e);
     }
   },
 
   generateRecommendations: async (userId: string) => {
+    console.log('🎯 generateRecommendations called for userId:', userId);
     set({ isLoading: true, error: null });
     try {
       // Re-fetch fresh recommendations
       await get().fetchRecommendations();
       
+      const currentRecs = get().recommendations;
+      console.log(`📈 After fetch: ${currentRecs.length} recommendations in store`);
+      
       // Optionally reload AI insights if available
-      if (get().recommendations.length > 0) {
+      if (currentRecs.length > 0) {
+        console.log('🧠 Loading AI insights...');
         await get().loadAIInsights();
+      } else {
+        console.warn('⚠️ No recommendations generated!');
       }
     } catch (error) {
-      console.error('Erreur lors de la génération des recommandations:', error);
+      console.error('❌ Erreur lors de la génération des recommandations:', error);
       set({ error: 'Erreur lors de la génération des recommandations' });
       throw error;
     } finally {
