@@ -168,12 +168,37 @@ export default function AdminDashboard() {
   const handleImportArticles = async () => {
     setIsImportingArticles(true);
     try {
-      toast.loading('Importation des articles depuis siportevent.com...', { id: 'import-articles' });
-      await fetchFromOfficialSite();
-      toast.success('Articles importés avec succès!', { id: 'import-articles' });
+      toast.loading('🔄 Synchronisation des articles depuis siportevent.com...', { id: 'import-articles', duration: 10000 });
+      const result = await fetchFromOfficialSite();
+      
+      if (result && result.success && result.stats) {
+        const { inserted, updated, total } = result.stats;
+        toast.success(
+          `✅ Synchronisation réussie !\n${inserted} nouveau${inserted > 1 ? 'x' : ''} article${inserted > 1 ? 's' : ''}, ${updated} mis à jour sur ${total} trouvé${total > 1 ? 's' : ''}`,
+          { 
+            id: 'import-articles',
+            duration: 6000,
+            description: 'Les articles sont maintenant disponibles sur la page Actualités'
+          }
+        );
+      } else {
+        toast.success('✅ Articles synchronisés avec succès !', { 
+          id: 'import-articles',
+          duration: 4000,
+          description: 'Consultez la page Actualités pour voir les nouveaux articles'
+        });
+      }
     } catch (error) {
-      console.error('Erreur importation articles:', error);
-      toast.error('Erreur lors de l\'importation des articles', { id: 'import-articles' });
+      console.error('❌ Erreur importation articles:', error);
+      const errorMsg = error instanceof Error ? error.message : 'Erreur inconnue';
+      toast.error(
+        `❌ Échec de la synchronisation automatique`,
+        { 
+          id: 'import-articles',
+          duration: 8000,
+          description: `Utilisez le script manuel : node scripts/sync-siport-news.mjs\n${errorMsg}`
+        }
+      );
     } finally {
       setIsImportingArticles(false);
     }
@@ -758,15 +783,42 @@ export default function AdminDashboard() {
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold">
-                        {isImportingArticles ? 'Importation en cours...' : 'Importer Articles'}
+                        {isImportingArticles ? '⏳ Synchronisation en cours...' : '🔄 Synchroniser Articles'}
                       </div>
-                      <div className="text-xs text-indigo-100">Synchroniser depuis siportevent.com</div>
+                      <div className="text-xs text-indigo-100">Importer depuis siportevent.com/actualite-portuaire</div>
                     </div>
                     {!isImportingArticles && (
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     )}
+                  </div>
+                </motion.div>
+
+                {/* Info card for manual sync */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="mt-3"
+                >
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <div className="flex items-start gap-2">
+                      <div className="bg-blue-100 rounded-full p-1 mt-0.5">
+                        <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs font-medium text-blue-900 mb-1">Synchronisation manuelle</p>
+                        <p className="text-xs text-blue-700 mb-2">
+                          Si la synchronisation automatique échoue, utilisez le script :
+                        </p>
+                        <code className="block bg-blue-100 text-blue-900 px-2 py-1 rounded text-xs font-mono">
+                          node scripts/sync-siport-news.mjs
+                        </code>
+                      </div>
+                    </div>
                   </div>
                 </motion.div>
               </div>
