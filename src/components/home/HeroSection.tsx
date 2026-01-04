@@ -156,8 +156,8 @@ export const HeroSection: React.FC = () => {
                   <Users className="h-5 w-5 text-siports-gold" />
                 </div>
                 <div>
-                  <p className="font-semibold text-white">6 000+</p>
-                  <p className="text-blue-100 text-sm">{t('hero.stats.participants')}</p>
+                  <p className="font-semibold text-white">Networking</p>
+                  <p className="text-blue-100 text-sm">B2B & B2G</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3 bg-white/5 p-3 rounded-lg border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-colors">
@@ -165,8 +165,8 @@ export const HeroSection: React.FC = () => {
                   <Building2 className="h-5 w-5 text-siports-gold" />
                 </div>
                 <div>
-                  <p className="font-semibold text-white">300+</p>
-                  <p className="text-blue-100 text-sm">{t('hero.stats.exhibitors')}</p>
+                  <p className="font-semibold text-white">Format</p>
+                  <p className="text-blue-100 text-sm">Hybride</p>
                 </div>
               </div>
             </div>
@@ -222,8 +222,8 @@ export const HeroSection: React.FC = () => {
                     <Users className="h-6 w-6 text-siports-primary" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-siports-primary">40</p>
-                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">Pays</p>
+                    <p className="text-lg font-bold text-siports-primary">Innovation</p>
+                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">Smart Port</p>
                   </div>
                 </div>
               </motion.div>
@@ -239,8 +239,8 @@ export const HeroSection: React.FC = () => {
                     <Calendar className="h-6 w-6 text-siports-primary" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-siports-primary">30+</p>
-                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">Conférences</p>
+                    <p className="text-lg font-bold text-siports-primary">Conférences</p>
+                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">High Level</p>
                   </div>
                 </div>
               </motion.div>

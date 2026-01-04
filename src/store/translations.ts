@@ -205,6 +205,16 @@ export const allTranslations = {
     'time.hours': 'Heures',
     'time.minutes': 'Minutes',
     'time.seconds': 'Secondes',
+    'time.day': 'Jour',
+    'time.hour': 'Heure',
+    'time.minute': 'Minute',
+    'time.second': 'Seconde',
+
+    // Stats Section
+    'stats.exhibitors': 'Exposants',
+    'stats.visitors': 'Visiteurs',
+    'stats.countries': 'Pays',
+    'stats.conferences': 'Conférences',
     
     // Login Page
     'login.title': 'Connexion',
@@ -726,6 +736,16 @@ export const allTranslations = {
     'time.hours': 'Hours',
     'time.minutes': 'Minutes',
     'time.seconds': 'Seconds',
+    'time.day': 'Day',
+    'time.hour': 'Hour',
+    'time.minute': 'Minute',
+    'time.second': 'Second',
+
+    // Stats Section
+    'stats.exhibitors': 'Exhibitors',
+    'stats.visitors': 'Visitors',
+    'stats.countries': 'Countries',
+    'stats.conferences': 'Conferences',
     
     // Login Page
     'login.title': 'Login',
@@ -1214,6 +1234,16 @@ export const allTranslations = {
     'time.hours': 'الساعات',
     'time.minutes': 'الدقائق',
     'time.seconds': 'الثواني',
+    'time.day': 'يوم',
+    'time.hour': 'ساعة',
+    'time.minute': 'دقيقة',
+    'time.second': 'ثانية',
+
+    // Stats Section
+    'stats.exhibitors': 'العارضون',
+    'stats.visitors': 'الزوار',
+    'stats.countries': 'الدول',
+    'stats.conferences': 'المؤتمرات',
     
     // Login Page
     'login.title': 'تسجيل الدخول',
