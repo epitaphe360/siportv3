@@ -728,7 +728,7 @@ export default function NetworkingPage() {
                     const profile = rec.recommendedUser;
                     const isFavorite = favorites.includes(profile.id);
                     const isConnected = connections.includes(profile.id);
-                    const isPending = pendingConnections.includes(profile.id);
+                    const isPending = pendingConnections.some(pc => pc.addressee_id === profile.id || pc.requester_id === profile.id);
 
                     return (
                       <motion.div
