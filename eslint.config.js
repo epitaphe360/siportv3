@@ -37,7 +37,14 @@ export default tseslint.config(
   },
   // Node.js scripts and config files
   {
-    files: ['scripts/**/*.{js,mjs,cjs,ts}', 'server/**/*.{js,mjs,cjs,ts}', '*.{js,mjs,cjs,ts}', '**/*.config.{js,ts,mjs,cjs}'],
+    files: [
+      'scripts/**/*.{js,mjs,cjs,ts,mts,cts}',
+      'server/**/*.{js,mjs,cjs,ts,mts,cts}',
+      'tests/**/*.{js,mjs,cjs,ts,mts,cts}',
+      '*.{js,mjs,cjs,ts,mts,cts}',
+      '**/*.config.{js,ts,mjs,cjs,mts,cts}',
+      '**/*.cjs'
+    ],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -49,6 +56,7 @@ export default tseslint.config(
       '@typescript-eslint/no-var-requires': 'off',
       '@typescript-eslint/no-require-imports': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
       'no-undef': 'off',
       'no-useless-escape': 'off',
       'no-empty': 'off',
