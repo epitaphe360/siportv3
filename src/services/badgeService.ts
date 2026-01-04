@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase';
 import { UserBadge } from '../types';
+import { getDisplayName } from '@/utils/userHelpers';
 
 /**
  * Service de gestion des badges utilisateurs avec QR code
@@ -108,7 +109,7 @@ export async function generateBadgeFromUser(userId: string): Promise<UserBadge> 
       userId: user.id,
       userType: user.type,
       userLevel: user.visitor_level,
-      fullName: `${user.profile?.firstName || ''} ${user.profile?.lastName || ''}`.trim() || user.name,
+      fullName: getDisplayName(user),
       email: user.email,
       phone: user.profile?.phone,
       avatarUrl: user.profile?.avatar,

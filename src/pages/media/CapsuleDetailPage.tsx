@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar, Clock, Share2, BookmarkPlus, Play, Eye } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Share2, BookmarkPlus, Eye } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { VideoStreamPlayer } from '../../components/media/VideoStreamPlayer';

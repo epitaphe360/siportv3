@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Video, Clock, Users, Play, Pause, SkipForward, UserPlus } from 'lucide-react';
+import { Video, Clock, Users, UserPlus } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { SpeedNetworkingService } from '../../services/speedNetworking';

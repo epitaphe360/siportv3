@@ -710,7 +710,7 @@ export default function NetworkingPage() {
                                 <Avatar className="h-20 w-20 border-4 border-white shadow-xl">
                                   <AvatarImage src={profile.profile.avatar} alt={getDisplayName(profile)} />
                                   <AvatarFallback className="bg-gradient-to-br from-slate-800 to-slate-900 text-white font-black text-xl">
-                                    {profile.profile?.firstName?.[0] || 'U'}{profile.profile?.lastName?.[0] || 'U'}
+                                    {getUserInitials(profile)}
                                   </AvatarFallback>
                                 </Avatar>
                                 <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-lg">
@@ -955,7 +955,7 @@ export default function NetworkingPage() {
                             <Avatar className="h-16 w-16 border-2 border-slate-100">
                               <AvatarImage src={profile.profile.avatar} />
                               <AvatarFallback className="bg-slate-100 text-slate-600 font-bold">
-                                {profile.profile?.firstName?.[0] || 'U'}{profile.profile?.lastName?.[0] || 'U'}
+                                {getUserInitials(profile)}
                               </AvatarFallback>
                             </Avatar>
                             <div className="flex-1 min-w-0">

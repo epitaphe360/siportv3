@@ -29,7 +29,6 @@ interface Testimonial {
 export const TestimonialDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { t } = useTranslation();
   const [testimonial, setTestimonial] = useState<Testimonial | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);

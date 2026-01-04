@@ -1041,7 +1041,7 @@ export default function ExhibitorDashboard() {
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Contact :</span>
-                  <span>{user?.profile?.firstName || ''} {user?.profile?.lastName || ''}</span>
+                  <span>{getDisplayName(user)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Email :</span>
