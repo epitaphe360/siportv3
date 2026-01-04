@@ -5,17 +5,24 @@
 -- SOLUTION: Autoriser tous les authentifiés à lire tous les profils
 -- ============================================================
 
+-- ⚠️ D'ABORD : Supprimer TOUTES les policies existantes pour éviter les conflits
+DROP POLICY IF EXISTS "users_select_all_authenticated" ON users;
+DROP POLICY IF EXISTS "users_update_own" ON users;
+DROP POLICY IF EXISTS "users_all_admin" ON users;
+DROP POLICY IF EXISTS "Enable read access for all users" ON users;
+DROP POLICY IF EXISTS "Enable insert for authenticated users only" ON users;
+DROP POLICY IF EXISTS "Enable update for users based on user_id" ON users;
+DROP POLICY IF EXISTS "Enable delete for users based on user_id" ON users;
+
 -- 1️⃣ POLICY: Tous les utilisateurs authentifiés peuvent LIRE tous les profils
 --    (Nécessaire pour le networking, recommandations, recherche)
-DROP POLICY IF EXISTS "users_select_all_authenticated" ON users;
-CREATE POLICY "users_select_all_authenticated"
+CREATE POLICY "users_select_all"
   ON users
   FOR SELECT
   TO authenticated
   USING (true);
 
 -- 2️⃣ POLICY: Chaque utilisateur peut MODIFIER uniquement son propre profil
-DROP POLICY IF EXISTS "users_update_own" ON users;
 CREATE POLICY "users_update_own"
   ON users
   FOR UPDATE
@@ -23,21 +30,21 @@ CREATE POLICY "users_update_own"
   USING (auth.uid() = id)
   WITH CHECK (auth.uid() = id);
 
--- 3️⃣ POLICY: Les admins peuvent tout faire (CRUD complet)
-DROP POLICY IF EXISTS "users_all_admin" ON users;
-CREATE POLICY "users_all_admin"
+-- 3️⃣ POLICY: Chaque utilisateur peut SUPPRIMER uniquement son propre profil
+CREATE POLICY "users_delete_own"
   ON users
-  FOR ALL
+  FOR DELETE
   TO authenticated
-  USING (
-    EXISTS (
-      SELECT 1 FROM users 
-      WHERE id = auth.uid() 
-      AND type = 'admin'
-    )
-  );
+  USING (auth.uid() = id);
 
--- 4️⃣ S'assurer que RLS est activé sur la table
+-- 4️⃣ POLICY: Seuls les utilisateurs authentifiés peuvent créer des profils
+CREATE POLICY "users_insert_authenticated"
+  ON users
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (auth.uid() = id);
+
+-- 5️⃣ S'assurer que RLS est activé sur la table
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================
