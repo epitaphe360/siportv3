@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Star, Heart, MessageCircle, Handshake, TrendingUp, Calendar } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { MatchmakingService } from '../../services/matchmaking';
-import { useAuth } from '../../hooks/useAuth';
+import useAuthStore from '../../store/authStore';
 import type { MatchScore } from '../../types/site-builder';
 
 export const MatchmakingDashboard: React.FC = () => {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const [recommendations, setRecommendations] = useState<MatchScore[]>([]);
   const [networkStrength, setNetworkStrength] = useState(0);
   const [filters, setFilters] = useState({

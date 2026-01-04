@@ -30,6 +30,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ROUTES } from '../../lib/routes';
 import { supabase } from '../../lib/supabase';
 import { COUNTRIES } from '../../data/countries';
+import { MoroccanPattern, MoroccanArch } from '../ui/MoroccanDecor';
 
 const MAX_DESCRIPTION_LENGTH = 1000;
 
@@ -212,21 +213,21 @@ export default function RegisterPage() {
       title: 'Exposant',
       description: 'Entreprise ou organisation exposante',
       icon: Building2,
-      color: 'bg-blue-100 text-blue-600 border-blue-200'
+      color: 'bg-blue-50 text-siports-primary border-siports-primary'
     },
     {
       value: 'partner',
       title: 'Partenaire',
       description: 'Sponsor ou partenaire officiel',
       icon: Globe,
-      color: 'bg-green-100 text-green-600 border-green-200'
+      color: 'bg-amber-50 text-siports-gold border-siports-gold'
     },
     {
       value: 'visitor',
       title: 'Visiteur',
       description: 'Professionnel ou particulier visitant le salon',
       icon: User,
-      color: 'bg-purple-100 text-purple-600 border-purple-200'
+      color: 'bg-cyan-50 text-siports-secondary border-siports-secondary'
     }
   ];
 
@@ -341,8 +342,14 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-siports-primary via-siports-secondary to-siports-accent py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Background Pattern */}
+      <MoroccanPattern className="opacity-10" color="white" scale={1.5} />
+      
+      {/* Decorative Arch at bottom */}
+      <MoroccanArch className="text-white/10" />
+
+      <div className="max-w-4xl mx-auto relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -350,12 +357,12 @@ export default function RegisterPage() {
           className="text-center mb-8"
         >
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="bg-white p-3 rounded-lg">
-              <Anchor className="h-8 w-8 text-blue-600" />
+            <div className="bg-white p-3 rounded-lg shadow-lg">
+              <Anchor className="h-8 w-8 text-siports-primary" />
             </div>
             <div>
               <span className="text-2xl font-bold text-white">SIPORTS</span>
-              <span className="text-sm text-blue-200 block leading-none">2026</span>
+              <span className="text-sm text-siports-gold block leading-none font-medium">2026</span>
             </div>
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">
@@ -376,9 +383,9 @@ export default function RegisterPage() {
           <div className="flex items-center justify-between">
             {steps.map((step, index) => (
               <div key={step.id} className="flex items-center">
-                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors duration-300 ${
                   currentStep >= step.id 
-                    ? 'bg-white text-blue-600 border-white' 
+                    ? 'bg-siports-gold text-white border-siports-gold shadow-lg shadow-siports-gold/30' 
                     : 'bg-transparent text-white border-white/30'
                 }`}>
                   {currentStep > step.id ? (
@@ -389,7 +396,7 @@ export default function RegisterPage() {
                 </div>
                 <div className="ml-3 hidden sm:block">
                   <p className={`text-sm font-medium ${
-                    currentStep >= step.id ? 'text-white' : 'text-white/60'
+                    currentStep >= step.id ? 'text-siports-gold' : 'text-white/60'
                   }`}>
                     {step.title}
                   </p>
@@ -397,7 +404,7 @@ export default function RegisterPage() {
                 </div>
                 {index < steps.length - 1 && (
                   <div className={`w-12 h-0.5 mx-4 ${
-                    currentStep > step.id ? 'bg-white' : 'bg-white/30'
+                    currentStep > step.id ? 'bg-siports-gold' : 'bg-white/30'
                   }`} />
                 )}
               </div>
@@ -412,7 +419,7 @@ export default function RegisterPage() {
           transition={{ delay: 0.2 }}
           className="relative z-[60]"
         >
-          <Card className="p-8">
+          <Card className="p-8 border-t-4 border-t-siports-gold shadow-2xl backdrop-blur-sm bg-white/95">
             <form onSubmit={handleSubmit(onSubmit)}>
               {/* Step 1: Account Type */}
               {currentStep === 1 && (

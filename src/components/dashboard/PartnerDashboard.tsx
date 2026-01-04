@@ -349,20 +349,20 @@ export default function PartnerDashboard() {
           transition={{ duration: 0.6 }}
           className="mb-8"
         >
-          <div className="bg-gradient-to-r from-amber-600 via-orange-600 to-red-700 rounded-2xl shadow-2xl p-8 mb-6 relative overflow-hidden">
+          <div className="bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent rounded-2xl shadow-2xl p-8 mb-6 relative overflow-hidden">
             {/* Background Pattern */}
-            <MoroccanPattern className="opacity-15" color="rgba(255,255,255,0.4)" scale={0.8} />
+            <MoroccanPattern className="opacity-15" color="white" scale={0.8} />
 
             <div className="relative flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center space-x-4">
-                <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
-                  <Crown className="h-10 w-10 text-white" />
+                <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
+                  <Crown className="h-10 w-10 text-siports-gold" />
                 </div>
                 <div>
                   <h1 className="text-3xl font-bold text-white mb-1">
                     {t('partner.my_profile')}
                   </h1>
-                  <p className="text-pink-100">
+                  <p className="text-blue-100">
                     {t('dashboard.welcome')} {user?.profile?.firstName || 'Partenaire'}, tier {partnerTier.toUpperCase()} ✨
                   </p>
                 </div>

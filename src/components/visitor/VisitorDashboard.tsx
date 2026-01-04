@@ -231,15 +231,15 @@ export default memo(function VisitorDashboard() {
 
   if (!isAuthenticated || !user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="text-center"
         >
-          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md">
-            <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-              <Users className="h-10 w-10 text-white" />
+          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md border border-gray-100">
+            <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-siports-primary to-siports-secondary rounded-full flex items-center justify-center">
+              <Users className="h-10 w-10 text-siports-gold" />
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-2">
               Accès non autorisé
@@ -248,7 +248,7 @@ export default memo(function VisitorDashboard() {
               Veuillez vous connecter pour accéder à votre espace visiteur
             </p>
             <Link to={ROUTES.LOGIN}>
-              <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+              <Button className="w-full bg-gradient-to-r from-siports-primary to-siports-secondary hover:from-siports-secondary hover:to-siports-primary text-white">
                 <Activity className="h-4 w-4 mr-2" />
                 Se connecter
               </Button>
@@ -262,7 +262,7 @@ export default memo(function VisitorDashboard() {
   // Note: VisitorLevelGuard removed - FREE visitors CAN access dashboard
   // They just have limited features (0 B2B appointments quota)
   return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header Premium avec Glass Morphism */}
           <motion.div
@@ -271,14 +271,14 @@ export default memo(function VisitorDashboard() {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-800 rounded-2xl shadow-2xl p-8 mb-6 relative overflow-hidden">
+            <div className="bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent rounded-2xl shadow-2xl p-8 mb-6 relative overflow-hidden">
               {/* Background Pattern */}
-              <MoroccanPattern className="opacity-15" color="rgba(255,255,255,0.4)" scale={0.8} />
+              <MoroccanPattern className="opacity-15" color="white" scale={0.8} />
 
               <div className="relative flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center space-x-4">
-                  <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
-                    <Sparkles className="h-10 w-10 text-white" />
+                  <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
+                    <Sparkles className="h-10 w-10 text-siports-gold" />
                   </div>
                   <div>
                     <h1 className="text-3xl font-bold text-white mb-1">

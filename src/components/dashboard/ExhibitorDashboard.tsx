@@ -479,22 +479,22 @@ export default function ExhibitorDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Header avec gradient premium et glass morphism */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="bg-gradient-to-r from-emerald-700 via-teal-600 to-blue-700 rounded-2xl shadow-2xl mx-4 mt-4 mb-6 relative overflow-hidden"
+        className="bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent rounded-2xl shadow-2xl mx-4 mt-4 mb-6 relative overflow-hidden"
       >
         {/* Background Pattern */}
-        <MoroccanPattern className="opacity-15" color="rgba(255,255,255,0.4)" scale={0.8} />
+        <MoroccanPattern className="opacity-15" color="white" scale={0.8} />
         
         <div className="relative max-w-7xl mx-auto px-6 py-8">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center space-x-4">
-              <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
-                <Building2 className="h-10 w-10 text-white" />
+              <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
+                <Building2 className="h-10 w-10 text-siports-gold" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-white mb-1">{t('exhibitor.my_booth')}</h1>
