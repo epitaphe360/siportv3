@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Smartphone, Tablet, Monitor } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from '../ui/Button';
 import type { SiteSection, MiniSite } from '../../types/site-builder';
 
 interface MobilePreviewProps {

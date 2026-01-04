@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Eye, Heart, MessageCircle, Video, Calendar, Filter } from 'lucide-react';
-import { Badge } from '../ui/badge';
+import { Badge } from '../ui/Badge';
 import { MatchmakingService } from '../../services/matchmaking';
 import { useAuth } from '../../hooks/useAuth';
 import type { NetworkingInteraction } from '../../types/site-builder';
