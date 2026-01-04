@@ -275,13 +275,13 @@ export default function LoginPage() {
               {t('login.demo_accounts')}
             </h4>
             {(import.meta.env.VITE_SHOW_DEMO_LOGINS !== 'false') && (
-              <div className="space-y-3">
-                {/* Visiteur */}
-                <div className="bg-white rounded-lg p-3 shadow-sm">
-                  <p className="text-xs font-semibold text-gray-700 mb-2 flex items-center">
-                    👥 Visiteur
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {/* Visiteur Free */}
+                <div className="bg-white rounded-lg p-3 shadow-sm border-2 border-gray-200">
+                  <p className="text-xs font-semibold text-gray-700 mb-1 flex items-center">
+                    👥 Visiteur <span className="ml-auto text-[10px] bg-gray-100 px-2 py-0.5 rounded-full">Free</span>
                   </p>
-                  <p className="text-[10px] text-gray-600 mb-2 font-mono">
+                  <p className="text-[9px] text-gray-500 mb-2 font-mono truncate">
                     📧 demo.visitor@siports.com
                   </p>
                   <Button
@@ -292,40 +292,128 @@ export default function LoginPage() {
                       setEmail('demo.visitor@siports.com');
                       setPassword('Demo2026!');
                     }}
-                    className="w-full text-xs bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 border-0 shadow-sm"
+                    className="w-full text-xs h-8 bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 border-0"
                   >
-                    ✅ Compte Visiteur
+                    ✅ Connexion
                   </Button>
                 </div>
 
-                {/* Exposant */}
-                <div className="bg-white rounded-lg p-3 shadow-sm">
-                  <p className="text-xs font-semibold text-gray-700 mb-2 flex items-center">
-                    🏢 Exposant
+                {/* Visiteur VIP */}
+                <div className="bg-white rounded-lg p-3 shadow-sm border-2 border-amber-300">
+                  <p className="text-xs font-semibold text-gray-700 mb-1 flex items-center">
+                    👑 Visiteur <span className="ml-auto text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold">VIP</span>
                   </p>
-                  <p className="text-[10px] text-gray-600 mb-2 font-mono">
-                    📧 demo.exhibitor@siports.com
+                  <p className="text-[9px] text-gray-500 mb-2 font-mono truncate">
+                    📧 visitor-vip@test.siport.com
                   </p>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      setEmail('demo.exhibitor@siports.com');
+                      setEmail('visitor-vip@test.siport.com');
                       setPassword('Demo2026!');
                     }}
-                    className="w-full text-xs bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 border-0 shadow-sm"
+                    className="w-full text-xs h-8 bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 border-0"
                   >
-                    ✅ Compte Exposant
+                    ✅ Connexion
                   </Button>
                 </div>
 
-                {/* Partenaire */}
-                <div className="bg-white rounded-lg p-3 shadow-sm">
-                  <p className="text-xs font-semibold text-gray-700 mb-2 flex items-center">
-                    🤝 Partenaire
+                {/* Exposant 9m² */}
+                <div className="bg-white rounded-lg p-3 shadow-sm border-2 border-purple-200">
+                  <p className="text-xs font-semibold text-gray-700 mb-1 flex items-center">
+                    🏢 Exposant <span className="ml-auto text-[10px] bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">9m²</span>
                   </p>
-                  <p className="text-[10px] text-gray-600 mb-2 font-mono">
+                  <p className="text-[9px] text-gray-500 mb-2 font-mono truncate">
+                    📧 exhibitor-9m@test.siport.com
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setEmail('exhibitor-9m@test.siport.com');
+                      setPassword('Demo2026!');
+                    }}
+                    className="w-full text-xs h-8 bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 border-0"
+                  >
+                    ✅ Connexion
+                  </Button>
+                </div>
+
+                {/* Exposant 18m² */}
+                <div className="bg-white rounded-lg p-3 shadow-sm border-2 border-purple-300">
+                  <p className="text-xs font-semibold text-gray-700 mb-1 flex items-center">
+                    🏢 Exposant <span className="ml-auto text-[10px] bg-purple-200 text-purple-800 px-2 py-0.5 rounded-full">18m²</span>
+                  </p>
+                  <p className="text-[9px] text-gray-500 mb-2 font-mono truncate">
+                    📧 exhibitor-18m@test.siport.com
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setEmail('exhibitor-18m@test.siport.com');
+                      setPassword('Demo2026!');
+                    }}
+                    className="w-full text-xs h-8 bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:from-purple-700 hover:to-purple-800 border-0"
+                  >
+                    ✅ Connexion
+                  </Button>
+                </div>
+
+                {/* Exposant 36m² */}
+                <div className="bg-white rounded-lg p-3 shadow-sm border-2 border-purple-400">
+                  <p className="text-xs font-semibold text-gray-700 mb-1 flex items-center">
+                    🏢 Exposant <span className="ml-auto text-[10px] bg-purple-300 text-purple-900 px-2 py-0.5 rounded-full font-semibold">36m²</span>
+                  </p>
+                  <p className="text-[9px] text-gray-500 mb-2 font-mono truncate">
+                    📧 exhibitor-36m@test.siport.com
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setEmail('exhibitor-36m@test.siport.com');
+                      setPassword('Demo2026!');
+                    }}
+                    className="w-full text-xs h-8 bg-gradient-to-r from-purple-700 to-purple-800 text-white hover:from-purple-800 hover:to-purple-900 border-0"
+                  >
+                    ✅ Connexion
+                  </Button>
+                </div>
+
+                {/* Exposant 54m² */}
+                <div className="bg-white rounded-lg p-3 shadow-sm border-2 border-purple-500">
+                  <p className="text-xs font-semibold text-gray-700 mb-1 flex items-center">
+                    🏢 Exposant <span className="ml-auto text-[10px] bg-purple-400 text-purple-950 px-2 py-0.5 rounded-full font-bold">54m²</span>
+                  </p>
+                  <p className="text-[9px] text-gray-500 mb-2 font-mono truncate">
+                    📧 exhibitor-54m@test.siport.com
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setEmail('exhibitor-54m@test.siport.com');
+                      setPassword('Demo2026!');
+                    }}
+                    className="w-full text-xs h-8 bg-gradient-to-r from-purple-800 to-purple-900 text-white hover:from-purple-900 hover:to-purple-950 border-0"
+                  >
+                    ✅ Connexion
+                  </Button>
+                </div>
+
+                {/* Partenaire Bronze */}
+                <div className="bg-white rounded-lg p-3 shadow-sm border-2 border-orange-200">
+                  <p className="text-xs font-semibold text-gray-700 mb-1 flex items-center">
+                    🤝 Partenaire <span className="ml-auto text-[10px] bg-orange-100 text-orange-800 px-2 py-0.5 rounded-full">Bronze</span>
+                  </p>
+                  <p className="text-[9px] text-gray-500 mb-2 font-mono truncate">
                     📧 demo.partner@siports.com
                   </p>
                   <Button
@@ -336,18 +424,84 @@ export default function LoginPage() {
                       setEmail('demo.partner@siports.com');
                       setPassword('Demo2026!');
                     }}
-                    className="w-full text-xs bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 border-0 shadow-sm"
+                    className="w-full text-xs h-8 bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 border-0"
                   >
-                    ✅ Compte Partenaire
+                    ✅ Connexion
+                  </Button>
+                </div>
+
+                {/* Partenaire Silver */}
+                <div className="bg-white rounded-lg p-3 shadow-sm border-2 border-gray-300">
+                  <p className="text-xs font-semibold text-gray-700 mb-1 flex items-center">
+                    🤝 Partenaire <span className="ml-auto text-[10px] bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full font-semibold">Silver</span>
+                  </p>
+                  <p className="text-[9px] text-gray-500 mb-2 font-mono truncate">
+                    📧 partner-silver@test.siport.com
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setEmail('partner-silver@test.siport.com');
+                      setPassword('Demo2026!');
+                    }}
+                    className="w-full text-xs h-8 bg-gradient-to-r from-gray-400 to-gray-500 text-white hover:from-gray-500 hover:to-gray-600 border-0"
+                  >
+                    ✅ Connexion
+                  </Button>
+                </div>
+
+                {/* Partenaire Gold */}
+                <div className="bg-white rounded-lg p-3 shadow-sm border-2 border-amber-300">
+                  <p className="text-xs font-semibold text-gray-700 mb-1 flex items-center">
+                    🤝 Partenaire <span className="ml-auto text-[10px] bg-amber-200 text-amber-900 px-2 py-0.5 rounded-full font-bold">Gold</span>
+                  </p>
+                  <p className="text-[9px] text-gray-500 mb-2 font-mono truncate">
+                    📧 partner-gold@test.siport.com
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setEmail('partner-gold@test.siport.com');
+                      setPassword('Demo2026!');
+                    }}
+                    className="w-full text-xs h-8 bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 border-0"
+                  >
+                    ✅ Connexion
+                  </Button>
+                </div>
+
+                {/* Partenaire Platinum */}
+                <div className="bg-white rounded-lg p-3 shadow-sm border-2 border-blue-400">
+                  <p className="text-xs font-semibold text-gray-700 mb-1 flex items-center">
+                    🤝 Partenaire <span className="ml-auto text-[10px] bg-blue-200 text-blue-900 px-2 py-0.5 rounded-full font-bold">Platinum</span>
+                  </p>
+                  <p className="text-[9px] text-gray-500 mb-2 font-mono truncate">
+                    📧 partner-platinum@test.siport.com
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setEmail('partner-platinum@test.siport.com');
+                      setPassword('Demo2026!');
+                    }}
+                    className="w-full text-xs h-8 bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 border-0"
+                  >
+                    ✅ Connexion
                   </Button>
                 </div>
 
                 {/* Admin */}
-                <div className="bg-white rounded-lg p-3 shadow-sm">
-                  <p className="text-xs font-semibold text-gray-700 mb-2 flex items-center">
-                    ⚙️ Administrateur
+                <div className="col-span-1 md:col-span-2 bg-white rounded-lg p-3 shadow-sm border-2 border-red-300">
+                  <p className="text-xs font-semibold text-gray-700 mb-1 flex items-center">
+                    ⚙️ Administrateur <span className="ml-auto text-[10px] bg-red-100 text-red-800 px-2 py-0.5 rounded-full font-bold">ADMIN</span>
                   </p>
-                  <p className="text-[10px] text-gray-600 mb-2 font-mono">
+                  <p className="text-[9px] text-gray-500 mb-2 font-mono truncate">
                     📧 admin@siports.com
                   </p>
                   <Button
@@ -358,9 +512,9 @@ export default function LoginPage() {
                       setEmail('admin@siports.com');
                       setPassword('Admin2026!');
                     }}
-                    className="w-full text-xs bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 border-0 shadow-sm"
+                    className="w-full text-xs h-8 bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 border-0"
                   >
-                    ✅ Compte Admin
+                    ✅ Connexion Admin
                   </Button>
                 </div>
 

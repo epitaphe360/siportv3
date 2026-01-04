@@ -48,7 +48,22 @@ export const HeroSection: React.FC = () => {
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-siports-primary via-siports-secondary to-siports-accent text-white overflow-hidden min-h-[90vh] flex items-center">
+    <section className="relative bg-gradient-to-br from-red-700 via-red-800 to-red-900 text-white overflow-hidden min-h-[90vh] flex items-center">
+      {/* Moroccan Zellige Pattern Background */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,215,0,0.1) 35px, rgba(255,215,0,0.1) 70px),
+                           repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(0,128,0,0.1) 35px, rgba(0,128,0,0.1) 70px)`
+        }} />
+      </div>
+      
+      {/* Decorative Moroccan Arches */}
+      <div className="absolute top-0 left-0 w-full h-24 opacity-20">
+        <svg viewBox="0 0 1200 100" className="w-full h-full" preserveAspectRatio="none">
+          <path d="M0,0 Q150,80 300,0 Q450,80 600,0 Q750,80 900,0 Q1050,80 1200,0 L1200,100 L0,100 Z" fill="currentColor" className="text-siports-gold" />
+        </svg>
+      </div>
+      
       {/* Background Pattern */}
       <MoroccanPattern className="opacity-10" color="white" scale={1.5} />
       
@@ -92,39 +107,51 @@ export const HeroSection: React.FC = () => {
                 </p>
                 
                 <div className="grid grid-cols-4 gap-4">
-                  <div className="bg-gradient-to-br from-siports-secondary to-siports-primary rounded-2xl p-4 shadow-2xl text-center border border-siports-gold/30">
-                    <div className="text-3xl font-bold text-white mb-1">
-                      {formatNumber(timeLeft.days)}
-                    </div>
-                    <div className="text-siports-gold text-xs font-medium uppercase tracking-wide">
-                      {getTimeUnit(timeLeft.days, 'time.day', 'time.days')}
-                    </div>
-                  </div>
-
-                  <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-4 shadow-2xl text-center">
-                    <div className="text-3xl font-bold text-white mb-1">
-                      {formatNumber(timeLeft.hours)}
-                    </div>
-                    <div className="text-purple-100 text-xs font-medium uppercase tracking-wide">
-                      {getTimeUnit(timeLeft.hours, 'time.hour', 'time.hours')}
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-siports-gold to-amber-600 rounded-2xl transform rotate-2 group-hover:rotate-3 transition-transform"></div>
+                    <div className="relative bg-gradient-to-br from-red-600 to-red-700 rounded-2xl p-4 shadow-2xl text-center border-2 border-siports-gold">
+                      <div className="text-3xl font-bold text-siports-gold mb-1">
+                        {formatNumber(timeLeft.days)}
+                      </div>
+                      <div className="text-amber-200 text-xs font-medium uppercase tracking-wide">
+                        {getTimeUnit(timeLeft.days, 'time.day', 'time.days')}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-4 shadow-2xl text-center">
-                    <div className="text-3xl font-bold text-white mb-1">
-                      {formatNumber(timeLeft.minutes)}
-                    </div>
-                    <div className="text-green-100 text-xs font-medium uppercase tracking-wide">
-                      {getTimeUnit(timeLeft.minutes, 'time.minute', 'time.minutes')}
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl transform rotate-2 group-hover:rotate-3 transition-transform"></div>
+                    <div className="relative bg-white rounded-2xl p-4 shadow-2xl text-center border-2 border-green-600">
+                      <div className="text-3xl font-bold text-green-700 mb-1">
+                        {formatNumber(timeLeft.hours)}
+                      </div>
+                      <div className="text-green-600 text-xs font-medium uppercase tracking-wide">
+                        {getTimeUnit(timeLeft.hours, 'time.hour', 'time.hours')}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-4 shadow-2xl text-center">
-                    <div className="text-3xl font-bold text-white mb-1">
-                      {formatNumber(timeLeft.seconds)}
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-siports-gold to-amber-600 rounded-2xl transform -rotate-2 group-hover:-rotate-3 transition-transform"></div>
+                    <div className="relative bg-white rounded-2xl p-4 shadow-2xl text-center border-2 border-siports-gold">
+                      <div className="text-3xl font-bold text-amber-700 mb-1">
+                        {formatNumber(timeLeft.minutes)}
+                      </div>
+                      <div className="text-amber-600 text-xs font-medium uppercase tracking-wide">
+                        {getTimeUnit(timeLeft.minutes, 'time.minute', 'time.minutes')}
+                      </div>
                     </div>
-                    <div className="text-orange-100 text-xs font-medium uppercase tracking-wide">
-                      {getTimeUnit(timeLeft.seconds, 'time.second', 'time.seconds')}
+                  </div>
+
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-red-700 rounded-2xl transform -rotate-2 group-hover:-rotate-3 transition-transform"></div>
+                    <div className="relative bg-gradient-to-br from-green-600 to-green-700 rounded-2xl p-4 shadow-2xl text-center border-2 border-red-600">
+                      <div className="text-3xl font-bold text-white mb-1">
+                        {formatNumber(timeLeft.seconds)}
+                      </div>
+                      <div className="text-green-100 text-xs font-medium uppercase tracking-wide">
+                        {getTimeUnit(timeLeft.seconds, 'time.second', 'time.seconds')}
+                      </div>
                     </div>
                   </div>
                 </div>

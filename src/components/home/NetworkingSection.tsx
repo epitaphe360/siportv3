@@ -57,7 +57,14 @@ export const NetworkingSection: React.FC = () => {
   ];
 
   return (
-    <section className="py-16 bg-white relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-br from-red-50/30 via-white to-green-50/30 relative overflow-hidden">
+      {/* Moroccan Geometric Background */}
+      <div className="absolute inset-0 opacity-[0.05]">
+        <div className="absolute top-10 left-10 w-32 h-32 border-4 border-siports-gold rounded-full" />
+        <div className="absolute top-20 right-20 w-24 h-24 border-4 border-red-600 rotate-45 transform" />
+        <div className="absolute bottom-20 left-1/4 w-40 h-40 border-4 border-green-600" style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }} />
+        <div className="absolute bottom-10 right-1/3 w-36 h-36 border-4 border-siports-gold rotate-12 transform" />
+      </div>
       {/* Background Pattern */}
       <MoroccanPattern className="opacity-[0.03] text-siports-primary" scale={1.5} />
 

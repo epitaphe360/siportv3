@@ -87,8 +87,17 @@ export const FeaturedExhibitors: React.FC = () => {
   }
 
   return (
-    <section className="py-16 bg-gray-50 relative overflow-hidden">
-      {/* Background Pattern */}
+    <section className="py-20 bg-gradient-to-b from-white via-green-50/20 to-white relative overflow-hidden">
+      {/* Moroccan Zellige Background Pattern */}
+      <div className="absolute inset-0 opacity-[0.04]">
+        <div className="absolute w-full h-full" style={{
+          backgroundImage: `radial-gradient(circle, transparent 20%, #D4AF37 21%, #D4AF37 22%, transparent 23%),
+                           radial-gradient(circle, transparent 20%, #C1272D 21%, #C1272D 22%, transparent 23%),
+                           radial-gradient(circle, transparent 20%, #006233 21%, #006233 22%, transparent 23%)`,
+          backgroundSize: '80px 80px',
+          backgroundPosition: '0 0, 40px 40px, 20px 60px'
+        }} />
+      </div>
       <MoroccanPattern className="opacity-[0.03] text-siports-primary" scale={2} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
