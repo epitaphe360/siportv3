@@ -2564,24 +2564,19 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      console.log('🔎 getUsers: Fetching ALL users from database...');
       const { data, error } = await safeSupabase
         .from('users')
         .select('*')
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.warn('❌ getUsers error:', error.message, error);
+        console.warn('Erreur lors de la récupération des utilisateurs:', error.message);
         return [];
       }
 
-      console.log(`📊 getUsers: Raw data from DB: ${data?.length || 0} users`);
-      const transformedUsers = (data || []).map(this.transformUserDBToUser);
-      console.log(`✅ getUsers: After transformation: ${transformedUsers.length} users`);
-      
-      return transformedUsers;
+      return (data || []).map(this.transformUserDBToUser);
     } catch (error) {
-      console.error('❌ getUsers exception:', error);
+      console.error('Erreur lors de la récupération des utilisateurs:', error);
       return [];
     }
   }
