@@ -27,6 +27,7 @@ import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { Card } from '../ui/Card';
 import { toast } from 'sonner';
+import { getEmbedUrl } from '../../utils/videoUtils';
 
 interface EnhancedProductModalProps {
   product: any;
@@ -337,12 +338,12 @@ export default function EnhancedProductModal({ product: rawProduct, theme, onClo
                     </div>
 
                     {/* Vidéo si disponible */}
-                    {product.videoUrl && (
+                    {getEmbedUrl(product.videoUrl) && (
                       <div>
                         <h3 className="font-semibold text-lg mb-3 text-gray-800">Vidéo de démonstration</h3>
                         <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-100">
                           <iframe
-                            src={product.videoUrl}
+                            src={getEmbedUrl(product.videoUrl)!}
                             className="w-full h-full"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen

@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Star, Heart, MessageCircle, Handshake, TrendingUp, Calendar } from 'lucide-react';
-import { Badge } from '../ui/Badge';
+import { Badge } from '../ui/badge';
 import { MatchmakingService } from '../../services/matchmaking';
-import useAuthStore from '../../store/authStore';
+import { useAuth } from '../../hooks/useAuth';
 import type { MatchScore } from '../../types/site-builder';
-import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 export const MatchmakingDashboard: React.FC = () => {
-  const { user } = useAuthStore();
+  const { user } = useAuth();
   const [recommendations, setRecommendations] = useState<MatchScore[]>([]);
   const [networkStrength, setNetworkStrength] = useState(0);
   const [filters, setFilters] = useState({
@@ -74,14 +73,11 @@ export const MatchmakingDashboard: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto p-6">
       {/* Header */}
-      <div className="mb-8 bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent rounded-2xl shadow-lg p-8 relative overflow-hidden">
-        <MoroccanPattern className="opacity-10" color="white" scale={0.8} />
-        <div className="relative z-10">
-          <h1 className="text-3xl font-bold mb-2 text-white">🎯 Matchmaking Intelligent</h1>
-          <p className="text-blue-100">
-            Découvrez les professionnels les plus pertinents pour votre réseau
-          </p>
-        </div>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">🎯 Matchmaking Intelligent</h1>
+        <p className="text-gray-600">
+          Découvrez les professionnels les plus pertinents pour votre réseau
+        </p>
       </div>
 
       {/* Stats */}

@@ -12,10 +12,6 @@ import {
   type NetworkingPermissions,
   type EventAccessPermissions
 } from '@/lib/networkingPermissions';
-import { 
-  isUserConnected, 
-  isConnectionPending 
-} from '@/utils/userHelpers';
 
 // Types
 interface SectorData {
@@ -160,19 +156,9 @@ interface PendingConnection {
   requester: any; // User object
 }
 
-interface Connection {
-  id: string;
-  requester_id: string;
-  addressee_id: string;
-  status: string;
-  created_at: string;
-  requester: any;
-  addressee: any;
-}
-
 interface NetworkingState {
   recommendations: NetworkingRecommendation[];
-  connections: Connection[]; // Array of connection objects with full user data
+  connections: string[]; // Array of user IDs
   favorites: string[]; // Array of user IDs
   pendingConnections: PendingConnection[]; // Array of pending connection objects
   aiInsights: AIInsights | null;
@@ -226,7 +212,7 @@ interface NetworkingState {
 export const useNetworkingStore = create<NetworkingState>((set, get) => ({
   // State
   recommendations: [],
-  connections: [], // Maintenant des objets Connection complets
+  connections: [],
   favorites: [],
   pendingConnections: [],
   aiInsights: null,
@@ -440,12 +426,10 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     if (!user) return;
 
     try {
-      const connectionsData = await SupabaseService.getUserConnections(user.id);
-      // getUserConnections retourne déjà les objets complets avec requester et addressee
-      set({ connections: connectionsData });
+      const connections = await SupabaseService.getUserConnections(user.id);
+      set({ connections });
     } catch (error) {
       console.error('Erreur lors du chargement des connexions:', error);
-      set({ connections: [] });
     }
   },
 

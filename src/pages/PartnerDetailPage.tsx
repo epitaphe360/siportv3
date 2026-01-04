@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTranslation } from '../hooks/useTranslation';
 import { ROUTES } from '../lib/routes';
+import { getEmbedUrl } from '../utils/videoUtils';
 import { 
   ArrowLeft,
   ExternalLink,
@@ -1307,12 +1308,14 @@ export default function PartnerDetailPage() {
             >
               <ArrowLeft className="h-8 w-8" />
             </button>
-            <iframe
-              src={partner.videoUrl}
-              className="w-full h-full rounded-xl"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+            {getEmbedUrl(partner.videoUrl) && (
+              <iframe
+                src={getEmbedUrl(partner.videoUrl)!}
+                className="w-full h-full rounded-xl"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            )}
           </motion.div>
         </div>
       )}

@@ -18,6 +18,7 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { toast } from 'sonner';
+import { getEmbedUrl } from '../../utils/videoUtils';
 import { supabase } from '../../lib/supabase';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '../../store/authStore';
@@ -300,9 +301,9 @@ export default function PartnerMediaApprovalPage() {
                 {/* Video */}
                 <div className="mb-6">
                   <div className="aspect-video bg-gray-900 rounded-lg overflow-hidden">
-                    {selectedMedia.video_url ? (
+                    {selectedMedia.video_url && getEmbedUrl(selectedMedia.video_url) ? (
                       <iframe
-                        src={selectedMedia.video_url}
+                        src={getEmbedUrl(selectedMedia.video_url)!}
                         className="w-full h-full"
                         allowFullScreen
                       />
