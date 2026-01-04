@@ -468,7 +468,7 @@ class AnalyticsService {
   /**
    * Raccourcis pour périodes communes
    */
-  async getToday Metrics(): Promise<AnalyticsMetrics> {
+  async getTodayMetrics(): Promise<AnalyticsMetrics> {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const startDate = today.toISOString();

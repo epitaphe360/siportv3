@@ -48,8 +48,14 @@ export default function AvailabilitySettingsPage() {
   // Stats for Appointments
   const confirmedApps = appointments.filter(a => a.status === 'confirmed').length;
   const pendingApps = appointments.filter(a => a.status === 'pending').length;
+  const completedApps = appointments.filter(a => a.status === 'completed').length;
   const cancelledApps = appointments.filter(a => a.status === 'cancelled').length;
   const totalApps = appointments.length;
+
+  // Calculer les pourcentages réels
+  const confirmedPercent = totalApps > 0 ? (confirmedApps / totalApps) * 100 : 0;
+  const pendingPercent = totalApps > 0 ? (pendingApps / totalApps) * 100 : 0;
+  const completedPercent = totalApps > 0 ? (completedApps / totalApps) * 100 : 0;
 
   // Mock Data for Analytics (as per request visual)
   const engagementData = [
@@ -62,10 +68,11 @@ export default function AvailabilitySettingsPage() {
     { name: 'Dim', visits: 1, interactions: 0 },
   ];
 
+  // Utiliser les vraies données dynamiques
   const statusData = [
-    { name: 'Confirmés', value: 66.7, color: '#10B981' },
-    { name: 'En attente', value: 33.3, color: '#F59E0B' },
-    { name: 'Terminés', value: 0, color: '#3B82F6' },
+    { name: 'Confirmés', value: confirmedPercent, color: '#10B981' },
+    { name: 'En attente', value: pendingPercent, color: '#F59E0B' },
+    { name: 'Terminés', value: completedPercent, color: '#3B82F6' },
   ];
 
   const activityData = [

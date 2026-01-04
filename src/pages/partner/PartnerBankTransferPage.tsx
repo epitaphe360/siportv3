@@ -406,7 +406,7 @@ export default function PartnerBankTransferPage() {
                 </Button>
               </div>
               <p className="text-xs text-red-600 mt-2 font-semibold">
-                âš ï¸ Cette référence DOIT figurer dans le libellé de votre virement
+                ⚠️ Cette référence DOIT figurer dans le libellé de votre virement
               </p>
             </div>
           </div>
