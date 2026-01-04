@@ -125,6 +125,8 @@
     "eslint-plugin-react-refresh": "^0.4.11",
     "fs-extra": "^11.3.2",
     "globals": "^15.9.0",
+    "linkedom": "^0.18.12",
+    "node-html-parser": "^7.0.1",
     "patch-package": "^8.0.0",
     "postcss": "^8.4.35",
     "supabase": "^2.48.3",
