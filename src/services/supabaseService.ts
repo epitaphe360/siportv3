@@ -1944,8 +1944,17 @@ export class SupabaseService {
 
       // Filtre par terme de recherche (nom, entreprise, poste)
       if (filters.searchTerm && filters.searchTerm.trim()) {
-        const term = filters.searchTerm.trim().toLowerCase();
-        query = query.or(`profile->>firstName.ilike.%${term}%,profile->>lastName.ilike.%${term}%,profile->>company.ilike.%${term}%,profile->>companyName.ilike.%${term}%,profile->>position.ilike.%${term}%,name.ilike.%${term}%`);
+        const term = `%${filters.searchTerm.trim().toLowerCase()}%`;
+        // Utiliser un filtre OR plus simple et lisible
+        query = query.or(
+          `profile->>firstName.ilike.${term},` +
+          `profile->>lastName.ilike.${term},` +
+          `profile->>company.ilike.${term},` +
+          `profile->>companyName.ilike.${term},` +
+          `profile->>position.ilike.${term},` +
+          `name.ilike.${term},` +
+          `email.ilike.${term}`
+        );
       }
 
       // Filtre par secteur
@@ -1974,12 +1983,15 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      // Filtrer les résultats côté client pour s'assurer d'avoir des données valides
-      const users = (data || [])
-        .map(this.transformUserDBToUser)
-        .filter(u => u && (u.profile?.firstName || u.profile?.company || u.profile?.companyName || u.name));
+      console.log(`🔍 Recherche brute: ${data?.length || 0} résultats de la DB`);
 
-      console.log(`✅ Recherche utilisateurs: ${users.length} résultats trouvés`);
+      // Filtrer les résultats côté client pour s'assurer d'avoir des données valides
+      const transformedUsers = (data || []).map(this.transformUserDBToUser);
+      console.log(`🔄 Après transformation: ${transformedUsers.length} utilisateurs`);
+      
+      const users = transformedUsers.filter(u => u && (u.profile?.firstName || u.profile?.company || u.profile?.companyName || u.name));
+      console.log(`✅ Après filtre final: ${users.length} utilisateurs valides`);
+
       return users;
     } catch (error) {
       console.error('Erreur lors de la recherche d\'utilisateurs:', error);
