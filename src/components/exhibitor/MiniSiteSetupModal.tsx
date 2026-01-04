@@ -68,12 +68,21 @@ export const MiniSiteSetupModal: React.FC<MiniSiteSetupModalProps> = ({
 
       // Redirect to mini-site editor
       navigate(ROUTES.MINISITE_EDITOR);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating auto mini-site:', error);
-      toast.error(
-        'Impossible de créer le mini-site automatiquement. Essayez la création manuelle.',
-        { duration: 5000 }
-      );
+      
+      // Handle CORS errors specifically
+      if (error?.message?.includes('CORS') || error?.message?.includes('Failed to send')) {
+        toast.error(
+          '⚠️ Création automatique temporairement indisponible. Utilisez la création manuelle pour continuer.',
+          { duration: 6000 }
+        );
+      } else {
+        toast.error(
+          'Impossible de créer le mini-site automatiquement. Essayez la création manuelle.',
+          { duration: 5000 }
+        );
+      }
       setMode('manual');
     } finally {
       setIsLoading(false);
