@@ -45,7 +45,13 @@ export default function MediaDetailPage() {
     fetchMedia();
   }, [id, navigate]);
 
-  const handlePlayMedia = () => {
+  const handlePlayMedia = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    console.log('🎬 Play button clicked', { media_url: media?.media_url });
+    
     if (media?.media_url) {
       // Si c'est une vidéo ou audio avec URL, on peut soit ouvrir dans une nouvelle fenêtre
       // soit afficher un lecteur intégré (à implémenter selon vos besoins)
@@ -57,7 +63,13 @@ export default function MediaDetailPage() {
     }
   };
 
-  const handleDownloadResources = () => {
+  const handleDownloadResources = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    console.log('📥 Download button clicked', { resources_url: media?.resources_url });
+    
     if (media?.resources_url) {
       window.open(media.resources_url, '_blank');
       toast.success('Téléchargement des ressources en cours...');
@@ -66,7 +78,13 @@ export default function MediaDetailPage() {
     }
   };
 
-  const handleShare = async () => {
+  const handleShare = async (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    console.log('🔗 Share button clicked');
+    
     const url = window.location.href;
     if (navigator.share) {
       try {
@@ -87,7 +105,12 @@ export default function MediaDetailPage() {
     }
   };
 
-  const handleToggleFavorite = () => {
+  const handleToggleFavorite = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    console.log('❤️ Favorite button clicked');
     // TODO: Implémenter la logique de favoris avec le backend
     toast.success('Ajouté aux favoris');
   };
@@ -125,8 +148,9 @@ export default function MediaDetailPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
             <Button 
               size="lg" 
-              className="relative z-10 w-20 h-20 rounded-full bg-blue-600 hover:bg-blue-700 hover:scale-110 transition-all shadow-xl"
-              onClick={handlePlayMedia}
+              type="button"
+              className="relative z-10 w-20 h-20 rounded-full bg-blue-600 hover:bg-blue-700 hover:scale-110 transition-all shadow-xl cursor-pointer"
+              onClick={(e) => handlePlayMedia(e)}
             >
               <Play className="h-10 w-10 text-white ml-1" />
             </Button>
@@ -194,8 +218,13 @@ export default function MediaDetailPage() {
               </p>
               <Button 
                 variant="link" 
-                className="mt-4 p-0 text-blue-600 font-bold"
-                onClick={() => setShowTranscript(!showTranscript)}
+                type="button"
+                className="mt-4 p-0 text-blue-600 font-bold cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowTranscript(!showTranscript);
+                }}
               >
                 {showTranscript ? 'Masquer' : 'Lire'} la transcription complète
               </Button>
@@ -212,18 +241,29 @@ export default function MediaDetailPage() {
             <Card className="p-6">
               <div className="space-y-4">
                 <Button 
-                  className="w-full bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200"
-                  onClick={handleDownloadResources}
+                  type="button"
+                  className="w-full bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200 cursor-pointer"
+                  onClick={(e) => handleDownloadResources(e)}
                 >
                   <Download className="h-4 w-4 mr-2" />
                   Télécharger les ressources
                 </Button>
                 <div className="flex gap-2">
-                  <Button variant="outline" className="flex-1" onClick={handleShare}>
+                  <Button 
+                    type="button"
+                    variant="outline" 
+                    className="flex-1 cursor-pointer" 
+                    onClick={(e) => handleShare(e)}
+                  >
                     <Share2 className="h-4 w-4 mr-2" />
                     Partager
                   </Button>
-                  <Button variant="outline" className="flex-1" onClick={handleToggleFavorite}>
+                  <Button 
+                    type="button"
+                    variant="outline" 
+                    className="flex-1 cursor-pointer" 
+                    onClick={(e) => handleToggleFavorite(e)}
+                  >
                     <Heart className="h-4 w-4 mr-2" />
                     Favoris
                   </Button>
@@ -256,7 +296,14 @@ export default function MediaDetailPage() {
               <p className="text-sm text-slate-300 mb-6">
                 Vous avez des questions sur ce contenu ou souhaitez contacter les intervenants ?
               </p>
-              <Button className="w-full bg-white text-slate-900 hover:bg-blue-50">
+              <Button 
+                type="button"
+                className="w-full bg-white text-slate-900 hover:bg-blue-50 cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  toast.info('Support : support@siports.ma');
+                }}
+              >
                 Contacter le support
               </Button>
             </Card>
