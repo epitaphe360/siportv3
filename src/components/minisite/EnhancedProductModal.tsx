@@ -53,10 +53,10 @@ export default function EnhancedProductModal({ product: rawProduct, theme, onClo
   const [copiedLink, setCopiedLink] = useState(false);
   const [imageZoom, setImageZoom] = useState(false);
 
-  // Mapper snake_case vers camelCase
+  // Mapper snake_case vers camelCase (fallback si pas déjà transformé)
   const product = {
     ...rawProduct,
-    isNew: rawProduct.is_new ?? rawProduct.isNew,
+    isNew: rawProduct.is_new ?? rawProduct.isNew ?? false,
     inStock: rawProduct.in_stock ?? rawProduct.inStock ?? true,
     certified: rawProduct.certified ?? false,
     deliveryTime: rawProduct.delivery_time ?? rawProduct.deliveryTime,
@@ -65,17 +65,6 @@ export default function EnhancedProductModal({ product: rawProduct, theme, onClo
     documents: rawProduct.documents ?? [],
     specifications: rawProduct.specifications ?? '',
   };
-
-  // DEBUG - Afficher les données reçues
-  console.log('EnhancedProductModal - Product data:', {
-    name: product.name,
-    isNew: product.isNew,
-    certified: product.certified,
-    inStock: product.inStock,
-    deliveryTime: product.deliveryTime,
-    videoUrl: product.videoUrl,
-    documents: product.documents,
-  });
 
   // Préparer la galerie d'images
   const images = product.images?.length > 0 

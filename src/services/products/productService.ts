@@ -14,8 +14,16 @@ interface ProductDB {
   images: string[];
   specifications?: string | null;
   price?: number | null;
+  original_price?: number | null;
   featured: boolean;
   technical_specs?: TechnicalSpec[];
+  is_new?: boolean;
+  in_stock?: boolean;
+  certified?: boolean;
+  delivery_time?: string | null;
+  video_url?: string | null;
+  documents?: Array<{ name: string; url: string; type?: string }> | null;
+  brochure?: string | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -33,8 +41,17 @@ function transformProductDBToProduct(productDB: ProductDB): Product {
     images: productDB.images || [],
     specifications: productDB.specifications || undefined,
     price: productDB.price || undefined,
+    originalPrice: productDB.original_price || undefined,
     featured: productDB.featured,
-    technicalSpecs: productDB.technical_specs || []
+    technicalSpecs: productDB.technical_specs || [],
+    // Champs additionnels
+    isNew: productDB.is_new ?? false,
+    inStock: productDB.in_stock ?? true,
+    certified: productDB.certified ?? false,
+    deliveryTime: productDB.delivery_time || undefined,
+    videoUrl: productDB.video_url || undefined,
+    documents: productDB.documents || [],
+    brochure: productDB.brochure || undefined
   };
 }
 
