@@ -8,17 +8,13 @@ import { SupabaseService } from '../services/supabaseService';
  */
 export async function initializeAuth() {
   try {
-    console.log("[AUTH] Initialisation de l'authentification...");
-    
     // CRITICAL: Verifier et nettoyer le localStorage si donnees invalides
     const storedAuth = localStorage.getItem('siport-auth-storage');
     if (storedAuth) {
       try {
         const parsed = JSON.parse(storedAuth);
         // Si le store contient un admin mais pas de session Supabase active, suspect
-        if (parsed.state?.user?.type === 'admin') {
-          console.warn('[AUTH] Detection admin en localStorage, verification Supabase...');
-        }
+        // Verification silencieuse
       } catch (e) {
         console.error('[AUTH] localStorage corrompu, nettoyage...');
         localStorage.removeItem('siport-auth-storage');
@@ -70,18 +66,9 @@ export async function initializeAuth() {
       return;
     }
     
-    console.log('[AUTH] Rechargement du profil pour:', session.user.email);
     const userProfile = await SupabaseService.getUserByEmail(session.user.email);
 
     if (userProfile) {
-      // ✅ DEBUG: Vérifier que les données de réseautage sont bien chargées
-      console.log('[AUTH] Profil chargé:', {
-        email: userProfile.email,
-        sectors: userProfile.profile?.sectors?.length || 0,
-        interests: userProfile.profile?.interests?.length || 0,
-        bio: userProfile.profile?.bio?.substring(0, 50) || 'vide'
-      });
-      
       // CRITICAL: Verification supplementaire pour les admins
       if (userProfile.type === 'admin') {
         // Verifier que utilisateur est reellement admin dans la DB
@@ -96,7 +83,6 @@ export async function initializeAuth() {
           useAuthStore.getState().logout();
           return;
         }
-        console.warn('[AUTH] Admin authentifie:', dbUser.email);
       }
       
       // Restore auth state in store
@@ -106,8 +92,6 @@ export async function initializeAuth() {
         isAuthenticated: true,
         isLoading: false
       });
-
-      console.log('[AUTH] Session restauree:', userProfile.email, '- Type:', userProfile.type);
     } else {
       console.warn('[AUTH] Profil utilisateur introuvable, deconnexion...');
       useAuthStore.getState().logout();

@@ -473,8 +473,6 @@ const useAuthStore = create<AuthState>()(
         if (state?.user?.type === 'admin' && state?.isAuthenticated) {
           // SECURITY: Si un admin est détecté dans localStorage, on marque pour vérification
           // La vérification complète sera faite par initAuth.ts avec Supabase
-          console.warn('⚠️ Session admin détectée dans localStorage - vérification requise');
-
           // CRITICAL: Ne pas faire confiance au localStorage pour les admins
           // Forcer une vérification Supabase via initAuth
           // On ne déconnecte pas immédiatement car initAuth le fera si invalide

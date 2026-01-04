@@ -55,8 +55,6 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
   const [isMinimized, setIsMinimized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  console.log('🤖 ChatBot rendered - isOpen:', isOpen); // Debug log
-
   // Initialiser la conversation
   useEffect(() => {
     if (isOpen && messages.length === 0) {

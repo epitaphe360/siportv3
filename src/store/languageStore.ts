@@ -56,11 +56,9 @@ interface LanguageState {
 // Utiliser le dictionnaire de traductions enrichi
 const translations = allTranslations;
 
-// Debug: Vérifier que les traductions sont chargées
+// Vérification silencieuse des traductions
 if (!translations || !translations.fr) {
   console.error('❌ ERREUR: Traductions non chargées!', { translations });
-} else {
-  console.log('✅ Traductions chargées:', Object.keys(translations));
 }
 
 export const useLanguageStore = create<LanguageState>()(
