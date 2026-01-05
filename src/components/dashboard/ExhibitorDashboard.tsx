@@ -130,12 +130,21 @@ export default function ExhibitorDashboard() {
     ];
   }, [dashboardStats?.weeklyEngagement]);
 
-  // FIXED: Utiliser les vraies données de rendez-vous (0 par défaut au lieu de fausses valeurs)
+  // FIXED: Utiliser les vraies données de rendez-vous filtrées par l'exposant actuel
+  const myAppointments = React.useMemo(() => {
+    if (!user?.id || !appointments) return [];
+    // Filtrer par exhibitorUserId (user_id de l'exhibitor) ou exhibitor.user_id
+    return appointments.filter(a => 
+      (a as any).exhibitorUserId === user.id || 
+      (a as any).exhibitor?.user_id === user.id
+    );
+  }, [appointments, user?.id]);
+
   const appointmentStatusData = React.useMemo(() => [
-    { name: 'Confirmés', value: appointments?.filter(a => a.status === 'confirmed').length || 0 },
-    { name: 'En attente', value: appointments?.filter(a => a.status === 'pending').length || 0 },
-    { name: 'Terminés', value: appointments?.filter(a => a.status === 'completed').length || 0 },
-  ], [appointments]);
+    { name: 'Confirmés', value: myAppointments?.filter(a => a.status === 'confirmed').length || 0 },
+    { name: 'En attente', value: myAppointments?.filter(a => a.status === 'pending').length || 0 },
+    { name: 'Terminés', value: myAppointments?.filter(a => a.status === 'completed').length || 0 },
+  ], [myAppointments]);
 
   // FIXED: Utiliser les vraies métriques (0 par défaut)
   const activityBreakdownData = React.useMemo(() => [
@@ -152,17 +161,16 @@ export default function ExhibitorDashboard() {
     return totalActivity > 0 || totalAppointments > 0;
   }, [activityBreakdownData, appointmentStatusData]);
 
-  // CRITICAL #12 FIX: Proper null check before filtering appointments
-  const receivedAppointments = user?.id
-    ? appointments.filter(a => a.exhibitorId === user.id)
-    : [];
+  // CRITICAL #12 FIX: Utiliser myAppointments déjà filtré par exhibitorUserId
+  const receivedAppointments = myAppointments;
   const pendingAppointments = receivedAppointments.filter(a => a.status === 'pending');
   const confirmedAppointments = receivedAppointments.filter(a => a.status === 'confirmed');
 
   const handleAccept = async (appointmentId: string) => {
-    // Role validation: Verify user owns this appointment
+    // Role validation: Verify user owns this appointment via exhibitorUserId
     const appointment = appointments.find(a => a.id === appointmentId);
-    if (!appointment || !user?.id || appointment.exhibitorId !== user.id) {
+    const exhibitorUserId = (appointment as any)?.exhibitorUserId || (appointment as any)?.exhibitor?.user_id;
+    if (!appointment || !user?.id || exhibitorUserId !== user.id) {
       setError('Vous n\'êtes pas autorisé à confirmer ce rendez-vous');
       return;
     }
@@ -180,9 +188,10 @@ export default function ExhibitorDashboard() {
   };
 
   const handleReject = async (appointmentId: string) => {
-    // Role validation: Verify user owns this appointment
+    // Role validation: Verify user owns this appointment via exhibitorUserId
     const appointment = appointments.find(a => a.id === appointmentId);
-    if (!appointment || !user?.id || appointment.exhibitorId !== user.id) {
+    const exhibitorUserId = (appointment as any)?.exhibitorUserId || (appointment as any)?.exhibitor?.user_id;
+    if (!appointment || !user?.id || exhibitorUserId !== user.id) {
       setError('Vous n\'êtes pas autorisé à refuser ce rendez-vous');
       return;
     }

@@ -2451,13 +2451,18 @@ export class SupabaseService {
         .from('appointments')
         .select(`
           *,
-          exhibitor:exhibitor_id(id, company_name, logo_url),
+          exhibitor:exhibitor_id(id, user_id, company_name, logo_url),
           visitor:visitor_id(id, name, email)
         `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      
+      // Transformer pour ajouter exhibitorUserId pour le filtrage dans le dashboard
+      return (data || []).map(apt => ({
+        ...apt,
+        exhibitorUserId: apt.exhibitor?.user_id || null
+      }));
     } catch (error) {
       // Ignorer les erreurs réseau silencieusement
       if (error instanceof Error && !error.message.includes('Failed to fetch')) {
