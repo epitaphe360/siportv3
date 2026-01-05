@@ -29,7 +29,7 @@ export const DemoAccountsPage: React.FC = () => {
     visitors: [
       {
         email: 'visitor-free@test.siport.com',
-        password: 'Demo2026!',
+        password: 'Test123456!',
         name: 'Visiteur Gratuit',
         description: 'Accès de base au salon',
         icon: Users,
@@ -37,7 +37,7 @@ export const DemoAccountsPage: React.FC = () => {
       },
       {
         email: 'visitor-vip@test.siport.com',
-        password: 'Demo2026!',
+        password: 'Test123456!',
         name: 'Visiteur VIP',
         description: 'Accès premium avec badge numérique',
         icon: Crown,
@@ -48,7 +48,7 @@ export const DemoAccountsPage: React.FC = () => {
     exhibitors: [
       {
         email: 'exhibitor-9m@test.siport.com',
-        password: 'Demo2026!',
+        password: 'Test123456!',
         name: 'TechMarine Solutions',
         description: 'Stand 9m² - Starter',
         icon: Store,
@@ -56,7 +56,7 @@ export const DemoAccountsPage: React.FC = () => {
       },
       {
         email: 'exhibitor-18m@test.siport.com',
-        password: 'Demo2026!',
+        password: 'Test123456!',
         name: 'OceanLogistics Pro',
         description: 'Stand 18m² - Business',
         icon: Warehouse,
@@ -64,7 +64,7 @@ export const DemoAccountsPage: React.FC = () => {
       },
       {
         email: 'exhibitor-36m@test.siport.com',
-        password: 'Demo2026!',
+        password: 'Test123456!',
         name: 'PortTech Industries',
         description: 'Stand 36m² - Premium',
         icon: Factory,
@@ -72,7 +72,7 @@ export const DemoAccountsPage: React.FC = () => {
       },
       {
         email: 'exhibitor-54m@test.siport.com',
-        password: 'Demo2026!',
+        password: 'Test123456!',
         name: 'Global Shipping Alliance',
         description: 'Stand 54m² - Enterprise',
         icon: Ship,
@@ -83,7 +83,7 @@ export const DemoAccountsPage: React.FC = () => {
     partners: [
       {
         email: 'partner-museum@test.siport.com',
-        password: 'Demo2026!',
+        password: 'Test123456!',
         name: 'Musée Maritime National',
         description: 'Partenaire institutionnel',
         icon: Landmark,
@@ -91,7 +91,7 @@ export const DemoAccountsPage: React.FC = () => {
       },
       {
         email: 'partner-silver@test.siport.com',
-        password: 'Demo2026!',
+        password: 'Test123456!',
         name: 'Silver Maritime Services',
         description: 'Sponsor Silver',
         icon: Medal,
@@ -99,7 +99,7 @@ export const DemoAccountsPage: React.FC = () => {
       },
       {
         email: 'partner-gold@test.siport.com',
-        password: 'Demo2026!',
+        password: 'Test123456!',
         name: 'Gold Shipping Corp',
         description: 'Sponsor Gold',
         icon: Award,
@@ -107,7 +107,7 @@ export const DemoAccountsPage: React.FC = () => {
       },
       {
         email: 'partner-platinium@test.siport.com',
-        password: 'Demo2026!',
+        password: 'Test123456!',
         name: 'Platinium Port Authority',
         description: 'Sponsor Platinium',
         icon: Trophy,
@@ -226,7 +226,7 @@ export const DemoAccountsPage: React.FC = () => {
             <div className="flex items-center space-x-2">
               <span className="text-sm font-medium text-gray-700">Mot de passe universel:</span>
               <code className="px-3 py-1 bg-gray-100 rounded font-mono text-sm font-semibold text-blue-600">
-                {showPassword ? 'Demo2026!' : '••••••••'}
+                {showPassword ? 'Test123456!' : '••••••••'}
               </code>
               <button
                 onClick={() => setShowPassword(!showPassword)}
@@ -235,7 +235,7 @@ export const DemoAccountsPage: React.FC = () => {
                 {showPassword ? <EyeOff className="h-5 w-5 text-gray-600" /> : <Eye className="h-5 w-5 text-gray-600" />}
               </button>
               <button
-                onClick={() => copyToClipboard('Demo2026!', 'Mot de passe')}
+                onClick={() => copyToClipboard('Test123456!', 'Mot de passe')}
                 className="p-2 hover:bg-gray-100 rounded-full transition"
               >
                 <Copy className="h-5 w-5 text-gray-600" />

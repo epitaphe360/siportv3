@@ -282,18 +282,18 @@ export default function LoginPage() {
                     👥 Visiteur <span className="ml-auto text-[10px] bg-gray-100 px-2 py-0.5 rounded-full">Free</span>
                   </p>
                   <p className="text-[9px] text-gray-500 mb-2 font-mono truncate">
-                    📧 demo.visitor@siports.com
+                    📧 visitor-free@test.siport.com
                   </p>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
                     onClick={async () => {
-                      setEmail('demo.visitor@siports.com');
-                      setPassword('Demo2026!');
+                      setEmail('visitor-free@test.siport.com');
+                      setPassword('Test123456!');
                       setError('');
                       try {
-                        await login('demo.visitor@siports.com', 'Demo2026!', { rememberMe: true });
+                        await login('visitor-free@test.siport.com', 'Test123456!', { rememberMe: true });
                       } catch (err: any) {
                         setError(err.message || 'Erreur de connexion');
                       }
@@ -318,10 +318,10 @@ export default function LoginPage() {
                     size="sm"
                     onClick={async () => {
                       setEmail('visitor-vip@test.siport.com');
-                      setPassword('Demo2026!');
+                      setPassword('Test123456!');
                       setError('');
                       try {
-                        await login('visitor-vip@test.siport.com', 'Demo2026!', { rememberMe: true });
+                        await login('visitor-vip@test.siport.com', 'Test123456!', { rememberMe: true });
                       } catch (err: any) {
                         setError(err.message || 'Erreur de connexion');
                       }
@@ -346,10 +346,10 @@ export default function LoginPage() {
                     size="sm"
                     onClick={async () => {
                       setEmail('exhibitor-9m@test.siport.com');
-                      setPassword('Demo2026!');
+                      setPassword('Test123456!');
                       setError('');
                       try {
-                        await login('exhibitor-9m@test.siport.com', 'Demo2026!', { rememberMe: true });
+                        await login('exhibitor-9m@test.siport.com', 'Test123456!', { rememberMe: true });
                       } catch (err: any) {
                         setError(err.message || 'Erreur de connexion');
                       }
@@ -374,10 +374,10 @@ export default function LoginPage() {
                     size="sm"
                     onClick={async () => {
                       setEmail('exhibitor-18m@test.siport.com');
-                      setPassword('Demo2026!');
+                      setPassword('Test123456!');
                       setError('');
                       try {
-                        await login('exhibitor-18m@test.siport.com', 'Demo2026!', { rememberMe: true });
+                        await login('exhibitor-18m@test.siport.com', 'Test123456!', { rememberMe: true });
                       } catch (err: any) {
                         setError(err.message || 'Erreur de connexion');
                       }
@@ -402,10 +402,10 @@ export default function LoginPage() {
                     size="sm"
                     onClick={async () => {
                       setEmail('exhibitor-36m@test.siport.com');
-                      setPassword('Demo2026!');
+                      setPassword('Test123456!');
                       setError('');
                       try {
-                        await login('exhibitor-36m@test.siport.com', 'Demo2026!', { rememberMe: true });
+                        await login('exhibitor-36m@test.siport.com', 'Test123456!', { rememberMe: true });
                       } catch (err: any) {
                         setError(err.message || 'Erreur de connexion');
                       }
@@ -430,10 +430,10 @@ export default function LoginPage() {
                     size="sm"
                     onClick={async () => {
                       setEmail('exhibitor-54m@test.siport.com');
-                      setPassword('Demo2026!');
+                      setPassword('Test123456!');
                       setError('');
                       try {
-                        await login('exhibitor-54m@test.siport.com', 'Demo2026!', { rememberMe: true });
+                        await login('exhibitor-54m@test.siport.com', 'Test123456!', { rememberMe: true });
                       } catch (err: any) {
                         setError(err.message || 'Erreur de connexion');
                       }
@@ -458,10 +458,10 @@ export default function LoginPage() {
                     size="sm"
                     onClick={async () => {
                       setEmail('demo.partner@siports.com');
-                      setPassword('Demo2026!');
+                      setPassword('Test123456!');
                       setError('');
                       try {
-                        await login('demo.partner@siports.com', 'Demo2026!', { rememberMe: true });
+                        await login('demo.partner@siports.com', 'Test123456!', { rememberMe: true });
                       } catch (err: any) {
                         setError(err.message || 'Erreur de connexion');
                       }
@@ -486,10 +486,10 @@ export default function LoginPage() {
                     size="sm"
                     onClick={async () => {
                       setEmail('partner-silver@test.siport.com');
-                      setPassword('Demo2026!');
+                      setPassword('Test123456!');
                       setError('');
                       try {
-                        await login('partner-silver@test.siport.com', 'Demo2026!', { rememberMe: true });
+                        await login('partner-silver@test.siport.com', 'Test123456!', { rememberMe: true });
                       } catch (err: any) {
                         setError(err.message || 'Erreur de connexion');
                       }
@@ -514,10 +514,10 @@ export default function LoginPage() {
                     size="sm"
                     onClick={async () => {
                       setEmail('partner-gold@test.siport.com');
-                      setPassword('Demo2026!');
+                      setPassword('Test123456!');
                       setError('');
                       try {
-                        await login('partner-gold@test.siport.com', 'Demo2026!', { rememberMe: true });
+                        await login('partner-gold@test.siport.com', 'Test123456!', { rememberMe: true });
                       } catch (err: any) {
                         setError(err.message || 'Erreur de connexion');
                       }
@@ -542,10 +542,10 @@ export default function LoginPage() {
                     size="sm"
                     onClick={async () => {
                       setEmail('partner-platinum@test.siport.com');
-                      setPassword('Demo2026!');
+                      setPassword('Test123456!');
                       setError('');
                       try {
-                        await login('partner-platinum@test.siport.com', 'Demo2026!', { rememberMe: true });
+                        await login('partner-platinum@test.siport.com', 'Test123456!', { rememberMe: true });
                       } catch (err: any) {
                         setError(err.message || 'Erreur de connexion');
                       }
@@ -570,10 +570,10 @@ export default function LoginPage() {
                     size="sm"
                     onClick={async () => {
                       setEmail('admin@siports.com');
-                      setPassword('Admin2026!');
+                      setPassword('Test123456!');
                       setError('');
                       try {
-                        await login('admin@siports.com', 'Admin2026!', { rememberMe: true });
+                        await login('admin@siports.com', 'Test123456!', { rememberMe: true });
                       } catch (err: any) {
                         setError(err.message || 'Erreur de connexion');
                       }
@@ -596,7 +596,7 @@ export default function LoginPage() {
                       size="sm"
                       onClick={() => {
                         setEmail('exhibitor-9m@test.siport.com');
-                        setPassword('Demo2026!');
+                        setPassword('Test123456!');
                       }}
                       className="text-[10px] h-8 bg-white hover:bg-purple-50 border-purple-200"
                     >
@@ -608,7 +608,7 @@ export default function LoginPage() {
                       size="sm"
                       onClick={() => {
                         setEmail('exhibitor-18m@test.siport.com');
-                        setPassword('Demo2026!');
+                        setPassword('Test123456!');
                       }}
                       className="text-[10px] h-8 bg-white hover:bg-purple-50 border-purple-200"
                     >
@@ -620,7 +620,7 @@ export default function LoginPage() {
                       size="sm"
                       onClick={() => {
                         setEmail('exhibitor-36m@test.siport.com');
-                        setPassword('Demo2026!');
+                        setPassword('Test123456!');
                       }}
                       className="text-[10px] h-8 bg-white hover:bg-purple-50 border-purple-200"
                     >
@@ -632,7 +632,7 @@ export default function LoginPage() {
                       size="sm"
                       onClick={() => {
                         setEmail('exhibitor-54m@test.siport.com');
-                        setPassword('Demo2026!');
+                        setPassword('Test123456!');
                       }}
                       className="text-[10px] h-8 bg-white hover:bg-purple-50 border-purple-200"
                     >
@@ -647,7 +647,7 @@ export default function LoginPage() {
                 {/* Note */}
                 <div className="col-span-2 p-2 bg-blue-100/50 rounded-lg">
                   <p className="text-[10px] text-blue-800 text-center">
-                    💡 <strong>Mot de passe:</strong> Demo2026! (Admin2026! pour admin)
+                    💡 <strong>Mot de passe:</strong> Test123456! (Test123456! pour admin)
                   </p>
                 </div>
               </div>
