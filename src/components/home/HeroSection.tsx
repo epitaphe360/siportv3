@@ -48,7 +48,7 @@ export const HeroSection: React.FC = () => {
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-red-700 via-red-800 to-red-900 text-white overflow-hidden min-h-[90vh] flex items-center">
+    <section className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 text-white overflow-hidden min-h-[90vh] flex items-center">
       {/* Moroccan Zellige Pattern Background */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
@@ -109,7 +109,7 @@ export const HeroSection: React.FC = () => {
                 <div className="grid grid-cols-4 gap-4">
                   <div className="relative group">
                     <div className="absolute inset-0 bg-gradient-to-br from-siports-gold to-amber-600 rounded-2xl transform rotate-2 group-hover:rotate-3 transition-transform"></div>
-                    <div className="relative bg-gradient-to-br from-red-600 to-red-700 rounded-2xl p-4 shadow-2xl text-center border-2 border-siports-gold">
+                    <div className="relative bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-4 shadow-2xl text-center border-2 border-siports-gold">
                       <div className="text-3xl font-bold text-siports-gold mb-1">
                         {formatNumber(timeLeft.days)}
                       </div>
