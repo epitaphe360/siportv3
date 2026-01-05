@@ -192,10 +192,23 @@ export default memo(function VisitorDashboard() {
 
   const getUpcomingEvents = () => {
     const now = new Date();
+    // Retourner tous les événements auxquels l'utilisateur est inscrit (futurs en premier, puis passés)
     return events
-      .filter(event => registeredEvents.includes(event.id) && event.date > now)
-      .sort((a, b) => a.date.getTime() - b.date.getTime())
-      .slice(0, 3);
+      .filter(event => registeredEvents.includes(event.id))
+      .sort((a, b) => {
+        const aIsFuture = a.date > now;
+        const bIsFuture = b.date > now;
+        // Futurs en premier
+        if (aIsFuture && !bIsFuture) return -1;
+        if (!aIsFuture && bIsFuture) return 1;
+        // Dans chaque groupe, trier par date
+        return a.date.getTime() - b.date.getTime();
+      })
+      .slice(0, 5);
+  };
+
+  const isEventPast = (eventDate: Date) => {
+    return eventDate < new Date();
   };
 
   // Fonction helper pour afficher le nom de l'exposant
@@ -649,32 +662,50 @@ export default memo(function VisitorDashboard() {
                   Gérez vos inscriptions aux événements et conférences
                 </p>
                 <div className="space-y-3 mb-4">
-                  {getUpcomingEvents().map((event, index) => (
-                    <motion.div
-                      key={event.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg hover:shadow-md transition-shadow"
-                    >
-                      <div className="flex-1">
-                        <p className="font-medium text-gray-900 text-sm">{event.title}</p>
-                        <p className="text-xs text-gray-600">{formatDate(event.date)} à {event.startTime}</p>
-                      </div>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleUnregisterFromEvent(event.id)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  {getUpcomingEvents().map((event, index) => {
+                    const isPast = isEventPast(event.date);
+                    return (
+                      <motion.div
+                        key={event.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className={`flex items-center justify-between p-3 rounded-lg hover:shadow-md transition-shadow ${
+                          isPast 
+                            ? 'bg-gradient-to-r from-gray-100 to-gray-200 opacity-75' 
+                            : 'bg-gradient-to-r from-purple-50 to-indigo-50'
+                        }`}
                       >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </motion.div>
-                  ))}
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <p className={`font-medium text-sm ${isPast ? 'text-gray-500' : 'text-gray-900'}`}>
+                              {event.title}
+                            </p>
+                            {isPast && (
+                              <Badge variant="secondary" className="text-xs">Passé</Badge>
+                            )}
+                          </div>
+                          <p className={`text-xs ${isPast ? 'text-gray-400' : 'text-gray-600'}`}>
+                            {formatDate(event.date)} à {event.startTime}
+                          </p>
+                        </div>
+                        {!isPast && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleUnregisterFromEvent(event.id)}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </motion.div>
+                    );
+                  })}
                   {getUpcomingEvents().length === 0 && (
                     <div className="text-center py-4">
                       <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-                      <p className="text-sm text-gray-500">Aucun événement à venir</p>
+                      <p className="text-sm text-gray-500">Aucun événement inscrit</p>
                     </div>
                   )}
                 </div>
