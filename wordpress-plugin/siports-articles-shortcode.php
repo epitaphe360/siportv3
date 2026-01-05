@@ -15,10 +15,15 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Configuration de l'API
-define('SIPORTS_API_URL', 'https://siportv3.up.railway.app/api/articles');
-define('SIPORTS_MEDIA_API_URL', 'https://siportv3.up.railway.app/api/media');
-define('SIPORTS_CACHE_TIME', 3600); // 1 heure en secondes
+// Configuration Supabase (API REST directe)
+define('SIPORTS_SUPABASE_URL', 'https://eqjoqgpbxhsfgcovipgu.supabase.co');
+define('SIPORTS_SUPABASE_ANON_KEY', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxam9xZ3BieGhzZmdjb3ZpcGd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTczNjIyNDcsImV4cCI6MjA3MjkzODI0N30.W8NfGyGQRBvVPAeS-EYq5TLjMBRTASLf5AgHES3aieE');
+define('SIPORTS_CACHE_TIME', 300); // 5 minutes en secondes (synchronisation rapide)
+define('SIPORTS_WEBHOOK_SECRET', 'siports_webhook_2024'); // Clé secrète pour le webhook
+
+// URLs API anciennes (gardées pour compatibilité)
+define('SIPORTS_API_URL', SIPORTS_SUPABASE_URL . '/rest/v1/articles');
+define('SIPORTS_MEDIA_API_URL', SIPORTS_SUPABASE_URL . '/rest/v1/media_contents');
 
 /**
  * Classe principale du plugin
@@ -61,6 +66,12 @@ class SIPORTS_Articles_Shortcode {
         
         // Ajouter une page d'options dans l'admin
         add_action('admin_menu', array($this, 'add_admin_menu'));
+        
+        // Enregistrer le webhook pour la synchronisation automatique
+        add_action('rest_api_init', array($this, 'register_webhook_endpoint'));
+        
+        // AJAX pour rafraîchir le cache
+        add_action('wp_ajax_siports_refresh_cache', array($this, 'ajax_refresh_cache'));
     }
     
     /**
@@ -76,7 +87,7 @@ class SIPORTS_Articles_Shortcode {
     }
     
     /**
-     * Récupérer un article depuis l'API avec cache
+     * Récupérer un article depuis l'API Supabase avec cache
      */
     private function fetch_article($article_id) {
         // Clé de cache unique
@@ -88,12 +99,14 @@ class SIPORTS_Articles_Shortcode {
             return $cached;
         }
         
-        // Appel API
-        $api_url = SIPORTS_API_URL . '/' . $article_id;
+        // Appel API Supabase REST
+        $api_url = SIPORTS_SUPABASE_URL . '/rest/v1/articles?id=eq.' . $article_id . '&select=*';
         $response = wp_remote_get($api_url, array(
             'timeout' => 10,
             'headers' => array(
                 'Accept' => 'application/json',
+                'apikey' => SIPORTS_SUPABASE_ANON_KEY,
+                'Authorization' => 'Bearer ' . SIPORTS_SUPABASE_ANON_KEY,
             ),
         ));
         
@@ -104,20 +117,27 @@ class SIPORTS_Articles_Shortcode {
             );
         }
         
+        $status_code = wp_remote_retrieve_response_code($response);
         $body = wp_remote_retrieve_body($response);
         $data = json_decode($body, true);
         
-        if (!$data || !isset($data['success']) || !$data['success']) {
+        if ($status_code !== 200 || !is_array($data) || empty($data)) {
             return array(
                 'success' => false,
                 'error' => 'Article non trouvé',
             );
         }
         
-        // Mettre en cache
-        set_transient($cache_key, $data, SIPORTS_CACHE_TIME);
+        // Supabase retourne un tableau, on prend le premier élément
+        $result = array(
+            'success' => true,
+            'data' => $data[0],
+        );
         
-        return $data;
+        // Mettre en cache
+        set_transient($cache_key, $result, SIPORTS_CACHE_TIME);
+        
+        return $result;
     }
     
     /**
@@ -246,12 +266,14 @@ class SIPORTS_Articles_Shortcode {
             return $cached;
         }
         
-        // Appel API
-        $api_url = SIPORTS_MEDIA_API_URL . '/' . $media_id;
+        // Appel API Supabase REST
+        $api_url = SIPORTS_SUPABASE_URL . '/rest/v1/media_contents?id=eq.' . $media_id . '&select=*';
         $response = wp_remote_get($api_url, array(
             'timeout' => 10,
             'headers' => array(
                 'Accept' => 'application/json',
+                'apikey' => SIPORTS_SUPABASE_ANON_KEY,
+                'Authorization' => 'Bearer ' . SIPORTS_SUPABASE_ANON_KEY,
             ),
         ));
         
@@ -262,20 +284,27 @@ class SIPORTS_Articles_Shortcode {
             );
         }
         
+        $status_code = wp_remote_retrieve_response_code($response);
         $body = wp_remote_retrieve_body($response);
         $data = json_decode($body, true);
         
-        if (!$data || !isset($data['success']) || !$data['success']) {
+        if ($status_code !== 200 || !is_array($data) || empty($data)) {
             return array(
                 'success' => false,
                 'error' => 'Média non trouvé',
             );
         }
         
-        // Mettre en cache
-        set_transient($cache_key, $data, SIPORTS_CACHE_TIME);
+        // Supabase retourne un tableau, on prend le premier élément
+        $result = array(
+            'success' => true,
+            'data' => $data[0],
+        );
         
-        return $data;
+        // Mettre en cache
+        set_transient($cache_key, $result, SIPORTS_CACHE_TIME);
+        
+        return $result;
     }
     
     /**
@@ -466,25 +495,32 @@ class SIPORTS_Articles_Shortcode {
             return $cached;
         }
         
-        // Construire l'URL avec paramètres
-        $api_url = SIPORTS_MEDIA_API_URL;
-        $params = array('limit' => $limit);
+        // Construire l'URL Supabase REST API
+        $api_url = SIPORTS_SUPABASE_URL . '/rest/v1/media_contents';
+        $params = array(
+            'select' => '*',
+            'status' => 'eq.published',
+            'order' => 'created_at.desc',
+            'limit' => $limit
+        );
         
         if (!empty($type)) {
-            $params['type'] = $type;
+            $params['type'] = 'eq.' . $type;
         }
         
         if (!empty($category)) {
-            $params['category'] = $category;
+            $params['category'] = 'eq.' . $category;
         }
         
         $api_url .= '?' . http_build_query($params);
         
-        // Appel API
+        // Appel API Supabase avec clé anonyme
         $response = wp_remote_get($api_url, array(
             'timeout' => 15,
             'headers' => array(
                 'Accept' => 'application/json',
+                'apikey' => SIPORTS_SUPABASE_ANON_KEY,
+                'Authorization' => 'Bearer ' . SIPORTS_SUPABASE_ANON_KEY,
             ),
         ));
         
@@ -495,20 +531,27 @@ class SIPORTS_Articles_Shortcode {
             );
         }
         
+        $status_code = wp_remote_retrieve_response_code($response);
         $body = wp_remote_retrieve_body($response);
         $data = json_decode($body, true);
         
-        if (!$data || !isset($data['success']) || !$data['success']) {
+        if ($status_code !== 200 || !is_array($data)) {
             return array(
                 'success' => false,
-                'error' => 'Aucun média trouvé',
+                'error' => 'Erreur API Supabase: ' . ($data['message'] ?? 'Inconnue'),
             );
         }
         
-        // Mettre en cache
-        set_transient($cache_key, $data, SIPORTS_CACHE_TIME);
+        // Formater la réponse
+        $result = array(
+            'success' => true,
+            'data' => $data,
+        );
         
-        return $data;
+        // Mettre en cache
+        set_transient($cache_key, $result, SIPORTS_CACHE_TIME);
+        
+        return $result;
     }
     
     /**
@@ -699,6 +742,113 @@ class SIPORTS_Articles_Shortcode {
     }
     
     /**
+     * Enregistrer l'endpoint webhook pour la synchronisation automatique
+     * URL: https://votre-site.com/wp-json/siports/v1/sync
+     */
+    public function register_webhook_endpoint() {
+        register_rest_route('siports/v1', '/sync', array(
+            'methods' => 'POST',
+            'callback' => array($this, 'handle_webhook_sync'),
+            'permission_callback' => '__return_true', // Authentification via secret
+        ));
+        
+        // Endpoint pour vérifier le statut
+        register_rest_route('siports/v1', '/status', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'handle_status_check'),
+            'permission_callback' => '__return_true',
+        ));
+    }
+    
+    /**
+     * Gérer le webhook de synchronisation depuis Supabase
+     */
+    public function handle_webhook_sync($request) {
+        // Vérifier le secret
+        $secret = $request->get_header('X-Webhook-Secret');
+        if ($secret !== SIPORTS_WEBHOOK_SECRET) {
+            return new WP_REST_Response(array(
+                'success' => false,
+                'error' => 'Unauthorized'
+            ), 401);
+        }
+        
+        // Récupérer les données du webhook
+        $body = $request->get_json_params();
+        $table = isset($body['table']) ? $body['table'] : '';
+        $type = isset($body['type']) ? $body['type'] : ''; // INSERT, UPDATE, DELETE
+        $record = isset($body['record']) ? $body['record'] : array();
+        
+        // Invalider le cache approprié
+        $this->clear_all_cache();
+        
+        // Logger l'événement (optionnel)
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('SIPORTS Webhook: ' . $type . ' on ' . $table);
+        }
+        
+        return new WP_REST_Response(array(
+            'success' => true,
+            'message' => 'Cache invalidated',
+            'table' => $table,
+            'type' => $type
+        ), 200);
+    }
+    
+    /**
+     * Endpoint de vérification du statut
+     */
+    public function handle_status_check($request) {
+        return new WP_REST_Response(array(
+            'success' => true,
+            'plugin' => 'SIPORTS Articles Shortcode',
+            'version' => '1.0.0',
+            'cache_time' => SIPORTS_CACHE_TIME,
+            'webhook_url' => rest_url('siports/v1/sync'),
+            'supabase_url' => SIPORTS_SUPABASE_URL
+        ), 200);
+    }
+    
+    /**
+     * Vider tout le cache SIPORTS
+     */
+    public function clear_all_cache() {
+        global $wpdb;
+        
+        // Supprimer tous les transients SIPORTS
+        $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_siports_%'");
+        $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_siports_%'");
+        
+        // Mettre à jour le timestamp de dernière synchronisation
+        update_option('siports_last_sync', current_time('mysql'));
+        
+        return true;
+    }
+    
+    /**
+     * AJAX pour rafraîchir le cache manuellement
+     */
+    public function ajax_refresh_cache() {
+        // Vérifier le nonce
+        if (!check_ajax_referer('siports_ajax_nonce', 'nonce', false)) {
+            wp_send_json_error(array('message' => 'Nonce invalide'));
+        }
+        
+        // Vérifier les permissions
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => 'Permission refusée'));
+        }
+        
+        // Vider le cache
+        $this->clear_all_cache();
+        
+        wp_send_json_success(array(
+            'message' => 'Cache rafraîchi avec succès',
+            'time' => current_time('mysql')
+        ));
+    }
+    
+    /**
      * Ajouter le menu admin
      */
     public function add_admin_menu() {
@@ -715,12 +865,85 @@ class SIPORTS_Articles_Shortcode {
      * Rendu de la page admin
      */
     public function render_admin_page() {
+        // Traiter le vidage de cache
+        if (isset($_POST['clear_cache']) && check_admin_referer('siports_clear_cache')) {
+            $this->clear_all_cache();
+            echo '<div class="notice notice-success"><p>✅ Cache vidé avec succès !</p></div>';
+        }
+        
+        $last_sync = get_option('siports_last_sync', 'Jamais');
+        $webhook_url = rest_url('siports/v1/sync');
         ?>
         <div class="wrap">
-            <h1>SIPORTS Articles - Configuration</h1>
+            <h1>🏆 SIPORTS Articles - Configuration</h1>
             
-            <div class="card">
-                <h2>🎯 Comment utiliser</h2>
+            <div class="card" style="max-width: 800px;">
+                <h2>🔄 Synchronisation Automatique</h2>
+                <table class="form-table">
+                    <tr>
+                        <th>Statut</th>
+                        <td><span style="color: green; font-weight: bold;">✅ Actif</span></td>
+                    </tr>
+                    <tr>
+                        <th>Durée du cache</th>
+                        <td><?php echo (SIPORTS_CACHE_TIME / 60); ?> minutes</td>
+                    </tr>
+                    <tr>
+                        <th>Dernière synchronisation</th>
+                        <td id="last-sync-time"><?php echo esc_html($last_sync); ?></td>
+                    </tr>
+                    <tr>
+                        <th>URL Webhook</th>
+                        <td>
+                            <code style="background: #f0f0f0; padding: 5px 10px; display: block; word-break: break-all;">
+                                <?php echo esc_html($webhook_url); ?>
+                            </code>
+                            <p class="description">Configurez cette URL dans Supabase Database Webhooks pour recevoir les mises à jour en temps réel.</p>
+                        </td>
+                    </tr>
+                </table>
+                
+                <h3>Actions</h3>
+                <form method="post" action="" style="display: inline-block; margin-right: 10px;">
+                    <?php wp_nonce_field('siports_clear_cache'); ?>
+                    <button type="submit" name="clear_cache" class="button button-primary">
+                        🔄 Rafraîchir maintenant
+                    </button>
+                </form>
+                
+                <button type="button" id="test-api-btn" class="button button-secondary">
+                    🧪 Tester l'API
+                </button>
+                
+                <div id="api-test-result" style="margin-top: 15px;"></div>
+            </div>
+            
+            <div class="card" style="max-width: 800px;">
+                <h2>📺 Shortcodes Médias</h2>
+                <p><strong>Liste de médias (webinaires, podcasts, etc.) :</strong></p>
+                <code>[media_list type="webinar" limit="6" columns="3"]</code>
+                
+                <h3>Types disponibles :</h3>
+                <ul>
+                    <li><code>webinar</code> - Webinaires</li>
+                    <li><code>podcast</code> - Podcasts</li>
+                    <li><code>capsule_inside</code> - Capsules Inside</li>
+                    <li><code>live_studio</code> - Lives Studio</li>
+                    <li><code>best_moments</code> - Best Moments</li>
+                    <li><code>testimonial</code> - Témoignages</li>
+                </ul>
+                
+                <h3>Options :</h3>
+                <ul>
+                    <li><strong>type</strong> : Type de média (voir ci-dessus)</li>
+                    <li><strong>limit</strong> : Nombre de médias à afficher (défaut: 10)</li>
+                    <li><strong>columns</strong> : Nombre de colonnes (défaut: 3)</li>
+                    <li><strong>layout</strong> : grid / list (défaut: grid)</li>
+                </ul>
+            </div>
+            
+            <div class="card" style="max-width: 800px;">
+                <h2>📄 Shortcodes Articles</h2>
                 <p><strong>Shortcode simple :</strong></p>
                 <code>[article id="00000000-0000-0000-0000-000000000401"]</code>
                 
@@ -739,37 +962,99 @@ class SIPORTS_Articles_Shortcode {
                 </ul>
             </div>
             
-            <div class="card">
-                <h2>🔗 API Configuration</h2>
-                <p><strong>URL de l'API :</strong> <?php echo esc_html(SIPORTS_API_URL); ?></p>
-                <p><strong>Cache :</strong> <?php echo (SIPORTS_CACHE_TIME / 60); ?> minutes</p>
-                
-                <form method="post" action="">
-                    <?php wp_nonce_field('siports_clear_cache'); ?>
-                    <button type="submit" name="clear_cache" class="button button-secondary">
-                        🗑️ Vider le cache
-                    </button>
-                </form>
-                
-                <?php
-                if (isset($_POST['clear_cache']) && check_admin_referer('siports_clear_cache')) {
-                    global $wpdb;
-                    $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_siports_article_%'");
-                    echo '<div class="notice notice-success"><p>✅ Cache vidé avec succès !</p></div>';
-                }
-                ?>
+            <div class="card" style="max-width: 800px;">
+                <h2>🔗 Configuration API</h2>
+                <table class="form-table">
+                    <tr>
+                        <th>URL Supabase</th>
+                        <td><code><?php echo esc_html(SIPORTS_SUPABASE_URL); ?></code></td>
+                    </tr>
+                    <tr>
+                        <th>API Articles</th>
+                        <td><code><?php echo esc_html(SIPORTS_API_URL); ?></code></td>
+                    </tr>
+                    <tr>
+                        <th>API Médias</th>
+                        <td><code><?php echo esc_html(SIPORTS_MEDIA_API_URL); ?></code></td>
+                    </tr>
+                </table>
             </div>
             
-            <div class="card">
+            <div class="card" style="max-width: 800px;">
                 <h2>📊 Elementor Pro</h2>
                 <?php if (defined('ELEMENTOR_VERSION')): ?>
-                    <p class="notice notice-success">✅ Elementor détecté (v<?php echo ELEMENTOR_VERSION; ?>)</p>
-                    <p>Vous pouvez utiliser le widget <strong>"SIPORTS Article"</strong> dans Elementor.</p>
+                    <p class="notice notice-success" style="padding: 10px;">✅ Elementor détecté (v<?php echo ELEMENTOR_VERSION; ?>)</p>
+                    <p>Vous pouvez utiliser les widgets <strong>"SIPORTS Article"</strong> et <strong>"SIPORTS Media"</strong> dans Elementor.</p>
                 <?php else: ?>
-                    <p class="notice notice-warning">⚠️ Elementor non détecté. Le widget Elementor ne sera pas disponible.</p>
+                    <p class="notice notice-warning" style="padding: 10px;">⚠️ Elementor non détecté. Les widgets Elementor ne seront pas disponibles.</p>
                 <?php endif; ?>
             </div>
+            
+            <div class="card" style="max-width: 800px; background: #f0f8ff;">
+                <h2>🔧 Configuration Supabase Webhook (Optionnel)</h2>
+                <p>Pour une synchronisation instantanée quand vous ajoutez des médias dans l'application SIPORTS, configurez un webhook dans Supabase :</p>
+                <ol>
+                    <li>Allez dans <strong>Supabase Dashboard → Database → Webhooks</strong></li>
+                    <li>Cliquez sur <strong>"Create a new webhook"</strong></li>
+                    <li>Configurez comme suit :
+                        <ul>
+                            <li><strong>Name:</strong> wordpress_sync</li>
+                            <li><strong>Table:</strong> media_contents</li>
+                            <li><strong>Events:</strong> INSERT, UPDATE, DELETE</li>
+                            <li><strong>URL:</strong> <code><?php echo esc_html($webhook_url); ?></code></li>
+                            <li><strong>HTTP Headers:</strong><br>
+                                <code>X-Webhook-Secret: <?php echo esc_html(SIPORTS_WEBHOOK_SECRET); ?></code>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>Cliquez sur <strong>"Create webhook"</strong></li>
+                </ol>
+                <p><strong>Note :</strong> Sans webhook, les médias se synchronisent automatiquement toutes les <?php echo (SIPORTS_CACHE_TIME / 60); ?> minutes.</p>
+            </div>
         </div>
+        
+        <script>
+        jQuery(document).ready(function($) {
+            // Test API
+            $('#test-api-btn').on('click', function() {
+                var $btn = $(this);
+                var $result = $('#api-test-result');
+                
+                $btn.prop('disabled', true).text('Test en cours...');
+                $result.html('<p>🔄 Connexion à Supabase...</p>');
+                
+                $.ajax({
+                    url: '<?php echo esc_js(SIPORTS_SUPABASE_URL); ?>/rest/v1/media_contents?select=id,title,type&status=eq.published&limit=5',
+                    headers: {
+                        'apikey': '<?php echo esc_js(SIPORTS_SUPABASE_ANON_KEY); ?>',
+                        'Authorization': 'Bearer <?php echo esc_js(SIPORTS_SUPABASE_ANON_KEY); ?>'
+                    },
+                    success: function(data) {
+                        if (Array.isArray(data)) {
+                            var html = '<div class="notice notice-success"><p>✅ Connexion réussie ! ' + data.length + ' média(s) trouvé(s)</p>';
+                            if (data.length > 0) {
+                                html += '<ul>';
+                                data.forEach(function(item) {
+                                    html += '<li><strong>' + (item.title || 'Sans titre') + '</strong> (' + item.type + ')</li>';
+                                });
+                                html += '</ul>';
+                            }
+                            html += '</div>';
+                            $result.html(html);
+                        } else {
+                            $result.html('<div class="notice notice-error"><p>❌ Réponse invalide</p></div>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $result.html('<div class="notice notice-error"><p>❌ Erreur: ' + error + '</p></div>');
+                    },
+                    complete: function() {
+                        $btn.prop('disabled', false).text('🧪 Tester l\'API');
+                    }
+                });
+            });
+        });
+        </script>
         <?php
     }
 }
