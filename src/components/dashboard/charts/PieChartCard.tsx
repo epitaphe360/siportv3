@@ -50,7 +50,7 @@ export function PieChartCard({
 
   const renderLabel = (entry: any) => {
     if (!showPercentage) return '';
-    const percent = ((entry.value / total) * 100).toFixed(1);
+    const percent = total === 0 ? '0.0' : ((entry.value / total) * 100).toFixed(1);
     return `${percent}%`;
   };
 
@@ -102,7 +102,7 @@ export function PieChartCard({
         {/* Stats Summary */}
         <div className="mt-6 grid grid-cols-2 gap-4">
           {data.map((item, index) => {
-            const percent = ((item.value / total) * 100).toFixed(1);
+            const percent = total === 0 ? '0.0' : ((item.value / total) * 100).toFixed(1);
             return (
               <motion.div
                 key={item.name}
