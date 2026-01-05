@@ -58,7 +58,7 @@ export const NetworkingSection: React.FC = () => {
 
   return (
     <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-sky-50 relative overflow-hidden">
-      {/* Moroccan Geometric Background */>
+      {/* Moroccan Geometric Background */}
       <div className="absolute inset-0 opacity-[0.05]">
         <div className="absolute top-10 left-10 w-32 h-32 border-4 border-siports-gold rounded-full" />
         <div className="absolute top-20 right-20 w-24 h-24 border-4 border-red-600 rotate-45 transform" />
