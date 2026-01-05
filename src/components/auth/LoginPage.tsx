@@ -288,9 +288,15 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => {
+                    onClick={async () => {
                       setEmail('demo.visitor@siports.com');
                       setPassword('Demo2026!');
+                      setError('');
+                      try {
+                        await login('demo.visitor@siports.com', 'Demo2026!', { rememberMe: true });
+                      } catch (err: any) {
+                        setError(err.message || 'Erreur de connexion');
+                      }
                     }}
                     className="w-full text-xs h-8 bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 border-0"
                   >
@@ -310,9 +316,15 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => {
+                    onClick={async () => {
                       setEmail('visitor-vip@test.siport.com');
                       setPassword('Demo2026!');
+                      setError('');
+                      try {
+                        await login('visitor-vip@test.siport.com', 'Demo2026!', { rememberMe: true });
+                      } catch (err: any) {
+                        setError(err.message || 'Erreur de connexion');
+                      }
                     }}
                     className="w-full text-xs h-8 bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 border-0"
                   >
@@ -332,9 +344,15 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => {
+                    onClick={async () => {
                       setEmail('exhibitor-9m@test.siport.com');
                       setPassword('Demo2026!');
+                      setError('');
+                      try {
+                        await login('exhibitor-9m@test.siport.com', 'Demo2026!', { rememberMe: true });
+                      } catch (err: any) {
+                        setError(err.message || 'Erreur de connexion');
+                      }
                     }}
                     className="w-full text-xs h-8 bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 border-0"
                   >
@@ -354,9 +372,15 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => {
+                    onClick={async () => {
                       setEmail('exhibitor-18m@test.siport.com');
                       setPassword('Demo2026!');
+                      setError('');
+                      try {
+                        await login('exhibitor-18m@test.siport.com', 'Demo2026!', { rememberMe: true });
+                      } catch (err: any) {
+                        setError(err.message || 'Erreur de connexion');
+                      }
                     }}
                     className="w-full text-xs h-8 bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:from-purple-700 hover:to-purple-800 border-0"
                   >
@@ -376,9 +400,15 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => {
+                    onClick={async () => {
                       setEmail('exhibitor-36m@test.siport.com');
                       setPassword('Demo2026!');
+                      setError('');
+                      try {
+                        await login('exhibitor-36m@test.siport.com', 'Demo2026!', { rememberMe: true });
+                      } catch (err: any) {
+                        setError(err.message || 'Erreur de connexion');
+                      }
                     }}
                     className="w-full text-xs h-8 bg-gradient-to-r from-purple-700 to-purple-800 text-white hover:from-purple-800 hover:to-purple-900 border-0"
                   >
@@ -398,9 +428,15 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => {
+                    onClick={async () => {
                       setEmail('exhibitor-54m@test.siport.com');
                       setPassword('Demo2026!');
+                      setError('');
+                      try {
+                        await login('exhibitor-54m@test.siport.com', 'Demo2026!', { rememberMe: true });
+                      } catch (err: any) {
+                        setError(err.message || 'Erreur de connexion');
+                      }
                     }}
                     className="w-full text-xs h-8 bg-gradient-to-r from-purple-800 to-purple-900 text-white hover:from-purple-900 hover:to-purple-950 border-0"
                   >
@@ -420,9 +456,15 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => {
+                    onClick={async () => {
                       setEmail('demo.partner@siports.com');
                       setPassword('Demo2026!');
+                      setError('');
+                      try {
+                        await login('demo.partner@siports.com', 'Demo2026!', { rememberMe: true });
+                      } catch (err: any) {
+                        setError(err.message || 'Erreur de connexion');
+                      }
                     }}
                     className="w-full text-xs h-8 bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 border-0"
                   >
@@ -442,9 +484,15 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => {
+                    onClick={async () => {
                       setEmail('partner-silver@test.siport.com');
                       setPassword('Demo2026!');
+                      setError('');
+                      try {
+                        await login('partner-silver@test.siport.com', 'Demo2026!', { rememberMe: true });
+                      } catch (err: any) {
+                        setError(err.message || 'Erreur de connexion');
+                      }
                     }}
                     className="w-full text-xs h-8 bg-gradient-to-r from-gray-400 to-gray-500 text-white hover:from-gray-500 hover:to-gray-600 border-0"
                   >
@@ -464,9 +512,15 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => {
+                    onClick={async () => {
                       setEmail('partner-gold@test.siport.com');
                       setPassword('Demo2026!');
+                      setError('');
+                      try {
+                        await login('partner-gold@test.siport.com', 'Demo2026!', { rememberMe: true });
+                      } catch (err: any) {
+                        setError(err.message || 'Erreur de connexion');
+                      }
                     }}
                     className="w-full text-xs h-8 bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 border-0"
                   >
@@ -486,9 +540,15 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => {
+                    onClick={async () => {
                       setEmail('partner-platinum@test.siport.com');
                       setPassword('Demo2026!');
+                      setError('');
+                      try {
+                        await login('partner-platinum@test.siport.com', 'Demo2026!', { rememberMe: true });
+                      } catch (err: any) {
+                        setError(err.message || 'Erreur de connexion');
+                      }
                     }}
                     className="w-full text-xs h-8 bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 border-0"
                   >
@@ -508,9 +568,15 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => {
+                    onClick={async () => {
                       setEmail('admin@siports.com');
                       setPassword('Admin2026!');
+                      setError('');
+                      try {
+                        await login('admin@siports.com', 'Admin2026!', { rememberMe: true });
+                      } catch (err: any) {
+                        setError(err.message || 'Erreur de connexion');
+                      }
                     }}
                     className="w-full text-xs h-8 bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 border-0"
                   >
