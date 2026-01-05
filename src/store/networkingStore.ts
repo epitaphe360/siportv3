@@ -300,11 +300,20 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     try {
       // Créer la connexion dans Supabase
       // Note: createConnection prend seulement l'ID du destinataire, l'utilisateur courant est récupéré via auth
-      await SupabaseService.createConnection(userId);
+      const result = await SupabaseService.createConnection(userId);
       
-      // Mettre à jour le state local
+      // Mettre à jour le state local avec un objet correctement formaté
+      const newPendingConnection: PendingConnection = {
+        id: result?.id || `temp-${Date.now()}`,
+        requester_id: user.id,
+        addressee_id: userId,
+        status: 'pending',
+        created_at: new Date().toISOString(),
+        requester: user
+      };
+      
       set(state => ({
-        pendingConnections: [...state.pendingConnections, userId],
+        pendingConnections: [...state.pendingConnections, newPendingConnection],
       }));
       
       // Recharger l'usage quotidien depuis la DB
@@ -427,8 +436,13 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     if (!user) return;
 
     try {
-      const connections = await SupabaseService.getUserConnections(user.id);
-      set({ connections });
+      const connectionsData = await SupabaseService.getUserConnections(user.id);
+      // Extract the IDs of connected users (the other party, not the current user)
+      const connectionIds = connectionsData.map((conn: any) => {
+        // Return the ID of the other user (not the current user)
+        return conn.requester_id === user.id ? conn.addressee_id : conn.requester_id;
+      }).filter(Boolean);
+      set({ connections: connectionIds });
     } catch (error) {
       console.error('Erreur lors du chargement des connexions:', error);
     }

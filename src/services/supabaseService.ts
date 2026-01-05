@@ -3137,7 +3137,7 @@ export class SupabaseService {
   }
 
   /**
-   * Get pending connection requests for user
+   * Get pending connection requests for user (both sent and received)
    */
   static async getPendingConnections(userId?: string): Promise<any[]> {
     if (!this.checkSupabaseConnection()) return [];
@@ -3148,23 +3148,25 @@ export class SupabaseService {
       const targetUserId = userId || user?.id;
       if (!targetUserId) return [];
 
-      // Simplified fetch: get pending connection rows then enrich with requester profiles
+      // Fetch both pending connections sent by user AND received by user
       const { data, error } = await safeSupabase
         .from('connections')
         .select('id, requester_id, addressee_id, status, created_at, message')
-        .eq('addressee_id', targetUserId)
+        .or(`requester_id.eq.${targetUserId},addressee_id.eq.${targetUserId}`)
         .eq('status', 'pending')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       const rows = data || [];
-      const requesterIds = Array.from(new Set(rows.map((r: any) => r.requester_id).filter(Boolean)));
-      if (requesterIds.length === 0) return rows;
+      
+      // Get all user IDs involved (both requesters and addressees)
+      const userIds = Array.from(new Set(rows.flatMap((r: any) => [r.requester_id, r.addressee_id]).filter(Boolean)));
+      if (userIds.length === 0) return rows;
 
       const { data: usersData, error: usersError } = await safeSupabase
         .from('users')
         .select('id, name, email, type, profile')
-        .in('id', requesterIds);
+        .in('id', userIds);
 
       if (usersError) throw usersError;
 
@@ -3175,7 +3177,8 @@ export class SupabaseService {
 
       return rows.map((r: any) => ({
         ...r,
-        requester: usersMap[r.requester_id] || null
+        requester: usersMap[r.requester_id] || null,
+        addressee: usersMap[r.addressee_id] || null
       }));
     } catch (error) {
       console.error('Erreur lors de la récupération des demandes en attente:', error);
