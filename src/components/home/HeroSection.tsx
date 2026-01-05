@@ -144,8 +144,8 @@ export const HeroSection: React.FC = () => {
                   </div>
 
                   <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-red-700 rounded-2xl transform -rotate-2 group-hover:-rotate-3 transition-transform"></div>
-                    <div className="relative bg-gradient-to-br from-green-600 to-green-700 rounded-2xl p-4 shadow-2xl text-center border-2 border-red-600">
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-600 to-green-700 rounded-2xl transform -rotate-2 group-hover:-rotate-3 transition-transform"></div>
+                    <div className="relative bg-gradient-to-br from-green-600 to-green-700 rounded-2xl p-4 shadow-2xl text-center">
                       <div className="text-3xl font-bold text-white mb-1">
                         {formatNumber(timeLeft.seconds)}
                       </div>

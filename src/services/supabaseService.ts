@@ -2347,11 +2347,30 @@ export class SupabaseService {
       // LOG DÉTAILLÉ POUR DEBUG
       console.log('🔍 [CREATE_SLOT] Payload à insérer:', JSON.stringify(insertPayload, null, 2));
 
-      const { data, error } = await safeSupabase
+      // Check for existing slot to avoid 409 Conflict
+      const { data: existingSlot } = await safeSupabase
         .from('time_slots')
-        .insert([insertPayload])
-        .select()
-        .single();
+        .select('*')
+        .eq('exhibitor_id', insertPayload.exhibitor_id)
+        .eq('slot_date', insertPayload.slot_date)
+        .eq('start_time', insertPayload.start_time)
+        .maybeSingle();
+
+      let data, error;
+
+      if (existingSlot) {
+        console.log('⚠️ [CREATE_SLOT] Le créneau existe déjà, retour du créneau existant.');
+        data = existingSlot;
+        error = null;
+      } else {
+        const result = await safeSupabase
+          .from('time_slots')
+          .insert([insertPayload])
+          .select()
+          .single();
+        data = result.data;
+        error = result.error;
+      }
 
       if (error) {
         console.error('❌ [CREATE_SLOT] Erreur Supabase:', {

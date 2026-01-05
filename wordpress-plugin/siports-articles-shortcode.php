@@ -56,6 +56,7 @@ class SIPORTS_Articles_Shortcode {
         add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
         
         // Ajouter le support Elementor
+        add_action('elementor/widgets/register', array($this, 'register_elementor_widget'));
         add_action('elementor/widgets/widgets_registered', array($this, 'register_elementor_widget'));
         
         // Ajouter une page d'options dans l'admin
@@ -641,20 +642,33 @@ class SIPORTS_Articles_Shortcode {
     /**
      * Enregistrer le widget Elementor
      */
-    public function register_elementor_widget() {
-        if (defined('ELEMENTOR_VERSION')) {
-            // Widget Article
-            require_once plugin_dir_path(__FILE__) . 'widgets/elementor-siports-article.php';
-            \Elementor\Plugin::instance()->widgets_manager->register_widget_type(
-                new \Elementor_SIPORTS_Article_Widget()
-            );
-            
-            // Widget Media
-            require_once plugin_dir_path(__FILE__) . 'widgets/elementor-siports-media.php';
-            \Elementor\Plugin::instance()->widgets_manager->register_widget_type(
-                new \Elementor_SIPORTS_Media_Widget()
-            );
+    public function register_elementor_widget($widgets_manager) {
+        // Sécurité : Vérifier si Elementor est chargé
+        if (!class_exists('\Elementor\Widget_Base')) {
+            return;
         }
+        
+        // Éviter le double chargement
+        static $loaded = false;
+        if ($loaded) {
+            return;
+        }
+        
+        require_once plugin_dir_path(__FILE__) . 'widgets/elementor-siports-article.php';
+        require_once plugin_dir_path(__FILE__) . 'widgets/elementor-siports-media.php';
+
+        // Vérifier si la méthode register existe (Elementor 3.5+)
+        if (method_exists($widgets_manager, 'register')) {
+            $widgets_manager->register(new \Elementor_SIPORTS_Article_Widget());
+            $widgets_manager->register(new \Elementor_SIPORTS_Media_Widget());
+        } 
+        // Fallback pour les anciennes versions
+        elseif (method_exists($widgets_manager, 'register_widget_type')) {
+            $widgets_manager->register_widget_type(new \Elementor_SIPORTS_Article_Widget());
+            $widgets_manager->register_widget_type(new \Elementor_SIPORTS_Media_Widget());
+        }
+        
+        $loaded = true;
     }
     
     /**
