@@ -38,7 +38,7 @@ export const StatsSection: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="py-20 bg-white relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-b from-blue-50 via-blue-100/30 to-white relative overflow-hidden">
       {/* Moroccan Geometric Pattern Background */}
       <div className="absolute inset-0 opacity-[0.03]">
         <div className="absolute top-0 left-0 w-64 h-64 border-8 border-siports-gold rotate-45 transform -translate-x-32 -translate-y-32" />
