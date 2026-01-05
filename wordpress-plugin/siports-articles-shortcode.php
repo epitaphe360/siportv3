@@ -642,8 +642,12 @@ class SIPORTS_Articles_Shortcode {
     /**
      * Enregistrer le widget Elementor
      */
-    public function register_elementor_widget($widgets_manager) {
+    public function register_elementor_widget($widgets_manager = null) {
         // Sécurité : Vérifier si Elementor est chargé
+        if (!did_action('elementor/loaded')) {
+            return;
+        }
+        
         if (!class_exists('\Elementor\Widget_Base')) {
             return;
         }
@@ -654,8 +658,31 @@ class SIPORTS_Articles_Shortcode {
             return;
         }
         
-        require_once plugin_dir_path(__FILE__) . 'widgets/elementor-siports-article.php';
-        require_once plugin_dir_path(__FILE__) . 'widgets/elementor-siports-media.php';
+        // Charger les fichiers widget en toute sécurité
+        $article_widget_file = plugin_dir_path(__FILE__) . 'widgets/elementor-siports-article.php';
+        $media_widget_file = plugin_dir_path(__FILE__) . 'widgets/elementor-siports-media.php';
+        
+        if (file_exists($article_widget_file)) {
+            require_once $article_widget_file;
+        }
+        
+        if (file_exists($media_widget_file)) {
+            require_once $media_widget_file;
+        }
+        
+        // Vérifier que les classes existent avant de les instancier
+        if (!class_exists('Elementor_SIPORTS_Article_Widget') || !class_exists('Elementor_SIPORTS_Media_Widget')) {
+            return;
+        }
+        
+        // Si $widgets_manager n'est pas fourni, essayer de le récupérer
+        if ($widgets_manager === null && class_exists('\Elementor\Plugin')) {
+            $widgets_manager = \Elementor\Plugin::instance()->widgets_manager;
+        }
+        
+        if ($widgets_manager === null) {
+            return;
+        }
 
         // Vérifier si la méthode register existe (Elementor 3.5+)
         if (method_exists($widgets_manager, 'register')) {
