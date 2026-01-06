@@ -1,12 +1,17 @@
 /**
  * Fixtures de données pour les tests E2E
  * Contient les utilisateurs de test pour chaque type de compte
+ * 
+ * ⚠️ IMPORTANT: Les mots de passe sont chargés depuis les variables d'environnement
+ * pour des raisons de sécurité. Ne jamais hardcoder les mots de passe en production.
  */
+
+const TEST_PASSWORD = process.env.TEST_PASSWORD || 'TestPassword123!';
 
 export const TEST_USERS = {
   admin: {
     email: 'admin.siports@siports.com',
-    password: 'Admin123!',
+    password: TEST_PASSWORD,
     firstName: 'Admin',
     lastName: 'SIPORTS',
     type: 'admin'
@@ -14,7 +19,7 @@ export const TEST_USERS = {
 
   visitor: {
     email: 'visiteur@siports.com',
-    password: 'Visit123!',
+    password: TEST_PASSWORD,
     firstName: 'Jean',
     lastName: 'Visiteur',
     type: 'visitor',
@@ -26,7 +31,7 @@ export const TEST_USERS = {
 
   exhibitor: {
     email: 'exposant@siports.com',
-    password: 'Expo123!',
+    password: TEST_PASSWORD,
     firstName: 'Marie',
     lastName: 'Exposant',
     type: 'exhibitor',
@@ -38,7 +43,7 @@ export const TEST_USERS = {
 
   partner: {
     email: 'partenaire@siports.com',
-    password: 'Partner123!',
+    password: TEST_PASSWORD,
     firstName: 'Pierre',
     lastName: 'Partenaire',
     type: 'partner',
@@ -51,7 +56,7 @@ export const TEST_USERS = {
   // Nouveaux utilisateurs pour tests d'inscription
   newVisitor: {
     email: `visitor-${Date.now()}@test.com`,
-    password: 'TestVisitor123!',
+    password: TEST_PASSWORD,
     firstName: 'Test',
     lastName: 'Visitor',
     type: 'visitor',
