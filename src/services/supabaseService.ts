@@ -1966,13 +1966,14 @@ export class SupabaseService {
       let query = safeSupabase.from('users').select('*');
 
       // Par défaut, afficher uniquement les exposants, visiteurs et partenaires (pas les admins)
-      // Si aucun userType spécifié, afficher tous les types professionnels
+      // Si aucun userType et aucun secteur spécifiés, afficher tous les types professionnels
       const hasSearchTerm = filters.searchTerm && filters.searchTerm.trim();
       const hasSector = filters.sector && filters.sector.trim();
       const hasLocation = filters.location && filters.location.trim();
       
-      if (!filters.userType) {
-        // Toujours exclure les admins si aucun type spécifié
+      // Exclure les admins si aucun type spécifié ET aucun secteur spécifié
+      if (!filters.userType && !hasSector) {
+        // Toujours exclure les admins si aucun type et aucun secteur spécifié
         query = query.in('type', ['exhibitor', 'partner', 'visitor']);
       }
 
