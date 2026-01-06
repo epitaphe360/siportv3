@@ -328,31 +328,16 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       }
 
       const visitorId = resolvedUser.id;
+      const visitorLevel = resolvedUser?.visitor_level || resolvedUser?.profile?.visitor_level || 'free';
 
-    // Vérifier le quota selon visitor_level (utilise la configuration centralisée)
-    const visitorLevel = resolvedUser?.visitor_level || resolvedUser?.profile?.visitor_level || 'free';
-    
-    // Import de la configuration des quotas
-    const { getVisitorQuota } = await import('../config/quotas');
-
-    const quota = getVisitorQuota(visitorLevel);
-    
-    // For FREE visitors: NO appointments allowed (strict CDC requirement)
-    if (visitorLevel === 'free') {
-      const anyAppointmentCount = appointments.filter(a => a.visitorId === visitorId).length;
-      if (anyAppointmentCount > 0) {
-        throw new Error('Visiteurs FREE: Vous ne pouvez pas réserver de rendez-vous. Veuillez upgrader votre ticket pour accéder aux rendez-vous B2B.');
+    // ✅ Server-side quota validation via RPC
+    try {
+      const quotaResult = await SecurityService.validateAppointmentQuota(visitorId, visitorLevel);
+      if (!quotaResult.valid) {
+        throw new Error(quotaResult.reason || 'Quota dépassé pour votre niveau d\'accès');
       }
-    } else {
-      // For other levels: count active appointments (pending + confirmed)
-      const activeCount = appointments.filter(
-        a => a.visitorId === visitorId &&
-             (a.status === 'confirmed' || a.status === 'pending')
-      ).length;
-
-      if (activeCount >= quota) {
-        throw new Error('Quota de rendez-vous atteint pour votre niveau');
-      }
+    } catch (quotaError) {
+      throw new Error(quotaError instanceof Error ? quotaError.message : 'Erreur validation quota serveur');
     }
 
     // Prevent duplicate booking of the same time slot by the same visitor
