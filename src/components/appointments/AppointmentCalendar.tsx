@@ -149,6 +149,18 @@ export default function AppointmentCalendar() {
 
   const handleCreateSlot = async () => {
     try {
+      // CRITICAL: Only exhibitors can create slots (security check)
+      if (authUser?.type !== 'exhibitor' && authUser?.type !== 'partner') {
+        toast.error('Seuls les exposants et partenaires peuvent créer des créneaux');
+        return;
+      }
+
+      // CRITICAL: Ensure exhibitorId matches current user (prevent cross-user slot creation)
+      if (authUser?.type === 'exhibitor' && !exhibitorId) {
+        toast.error('Exhibitor ID manquant. Impossible de créer un créneau.');
+        return;
+      }
+
       // Validation des données
       if (!newSlotData.date || !newSlotData.startTime || !newSlotData.endTime) {
         toast.error('Veuillez remplir tous les champs obligatoires');
@@ -538,10 +550,17 @@ export default function AppointmentCalendar() {
           </div>
           
           <div className="flex-shrink-0">
-            <Button variant="default" onClick={() => setShowCreateSlotModal(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Nouveau Créneau
-            </Button>
+            {/* Only exhibitors and partners can create slots */}
+            {(authUser?.type === 'exhibitor' || authUser?.type === 'partner') ? (
+              <Button variant="default" onClick={() => setShowCreateSlotModal(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Nouveau Créneau
+              </Button>
+            ) : (
+              <div className="text-sm text-gray-600 bg-yellow-50 px-4 py-2 rounded-lg border border-yellow-200">
+                ℹ️ Seuls les exposants peuvent créer des créneaux
+              </div>
+            )}
           </div>
         </div>
 
@@ -869,8 +888,8 @@ export default function AppointmentCalendar() {
             </div>
           )}
 
-          {/* Create Slot Modal */}
-          {showCreateSlotModal && (
+          {/* Create Slot Modal - Only for exhibitors and partners */}
+          {showCreateSlotModal && (authUser?.type === 'exhibitor' || authUser?.type === 'partner') && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
