@@ -213,6 +213,24 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
+      // ✅ Étape 1: Vérifier que l'utilisateur existe et que nous avons les droits d'accès
+      console.log('🔍 Vérification de l\'utilisateur avant mise à jour:', userId);
+      const { data: existingUser, error: checkError } = await safeSupabase
+        .from('users')
+        .select('id')
+        .eq('id', userId)
+        .single();
+
+      if (checkError) {
+        console.error(`❌ Erreur vérification utilisateur ${userId}:`, checkError);
+        throw new Error(`Utilisateur ${userId} non trouvé ou pas d'accès (RLS): ${checkError.message}`);
+      }
+
+      if (!existingUser) {
+        throw new Error(`Utilisateur ${userId} n'existe pas en base de données`);
+      }
+
+      // ✅ Étape 2: Construire les données à mettre à jour
       const updateData: Record<string, any> = {};
       if (userData.name !== undefined) updateData.name = userData.name;
       if (userData.email !== undefined) updateData.email = userData.email;
@@ -222,16 +240,28 @@ export class SupabaseService {
 
       updateData.updated_at = new Date().toISOString();
 
+      // ✅ Étape 3: Effectuer la mise à jour avec gestion appropriée des résultats
+      console.log('📝 Mise à jour utilisateur:', userId, Object.keys(updateData));
       const { data, error } = await safeSupabase
         .from('users')
         .update(updateData)
         .eq('id', userId)
-        .select()
-        .single();
+        .select('*');
 
-      if (error) throw error;
+      if (error) {
+        console.error(`❌ Erreur lors de la mise à jour ${userId}:`, error);
+        throw new Error(`Erreur mise à jour: ${error.message}`);
+      }
 
-      return this.transformUserDBToUser(data);
+      // ✅ Vérifier que nous avons au moins un résultat
+      if (!data || data.length === 0) {
+        console.error(`❌ PGRST116: Aucune ligne retournée après la mise à jour de ${userId}`);
+        throw new Error(`Pas de données retournées après mise à jour de ${userId}. Vérifiez les permissions RLS.`);
+      }
+
+      const updatedData = Array.isArray(data) ? data[0] : data;
+      console.log('✅ Utilisateur mis à jour avec succès:', userId);
+      return this.transformUserDBToUser(updatedData);
     } catch (error) {
       console.error(`❌ Erreur mise à jour utilisateur ${userId}:`, error);
       throw error;

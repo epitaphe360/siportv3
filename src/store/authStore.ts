@@ -427,11 +427,16 @@ const useAuthStore = create<AuthState>()(
     set({ isLoading: true });
 
     try {
+      console.log('🔄 Début mise à jour profil pour:', user.id);
+      console.log('📊 Données à fusionner:', Object.keys(profileData));
+      
       // ✅ Fusionner les données de manière robuste
       const mergedProfile = {
         ...user.profile,
         ...profileData
       };
+
+      console.log('✅ Profil fusionné, envoi vers Supabase...');
 
       // ✅ Envoyer la mise à jour vers Supabase
       const updatedUser = await SupabaseService.updateUser(user.id, {
@@ -448,6 +453,7 @@ const useAuthStore = create<AuthState>()(
 
       // ✅ Vérifier que les données sont bien sauvegardées
       console.log('✅ Profil mis à jour avec succès:', {
+        userId: user.id,
         sectors: updatedUser.profile.sectors?.length || 0,
         interests: updatedUser.profile.interests?.length || 0,
         objectives: updatedUser.profile.objectives?.length || 0,
@@ -455,7 +461,14 @@ const useAuthStore = create<AuthState>()(
       });
     } catch (error: unknown) {
       set({ isLoading: false });
-      console.error('❌ Erreur mise à jour profil:', error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error('❌ Erreur mise à jour profil pour', user.id, ':', errorMsg);
+      
+      // ✅ Ajouter des détails sur l'erreur
+      if (errorMsg.includes('RLS') || errorMsg.includes('PGRST116')) {
+        console.error('🔒 PROBLÈME RLS DÉTECTÉ - Vérifiez les politiques de sécurité en base de données');
+      }
+      
       throw error instanceof Error ? error : new Error('Erreur lors de la mise à jour du profil');
     }
   }

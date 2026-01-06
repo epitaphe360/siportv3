@@ -334,14 +334,23 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     const { getVisitorQuota } = await import('../config/quotas');
 
     const quota = getVisitorQuota(visitorLevel);
-    // Compter TOUS les RDV actifs (pending + confirmed) pour éviter le contournement du quota
-    const activeCount = appointments.filter(
-      a => a.visitorId === visitorId &&
-           (a.status === 'confirmed' || a.status === 'pending')
-    ).length;
+    
+    // For FREE visitors: NO appointments allowed (strict CDC requirement)
+    if (visitorLevel === 'free') {
+      const anyAppointmentCount = appointments.filter(a => a.visitorId === visitorId).length;
+      if (anyAppointmentCount > 0) {
+        throw new Error('Visiteurs FREE: Vous ne pouvez pas réserver de rendez-vous. Veuillez upgrader votre ticket pour accéder aux rendez-vous B2B.');
+      }
+    } else {
+      // For other levels: count active appointments (pending + confirmed)
+      const activeCount = appointments.filter(
+        a => a.visitorId === visitorId &&
+             (a.status === 'confirmed' || a.status === 'pending')
+      ).length;
 
-    if (activeCount >= quota) {
-      throw new Error('Quota de rendez-vous atteint pour votre niveau');
+      if (activeCount >= quota) {
+        throw new Error('Quota de rendez-vous atteint pour votre niveau');
+      }
     }
 
     // Prevent duplicate booking of the same time slot by the same visitor

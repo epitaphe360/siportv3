@@ -258,6 +258,17 @@ export default function AppointmentCalendar() {
       const visitorId = authUser?.id || 'user1';
       const visitorLevel = authUser?.visitor_level || authUser?.profile?.visitor_level || 'free';
       const quota = getVisitorQuota(visitorLevel);
+      
+      // Special check for FREE visitors: cannot book ANY appointments (including pending)
+      if (visitorLevel === 'free') {
+        const anyAppointmentCount = appointments.filter(a => a.visitorId === visitorId).length;
+        if (anyAppointmentCount >= quota) {
+          toast.error('Visiteurs FREE: Vous ne pouvez pas réserver de rendez-vous. Veuillez upgrader votre ticket pour accéder aux rendez-vous B2B.');
+          return;
+        }
+      }
+      
+      // For other levels: count only confirmed appointments
       const confirmedCount = appointments.filter(a => a.visitorId === visitorId && a.status === 'confirmed').length;
       if (confirmedCount >= quota) {
         toast.error('Quota de rendez-vous atteint pour votre niveau');
