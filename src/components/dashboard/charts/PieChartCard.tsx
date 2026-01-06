@@ -99,8 +99,8 @@ export function PieChartCard({
           </PieChart>
         </ResponsiveContainer>
 
-        {/* Stats Summary */}
-        <div className="mt-6 grid grid-cols-2 gap-4">
+        {/* Stats Summary - 3 colonnes pour équilibrer avec le graphique */}
+        <div className="mt-4 grid grid-cols-3 gap-2">
           {data.map((item, index) => {
             const percent = total === 0 ? '0.0' : ((item.value / total) * 100).toFixed(1);
             return (
@@ -109,18 +109,15 @@ export function PieChartCard({
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 + 0.3 }}
-                className="flex items-center space-x-2"
+                className="text-center p-2 bg-gray-50 rounded-lg border border-gray-200"
               >
                 <div
-                  className="w-3 h-3 rounded-full"
+                  className="w-2 h-2 rounded-full mx-auto mb-1"
                   style={{ backgroundColor: colors[index % colors.length] }}
                 />
-                <div className="flex-1">
-                  <p className="text-sm text-gray-600">{item.name}</p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {item.value} ({percent}%)
-                  </p>
-                </div>
+                <p className="text-xs text-gray-600 font-medium">{item.name}</p>
+                <p className="text-sm font-bold text-gray-900 mt-1">{item.value}</p>
+                <p className="text-xs text-gray-500">({percent}%)</p>
               </motion.div>
             );
           })}

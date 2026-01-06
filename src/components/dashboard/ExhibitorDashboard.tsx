@@ -803,13 +803,13 @@ export default function ExhibitorDashboard() {
             showArea={true}
           />
 
-          {/* Row 2: Statut RDV et Activités */}
+          {/* Row 2: Statut RDV et Activités - Hauteurs équilibrées */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <PieChartCard
               title="Statut des Rendez-vous"
               data={appointmentStatusData}
               colors={['#10b981', '#f59e0b', '#3b82f6']}
-              height={300}
+              height={340}
               showPercentage={true}
             />
 
@@ -818,7 +818,7 @@ export default function ExhibitorDashboard() {
               data={activityBreakdownData}
               dataKey="value"
               colors={['#3b82f6', '#10b981', '#f59e0b', '#ef4444']}
-              height={300}
+              height={400}
             />
           </div>
         </div>
