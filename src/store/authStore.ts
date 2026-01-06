@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase';
 import OAuthService from '../services/oauthService';
 import { User, UserProfile } from '../types';
 import { resetAllStores } from './resetStores';
+import { secureStorage } from '../lib/secureStorage';
 
 /**
  * Interface pour les données d'inscription
@@ -474,19 +475,32 @@ const useAuthStore = create<AuthState>()(
   }
 }),
     {
-      name: 'siport-auth-storage', // localStorage key
+      name: 'siport-auth-storage', // Storage key (localStorage or IndexedDB)
       partialize: (state) => ({
         user: state.user,
         token: state.token,
         isAuthenticated: state.isAuthenticated
         // Ne PAS persister les états de loading
       }),
+      // ✅ CUSTOM STORAGE: Use secureStorage with localStorage + IndexedDB fallback
+      storage: {
+        getItem: async (name) => {
+          const stored = await secureStorage.getItem(name);
+          return stored ? JSON.parse(stored) : null;
+        },
+        setItem: async (name, value) => {
+          await secureStorage.setItem(name, JSON.stringify(value));
+        },
+        removeItem: async (name) => {
+          await secureStorage.removeItem(name);
+        }
+      },
       // CRITICAL FIX: Validation au chargement du store depuis localStorage
       onRehydrateStorage: () => (state) => {
         if (state?.user?.type === 'admin' && state?.isAuthenticated) {
-          // SECURITY: Si un admin est détecté dans localStorage, on marque pour vérification
+          // SECURITY: Si un admin est détecté dans storage, on marque pour vérification
           // La vérification complète sera faite par initAuth.ts avec Supabase
-          // CRITICAL: Ne pas faire confiance au localStorage pour les admins
+          // CRITICAL: Ne pas faire confiance au storage pour les admins
           // Forcer une vérification Supabase via initAuth
           // On ne déconnecte pas immédiatement car initAuth le fera si invalide
         }

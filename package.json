@@ -54,6 +54,7 @@
     "test:concurrency": "node --experimental-top-level-await scripts/concurrent_book_test.mjs",
     "import:exhibitors": "node scripts/run_import_exhibitors.mjs",
     "db:quick-check": "node scripts/db_quick_check.mjs",
+    "diagnose:payments": "node scripts/diagnose-payment-storage.mjs",
     "ai-agent": "node server/ai-agent/index.mjs"
   },
   "dependencies": {
