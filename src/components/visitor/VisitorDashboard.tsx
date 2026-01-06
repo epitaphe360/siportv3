@@ -533,56 +533,59 @@ export default memo(function VisitorDashboard() {
           </motion.div>
 
           {/* 📊 SECTION ANALYTICS VISITEUR - Graphiques Professionnels */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mb-8"
-          >
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-                  <Activity className="h-6 w-6 text-white" />
+          {/* Visiteurs FREE ne voient pas cette section */}
+          {userLevel !== 'free' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mb-8"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+                    <Activity className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">Votre Activité</h2>
+                    <p className="text-sm text-gray-600">Suivez votre parcours au salon en temps réel</p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Votre Activité</h2>
-                  <p className="text-sm text-gray-600">Suivez votre parcours au salon en temps réel</p>
-                </div>
+                <Badge className="bg-blue-100 text-blue-700 border-blue-300">
+                  En direct
+                </Badge>
               </div>
-              <Badge className="bg-blue-100 text-blue-700 border-blue-300">
-                En direct
-              </Badge>
-            </div>
 
-            {/* Graphique ligne: Activité des visites (7 jours) */}
-            <div className="mb-6">
-              <LineChartCard
-                title={t('dashboard.visit_activity_7days')}
-                data={visitActivityData}
-                dataKeys={[
-                  { key: 'visites', color: '#3b82f6', name: 'Visites' },
-                  { key: 'interactions', color: '#8b5cf6', name: 'Interactions' }
-                ]}
-                height={300}
-              />
-            </div>
+              {/* Graphique ligne: Activité des visites (7 jours) */}
+              <div className="mb-6">
+                <LineChartCard
+                  title={t('dashboard.visit_activity_7days')}
+                  data={visitActivityData}
+                  dataKeys={[
+                    { key: 'visites', color: '#3b82f6', name: 'Visites' },
+                    { key: 'interactions', color: '#8b5cf6', name: 'Interactions' }
+                  ]}
+                  height={300}
+                />
+              </div>
 
-            {/* Grille: Graphique circulaire + Barres */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <PieChartCard
-                title={t('dashboard.appointment_status')}
-                data={appointmentStatusData}
-                height={300}
-              />
-              <BarChartCard
-                title={t('dashboard.interest_areas')}
-                data={interestAreasData}
-                dataKey="value"
-                color="#3b82f6"
-                height={300}
-              />
-            </div>
-          </motion.div>
+              {/* Grille: Graphique circulaire + Barres */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <PieChartCard
+                  title={t('dashboard.appointment_status')}
+                  data={appointmentStatusData}
+                  height={300}
+                />
+                <BarChartCard
+                  title={t('dashboard.interest_areas')}
+                  data={interestAreasData}
+                  dataKey="value"
+                  color="#3b82f6"
+                  height={300}
+                />
+              </div>
+            </motion.div>
+          )}
 
           {/* Communication Cards */}
           <motion.div
