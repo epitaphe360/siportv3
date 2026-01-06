@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Mail, CheckCircle, Clock, ArrowRight, RefreshCw } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { EmailService } from '@/services/emailService';
 import { ROUTES } from '@/lib/routes';
 
 export default function SignupConfirmationPage() {
@@ -98,9 +99,14 @@ export default function SignupConfirmationPage() {
     }
   }, [countdown]);
 
-  const handleResendEmail = () => {
-    setCountdown(60);
-    // TODO: Implémenter la fonction de renvoi d'email
+  const handleResendEmail = async () => {
+    try {
+      setCountdown(60);
+      // ✅ Envoyer email de bienvenue
+      await EmailService.sendWelcomeEmail(email, 'Utilisateur', userType);
+    } catch (error) {
+      console.warn('Email resend failed:', error);
+    }
   };
 
   return (

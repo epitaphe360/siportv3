@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { Appointment, TimeSlot } from '../types';
 import { SupabaseService } from '../services/supabaseService';
+import { EmailService } from '../services/emailService';
+import { SecurityService } from '../services/securityService';
 import { supabase as supabaseClient, isSupabaseReady } from '../lib/supabase';
 import { generateDemoTimeSlots } from '../config/demoTimeSlots';
 
@@ -504,8 +506,22 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
               description: 'Les calendriers ont été mis à jour et les participants notifiés.'
             });
 
-            // TODO: Envoyer notification email/push aux participants
-            // await sendAppointmentConfirmationNotification(appointment);
+            // ✅ Envoyer notification email/push aux participants
+            try {
+              await EmailService.sendAppointmentConfirmation({
+                visitorEmail: appointment.visitorEmail || '',
+                visitorName: appointment.visitorName || 'Visiteur',
+                exhibitorName: appointment.exhibitorName || 'Exposant',
+                exhibitorEmail: appointment.exhibitorEmail || '',
+                date: appointment.date,
+                time: appointment.startTime || '',
+                status: 'confirmed',
+                appointmentId: appointment.id
+              });
+            } catch (emailError) {
+              console.warn('⚠️ Email notification failed:', emailError);
+              // Non-blocking error - appointment is still saved
+            }
           } catch (notifError) {
             console.warn('Erreur notification:', notifError);
           }
