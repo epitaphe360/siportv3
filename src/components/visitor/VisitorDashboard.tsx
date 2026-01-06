@@ -587,21 +587,22 @@ export default memo(function VisitorDashboard() {
             </motion.div>
           )}
 
-          {/* Communication Cards */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8"
-          >
-            <motion.div variants={itemVariants}>
-              <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 h-full">
-                <div className="flex items-start space-x-3 mb-4">
-                  <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
-                    <MessageCircle className="h-5 w-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900">Messagerie</h3>
+          {/* Communication Cards - Hidden for FREE visitors */}
+          {userLevel !== 'free' && (
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8"
+            >
+              <motion.div variants={itemVariants}>
+                <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 h-full">
+                  <div className="flex items-start space-x-3 mb-4">
+                    <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+                      <MessageCircle className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900">Messagerie</h3>
                     <p className="text-gray-600 text-sm mt-1">
                       Communiquez directement avec les exposants et partenaires
                     </p>
@@ -614,30 +615,31 @@ export default memo(function VisitorDashboard() {
                   </Button>
                 </Link>
               </Card>
-            </motion.div>
+              </motion.div>
 
-            <motion.div variants={itemVariants}>
-              <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 h-full">
-                <div className="flex items-start space-x-3 mb-4">
-                  <div className="p-2 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg">
-                    <Building2 className="h-5 w-5 text-white" />
+              <motion.div variants={itemVariants}>
+                <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 h-full">
+                  <div className="flex items-start space-x-3 mb-4">
+                    <div className="p-2 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg">
+                      <Building2 className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900">Découvrir les exposants</h3>
+                      <p className="text-gray-600 text-sm mt-1">
+                        Explorez les stands et trouvez les solutions qui vous intéressent
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900">Découvrir les exposants</h3>
-                    <p className="text-gray-600 text-sm mt-1">
-                      Explorez les stands et trouvez les solutions qui vous intéressent
-                    </p>
-                  </div>
-                </div>
-                <Link to={ROUTES.EXHIBITORS}>
-                  <Button variant="outline" className="w-full border-2 hover:bg-gray-50">
-                    <Building2 className="h-4 w-4 mr-2" />
-                    Voir les exposants
-                  </Button>
-                </Link>
-              </Card>
+                  <Link to={ROUTES.EXHIBITORS}>
+                    <Button variant="outline" className="w-full border-2 hover:bg-gray-50">
+                      <Building2 className="h-4 w-4 mr-2" />
+                      Voir les exposants
+                    </Button>
+                  </Link>
+                </Card>
+              </motion.div>
             </motion.div>
-          </motion.div>
+          )}
 
           {/* Event Management avec animations */}
           <motion.div
@@ -737,19 +739,20 @@ export default memo(function VisitorDashboard() {
             </motion.div>
           </motion.div>
 
-          {/* Appointment Management avec animations */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center space-x-2 mb-6">
-                <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
-                  <Calendar className="h-5 w-5 text-white" />
+          {/* Appointment Management avec animations - Hidden for FREE visitors */}
+          {userLevel !== 'free' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center space-x-2 mb-6">
+                  <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+                    <Calendar className="h-5 w-5 text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">Mes rendez-vous</h3>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Mes rendez-vous</h3>
-              </div>
               {isAppointmentsLoading ? (
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
@@ -864,8 +867,9 @@ export default memo(function VisitorDashboard() {
                   )}
                 </>
               )}
-            </Card>
-          </motion.div>
+              </Card>
+            </motion.div>
+          )}
 
           {/* Modal for requesting another slot */}
           {showAvailabilityModal && (
