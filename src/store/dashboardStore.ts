@@ -2,6 +2,16 @@ import { create } from 'zustand';
 import { Dashboard, DashboardStats, Activity } from '../types';
 import { supabase } from '../lib/supabase';
 
+// Type definitions for database records
+interface ActivityDBRecord {
+  id: string;
+  type: string;
+  description: string;
+  created_at: string;
+  actor_id: string;
+  actor?: Record<string, unknown>;
+}
+
 interface DashboardState {
   dashboard: Dashboard | null;
   isLoading: boolean;
@@ -196,7 +206,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       }
 
       // Transformer les activités
-      const recentActivity: Activity[] = activitiesWithActors.map((activity: any) => ({
+      const recentActivity: Activity[] = activitiesWithActors.map((activity: ActivityDBRecord) => ({
         id: activity.id,
         type: activity.type,
         description: activity.description,

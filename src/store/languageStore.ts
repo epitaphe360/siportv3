@@ -128,11 +128,11 @@ export const useLanguageStore = create<LanguageState>()(
         
         // Sinon, essayer comme clé imbriquée (pour compatibilité)
         const keys = key.split('.');
-        let value: any = languageTranslations;
+        let value: unknown = languageTranslations;
         
         for (const k of keys) {
           if (value && typeof value === 'object' && k in value) {
-            value = value[k];
+            value = (value as Record<string, unknown>)[k];
           } else {
             // Clé non trouvée, retourner fallback ou la clé
             if (key.startsWith('nav.')) {
