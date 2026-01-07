@@ -1,4 +1,4 @@
-import { User, NetworkingRecommendation } from '../types';
+import { User, NetworkingRecommendation, UserProfile } from '../types';
 
 // --- Helper Functions ---
 
@@ -51,7 +51,7 @@ class RecommendationService {
   /**
    * Ensures profile has default values for matching
    */
-  private static ensureProfileDefaults(profile: any): any {
+  private static ensureProfileDefaults(profile: Partial<UserProfile> | undefined): UserProfile {
     return {
       interests: profile?.interests || [],
       sectors: profile?.sectors || [],
@@ -138,8 +138,8 @@ class RecommendationService {
   private static calculateMatchScore(user1: User, user2: User): { score: number; reasons: string[] } {
     let score = 0;
     const reasons: string[] = [];
-    const p1: any = user1.profile || {};
-    const p2: any = user2.profile || {};
+    const p1: UserProfile = user1.profile || {} as UserProfile;
+    const p2: UserProfile = user2.profile || {} as UserProfile;
 
     // Ensure arrays exist to avoid null errors
     const p1Interests = p1.interests || [];
