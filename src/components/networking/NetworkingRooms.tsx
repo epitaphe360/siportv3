@@ -35,7 +35,10 @@ export const NetworkingRooms: React.FC<NetworkingRoomsProps> = ({ eventId }) => 
 
   useEffect(() => {
     loadRooms();
-    subscribeToRoomUpdates();
+    const unsubscribe = subscribeToRoomUpdates();
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, [eventId]);
 
   useEffect(() => {
