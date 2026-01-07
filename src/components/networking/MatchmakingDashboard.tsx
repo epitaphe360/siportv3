@@ -62,6 +62,50 @@ export const MatchmakingDashboard: React.FC = () => {
     return 'Match faible';
   };
 
+  const handleConnect = async (targetUserId: string) => {
+    if (!user) return;
+
+    try {
+      await MatchmakingService.sendConnectionRequest(user.id, targetUserId);
+      const { toast } = await import('sonner');
+      toast.success('Demande de connexion envoyée !');
+      loadRecommendations(); // Refresh recommendations
+    } catch (error) {
+      const { toast } = await import('sonner');
+      toast.error('Erreur lors de l\'envoi de la demande');
+      console.error('Connection error:', error);
+    }
+  };
+
+  const handleMessage = async (targetUserId: string, targetName: string) => {
+    if (!user) return;
+
+    try {
+      // Redirect to chat with this user
+      const { default: useNavigate } = await import('react-router-dom');
+      window.location.href = `/chat?userId=${targetUserId}`;
+    } catch (error) {
+      const { toast } = await import('sonner');
+      toast.error('Erreur lors de l\'ouverture du chat');
+      console.error('Message error:', error);
+    }
+  };
+
+  const handleLike = async (targetUserId: string) => {
+    if (!user) return;
+
+    try {
+      await MatchmakingService.likeProfile(user.id, targetUserId);
+      const { toast } = await import('sonner');
+      toast.success('Profil ajouté aux favoris !');
+      loadRecommendations(); // Refresh recommendations
+    } catch (error) {
+      const { toast } = await import('sonner');
+      toast.error('Erreur lors de l\'ajout aux favoris');
+      console.error('Like error:', error);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -237,15 +281,25 @@ export const MatchmakingDashboard: React.FC = () => {
 
                     {/* Actions */}
                     <div className="flex gap-2">
-                      <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                      <button
+                        onClick={() => handleConnect(match.userId)}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                      >
                         <Handshake className="w-4 h-4" />
                         Connecter
                       </button>
-                      <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
+                      <button
+                        onClick={() => handleMessage(match.userId, `Professionnel #${index + 1}`)}
+                        className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
+                      >
                         <MessageCircle className="w-4 h-4" />
                         Message
                       </button>
-                      <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                      <button
+                        onClick={() => handleLike(match.userId)}
+                        className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                        title="Ajouter aux favoris"
+                      >
                         <Heart className="w-4 h-4" />
                       </button>
                     </div>

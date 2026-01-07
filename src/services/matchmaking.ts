@@ -339,4 +339,33 @@ export class MatchmakingService {
       return 0;
     }
   }
+
+  /**
+   * Send a connection request to another user
+   */
+  static async sendConnectionRequest(fromUserId: string, toUserId: string): Promise<void> {
+    try {
+      await this.trackInteraction(fromUserId, toUserId, 'connection', {
+        status: 'pending',
+        requestedAt: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error sending connection request:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Like a user profile
+   */
+  static async likeProfile(fromUserId: string, toUserId: string): Promise<void> {
+    try {
+      await this.trackInteraction(fromUserId, toUserId, 'like', {
+        likedAt: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error liking profile:', error);
+      throw error;
+    }
+  }
 }
