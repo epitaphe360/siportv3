@@ -310,6 +310,19 @@ export default function RegisterPage() {
       // @ts-expect-error - recaptchaToken sera ajouté à authStore.register()
       await registerUser(data, recaptchaToken);
 
+      // 📧 Send welcome email (non-blocking)
+      try {
+        const { EmailService } = await import('../../services/emailService');
+        const firstName = data.firstName || data.accountType;
+        const accountTypeLabel = data.accountType === 'visitor' ? 'visiteur' : 
+                                data.accountType === 'exhibitor' ? 'exposant' : 'partenaire';
+        
+        await EmailService.sendWelcomeEmail(data.email, firstName, accountTypeLabel);
+      } catch (emailError) {
+        console.warn('⚠️ Welcome email failed:', emailError);
+        // Non-blocking error - registration is already complete
+      }
+
       // Si c'est un exposant ou partenaire, afficher un toast indiquant validation admin requise
       if (data.accountType && data.accountType !== 'visitor') {
         const label = data.accountType === 'exhibitor' ? 'exposant' : 'partenaire';

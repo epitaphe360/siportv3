@@ -459,6 +459,26 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       timeSlots: updatedSlots
     });
 
+    // 📧 Send appointment confirmation email (non-blocking)
+    try {
+      const slot = timeSlots.find(s => s.id === timeSlotId);
+      if (slot && resolvedUser?.profile?.email) {
+        await EmailService.sendAppointmentConfirmation({
+          visitorEmail: resolvedUser.profile.email as string,
+          visitorName: ((resolvedUser.profile?.firstName as string) || 'Visiteur'),
+          exhibitorName: slot.exhibitor?.companyName || 'Exposant',
+          exhibitorEmail: slot.exhibitor?.email || '',
+          date: slot.date?.toLocaleDateString('fr-FR') || new Date().toLocaleDateString('fr-FR'),
+          time: slot.startTime || '00:00',
+          status: 'pending',
+          appointmentId: newAppointment.id
+        });
+      }
+    } catch (emailError) {
+      console.warn('⚠️ Email notification failed after booking:', emailError);
+      // Non-blocking error - appointment is already created
+    }
+
     return newAppointment;
     } finally {
       // Always reset isBooking flag, even if error occurs
@@ -516,6 +536,26 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
           // Ignore refresh errors, we already updated the appointment
         }
       }
+    }
+
+    // 📧 Send cancellation email (non-blocking)
+    try {
+      if (appointment.visitorEmail && resolvedUser?.profile?.email) {
+        const slot = timeSlots.find(s => s.id === appointment.timeSlotId);
+        await EmailService.sendAppointmentConfirmation({
+          visitorEmail: appointment.visitorEmail as string,
+          visitorName: appointment.visitorName || 'Visiteur',
+          exhibitorName: appointment.exhibitorName || 'Exposant',
+          exhibitorEmail: appointment.exhibitorEmail || '',
+          date: appointment.date || new Date().toLocaleDateString('fr-FR'),
+          time: appointment.startTime || '00:00',
+          status: 'cancelled',
+          appointmentId: appointmentId
+        });
+      }
+    } catch (emailError) {
+      console.warn('⚠️ Cancellation email failed:', emailError);
+      // Non-blocking error - appointment is already cancelled
     }
 
     set({ appointments: updatedAppointments });
