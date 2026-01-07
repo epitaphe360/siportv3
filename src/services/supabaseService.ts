@@ -19,6 +19,39 @@ interface UserDB {
   updated_at: string;
 }
 
+interface PartnerDB {
+  id: string;
+  company_name: string;
+  partner_type: string;
+  sector?: string;
+  description?: string;
+  logo_url?: string;
+  website?: string;
+  verified: boolean;
+  featured: boolean;
+  partnership_level?: string;
+  benefits?: string[];
+  contact_info?: { country?: string };
+  created_at: string;
+}
+
+interface PartnerUI {
+  id: string;
+  name: string;
+  partner_tier: string;
+  category: string;
+  sector?: string;
+  description: string;
+  logo?: string;
+  website?: string;
+  country: string;
+  verified: boolean;
+  featured: boolean;
+  contributions: string[];
+  projects?: PartnerProject[];
+  enrichedData?: Record<string, unknown>;
+}
+
 interface ProductDB {
   id: string;
   exhibitor_id: string;
@@ -36,6 +69,26 @@ interface MiniSiteData {
   custom_colors?: Record<string, string>;
   sections?: MiniSiteSection[];
   published?: boolean;
+}
+
+interface RegistrationRequest {
+  id: string;
+  user_id: string;
+  request_type: 'exhibitor' | 'partner';
+  status: 'pending' | 'approved' | 'rejected';
+  created_at: string;
+  updated_at: string;
+}
+
+interface PartnerProject {
+  id: string;
+  partner_id?: string;
+  user_id?: string;
+  name: string;
+  description: string;
+  timeline?: Array<{ date: string; milestone: string }>;
+  sectors?: string[];
+  status?: string;
 }
 
 interface ExhibitorDB {
@@ -161,7 +214,7 @@ export class SupabaseService {
 
       // Si c'est un partenaire, on tente de récupérer ses projets séparément
       // pour éviter les erreurs de jointure si la relation n'est pas détectée par PostgREST
-      let projects: any[] = [];
+      let projects: PartnerProject[] = [];
       if (userData.type === 'partner') {
         try {
           // On essaie de récupérer par user_id (nouvelle structure)
@@ -268,7 +321,7 @@ export class SupabaseService {
     }
   }
 
-  static async createSimpleRegistrationRequest(userId: string, requestType: 'exhibitor' | 'partner'): Promise<any> {
+  static async createSimpleRegistrationRequest(userId: string, requestType: 'exhibitor' | 'partner'): Promise<RegistrationRequest | null> {
     if (!this.checkSupabaseConnection()) return null;
 
     const safeSupabase = supabase!;
@@ -327,7 +380,7 @@ export class SupabaseService {
   }
 
   // ==================== PARTNERS ====================
-  static async getPartners(): Promise<any[]> {
+  static async getPartners(): Promise<PartnerUI[]> {
     if (!this.checkSupabaseConnection()) {
       console.warn('⚠️ Supabase non configuré - aucun partenaire disponible');
       return [];
@@ -345,7 +398,7 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      return (data || []).map((partner: any) => ({
+      return (data || []).map((partner: PartnerDB) => ({
         id: partner.id,
         name: partner.company_name,
         partner_tier: partner.partnership_level || partner.partner_type,
