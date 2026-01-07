@@ -4,6 +4,7 @@
  */
 
 import { logger } from '../lib/logger';
+import { supabase } from '../lib/supabase';
 
 export interface EmailTemplate {
   subject: string;
@@ -343,8 +344,7 @@ L'équipe SIPORT 2026
   }
 
   /**
-   * Send email via service
-   * TODO: Integrate with actual email service (SendGrid, AWS SES, etc.)
+   * Send email via Supabase Edge Function + SendGrid
    */
   async sendEmail(
     to: string,
@@ -354,12 +354,31 @@ L'équipe SIPORT 2026
     try {
       logger.info('Sending email', { to, subject: template.subject });
 
-      // TODO: Implement actual email sending
-      // For now, just log
-      console.log('Email would be sent to:', to);
-      console.log('Subject:', template.subject);
-      console.log('HTML length:', template.html.length);
+      // Call Supabase Edge Function to send email
+      const { data, error } = await supabase.functions.invoke('send-template-email', {
+        body: {
+          to,
+          from: options?.from,
+          replyTo: options?.replyTo,
+          subject: template.subject,
+          html: template.html,
+          text: template.text,
+        },
+      });
 
+      if (error) {
+        logger.error('Edge function error', error as Error, { to });
+        // Log for debugging but don't expose internal errors to UI
+        console.error('Email sending failed:', error);
+        return false;
+      }
+
+      if (!data?.success) {
+        logger.error('Email sending failed', new Error(data?.error || 'Unknown error'), { to });
+        return false;
+      }
+
+      logger.info('Email sent successfully', { to, subject: template.subject });
       return true;
     } catch (error) {
       logger.error('Failed to send email', error as Error, { to });

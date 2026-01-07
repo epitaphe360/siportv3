@@ -170,12 +170,15 @@ Deno.serve(async (req: Request) => {
         console.log('📡 Envoi de la requête à Google Cloud TTS...');
         console.log('Langue:', languageCode, 'Voix:', voiceConfig.name);
 
+        // Use X-Goog-Api-Key header instead of URL parameter for better security
+        // API keys in URL parameters can be logged in server logs, cached by proxies, etc.
         const response = await fetch(
-          `https://texttospeech.googleapis.com/v1/text:synthesize?key=${googleApiKey}`,
+          'https://texttospeech.googleapis.com/v1/text:synthesize',
           {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              'X-Goog-Api-Key': googleApiKey,
             },
             body: JSON.stringify(requestBody),
           }
