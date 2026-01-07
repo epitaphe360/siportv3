@@ -52,7 +52,7 @@ export default function VisitorPaymentPage() {
       toast.success('Vous êtes déjà abonné Premium VIP !');
       navigate(ROUTES.VISITOR_DASHBOARD);
     }
-  }, [user, navigate]);
+  }, [user?.visitor_level, navigate]);
 
   const handleStripePayment = async () => {
     if (!user) return;
@@ -75,16 +75,17 @@ export default function VisitorPaymentPage() {
 
       // Redirect to Stripe
       await redirectToStripeCheckout(session.id);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorInfo = err as Record<string, unknown>;
       console.error('Stripe payment error:', err);
-      setError(err.message || 'Erreur lors du paiement Stripe');
+      setError((errorInfo.message as string) || 'Erreur lors du paiement Stripe');
       toast.error('Erreur de paiement Stripe');
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const handlePayPalApprove = async (data: any) => {
+  const handlePayPalApprove = async (data: Record<string, unknown>) => {
     if (!user) return;
 
     setIsProcessing(true);
@@ -92,7 +93,7 @@ export default function VisitorPaymentPage() {
 
     try {
       // Capture PayPal order
-      const captureData = await capturePayPalOrder(data.orderID, user.id);
+      const captureData = await capturePayPalOrder(data.orderID as string, user.id);
 
       // Create payment record
       await createPaymentRecord({
@@ -100,15 +101,16 @@ export default function VisitorPaymentPage() {
         amount: PAYMENT_AMOUNTS.VIP_PASS,
         currency: 'EUR',
         paymentMethod: 'paypal',
-        transactionId: data.orderID,
+        transactionId: data.orderID as string,
         status: 'approved', // PayPal approves instantly
       });
 
       toast.success('Paiement PayPal réussi !');
       navigate('/visitor/payment-success');
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorInfo = err as Record<string, unknown>;
       console.error('PayPal capture error:', err);
-      setError(err.message || 'Erreur lors de la capture PayPal');
+      setError((errorInfo.message as string) || 'Erreur lors de la capture PayPal');
       toast.error('Erreur de paiement PayPal');
     } finally {
       setIsProcessing(false);
@@ -135,10 +137,11 @@ export default function VisitorPaymentPage() {
       const cmiData = await createCMIPaymentRequest(user.id, user.email);
 
       // Redirect to CMI payment gateway
-      window.location.href = cmiData.paymentUrl;
-    } catch (err: any) {
+      window.location.href = cmiData.paymentUrl as string;
+    } catch (err: unknown) {
+      const errorInfo = err as Record<string, unknown>;
       console.error('CMI payment error:', err);
-      setError(err.message || 'Erreur lors du paiement CMI');
+      setError((errorInfo.message as string) || 'Erreur lors du paiement CMI');
       toast.error('Erreur de paiement CMI');
     } finally {
       setIsProcessing(false);
