@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Kill any existing service worker that might be caching old assets
 if ('serviceWorker' in navigator) {
@@ -37,9 +38,11 @@ const mount = (el: Element) => {
   isMounted = true;
   ReactDOM.createRoot(el as HTMLElement).render(
     <React.StrictMode>
-      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <App />
-      </Router>
+      <ThemeProvider>
+        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <App />
+        </Router>
+      </ThemeProvider>
     </React.StrictMode>
   );
 };

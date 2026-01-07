@@ -15,6 +15,7 @@ import { ROUTES } from '../../lib/routes';
 import { Button } from '../ui/Button';
 import useAuthStore from '../../store/authStore';
 import { LanguageSelector } from '../ui/LanguageSelector';
+import { ThemeToggle } from '../ui/ThemeToggle';
 import { useTranslation } from '../../hooks/useTranslation';
 import { MoroccanPattern } from '../ui/MoroccanDecor';
 
@@ -188,6 +189,9 @@ export const Header: React.FC = memo(() => {
           <div className="flex items-center space-x-4">
             {/* Language Selector */}
             <LanguageSelector />
+
+            {/* Theme Toggle */}
+            <ThemeToggle />
 
             {isAuthenticated ? (
               <>
