@@ -11,11 +11,24 @@
 -- Step 1: Disable RLS temporarily (for admin use only)
 ALTER TABLE payment_requests DISABLE ROW LEVEL SECURITY;
 
--- Step 2: Drop existing restrictive policies
+-- Step 2: Drop ALL existing policies (both old and new names)
+-- Old names:
 DROP POLICY IF EXISTS "Users can view their own payments" ON payment_requests;
 DROP POLICY IF EXISTS "Users can insert own payments" ON payment_requests;
 DROP POLICY IF EXISTS "Users can update their own payments" ON payment_requests;
 DROP POLICY IF EXISTS "Admin can manage all payments" ON payment_requests;
+
+-- New names (in case they were already created):
+DROP POLICY IF EXISTS "Users can create their own payment records" ON payment_requests;
+DROP POLICY IF EXISTS "Users can view their own payment records" ON payment_requests;
+DROP POLICY IF EXISTS "Users can update their own payment records" ON payment_requests;
+DROP POLICY IF EXISTS "Admins can manage all payments" ON payment_requests;
+
+-- Any other variations:
+DROP POLICY IF EXISTS "allow_user_create_payments" ON payment_requests;
+DROP POLICY IF EXISTS "allow_user_view_payments" ON payment_requests;
+DROP POLICY IF EXISTS "allow_user_update_payments" ON payment_requests;
+DROP POLICY IF EXISTS "allow_admin_manage_payments" ON payment_requests;
 
 -- Step 3: Re-enable RLS
 ALTER TABLE payment_requests ENABLE ROW LEVEL SECURITY;
