@@ -9,10 +9,17 @@
  * - Syncs data in background
  */
 
-importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js');
+// Try to load Firebase with error handling
+try {
+  importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js');
+  importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js');
+} catch (error) {
+  console.error('Failed to load Firebase scripts:', error);
+}
 
-// Initialize Firebase in service worker
+// Initialize Firebase in service worker (graceful)
+let messaging = null;
+
 const firebaseConfig = {
   apiKey: 'AIzaSyDvQxZ1234567890-abcdefghijklmnop', // Will be injected
   authDomain: 'siport-2026.firebaseapp.com',
@@ -22,8 +29,15 @@ const firebaseConfig = {
   appId: '1:123456789000:web:abcdef1234567890',
 };
 
-firebase.initializeApp(firebaseConfig);
-const messaging = firebase.messaging();
+// Safely initialize if Firebase is available
+if (typeof firebase !== 'undefined') {
+  try {
+    firebase.initializeApp(firebaseConfig);
+    messaging = firebase.messaging();
+  } catch (error) {
+    console.warn('Firebase initialization in SW failed:', error);
+  }
+}
 
 /**
  * Handle background messages
