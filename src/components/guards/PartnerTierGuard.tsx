@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import useAuthStore from '../../store/authStore';
 import { ROUTES } from '../../lib/routes';
-import { PartnerTier, comparePartnerTiers, getPartnerTierConfig } from '../../config/partnerTiers';
+import { PartnerTier, PartnerTierConfig, comparePartnerTiers, getPartnerTierConfig, hasPartnerAccess } from '../../config/partnerTiers';
 
 interface PartnerTierGuardProps {
   children: ReactNode;
@@ -112,10 +112,29 @@ export function PartnerTierGuard({
     }
 
     // Vérification de quota spécifique (si fourni)
-    if (quotaType) {
-      // TODO: Implémenter la vérification de quota en fonction du type
-      // Nécessite d'accéder à la base de données pour récupérer l'utilisation actuelle
-      console.log('Quota check not yet implemented for:', quotaType);
+    if (quotaType && user.type === 'partner') {
+      const partnerTier = (user.partner_tier || user.profile?.partner_tier || 'museum') as PartnerTier;
+
+      // Vérifier si le tier a accès à ce quota
+      const hasAccess = hasPartnerAccess(partnerTier, quotaType as keyof PartnerTierConfig['quotas']);
+
+      if (!hasAccess) {
+        toast({
+          title: 'Accès restreint',
+          description: customMessage || `Votre niveau ${partnerTier} n'a pas accès à cette fonctionnalité. Veuillez upgrader votre compte.`,
+          variant: 'destructive',
+          action: {
+            label: 'Upgrader',
+            onClick: () => navigate(ROUTES.PARTNER_PROFILE)
+          }
+        });
+        navigate(fallbackRoute, { replace: true });
+        return;
+      }
+
+      // Note: La vérification de l'utilisation actuelle vs quota max
+      // nécessite une requête DB et sera implémentée au niveau du composant
+      // qui utilise PartnerTierGuard, pas ici pour éviter les requêtes multiples
     }
   }, [user, requiredTier, minimumTier, quotaType, fallbackRoute, showToast, customMessage, navigate]);
 

@@ -165,18 +165,93 @@ export function createAccessibleButtonProps(
 }
 
 /**
+ * Convert hex color to RGB
+ */
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  // Remove # if present
+  hex = hex.replace(/^#/, '');
+
+  // Handle 3-digit hex
+  if (hex.length === 3) {
+    hex = hex.split('').map(char => char + char).join('');
+  }
+
+  // Parse hex to RGB
+  const result = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16),
+  } : null;
+}
+
+/**
+ * Calculate relative luminance according to WCAG formula
+ */
+function getRelativeLuminance(r: number, g: number, b: number): number {
+  // Normalize RGB values
+  const normalize = (channel: number) => {
+    const value = channel / 255;
+    return value <= 0.03928
+      ? value / 12.92
+      : Math.pow((value + 0.055) / 1.055, 2.4);
+  };
+
+  const rLinear = normalize(r);
+  const gLinear = normalize(g);
+  const bLinear = normalize(b);
+
+  // Calculate luminance using WCAG formula
+  return 0.2126 * rLinear + 0.7152 * gLinear + 0.0722 * bLinear;
+}
+
+/**
+ * Calculate contrast ratio between two colors
+ */
+export function getContrastRatio(foreground: string, background: string): number {
+  const fgRgb = hexToRgb(foreground);
+  const bgRgb = hexToRgb(background);
+
+  if (!fgRgb || !bgRgb) {
+    console.error('Invalid color format:', { foreground, background });
+    return 0;
+  }
+
+  const fgLuminance = getRelativeLuminance(fgRgb.r, fgRgb.g, fgRgb.b);
+  const bgLuminance = getRelativeLuminance(bgRgb.r, bgRgb.g, bgRgb.b);
+
+  // Calculate contrast ratio
+  const lighter = Math.max(fgLuminance, bgLuminance);
+  const darker = Math.min(fgLuminance, bgLuminance);
+
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+/**
  * Validate color contrast ratio
- * Checks if contrast meets WCAG AA standards
+ * Checks if contrast meets WCAG standards
  *
  * @param foreground - Foreground color (hex)
  * @param background - Background color (hex)
+ * @param level - WCAG level ('AA' or 'AAA')
+ * @param largeText - Whether this is large text (>=18pt regular or >=14pt bold)
  * @returns Whether contrast is sufficient
  */
-export function hasValidContrast(foreground: string, background: string): boolean {
-  // Simplified check - in production, use a proper contrast checker library
-  // WCAG AA requires 4.5:1 for normal text, 3:1 for large text
-  // This is a placeholder
-  return true; // TODO: Implement proper contrast checking
+export function hasValidContrast(
+  foreground: string,
+  background: string,
+  level: 'AA' | 'AAA' = 'AA',
+  largeText: boolean = false
+): boolean {
+  const ratio = getContrastRatio(foreground, background);
+
+  // WCAG contrast requirements
+  if (level === 'AAA') {
+    return largeText ? ratio >= 4.5 : ratio >= 7;
+  } else {
+    // AA level (default)
+    return largeText ? ratio >= 3 : ratio >= 4.5;
+  }
 }
 
 /**

@@ -187,6 +187,55 @@ export class StorageService {
   }
 
   /**
+   * Liste les fichiers dans un bucket et dossier spécifique
+   * @param bucket Le nom du bucket (par défaut 'images')
+   * @param folder Le dossier à lister (optionnel, liste le bucket entier si vide)
+   * @returns Liste des fichiers avec leurs métadonnées
+   */
+  static async listFiles(
+    bucket: string = 'images',
+    folder: string = ''
+  ): Promise<{ name: string; url: string; size: number; createdAt: string }[]> {
+    if (!supabase) {
+      throw new Error('Supabase non configuré. Veuillez configurer vos variables d\'environnement Supabase.');
+    }
+
+    const { data, error } = await supabase.storage
+      .from(bucket)
+      .list(folder, {
+        limit: 1000,
+        offset: 0,
+        sortBy: { column: 'created_at', order: 'desc' }
+      });
+
+    if (error) {
+      console.error('Erreur lors de la récupération des fichiers:', error);
+      throw error;
+    }
+
+    if (!data) {
+      return [];
+    }
+
+    // Mapper les fichiers avec leurs URLs publiques
+    return data
+      .filter(file => file.name) // Filtrer les dossiers
+      .map(file => {
+        const filePath = folder ? `${folder}/${file.name}` : file.name;
+        const { data: urlData } = supabase.storage
+          .from(bucket)
+          .getPublicUrl(filePath);
+
+        return {
+          name: file.name,
+          url: urlData.publicUrl,
+          size: file.metadata?.size || 0,
+          createdAt: file.created_at || new Date().toISOString(),
+        };
+      });
+  }
+
+  /**
    * Crée un bucket s'il n'existe pas déjà
    * @param bucketName Le nom du bucket à créer
    * @param isPublic Si le bucket doit être public (true par défaut)

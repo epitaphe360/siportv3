@@ -3,6 +3,7 @@ import { Appointment, TimeSlot } from '../types';
 import { SupabaseService } from '../services/supabaseService';
 import { supabase as supabaseClient, isSupabaseReady } from '../lib/supabase';
 import { generateDemoTimeSlots } from '../config/demoTimeSlots';
+import { emailTemplateService } from '../services/emailTemplateService';
 
 // Helper pour vérifier si Supabase est configuré
 const getSupabaseClient = () => {
@@ -11,6 +12,103 @@ const getSupabaseClient = () => {
   }
   return supabaseClient;
 };
+
+/**
+ * Envoie des notifications email et push pour un rendez-vous
+ */
+async function sendAppointmentNotifications(
+  appointment: Appointment,
+  type: 'confirmed' | 'cancelled' | 'reminder'
+): Promise<void> {
+  try {
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      console.warn('Supabase not configured, skipping notifications');
+      return;
+    }
+
+    // Récupérer les informations du visiteur et de l'exposant
+    const { data: visitorProfile } = await supabase
+      .from('profiles')
+      .select('email, first_name, last_name')
+      .eq('id', appointment.visitorId)
+      .single();
+
+    const { data: exhibitorProfile } = await supabase
+      .from('profiles')
+      .select('email, first_name, last_name, company_name')
+      .eq('id', appointment.exhibitorId)
+      .single();
+
+    if (!visitorProfile?.email || !exhibitorProfile?.email) {
+      console.warn('Missing email addresses for notification');
+      return;
+    }
+
+    // Formater la date et l'heure
+    const appointmentDate = new Date(appointment.startTime);
+    const formattedDate = appointmentDate.toLocaleDateString('fr-FR', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    const formattedTime = appointmentDate.toLocaleTimeString('fr-FR', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    // Préparer les données pour le template
+    const emailData = {
+      firstName: visitorProfile.first_name || 'Visiteur',
+      exhibitorName: exhibitorProfile.company_name || `${exhibitorProfile.first_name} ${exhibitorProfile.last_name}`,
+      date: formattedDate,
+      time: formattedTime,
+      location: appointment.location || 'À déterminer',
+      type: appointment.type || 'in-person' as 'in-person' | 'virtual' | 'hybrid',
+    };
+
+    // Envoyer email au visiteur
+    if (type === 'confirmed') {
+      const visitorTemplate = emailTemplateService.createAppointmentConfirmationEmail(emailData);
+      await emailTemplateService.sendEmail(visitorProfile.email, visitorTemplate);
+    } else if (type === 'cancelled') {
+      // Pour l'annulation, créer un template simple
+      const cancelTemplate = {
+        subject: 'Annulation de rendez-vous - SIPORTS 2026',
+        html: `
+          <p>Bonjour ${emailData.firstName},</p>
+          <p>Votre rendez-vous avec ${emailData.exhibitorName} prévu le ${emailData.date} à ${emailData.time} a été annulé.</p>
+          <p>N'hésitez pas à prendre un nouveau rendez-vous si nécessaire.</p>
+          <p>Cordialement,<br>L'équipe SIPORTS 2026</p>
+        `,
+        text: `Bonjour ${emailData.firstName}, Votre rendez-vous avec ${emailData.exhibitorName} prévu le ${emailData.date} à ${emailData.time} a été annulé.`
+      };
+      await emailTemplateService.sendEmail(visitorProfile.email, cancelTemplate);
+    }
+
+    // Envoyer une notification push si disponible
+    try {
+      await supabase.functions.invoke('send-push-notification', {
+        body: {
+          userId: appointment.visitorId,
+          title: type === 'confirmed' ? 'Rendez-vous confirmé' : 'Rendez-vous annulé',
+          body: `${emailData.exhibitorName} - ${emailData.date} à ${emailData.time}`,
+          data: {
+            appointmentId: appointment.id,
+            type,
+          },
+        },
+      });
+    } catch (pushError) {
+      // Push notifications sont optionnelles, ne pas faire échouer si indisponibles
+      console.warn('Push notification failed:', pushError);
+    }
+  } catch (error) {
+    console.error('Failed to send appointment notifications:', error);
+    // Ne pas faire échouer l'opération principale si les notifications échouent
+  }
+}
 
 interface AppointmentState {
   appointments: Appointment[];
@@ -459,6 +557,14 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       a.id === appointmentId ? { ...a, status: 'cancelled' as const } : a
     );
 
+    // Envoyer notification d'annulation
+    try {
+      await sendAppointmentNotifications(appointment, 'cancelled');
+    } catch (notifError) {
+      console.warn('Failed to send cancellation notification:', notifError);
+      // Ne pas faire échouer l'annulation si la notification échoue
+    }
+
     // Refresh time slots to get updated counts
     if (appointment.timeSlotId) {
       const affectedSlot = timeSlots.find(s => s.id === appointment.timeSlotId);
@@ -495,8 +601,8 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
               description: 'Les calendriers ont été mis à jour et les participants notifiés.'
             });
 
-            // TODO: Envoyer notification email/push aux participants
-            // await sendAppointmentConfirmationNotification(appointment);
+            // Envoyer notification email/push aux participants
+            await sendAppointmentNotifications(appointment, 'confirmed');
           } catch (notifError) {
             console.warn('Erreur notification:', notifError);
           }

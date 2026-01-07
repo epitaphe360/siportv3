@@ -166,10 +166,8 @@ export const useStorage = (options: UseStorageOptions = {}): UseStorageReturn =>
     setError(null);
 
     try {
-      // listFiles method doesn't exist in StorageService, return empty array
-      // This functionality would need to be implemented in StorageService if needed
-      console.warn('listFiles: StorageService.listFiles not implemented');
-      return [];
+      const files = await StorageService.listFiles(bucket, folder);
+      return files;
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : String(err) || 'Erreur lors de la récupération des fichiers';
       setError(errorMessage);
