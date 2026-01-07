@@ -2403,7 +2403,7 @@ export class SupabaseService {
     const safeSupabase = supabase!;
     try {
       // Validation: la date ne doit pas être dans le passé
-      const slotDate = (slotData as any).date || (slotData as any).slot_date;
+      const slotDate = (slotData as unknown as Record<string, unknown>).date || (slotData as unknown as Record<string, unknown>).slot_date;
       if (slotDate) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -2415,10 +2415,10 @@ export class SupabaseService {
       }
 
       // Résoudre l'exhibitor_id depuis le userId si nécessaire
-      let exhibitorId = (slotData as any).exhibitorId || null;
+      let exhibitorId = (slotData as unknown as Record<string, unknown>).exhibitorId || null;
       
       if (!exhibitorId) {
-        const userId = (slotData as any).userId;
+        const userId = (slotData as unknown as Record<string, unknown>).userId;
         if (userId) {
           // Récupérer l'exhibitor_id correspondant au user_id
           const { data: exhibitor, error: exhError } = await safeSupabase
@@ -2480,17 +2480,18 @@ export class SupabaseService {
       }
 
       // Map frontend slotData to DB column names to handle schema differences
-      const insertPayload: any = {
+      const slotDataRecord = slotData as unknown as Record<string, unknown>;
+      const insertPayload: Record<string, unknown> = {
         exhibitor_id: exhibitorId,
-        slot_date: (slotData as any).date || (slotData as any).slot_date || null,
-        start_time: (slotData as any).startTime || (slotData as any).start_time || null,
-        end_time: (slotData as any).endTime || (slotData as any).end_time || null,
-        duration: (slotData as any).duration || null,
-        type: (slotData as any).type || 'in-person',
-        max_bookings: (slotData as any).maxBookings ?? (slotData as any).max_bookings ?? 1,
-        current_bookings: (slotData as any).currentBookings ?? (slotData as any).current_bookings ?? 0,
-        available: ((slotData as any).currentBookings ?? 0) < ((slotData as any).maxBookings ?? 1),
-        location: (slotData as any).location || null
+        slot_date: slotDataRecord.date || slotDataRecord.slot_date || null,
+        start_time: slotDataRecord.startTime || slotDataRecord.start_time || null,
+        end_time: slotDataRecord.endTime || slotDataRecord.end_time || null,
+        duration: slotDataRecord.duration || null,
+        type: slotDataRecord.type || 'in-person',
+        max_bookings: (slotDataRecord.maxBookings as number) ?? (slotDataRecord.max_bookings as number) ?? 1,
+        current_bookings: (slotDataRecord.currentBookings as number) ?? (slotDataRecord.current_bookings as number) ?? 0,
+        available: ((slotDataRecord.currentBookings as number) ?? 0) < ((slotDataRecord.maxBookings as number) ?? 1),
+        location: slotDataRecord.location || null
       };
 
       // LOG DÉTAILLÉ POUR DEBUG
@@ -2522,11 +2523,12 @@ export class SupabaseService {
       }
 
       if (error) {
+        const errorInfo = error as unknown as Record<string, unknown>;
         console.error('❌ [CREATE_SLOT] Erreur Supabase:', {
-          code: error.code,
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
+          code: errorInfo.code,
+          message: errorInfo.message,
+          details: errorInfo.details,
+          hint: errorInfo.hint,
           payload: insertPayload
         });
         throw error;
@@ -2543,7 +2545,7 @@ export class SupabaseService {
       };
 
       // Transform returned DB row into TimeSlot interface expected by frontend
-      const created: any = data;
+      const created = data as unknown as Record<string, unknown>;
       const transformed: TimeSlot = {
         id: created.id,
         userId: created.exhibitor_id || created.user_id,
