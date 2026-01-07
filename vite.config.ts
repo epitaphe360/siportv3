@@ -40,6 +40,8 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
+      // Externalize optional dependencies that may not be installed
+      external: ['@sentry/react'],
       output: {
         // Use content-based hashing for better cache busting
         entryFileNames: 'assets/[name]-[hash].js',

@@ -1,4 +1,17 @@
-import * as Sentry from '@sentry/react';
+// Sentry is optional - only import if available
+let Sentry: any = null;
+try {
+  // Dynamic import to avoid build errors if @sentry/react is not installed
+  if (import.meta.env.VITE_SENTRY_DSN) {
+    import('@sentry/react').then(module => {
+      Sentry = module;
+    }).catch(() => {
+      console.warn('Sentry not available - logging will continue without it');
+    });
+  }
+} catch {
+  // Sentry not available, continue without it
+}
 
 export enum LogLevel {
   DEBUG = 'debug',
@@ -30,10 +43,11 @@ class Logger {
       }[level];
 
       const logMessage = `[${timestamp}] ${level.toUpperCase()}: ${message}`;
+      console.log(`%c${logMessage}`, `color: ${color}`, context || '');
     }
 
-    // Send to Sentry in production
-    if (!this.isDevelopment && import.meta.env.VITE_SENTRY_DSN) {
+    // Send to Sentry in production (if available)
+    if (!this.isDevelopment && Sentry && import.meta.env.VITE_SENTRY_DSN) {
       if (level === LogLevel.ERROR) {
         Sentry.captureException(new Error(message), {
           contexts: { custom: context }
