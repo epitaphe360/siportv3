@@ -11,6 +11,7 @@ import { SupabaseService } from '../services/supabaseService';
 import { LevelBadge } from '../components/common/QuotaWidget';
 import type { PartnerTier } from '../config/partnerTiers';
 import { useTranslation } from '../hooks/useTranslation';
+import { COUNTRIES } from '../data/countries';
 
 interface Partner {
   id: string;
@@ -111,7 +112,11 @@ export default function PartnersPage() {
     { value: 'platinium', label: t('pages.partners.tier_platinium') + ' ($98k)' }
   ];
 
-  const countries = [...new Set(partners.map(p => p.country).filter(Boolean))];
+  // Utiliser la liste complète des pays depuis data/countries.ts
+  // Combinée avec les pays des partenaires existants
+  const partnerCountries = [...new Set(partners.map(p => p.country).filter(Boolean))];
+  const allCountryNames = COUNTRIES.map(c => c.name);
+  const countries = [...new Set([...allCountryNames, ...partnerCountries])].sort();
 
   return (
     <div className="min-h-screen bg-gray-50">

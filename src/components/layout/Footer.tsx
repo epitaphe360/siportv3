@@ -12,6 +12,7 @@ import {
   Linkedin,
   Youtube
 } from 'lucide-react';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 // OPTIMIZATION: Memoized Footer component to prevent unnecessary re-renders
 export const Footer: React.FC = memo(() => {
@@ -19,8 +20,12 @@ export const Footer: React.FC = memo(() => {
   const { t } = useTranslation();
 
   return (
-    <footer className="bg-siports-dark text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer className="bg-siports-dark text-white relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.05]">
+        <MoroccanPattern className="w-full h-full text-siports-gold" scale={1} />
+      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Logo and Description */}
           <div className="lg:col-span-1">
@@ -42,7 +47,7 @@ export const Footer: React.FC = memo(() => {
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="p-2 bg-white/10 rounded-lg text-white/80 hover:text-white hover:bg-siports-primary transition-all duration-200"
-                title="Suivez-nous sur Facebook"
+                title={t('social.follow_facebook')}
               >
                 <Facebook className="h-5 w-5" />
               </a>
@@ -51,7 +56,7 @@ export const Footer: React.FC = memo(() => {
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="p-2 bg-white/10 rounded-lg text-white/80 hover:text-white hover:bg-siports-primary transition-all duration-200"
-                title="Suivez-nous sur Twitter"
+                title={t('social.follow_twitter')}
               >
                 <Twitter className="h-5 w-5" />
               </a>
@@ -60,7 +65,7 @@ export const Footer: React.FC = memo(() => {
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="p-2 bg-white/10 rounded-lg text-white/80 hover:text-white hover:bg-siports-primary transition-all duration-200"
-                title="Suivez-nous sur LinkedIn"
+                title={t('social.follow_linkedin')}
               >
                 <Linkedin className="h-5 w-5" />
               </a>
@@ -69,7 +74,7 @@ export const Footer: React.FC = memo(() => {
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="p-2 bg-white/10 rounded-lg text-white/80 hover:text-white hover:bg-siports-primary transition-all duration-200"
-                title="Chaîne YouTube SIPORTS"
+                title={t('social.youtube_channel')}
               >
                 <Youtube className="h-5 w-5" />
               </a>

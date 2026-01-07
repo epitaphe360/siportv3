@@ -4,9 +4,11 @@
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
+  <!-- SEO FIX: Added lastmod dates for better indexing -->
   <!-- Page d'accueil -->
   <url>
     <loc>https://siports.com/</loc>
+    <lastmod>2025-11-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>

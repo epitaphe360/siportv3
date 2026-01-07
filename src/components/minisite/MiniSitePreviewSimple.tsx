@@ -39,7 +39,8 @@ import {
   TrendingUp,
   Play,
   Copy,
-  Check
+  Check,
+  Users
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
@@ -105,6 +106,7 @@ export default function MiniSitePreviewSimple() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+  const [expandedFeatures, setExpandedFeatures] = useState<{ [key: number]: boolean }>({});
 
   // Parallax
   const { scrollY } = useScroll();
@@ -376,55 +378,139 @@ export default function MiniSitePreviewSimple() {
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {/* SECTION À PROPOS */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
-      <section id="about" className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-6">
+      <section id="about" className="py-24 bg-gradient-to-br from-slate-50 via-white to-blue-50/30 relative overflow-hidden">
+        {/* Decorative grid pattern */}
+        <div className="absolute inset-0 opacity-[0.03]">
+          <div className="w-full h-full" style={{ 
+            backgroundImage: `radial-gradient(circle, ${theme.accentColor} 1px, transparent 1px)`,
+            backgroundSize: '30px 30px'
+          }} />
+        </div>
+        
+        <div className="max-w-6xl mx-auto px-6 relative">
           {/* Header */}
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-medium mb-4">
-              <Building2 className="h-4 w-4" />
-              À propos
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 border border-blue-200/50 text-blue-700 text-sm font-semibold mb-6 shadow-sm">
+              <Sparkles className="h-4 w-4" />
+              À propos de nous
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: theme.primaryColor }}>
+            <h2 className="text-4xl md:text-5xl font-black mb-6 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
               {aboutSection?.content?.title || 'Notre expertise'}
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto font-medium leading-relaxed mb-8">
               {aboutSection?.content?.description || aboutSection?.content?.text || exhibitorData.description || 'Nous sommes fiers de présenter nos solutions innovantes à SIPORTS 2026.'}
             </p>
+            
+            {/* Certification Badges */}
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <Badge className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-lg hover:shadow-xl transition-shadow">
+                <Award className="h-4 w-4 mr-2" />
+                ISO 9001
+              </Badge>
+              <Badge className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-600 text-white border-0 shadow-lg hover:shadow-xl transition-shadow">
+                <Award className="h-4 w-4 mr-2" />
+                ISO 27001
+              </Badge>
+              <Badge className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white border-0 shadow-lg hover:shadow-xl transition-shadow">
+                <Star className="h-4 w-4 mr-2" />
+                Certifié depuis 2008
+              </Badge>
+            </div>
           </div>
 
-          {/* Features/Values - TOUJOURS AFFICHÉES */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          {/* Features/Values - TOUJOURS AFFICHÉES avec design amélioré */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             {features.length > 0 ? (
-              features.map((feature: string) => (
-                <Card key={feature} className="p-6 text-center hover:shadow-lg transition-shadow">
-                  <div 
-                    className="w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-4"
-                    style={{ backgroundColor: `${theme.accentColor}15` }}
+              features.map((feature: string, index: number) => {
+                const featureIcons = [Sparkles, Star, Award, CheckCircle2];
+                const FeatureIcon = featureIcons[index % featureIcons.length];
+                const isExpanded = expandedFeatures[index] || false;
+                
+                // Descriptions génériques basées sur les domaines courants
+                const getFeatureDescription = (title: string) => {
+                  const lowerTitle = title.toLowerCase();
+                  if (lowerTitle.includes('transformation') || lowerTitle.includes('digital')) {
+                    return "Accompagnement complet dans la digitalisation de vos processus et infrastructures pour optimiser votre compétitivité.";
+                  }
+                  if (lowerTitle.includes('cyber') || lowerTitle.includes('sécurité')) {
+                    return "Protection avancée de vos systèmes et données contre les menaces cybernétiques avec des solutions de pointe.";
+                  }
+                  if (lowerTitle.includes('big data') || lowerTitle.includes('analytics')) {
+                    return "Exploitation intelligente de vos données massives pour des décisions stratégiques éclairées et prédictives.";
+                  }
+                  if (lowerTitle.includes('intelligence') || lowerTitle.includes('ia') || lowerTitle.includes('ai')) {
+                    return "Intégration d'algorithmes d'apprentissage automatique pour automatiser et optimiser vos opérations.";
+                  }
+                  if (lowerTitle.includes('cloud')) {
+                    return "Infrastructure cloud évolutive et sécurisée pour une flexibilité maximale et une réduction des coûts.";
+                  }
+                  if (lowerTitle.includes('blockchain')) {
+                    return "Technologie blockchain pour une traçabilité transparente et des transactions sécurisées et décentralisées.";
+                  }
+                  return "Solution complète et personnalisée adaptée à vos besoins spécifiques et enjeux métiers.";
+                };
+                
+                return (
+                  <Card 
+                    key={feature} 
+                    className="p-8 text-center hover:shadow-2xl transition-all duration-300 group bg-white/80 backdrop-blur-sm border-2 border-transparent hover:border-blue-200 hover:-translate-y-2 relative overflow-hidden cursor-pointer"
+                    onClick={() => setExpandedFeatures(prev => ({ ...prev, [index]: !prev[index] }))}
                   >
-                    <CheckCircle2 className="h-7 w-7" style={{ color: theme.accentColor }} />
-                  </div>
-                  <h3 className="font-semibold text-gray-900">{feature}</h3>
-                </Card>
-              ))
+                    <div 
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      style={{ background: `linear-gradient(135deg, ${theme.primaryColor}05, ${theme.accentColor}05)` }}
+                    />
+                    <div className="relative z-10">
+                      <div 
+                        className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 shadow-lg"
+                        style={{ background: `linear-gradient(135deg, ${theme.primaryColor}, ${theme.accentColor})` }}
+                      >
+                        <FeatureIcon className="h-8 w-8 text-white" />
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-blue-600 transition-colors">{feature}</h3>
+                      {isExpanded && (
+                        <p className="text-sm text-gray-600 mt-3 leading-relaxed">{getFeatureDescription(feature)}</p>
+                      )}
+                      <div className="h-1 w-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto mt-4 transform origin-center transition-all duration-300 group-hover:w-full"></div>
+                    </div>
+                  </Card>
+                );
+              })
             ) : (
-              // Valeurs par défaut si aucune feature
-              ['Innovation', 'Expertise', 'Qualité', 'Support'].map((feature) => (
-                <Card key={feature} className="p-6 text-center hover:shadow-lg transition-shadow">
-                  <div 
-                    className="w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-4"
-                    style={{ backgroundColor: `${theme.accentColor}15` }}
-                  >
-                    <CheckCircle2 className="h-7 w-7" style={{ color: theme.accentColor }} />
-                  </div>
-                  <h3 className="font-semibold text-gray-900">{feature}</h3>
-                </Card>
-              ))
+              // Valeurs par défaut avec icônes spécifiques
+              [
+                { title: 'Intelligence Artificielle Maritime', icon: Sparkles },
+                { title: 'Plateforme IoT intégrée', icon: Star },
+                { title: 'Support technique 24/7', icon: Users },
+                { title: 'Déploiement international', icon: Globe }
+              ].map((feature, index) => {
+                const FeatureIcon = feature.icon;
+                
+                return (
+                  <Card key={feature.title} className="p-8 text-center hover:shadow-2xl transition-all duration-300 group bg-white/80 backdrop-blur-sm border-2 border-transparent hover:border-blue-200 hover:-translate-y-2 relative overflow-hidden">
+                    <div 
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      style={{ background: `linear-gradient(135deg, ${theme.primaryColor}05, ${theme.accentColor}05)` }}
+                    />
+                    <div className="relative z-10">
+                      <div 
+                        className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 shadow-lg"
+                        style={{ background: `linear-gradient(135deg, ${theme.primaryColor}, ${theme.accentColor})` }}
+                      >
+                        <FeatureIcon className="h-8 w-8 text-white" />
+                      </div>
+                      <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-blue-600 transition-colors">{feature.title}</h3>
+                      <div className="h-1 w-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto mt-4 transform origin-center transition-all duration-300 group-hover:w-full"></div>
+                    </div>
+                  </Card>
+                );
+              })
             )}
           </div>
 
           {/* Image About */}
           {(aboutSection?.content?.image || aboutSection?.content?.images?.length > 0) && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className={`grid grid-cols-1 gap-6 ${(aboutSection?.content?.images?.length > 0 || (aboutSection?.content?.image && aboutSection?.content?.images?.length > 0)) ? 'md:grid-cols-2' : 'md:grid-cols-1 max-w-2xl mx-auto'}`}>
               {aboutSection?.content?.image && (
                 <div className="rounded-2xl overflow-hidden shadow-lg">
                   <img 
@@ -465,81 +551,162 @@ export default function MiniSitePreviewSimple() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════ */}
-      {/* SECTION PRODUITS */}
+      {/* SECTION PRODUITS - Enhanced Modern Design */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
-      <section id="products" className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          {/* Header */}
+      <section id="products" className="py-20 bg-gradient-to-br from-slate-50 via-white to-blue-50/30 relative overflow-hidden">
+        {/* Decorative Background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 right-10 w-72 h-72 bg-gradient-to-br from-blue-200/20 to-purple-200/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 left-10 w-64 h-64 bg-gradient-to-br from-indigo-200/20 to-pink-200/20 rounded-full blur-3xl" />
+        </div>
+
+        <div className="max-w-6xl mx-auto px-6 relative">
+          {/* Header - Enhanced */}
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-medium mb-4">
-              <Package className="h-4 w-4" />
-              Nos solutions
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: theme.primaryColor }}>
+            <Badge className="px-6 py-2.5 rounded-full bg-gradient-to-r from-emerald-500/10 via-green-500/10 to-teal-500/10 border-2 border-emerald-200/50 mb-6">
+              <Sparkles className="h-4 w-4 mr-2 text-emerald-600" />
+              <span className="text-emerald-700 font-bold">Nos Solutions Premium</span>
+            </Badge>
+            <h2 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
               Produits & Services
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Découvrez notre gamme de solutions innovantes
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Découvrez notre gamme complète de solutions innovantes pour transformer votre activité
             </p>
           </div>
 
-          {/* Products Grid */}
+          {/* Products Grid - Enhanced Cards */}
           {products.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {products.map((product) => (
-                <Card key={product.id} className="overflow-hidden hover:shadow-xl transition-shadow">
-                  {/* Image */}
-                  <div className="h-48 bg-gray-100">
+                <Card 
+                  key={product.id} 
+                  className="overflow-hidden hover:shadow-2xl transition-all duration-300 border-4 border-gray-100 hover:border-blue-200 group relative"
+                >
+                  {/* Animated border effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-pink-500/20 transition-all duration-500 pointer-events-none rounded-lg" />
+                  
+                  {/* Image with enhanced overlay */}
+                  <div className="h-56 bg-gray-100 relative overflow-hidden">
                     <SafeImage 
                       src={product.image || product.images?.[0]}
                       alt={product.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transform group-hover:scale-110 group-hover:rotate-1 transition-all duration-700"
                       fallback={
-                        <div className="w-full h-full flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${theme.primaryColor}20, ${theme.secondaryColor}20)` }}>
-                          <Package className="h-16 w-16" style={{ color: theme.primaryColor }} />
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100">
+                          <div className="bg-gradient-to-br from-blue-500 to-indigo-600 w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg">
+                            <Package className="h-8 w-8 text-white" />
+                          </div>
                         </div>
                       }
                     />
+                    
+                    {/* Dark overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                    
+                    {/* Stock & Category Badges */}
+                    <div className="absolute top-3 left-3 right-3 flex items-start justify-between gap-2">
+                      {/* Stock Badge */}
+                      {product.inStock !== false && (
+                        <Badge className="px-3 py-1 text-xs font-bold shadow-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0">
+                          <CheckCircle2 className="h-3 w-3 mr-1" />
+                          En stock
+                        </Badge>
+                      )}
+                      
+                      {/* Category Badge */}
+                      {product.category && (
+                        <Badge className="px-3 py-1 text-xs font-bold shadow-lg bg-gradient-to-r from-blue-500 to-cyan-600 text-white border-0">
+                          {product.category}
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                   
-                  {/* Content */}
-                  <div className="p-6">
-                    {product.category && (
-                      <Badge className="mb-3" style={{ backgroundColor: theme.accentColor, color: 'white' }}>
-                        {product.category}
-                      </Badge>
-                    )}
-                    <h3 className="text-xl font-bold mb-2">{product.name}</h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">{product.description}</p>
+                  {/* Content - Enhanced */}
+                  <div className="p-6 relative z-10">
+                    <h3 className="text-xl font-black mb-3 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">
+                      {product.name}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed">
+                      {product.description}
+                    </p>
                     
-                    {/* Features */}
+                    {/* Features with modern styling */}
                     {product.features?.length > 0 && (
-                      <ul className="space-y-1 mb-4">
+                      <div className="space-y-2 mb-4">
                         {product.features.slice(0, 3).map((f: string) => (
-                          <li key={f} className="flex items-center text-sm text-gray-600">
-                            <CheckCircle2 className="h-4 w-4 mr-2 flex-shrink-0" style={{ color: theme.accentColor }} />
-                            <span className="line-clamp-1">{f}</span>
-                          </li>
+                          <div key={f} className="flex items-center gap-2 text-sm text-gray-700 bg-gray-50 p-2 rounded-lg group-hover:bg-blue-50 transition-colors">
+                            <div className="bg-gradient-to-br from-blue-500 to-indigo-600 w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 shadow-sm">
+                              <CheckCircle2 className="h-3 w-3 text-white" />
+                            </div>
+                            <span className="font-medium line-clamp-1">{f}</span>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
                     )}
                     
-                    {/* Price */}
-                    <div className="flex items-center justify-between pt-4 border-t">
-                      <span className="font-bold text-lg" style={{ color: theme.primaryColor }}>
-                        {product.price || 'Sur devis'}
-                      </span>
-                      <Button size="sm" variant="outline" onClick={() => setSelectedProduct(product)}>En savoir +</Button>
+                    {/* Price & CTA - Enhanced */}
+                    <div className="flex items-center justify-between pt-4 border-t-2 border-gray-100 group-hover:border-blue-200 transition-colors">
+                      <div className="flex-1">
+                        {product.price ? (
+                          <div className="flex flex-col">
+                            <span className="text-xs text-gray-500 font-medium">À partir de</span>
+                            <span className="font-black text-2xl bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                              {product.price}
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col">
+                            <span className="text-xs text-gray-500 font-medium">Tarif</span>
+                            <span className="font-bold text-gray-700">Sur devis</span>
+                          </div>
+                        )}
+                      </div>
+                      <Button 
+                        size="sm" 
+                        className="rounded-xl px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                        onClick={() => setSelectedProduct(product)}
+                      >
+                        <span className="mr-1">En savoir +</span>
+                        <ExternalLink className="h-3 w-3" />
+                      </Button>
                     </div>
                   </div>
                 </Card>
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 bg-gray-50 rounded-2xl">
-              <Package className="h-16 w-16 mx-auto text-gray-300 mb-4" />
-              <p className="text-gray-500">Aucun produit n'a encore été ajouté</p>
+            <div className="text-center py-16 bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-3xl border-2 border-dashed border-gray-300">
+              <div className="bg-gradient-to-br from-gray-100 to-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Package className="h-10 w-10 text-gray-400" />
+              </div>
+              <p className="text-gray-500 font-medium">Aucun produit n'a encore été ajouté</p>
             </div>
+          )}
+
+          {/* Call to Action - Enhanced */}
+          {products.length > 0 && (
+            <Card className="mt-12 p-6 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-2 border-blue-200 shadow-xl">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="text-left flex-1">
+                  <h3 className="text-xl font-bold text-gray-900 mb-1">
+                    💬 Besoin d'une solution personnalisée ?
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Notre équipe d'experts est à votre disposition
+                  </p>
+                </div>
+                <Button
+                  size="lg"
+                  className="rounded-xl px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                  onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  <MessageCircle className="h-5 w-5 mr-2" />
+                  Contactez-nous
+                </Button>
+              </div>
+            </Card>
           )}
         </div>
       </section>

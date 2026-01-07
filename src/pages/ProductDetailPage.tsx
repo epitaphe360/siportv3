@@ -11,6 +11,7 @@ import { Card } from '../components/ui/Card';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, Download, Mail, Star, CheckCircle, Clock, FileText, Play, Package, Shield, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
+import { getEmbedUrl } from '../utils/videoUtils';
 
 export default function ProductDetailPage() {
   const { exhibitorId, productId } = useParams<{ exhibitorId: string; productId: string }>();
@@ -148,14 +149,14 @@ export default function ProductDetailPage() {
               <p className="text-gray-700 mb-6">{product.description}</p>
 
               {/* Vidéo de présentation */}
-              {(product as any).video_url && (
+              {(product as any).video_url && getEmbedUrl((product as any).video_url) && (
                 <Card className="p-4 mb-6">
                   <h3 className="font-semibold mb-3 flex items-center gap-2">
                     <Play className="h-4 w-4 text-red-500" /> Vidéo de présentation
                   </h3>
                   <div className="aspect-video rounded-lg overflow-hidden">
                     <iframe
-                      src={(product as any).video_url}
+                      src={getEmbedUrl((product as any).video_url)!}
                       className="w-full h-full"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen

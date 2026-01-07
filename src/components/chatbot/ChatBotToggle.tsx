@@ -13,8 +13,6 @@ export const ChatBotToggle: React.FC<ChatBotToggleProps> = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  console.log('🤖 ChatBotToggle rendered'); // Debug log
-
   return (
     <motion.div
       className="fixed bottom-4 right-4 z-[9999]"

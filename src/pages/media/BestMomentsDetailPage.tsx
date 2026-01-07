@@ -46,7 +46,7 @@ export const BestMomentsDetailPage: React.FC = () => {
         .select('*')
         .eq('id', id)
         .eq('type', 'best_moments')
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       setMoment(data);
@@ -389,3 +389,4 @@ export const BestMomentsDetailPage: React.FC = () => {
     </div>
   );
 };
+export default BestMomentsDetailPage;

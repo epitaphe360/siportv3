@@ -15,6 +15,10 @@ export interface AdminMetrics {
   activeContracts: number;
   contentModerations: number;
   onlineExhibitors: number;
+  totalConnections: number;
+  totalAppointments: number;
+  totalMessages: number;
+  totalDownloads: number;
 }
 
 const defaultMetrics: AdminMetrics = {
@@ -31,7 +35,11 @@ const defaultMetrics: AdminMetrics = {
   pendingValidations: 0,
   activeContracts: 0,
   contentModerations: 0,
-  onlineExhibitors: 0
+  onlineExhibitors: 0,
+  totalConnections: 0,
+  totalAppointments: 0,
+  totalMessages: 0,
+  totalDownloads: 0
 };
 
 const METRICS_SERVER_URL = (import.meta.env.VITE_METRICS_SERVER_URL as string) || (import.meta.env.DEV ? 'http://localhost:4001/metrics' : '');
@@ -85,6 +93,10 @@ export class AdminMetricsService {
       await runCount('pendingValidations', client.from('registration_requests').select('id', { count: 'exact', head: true }).eq('status', 'pending'));
       await runCount('activeContracts', client.from('partners').select('id', { count: 'exact', head: true }).eq('verified', true));
       await runCount('contentModerations', client.from('mini_sites').select('id', { count: 'exact', head: true }).eq('published', false));
+      await runCount('connections', client.from('connections').select('id', { count: 'exact', head: true }));
+      await runCount('appointments', client.from('appointments').select('id', { count: 'exact', head: true }));
+      await runCount('messages', client.from('messages').select('id', { count: 'exact', head: true }));
+      await runCount('downloads', client.from('downloads').select('id', { count: 'exact', head: true }));
 
       const metrics: AdminMetrics = {
         totalUsers: (results['users'] ?? 0),
@@ -100,7 +112,11 @@ export class AdminMetricsService {
         pendingValidations: (results['pendingValidations'] ?? 0),
         activeContracts: (results['activeContracts'] ?? 0),
         contentModerations: (results['contentModerations'] ?? 0),
-        onlineExhibitors: 85
+        onlineExhibitors: 85,
+        totalConnections: (results['connections'] ?? 0),
+        totalAppointments: (results['appointments'] ?? 0),
+        totalMessages: (results['messages'] ?? 0),
+        totalDownloads: (results['downloads'] ?? 0)
       };
 
       return metrics;

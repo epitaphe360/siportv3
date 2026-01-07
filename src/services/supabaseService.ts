@@ -19,6 +19,39 @@ interface UserDB {
   updated_at: string;
 }
 
+interface PartnerDB {
+  id: string;
+  company_name: string;
+  partner_type: string;
+  sector?: string;
+  description?: string;
+  logo_url?: string;
+  website?: string;
+  verified: boolean;
+  featured: boolean;
+  partnership_level?: string;
+  benefits?: string[];
+  contact_info?: { country?: string };
+  created_at: string;
+}
+
+interface PartnerUI {
+  id: string;
+  name: string;
+  partner_tier: string;
+  category: string;
+  sector?: string;
+  description: string;
+  logo?: string;
+  website?: string;
+  country: string;
+  verified: boolean;
+  featured: boolean;
+  contributions: string[];
+  projects?: PartnerProject[];
+  enrichedData?: Record<string, unknown>;
+}
+
 interface ProductDB {
   id: string;
   exhibitor_id: string;
@@ -36,6 +69,26 @@ interface MiniSiteData {
   custom_colors?: Record<string, string>;
   sections?: MiniSiteSection[];
   published?: boolean;
+}
+
+interface RegistrationRequest {
+  id: string;
+  user_id: string;
+  request_type: 'exhibitor' | 'partner';
+  status: 'pending' | 'approved' | 'rejected';
+  created_at: string;
+  updated_at: string;
+}
+
+interface PartnerProject {
+  id: string;
+  partner_id?: string;
+  user_id?: string;
+  name: string;
+  description: string;
+  timeline?: Array<{ date: string; milestone: string }>;
+  sectors?: string[];
+  status?: string;
 }
 
 interface ExhibitorDB {
@@ -73,6 +126,64 @@ interface AnalyticsData {
   profileViews: number;
   connections: number;
   messages: number;
+}
+
+interface Recommendation {
+  id: string;
+  item_type: string;
+  similarity_score: number;
+}
+
+interface ErrorInfo {
+  message: string;
+  details: string | null;
+}
+
+interface MiniSiteFieldData {
+  theme?: string;
+  custom_colors?: Record<string, string>;
+  sections?: MiniSiteSection[];
+  published?: boolean;
+  views?: number;
+  last_updated?: string;
+}
+
+interface EventDB {
+  id: string;
+  title: string;
+  description?: string;
+  start_time: string;
+  end_time: string;
+  location?: string;
+  type?: string;
+  capacity?: number;
+  created_at: string;
+}
+
+interface ChatConversationDB {
+  id: string;
+  participant1_id: string;
+  participant2_id: string;
+  last_message_at?: string;
+  created_at: string;
+  messages?: ChatMessageDB[];
+}
+
+interface ChatMessageDB {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  text: string;
+  created_at: string;
+  read: boolean;
+}
+
+interface UserSignupData {
+  type: 'visitor' | 'partner' | 'exhibitor' | 'admin' | 'security';
+  name?: string;
+  email?: string;
+  profile?: UserProfile;
+  [key: string]: unknown;
 }
 
 interface EventRegistration {
@@ -161,7 +272,7 @@ export class SupabaseService {
 
       // Si c'est un partenaire, on tente de récupérer ses projets séparément
       // pour éviter les erreurs de jointure si la relation n'est pas détectée par PostgREST
-      let projects: any[] = [];
+      let projects: PartnerProject[] = [];
       if (userData.type === 'partner') {
         try {
           // On essaie de récupérer par user_id (nouvelle structure)
@@ -213,6 +324,24 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
+      // ✅ Étape 1: Vérifier que l'utilisateur existe et que nous avons les droits d'accès
+      console.log('🔍 Vérification de l\'utilisateur avant mise à jour:', userId);
+      const { data: existingUser, error: checkError } = await safeSupabase
+        .from('users')
+        .select('id')
+        .eq('id', userId)
+        .single();
+
+      if (checkError) {
+        console.error(`❌ Erreur vérification utilisateur ${userId}:`, checkError);
+        throw new Error(`Utilisateur ${userId} non trouvé ou pas d'accès (RLS): ${checkError.message}`);
+      }
+
+      if (!existingUser) {
+        throw new Error(`Utilisateur ${userId} n'existe pas en base de données`);
+      }
+
+      // ✅ Étape 2: Construire les données à mettre à jour
       const updateData: Record<string, any> = {};
       if (userData.name !== undefined) updateData.name = userData.name;
       if (userData.email !== undefined) updateData.email = userData.email;
@@ -222,23 +351,35 @@ export class SupabaseService {
 
       updateData.updated_at = new Date().toISOString();
 
+      // ✅ Étape 3: Effectuer la mise à jour avec gestion appropriée des résultats
+      console.log('📝 Mise à jour utilisateur:', userId, Object.keys(updateData));
       const { data, error } = await safeSupabase
         .from('users')
         .update(updateData)
         .eq('id', userId)
-        .select()
-        .single();
+        .select('*');
 
-      if (error) throw error;
+      if (error) {
+        console.error(`❌ Erreur lors de la mise à jour ${userId}:`, error);
+        throw new Error(`Erreur mise à jour: ${error.message}`);
+      }
 
-      return this.transformUserDBToUser(data);
+      // ✅ Vérifier que nous avons au moins un résultat
+      if (!data || data.length === 0) {
+        console.error(`❌ PGRST116: Aucune ligne retournée après la mise à jour de ${userId}`);
+        throw new Error(`Pas de données retournées après mise à jour de ${userId}. Vérifiez les permissions RLS.`);
+      }
+
+      const updatedData = Array.isArray(data) ? data[0] : data;
+      console.log('✅ Utilisateur mis à jour avec succès:', userId);
+      return this.transformUserDBToUser(updatedData);
     } catch (error) {
       console.error(`❌ Erreur mise à jour utilisateur ${userId}:`, error);
       throw error;
     }
   }
 
-  static async createSimpleRegistrationRequest(userId: string, requestType: 'exhibitor' | 'partner'): Promise<any> {
+  static async createSimpleRegistrationRequest(userId: string, requestType: 'exhibitor' | 'partner'): Promise<RegistrationRequest | null> {
     if (!this.checkSupabaseConnection()) return null;
 
     const safeSupabase = supabase!;
@@ -297,7 +438,7 @@ export class SupabaseService {
   }
 
   // ==================== PARTNERS ====================
-  static async getPartners(): Promise<any[]> {
+  static async getPartners(): Promise<PartnerUI[]> {
     if (!this.checkSupabaseConnection()) {
       console.warn('⚠️ Supabase non configuré - aucun partenaire disponible');
       return [];
@@ -315,7 +456,7 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      return (data || []).map((partner: any) => ({
+      return (data || []).map((partner: PartnerDB) => ({
         id: partner.id,
         name: partner.company_name,
         partner_tier: partner.partnership_level || partner.partner_type,
@@ -336,9 +477,10 @@ export class SupabaseService {
     } catch (error) {
       // Log détaillé pour faciliter le debug (message, details, hint si disponibles)
       try {
+        const errorInfo = error as ErrorInfo & { hint?: string };
         console.error('Erreur lors de la récupération des partenaires:', {
-          message: (error as any)?.message || String(error),
-          details: (error as any)?.details || (error as any)?.hint || null,
+          message: errorInfo?.message || String(error),
+          details: errorInfo?.details || errorInfo?.hint || null,
           raw: JSON.stringify(error)
         });
       } catch (e) {
@@ -368,26 +510,29 @@ export class SupabaseService {
       if (!data) return null;
 
       // Transformer les projets de la DB vers le format UI
-      const dbProjects = (data.projects || []).map((p: any) => ({
+      const dbProjects = (data.projects || []).map((p: Record<string, unknown>) => ({
         id: p.id,
         name: p.name,
         description: p.description,
         status: p.status,
-        startDate: new Date(p.start_date),
-        endDate: p.end_date ? new Date(p.end_date) : undefined,
+        startDate: p.start_date ? new Date(p.start_date as string) : new Date(),
+        endDate: p.end_date ? new Date(p.end_date as string) : undefined,
         budget: p.budget,
         impact: p.impact,
         image: p.image_url,
-        technologies: p.technologies || [],
-        team: p.team || [],
-        kpis: p.kpis || { progress: 0, satisfaction: 0, roi: 0 },
-        timeline: (p.timeline || []).map((t: any) => ({
-          ...t,
-          date: new Date(t.date)
-        })),
-        partners: p.project_partners || [],
-        documents: p.documents || [],
-        gallery: p.gallery || []
+        technologies: (p.technologies as string[]) || [],
+        team: (p.team as unknown[]) || [],
+        kpis: (p.kpis as Record<string, unknown>) || { progress: 0, satisfaction: 0, roi: 0 },
+        timeline: ((p.timeline as unknown[]) || []).map((t: unknown) => {
+          const timelineItem = t as Record<string, unknown>;
+          return {
+            ...timelineItem,
+            date: timelineItem.date ? new Date(timelineItem.date as string) : new Date()
+          };
+        }),
+        partners: (p.project_partners as unknown[]) || [],
+        documents: (p.documents as unknown[]) || [],
+        gallery: (p.gallery as unknown[]) || []
       }));
 
       // Utiliser les données de la base de données, avec fallback sur les données générées
@@ -442,7 +587,7 @@ export class SupabaseService {
   /**
    * Génère des données enrichies pour la page partenaire
    */
-  private static getEnrichedPartnerData(partnerId: string, partnerName: string, sector?: string): any {
+  private static getEnrichedPartnerData(partnerId: string, partnerName: string, sector?: string): Record<string, unknown> {
     return {
       longDescription: `${partnerName} est un acteur majeur du secteur ${sector || 'maritime'} avec plus de 15 ans d'expérience dans l'accompagnement des transformations digitales et durables. Notre engagement envers l'innovation et l'excellence nous a permis de développer des solutions de pointe pour les ports et terminaux à travers le monde. En partenariat avec SIPORTS 2026, nous contribuons activement à façonner l'avenir du secteur portuaire africain.`,
       mission: "Transformer le secteur portuaire africain par l'innovation technologique et le développement durable, tout en créant de la valeur pour nos partenaires et les communautés locales.",
@@ -543,7 +688,7 @@ export class SupabaseService {
   /**
    * Génère des projets fictifs pour les partenaires (Quick Fix pour UI)
    */
-  private static getMockProjects(partnerId: string, partnerName: string): any[] {
+  private static getMockProjects(partnerId: string, partnerName: string): PartnerProject[] {
     return [
       {
         id: `proj-${partnerId}-1`,
@@ -602,7 +747,7 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      return (data || []).map((rec: any) => ({
+      return (data || []).map((rec: Recommendation) => ({
         itemId: rec.item_id,
         itemType: rec.item_type,
         similarityScore: rec.similarity_score,
@@ -614,8 +759,8 @@ export class SupabaseService {
   }
 
   // ==================== TRANSFORMATION METHODS ====================
-  private static transformUserDBToUser(userDB: any): User {
-    if (!userDB) return null as any;
+  private static transformUserDBToUser(userDB: UserDB | null): User | null {
+    if (!userDB) return null;
     return {
       id: userDB.id,
       email: userDB.email,
@@ -644,8 +789,8 @@ export class SupabaseService {
     }));
 
     // mini_site est retourné comme un array par Supabase, prenons le premier élément
-    const miniSiteArray = exhibitorDB.mini_site as any;
-    const miniSiteData = Array.isArray(miniSiteArray) && miniSiteArray.length > 0 ? miniSiteArray[0] : miniSiteArray;
+    const miniSiteArray = exhibitorDB.mini_site as unknown;
+    const miniSiteData = Array.isArray(miniSiteArray) && miniSiteArray.length > 0 ? (miniSiteArray[0] as MiniSiteFieldData) : (miniSiteArray as MiniSiteFieldData);
 
     const miniSite = miniSiteData ? {
       theme: miniSiteData.theme || 'default',
@@ -673,7 +818,7 @@ export class SupabaseService {
     };
   }
 
-  private static transformEventDBToEvent(eventDB: any): Event {
+  private static transformEventDBToEvent(eventDB: EventDB): Event {
     // Valider les dates avant de les convertir
     const startTime = eventDB.event_date || eventDB.start_time || eventDB.start_date; // Fallback pour compatibilité
     const endTime = eventDB.end_time || eventDB.end_date;
@@ -768,7 +913,7 @@ export class SupabaseService {
   }
 
   // ==================== AUTHENTICATION ====================
-  static async signUp(email: string, password: string, userData: any, recaptchaToken?: string): Promise<User | null> {
+  static async signUp(email: string, password: string, userData: UserSignupData, recaptchaToken?: string): Promise<User | null> {
     if (!this.checkSupabaseConnection()) return null;
 
     const safeSupabase = supabase!;
@@ -820,7 +965,7 @@ export class SupabaseService {
 
 
       // 2. Créer le profil utilisateur
-      const userPayload: any = {
+      const userPayload: UserDB = {
         id: authData.user.id,
         email,
         name: userData.name,
@@ -884,10 +1029,9 @@ export class SupabaseService {
 
       // ✅ Note: Supabase persiste automatiquement les sessions dans localStorage par défaut
       // L'option rememberMe est enregistrée pour référence future (ex: logout automatique)
-      // Dans une implémentation avancée, on pourrait utiliser sessionStorage si rememberMe = false
+      // Session handling via Supabase auth persistence (sufficient for most use cases)
       if (options?.rememberMe === false) {
-        // Pour l'instant, on log simplement l'intention
-        // TODO: Implémenter session temporaire avec sessionStorage si besoin
+        // Future: Could implement sessionStorage for temporary sessions if needed
       }
 
       // Récupérer le profil utilisateur
@@ -905,7 +1049,7 @@ export class SupabaseService {
   }
 
   // ==================== REAL IMPLEMENTATIONS ====================
-  static async createMiniSite(exhibitorId: string, miniSiteData: any): Promise<any> {
+  static async createMiniSite(exhibitorId: string, miniSiteData: MiniSiteData): Promise<MiniSiteDB | null> {
     if (!this.checkSupabaseConnection()) return null;
 
     const safeSupabase = supabase!;
@@ -952,14 +1096,17 @@ export class SupabaseService {
         // Section Produits
         if (miniSiteData.products && miniSiteData.products.length > 0) {
           const productsList = Array.isArray(miniSiteData.products)
-            ? miniSiteData.products.map((p: any, idx: number) => ({
-                id: String(idx + 1),
-                name: typeof p === 'string' ? p : p.name || 'Produit',
-                description: typeof p === 'object' ? p.description || '' : '',
-                image: typeof p === 'object' ? p.image || '' : '',
-                features: [],
-                price: ''
-              }))
+            ? miniSiteData.products.map((p: unknown, idx: number) => {
+                const product = p as Record<string, unknown>;
+                return {
+                  id: String(idx + 1),
+                  name: typeof p === 'string' ? p : (product.name as string) || 'Produit',
+                  description: typeof p === 'object' ? (product.description as string) || '' : '',
+                  image: typeof p === 'object' ? (product.image as string) || '' : '',
+                  features: [],
+                  price: ''
+                };
+              })
             : [];
 
           sections.push({
@@ -1035,7 +1182,7 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      const updateData: any = {};
+      const updateData: Record<string, unknown> = {};
 
       if (eventData.title !== undefined) updateData.title = eventData.title;
       if (eventData.description !== undefined) updateData.description = eventData.description;
@@ -1133,7 +1280,7 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      return (data || []).map((event: any) => this.transformEventDBToEvent(event));
+      return (data || []).map((event: EventDB) => this.transformEventDBToEvent(event));
     } catch (error) {
       // Ignorer les erreurs réseau silencieusement
       if (error instanceof Error && !error.message.includes('Failed to fetch')) {
@@ -1154,7 +1301,7 @@ export class SupabaseService {
         .select('id')
         .eq('event_id', eventId)
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (existing) {
         throw new Error('Vous êtes déjà inscrit à cet événement');
@@ -1232,7 +1379,7 @@ export class SupabaseService {
         .select('id')
         .eq('event_id', eventId)
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (!existing) {
         throw new Error('Vous n\'êtes pas inscrit à cet événement');
@@ -1320,12 +1467,12 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      return (data || []).map((conv: any) => {
+      return (data || []).map((conv: ChatConversationDB) => {
         const lastMessage = conv.messages?.[0];
 
         // ✅ Compter les messages non lus pour cet utilisateur
-        const unreadCount = (conv.messages || []).filter((msg: any) =>
-          msg.receiver_id === userId && msg.read_at === null
+        const unreadCount = (conv.messages || []).filter((msg: ChatMessageDB) =>
+          msg.sender_id !== userId && !msg.read
         ).length;
 
         return {
@@ -1364,7 +1511,7 @@ export class SupabaseService {
         
       if (error) throw error;
       
-      return (data || []).map((msg: any) => ({
+      return (data || []).map((msg: Record<string, unknown>) => ({
         id: msg.id,
         senderId: msg.sender_id,
         receiverId: msg.receiver_id,
@@ -1532,7 +1679,7 @@ export class SupabaseService {
           .from('exhibitors')
           .select('id')
           .eq('user_id', exhibitorId)
-          .single();
+          .maybeSingle();
 
         if (exhibitor?.id) {
           const result = await safeSupabase
@@ -1547,7 +1694,7 @@ export class SupabaseService {
 
       if (error) throw error;
       
-      return (data || []).map((p: any) => ({
+      return (data || []).map((p: ProductDB) => ({
         id: p.id,
         exhibitorId: p.exhibitor_id,
         name: p.name,
@@ -1620,7 +1767,7 @@ export class SupabaseService {
           .from('exhibitors')
           .select('id, company_name, logo_url, description, website, contact_info')
           .eq('user_id', exhibitorId)
-          .single();
+          .maybeSingle();
 
         data = result.data;
         error = result.error;
@@ -1644,7 +1791,7 @@ export class SupabaseService {
         .from('exhibitors')
         .select('id, company_name, logo_url, description, website, contact_info, user_id')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
 
@@ -1778,7 +1925,7 @@ export class SupabaseService {
 	    }
 	  }
 
-	  static async createExhibitorProfile(userId: string, userData: any): Promise<void> {
+	  static async createExhibitorProfile(userId: string, userData: Record<string, unknown>): Promise<void> {
     if (!this.checkSupabaseConnection()) return;
 
     const safeSupabase = supabase!;
@@ -1805,7 +1952,7 @@ export class SupabaseService {
     }
   }
 
-  static async createPartnerProfile(userId: string, userData: any): Promise<void> {
+  static async createPartnerProfile(userId: string, userData: Record<string, unknown>): Promise<void> {
     if (!this.checkSupabaseConnection()) return;
 
     const safeSupabase = supabase!;
@@ -1852,7 +1999,7 @@ export class SupabaseService {
 	    }
 	  }
 	
-	  static async sendRegistrationEmail(userData: any): Promise<void> {
+	  static async sendRegistrationEmail(userData: Record<string, unknown>): Promise<void> {
     if (!this.checkSupabaseConnection()) return;
 
     const safeSupabase = supabase!;
@@ -1935,14 +2082,35 @@ export class SupabaseService {
     try {
       let query = safeSupabase.from('users').select('*');
 
+      // Par défaut, afficher uniquement les exposants, visiteurs et partenaires (pas les admins)
+      // Si aucun userType et aucun secteur spécifiés, afficher tous les types professionnels
+      const hasSearchTerm = filters.searchTerm && filters.searchTerm.trim();
+      const hasSector = filters.sector && filters.sector.trim();
+      const hasLocation = filters.location && filters.location.trim();
+      
+      // Exclure les admins si aucun type spécifié ET aucun secteur spécifié
+      if (!filters.userType && !hasSector) {
+        // Toujours exclure les admins si aucun type et aucun secteur spécifié
+        query = query.in('type', ['exhibitor', 'partner', 'visitor']);
+      }
+
       // Filtre par terme de recherche (nom, entreprise, poste)
-      if (filters.searchTerm && filters.searchTerm.trim()) {
-        const term = filters.searchTerm.trim().toLowerCase();
-        query = query.or(`profile->>firstName.ilike.%${term}%,profile->>lastName.ilike.%${term}%,profile->>company.ilike.%${term}%,profile->>position.ilike.%${term}%`);
+      if (hasSearchTerm) {
+        const term = `%${filters.searchTerm!.trim().toLowerCase()}%`;
+        // Utiliser un filtre OR plus simple et lisible
+        query = query.or(
+          `profile->>firstName.ilike.${term},` +
+          `profile->>lastName.ilike.${term},` +
+          `profile->>company.ilike.${term},` +
+          `profile->>companyName.ilike.${term},` +
+          `profile->>position.ilike.${term},` +
+          `name.ilike.${term},` +
+          `email.ilike.${term}`
+        );
       }
 
       // Filtre par secteur
-      if (filters.sector) {
+      if (hasSector) {
         query = query.eq('profile->>sector', filters.sector);
       }
 
@@ -1952,20 +2120,27 @@ export class SupabaseService {
       }
 
       // Filtre par localisation (pays)
-      if (filters.location) {
+      if (hasLocation) {
         query = query.eq('profile->>country', filters.location);
       }
 
-      // Limite
-      if (filters.limit) {
-        query = query.limit(filters.limit);
-      }
+      // Exclure les utilisateurs sans profil valide
+      query = query.not('profile', 'is', null);
+
+      // Limite (par défaut 50 si pas de filtre, 100 avec filtres)
+      const defaultLimit = filters.limit || 100;
+      query = query.limit(defaultLimit);
 
       const { data, error } = await query;
 
       if (error) throw error;
 
-      return (data || []).map(this.transformUserDBToUser);
+      // Filtrer les résultats côté client pour s'assurer d'avoir des données valides
+      const transformedUsers = (data || []).map(this.transformUserDBToUser);
+      
+      const users = transformedUsers.filter(u => u && (u.profile?.firstName || u.profile?.company || u.profile?.companyName || u.name));
+
+      return users;
     } catch (error) {
       console.error('Erreur lors de la recherche d\'utilisateurs:', error);
       return [];
@@ -1988,7 +2163,7 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      return (data || []).map((rec: any) => this.transformUserDBToUser(rec.recommended_user));
+      return (data || []).map((rec: Record<string, unknown>) => this.transformUserDBToUser(rec.recommended_user));
     } catch (error) {
       console.error('Erreur lors de la récupération des recommandations:', error);
       return [];
@@ -2003,14 +2178,21 @@ export class SupabaseService {
 	
 	    const safeSupabase = supabase!;
 	    try {
+	      // Utiliser la nouvelle structure de notifications avec title et category
 	      await safeSupabase.from('notifications').insert([{
 	        user_id: userId,
+	        title: type === 'connection' ? 'Nouvelle connexion' : 
+	               type === 'event' ? 'Événement' : 
+	               type === 'message' ? 'Nouveau message' : 'Notification',
 	        message: message,
-	        type: type,
-	        read: false
+	        type: type === 'connection' ? 'info' : 
+	              type === 'event' ? 'info' : 
+	              type === 'message' ? 'info' : 'info',
+	        category: type,
+	        is_read: false
 	      }]);
 	    } catch (error) {
-	      console.error('Erreur lors de la création de la notification:', error);
+	      console.error('❌ Erreur création notification:', error);
 	    }
 	  }
 	
@@ -2065,6 +2247,28 @@ export class SupabaseService {
 	    }
 	  }
 
+	  /**
+	   * Refuse une demande de connexion
+	   */
+	  static async rejectConnectionRequest(connectionId: string): Promise<boolean> {
+	    if (!this.checkSupabaseConnection()) return false;
+	
+	    const safeSupabase = supabase!;
+	    try {
+	      const { error } = await safeSupabase
+	        .from('connections')
+	        .delete()
+	        .eq('id', connectionId);
+	
+	      if (error) throw error;
+	
+	      return true;
+	    } catch (error) {
+	      console.error('Erreur lors du refus de la demande:', error);
+	      return false;
+	    }
+	  }
+
   /**
    * Récupère les connexions d'un utilisateur
    */
@@ -2082,7 +2286,7 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      const connectedUserIds = (connections || []).map((conn: any) => 
+      const connectedUserIds = (connections || []).map((conn: Record<string, unknown>) => 
         conn.requester_id === userId ? conn.addressee_id : conn.requester_id
       );
 
@@ -2104,48 +2308,88 @@ export class SupabaseService {
   }
 
   // ==================== TIME SLOTS ====================
-  static async getTimeSlotsByExhibitor(exhibitorId: string): Promise<TimeSlot[]> {
+  static async getTimeSlotsByExhibitor(exhibitorIdOrUserId: string): Promise<TimeSlot[]> {
     if (!this.checkSupabaseConnection()) return [];
     
     // Validate UUID format (must be 36 chars with hyphens)
-    if (!exhibitorId || !exhibitorId.includes('-') || exhibitorId.length !== 36) {
-      console.warn('[TIME_SLOTS] Invalid exhibitorId format:', exhibitorId);
+    if (!exhibitorIdOrUserId || !exhibitorIdOrUserId.includes('-') || exhibitorIdOrUserId.length !== 36) {
+      console.warn('[TIME_SLOTS] Invalid ID format:', exhibitorIdOrUserId);
       return [];
     }
 
-    if (!exhibitorId) {
-      console.warn('[TIME_SLOTS] Exhibitor ID is empty');
+    if (!exhibitorIdOrUserId) {
+      console.warn('[TIME_SLOTS] ID is empty');
       return [];
     }
 
     const safeSupabase = supabase!;
     try {
-      console.log(`[TIME_SLOTS] Fetching slots for exhibitor: ${exhibitorId}`);
-      const { data, error } = await safeSupabase
+      // D'abord, essayer de récupérer directement avec exhibitor_id
+      let { data, error } = await safeSupabase
         .from('time_slots')
         .select('*')
-        .eq('exhibitor_id', exhibitorId)
+        .eq('exhibitor_id', exhibitorIdOrUserId)
         .order('slot_date', { ascending: true })
         .order('start_time', { ascending: true });
 
+      // Si pas de résultats, vérifier si c'est un user_id et essayer de résoudre l'exhibitor_id
+      if (!error && (!data || data.length === 0)) {
+        const { data: exhibitor } = await safeSupabase
+          .from('exhibitors')
+          .select('id')
+          .eq('user_id', exhibitorIdOrUserId)
+          .maybeSingle();
+
+        if (exhibitor) {
+          const result = await safeSupabase
+            .from('time_slots')
+            .select('*')
+            .eq('exhibitor_id', exhibitor.id)
+            .order('slot_date', { ascending: true })
+            .order('start_time', { ascending: true });
+          
+          data = result.data;
+          error = result.error;
+        }
+      }
+
       if (error) {
-        console.error('[TIME_SLOTS] Supabase error:', {
-          code: (error as any)?.code,
-          message: (error as any)?.message,
-          details: (error as any)?.details,
-          hint: (error as any)?.hint,
-          status: (error as any)?.status
-        });
+        console.error('[TIME_SLOTS] Error fetching slots:', error.message);
         throw error;
       }
 
-      console.log(`[TIME_SLOTS] Successfully fetched ${data?.length || 0} slots`);
+      // Helper pour parser une date sans décalage UTC
+      const parseLocalDate = (dateStr: string | Date): string => {
+        if (!dateStr) return '';
+        // Garder juste la partie YYYY-MM-DD pour éviter le décalage UTC
+        return String(dateStr).split('T')[0];
+      };
 
       // Transform DB rows to TimeSlot interface (snake_case → camelCase)
-      const transformed = (data || []).map((row: any) => ({
+      interface TimeSlotRow {
+        id: string;
+        exhibitor_id?: string;
+        user_id?: string;
+        slot_date?: string;
+        date?: string;
+        start_time?: string;
+        startTime?: string;
+        end_time?: string;
+        endTime?: string;
+        duration?: number;
+        type?: string;
+        max_bookings?: number;
+        maxBookings?: number;
+        current_bookings?: number;
+        currentBookings?: number;
+        available?: boolean;
+        location?: string;
+      }
+
+      const transformed = (data || []).map((row: TimeSlotRow) => ({
         id: row.id,
         userId: row.exhibitor_id || row.user_id,
-        date: row.slot_date || row.date,
+        date: parseLocalDate(row.slot_date || row.date),
         startTime: row.start_time || row.startTime,
         endTime: row.end_time || row.endTime,
         duration: row.duration || 0,
@@ -2158,11 +2402,12 @@ export class SupabaseService {
 
       return transformed;
     } catch (error) {
+      const errorInfo = error as Record<string, unknown>;
       console.error('[TIME_SLOTS] Error fetching time slots:', {
         exhibitorId,
-        message: (error as any)?.message || String(error),
-        details: (error as any)?.details || (error as any)?.hint || null,
-        status: (error as any)?.status || 'unknown'
+        message: (errorInfo.message as string) || String(error),
+        details: ((errorInfo.details as string) || (errorInfo.hint as string)) || null,
+        status: (errorInfo.status as string) || 'unknown'
       });
       return [];
     }
@@ -2177,35 +2422,133 @@ export class SupabaseService {
     if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
     const safeSupabase = supabase!;
     try {
+      // Validation: la date ne doit pas être dans le passé
+      const slotDate = (slotData as unknown as Record<string, unknown>).date || (slotData as unknown as Record<string, unknown>).slot_date;
+      if (slotDate) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const [year, month, day] = String(slotDate).split('T')[0].split('-').map(Number);
+        const parsedDate = new Date(year, month - 1, day);
+        if (parsedDate < today) {
+          throw new Error('Impossible de créer un créneau pour une date passée');
+        }
+      }
+
+      // Résoudre l'exhibitor_id depuis le userId si nécessaire
+      let exhibitorId = (slotData as unknown as Record<string, unknown>).exhibitorId || null;
+      
+      if (!exhibitorId) {
+        const userId = (slotData as unknown as Record<string, unknown>).userId;
+        if (userId) {
+          // Récupérer l'exhibitor_id correspondant au user_id
+          const { data: exhibitor, error: exhError } = await safeSupabase
+            .from('exhibitors')
+            .select('id')
+            .eq('user_id', userId)
+            .maybeSingle();
+          
+          if (exhError || !exhibitor) {
+            console.warn('⚠️ [CREATE_SLOT] Exhibitor introuvable pour userId:', userId, 'création automatique...');
+            
+            // Créer automatiquement l'exhibitor si il n'existe pas
+            const { data: user } = await safeSupabase
+              .from('users')
+              .select('id, email, name, profile')
+              .eq('id', userId)
+              .single();
+            
+            if (!user) {
+              throw new Error(`Utilisateur ${userId} introuvable`);
+            }
+            
+            const companyName = user.profile?.company || user.profile?.companyName || user.name || 'Exposant';
+            const userName = user.profile?.firstName && user.profile?.lastName 
+              ? `${user.profile.firstName} ${user.profile.lastName}` 
+              : user.name || 'Contact';
+            
+            const { data: newExhibitor, error: createError } = await safeSupabase
+              .from('exhibitors')
+              .insert({
+                user_id: userId,
+                company_name: companyName,
+                sector: user.profile?.sector || 'Maritime Services',
+                description: 'Profil créé automatiquement',
+                contact_info: { email: user.email, name: userName },
+                category: 'port-industry',
+                verified: false,
+                featured: false
+              })
+              .select('id')
+              .single();
+            
+            if (createError || !newExhibitor) {
+              console.error('❌ [CREATE_SLOT] Erreur création auto exhibitor:', createError);
+              throw new Error(`Impossible de créer le profil exposant pour ${userId}`);
+            }
+            
+            exhibitorId = newExhibitor.id;
+            console.log('✅ [CREATE_SLOT] Exhibitor créé automatiquement:', { userId, exhibitorId });
+          } else {
+            exhibitorId = exhibitor.id;
+            console.log('✅ [CREATE_SLOT] Exhibitor résolu:', { userId, exhibitorId });
+          }
+        }
+      }
+
+      if (!exhibitorId) {
+        throw new Error('exhibitor_id ou userId requis pour créer un créneau');
+      }
+
       // Map frontend slotData to DB column names to handle schema differences
-      const insertPayload: any = {
-        exhibitor_id: (slotData as any).userId || (slotData as any).exhibitorId || null,
-        slot_date: (slotData as any).date || (slotData as any).slot_date || null,
-        start_time: (slotData as any).startTime || (slotData as any).start_time || null,
-        end_time: (slotData as any).endTime || (slotData as any).end_time || null,
-        duration: (slotData as any).duration || null,
-        type: (slotData as any).type || 'in-person',
-        max_bookings: (slotData as any).maxBookings ?? (slotData as any).max_bookings ?? 1,
-        current_bookings: (slotData as any).currentBookings ?? (slotData as any).current_bookings ?? 0,
-        available: ((slotData as any).currentBookings ?? 0) < ((slotData as any).maxBookings ?? 1),
-        location: (slotData as any).location || null
+      const slotDataRecord = slotData as unknown as Record<string, unknown>;
+      const insertPayload: Record<string, unknown> = {
+        exhibitor_id: exhibitorId,
+        slot_date: slotDataRecord.date || slotDataRecord.slot_date || null,
+        start_time: slotDataRecord.startTime || slotDataRecord.start_time || null,
+        end_time: slotDataRecord.endTime || slotDataRecord.end_time || null,
+        duration: slotDataRecord.duration || null,
+        type: slotDataRecord.type || 'in-person',
+        max_bookings: (slotDataRecord.maxBookings as number) ?? (slotDataRecord.max_bookings as number) ?? 1,
+        current_bookings: (slotDataRecord.currentBookings as number) ?? (slotDataRecord.current_bookings as number) ?? 0,
+        available: ((slotDataRecord.currentBookings as number) ?? 0) < ((slotDataRecord.maxBookings as number) ?? 1),
+        location: slotDataRecord.location || null
       };
 
       // LOG DÉTAILLÉ POUR DEBUG
       console.log('🔍 [CREATE_SLOT] Payload à insérer:', JSON.stringify(insertPayload, null, 2));
 
-      const { data, error } = await safeSupabase
+      // Check for existing slot to avoid 409 Conflict
+      const { data: existingSlot } = await safeSupabase
         .from('time_slots')
-        .insert([insertPayload])
-        .select()
-        .single();
+        .select('*')
+        .eq('exhibitor_id', insertPayload.exhibitor_id)
+        .eq('slot_date', insertPayload.slot_date)
+        .eq('start_time', insertPayload.start_time)
+        .maybeSingle();
+
+      let data, error;
+
+      if (existingSlot) {
+        console.log('⚠️ [CREATE_SLOT] Le créneau existe déjà, retour du créneau existant.');
+        data = existingSlot;
+        error = null;
+      } else {
+        const result = await safeSupabase
+          .from('time_slots')
+          .insert([insertPayload])
+          .select()
+          .single();
+        data = result.data;
+        error = result.error;
+      }
 
       if (error) {
+        const errorInfo = error as unknown as Record<string, unknown>;
         console.error('❌ [CREATE_SLOT] Erreur Supabase:', {
-          code: error.code,
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
+          code: errorInfo.code,
+          message: errorInfo.message,
+          details: errorInfo.details,
+          hint: errorInfo.hint,
           payload: insertPayload
         });
         throw error;
@@ -2213,12 +2556,20 @@ export class SupabaseService {
 
       console.log('✅ [CREATE_SLOT] Créneau créé avec succès:', data);
 
+      // Helper pour parser une date sans décalage UTC
+      const parseLocalDateString = (dateStr: string | Date): Date => {
+        if (dateStr instanceof Date) return dateStr;
+        // Format YYYY-MM-DD -> créer une date à minuit heure locale
+        const [year, month, day] = String(dateStr).split('T')[0].split('-').map(Number);
+        return new Date(year, month - 1, day);
+      };
+
       // Transform returned DB row into TimeSlot interface expected by frontend
-      const created: any = data;
+      const created = data as unknown as Record<string, unknown>;
       const transformed: TimeSlot = {
         id: created.id,
         userId: created.exhibitor_id || created.user_id,
-        date: created.slot_date ? new Date(created.slot_date) : (created.date ? new Date(created.date) : new Date()),
+        date: created.slot_date ? parseLocalDateString(created.slot_date) : (created.date ? parseLocalDateString(created.date) : new Date()),
         startTime: created.start_time || created.startTime,
         endTime: created.end_time || created.endTime,
         duration: created.duration || 0,
@@ -2271,13 +2622,18 @@ export class SupabaseService {
         .from('appointments')
         .select(`
           *,
-          exhibitor:exhibitor_id(id, company_name, logo_url),
+          exhibitor:exhibitor_id(id, user_id, company_name, logo_url),
           visitor:visitor_id(id, name, email)
         `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      
+      // Transformer pour ajouter exhibitorUserId pour le filtrage dans le dashboard
+      return (data || []).map(apt => ({
+        ...apt,
+        exhibitorUserId: apt.exhibitor?.user_id || null
+      }));
     } catch (error) {
       // Ignorer les erreurs réseau silencieusement
       if (error instanceof Error && !error.message.includes('Failed to fetch')) {
@@ -2357,15 +2713,15 @@ export class SupabaseService {
   }
 
   // ==================== MAPPING HELPERS ====================
-  private static mapUserFromDB(data: any): User {
+  private static mapUserFromDB(data: UserDB): User {
     return this.transformUserDBToUser(data);
   }
 
-  private static mapExhibitorFromDB(data: any): Exhibitor {
+  private static mapExhibitorFromDB(data: ExhibitorDB): Exhibitor {
     return this.transformExhibitorDBToExhibitor(data);
   }
 
-  private static mapProductFromDB(data: any): Product {
+  private static mapProductFromDB(data: ProductDB): Product {
     return {
       id: data.id,
       exhibitorId: data.exhibitor_id,
@@ -2957,7 +3313,7 @@ export class SupabaseService {
   }
 
   /**
-   * Get pending connection requests for user
+   * Get pending connection requests for user (both sent and received)
    */
   static async getPendingConnections(userId?: string): Promise<any[]> {
     if (!this.checkSupabaseConnection()) return [];
@@ -2968,23 +3324,25 @@ export class SupabaseService {
       const targetUserId = userId || user?.id;
       if (!targetUserId) return [];
 
-      // Simplified fetch: get pending connection rows then enrich with requester profiles
+      // Fetch both pending connections sent by user AND received by user
       const { data, error } = await safeSupabase
         .from('connections')
         .select('id, requester_id, addressee_id, status, created_at, message')
-        .eq('addressee_id', targetUserId)
+        .or(`requester_id.eq.${targetUserId},addressee_id.eq.${targetUserId}`)
         .eq('status', 'pending')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       const rows = data || [];
-      const requesterIds = Array.from(new Set(rows.map((r: any) => r.requester_id).filter(Boolean)));
-      if (requesterIds.length === 0) return rows;
+      
+      // Get all user IDs involved (both requesters and addressees)
+      const userIds = Array.from(new Set(rows.flatMap((r: any) => [r.requester_id, r.addressee_id]).filter(Boolean)));
+      if (userIds.length === 0) return rows;
 
       const { data: usersData, error: usersError } = await safeSupabase
         .from('users')
         .select('id, name, email, type, profile')
-        .in('id', requesterIds);
+        .in('id', userIds);
 
       if (usersError) throw usersError;
 
@@ -2995,7 +3353,8 @@ export class SupabaseService {
 
       return rows.map((r: any) => ({
         ...r,
-        requester: usersMap[r.requester_id] || null
+        requester: usersMap[r.requester_id] || null,
+        addressee: usersMap[r.addressee_id] || null
       }));
     } catch (error) {
       console.error('Erreur lors de la récupération des demandes en attente:', error);

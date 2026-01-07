@@ -47,7 +47,7 @@ export const PodcastEpisodeDetailPage: React.FC = () => {
         .select('*')
         .eq('id', id)
         .eq('type', 'podcast')
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       setEpisode(data);
@@ -330,3 +330,4 @@ export const PodcastEpisodeDetailPage: React.FC = () => {
     </div>
   );
 };
+export default PodcastEpisodeDetailPage;

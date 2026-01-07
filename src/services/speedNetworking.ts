@@ -4,6 +4,13 @@
 import { supabase } from '../lib/supabase';
 import type { SpeedNetworkingSession } from '../types/site-builder';
 
+interface SpeedNetworkingMatch {
+  user1: string;
+  user2: string;
+  startTime: string;
+  roomId: string;
+}
+
 export class SpeedNetworkingService {
   /**
    * Create a new speed networking session
@@ -201,7 +208,7 @@ export class SpeedNetworkingService {
       if (!session || session.status !== 'active') return null;
 
       const now = new Date().getTime();
-      const currentMatch = session.matches.find((match: any) => {
+      const currentMatch = session.matches.find((match: SpeedNetworkingMatch) => {
         const matchStart = new Date(match.startTime).getTime();
         const matchEnd = matchStart + session.duration * 60000;
         return (match.user1 === userId || match.user2 === userId) &&

@@ -9,6 +9,17 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
 
+interface PushRegistrationError {
+  error: string;
+  code?: number;
+}
+
+interface LocalNotificationParams {
+  title: string;
+  body: string;
+  data?: Record<string, unknown>;
+}
+
 class MobilePushService {
   private isNative = Capacitor.isNativePlatform();
   private pushToken: string | null = null;
@@ -65,7 +76,7 @@ class MobilePushService {
     });
 
     // Listener: erreur de registration
-    PushNotifications.addListener('registrationError', (error: any) => {
+    PushNotifications.addListener('registrationError', (error: PushRegistrationError) => {
       console.error('Error on registration: ' + JSON.stringify(error));
     });
 
@@ -122,11 +133,7 @@ class MobilePushService {
   /**
    * Afficher une notification locale
    */
-  private async showLocalNotification(params: {
-    title: string;
-    body: string;
-    data?: any;
-  }): Promise<void> {
+  private async showLocalNotification(params: LocalNotificationParams): Promise<void> {
     try {
       // Demander la permission pour les notifications locales
       const permStatus = await LocalNotifications.checkPermissions();

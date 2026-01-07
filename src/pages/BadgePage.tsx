@@ -1,6 +1,7 @@
 ﻿import React, { useEffect, useState, useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { toast } from 'sonner';
+import { Download, Printer, RefreshCw, AlertTriangle, CheckCircle, XCircle, Scan, Calendar, User, Briefcase, Building } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 import { useTranslation } from '../hooks/useTranslation';
 import {
@@ -11,6 +12,8 @@ import {
   generateQRData,
 } from '../services/badgeService';
 import { UserBadge } from '../types';
+import { Button } from '../components/ui/Button';
+import { Card } from '../components/ui/Card';
 
 export default function BadgePage() {
   const { user } = useAuthStore();
@@ -51,9 +54,11 @@ export default function BadgePage() {
       setError(null);
       const newBadge = await generateBadgeFromUser(user.id);
       setBadge(newBadge);
+      toast.success('Badge généré avec succès !');
     } catch (err: any) {
       console.error('Error generating badge:', err);
       setError(err.message || 'Erreur lors de la génération du badge');
+      toast.error('Erreur lors de la génération du badge');
     } finally {
       setGenerating(false);
     }
@@ -63,14 +68,13 @@ export default function BadgePage() {
     if (!badgeRef.current || !badge) return;
 
     try {
-      // Utiliser html2canvas pour capturer le badge
       const html2canvas = (await import('html2canvas')).default;
       const canvas = await html2canvas(badgeRef.current, {
         scale: 2,
         backgroundColor: '#ffffff',
+        useCORS: true, // Important for images
       });
 
-      // Convertir en blob et télécharger
       canvas.toBlob((blob) => {
         if (blob) {
           const url = URL.createObjectURL(blob);
@@ -81,6 +85,7 @@ export default function BadgePage() {
           a.click();
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
+          toast.success('Badge téléchargé !');
         }
       });
     } catch (err) {
@@ -95,16 +100,20 @@ export default function BadgePage() {
 
   if (loading) {
     return (
-      <div style={{ maxWidth: 900, margin: 'auto', padding: 32, textAlign: 'center' }}>
-        <p>Chargement de votre badge...</p>
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div style={{ maxWidth: 900, margin: 'auto', padding: 32, textAlign: 'center' }}>
-        <p>Vous devez être connecté pour voir votre badge.</p>
+      <div className="max-w-4xl mx-auto p-8 text-center">
+        <Card className="p-8">
+          <AlertTriangle className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
+          <h2 className="text-xl font-bold mb-2">Connexion requise</h2>
+          <p className="text-gray-600">Vous devez être connecté pour voir votre badge.</p>
+        </Card>
       </div>
     );
   }
@@ -113,7 +122,7 @@ export default function BadgePage() {
   const qrData = badge ? generateQRData(badge) : '';
 
   return (
-    <div style={{ maxWidth: 900, margin: 'auto', padding: 32 }}>
+    <div className="max-w-4xl mx-auto p-4 md:p-8">
       <style>
         {`
           @media print {
@@ -128,6 +137,8 @@ export default function BadgePage() {
               left: 50%;
               top: 50%;
               transform: translate(-50%, -50%);
+              box-shadow: none !important;
+              border: 1px solid #ccc !important;
             }
             .no-print {
               display: none !important;
@@ -136,9 +147,9 @@ export default function BadgePage() {
         `}
       </style>
 
-      <div className="no-print" style={{ marginBottom: 32 }}>
-        <h1>🎫 Mon Badge d'Accès</h1>
-        <p style={{ color: '#666' }}>
+      <div className="no-print mb-8 text-center">
+        <h1 className="text-3xl font-bold mb-2">🎫 Mon Badge d'Accès</h1>
+        <p className="text-gray-600">
           {badge
             ? 'Téléchargez ou imprimez votre badge pour accéder au salon.'
             : 'Générez votre badge personnalisé avec QR code pour accéder au salon.'}
@@ -146,263 +157,222 @@ export default function BadgePage() {
       </div>
 
       {error && (
-        <div className="no-print" style={{ background: '#f8d7da', padding: 16, borderRadius: 8, marginBottom: 24, color: '#721c24' }}>
-          ⚠️ {error}
+        <div className="no-print bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2">
+          <AlertTriangle className="w-5 h-5" />
+          {error}
         </div>
       )}
 
       {!badge && (
-        <div className="no-print" style={{ textAlign: 'center', marginBottom: 32 }}>
-          <button
+        <div className="no-print text-center mb-8">
+          <Button
             onClick={handleGenerateBadge}
             disabled={generating}
-            style={{
-              background: '#007bff',
-              color: '#fff',
-              padding: '16px 32px',
-              borderRadius: 8,
-              border: 'none',
-              fontSize: 18,
-              fontWeight: 'bold',
-              cursor: generating ? 'not-allowed' : 'pointer',
-              opacity: generating ? 0.6 : 1,
-            }}
+            size="lg"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg shadow-lg hover:shadow-xl transition-all"
           >
-            {generating ? 'Génération...' : '✨ Générer mon badge'}
-          </button>
+            {generating ? (
+              <>
+                <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                Génération...
+              </>
+            ) : (
+              <>
+                <Scan className="w-5 h-5 mr-2" />
+                ✨ Générer mon badge
+              </>
+            )}
+          </Button>
         </div>
       )}
 
       {badge && (
         <>
           {/* Actions */}
-          <div className="no-print" style={{ display: 'flex', gap: 16, marginBottom: 32, justifyContent: 'center' }}>
-            <button
+          <div className="no-print flex flex-wrap justify-center gap-4 mb-8">
+            <Button
               onClick={handleDownloadBadge}
-              style={{
-                background: '#28a745',
-                color: '#fff',
-                padding: '12px 24px',
-                borderRadius: 8,
-                border: 'none',
-                fontSize: 16,
-                fontWeight: 'bold',
-                cursor: 'pointer',
-              }}
+              variant="outline"
+              className="border-green-600 text-green-700 hover:bg-green-50"
             >
-              📥 Télécharger PNG
-            </button>
-            <button
+              <Download className="w-4 h-4 mr-2" />
+              Télécharger PNG
+            </Button>
+            <Button
               onClick={handlePrintBadge}
-              style={{
-                background: '#6c757d',
-                color: '#fff',
-                padding: '12px 24px',
-                borderRadius: 8,
-                border: 'none',
-                fontSize: 16,
-                fontWeight: 'bold',
-                cursor: 'pointer',
-              }}
+              variant="outline"
+              className="border-gray-600 text-gray-700 hover:bg-gray-50"
             >
-              🖨️ Imprimer
-            </button>
-            <button
+              <Printer className="w-4 h-4 mr-2" />
+              Imprimer
+            </Button>
+            <Button
               onClick={handleGenerateBadge}
               disabled={generating}
-              style={{
-                background: '#ffc107',
-                color: '#000',
-                padding: '12px 24px',
-                borderRadius: 8,
-                border: 'none',
-                fontSize: 16,
-                fontWeight: 'bold',
-                cursor: generating ? 'not-allowed' : 'pointer',
-                opacity: generating ? 0.6 : 1,
-              }}
+              variant="ghost"
+              className="text-yellow-600 hover:bg-yellow-50"
             >
-              {generating ? 'Régénération...' : '📄 Régénérer'}
-            </button>
+              <RefreshCw className={`w-4 h-4 mr-2 ${generating ? 'animate-spin' : ''}`} />
+              {generating ? 'Régénération...' : 'Régénérer'}
+            </Button>
           </div>
 
-          {/* Badge */}
-          <div className="badge-container" style={{ display: 'flex', justifyContent: 'center', marginBottom: 32 }}>
+          {/* Badge Display */}
+          <div className="flex justify-center mb-8">
             <div
               ref={badgeRef}
+              className="badge-container bg-white w-[400px] rounded-2xl shadow-2xl overflow-hidden relative"
               style={{
-                width: 400,
-                background: '#fff',
                 border: `4px solid ${badgeColor}`,
-                borderRadius: 16,
-                padding: 24,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
               }}
             >
-              {/* En-tête */}
-              <div style={{ textAlign: 'center', marginBottom: 20, borderBottom: `2px solid ${badgeColor}`, paddingBottom: 16 }}>
-                <img src="/salon-logo01.png" alt="SIPORTS Logo" style={{ height: 60, marginBottom: 10 }} />
-                <div style={{ fontSize: 24, fontWeight: 'bold', color: badgeColor }}>
+              {/* Header */}
+              <div className="text-center p-6 border-b-2" style={{ borderColor: badgeColor }}>
+                <img src="/salon-logo01.png" alt="SIPORTS Logo" className="h-16 mx-auto mb-3" />
+                <div className="text-2xl font-bold" style={{ color: badgeColor }}>
                   SIPORTS 2026
                 </div>
-                <div style={{ fontSize: 12, color: '#666', marginTop: 4 }}>
+                <div className="text-xs text-gray-500 mt-1 uppercase tracking-wider">
                   Salon International des Ports et de leurs Écosystème
                 </div>
               </div>
 
-              {/* Photo et Nom */}
-              <div style={{ textAlign: 'center', marginBottom: 20 }}>
-                {badge.avatarUrl && (
+              {/* User Info */}
+              <div className="text-center p-6 bg-gradient-to-b from-white to-gray-50">
+                {badge.avatarUrl ? (
                   <img
                     src={badge.avatarUrl}
                     alt="Avatar"
-                    style={{
-                      width: 100,
-                      height: 100,
-                      borderRadius: '50%',
-                      objectFit: 'cover',
-                      border: `3px solid ${badgeColor}`,
-                      marginBottom: 12,
-                    }}
+                    className="w-28 h-28 rounded-full object-cover mx-auto mb-4 border-4 shadow-md"
+                    style={{ borderColor: badgeColor }}
                   />
+                ) : (
+                  <div 
+                    className="w-28 h-28 rounded-full mx-auto mb-4 border-4 flex items-center justify-center bg-gray-100 text-gray-400"
+                    style={{ borderColor: badgeColor }}
+                  >
+                    <User className="w-12 h-12" />
+                  </div>
                 )}
-                <div style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 8 }}>
+                
+                <div className="text-2xl font-bold text-gray-900 mb-2 leading-tight">
                   {badge.fullName}
                 </div>
+                
                 {badge.position && (
-                  <div style={{ fontSize: 14, color: '#666', marginBottom: 4 }}>
-                    {badge.position}
+                  <div className="flex items-center justify-center gap-1 text-gray-600 mb-1">
+                    <Briefcase className="w-3 h-3" />
+                    <span className="text-sm font-medium">{badge.position}</span>
                   </div>
                 )}
+                
                 {badge.companyName && (
-                  <div style={{ fontSize: 14, fontWeight: 'bold', color: '#333' }}>
-                    {badge.companyName}
+                  <div className="flex items-center justify-center gap-1 text-gray-800 font-semibold">
+                    <Building className="w-3 h-3" />
+                    <span className="text-sm">{badge.companyName}</span>
                   </div>
                 )}
               </div>
 
-              {/* Badge Type */}
-              <div
-                style={{
-                  textAlign: 'center',
-                  background: badgeColor,
-                  color: '#fff',
-                  padding: '8px 16px',
-                  borderRadius: 8,
-                  fontSize: 16,
-                  fontWeight: 'bold',
-                  marginBottom: 20,
-                }}
-              >
-                {getAccessLevelLabel(badge.accessLevel)}
+              {/* Badge Level */}
+              <div className="px-6 pb-4 text-center">
+                <span
+                  className="inline-block px-6 py-2 rounded-full text-white font-bold text-lg shadow-sm uppercase tracking-wide"
+                  style={{ background: badgeColor }}
+                >
+                  {getAccessLevelLabel(badge.accessLevel)}
+                </span>
               </div>
 
-              {/* Informations supplémentaires */}
+              {/* Stand Number (if applicable) */}
               {badge.standNumber && (
-                <div style={{ textAlign: 'center', marginBottom: 16, fontSize: 14 }}>
-                  <strong>Stand N°:</strong> {badge.standNumber}
+                <div className="text-center mb-4 text-gray-700 bg-gray-100 py-2 mx-6 rounded-lg">
+                  <span className="font-bold">Stand N°:</span> {badge.standNumber}
                 </div>
               )}
 
               {/* QR Code */}
-              <div style={{ textAlign: 'center', marginBottom: 16 }}>
-                <div style={{ display: 'inline-block', padding: 16, background: '#fff', borderRadius: 8 }}>
-                  <QRCodeSVG value={qrData} size={180} level="H" includeMargin={true} />
+              <div className="text-center p-6 bg-white">
+                <div className="inline-block p-4 bg-white rounded-xl border border-gray-200 shadow-inner">
+                  <QRCodeSVG value={qrData} size={160} level="H" includeMargin={false} />
                 </div>
-                <div style={{ fontSize: 12, color: '#666', marginTop: 8 }}>
-                  Code: {badge.badgeCode}
+                <div className="text-xs text-gray-400 mt-2 font-mono">
+                  ID: {badge.badgeCode}
                 </div>
               </div>
 
-              {/* Validité */}
-              <div style={{ textAlign: 'center', fontSize: 11, color: '#666' }}>
-                <div>Valide du:</div>
-                <div style={{ fontWeight: 'bold', fontSize: 14 }}>
-                  1 au 3 avril 2026
+              {/* Footer / Validity */}
+              <div className="text-center p-3 bg-gray-900 text-white text-xs">
+                <div className="flex items-center justify-center gap-1 opacity-80 mb-1">
+                  <Calendar className="w-3 h-3" />
+                  <span>Valide du</span>
+                </div>
+                <div className="font-bold text-sm tracking-widest">
+                  1 - 3 AVRIL 2026
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Instructions */}
-          <div className="no-print" style={{ background: '#e7f3ff', padding: 24, borderRadius: 8 }}>
-            <h3 style={{ marginTop: 0 }}>📱 Instructions d'utilisation</h3>
-            <ol style={{ marginBottom: 0 }}>
-              <li>
-                <strong>Téléchargez</strong> votre badge en cliquant sur "Télécharger PNG" ou imprimez-le
-              </li>
-              <li>
-                <strong>Conservez</strong> le badge sur votre téléphone ou imprimez-le sur papier
-              </li>
-              <li>
-                <strong>Présentez</strong> le QR code à l'entrée du salon pour scanner votre accès
-              </li>
-              <li>
-                <strong>Portez</strong> votre badge de manière visible pendant toute la durée du salon
-              </li>
-            </ol>
+          {/* Instructions & Stats Grid */}
+          <div className="no-print grid md:grid-cols-2 gap-6">
+            {/* Instructions */}
+            <Card className="p-6 bg-blue-50 border-blue-100">
+              <h3 className="text-lg font-bold text-blue-900 mb-4 flex items-center gap-2">
+                <Scan className="w-5 h-5" />
+                Instructions d'utilisation
+              </h3>
+              <ol className="list-decimal list-inside space-y-2 text-blue-800 text-sm">
+                <li><span className="font-semibold">Téléchargez</span> votre badge ou imprimez-le.</li>
+                <li><span className="font-semibold">Conservez</span> le badge sur votre téléphone.</li>
+                <li><span className="font-semibold">Présentez</span> le QR code à l'entrée.</li>
+                <li><span className="font-semibold">Portez</span> votre badge visiblement.</li>
+              </ol>
 
-            {badge.accessLevel === 'vip' && (
-              <div style={{ marginTop: 16, background: '#fff3cd', padding: 12, borderRadius: 8, border: '1px solid #ffc107' }}>
-                <strong>👑 Avantages Pass Premium VIP:</strong>
-                <ul style={{ marginBottom: 0, marginTop: 8 }}>
-                  <li>Accès illimité à toutes les zones</li>
-                  <li>Rendez-vous B2B illimités</li>
-                  <li>Accès aux événements exclusifs</li>
-                  <li>Déjeuners networking</li>
-                  <li>Soirée gala</li>
-                </ul>
-              </div>
-            )}
-
-            {badge.userType === 'exhibitor' && (
-              <div style={{ marginTop: 16, background: '#d1ecf1', padding: 12, borderRadius: 8, border: '1px solid #0c5460' }}>
-                <strong>🏢 Badge Exposant:</strong> Ce badge vous donne accès à votre stand et aux zones exposants.
-                {badge.standNumber && ` Votre stand: ${badge.standNumber}`}
-              </div>
-            )}
-
-            {badge.userType === 'partner' && (
-              <div style={{ marginTop: 16, background: '#e2e3e5', padding: 12, borderRadius: 8, border: '1px solid #6c757d' }}>
-                <strong>🤝 Badge Partenaire:</strong> Ce badge vous donne accès à toutes les zones partenaires et événements.
-              </div>
-            )}
-          </div>
-
-          {/* Statistiques */}
-          <div className="no-print" style={{ marginTop: 24, padding: 16, background: '#f8f9fa', borderRadius: 8 }}>
-            <h4 style={{ marginTop: 0, marginBottom: 12 }}>📊 Statistiques du badge</h4>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 16 }}>
-              <div>
-                <div style={{ fontSize: 12, color: '#666' }}>Scans effectués</div>
-                <div style={{ fontSize: 20, fontWeight: 'bold' }}>{badge.scanCount}</div>
-              </div>
-              {badge.lastScannedAt && (
-                <div>
-                  <div style={{ fontSize: 12, color: '#666' }}>Dernier scan</div>
-                  <div style={{ fontSize: 14, fontWeight: 'bold' }}>
-                    {new Date(badge.lastScannedAt).toLocaleDateString('fr-FR', {
-                      day: '2-digit',
-                      month: 'short',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </div>
+              {badge.accessLevel === 'vip' && (
+                <div className="mt-4 bg-yellow-50 p-3 rounded-lg border border-yellow-200 text-yellow-800 text-sm">
+                  <strong className="block mb-1 flex items-center gap-1">
+                    <span className="text-lg">👑</span> Avantages VIP
+                  </strong>
+                  <ul className="list-disc list-inside pl-1 space-y-1 text-xs">
+                    <li>Accès illimité à toutes les zones</li>
+                    <li>Rendez-vous B2B illimités</li>
+                    <li>Accès aux événements exclusifs</li>
+                  </ul>
                 </div>
               )}
-              <div>
-                <div style={{ fontSize: 12, color: '#666' }}>Statut</div>
-                <div
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    color: badge.status === 'active' ? '#28a745' : '#dc3545',
-                  }}
-                >
-                  {badge.status === 'active' ? '✅ Actif' : '❌ ' + badge.status}
+            </Card>
+
+            {/* Stats */}
+            <Card className="p-6">
+              <h4 className="text-lg font-bold text-gray-900 mb-4">📊 Statistiques</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <div className="text-xs text-gray-500 mb-1">Scans effectués</div>
+                  <div className="text-2xl font-bold text-gray-900">{badge.scanCount}</div>
                 </div>
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <div className="text-xs text-gray-500 mb-1">Statut</div>
+                  <div className={`text-sm font-bold flex items-center gap-1 ${badge.status === 'active' ? 'text-green-600' : 'text-red-600'}`}>
+                    {badge.status === 'active' ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+                    {badge.status === 'active' ? 'Actif' : badge.status}
+                  </div>
+                </div>
+                {badge.lastScannedAt && (
+                  <div className="col-span-2 bg-gray-50 p-3 rounded-lg">
+                    <div className="text-xs text-gray-500 mb-1">Dernier scan</div>
+                    <div className="text-sm font-medium text-gray-900">
+                      {new Date(badge.lastScannedAt).toLocaleDateString('fr-FR', {
+                        day: '2-digit',
+                        month: 'long',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
+            </Card>
           </div>
         </>
       )}

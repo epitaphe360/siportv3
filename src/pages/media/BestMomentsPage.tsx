@@ -109,3 +109,5 @@ export const BestMomentsPage: React.FC = () => {
 
 
 
+
+export default BestMomentsPage;

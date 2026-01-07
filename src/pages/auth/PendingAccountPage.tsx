@@ -59,7 +59,7 @@ export default function PendingAccountPage() {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
         console.error('Erreur recuperation payment_request:', error);

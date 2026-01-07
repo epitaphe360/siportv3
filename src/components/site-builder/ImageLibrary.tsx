@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Upload, Search, Trash2, Grid3x3, List } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from '../ui/Button';
 import { supabase } from '../../lib/supabase';
 import toast from 'react-hot-toast';
 
@@ -162,7 +162,7 @@ export const ImageLibrary: React.FC<ImageLibraryProps> = ({ onSelect, onClose })
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Rechercher une image..."
+              placeholder={t('siteBuilder.search_image')}
               className="w-full pl-10 pr-4 py-2 border rounded-lg"
             />
           </div>

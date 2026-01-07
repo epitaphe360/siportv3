@@ -144,5 +144,4 @@ export const PartnerEventsPage: React.FC = () => {
   );
 };
 
-
-
+export default PartnerEventsPage;

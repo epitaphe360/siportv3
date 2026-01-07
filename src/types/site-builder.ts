@@ -1,9 +1,12 @@
 // Site Builder Types
 
+// Generic content type for flexible section content
+type SectionContent = Record<string, unknown>;
+
 export interface SiteSection {
   id: string;
   type: 'hero' | 'about' | 'products' | 'contact' | 'gallery' | 'testimonials' | 'video' | 'custom';
-  content: any;
+  content: SectionContent;
   order: number;
   visible: boolean;
   storage_path?: string;
@@ -73,7 +76,7 @@ export interface NetworkingInteraction {
   toUserId: string;
   type: 'view' | 'like' | 'message' | 'meeting' | 'connection';
   timestamp: string;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
 }
 
 export interface SpeedNetworkingSession {

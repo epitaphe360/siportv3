@@ -50,7 +50,7 @@ async function runMigration() {
         }
         
         console.log(`   ✅ Succès\n`);
-      } catch (err: any) {
+      } catch (err) {
         console.log(`   ⚠️  Avertissement: ${err.message}\n`);
       }
     }
@@ -86,7 +86,7 @@ async function runMigration() {
     console.log('   2. Ajoutez des images/vidéos/documents aux produits existants');
     console.log('   3. Configurez les badges (is_new, certified, etc.)\n');
 
-  } catch (error: any) {
+  } catch (error) {
     console.error('❌ Erreur lors de la migration:', error.message);
     process.exit(1);
   }

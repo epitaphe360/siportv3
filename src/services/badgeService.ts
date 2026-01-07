@@ -1,5 +1,21 @@
 import { supabase } from '../lib/supabase';
 import { UserBadge } from '../types';
+import { getDisplayName } from '@/utils/userHelpers';
+
+// Type definitions for database records
+interface BadgeDBRecord {
+  id: string;
+  user_id: string;
+  badge_code: string;
+  user_type: string;
+  user_level?: string;
+  full_name: string;
+  company_name?: string;
+  sector?: string;
+  created_at: string;
+  qr_code_url?: string;
+  [key: string]: unknown;
+}
 
 /**
  * Service de gestion des badges utilisateurs avec QR code
@@ -28,7 +44,7 @@ export async function getUserBadge(userId: string): Promise<UserBadge | null> {
       .from('user_badges')
       .select('*')
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
 
     if (error) {
       if (error.code === 'PGRST116') {
@@ -108,7 +124,7 @@ export async function generateBadgeFromUser(userId: string): Promise<UserBadge> 
       userId: user.id,
       userType: user.type,
       userLevel: user.visitor_level,
-      fullName: `${user.profile?.firstName || ''} ${user.profile?.lastName || ''}`.trim() || user.name,
+      fullName: getDisplayName(user),
       email: user.email,
       phone: user.profile?.phone,
       avatarUrl: user.profile?.avatar,
@@ -238,7 +254,7 @@ export async function renewBadge(badgeId: string, daysToAdd: number = 3): Promis
 /**
  * Transforme les données de la base de données en objet UserBadge
  */
-function transformBadgeFromDB(data: any): UserBadge {
+function transformBadgeFromDB(data: BadgeDBRecord): UserBadge {
   return {
     id: data.id,
     userId: data.user_id,
@@ -284,16 +300,28 @@ export function generateQRData(badge: UserBadge): string {
 export function getBadgeColor(accessLevel: string): string {
   switch (accessLevel) {
     case 'admin':
-      return '#dc3545'; // Rouge
+      return '#F44336'; // Rouge
+    case 'security':
+      return '#FF9800'; // Orange
     case 'exhibitor':
-      return '#007bff'; // Bleu
-    case 'partner':
-      return '#6f42c1'; // Violet
+      return '#4CAF50'; // Vert
+    case 'visitor_premium':
     case 'vip':
-      return '#ffd700'; // Or
+    case 'partner_gold':
+      return '#FFD700'; // Or
+    case 'partner_museum':
+      return '#3F51B5'; // Indigo
+    case 'partner_silver':
+      return '#C0C0C0'; // Argent
+    case 'partner_platinium':
+      return '#E0E0E0'; // Platine
+    case 'partner':
+      return '#6f42c1'; // Violet (fallback)
+    case 'visitor_free':
+      return '#9E9E9E'; // Gris
     case 'standard':
     default:
-      return '#28a745'; // Vert
+      return '#28a745'; // Vert par défaut
   }
 }
 
@@ -304,12 +332,25 @@ export function getAccessLevelLabel(accessLevel: string): string {
   switch (accessLevel) {
     case 'admin':
       return 'Administrateur';
+    case 'security':
+      return 'Sécurité';
     case 'exhibitor':
       return 'Exposant';
+    case 'visitor_premium':
+    case 'vip':
+      return 'Visiteur VIP';
+    case 'visitor_free':
+      return 'Visiteur';
+    case 'partner_museum':
+      return 'Partenaire Musée';
+    case 'partner_silver':
+      return 'Partenaire Silver';
+    case 'partner_gold':
+      return 'Partenaire Gold';
+    case 'partner_platinium':
+      return 'Partenaire Platinum';
     case 'partner':
       return 'Partenaire';
-    case 'vip':
-      return 'VIP Premium';
     case 'standard':
     default:
       return 'Standard';

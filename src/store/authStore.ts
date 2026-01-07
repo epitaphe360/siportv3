@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase';
 import OAuthService from '../services/oauthService';
 import { User, UserProfile } from '../types';
 import { resetAllStores } from './resetStores';
+import { secureStorage } from '../lib/secureStorage';
 
 /**
  * Interface pour les données d'inscription
@@ -24,6 +25,17 @@ interface RegistrationData {
   description?: string;
   objectives?: string[];
   [key: string]: unknown; // Pour les champs additionnels
+}
+
+interface SignUpPayload {
+  name: string;
+  type: User['type'];
+  profile: Partial<UserProfile>;
+  visitor_level?: 'free' | 'premium' | 'vip';
+}
+
+interface OAuthError extends Error {
+  message: string;
 }
 
 interface AuthState {
@@ -220,7 +232,7 @@ const useAuthStore = create<AuthState>()(
       const userType = (['admin','exhibitor','partner','visitor','security'].includes(userData.accountType ?? '') ? userData.accountType! : 'visitor') as User['type'];
 
       // Préparer les données utilisateur avec le niveau visiteur par défaut (FREE)
-      const signUpData: any = {
+      const signUpData: SignUpPayload = {
         name: `${userData.firstName} ${userData.lastName}`.trim(),
         type: userType,
         profile: minimalUserProfile({
@@ -315,10 +327,11 @@ const useAuthStore = create<AuthState>()(
       // Note: The OAuth flow redirects, so code after this may not execute
       // The actual login completion happens after OAuth callback
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const oauthError = error as OAuthError;
       console.error('❌ Google OAuth error:', error);
       set({ isGoogleLoading: false });
-      throw new Error(error.message || 'Erreur lors de la connexion avec Google');
+      throw new Error(oauthError.message || 'Erreur lors de la connexion avec Google');
     }
   },
 
@@ -333,10 +346,11 @@ const useAuthStore = create<AuthState>()(
       // Note: The OAuth flow redirects, so code after this may not execute
       // The actual login completion happens after OAuth callback
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const oauthError = error as OAuthError;
       console.error('❌ LinkedIn OAuth error:', error);
       set({ isLinkedInLoading: false });
-      throw new Error(error.message || 'Erreur lors de la connexion avec LinkedIn');
+      throw new Error(oauthError.message || 'Erreur lors de la connexion avec LinkedIn');
     }
   },
 
@@ -369,7 +383,7 @@ const useAuthStore = create<AuthState>()(
         isLinkedInLoading: false
       });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Error handling OAuth callback:', error);
       set({
         isLoading: false,
@@ -427,34 +441,79 @@ const useAuthStore = create<AuthState>()(
     set({ isLoading: true });
 
     try {
+      console.log('🔄 Début mise à jour profil pour:', user.id);
+      console.log('📊 Données à fusionner:', Object.keys(profileData));
+      
+      // ✅ Fusionner les données de manière robuste
+      const mergedProfile = {
+        ...user.profile,
+        ...profileData
+      };
+
+      console.log('✅ Profil fusionné, envoi vers Supabase...');
+
+      // ✅ Envoyer la mise à jour vers Supabase
       const updatedUser = await SupabaseService.updateUser(user.id, {
         ...user,
-        profile: { ...user.profile, ...profileData }
+        profile: mergedProfile
       });
 
+      if (!updatedUser) {
+        throw new Error('Impossible de mettre à jour le profil - réponse vide du serveur');
+      }
+
+      // ✅ Mettre à jour le store avec les données mises à jour
       set({ user: updatedUser, isLoading: false });
+
+      // ✅ Vérifier que les données sont bien sauvegardées
+      console.log('✅ Profil mis à jour avec succès:', {
+        userId: user.id,
+        sectors: updatedUser.profile.sectors?.length || 0,
+        interests: updatedUser.profile.interests?.length || 0,
+        objectives: updatedUser.profile.objectives?.length || 0,
+        bio: updatedUser.profile.bio?.substring(0, 50) || 'vide'
+      });
     } catch (error: unknown) {
       set({ isLoading: false });
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error('❌ Erreur mise à jour profil pour', user.id, ':', errorMsg);
+      
+      // ✅ Ajouter des détails sur l'erreur
+      if (errorMsg.includes('RLS') || errorMsg.includes('PGRST116')) {
+        console.error('🔒 PROBLÈME RLS DÉTECTÉ - Vérifiez les politiques de sécurité en base de données');
+      }
+      
       throw error instanceof Error ? error : new Error('Erreur lors de la mise à jour du profil');
     }
   }
 }),
     {
-      name: 'siport-auth-storage', // localStorage key
+      name: 'siport-auth-storage', // Storage key (localStorage or IndexedDB)
       partialize: (state) => ({
         user: state.user,
         token: state.token,
         isAuthenticated: state.isAuthenticated
         // Ne PAS persister les états de loading
       }),
+      // ✅ CUSTOM STORAGE: Use secureStorage with localStorage + IndexedDB fallback
+      storage: {
+        getItem: async (name) => {
+          const stored = await secureStorage.getItem(name);
+          return stored ? JSON.parse(stored) : null;
+        },
+        setItem: async (name, value) => {
+          await secureStorage.setItem(name, JSON.stringify(value));
+        },
+        removeItem: async (name) => {
+          await secureStorage.removeItem(name);
+        }
+      },
       // CRITICAL FIX: Validation au chargement du store depuis localStorage
       onRehydrateStorage: () => (state) => {
         if (state?.user?.type === 'admin' && state?.isAuthenticated) {
-          // SECURITY: Si un admin est détecté dans localStorage, on marque pour vérification
+          // SECURITY: Si un admin est détecté dans storage, on marque pour vérification
           // La vérification complète sera faite par initAuth.ts avec Supabase
-          console.warn('⚠️ Session admin détectée dans localStorage - vérification requise');
-
-          // CRITICAL: Ne pas faire confiance au localStorage pour les admins
+          // CRITICAL: Ne pas faire confiance au storage pour les admins
           // Forcer une vérification Supabase via initAuth
           // On ne déconnecte pas immédiatement car initAuth le fera si invalide
         }

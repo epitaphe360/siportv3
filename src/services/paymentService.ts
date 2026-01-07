@@ -178,6 +178,7 @@ export async function checkPaymentStatus(userId: string): Promise<{
 
 /**
  * Create payment record in database
+ * ✅ FIXED: Improved error handling for RLS 42501
  */
 export async function createPaymentRecord(params: {
   userId: string;
@@ -188,6 +189,20 @@ export async function createPaymentRecord(params: {
   status: 'pending' | 'approved' | 'rejected';
 }) {
   try {
+    console.log('💳 Creating payment record for user:', params.userId);
+
+    // ✅ Verify user exists before attempting INSERT
+    const { data: userExists, error: userCheckError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('id', params.userId)
+      .single();
+
+    if (userCheckError || !userExists) {
+      throw new Error(`User ${params.userId} not found - cannot create payment record`);
+    }
+
+    // ✅ Attempt INSERT with improved error handling
     const { data, error } = await supabase
       .from('payment_requests')
       .insert({
@@ -199,14 +214,55 @@ export async function createPaymentRecord(params: {
         transaction_id: params.transactionId,
         status: params.status,
       })
-      .select()
-      .single();
+      .select('*');  // NOT .single() - use .select('*') instead
 
-    if (error) throw error;
+    // ✅ Handle RLS errors specifically
+    if (error) {
+      console.error('❌ Payment record creation error:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
 
-    return data;
+      // Check for RLS violation (code 42501)
+      if (error.code === '42501') {
+        throw new Error(
+          'RLS Error: Cannot create payment record - insufficient permissions. ' +
+          'Please contact support or try again later. ' +
+          `[Error: ${error.message}]`
+        );
+      }
+
+      throw error;
+    }
+
+    // ✅ Verify data was actually inserted
+    if (!data || data.length === 0) {
+      throw new Error('Payment record created but no data returned - possible RLS issue');
+    }
+
+    console.log('✅ Payment record created successfully:', {
+      id: data[0].id,
+      user_id: data[0].user_id,
+      amount: data[0].amount,
+      status: data[0].status
+    });
+
+    return data[0];
   } catch (error) {
-    console.error('Error creating payment record:', error);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('❌ Error creating payment record:', errorMsg);
+
+    // Re-throw with enhanced context
+    if (errorMsg.includes('RLS')) {
+      throw new Error(
+        'Payment system error: Row-Level Security violation. ' +
+        'This usually means your account permissions need to be verified. ' +
+        'Please try again or contact support.'
+      );
+    }
+
     throw error;
   }
 }

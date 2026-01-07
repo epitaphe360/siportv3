@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
+import { useTranslation } from '../../hooks/useTranslation';
 import {
   User, 
   Building2, 
@@ -27,6 +28,7 @@ import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import useAuthStore from '../../store/authStore';
 import { motion } from 'framer-motion';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 export default function ProfilePage() {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -141,9 +143,11 @@ export default function ProfilePage() {
             animate={{ opacity: 1, x: 0 }}
             className="lg:col-span-1"
           >
-            <Card className="text-center">
+            <Card className="text-center border-t-4 border-t-siports-gold">
               <div className="relative">
-                <div className="h-32 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-t-lg"></div>
+                <div className="h-32 bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent rounded-t-lg relative overflow-hidden">
+                   <MoroccanPattern className="opacity-10" color="white" scale={0.5} />
+                </div>
                 <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
                   <div className="relative">
                     <div className="h-24 w-24 bg-white rounded-full flex items-center justify-center shadow-lg">
@@ -164,7 +168,7 @@ export default function ProfilePage() {
                         type="button"
                         className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
                         onClick={() => fileInputRef.current?.click()}
-                        title="Changer la photo de profil"
+                        title={t('profile.change_photo')}
                         style={{ zIndex: 2 }}
                       >
                         <Camera className="h-4 w-4" />
@@ -447,7 +451,7 @@ export default function ProfilePage() {
                       onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                       rows={4}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Parlez-nous de vous et de votre expertise..."
+                      placeholder={t('profile.about_placeholder')}
                     />
                   ) : (
                     <p className="text-gray-900">{user.profile.bio || 'Aucune biographie renseignée'}</p>

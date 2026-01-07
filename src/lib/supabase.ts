@@ -747,7 +747,19 @@ function getSupabaseClient(): ReturnType<typeof createClient<Database>> | null {
   
   // Créer le client une seule fois
   if (!supabaseClientInstance) {
-    supabaseClientInstance = createClient<Database>(supabaseUrl, supabaseAnonKey);
+    supabaseClientInstance = createClient<Database>(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true
+      },
+      global: {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }
+    });
   }
   
   return supabaseClientInstance;

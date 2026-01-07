@@ -109,7 +109,13 @@ export default function DigitalBadge() {
   }
 
   // Obtenir les informations de niveau d'accès
-  const accessKey = `${payload.userType}_${payload.level}` as keyof typeof ACCESS_LEVELS;
+  let accessKey = `${payload.userType}_${payload.level}` as keyof typeof ACCESS_LEVELS;
+  
+  // Correction pour les types qui n'ont pas de préfixe composé dans ACCESS_LEVELS
+  if (['admin', 'security', 'exhibitor'].includes(payload.userType)) {
+    accessKey = payload.userType as keyof typeof ACCESS_LEVELS;
+  }
+
   const accessLevel = ACCESS_LEVELS[accessKey] || {
     color: '#CCCCCC',
     displayName: 'Niveau inconnu',
@@ -178,7 +184,9 @@ export default function DigitalBadge() {
               )}
               <div>
                 <h3 className="font-bold text-gray-900">{payload.name}</h3>
-                <p className="text-sm text-gray-600">{payload.email}</p>
+                {payload.name !== payload.email && (
+                  <p className="text-sm text-gray-600">{payload.email}</p>
+                )}
                 {payload.company && (
                   <p className="text-xs text-gray-500 mt-1">{payload.company}</p>
                 )}

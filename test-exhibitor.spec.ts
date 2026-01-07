@@ -3,6 +3,9 @@ import { test, expect } from '@playwright/test';
 // Utiliser baseURL du config playwright
 const BASE_URL = 'http://localhost:9323';
 
+// ⚠️ SECURITY: Test passwords should be loaded from environment variables
+const TEST_PASSWORD = process.env.TEST_PASSWORD || 'TestPassword123!';
+
 // =============================================================================
 // CONFIGURATION TEST EXPOSANT
 // =============================================================================
@@ -10,7 +13,7 @@ const BASE_URL = 'http://localhost:9323';
 // Compte admin pour validation paiement
 const ADMIN_ACCOUNT = {
   email: 'admin@siport.com',
-  password: 'Admin123!'
+  password: TEST_PASSWORD
 };
 
 // Données pour test d'inscription (email unique à chaque test)

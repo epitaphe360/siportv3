@@ -129,6 +129,7 @@ export type ExhibitorCategory =
 
 export interface Product {
   id: string;
+  exhibitorId?: string;
   name: string;
   description: string;
   category: string;
@@ -136,8 +137,16 @@ export interface Product {
   specifications?: string;
   brochure?: string;
   price?: number;
+  originalPrice?: number;
   featured: boolean;
   technicalSpecs: TechnicalSpec[];
+  // Champs additionnels pour le modal produit
+  isNew?: boolean;
+  inStock?: boolean;
+  certified?: boolean;
+  deliveryTime?: string;
+  videoUrl?: string;
+  documents?: Array<{ name: string; url: string; type?: string }>;
 }
 
 export interface TechnicalSpec {

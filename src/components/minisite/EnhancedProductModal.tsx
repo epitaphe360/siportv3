@@ -27,6 +27,7 @@ import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { Card } from '../ui/Card';
 import { toast } from 'sonner';
+import { getEmbedUrl } from '../../utils/videoUtils';
 
 interface EnhancedProductModalProps {
   product: any;
@@ -53,10 +54,10 @@ export default function EnhancedProductModal({ product: rawProduct, theme, onClo
   const [copiedLink, setCopiedLink] = useState(false);
   const [imageZoom, setImageZoom] = useState(false);
 
-  // Mapper snake_case vers camelCase
+  // Mapper snake_case vers camelCase (fallback si pas déjà transformé)
   const product = {
     ...rawProduct,
-    isNew: rawProduct.is_new ?? rawProduct.isNew,
+    isNew: rawProduct.is_new ?? rawProduct.isNew ?? false,
     inStock: rawProduct.in_stock ?? rawProduct.inStock ?? true,
     certified: rawProduct.certified ?? false,
     deliveryTime: rawProduct.delivery_time ?? rawProduct.deliveryTime,
@@ -65,17 +66,6 @@ export default function EnhancedProductModal({ product: rawProduct, theme, onClo
     documents: rawProduct.documents ?? [],
     specifications: rawProduct.specifications ?? '',
   };
-
-  // DEBUG - Afficher les données reçues
-  console.log('EnhancedProductModal - Product data:', {
-    name: product.name,
-    isNew: product.isNew,
-    certified: product.certified,
-    inStock: product.inStock,
-    deliveryTime: product.deliveryTime,
-    videoUrl: product.videoUrl,
-    documents: product.documents,
-  });
 
   // Préparer la galerie d'images
   const images = product.images?.length > 0 
@@ -348,12 +338,12 @@ export default function EnhancedProductModal({ product: rawProduct, theme, onClo
                     </div>
 
                     {/* Vidéo si disponible */}
-                    {product.videoUrl && (
+                    {getEmbedUrl(product.videoUrl) && (
                       <div>
                         <h3 className="font-semibold text-lg mb-3 text-gray-800">Vidéo de démonstration</h3>
                         <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-100">
                           <iframe
-                            src={product.videoUrl}
+                            src={getEmbedUrl(product.videoUrl)!}
                             className="w-full h-full"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
@@ -414,20 +404,28 @@ export default function EnhancedProductModal({ product: rawProduct, theme, onClo
                 )}
 
                 {/* Onglet Spécifications */}
-                {activeTab === 'specs' && product.specifications && Object.keys(product.specifications).length > 0 && (
-                  <div className="grid grid-cols-2 gap-4">
-                    {Object.entries(product.specifications).map(([key, value], idx) => (
-                      <motion.div
-                        key={key}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: idx * 0.05 }}
-                        className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 rounded-lg hover:shadow-md transition-shadow"
-                      >
-                        <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">{key}</span>
-                        <p className="text-lg font-semibold text-gray-800 mt-1">{String(value)}</p>
-                      </motion.div>
-                    ))}
+                {activeTab === 'specs' && product.specifications && (
+                  <div className="space-y-4">
+                    {typeof product.specifications === 'string' ? (
+                      <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-lg">
+                        <p className="text-gray-800 leading-relaxed whitespace-pre-line">{product.specifications}</p>
+                      </div>
+                    ) : Object.keys(product.specifications).length > 0 ? (
+                      <div className="grid grid-cols-2 gap-4">
+                        {Object.entries(product.specifications).map(([key, value], idx) => (
+                          <motion.div
+                            key={key}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: idx * 0.05 }}
+                            className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 rounded-lg hover:shadow-md transition-shadow"
+                          >
+                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">{key}</span>
+                            <p className="text-lg font-semibold text-gray-800 mt-1">{String(value)}</p>
+                          </motion.div>
+                        ))}
+                      </div>
+                    ) : null}
                   </div>
                 )}
               </motion.div>

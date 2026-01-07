@@ -148,6 +148,22 @@ export default function ProfileMatchingPage() {
     bio: user?.profile?.bio || ''
   });
 
+  // ✅ Resynchroniser le formulaire quand le user change (après sauvegarde ou rechargement)
+  useEffect(() => {
+    if (user?.profile) {
+      setFormData({
+        sectors: user.profile.sectors || [],
+        interests: user.profile.interests || [],
+        objectives: user.profile.objectives || [],
+        collaborationTypes: user.profile.collaborationTypes || [],
+        country: user.profile.country || '',
+        company: user.profile.company || '',
+        companySize: user.profile.companySize || '',
+        bio: user.profile.bio || ''
+      });
+    }
+  }, [user?.profile]);
+
   // Calculer le pourcentage de complétion du profil
   useEffect(() => {
     let score = 0;
@@ -192,6 +208,7 @@ export default function ProfileMatchingPage() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
+      // ✅ Sauvegarder les données
       await updateProfile({
         sectors: formData.sectors,
         interests: formData.interests,
@@ -202,9 +219,39 @@ export default function ProfileMatchingPage() {
         companySize: formData.companySize,
         bio: formData.bio
       });
-      toast.success('Profil mis à jour avec succès ! Votre matching IA sera plus précis.');
+
+      // ✅ IMPORTANT: Attendre un court délai pour que Zustand finisse la mise à jour
+      // Puis vérifier que les données sont bien à jour dans le store
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // ✅ Resynchroniser les données du formulaire avec le user mis à jour du store
+      const currentUser = useAuthStore.getState().user;
+      if (currentUser?.profile) {
+        console.log('✅ Données mises à jour en base:', {
+          sectors: currentUser.profile.sectors?.length,
+          bio: currentUser.profile.bio?.substring(0, 50)
+        });
+        
+        setFormData({
+          sectors: currentUser.profile.sectors || [],
+          interests: currentUser.profile.interests || [],
+          objectives: currentUser.profile.objectives || [],
+          collaborationTypes: currentUser.profile.collaborationTypes || [],
+          country: currentUser.profile.country || '',
+          company: currentUser.profile.company || '',
+          companySize: currentUser.profile.companySize || '',
+          bio: currentUser.profile.bio || ''
+        });
+      }
+
+      toast.success('✅ Profil mis à jour avec succès ! Redirection vers votre réseau...');
+      
+      // Redirection vers la page réseau avec déclenchement automatique de la génération
+      setTimeout(() => {
+        navigate(ROUTES.NETWORKING + '?generate=true');
+      }, 1500);
     } catch (error) {
-      console.error('Erreur lors de la mise à jour:', error);
+      console.error('❌ Erreur lors de la mise à jour:', error);
       toast.error('Erreur lors de la mise à jour du profil');
     } finally {
       setIsSaving(false);

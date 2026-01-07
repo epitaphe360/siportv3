@@ -26,6 +26,11 @@ export interface TwoFactorAuth {
   locked_until?: string;
 }
 
+interface TwoFactorAuthUpdate {
+  failed_attempts: number;
+  locked_until?: string;
+}
+
 class TwoFactorAuthService {
   /**
    * Générer un secret TOTP
@@ -448,7 +453,7 @@ class TwoFactorAuthService {
         .from('two_factor_auth')
         .select('*')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (error && error.code !== 'PGRST116') throw error;
       return data;
@@ -477,7 +482,7 @@ class TwoFactorAuthService {
       const config = await this.get2FAConfig(userId);
       const failedAttempts = (config?.failed_attempts || 0) + 1;
 
-      const updates: any = {
+      const updates: TwoFactorAuthUpdate = {
         failed_attempts: failedAttempts,
       };
 

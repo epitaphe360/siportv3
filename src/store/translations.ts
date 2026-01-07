@@ -50,6 +50,12 @@ export const allTranslations = {
     'pages.exhibitors.view_profile': 'Voir le profil',
     'pages.exhibitors.no_results': 'Aucun exposant trouvé',
     
+    // Exhibitor Levels
+    'exhibitor_levels.basic_9': '9m² Basique',
+    'exhibitor_levels.standard_18': '18m² Standard',
+    'exhibitor_levels.premium_36': '36m² Premium',
+    'exhibitor_levels.elite_54plus': '54m²+ Élite',
+    
     'pages.partners.title': 'Partenaires',
     'pages.partners.description': 'Les organisations qui soutiennent SIPORTS 2026',
     'pages.partners.search': 'Chercher un partenaire',
@@ -127,6 +133,8 @@ export const allTranslations = {
     'admin.reject': 'Rejeter',
     'admin.edit': 'Modifier',
     'admin.delete': 'Supprimer',
+    'admin.edit_profile': 'Modifier le profil',
+    'admin.media_management': 'Gestion des médias',
     
     // Dashboard Visitor
     'visitor.dashboard': 'Mon espace',
@@ -197,6 +205,16 @@ export const allTranslations = {
     'time.hours': 'Heures',
     'time.minutes': 'Minutes',
     'time.seconds': 'Secondes',
+    'time.day': 'Jour',
+    'time.hour': 'Heure',
+    'time.minute': 'Minute',
+    'time.second': 'Seconde',
+
+    // Stats Section
+    'stats.exhibitors': 'Exposants',
+    'stats.visitors': 'Visiteurs',
+    'stats.countries': 'Pays',
+    'stats.conferences': 'Conférences',
     
     // Login Page
     'login.title': 'Connexion',
@@ -314,6 +332,17 @@ export const allTranslations = {
     'dashboard.settings': 'Paramètres',
     'dashboard.reports': 'Rapports',
     'dashboard.exports': 'Exports',
+    'dashboard.quick_actions': 'Actions rapides',
+    'dashboard.notifications': 'Notifications',
+    'dashboard.logout': 'Déconnexion',
+    'dashboard.your_quotas': 'Vos Quotas',
+    'dashboard.exhibitor_quotas': 'Vos Quotas Exposant',
+    'dashboard.visit_activity_7days': 'Activité de Visite (7 derniers jours)',
+    'dashboard.appointment_status': 'Statut des Rendez-vous',
+    'dashboard.interest_areas': 'Centres d\'Intérêt',
+    'dashboard.visitor_engagement_7days': 'Engagement Visiteurs (7 derniers jours)',
+    'dashboard.brand_exposure_7days': 'Exposition de Marque (7 derniers jours)',
+    'dashboard.engagement_channels': 'Canaux d\'Engagement',
     
     // Visitor Dashboard
     'visitor.my_tickets': 'Mes Billets',
@@ -556,6 +585,12 @@ export const allTranslations = {
     'pages.exhibitors.view_profile': 'View Profile',
     'pages.exhibitors.no_results': 'No exhibitors found',
     
+    // Exhibitor Levels
+    'exhibitor_levels.basic_9': '9m² Basic',
+    'exhibitor_levels.standard_18': '18m² Standard',
+    'exhibitor_levels.premium_36': '36m² Premium',
+    'exhibitor_levels.elite_54plus': '54m²+ Elite',
+    
     'pages.partners.title': 'Partners',
     'pages.partners.description': 'Organizations supporting SIPORTS 2026',
     'pages.partners.search': 'Search for a partner',
@@ -632,6 +667,8 @@ export const allTranslations = {
     'admin.reject': 'Reject',
     'admin.edit': 'Edit',
     'admin.delete': 'Delete',
+    'admin.edit_profile': 'Edit Profile',
+    'admin.media_management': 'Media Management',
     
     'visitor.dashboard': 'My Space',
     'visitor.my_profile': 'My Profile',
@@ -699,6 +736,16 @@ export const allTranslations = {
     'time.hours': 'Hours',
     'time.minutes': 'Minutes',
     'time.seconds': 'Seconds',
+    'time.day': 'Day',
+    'time.hour': 'Hour',
+    'time.minute': 'Minute',
+    'time.second': 'Second',
+
+    // Stats Section
+    'stats.exhibitors': 'Exhibitors',
+    'stats.visitors': 'Visitors',
+    'stats.countries': 'Countries',
+    'stats.conferences': 'Conferences',
     
     // Login Page
     'login.title': 'Login',
@@ -813,6 +860,17 @@ export const allTranslations = {
     'dashboard.settings': 'Settings',
     'dashboard.reports': 'Reports',
     'dashboard.exports': 'Exports',
+    'dashboard.quick_actions': 'Quick Actions',
+    'dashboard.notifications': 'Notifications',
+    'dashboard.logout': 'Logout',
+    'dashboard.your_quotas': 'Your Quotas',
+    'dashboard.exhibitor_quotas': 'Your Exhibitor Quotas',
+    'dashboard.visit_activity_7days': 'Visit Activity (Last 7 days)',
+    'dashboard.appointment_status': 'Appointment Status',
+    'dashboard.interest_areas': 'Interest Areas',
+    'dashboard.visitor_engagement_7days': 'Visitor Engagement (Last 7 days)',
+    'dashboard.brand_exposure_7days': 'Brand Exposure (Last 7 days)',
+    'dashboard.engagement_channels': 'Engagement Channels',
     
     // Visitor Dashboard
     'visitor.my_tickets': 'My Tickets',
@@ -1055,6 +1113,12 @@ export const allTranslations = {
     'pages.exhibitors.view_profile': 'عرض الملف الشخصي',
     'pages.exhibitors.no_results': 'لم يتم العثور على عارضين',
     
+    // Exhibitor Levels
+    'exhibitor_levels.basic_9': 'أساسي 9م²',
+    'exhibitor_levels.standard_18': 'قياسي 18م²',
+    'exhibitor_levels.premium_36': 'بريميوم 36م²',
+    'exhibitor_levels.elite_54plus': 'نخبة 54م²+',
+    
     'pages.partners.title': 'الشركاء',
     'pages.partners.description': 'المنظمات التي تدعم SIPORTS 2026',
     'pages.partners.search': 'ابحث عن شريك',
@@ -1101,6 +1165,8 @@ export const allTranslations = {
     'admin.reject': 'الرفض',
     'admin.edit': 'تعديل',
     'admin.delete': 'حذف',
+    'admin.edit_profile': 'تعديل الملف الشخصي',
+    'admin.media_management': 'إدارة الوسائط',
     
     'visitor.dashboard': 'مساحتي',
     'visitor.my_profile': 'ملفي الشخصي',
@@ -1168,6 +1234,16 @@ export const allTranslations = {
     'time.hours': 'الساعات',
     'time.minutes': 'الدقائق',
     'time.seconds': 'الثواني',
+    'time.day': 'يوم',
+    'time.hour': 'ساعة',
+    'time.minute': 'دقيقة',
+    'time.second': 'ثانية',
+
+    // Stats Section
+    'stats.exhibitors': 'العارضون',
+    'stats.visitors': 'الزوار',
+    'stats.countries': 'الدول',
+    'stats.conferences': 'المؤتمرات',
     
     // Login Page
     'login.title': 'تسجيل الدخول',
@@ -1282,6 +1358,17 @@ export const allTranslations = {
     'dashboard.settings': 'الإعدادات',
     'dashboard.reports': 'التقارير',
     'dashboard.exports': 'الصادرات',
+    'dashboard.quick_actions': 'إجراءات سريعة',
+    'dashboard.notifications': 'الإشعارات',
+    'dashboard.logout': 'تسجيل الخروج',
+    'dashboard.your_quotas': 'حصصك',
+    'dashboard.exhibitor_quotas': 'حصص العارض',
+    'dashboard.visit_activity_7days': 'نشاط الزيارة (آخر 7 أيام)',
+    'dashboard.appointment_status': 'حالة المواعيد',
+    'dashboard.interest_areas': 'مجالات الاهتمام',
+    'dashboard.visitor_engagement_7days': 'تفاعل الزوار (آخر 7 أيام)',
+    'dashboard.brand_exposure_7days': 'التعرض للعلامة التجارية (آخر 7 أيام)',
+    'dashboard.engagement_channels': 'قنوات التفاعل',
     
     // Visitor Dashboard
     'visitor.my_tickets': 'تذاكري',

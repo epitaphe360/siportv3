@@ -179,6 +179,22 @@ export default function MetricsPage() {
     }
   ];
 
+  // Fonction pour calculer la performance globale d'un pavillon
+  const getPerformanceLevel = (pavilion: PavilionMetric): { label: string, variant: 'success' | 'warning' | 'error' | 'default' } => {
+    // Calculer un score basé sur les métriques
+    const totalScore = pavilion.exhibitors + Math.floor(pavilion.visitors / 10) + pavilion.conferences;
+    
+    if (totalScore >= 25) {
+      return { label: 'Excellent', variant: 'success' };
+    } else if (totalScore >= 15) {
+      return { label: 'Bon', variant: 'warning' };
+    } else if (totalScore >= 5) {
+      return { label: 'Moyen', variant: 'default' };
+    } else {
+      return { label: 'Faible', variant: 'error' };
+    }
+  };
+
   // Distribution réelle des pavillons (valeurs réelles de la base)
   const pavilionMetrics: PavilionMetric[] = [
     {
@@ -514,9 +530,9 @@ export default function MetricsPage() {
                     
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">Performance Globale</span>
-                      <Badge variant="secondary" size="sm">
+                      <Badge variant={getPerformanceLevel(pavilion).variant} size="sm">
                         <Activity className="h-3 w-3 mr-1" />
-                        En attente
+                        {getPerformanceLevel(pavilion).label}
                       </Badge>
                     </div>
                   </div>

@@ -337,7 +337,7 @@ export const ManageMediaPage: React.FC = () => {
                         variant="ghost"
                         size="sm"
                         onClick={() => navigate(`/media/${item.type}/${item.id}`)}
-                        title="Voir"
+                        title={t('common.view')}
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
@@ -345,7 +345,7 @@ export const ManageMediaPage: React.FC = () => {
                         variant="ghost"
                         size="sm"
                         onClick={() => navigate(`/admin/media/edit/${item.id}`)}
-                        title="Modifier"
+                        title={t('common.edit')}
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
@@ -353,7 +353,7 @@ export const ManageMediaPage: React.FC = () => {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleDelete(item.id)}
-                        title="Supprimer"
+                        title={t('common.delete')}
                         className="text-red-600 hover:text-red-700 hover:bg-red-50"
                       >
                         <Trash2 className="h-4 w-4" />

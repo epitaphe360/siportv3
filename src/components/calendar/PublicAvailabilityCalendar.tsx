@@ -36,6 +36,14 @@ export default function PublicAvailabilityCalendar({
     description: ''
   });
 
+  // Helper pour parser une date string (YYYY-MM-DD) en Date locale sans décalage UTC
+  const parseLocalDate = (dateStr: string | Date): Date => {
+    if (dateStr instanceof Date) return dateStr;
+    // Format YYYY-MM-DD -> créer une date à minuit heure locale
+    const [year, month, day] = String(dateStr).split('T')[0].split('-').map(Number);
+    return new Date(year, month - 1, day);
+  };
+
   useEffect(() => {
     fetchTimeSlots();
   }, [userId]);
@@ -58,6 +66,15 @@ export default function PublicAvailabilityCalendar({
       return;
     }
 
+    // Validation: date ne doit pas être dans le passé
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const slotDate = new Date(newSlot.date + 'T00:00:00'); // Force local timezone
+    if (slotDate < today) {
+      toast.error('❌ Impossible de créer un créneau pour une date passée');
+      return;
+    }
+
     // Validation: startTime < endTime
     if (newSlot.startTime >= newSlot.endTime) {
       toast.error('L\'heure de fin doit être après l\'heure de début');
@@ -68,12 +85,17 @@ export default function PublicAvailabilityCalendar({
     try {
       const duration = calculateDuration(newSlot.startTime, newSlot.endTime);
 
-      // Normaliser les dates pour comparaison (format YYYY-MM-DD)
+      // Normaliser les dates pour comparaison (format YYYY-MM-DD) - SANS conversion UTC
       const normalizeDate = (date: string | Date): string => {
         if (date instanceof Date) {
-          return date.toISOString().split('T')[0];
+          // Utiliser getFullYear/Month/Date pour éviter le décalage UTC
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
         }
-        return String(date).split('T')[0]; // Supprime l'heure si présente
+        // Pour une string, prendre juste la partie date (YYYY-MM-DD)
+        return String(date).split('T')[0];
       };
 
       const newSlotDate = normalizeDate(newSlot.date);
@@ -198,7 +220,7 @@ export default function PublicAvailabilityCalendar({
 
   const weekDays = getWeekDays(selectedWeek);
   const weekSlots = timeSlots.filter(slot => {
-    const slotDate = new Date(slot.date);
+    const slotDate = parseLocalDate(slot.date);
     return weekDays.some(day =>
       day.toDateString() === slotDate.toDateString()
     );
@@ -347,7 +369,7 @@ export default function PublicAvailabilityCalendar({
           <div className="grid grid-cols-7 gap-3">
             {weekDays.map((day) => {
               const daySlots = weekSlots.filter(slot =>
-                new Date(slot.date).toDateString() === day.toDateString()
+                parseLocalDate(slot.date).toDateString() === day.toDateString()
               );
               const isToday = day.toDateString() === new Date().toDateString();
               const isPast = day < new Date() && !isToday;
@@ -488,7 +510,7 @@ export default function PublicAvailabilityCalendar({
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-1">
                           <span className="font-bold text-lg text-gray-900">
-                            {new Date(slot.date).toLocaleDateString('fr-FR', {
+                            {parseLocalDate(slot.date).toLocaleDateString('fr-FR', {
                               weekday: 'long',
                               day: 'numeric',
                               month: 'long'

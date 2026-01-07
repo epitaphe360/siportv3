@@ -72,7 +72,7 @@ export default function VisitorUpgradePage() {
   const isFree = user?.type === 'visitor' && (user.visitor_level === 'free' || !user.visitor_level);
 
   const handleUpgrade = () => {
-    navigate(ROUTES.VISITOR_SUBSCRIPTION);
+    navigate(ROUTES.VISITOR_PAYMENT);
   };
 
   return (

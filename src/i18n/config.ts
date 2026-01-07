@@ -18,7 +18,7 @@ const resources = {
         subscriptions: 'Abonnements',
         appointments: 'Rendez-vous',
         chat: 'Messagerie',
-        networking: 'Networking',
+        networking: 'Réseautage',
         profile: 'Mon Profil'
       },
       menu: {
@@ -28,10 +28,10 @@ const resources = {
         subscriptions_desc: 'Gérez vos abonnements'
       },
       exhibitor_levels: {
-        basic_9: '9m² Basic',
+        basic_9: '9m² Basique',
         standard_18: '18m² Standard',
         premium_36: '36m² Premium',
-        elite_54plus: '54m²+ Elite'
+        elite_54plus: '54m²+ Élite'
       },
       auth: {
         login: 'Connexion',
@@ -61,7 +61,7 @@ const resources = {
         search: 'Rechercher',
         view: 'Voir',
         download: 'Télécharger',
-        upload: 'Upload',
+        upload: 'Téléverser',
         close: 'Fermer',
         confirm: 'Confirmer',
         back: 'Retour',
@@ -81,13 +81,21 @@ const resources = {
         quick_actions: 'Actions rapides',
         notifications: 'Notifications',
         settings: 'Paramètres',
-        logout: 'Déconnexion'
+        logout: 'Déconnexion',
+        your_quotas: 'Vos Quotas',
+        exhibitor_quotas: 'Vos Quotas Exposant',
+        visit_activity_7days: 'Activité de Visite (7 derniers jours)',
+        appointment_status: 'Statut des Rendez-vous',
+        interest_areas: 'Centres d\'Intérêt',
+        visitor_engagement_7days: 'Engagement Visiteurs (7 derniers jours)',
+        brand_exposure_7days: 'Exposition de Marque (7 derniers jours)',
+        engagement_channels: 'Canaux d\'Engagement'
       },
       admin: {
         title: 'Administration',
         users: 'Utilisateurs',
         moderation: 'Modération',
-        analytics: 'Analytics',
+        analytics: 'Analyses',
         reports: 'Rapports',
         settings: 'Paramètres',
         logs: 'Journaux',
@@ -118,15 +126,15 @@ const resources = {
         events: 'Événements',
         appointments: 'Mes rendez-vous',
         favorites: 'Mes favoris',
-        networking: 'Networking',
+        networking: 'Réseautage',
         badge: 'Mon badge',
-        subscription: 'Abonnement Premium',
+        subscription: 'Abonnement Privilège',
         level: 'Niveau',
-        upgrade: 'Passer Premium',
+        upgrade: 'Passer Privilège',
         my_appointments: 'Mes rendez-vous',
         my_favorites: 'Mes favoris',
         my_tickets: 'Mes billets',
-        upgrade_required: 'Upgrade requis',
+        upgrade_required: 'Mise à niveau requise',
         schedule_appointment: 'Planifier un rendez-vous',
         appointment_confirmed: 'Rendez-vous confirmé',
         appointment_declined: 'Rendez-vous refusé',
@@ -198,7 +206,7 @@ const resources = {
         audit_logs: 'Journaux d\'audit'
       },
       analytics: {
-        title: 'Analytics',
+        title: 'Analyses',
         overview: 'Vue d\'ensemble',
         visitors: 'Visiteurs',
         pageviews: 'Pages vues',
@@ -247,7 +255,7 @@ const resources = {
         leads: {
           title: 'Leads & Prospects',
           subtitle: 'Gérez vos leads qualifiés et suivez leur progression dans le pipeline commercial',
-          premium_program: 'Programme Leads Premium',
+          premium_program: 'Programme Leads Privilège',
           conversion_rate: '12% Taux de Conversion',
           generated: 'Leads générés',
           qualified: 'Leads qualifiés',
@@ -264,7 +272,7 @@ const resources = {
           awaiting_response: 'En attente de réponse',
           sources: {
             events: 'Événements SIPORTS',
-            networking: 'Networking Partenaires',
+            networking: 'Réseautage Partenaires',
             referrals: 'Références Clients',
             marketing: 'Campagnes Marketing'
           },
@@ -406,7 +414,7 @@ const resources = {
         level_info: 'Niveau',
         valid_dates: 'Valide du 1er au 3 avril 2026',
         access_granted: 'Accès autorisé',
-        upgrade_to_premium: 'Passer Premium pour plus d\'avantages'
+        upgrade_to_premium: 'Passer Privilège pour plus d\'avantages'
       },
       forms: {
         required: 'Requis',
@@ -423,6 +431,112 @@ const resources = {
           max_length: 'Maximum {{max}} caractères',
           passwords_not_match: 'Les mots de passe ne correspondent pas'
         }
+      },
+      profile: {
+        not_found: 'Profil introuvable',
+        edit_profile: 'Modifier le profil',
+        change_photo: 'Changer la photo de profil',
+        about_placeholder: 'Parlez-nous de vous et de votre expertise...',
+        first_name: 'Prénom',
+        last_name: 'Nom',
+        position: 'Poste',
+        country: 'Pays',
+        company_name: 'Nom de votre entreprise',
+        company_placeholder: 'Ex: Consultant indépendant',
+        sector_placeholder: 'Ex: Consulting maritime',
+        click_to_edit: 'Cliquer pour modifier'
+      },
+      siteBuilder: {
+        search_template: 'Rechercher un template...',
+        search_image: 'Rechercher une image...',
+        main_title: 'Titre principal',
+        subtitle: 'Sous-titre',
+        button_text: 'Texte bouton',
+        product_name: 'Nom produit',
+        price: 'Prix',
+        author: 'Auteur',
+        section_title: 'Titre',
+        description: 'Description...',
+        video_url: 'URL vidéo YouTube/Vimeo',
+        custom_html: 'Code HTML personnalisé',
+        seo_title_placeholder: 'ex: Votre Entreprise - Solutions Innovantes',
+        seo_description_placeholder: 'Description concise et attractive de votre page...',
+        seo_slug_placeholder: 'votre-page',
+        add_keyword: 'Ajouter un mot-clé...',
+        og_image_placeholder: 'https://example.com/image.jpg'
+      },
+      minisite: {
+        click_to_edit: 'Cliquer pour modifier',
+        delete_section: 'Supprimer la section',
+        delete_product: 'Supprimer ce produit',
+        change_image: 'Cliquer pour changer l\'image',
+        delete_image: 'Supprimer l\'image',
+        delete_article: 'Supprimer cet article',
+        section_title: 'Titre de la section',
+        company_description: 'Description de votre entreprise',
+        feature: 'Caractéristique',
+        products_section_title: 'Titre de la section produits',
+        upload_images: 'Upload d\'images et médias'
+      },
+      ui: {
+        search: 'Rechercher...',
+        uploading: 'Upload en cours...',
+        filtered_count: 'Nombre filtré',
+        search_by: 'Rechercher par nom, email, entreprise ou référence...',
+        click_to_change: 'Cliquer pour changer',
+        view: 'Voir',
+        share_article: 'Partager l\'article',
+        share_event: 'Partager cet événement',
+        back_to_top: 'Retour en haut',
+        sync_official: 'Synchroniser avec le site officiel SIPORTS',
+        contact_directly: 'Contacter directement',
+        book_appointment: 'Prendre rendez-vous',
+        add_remove_favorite: 'Ajouter/Retirer des favoris',
+        contact_info: 'Informations de contact',
+        forward_10s: 'Avancer de 10s',
+        backward_10s: 'Reculer de 10s'
+      },
+      partner_edit: {
+        basic_info: 'Informations de base',
+        contact_info: 'Informations de contact',
+        sectors_services: 'Secteurs & Services',
+        expertise: 'Notre Expertise',
+        projects: 'Projets & Réalisations',
+        gallery: 'Galerie Photos',
+        news: 'Actualités & Annonces',
+        metrics: 'Impact & Métriques',
+        timeline: 'Historique & Timeline',
+        team: 'Notre Équipe',
+        admin_only: 'Seul l\'administrateur peut modifier le niveau de sponsoring',
+        company_example: 'Tanger Med Logistics',
+        country_example: 'Maroc',
+        website_placeholder: 'https://votre-site.com',
+        description_example: 'Partenaire logistique premium du port de Tanger Med, offrant des services de stockage et de distribution internationaux.'
+      },
+      admin_media: {
+        manager_title: 'Gestionnaire de médias administrateur',
+        create_title_example: 'Ex: Webinaire - Innovation Portuaire 2026',
+        create_description_placeholder: 'Description détaillée du contenu...',
+        url_placeholder: 'https://...',
+        duration_example: 'Ex: 3600',
+        tags_example: 'innovation, technologie, digital',
+        reject_reason: 'Expliquez pourquoi ce média est rejeté...'
+      },
+      social: {
+        follow_facebook: 'Suivez-nous sur Facebook',
+        follow_twitter: 'Suivez-nous sur Twitter',
+        follow_linkedin: 'Suivez-nous sur LinkedIn',
+        youtube_channel: 'Chaîne YouTube SIPORTS'
+      },
+      networking: {
+        search_room: 'Rechercher une salle...'
+      },
+      registration: {
+        name: 'Nom',
+        bio: 'Bio'
+      },
+      dev: {
+        subscription_shortcuts: 'Raccourcis Abonnements (DEV)'
       }
     }
   },
@@ -503,7 +617,15 @@ const resources = {
         quick_actions: 'Quick Actions',
         notifications: 'Notifications',
         settings: 'Settings',
-        logout: 'Logout'
+        logout: 'Logout',
+        your_quotas: 'Your Quotas',
+        exhibitor_quotas: 'Your Exhibitor Quotas',
+        visit_activity_7days: 'Visit Activity (Last 7 days)',
+        appointment_status: 'Appointment Status',
+        interest_areas: 'Interest Areas',
+        visitor_engagement_7days: 'Visitor Engagement (Last 7 days)',
+        brand_exposure_7days: 'Brand Exposure (Last 7 days)',
+        engagement_channels: 'Engagement Channels'
       },
       admin: {
         title: 'Administration',
@@ -683,7 +805,31 @@ const resources = {
           pending: 'Pending',
           rejected: 'Rejected',
           active_followup: 'Active follow-up',
-          awaiting_response: 'Awaiting response'
+          awaiting_response: 'Awaiting response',
+          sources: {
+            events: 'SIPORTS Events',
+            networking: 'Partner Networking',
+            referrals: 'Client Referrals',
+            marketing: 'Marketing Campaigns'
+          },
+          funnel: {
+            generated: 'Generated Leads',
+            qualified: 'Qualified',
+            proposal: 'Proposal',
+            negotiation: 'Negotiation',
+            conversion: 'Conversion'
+          },
+          tips: {
+            title: 'Lead Management Tips',
+            qualification: 'Quick Qualification',
+            qualification_desc: 'Contact hot leads within 24h to maximize your conversion chances',
+            followup: 'Regular Follow-up',
+            followup_desc: 'Schedule weekly follow-up points to maintain engagement',
+            personalization: 'Personalization',
+            personalization_desc: 'Adapt your proposals to each prospect\'s specific needs',
+            measure: 'Results Measurement',
+            measure_desc: 'Regularly analyze your conversion rates to optimize your approach'
+          }
         },
         activity: {
           title: 'Partner Activity',
@@ -692,7 +838,52 @@ const resources = {
           realtime: 'Real-Time',
           history: 'Activity History',
           no_activity: 'No activity found',
-          try_filters: 'Try adjusting your search filters'
+          try_filters: 'Try adjusting your search filters',
+          just_now: 'Just now',
+          hours_ago: '{{count}}h ago',
+          days_ago: '{{count}}d ago',
+          stats: {
+            total: 'Total activities',
+            today: 'Today',
+            this_week: 'This week'
+          },
+          filter: {
+            all: 'All activities',
+            networking: 'Networking',
+            communication: 'Communication',
+            events: 'Events',
+            sponsorship: 'Sponsorship',
+            engagement: 'Engagement',
+            content: 'Content',
+            meetings: 'Meetings',
+            system: 'System'
+          },
+          type: {
+            connection: 'Connection',
+            message: 'Message',
+            event: 'Event',
+            sponsorship: 'Sponsorship',
+            consultation: 'Consultation',
+            content: 'Content',
+            alert: 'Alert',
+            meeting: 'Meeting'
+          },
+          connection_established: 'New connection established',
+          connected_with: 'You are now connected with Port Solutions Inc.',
+          new_message: 'New message received',
+          message_from: 'TechMarine Solutions sent you a message',
+          event_participation: 'Event participation',
+          participated_in: 'You participated in the conference "Digital Transformation in Ports"',
+          sponsoring_activated: 'Sponsorship activated',
+          logo_displayed: 'Your logo is now displayed on the homepage',
+          profile_viewed: 'Profile viewed',
+          views_today: 'Your profile was viewed 15 times today',
+          content_shared: 'Content shared',
+          article_shared: 'Your article "Innovation in Maritime Technology" was shared',
+          system_alert: 'System alert',
+          metrics_update: 'Performance metrics update available',
+          meeting_scheduled: 'Meeting scheduled',
+          meeting_confirmed: 'Meeting confirmed with LogiFlow Systems tomorrow at 2pm'
         },
         calendar: {
           title: 'Appointment Calendar',
@@ -776,6 +967,112 @@ const resources = {
           max_length: 'Maximum {{max}} characters',
           passwords_not_match: 'Passwords do not match'
         }
+      },
+      profile: {
+        not_found: 'Profile not found',
+        edit_profile: 'Edit Profile',
+        change_photo: 'Change profile photo',
+        about_placeholder: 'Tell us about yourself and your expertise...',
+        first_name: 'First Name',
+        last_name: 'Last Name',
+        position: 'Position',
+        country: 'Country',
+        company_name: 'Your company name',
+        company_placeholder: 'Ex: Independent Consultant',
+        sector_placeholder: 'Ex: Maritime Consulting',
+        click_to_edit: 'Click to edit'
+      },
+      siteBuilder: {
+        search_template: 'Search for a template...',
+        search_image: 'Search for an image...',
+        main_title: 'Main Title',
+        subtitle: 'Subtitle',
+        button_text: 'Button Text',
+        product_name: 'Product Name',
+        price: 'Price',
+        author: 'Author',
+        section_title: 'Title',
+        description: 'Description...',
+        video_url: 'YouTube/Vimeo video URL',
+        custom_html: 'Custom HTML code',
+        seo_title_placeholder: 'ex: Your Company - Innovative Solutions',
+        seo_description_placeholder: 'Concise and attractive page description...',
+        seo_slug_placeholder: 'your-page',
+        add_keyword: 'Add a keyword...',
+        og_image_placeholder: 'https://example.com/image.jpg'
+      },
+      minisite: {
+        click_to_edit: 'Click to edit',
+        delete_section: 'Delete section',
+        delete_product: 'Delete this product',
+        change_image: 'Click to change image',
+        delete_image: 'Delete image',
+        delete_article: 'Delete this article',
+        section_title: 'Section title',
+        company_description: 'Your company description',
+        feature: 'Feature',
+        products_section_title: 'Products section title',
+        upload_images: 'Image and media upload'
+      },
+      ui: {
+        search: 'Search...',
+        uploading: 'Uploading...',
+        filtered_count: 'Filtered count',
+        search_by: 'Search by name, email, company or reference...',
+        click_to_change: 'Click to change',
+        view: 'View',
+        share_article: 'Share article',
+        share_event: 'Share this event',
+        back_to_top: 'Back to top',
+        sync_official: 'Sync with official SIPORTS website',
+        contact_directly: 'Contact directly',
+        book_appointment: 'Book appointment',
+        add_remove_favorite: 'Add/Remove from favorites',
+        contact_info: 'Contact information',
+        forward_10s: 'Forward 10s',
+        backward_10s: 'Backward 10s'
+      },
+      partner_edit: {
+        basic_info: 'Basic Information',
+        contact_info: 'Contact Information',
+        sectors_services: 'Sectors & Services',
+        expertise: 'Our Expertise',
+        projects: 'Projects & Achievements',
+        gallery: 'Photo Gallery',
+        news: 'News & Announcements',
+        metrics: 'Impact & Metrics',
+        timeline: 'History & Timeline',
+        team: 'Our Team',
+        admin_only: 'Only administrators can modify sponsorship level',
+        company_example: 'Tanger Med Logistics',
+        country_example: 'Morocco',
+        website_placeholder: 'https://your-website.com',
+        description_example: 'Premium logistics partner of Tanger Med port, offering international storage and distribution services.'
+      },
+      admin_media: {
+        manager_title: 'Admin Media Manager',
+        create_title_example: 'Ex: Webinar - Port Innovation 2026',
+        create_description_placeholder: 'Detailed content description...',
+        url_placeholder: 'https://...',
+        duration_example: 'Ex: 3600',
+        tags_example: 'innovation, technology, digital',
+        reject_reason: 'Explain why this media is rejected...'
+      },
+      social: {
+        follow_facebook: 'Follow us on Facebook',
+        follow_twitter: 'Follow us on Twitter',
+        follow_linkedin: 'Follow us on LinkedIn',
+        youtube_channel: 'SIPORTS YouTube Channel'
+      },
+      networking: {
+        search_room: 'Search for a room...'
+      },
+      registration: {
+        name: 'Name',
+        bio: 'Bio'
+      },
+      dev: {
+        subscription_shortcuts: 'Subscription Shortcuts (DEV)'
       }
     }
   },
@@ -793,7 +1090,7 @@ const resources = {
         subscriptions: 'Suscripciones',
         appointments: 'Citas',
         chat: 'Mensajes',
-        networking: 'Networking',
+        networking: 'Contactos',
         profile: 'Mi Perfil'
       },
       menu: {
@@ -806,7 +1103,7 @@ const resources = {
         basic_9: '9m² Básico',
         standard_18: '18m² Estándar',
         premium_36: '36m² Premium',
-        elite_54plus: '54m²+ Elite'
+        elite_54plus: '54m²+ Élite'
       },
       auth: {
         login: 'Iniciar sesión',
@@ -856,13 +1153,21 @@ const resources = {
         quick_actions: 'Acciones Rápidas',
         notifications: 'Notificaciones',
         settings: 'Configuración',
-        logout: 'Cerrar Sesión'
+        logout: 'Cerrar Sesión',
+        your_quotas: 'Tus Cuotas',
+        exhibitor_quotas: 'Tus Cuotas de Expositor',
+        visit_activity_7days: 'Actividad de Visita (Últimos 7 días)',
+        appointment_status: 'Estado de Citas',
+        interest_areas: 'Áreas de Interés',
+        visitor_engagement_7days: 'Compromiso de Visitantes (Últimos 7 días)',
+        brand_exposure_7days: 'Exposición de Marca (Últimos 7 días)',
+        engagement_channels: 'Canales de Compromiso'
       },
       admin: {
         title: 'Administración',
         users: 'Usuarios',
         moderation: 'Moderación',
-        analytics: 'Analíticas',
+        analytics: 'Análisis',
         reports: 'Informes',
         settings: 'Configuración',
         logs: 'Registros',
@@ -893,11 +1198,11 @@ const resources = {
         events: 'Eventos',
         appointments: 'Mis Citas',
         favorites: 'Mis Favoritos',
-        networking: 'Networking',
+        networking: 'Contactos',
         badge: 'Mi Credencial',
-        subscription: 'Suscripción Premium',
+        subscription: 'Suscripción Privilegio',
         level: 'Nivel',
-        upgrade: 'Actualizar a Premium',
+        upgrade: 'Actualizar a Privilegio',
         my_appointments: 'Mis Citas',
         my_favorites: 'Mis Favoritos',
         my_tickets: 'Mis Boletos',
@@ -1001,6 +1306,128 @@ const resources = {
         status: 'Estado',
         download_invoice: 'Descargar Factura'
       },
+      partner: {
+        back_to_dashboard: 'Volver al panel',
+        priority: 'Prioritario',
+        details: 'Detalles',
+        status: {
+          upcoming: 'Próximo',
+          draft: 'Borrador'
+        },
+        events: {
+          title: 'Eventos Patrocinados',
+          subtitle: 'Gestiona tus eventos de socios y sigue su impacto',
+          program: 'Programa de Eventos de Socios',
+          available: 'Eventos disponibles',
+          loading: 'Cargando eventos...',
+          none: 'No hay eventos disponibles en este momento.',
+          registered: 'inscritos',
+          capacity: 'Capacidad'
+        },
+        leads: {
+          title: 'Leads y Prospectos',
+          subtitle: 'Gestiona tus leads calificados y sigue su progreso en el pipeline comercial',
+          premium_program: 'Programa de Leads Privilegio',
+          conversion_rate: '12% Tasa de Conversión',
+          generated: 'Leads generados',
+          qualified: 'Leads calificados',
+          conversion: 'Tasa de conversión',
+          estimated_value: 'Valor estimado',
+          recent: 'Leads Recientes',
+          exhibitor: 'Expositor',
+          visitor: 'Visitante',
+          other: 'Otro',
+          connected: 'Conectado',
+          pending: 'Pendiente',
+          rejected: 'Rechazado',
+          active_followup: 'Seguimiento activo',
+          awaiting_response: 'Esperando respuesta',
+          sources: {
+            events: 'Eventos SIPORTS',
+            networking: 'Contactos de Socios',
+            referrals: 'Referencias de Clientes',
+            marketing: 'Campañas de Marketing'
+          },
+          funnel: {
+            generated: 'Leads Generados',
+            qualified: 'Calificados',
+            proposal: 'Propuesta',
+            negotiation: 'Negociación',
+            conversion: 'Conversión'
+          },
+          tips: {
+            title: 'Consejos de Gestión de Leads',
+            qualification: 'Calificación Rápida',
+            qualification_desc: 'Contacta a los leads calientes en 24h para maximizar tus posibilidades de conversión',
+            followup: 'Seguimiento Regular',
+            followup_desc: 'Planifica puntos de seguimiento semanales para mantener el compromiso',
+            personalization: 'Personalización',
+            personalization_desc: 'Adapta tus propuestas a las necesidades específicas de cada prospecto',
+            measure: 'Medición de Resultados',
+            measure_desc: 'Analiza regularmente tus tasas de conversión para optimizar tu enfoque'
+          }
+        },
+        activity: {
+          title: 'Actividad de Socio',
+          subtitle: 'Sigue todas tus interacciones y compromisos en SIPORTS',
+          full_history: 'Historial Completo de Actividades',
+          realtime: 'Tiempo Real',
+          history: 'Historial de Actividades',
+          no_activity: 'No se encontró actividad',
+          try_filters: 'Intenta modificar tus filtros de búsqueda',
+          just_now: 'Justo ahora',
+          hours_ago: 'Hace {{count}}h',
+          days_ago: 'Hace {{count}}d',
+          stats: {
+            total: 'Actividades totales',
+            today: 'Hoy',
+            this_week: 'Esta semana'
+          },
+          filter: {
+            all: 'Todas las actividades',
+            networking: 'Contactos',
+            communication: 'Comunicación',
+            events: 'Eventos',
+            sponsorship: 'Patrocinio',
+            engagement: 'Compromiso',
+            content: 'Contenido',
+            meetings: 'Reuniones',
+            system: 'Sistema'
+          },
+          type: {
+            connection: 'Conexión',
+            message: 'Mensaje',
+            event: 'Evento',
+            sponsorship: 'Patrocinio',
+            consultation: 'Consulta',
+            content: 'Contenido',
+            alert: 'Alerta',
+            meeting: 'Reunión'
+          },
+          connection_established: 'Nueva conexión establecida',
+          connected_with: 'Ahora estás conectado con Port Solutions Inc.',
+          new_message: 'Nuevo mensaje recibido',
+          message_from: 'TechMarine Solutions te ha enviado un mensaje',
+          event_participation: 'Participación en un evento',
+          participated_in: 'Has participado en la conferencia "Digital Transformation in Ports"',
+          sponsoring_activated: 'Patrocinio activado',
+          logo_displayed: 'Tu logo ahora se muestra en la página de inicio',
+          profile_viewed: 'Perfil consultado',
+          views_today: 'Tu perfil ha sido consultado 15 veces hoy',
+          content_shared: 'Contenido compartido',
+          article_shared: 'Tu artículo "Innovation in Maritime Technology" ha sido compartido',
+          system_alert: 'Alerta del sistema',
+          metrics_update: 'Actualización de tus métricas de rendimiento disponible',
+          meeting_scheduled: 'Reunión programada',
+          meeting_confirmed: 'Reunión confirmada con LogiFlow Systems mañana a las 14h'
+        },
+        calendar: {
+          title: 'Calendario de Citas',
+          create_slot: 'Nuevo Espacio',
+          slot_date_restriction: 'Los espacios deben crearse entre el 1 y el 3 de abril de 2026',
+          date_outside_salon: 'La fecha debe estar entre el 1 y el 3 de abril de 2026'
+        }
+      },
       contact: {
         title: 'Contáctenos',
         subtitle: 'Nuestro equipo está aquí para ayudar',
@@ -1059,7 +1486,7 @@ const resources = {
         level_info: 'Nivel',
         valid_dates: 'Válido del 1 al 3 de abril de 2026',
         access_granted: 'Acceso Concedido',
-        upgrade_to_premium: 'Actualizar a Premium para más beneficios'
+        upgrade_to_premium: 'Actualizar a Privilegio para más beneficios'
       },
       forms: {
         required: 'Requerido',
@@ -1076,6 +1503,112 @@ const resources = {
           max_length: 'Máximo {{max}} caracteres',
           passwords_not_match: 'Las contraseñas no coinciden'
         }
+      },
+      profile: {
+        not_found: 'Perfil no encontrado',
+        edit_profile: 'Editar Perfil',
+        change_photo: 'Cambiar foto de perfil',
+        about_placeholder: 'Cuéntanos sobre ti y tu experiencia...',
+        first_name: 'Nombre',
+        last_name: 'Apellido',
+        position: 'Puesto',
+        country: 'País',
+        company_name: 'Nombre de tu empresa',
+        company_placeholder: 'Ej: Consultor independiente',
+        sector_placeholder: 'Ej: Consultoría marítima',
+        click_to_edit: 'Clic para editar'
+      },
+      siteBuilder: {
+        search_template: 'Buscar una plantilla...',
+        search_image: 'Buscar una imagen...',
+        main_title: 'Título principal',
+        subtitle: 'Subtítulo',
+        button_text: 'Texto del botón',
+        product_name: 'Nombre del producto',
+        price: 'Precio',
+        author: 'Autor',
+        section_title: 'Título',
+        description: 'Descripción...',
+        video_url: 'URL de video YouTube/Vimeo',
+        custom_html: 'Código HTML personalizado',
+        seo_title_placeholder: 'ej: Tu Empresa - Soluciones Innovadoras',
+        seo_description_placeholder: 'Descripción concisa y atractiva de tu página...',
+        seo_slug_placeholder: 'tu-pagina',
+        add_keyword: 'Añadir una palabra clave...',
+        og_image_placeholder: 'https://example.com/image.jpg'
+      },
+      minisite: {
+        click_to_edit: 'Clic para editar',
+        delete_section: 'Eliminar sección',
+        delete_product: 'Eliminar este producto',
+        change_image: 'Clic para cambiar imagen',
+        delete_image: 'Eliminar imagen',
+        delete_article: 'Eliminar este artículo',
+        section_title: 'Título de la sección',
+        company_description: 'Descripción de tu empresa',
+        feature: 'Característica',
+        products_section_title: 'Título de la sección de productos',
+        upload_images: 'Carga de imágenes y medios'
+      },
+      ui: {
+        search: 'Buscar...',
+        uploading: 'Cargando...',
+        filtered_count: 'Cantidad filtrada',
+        search_by: 'Buscar por nombre, email, empresa o referencia...',
+        click_to_change: 'Clic para cambiar',
+        view: 'Ver',
+        share_article: 'Compartir artículo',
+        share_event: 'Compartir este evento',
+        back_to_top: 'Volver arriba',
+        sync_official: 'Sincronizar con el sitio oficial SIPORTS',
+        contact_directly: 'Contactar directamente',
+        book_appointment: 'Reservar cita',
+        add_remove_favorite: 'Añadir/Quitar de favoritos',
+        contact_info: 'Información de contacto',
+        forward_10s: 'Avanzar 10s',
+        backward_10s: 'Retroceder 10s'
+      },
+      partner_edit: {
+        basic_info: 'Información básica',
+        contact_info: 'Información de contacto',
+        sectors_services: 'Sectores y Servicios',
+        expertise: 'Nuestra Experiencia',
+        projects: 'Proyectos y Logros',
+        gallery: 'Galería de Fotos',
+        news: 'Noticias y Anuncios',
+        metrics: 'Impacto y Métricas',
+        timeline: 'Historial y Línea de Tiempo',
+        team: 'Nuestro Equipo',
+        admin_only: 'Solo los administradores pueden modificar el nivel de patrocinio',
+        company_example: 'Tanger Med Logistics',
+        country_example: 'Marruecos',
+        website_placeholder: 'https://tu-sitio-web.com',
+        description_example: 'Socio logístico premium del puerto de Tanger Med, ofreciendo servicios de almacenamiento y distribución internacional.'
+      },
+      admin_media: {
+        manager_title: 'Gestor de Medios de Administrador',
+        create_title_example: 'Ej: Webinar - Innovación Portuaria 2026',
+        create_description_placeholder: 'Descripción detallada del contenido...',
+        url_placeholder: 'https://...',
+        duration_example: 'Ej: 3600',
+        tags_example: 'innovación, tecnología, digital',
+        reject_reason: 'Explica por qué este medio es rechazado...'
+      },
+      social: {
+        follow_facebook: 'Síguenos en Facebook',
+        follow_twitter: 'Síguenos en Twitter',
+        follow_linkedin: 'Síguenos en LinkedIn',
+        youtube_channel: 'Canal de YouTube SIPORTS'
+      },
+      networking: {
+        search_room: 'Buscar una sala...'
+      },
+      registration: {
+        name: 'Nombre',
+        bio: 'Bio'
+      },
+      dev: {
+        subscription_shortcuts: 'Accesos Directos de Suscripción (DEV)'
       }
     }
   },
@@ -1156,7 +1689,15 @@ const resources = {
         quick_actions: 'إجراءات سريعة',
         notifications: 'الإشعارات',
         settings: 'الإعدادات',
-        logout: 'تسجيل الخروج'
+        logout: 'تسجيل الخروج',
+        your_quotas: 'حصصك',
+        exhibitor_quotas: 'حصص العارض',
+        visit_activity_7days: 'نشاط الزيارة (آخر 7 أيام)',
+        appointment_status: 'حالة المواعيد',
+        interest_areas: 'مجالات الاهتمام',
+        visitor_engagement_7days: 'تفاعل الزوار (آخر 7 أيام)',
+        brand_exposure_7days: 'التعرض للعلامة التجارية (آخر 7 أيام)',
+        engagement_channels: 'قنوات التفاعل'
       },
       admin: {
         title: 'الإدارة',
@@ -1498,6 +2039,112 @@ const resources = {
           max_length: 'الحد الأقصى {{max}} أحرف',
           passwords_not_match: 'كلمات المرور غير متطابقة'
         }
+      },
+      profile: {
+        not_found: 'الملف الشخصي غير موجود',
+        edit_profile: 'تعديل الملف الشخصي',
+        change_photo: 'تغيير صورة الملف الشخصي',
+        about_placeholder: 'أخبرنا عن نفسك وخبرتك...',
+        first_name: 'الاسم الأول',
+        last_name: 'اسم العائلة',
+        position: 'المنصب',
+        country: 'البلد',
+        company_name: 'اسم شركتك',
+        company_placeholder: 'مثل: مستشار مستقل',
+        sector_placeholder: 'مثل: الاستشارات البحرية',
+        click_to_edit: 'انقر للتعديل'
+      },
+      siteBuilder: {
+        search_template: 'البحث عن قالب...',
+        search_image: 'البحث عن صورة...',
+        main_title: 'العنوان الرئيسي',
+        subtitle: 'العنوان الفرعي',
+        button_text: 'نص الزر',
+        product_name: 'اسم المنتج',
+        price: 'السعر',
+        author: 'المؤلف',
+        section_title: 'العنوان',
+        description: 'الوصف...',
+        video_url: 'رابط فيديو YouTube/Vimeo',
+        custom_html: 'كود HTML مخصص',
+        seo_title_placeholder: 'مثل: شركتك - حلول مبتكرة',
+        seo_description_placeholder: 'وصف موجز وجذاب للصفحة...',
+        seo_slug_placeholder: 'صفحتك',
+        add_keyword: 'إضافة كلمة مفتاحية...',
+        og_image_placeholder: 'https://example.com/image.jpg'
+      },
+      minisite: {
+        click_to_edit: 'انقر للتعديل',
+        delete_section: 'حذف القسم',
+        delete_product: 'حذف هذا المنتج',
+        change_image: 'انقر لتغيير الصورة',
+        delete_image: 'حذف الصورة',
+        delete_article: 'حذف هذا المقال',
+        section_title: 'عنوان القسم',
+        company_description: 'وصف شركتك',
+        feature: 'ميزة',
+        products_section_title: 'عنوان قسم المنتجات',
+        upload_images: 'رفع الصور والوسائط'
+      },
+      ui: {
+        search: 'بحث...',
+        uploading: 'جاري الرفع...',
+        filtered_count: 'العدد المفلتر',
+        search_by: 'البحث بالاسم أو البريد الإلكتروني أو الشركة أو المرجع...',
+        click_to_change: 'انقر للتغيير',
+        view: 'عرض',
+        share_article: 'مشاركة المقال',
+        share_event: 'مشاركة هذا الحدث',
+        back_to_top: 'العودة إلى الأعلى',
+        sync_official: 'مزامنة مع الموقع الرسمي SIPORTS',
+        contact_directly: 'الاتصال مباشرة',
+        book_appointment: 'حجز موعد',
+        add_remove_favorite: 'إضافة/إزالة من المفضلة',
+        contact_info: 'معلومات الاتصال',
+        forward_10s: 'تقديم 10ث',
+        backward_10s: 'إرجاع 10ث'
+      },
+      partner_edit: {
+        basic_info: 'المعلومات الأساسية',
+        contact_info: 'معلومات الاتصال',
+        sectors_services: 'القطاعات والخدمات',
+        expertise: 'خبرتنا',
+        projects: 'المشاريع والإنجازات',
+        gallery: 'معرض الصور',
+        news: 'الأخبار والإعلانات',
+        metrics: 'التأثير والمقاييس',
+        timeline: 'التاريخ والجدول الزمني',
+        team: 'فريقنا',
+        admin_only: 'فقط المسؤولون يمكنهم تعديل مستوى الرعاية',
+        company_example: 'Tanger Med Logistics',
+        country_example: 'المغرب',
+        website_placeholder: 'https://your-website.com',
+        description_example: 'شريك لوجستي متميز لميناء طنجة المتوسط، يقدم خدمات التخزين والتوزيع الدولية.'
+      },
+      admin_media: {
+        manager_title: 'مدير وسائط المسؤول',
+        create_title_example: 'مثل: ندوة عبر الإنترنت - الابتكار في الموانئ 2026',
+        create_description_placeholder: 'وصف تفصيلي للمحتوى...',
+        url_placeholder: 'https://...',
+        duration_example: 'مثل: 3600',
+        tags_example: 'الابتكار، التكنولوجيا، رقمي',
+        reject_reason: 'اشرح لماذا تم رفض هذا الوسائط...'
+      },
+      social: {
+        follow_facebook: 'تابعنا على فيسبوك',
+        follow_twitter: 'تابعنا على تويتر',
+        follow_linkedin: 'تابعنا على لينكدإن',
+        youtube_channel: 'قناة SIPORTS على YouTube'
+      },
+      networking: {
+        search_room: 'البحث عن غرفة...'
+      },
+      registration: {
+        name: 'الاسم',
+        bio: 'السيرة الذاتية'
+      },
+      dev: {
+        subscription_shortcuts: 'اختصارات الاشتراك (DEV)'
       }
     }
   }

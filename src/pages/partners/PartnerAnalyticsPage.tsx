@@ -358,5 +358,4 @@ export const PartnerAnalyticsPage: React.FC = () => {
   );
 };
 
-
-
+export default PartnerAnalyticsPage;

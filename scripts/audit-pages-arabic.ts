@@ -182,15 +182,15 @@ async function audit() {
     console.log('╚════════════════════════════════════════════════════════════════╝\n');
   } else if (percentage >= 90) {
     console.log('╔════════════════════════════════════════════════════════════════╗');
-    console.log(`║  ✅ BON - ${percentage}% DES PAGES SUPPORTENT L\'ARABE               ║`);
+    console.log(`║  ✅ BON - ${percentage}% DES PAGES SUPPORTENT L'ARABE               ║`);
     console.log('╚════════════════════════════════════════════════════════════════╝\n');
   } else if (percentage >= 75) {
     console.log('╔════════════════════════════════════════════════════════════════╗');
-    console.log(`║  ⚠️  ACCEPTABLE - ${percentage}% DES PAGES SUPPORTENT L\'ARABE        ║`);
+    console.log(`║  ⚠️  ACCEPTABLE - ${percentage}% DES PAGES SUPPORTENT L'ARABE        ║`);
     console.log('╚════════════════════════════════════════════════════════════════╝\n');
   } else {
     console.log('╔════════════════════════════════════════════════════════════════╗');
-    console.log(`║  ❌ INSUFFISANT - ${percentage}% DES PAGES SUPPORTENT L\'ARABE        ║`);
+    console.log(`║  ❌ INSUFFISANT - ${percentage}% DES PAGES SUPPORTENT L'ARABE        ║`);
     console.log('╚════════════════════════════════════════════════════════════════╝\n');
   }
 }

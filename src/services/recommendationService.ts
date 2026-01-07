@@ -1,4 +1,4 @@
-import { User, NetworkingRecommendation } from '../types';
+import { User, NetworkingRecommendation, UserProfile } from '../types';
 
 // --- Helper Functions ---
 
@@ -35,10 +35,12 @@ const weights = {
   keywordInBio: 5,
   sameCompanySize: 5,
   sharedCollaborationTypes: 20,
-  // New priority weights for user types
-  partnerPriority: 30, // Partners get priority over exhibitors
-  exhibitorPriority: 20, // Exhibitors get priority over visitors
+  // New priority weights for user types - INCREASED for better matching even with empty profiles
+  partnerPriority: 45, // Partners get priority over exhibitors
+  exhibitorPriority: 35, // Exhibitors get priority over visitors
+  visitorBonus: 25, // Bonus for matching with visitors
   availabilityBonus: 15, // Bonus for users with available time slots
+  baseConnectionScore: 20, // Base score for any potential connection
 };
 
 /**
@@ -49,7 +51,7 @@ class RecommendationService {
   /**
    * Ensures profile has default values for matching
    */
-  private static ensureProfileDefaults(profile: any): any {
+  private static ensureProfileDefaults(profile: Partial<UserProfile> | undefined): UserProfile {
     return {
       interests: profile?.interests || [],
       sectors: profile?.sectors || [],
@@ -103,8 +105,9 @@ class RecommendationService {
 
       const { score, reasons } = this.calculateMatchScore(currentUserWithDefaults as User, matchWithDefaults as User);
 
-      // Lower threshold for users with empty profiles - base score on user type priority
-      const threshold = (potentialMatch.profile?.interests?.length > 0) ? 30 : 15;
+      // REDUCED threshold - accept all matches with positive score
+      // Users with rich profiles get higher scores but all users can be recommended
+      const threshold = 10; // Very low threshold to ensure recommendations even with empty profiles
       
       if (score > threshold) {
         recommendations.push({
@@ -112,7 +115,7 @@ class RecommendationService {
           userId: currentUser.id,
           recommendedUserId: potentialMatch.id,
           score: Math.min(100, Math.round(score)), // Cap score at 100
-          reasons,
+          reasons: reasons.length > 0 ? reasons : ['Professionnel du secteur portuaire'], // Default reason if empty
           category: 'Professional Match',
           viewed: false,
           contacted: false,
@@ -135,8 +138,8 @@ class RecommendationService {
   private static calculateMatchScore(user1: User, user2: User): { score: number; reasons: string[] } {
     let score = 0;
     const reasons: string[] = [];
-    const p1: any = user1.profile || {};
-    const p2: any = user2.profile || {};
+    const p1: UserProfile = user1.profile || {} as UserProfile;
+    const p2: UserProfile = user2.profile || {} as UserProfile;
 
     // Ensure arrays exist to avoid null errors
     const p1Interests = p1.interests || [];
@@ -148,29 +151,49 @@ class RecommendationService {
     const p1CollabTypes = p1.collaborationTypes || [];
     const p2CollabTypes = p2.collaborationTypes || [];
 
-    // 1. User Type Priority System
-    // Partners get priority over exhibitors, exhibitors over visitors
+    // ALWAYS add a base connection score for any user
+    score += weights.baseConnectionScore;
+
+    // 1. User Type Priority System - ENHANCED
+    // Partners get highest priority, then exhibitors, then visitors
     if (user1.type === 'visitor' && user2.type === 'exhibitor') {
       score += weights.exhibitorPriority;
-      reasons.push('Exposant recommandé pour networking');
+      reasons.push('🏢 Exposant recommandé pour networking');
     } else if (user1.type === 'visitor' && user2.type === 'partner') {
-      score += weights.exhibitorPriority + weights.partnerPriority;
-      reasons.push('Partenaire officiel du salon');
+      score += weights.partnerPriority;
+      reasons.push('🤝 Partenaire officiel du salon');
     } else if (user1.type === 'exhibitor' && user2.type === 'partner') {
       score += weights.partnerPriority;
-      reasons.push('Partenaire stratégique');
+      reasons.push('⭐ Partenaire stratégique');
+    } else if (user1.type === 'exhibitor' && user2.type === 'visitor') {
+      score += weights.visitorBonus;
+      reasons.push('👤 Visiteur intéressé par vos services');
+    } else if (user1.type === 'partner' && user2.type === 'visitor') {
+      score += weights.visitorBonus;
+      reasons.push('👥 Visiteur potentiel');
+    } else if (user1.type === 'partner' && user2.type === 'exhibitor') {
+      score += weights.exhibitorPriority;
+      reasons.push('🏭 Exposant dans votre secteur');
     }
 
-    // Reverse priority for the other user perspective
-    if (user2.type === 'visitor' && user1.type === 'exhibitor') {
-      score += weights.exhibitorPriority;
-      reasons.push('Visiteur intéressé par vos services');
-    } else if (user2.type === 'visitor' && user1.type === 'partner') {
-      score += weights.exhibitorPriority + weights.partnerPriority;
-      reasons.push('Visiteur potentiel');
-    } else if (user2.type === 'exhibitor' && user1.type === 'partner') {
-      score += weights.partnerPriority;
-      reasons.push('Exposant dans votre secteur');
+    // Same type connections get a smaller bonus
+    if (user1.type === user2.type) {
+      score += weights.baseConnectionScore * 0.5;
+      reasons.push(`👔 Professionnel ${user2.type === 'exhibitor' ? 'exposant' : user2.type === 'partner' ? 'partenaire' : 'visiteur'}`);
+    }
+
+    // Add company-based bonus if available
+    if (p1.company && p2.company) {
+      score += 10;
+      reasons.push(`💼 ${p2.company}`);
+    }
+
+    // Add sector-based bonus if businessSector matches
+    if (p1.businessSector && p2.businessSector) {
+      if (p1.businessSector.toLowerCase() === p2.businessSector.toLowerCase()) {
+        score += 15;
+        reasons.push(`🎯 Même secteur: ${p2.businessSector}`);
+      }
     }
 
     // 2. Shared Interests

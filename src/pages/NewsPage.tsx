@@ -172,7 +172,7 @@ export default function NewsPage() {
                 variant="outline"
                 onClick={handleRefreshFromOfficialSite}
                 disabled={isLoading}
-                title="Synchroniser avec le site officiel SIPORTS"
+                title={t('ui.sync_official')}
               >
                 {isLoading ? (
                   <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
@@ -314,7 +314,7 @@ export default function NewsPage() {
                                   .catch(() => toast.error('Impossible de copier'));
                               }
                             }}
-                            title="Partager cet article"
+                            title={t('ui.share_article')}
                           >
                             <Share2 className="h-4 w-4" />
                           </Button>

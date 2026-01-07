@@ -4,8 +4,10 @@ import { toast } from 'react-hot-toast';
 import useAuthStore from '../../store/authStore';
 import { SupabaseService } from '../../services/supabaseService';
 import ImageUploader from '../ui/ImageUploader';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export const ProfileEditor: React.FC = () => {
+  const { t } = useTranslation();
   const { user, updateUserProfile, isLoading } = useAuthStore();
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
@@ -106,11 +108,11 @@ export const ProfileEditor: React.FC = () => {
         <div className="flex-grow">
           {isEditing ? (
             <div className="grid grid-cols-2 gap-4">
-              <input type="text" name="firstName" value={profileData.firstName} onChange={handleInputChange} placeholder="Prénom" className="input input-bordered w-full"  aria-label="Prénom" />
-              <input type="text" name="lastName" value={profileData.lastName} onChange={handleInputChange} placeholder="Nom" className="input input-bordered w-full"  aria-label="Nom" />
-              <input type="text" name="position" value={profileData.position} onChange={handleInputChange} placeholder="Poste" className="input input-bordered w-full"  aria-label="Poste" />
-              <input type="text" name="country" value={profileData.country} onChange={handleInputChange} placeholder="Pays" className="input input-bordered w-full"  aria-label="Pays" />
-              <input type="text" name="phone" value={profileData.phone} onChange={handleInputChange} placeholder="Téléphone" className="input input-bordered w-full"  aria-label="Téléphone" />
+              <input type="text" name="firstName" value={profileData.firstName} onChange={handleInputChange} placeholder={t('profile.first_name')} className="input input-bordered w-full"  aria-label={t('profile.first_name')} />
+              <input type="text" name="lastName" value={profileData.lastName} onChange={handleInputChange} placeholder={t('profile.last_name')} className="input input-bordered w-full"  aria-label={t('profile.last_name')} />
+              <input type="text" name="position" value={profileData.position} onChange={handleInputChange} placeholder={t('profile.position')} className="input input-bordered w-full"  aria-label={t('profile.position')} />
+              <input type="text" name="country" value={profileData.country} onChange={handleInputChange} placeholder={t('profile.country')} className="input input-bordered w-full"  aria-label={t('profile.country')} />
+              <input type="text" name="phone" value={profileData.phone} onChange={handleInputChange} placeholder={t('auth.phone')} className="input input-bordered w-full"  aria-label={t('auth.phone')} />
             </div>
           ) : (
             <>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, X, Star, Sparkles, TrendingUp } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Badge } from '../ui/badge';
+import { Button } from '../ui/Button';
+import { Badge } from '../ui/Badge';
 import { supabase } from '../../lib/supabase';
 import type { SiteTemplate } from '../../types/site-builder';
 import toast from 'react-hot-toast';
@@ -87,7 +87,7 @@ export const SiteTemplateSelector: React.FC<SiteTemplateSelectorProps> = ({ onSe
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Rechercher un template..."
+              placeholder={t('siteBuilder.search_template')}
               className="w-full pl-10 pr-4 py-2 border rounded-lg"
             />
           </div>
