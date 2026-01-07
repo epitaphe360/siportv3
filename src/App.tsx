@@ -139,6 +139,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import { initializeAuth } from './lib/initAuth';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import DevSubscriptionSwitcher from './components/dev/DevSubscriptionSwitcher';
+import { usePushNotifications } from './hooks/usePushNotifications';
 
 // Import cleanup functions for dev debugging (not used in production)
 if (import.meta.env.DEV) {
@@ -154,6 +155,9 @@ if (import.meta.env.DEV) {
 const App = () => {
   const [isChatBotOpen, setIsChatBotOpen] = React.useState(false);
   const { currentLanguage, getCurrentLanguage } = useLanguageStore();
+
+  // Initialize push notifications on app startup
+  usePushNotifications();
 
   // Initialize auth from Supabase session on app start
   React.useEffect(() => {

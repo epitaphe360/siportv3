@@ -3,6 +3,7 @@ import { Appointment, TimeSlot } from '../types';
 import { SupabaseService } from '../services/supabaseService';
 import { EmailService } from '../services/emailService';
 import { SecurityService } from '../services/securityService';
+import PushNotificationService from '../services/pushNotificationService';
 import { supabase as supabaseClient, isSupabaseReady } from '../lib/supabase';
 import { generateDemoTimeSlots } from '../config/demoTimeSlots';
 
@@ -492,11 +493,16 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
             });
 
             // ✅ Envoyer notification email/push aux participants
+            const visitorId = appointment.visitorId;
+            const visitorName = appointment.visitorName || 'Visiteur';
+            const exhibitorName = appointment.exhibitorName || 'Exposant';
+
             try {
+              // Email notification
               await EmailService.sendAppointmentConfirmation({
                 visitorEmail: appointment.visitorEmail || '',
-                visitorName: appointment.visitorName || 'Visiteur',
-                exhibitorName: appointment.exhibitorName || 'Exposant',
+                visitorName,
+                exhibitorName,
                 exhibitorEmail: appointment.exhibitorEmail || '',
                 date: appointment.date,
                 time: appointment.startTime || '',
@@ -506,6 +512,22 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
             } catch (emailError) {
               console.warn('⚠️ Email notification failed:', emailError);
               // Non-blocking error - appointment is still saved
+            }
+
+            // Push notification
+            try {
+              if (PushNotificationService.isNotificationSupported()) {
+                await PushNotificationService.sendAppointmentNotification(
+                  visitorId,
+                  appointment.id,
+                  visitorName,
+                  exhibitorName,
+                  'confirmed'
+                );
+              }
+            } catch (pushError) {
+              console.warn('⚠️ Push notification failed:', pushError);
+              // Non-blocking error - email was already sent
             }
           } catch (notifError) {
             console.warn('Erreur notification:', notifError);
