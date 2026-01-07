@@ -27,6 +27,17 @@ interface RegistrationData {
   [key: string]: unknown; // Pour les champs additionnels
 }
 
+interface SignUpPayload {
+  name: string;
+  type: User['type'];
+  profile: Partial<UserProfile>;
+  visitor_level?: 'free' | 'premium' | 'vip';
+}
+
+interface OAuthError extends Error {
+  message: string;
+}
+
 interface AuthState {
   user: User | null;
   token: string | null;
@@ -221,7 +232,7 @@ const useAuthStore = create<AuthState>()(
       const userType = (['admin','exhibitor','partner','visitor','security'].includes(userData.accountType ?? '') ? userData.accountType! : 'visitor') as User['type'];
 
       // Préparer les données utilisateur avec le niveau visiteur par défaut (FREE)
-      const signUpData: any = {
+      const signUpData: SignUpPayload = {
         name: `${userData.firstName} ${userData.lastName}`.trim(),
         type: userType,
         profile: minimalUserProfile({
@@ -316,10 +327,11 @@ const useAuthStore = create<AuthState>()(
       // Note: The OAuth flow redirects, so code after this may not execute
       // The actual login completion happens after OAuth callback
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const oauthError = error as OAuthError;
       console.error('❌ Google OAuth error:', error);
       set({ isGoogleLoading: false });
-      throw new Error(error.message || 'Erreur lors de la connexion avec Google');
+      throw new Error(oauthError.message || 'Erreur lors de la connexion avec Google');
     }
   },
 
@@ -334,10 +346,11 @@ const useAuthStore = create<AuthState>()(
       // Note: The OAuth flow redirects, so code after this may not execute
       // The actual login completion happens after OAuth callback
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const oauthError = error as OAuthError;
       console.error('❌ LinkedIn OAuth error:', error);
       set({ isLinkedInLoading: false });
-      throw new Error(error.message || 'Erreur lors de la connexion avec LinkedIn');
+      throw new Error(oauthError.message || 'Erreur lors de la connexion avec LinkedIn');
     }
   },
 
@@ -370,7 +383,7 @@ const useAuthStore = create<AuthState>()(
         isLinkedInLoading: false
       });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Error handling OAuth callback:', error);
       set({
         isLoading: false,
