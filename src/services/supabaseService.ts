@@ -1473,7 +1473,7 @@ export class SupabaseService {
 
         // ✅ Compter les messages non lus pour cet utilisateur
         const unreadCount = (conv.messages || []).filter((msg: ChatMessageDB) =>
-          (msg as any).receiver_id === userId && (msg as any).read_at === null
+          msg.sender_id !== userId && !msg.read
         ).length;
 
         return {
@@ -2367,7 +2367,27 @@ export class SupabaseService {
       };
 
       // Transform DB rows to TimeSlot interface (snake_case → camelCase)
-      const transformed = (data || []).map((row: any) => ({
+      interface TimeSlotRow {
+        id: string;
+        exhibitor_id?: string;
+        user_id?: string;
+        slot_date?: string;
+        date?: string;
+        start_time?: string;
+        startTime?: string;
+        end_time?: string;
+        endTime?: string;
+        duration?: number;
+        type?: string;
+        max_bookings?: number;
+        maxBookings?: number;
+        current_bookings?: number;
+        currentBookings?: number;
+        available?: boolean;
+        location?: string;
+      }
+
+      const transformed = (data || []).map((row: TimeSlotRow) => ({
         id: row.id,
         userId: row.exhibitor_id || row.user_id,
         date: parseLocalDate(row.slot_date || row.date),
@@ -2383,11 +2403,12 @@ export class SupabaseService {
 
       return transformed;
     } catch (error) {
+      const errorInfo = error as Record<string, unknown>;
       console.error('[TIME_SLOTS] Error fetching time slots:', {
         exhibitorId,
-        message: (error as any)?.message || String(error),
-        details: (error as any)?.details || (error as any)?.hint || null,
-        status: (error as any)?.status || 'unknown'
+        message: (errorInfo.message as string) || String(error),
+        details: ((errorInfo.details as string) || (errorInfo.hint as string)) || null,
+        status: (errorInfo.status as string) || 'unknown'
       });
       return [];
     }
@@ -2693,15 +2714,15 @@ export class SupabaseService {
   }
 
   // ==================== MAPPING HELPERS ====================
-  private static mapUserFromDB(data: any): User {
+  private static mapUserFromDB(data: UserDB): User {
     return this.transformUserDBToUser(data);
   }
 
-  private static mapExhibitorFromDB(data: any): Exhibitor {
+  private static mapExhibitorFromDB(data: ExhibitorDB): Exhibitor {
     return this.transformExhibitorDBToExhibitor(data);
   }
 
-  private static mapProductFromDB(data: any): Product {
+  private static mapProductFromDB(data: ProductDB): Product {
     return {
       id: data.id,
       exhibitorId: data.exhibitor_id,
