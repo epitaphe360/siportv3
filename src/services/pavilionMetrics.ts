@@ -7,6 +7,10 @@ export interface PavilionMetrics {
   countries: number;
 }
 
+interface ExhibitorProfile {
+  country?: string;
+}
+
 // Valeurs par défaut pour le développement - statistiques réalistes du salon
 const defaultPavilionMetrics: PavilionMetrics = {
   totalExhibitors: 500,
@@ -31,20 +35,20 @@ export class PavilionMetricsService {
         countriesResult
       ] = await Promise.all([
         // Total exposants (tous les exposants vérifiés)
-        (supabase as any).from('exhibitors').select('id', { count: 'exact', head: true }).eq('verified', true),
+        supabase.from('exhibitors').select('id', { count: 'exact', head: true }).eq('verified', true),
 
         // Total visiteurs
-        (supabase as any).from('users').select('id', { count: 'exact', head: true }).eq('type', 'visitor'),
+        supabase.from('users').select('id', { count: 'exact', head: true }).eq('type', 'visitor'),
 
         // Total conférences/événements
-        (supabase as any).from('events').select('id', { count: 'exact', head: true }),
+        supabase.from('events').select('id', { count: 'exact', head: true }),
 
         // Pays représentés
-        (supabase as any).from('exhibitor_profiles').select('country')
+        supabase.from('exhibitor_profiles').select('country')
       ]);
 
       // Calculer le nombre de pays distincts
-      const uniqueCountries = countriesResult.data ? new Set(countriesResult.data.map((p: any) => p.country).filter(Boolean)).size : 0;
+      const uniqueCountries = countriesResult.data ? new Set((countriesResult.data as ExhibitorProfile[]).map((p) => p.country).filter(Boolean)).size : 0;
 
       // Calculer les métriques réelles depuis la base de données
       const metrics: PavilionMetrics = {
