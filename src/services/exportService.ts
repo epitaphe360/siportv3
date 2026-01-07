@@ -5,6 +5,7 @@
  */
 
 import { logger } from '../lib/logger';
+import { Exhibitor, Partner, User, Appointment } from '../types';
 
 export type ExportFormat = 'csv' | 'excel' | 'pdf' | 'json';
 
@@ -15,6 +16,10 @@ export interface ExportOptions {
   title?: string;
   author?: string;
   subject?: string;
+}
+
+interface AnalyticsStats {
+  [key: string]: unknown;
 }
 
 class ExportService {
@@ -112,12 +117,12 @@ class ExportService {
    */
   async exportToJson<T>(data: T[], options: ExportOptions = {}): Promise<Blob> {
     try {
-      logger.debug('Exporting to JSON', { count: (data as any[]).length });
+      logger.debug('Exporting to JSON', { count: data.length });
 
       const json = JSON.stringify(data, null, 2);
       const blob = new Blob([json], { type: 'application/json' });
 
-      logger.info('JSON export successful', { rows: (data as any[]).length });
+      logger.info('JSON export successful', { rows: data.length });
       return blob;
     } catch (error) {
       logger.error('JSON export failed', error);
@@ -144,14 +149,14 @@ class ExportService {
   /**
    * Helper: Get nested value from object
    */
-  private getNestedValue(obj: any, path: string): any {
-    return path.split('.').reduce((current, key) => current?.[key], obj);
+  private getNestedValue(obj: Record<string, unknown>, path: string): unknown {
+    return path.split('.').reduce((current: any, key) => current?.[key], obj);
   }
 
   /**
    * Helper: Escape CSV value
    */
-  private escapeCsvValue(value: any): string {
+  private escapeCsvValue(value: unknown): string {
     if (value === null || value === undefined) {
       return '';
     }
@@ -232,7 +237,7 @@ class ExportService {
    * Export Exhibitors
    */
   async exportExhibitors(
-    exhibitors: any[],
+    exhibitors: Exhibitor[],
     format: ExportFormat = 'csv'
   ): Promise<void> {
     const data = exhibitors.map((ex) => ({
@@ -259,7 +264,7 @@ class ExportService {
   /**
    * Export Partners
    */
-  async exportPartners(partners: any[], format: ExportFormat = 'csv'): Promise<void> {
+  async exportPartners(partners: Partner[], format: ExportFormat = 'csv'): Promise<void> {
     const data = partners.map((p) => ({
       'Organisation': p.organizationName || p.organization_name,
       'Type': p.partnerType || p.partner_type,
@@ -284,7 +289,7 @@ class ExportService {
   /**
    * Export Visitors
    */
-  async exportVisitors(visitors: any[], format: ExportFormat = 'csv'): Promise<void> {
+  async exportVisitors(visitors: User[], format: ExportFormat = 'csv'): Promise<void> {
     const data = visitors.map((v) => ({
       'Nom': v.name,
       'Email': v.email,
@@ -310,7 +315,7 @@ class ExportService {
    * Export Appointments
    */
   async exportAppointments(
-    appointments: any[],
+    appointments: Appointment[],
     format: ExportFormat = 'csv'
   ): Promise<void> {
     const data = appointments.map((apt) => ({
@@ -335,7 +340,7 @@ class ExportService {
   /**
    * Export Analytics Report
    */
-  async exportAnalyticsReport(stats: any, format: ExportFormat = 'pdf'): Promise<void> {
+  async exportAnalyticsReport(stats: AnalyticsStats, format: ExportFormat = 'pdf'): Promise<void> {
     const data = [
       { 'Métrique': 'Visiteurs Total', 'Valeur': stats.totalVisitors },
       { 'Métrique': 'Exposants Total', 'Valeur': stats.totalExhibitors },
@@ -358,7 +363,7 @@ class ExportService {
    * Helper: Export by format
    */
   private async exportByFormat(
-    data: any[],
+    data: Record<string, unknown>[],
     format: ExportFormat,
     options: ExportOptions
   ): Promise<Blob> {
