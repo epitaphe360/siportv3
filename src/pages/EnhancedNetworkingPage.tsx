@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import { useTranslation } from '../hooks/useTranslation';
 import {
   Users, Brain, MessageCircle, Calendar, Search, Filter,
   Heart, CheckCircle, Clock, Eye, BarChart3, TrendingUp, 
@@ -22,6 +23,7 @@ type TabType = 'recommendations' | 'connections' | 'messages' | 'qr-access' | 'a
 
 const EnhancedNetworkingPage: React.FC = () => {
   const { user, isAuthenticated } = useAuthStore();
+  const { t } = useTranslation();
   const {
     recommendations,
     isLoading,
@@ -217,7 +219,7 @@ const EnhancedNetworkingPage: React.FC = () => {
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-gray-600">Connexions</span>
                         <span className="font-medium">
-                          {dailyUsage.connections}/{permissions?.maxConnectionsPerDay === -1 ? '∞' : permissions?.maxConnectionsPerDay}
+                          {dailyUsage.connections}/{permissions?.maxConnectionsPerDay === -1 ? 'âˆž' : permissions?.maxConnectionsPerDay}
                         </span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-1">
@@ -230,7 +232,7 @@ const EnhancedNetworkingPage: React.FC = () => {
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-gray-600">Messages</span>
                         <span className="font-medium">
-                          {dailyUsage.messages}/{permissions?.maxMessagesPerDay === -1 ? '∞' : permissions?.maxMessagesPerDay}
+                          {dailyUsage.messages}/{permissions?.maxMessagesPerDay === -1 ? 'âˆž' : permissions?.maxMessagesPerDay}
                         </span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-1">
@@ -243,7 +245,7 @@ const EnhancedNetworkingPage: React.FC = () => {
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-gray-600">Rendez-vous</span>
                         <span className="font-medium">
-                          {dailyUsage.meetings}/{permissions?.maxMeetingsPerDay === -1 ? '∞' : permissions?.maxMeetingsPerDay}
+                          {dailyUsage.meetings}/{permissions?.maxMeetingsPerDay === -1 ? 'âˆž' : permissions?.maxMeetingsPerDay}
                         </span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-1">
@@ -325,8 +327,8 @@ const EnhancedNetworkingPage: React.FC = () => {
                           <div>
                             <h4 className="font-medium text-gray-900 mb-2">Suggestions</h4>
                             <ul className="space-y-1">
-                              {aiInsights.suggestions.map((suggestion, index) => (
-                                <li key={index} className="text-sm text-gray-600 flex items-start">
+                              {aiInsights.suggestions.map((suggestion) => (
+                                <li key={suggestion} className="text-sm text-gray-600 flex items-start">
                                   <Target className="h-3 w-3 mr-2 mt-1 text-blue-500" />
                                   {suggestion}
                                 </li>
@@ -336,8 +338,8 @@ const EnhancedNetworkingPage: React.FC = () => {
                           <div>
                             <h4 className="font-medium text-gray-900 mb-2">Mots-clés Tendance</h4>
                             <div className="flex flex-wrap gap-2">
-                              {aiInsights.topKeywords.map((keyword, index) => (
-                                <Badge key={index} variant="success" className="text-xs">
+                              {aiInsights.topKeywords.map((keyword) => (
+                                <Badge key={keyword} variant="success" className="text-xs">
                                   {keyword}
                                 </Badge>
                               ))}
@@ -481,3 +483,4 @@ const EnhancedNetworkingPage: React.FC = () => {
 };
 
 export default EnhancedNetworkingPage;
+

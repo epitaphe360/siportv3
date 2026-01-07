@@ -1,10 +1,12 @@
-import { Card } from '../components/ui/Card';
+﻿import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
+import { useTranslation } from '../hooks/useTranslation';
 import { Handshake, Star, TrendingUp, Users } from 'lucide-react';
 import { toast } from 'sonner';
 import { getSupportEmail, getSupportPhone, getSupportMessage } from '../lib/config';
 
 export default function PartnershipPage() {
+  const { t } = useTranslation();
   const handleContact = () => {
     toast.success(getSupportMessage('partnership'));
   };
@@ -152,3 +154,5 @@ export default function PartnershipPage() {
     </div>
   );
 }
+
+

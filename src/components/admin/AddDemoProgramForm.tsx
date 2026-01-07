@@ -69,8 +69,6 @@ export default function AddDemoProgramPage() {
 
     try {
       // Ici vous pouvez implémenter la logique de sauvegarde
-      console.log('Programme data:', programData);
-      console.log('Pavilion ID:', pavilionId);
 
       // Simulation d'une requête API
       await new Promise(resolve => setTimeout(resolve, 1500));
@@ -220,7 +218,10 @@ export default function AddDemoProgramPage() {
                     required
                     min="1"
                     value={programData.capacity}
-                    onChange={(e) => handleChange('capacity', parseInt(e.target.value))}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value, 10);
+                      handleChange('capacity', isNaN(val) ? 0 : val);
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -295,7 +296,7 @@ export default function AddDemoProgramPage() {
                   </label>
                   <div className="flex flex-wrap gap-2 mb-3">
                     {programData.tags.map((tag, index) => (
-                      <Badge key={index} variant="default" className="flex items-center space-x-1">
+                      <Badge key={`tag-${tag}-${index}`} variant="default" className="flex items-center space-x-1">
                         <span>{tag}</span>
                         <button
                           type="button"
@@ -324,9 +325,11 @@ export default function AddDemoProgramPage() {
                       type="button"
                       variant="outline"
                       onClick={(e) => {
-                        const input = e.currentTarget.previousElementSibling as HTMLInputElement;
-                        addTag(input.value);
-                        input.value = '';
+                        const input = e.currentTarget.previousElementSibling as HTMLInputElement | null;
+                        if (input) {
+                          addTag(input.value);
+                          input.value = '';
+                        }
                       }}
                     >
                       Ajouter

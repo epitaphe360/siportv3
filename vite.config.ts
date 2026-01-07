@@ -4,13 +4,13 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: './',
+  base: '/',
   plugins: [react()],
   server: {
     host: '0.0.0.0',
-    port: 5000,
+    port: 9323,
     hmr: {
-      port: 5000,
+      port: 9323,
       overlay: false
     },
     allowedHosts: true,
@@ -18,10 +18,17 @@ export default defineConfig({
       usePolling: true,
       interval: 1000,
     },
+    // Fix COEP issue with reCAPTCHA
+    middlewareMode: false,
+    headers: {
+      // COEP is disabled to allow reCAPTCHA and other cross-origin resources
+      // 'Cross-Origin-Embedder-Policy': 'credentialless',
+      // 'Cross-Origin-Opener-Policy': 'same-origin-allow-popups'
+    }
   },
   preview: {
     host: '0.0.0.0',
-    port: process.env.PORT ? parseInt(process.env.PORT) : 5000,
+    port: process.env.PORT ? parseInt(process.env.PORT) : 9323,
   },
   resolve: {
     alias: {
@@ -34,6 +41,10 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
+        // Use content-based hashing for better cache busting
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react/jsx-runtime'],
           'router-vendor': ['react-router-dom'],
@@ -57,9 +68,9 @@ export default defineConfig({
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: true,
+        drop_console: false, // Keep console for production debugging
         drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info', 'console.debug']
+        pure_funcs: ['console.debug', 'console.trace']
       }
     },
     reportCompressedSize: false,

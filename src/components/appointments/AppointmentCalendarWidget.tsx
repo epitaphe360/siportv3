@@ -40,7 +40,14 @@ export const AppointmentCalendarWidget: React.FC = () => {
         const appointmentDate = new Date(appointment.slot.date);
         return appointmentDate.toDateString() === selectedDate.toDateString();
       })
-      .sort((a, b) => new Date(a.slot.startTime).getTime() - new Date(b.slot.startTime).getTime());
+      .sort((a, b) => {
+        // Parse time strings (HH:MM) to minutes for comparison
+        const timeToMinutes = (t: string) => {
+          const [hh, mm] = t.split(':').map(Number);
+          return (hh || 0) * 60 + (mm || 0);
+        };
+        return timeToMinutes(a.slot.startTime) - timeToMinutes(b.slot.startTime);
+      });
   }, [appointments, timeSlots, selectedDate]);
 
   const getStatusVariant = (status: string): 'success' | 'warning' | 'error' | 'info' | 'default' => {

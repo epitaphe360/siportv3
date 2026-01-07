@@ -21,7 +21,9 @@ describe('fileValidator', () => {
   ): File {
     const buffer = new Uint8Array(content);
     const blob = new Blob([buffer], { type });
-    return new File([blob], name, { type });
+    const file = new File([blob], name, { type });
+    Object.defineProperty(file, 'size', { value: size });
+    return file;
   }
 
   describe('validateImage', () => {

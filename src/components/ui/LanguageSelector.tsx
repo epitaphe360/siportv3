@@ -1,14 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Globe, ChevronDown, Check, Loader } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguageStore, supportedLanguages } from '../../store/languageStore';
+import { toast } from 'sonner';
 
 export const LanguageSelector: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { currentLanguage, isLoading, setLanguage, getCurrentLanguage } = useLanguageStore();
   
-  const currentLang = getCurrentLanguage();
+  // Sélecteurs individuels pour une meilleure réactivité
+  const currentLanguage = useLanguageStore((state) => state.currentLanguage);
+  const isLoading = useLanguageStore((state) => state.isLoading);
+  const setLanguage = useLanguageStore((state) => state.setLanguage);
+  
+  // Trouver la langue actuelle
+  const currentLang = supportedLanguages.find(lang => lang.code === currentLanguage) || supportedLanguages[0];
 
   // Fermer le dropdown quand on clique à l'extérieur
   useEffect(() => {
@@ -22,64 +28,34 @@ export const LanguageSelector: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleLanguageChange = async (languageCode: string) => {
+  const handleLanguageChange = useCallback(async (languageCode: string) => {
     if (languageCode === currentLanguage) {
       setIsOpen(false);
       return;
     }
 
     try {
+      console.log('🌍 Changing language to:', languageCode);
       await setLanguage(languageCode);
       setIsOpen(false);
       
-      // Notification de succès
+      // Notification de succès avec Sonner
       const newLang = supportedLanguages.find(lang => lang.code === languageCode);
       if (newLang) {
-        // Créer une notification toast personnalisée
-        const toast = document.createElement('div');
-        toast.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2';
-        toast.innerHTML = `
-          <div class="flex items-center space-x-2">
-            <span>${newLang.flag}</span>
-            <span>Langue changée en ${newLang.nativeName}</span>
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-          </div>
-        `;
-        
-        document.body.appendChild(toast);
-        
-        // Animation d'entrée
-        toast.style.transform = 'translateX(100%)';
-        toast.style.transition = 'transform 0.3s ease-out';
-        setTimeout(() => {
-          toast.style.transform = 'translateX(0)';
-        }, 10);
-        
-        // Supprimer après 3 secondes
-        setTimeout(() => {
-          toast.style.transform = 'translateX(100%)';
-          setTimeout(() => {
-            document.body.removeChild(toast);
-          }, 300);
-        }, 3000);
+        toast.success(`${newLang.flag} Langue changée en ${newLang.nativeName}`, {
+          duration: 3000,
+          position: 'top-right'
+        });
       }
+      
+      // Forcer un re-render de l'application
+      window.dispatchEvent(new Event('languagechange'));
       
     } catch (error) {
       console.error('Erreur changement de langue:', error);
-      
-      // Notification d'erreur
-      const errorToast = document.createElement('div');
-      errorToast.className = 'fixed top-4 right-4 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50';
-      errorToast.textContent = 'Erreur lors du changement de langue';
-      document.body.appendChild(errorToast);
-      
-      setTimeout(() => {
-        document.body.removeChild(errorToast);
-      }, 3000);
+      toast.error('Erreur lors du changement de langue');
     }
-  };
+  }, [currentLanguage, setLanguage]);
 
   return (
     <div className="relative" ref={dropdownRef}>

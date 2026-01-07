@@ -61,23 +61,23 @@ const RecommendationList: React.FC = memo(() => {
         <Card key={rec.recommendedUserId} className="flex flex-col" padding="none">
           <div className="p-6 flex flex-row items-center gap-4">
             <Avatar className="h-16 w-16">
-              <AvatarImage src={rec.recommendedUser.profile.avatar} alt={rec.recommendedUser.name} />
-              <AvatarFallback>{rec.recommendedUser.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+              <AvatarImage src={rec.recommendedUser?.profile?.avatar} alt={rec.recommendedUser?.name || ''} />
+              <AvatarFallback>{rec.recommendedUser?.name?.substring(0, 2)?.toUpperCase() || 'UN'}</AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <h3 className="text-xl font-semibold">{rec.recommendedUser.name}</h3>
-              <p className="text-sm text-muted-foreground">{rec.recommendedUser.profile.company}</p>
-              <Badge variant="default" className="mt-1">{rec.recommendedUser.type}</Badge>
+              <h3 className="text-xl font-semibold">{rec.recommendedUser?.name || 'Utilisateur'}</h3>
+              <p className="text-sm text-muted-foreground">{rec.recommendedUser?.profile?.company || ''}</p>
+              <Badge variant="default" className="mt-1">{rec.recommendedUser?.type || 'visitor'}</Badge>
             </div>
           </div>
           <div className="p-6 pt-0 flex-1 flex flex-col justify-between">
             <div>
-              <p className="text-sm mb-4">{rec.recommendedUser.profile.bio}</p>
+              <p className="text-sm mb-4">{rec.recommendedUser?.profile?.bio || ''}</p>
               <div className="mb-4">
                 <h4 className="font-semibold text-sm mb-2">Principales raisons de se connecter :</h4>
                 <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                  {rec.reasons.slice(0, 3).map((reason, index) => (
-                    <li key={index}>{reason}</li>
+                  {rec.reasons.slice(0, 3).map((reason) => (
+                    <li key={reason}>{reason}</li>
                   ))}
                 </ul>
               </div>

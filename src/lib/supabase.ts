@@ -10,7 +10,7 @@ export type Database = {
           id: string;
           email: string;
           name: string;
-          type: 'exhibitor' | 'partner' | 'visitor' | 'admin';
+          type: 'exhibitor' | 'partner' | 'visitor' | 'admin' | 'security';
           visitor_level?: 'free' | 'basic' | 'premium' | 'vip'; // Ajouté
           profile: UserProfile;
           status?: 'active' | 'pending' | 'suspended' | 'rejected';
@@ -21,7 +21,7 @@ export type Database = {
           id?: string;
           email: string;
           name: string;
-          type: 'exhibitor' | 'partner' | 'visitor' | 'admin';
+          type: 'exhibitor' | 'partner' | 'visitor' | 'admin' | 'security';
           visitor_level?: 'free' | 'basic' | 'premium' | 'vip'; // Ajouté
           profile: UserProfile;
           status?: 'active' | 'pending' | 'suspended' | 'rejected';
@@ -678,12 +678,7 @@ if (typeof window !== 'undefined' && (window as any).SIPORTS_CONFIG) {
 }
 
 // Debug logging (safe): do not print keys or lengths in client
-console.log('🔍 Supabase config:', {
-  urlProvided: !!supabaseUrl,
-  urlValue: supabaseUrl ? (supabaseUrl.includes('your-project') || supabaseUrl.includes('votre-project') || supabaseUrl.includes('placeholder') ? '⚠️ PLACEHOLDER VALUE DETECTED' : '✓ Real URL configured') : '❌ No URL',
-  anonKeyPresent: !!supabaseAnonKey,
-  anonKeyStatus: supabaseAnonKey ? (supabaseAnonKey.includes('placeholder') || supabaseAnonKey.includes('your_') || supabaseAnonKey.includes('demo_') || supabaseAnonKey.length < 50 ? '⚠️ PLACEHOLDER KEY DETECTED' : '✓ Real key configured') : '❌ No key'
-});
+// Bloc de debug supprimé (console.log retiré)
 
 // Vérifier si Supabase est configuré avec de vraies valeurs
 const isSupabaseConfigured = supabaseUrl &&
@@ -693,7 +688,7 @@ const isSupabaseConfigured = supabaseUrl &&
                              !supabaseUrl.includes('votre-project-id') &&
                              !supabaseUrl.includes('your-project-id') &&
                              !supabaseUrl.includes('your-project.supabase') &&
-                             supabaseAnonKey.length > 50 &&
+                             supabaseAnonKey.length > 30 && // Reduced from 50 to support shorter keys
                              !supabaseAnonKey.includes('placeholder') &&
                              !supabaseAnonKey.includes('your_supabase') &&
                              !supabaseAnonKey.includes('your-supabase') &&
@@ -752,8 +747,19 @@ function getSupabaseClient(): ReturnType<typeof createClient<Database>> | null {
   
   // Créer le client une seule fois
   if (!supabaseClientInstance) {
-    console.log('🔧 Creating Supabase client instance');
-    supabaseClientInstance = createClient<Database>(supabaseUrl, supabaseAnonKey);
+    supabaseClientInstance = createClient<Database>(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true
+      },
+      global: {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }
+    });
   }
   
   return supabaseClientInstance;

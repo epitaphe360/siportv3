@@ -123,19 +123,30 @@ export default function MiniSiteEditor() {
         products: [
           {
             id: '1',
-            name: 'SmartPort Management',
-            description: 'Plateforme complète de gestion portuaire',
+            name: 'Système IA Maritime',
+            description: 'Plateforme intelligente d\'optimisation des opérations portuaires avec IA prédictive',
             image: 'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=400',
-            features: ['Analytics temps réel', 'API intégrée', 'Multi-langues'],
-            price: 'Sur devis'
+            features: ['Analytics prédictifs en temps réel', 'Automatisation IA', 'Intégration API complète'],
+            price: 'Sur devis',
+            inStock: true
           },
           {
             id: '2',
-            name: 'Port Analytics',
-            description: 'Outils d\'analyse et de reporting avancés',
+            name: 'Plateforme IoT Connectée',
+            description: 'Solution IoT de supervision et monitoring des équipements portuaires',
             image: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=400',
-            features: ['Dashboards personnalisés', 'Prédictions IA', 'Export données'],
-            price: 'À partir de 5000€'
+            features: ['Capteurs intelligents', 'Maintenance prédictive', 'Alertes instantanées'],
+            price: 'À partir de 15 000€',
+            inStock: true
+          },
+          {
+            id: '3',
+            name: 'Support Premium 24/7',
+            description: 'Assistance technique dédiée et formation continue de vos équipes',
+            image: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400',
+            features: ['Équipe dédiée multilingue', 'Intervention sous 2h', 'Formation personnalisée'],
+            price: '2 500€/mois',
+            inStock: true
           }
         ]
       },
@@ -887,7 +898,7 @@ export default function MiniSiteEditor() {
                                 {section.content.features && section.content.features.length > 0 && (
                                   <div className="grid grid-cols-2 gap-4">
                                     {section.content.features.map((feature: string, index: number) => (
-                                      <div key={index} className="flex items-center space-x-2">
+                                      <div key={`${section.id}-feature-${index}-${feature.substring(0, 10)}`} className="flex items-center space-x-2">
                                         <div 
                                           className="w-2 h-2 rounded-full"
                                           style={{ backgroundColor: siteSettings.primaryColor }}
@@ -947,7 +958,7 @@ export default function MiniSiteEditor() {
                                 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                   {section.content.products?.map((product, index: number) => (
-                                    <div key={index} className="bg-white rounded-lg p-6 shadow-sm relative group">
+                                    <div key={product.id || `${section.id}-product-${index}`} className="bg-white rounded-lg p-6 shadow-sm relative group">
                                       <button
                                         onClick={() => removeProduct(section.id, index)}
                                         className="absolute top-2 right-2 p-1 bg-red-100 text-red-600 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
@@ -1072,7 +1083,7 @@ export default function MiniSiteEditor() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                   {section.content.articles?.map((article: any, index: number) => (
-                                    <div key={index} className="bg-white rounded-lg p-6 shadow-sm relative group">
+                                    <div key={article.id || `${section.id}-article-${index}`} className="bg-white rounded-lg p-6 shadow-sm relative group">
                                       <button
                                         onClick={() => {
                                           const currentArticles = section.content.articles ?? [];

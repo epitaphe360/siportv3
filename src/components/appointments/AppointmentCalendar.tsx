@@ -2,16 +2,17 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { Link, useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
-import { 
-  Calendar, 
-  Clock, 
-  MapPin, 
-  Video, 
-  Users, 
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Video,
+  Users,
   Plus,
   Check,
   X,
-  ArrowLeft
+  ArrowLeft,
+  AlertCircle
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
@@ -19,10 +20,11 @@ import { Badge } from '../ui/Badge';
 import { useAppointmentStore } from '../../store/appointmentStore';
 import useAuthStore from '../../store/authStore';
 import { motion } from 'framer-motion';
+import { isDateInSalonRange, getMinSlotDate, getMaxSlotDate, DEFAULT_SALON_CONFIG } from '../../config/salonInfo';
 
 export default function AppointmentCalendar() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user: authUser } = useAuthStore();
   const {
     appointments,
     timeSlots,
@@ -44,7 +46,7 @@ export default function AppointmentCalendar() {
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [bookingMessage, setBookingMessage] = useState('');
   const [newSlotData, setNewSlotData] = useState({
-    date: new Date().toISOString().split('T')[0],
+    date: getMinSlotDate(), // Date par défaut: 1er avril 2026
     startTime: '09:00',
     endTime: '09:30',
     duration: 30,
@@ -54,9 +56,31 @@ export default function AppointmentCalendar() {
   });
   
   // Récupérer l'ID de l'exposant depuis l'URL ou les paramètres
-  const exhibitorId = searchParams.get('exhibitor') ||
-                     location.pathname.split('/').pop() ||
-                     '';
+  const rawExhibitorId = searchParams.get('exhibitor') ||
+                         location.pathname.split('/').pop() ||
+                         '';
+  
+  // Valider que c'est une UUID valide (36 caractères avec tirets)
+  const exhibitorId = (rawExhibitorId && rawExhibitorId.includes('-') && rawExhibitorId.length === 36) 
+    ? rawExhibitorId 
+    : '';
+
+  // Mode "Mes rendez-vous" si pas d'exhibitorId
+  const isMyAppointmentsMode = !exhibitorId;
+
+  // Filtrer les rendez-vous pour l'utilisateur connecté seulement
+  const userAppointments = appointments.filter(app => {
+    if (!authUser?.id) return false;
+    // Pour les visiteurs: afficher leurs rendez-vous
+    if (authUser.type === 'visitor') {
+      return app.visitorId === authUser.id;
+    }
+    // Pour les exposants: afficher les rendez-vous qu'ils reçoivent
+    if (authUser.type === 'exhibitor') {
+      return app.exhibitorId === authUser.id;
+    }
+    return false;
+  });
 
   // Vérification d'authentification
   useEffect(() => {
@@ -66,19 +90,16 @@ export default function AppointmentCalendar() {
       navigate(`${ROUTES.LOGIN}?redirect=${encodeURIComponent(currentPath)}`);
       return;
     }
-
-    // Vérifier qu'un exhibitorId est fourni
-    if (!exhibitorId) {
-      toast.error('ID exposant manquant');
-      navigate('/'); // Rediriger vers la page d'accueil
-      return;
-    }
-  }, [isAuthenticated, navigate, searchParams, exhibitorId]);
+    // Note: On ne redirige plus si pas d'exhibitorId - on affiche "Mes rendez-vous"
+  }, [isAuthenticated, navigate, searchParams]);
 
   useEffect(() => {
     if (isAuthenticated) {
       fetchAppointments();
-      fetchTimeSlots(exhibitorId);
+      // Ne fetch les time slots que si on a un exhibitorId
+      if (exhibitorId) {
+        fetchTimeSlots(exhibitorId);
+      }
     }
   }, [fetchAppointments, fetchTimeSlots, exhibitorId, isAuthenticated]);
 
@@ -128,20 +149,29 @@ export default function AppointmentCalendar() {
 
   const handleCreateSlot = async () => {
     try {
+      // CRITICAL: Only exhibitors can create slots (security check)
+      if (authUser?.type !== 'exhibitor' && authUser?.type !== 'partner') {
+        toast.error('Seuls les exposants et partenaires peuvent créer des créneaux');
+        return;
+      }
+
+      // CRITICAL: Ensure exhibitorId matches current user (prevent cross-user slot creation)
+      if (authUser?.type === 'exhibitor' && !exhibitorId) {
+        toast.error('Exhibitor ID manquant. Impossible de créer un créneau.');
+        return;
+      }
+
       // Validation des données
       if (!newSlotData.date || !newSlotData.startTime || !newSlotData.endTime) {
         toast.error('Veuillez remplir tous les champs obligatoires');
         return;
       }
 
-      // Validation de la date (pas dans le passé)
-      // MEDIUM FIX: Use timezone-aware date comparison
-      const selectedDate = new Date(newSlotData.date + 'T00:00:00'); // Force local timezone interpretation
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      // Validation de la date dans la plage du salon (1-3 avril 2026)
+      const selectedDate = new Date(newSlotData.date + 'T00:00:00');
 
-      if (selectedDate < today) {
-        toast.error('La date ne peut pas être dans le passé');
+      if (!isDateInSalonRange(selectedDate)) {
+        toast.error(`La date doit être comprise entre le ${DEFAULT_SALON_CONFIG.dates.start} et le ${DEFAULT_SALON_CONFIG.dates.end}`);
         return;
       }
 
@@ -184,7 +214,7 @@ export default function AppointmentCalendar() {
       }
 
       const slotData = {
-        userId: exhibitorId,
+        exhibitorId: exhibitorId,
         date: selectedDate,
         startTime: newSlotData.startTime,
         endTime: newSlotData.endTime,
@@ -206,7 +236,7 @@ export default function AppointmentCalendar() {
 
       setShowCreateSlotModal(false);
       setNewSlotData({
-        date: new Date().toISOString().split('T')[0],
+        date: getMinSlotDate(),
         startTime: '09:00',
         endTime: '09:30',
         duration: 30,
@@ -236,12 +266,21 @@ export default function AppointmentCalendar() {
     
     try {
       // Pré-vérification du quota côté client
-      const auth = await import('../../store/authStore');
       const { getVisitorQuota } = await import('../../config/quotas');
-      const user = auth?.default?.getState ? auth.default.getState().user : null;
-      const visitorId = user?.id || 'user1';
-      const visitorLevel = user?.visitor_level || user?.profile?.visitor_level || 'free';
+      const visitorId = authUser?.id || 'user1';
+      const visitorLevel = authUser?.visitor_level || authUser?.profile?.visitor_level || 'free';
       const quota = getVisitorQuota(visitorLevel);
+      
+      // Special check for FREE visitors: cannot book ANY appointments (including pending)
+      if (visitorLevel === 'free') {
+        const anyAppointmentCount = appointments.filter(a => a.visitorId === visitorId).length;
+        if (anyAppointmentCount >= quota) {
+          toast.error('Visiteurs FREE: Vous ne pouvez pas réserver de rendez-vous. Veuillez upgrader votre ticket pour accéder aux rendez-vous B2B.');
+          return;
+        }
+      }
+      
+      // For other levels: count only confirmed appointments
       const confirmedCount = appointments.filter(a => a.visitorId === visitorId && a.status === 'confirmed').length;
       if (confirmedCount >= quota) {
         toast.error('Quota de rendez-vous atteint pour votre niveau');
@@ -299,7 +338,7 @@ export default function AppointmentCalendar() {
     return slotDate.toDateString() === selectedDate.toDateString();
   });
 
-  const todayAppointments = appointments.filter(appointment => {
+  const todayAppointments = userAppointments.filter(appointment => {
     const slot = timeSlots.find(s => s.id === appointment.timeSlotId);
     if (!slot) return false;
     const slotDate = new Date(slot.date);
@@ -313,6 +352,174 @@ export default function AppointmentCalendar() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Redirection vers la page de connexion...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Mode "Mes rendez-vous" - afficher tous les rendez-vous de l'utilisateur
+  if (isMyAppointmentsMode) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Bouton de retour */}
+          <div className="mb-6">
+            <Link to={ROUTES.DASHBOARD}>
+              <Button variant="ghost" size="sm">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Retour au Tableau de Bord
+              </Button>
+            </Link>
+          </div>
+
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex-1 min-w-0 mr-6">
+              <h2 className="text-2xl font-bold text-gray-900">
+                Mes Rendez-vous B2B
+              </h2>
+              <p className="text-gray-600 mt-1">
+                Consultez et gérez tous vos rendez-vous avec les exposants
+              </p>
+            </div>
+          </div>
+
+          {/* Liste des rendez-vous */}
+          <Card className="mb-8">
+            <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
+              <h3 className="font-semibold text-gray-900 flex items-center">
+                <Calendar className="h-5 w-5 mr-2 text-blue-600" />
+                Tous vos rendez-vous ({userAppointments.length})
+              </h3>
+            </div>
+            <div className="p-4">
+              {isLoading ? (
+                <div className="space-y-3">
+                  {[1, 2, 3].map(i => (
+                    <div key={`skeleton-${i}`} className="animate-pulse">
+                      <div className="h-20 bg-gray-200 rounded-lg"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : userAppointments.length === 0 ? (
+                <div className="text-center py-12">
+                  <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                  <h4 className="text-lg font-medium text-gray-900 mb-2">Aucun rendez-vous</h4>
+                  <p className="text-gray-600 mb-6">
+                    Vous n'avez pas encore de rendez-vous B2B.<br />
+                    Visitez les pages des exposants pour demander un rendez-vous.
+                  </p>
+                  <Link to={ROUTES.EXHIBITORS}>
+                    <Button variant="default">
+                      <Users className="h-4 w-4 mr-2" />
+                      Voir les exposants
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {userAppointments.map((appointment) => {
+                    const slot = timeSlots.find(s => s.id === appointment.timeSlotId);
+                    const StatusIcon = appointment.status === 'confirmed' ? Check :
+                                      appointment.status === 'cancelled' ? X : Clock;
+                    return (
+                      <motion.div
+                        key={appointment.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-4 border rounded-lg hover:shadow-md transition-shadow"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className={`p-3 rounded-full ${
+                              appointment.status === 'confirmed' ? 'bg-green-100' :
+                              appointment.status === 'cancelled' ? 'bg-red-100' : 'bg-yellow-100'
+                            }`}>
+                              <StatusIcon className={`h-5 w-5 ${
+                                appointment.status === 'confirmed' ? 'text-green-600' :
+                                appointment.status === 'cancelled' ? 'text-red-600' : 'text-yellow-600'
+                              }`} />
+                            </div>
+                            <div>
+                              <h4 className="font-medium text-gray-900">
+                                {appointment.exhibitor?.companyName || appointment.exhibitor?.name || `Exposant`}
+                              </h4>
+                              <p className="text-sm text-gray-600">
+                                {slot?.date ? new Date(slot.date).toLocaleDateString('fr-FR', {
+                                  weekday: 'long', day: 'numeric', month: 'long'
+                                }) : 'Date à confirmer'}
+                                {slot?.startTime && ` • ${slot.startTime}`}
+                              </p>
+                              {appointment.message && (
+                                <p className="text-xs text-gray-500 mt-1 italic">"{appointment.message}"</p>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <Badge variant={getStatusColor(appointment.status)}>
+                              {getStatusLabel(appointment.status)}
+                            </Badge>
+                            {appointment.status === 'pending' && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleCancelAppointment(appointment.id)}
+                              >
+                                Annuler
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </Card>
+
+          {/* Statistiques */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="p-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-green-100 rounded-lg">
+                  <Check className="h-5 w-5 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {userAppointments.filter(a => a.status === 'confirmed').length}
+                  </p>
+                  <p className="text-sm text-gray-600">Confirmés</p>
+                </div>
+              </div>
+            </Card>
+            <Card className="p-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-yellow-100 rounded-lg">
+                  <Clock className="h-5 w-5 text-yellow-600" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {userAppointments.filter(a => a.status === 'pending').length}
+                  </p>
+                  <p className="text-sm text-gray-600">En attente</p>
+                </div>
+              </div>
+            </Card>
+            <Card className="p-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-red-100 rounded-lg">
+                  <X className="h-5 w-5 text-red-600" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {userAppointments.filter(a => a.status === 'cancelled').length}
+                  </p>
+                  <p className="text-sm text-gray-600">Annulés</p>
+                </div>
+              </div>
+            </Card>
+          </div>
         </div>
       </div>
     );
@@ -343,10 +550,17 @@ export default function AppointmentCalendar() {
           </div>
           
           <div className="flex-shrink-0">
-            <Button variant="default" onClick={() => setShowCreateSlotModal(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Nouveau Créneau
-            </Button>
+            {/* Only exhibitors and partners can create slots */}
+            {(authUser?.type === 'exhibitor' || authUser?.type === 'partner') ? (
+              <Button variant="default" onClick={() => setShowCreateSlotModal(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Nouveau Créneau
+              </Button>
+            ) : (
+              <div className="text-sm text-gray-600 bg-yellow-50 px-4 py-2 rounded-lg border border-yellow-200">
+                ℹ️ Seuls les exposants peuvent créer des créneaux
+              </div>
+            )}
           </div>
         </div>
 
@@ -394,15 +608,20 @@ export default function AppointmentCalendar() {
             {/* Time Slots */}
             <Card className="lg:col-span-2">
               <div className="p-4 border-b border-gray-200">
-                <h3 className="font-semibold text-gray-900">
-                  Créneaux disponibles - {formatDate(selectedDate)}
-                </h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-gray-900">
+                    Créneaux disponibles - {formatDate(selectedDate)}
+                  </h3>
+                  <Badge variant="info" className="bg-blue-100 text-blue-800">
+                    Événement : 1-3 avril 2026
+                  </Badge>
+                </div>
               </div>
               <div className="p-4">
                 {isLoading ? (
                   <div className="space-y-3">
                     {[1, 2, 3].map(i => (
-                      <div key={i} className="animate-pulse">
+                      <div key={`skeleton-${i}`} className="animate-pulse">
                         <div className="h-16 bg-gray-200 rounded-lg"></div>
                       </div>
                     ))}
@@ -511,8 +730,25 @@ export default function AppointmentCalendar() {
                 <div className="space-y-4">
                   {todayAppointments.map((appointment) => {
                     const slot = timeSlots.find(s => s.id === appointment.timeSlotId);
-                    if (!slot) return null;
-                    
+                    if (!slot) {
+                      return (
+                        <motion.div
+                          key={appointment.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="p-4 border border-orange-200 rounded-lg bg-orange-50"
+                        >
+                          <div className="flex items-center space-x-3">
+                            <AlertCircle className="h-5 w-5 text-orange-500" />
+                            <div>
+                              <p className="text-sm font-medium text-orange-700">Créneau non trouvé</p>
+                              <p className="text-xs text-orange-600">Le créneau de ce rendez-vous n'est plus disponible</p>
+                            </div>
+                          </div>
+                        </motion.div>
+                      );
+                    }
+
                     const MeetingIcon = getMeetingTypeIcon(appointment.meetingType);
                     
                     return (
@@ -652,8 +888,8 @@ export default function AppointmentCalendar() {
             </div>
           )}
 
-          {/* Create Slot Modal */}
-          {showCreateSlotModal && (
+          {/* Create Slot Modal - Only for exhibitors and partners */}
+          {showCreateSlotModal && (authUser?.type === 'exhibitor' || authUser?.type === 'partner') && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -665,6 +901,16 @@ export default function AppointmentCalendar() {
                 </h3>
                 
                 <div className="space-y-4">
+                  {/* Information sur les dates du salon */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <div className="flex items-center space-x-2 text-blue-800">
+                      <AlertCircle className="h-4 w-4" />
+                      <span className="text-sm font-medium">
+                        Créneaux uniquement du {DEFAULT_SALON_CONFIG.dates.start} au {DEFAULT_SALON_CONFIG.dates.end}
+                      </span>
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Date
@@ -672,9 +918,14 @@ export default function AppointmentCalendar() {
                     <input
                       type="date"
                       value={newSlotData.date}
+                      min={getMinSlotDate()}
+                      max={getMaxSlotDate()}
                       onChange={(e) => setNewSlotData({...newSlotData, date: e.target.value})}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
+                    <p className="mt-1 text-xs text-blue-600 font-medium">
+                      ⚠️ Uniquement les 1, 2 et 3 avril 2026 (3 jours de l'événement)
+                    </p>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4">
@@ -782,12 +1033,12 @@ export default function AppointmentCalendar() {
                 </div>
                 
                 <div className="flex justify-end space-x-3 mt-6">
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     onClick={() => {
                       setShowCreateSlotModal(false);
                       setNewSlotData({
-                        date: new Date().toISOString().split('T')[0],
+                        date: getMinSlotDate(),
                         startTime: '09:00',
                         endTime: '09:30',
                         duration: 30,

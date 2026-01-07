@@ -8,7 +8,6 @@ import { supabase } from '../lib/supabase';
 
 const LinkedInAuthService = {
   signInWithLinkedIn: async (): Promise<User> => {
-    console.log('Initiating LinkedIn sign-in via Supabase OAuth...');
 
     try {
       // Use Supabase OAuth for LinkedIn
@@ -24,17 +23,16 @@ const LinkedInAuthService = {
         throw error;
       }
 
-      console.log('LinkedIn OAuth initiated, redirecting...');
 
       // The OAuth flow will redirect the user, so we return a placeholder
       // The actual user data will be retrieved after OAuth callback
       throw new Error('OAUTH_REDIRECT');
 
-    } catch (error: any) {
+    } catch (error: Error | unknown) {
       console.error('LinkedIn authentication error:', error);
 
       // If it's the expected redirect, re-throw it
-      if (error.message === 'OAUTH_REDIRECT') {
+      if (error instanceof Error && error.message === 'OAUTH_REDIRECT') {
         throw error;
       }
 

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../../store/authStore';
 import { SupabaseService } from '../../services/supabaseService';
@@ -105,3 +106,6 @@ const ProfileEdit: React.FC = () => {
 };
 
 export default ProfileEdit;
+
+
+

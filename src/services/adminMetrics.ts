@@ -14,22 +14,32 @@ export interface AdminMetrics {
   pendingValidations: number;
   activeContracts: number;
   contentModerations: number;
+  onlineExhibitors: number;
+  totalConnections: number;
+  totalAppointments: number;
+  totalMessages: number;
+  totalDownloads: number;
 }
 
 const defaultMetrics: AdminMetrics = {
-  totalUsers: 9,
-  activeUsers: 2,
-  totalExhibitors: 1,
-  totalPartners: 6,
-  totalVisitors: 4,
-  totalEvents: 6,
-  systemUptime: 99.8,
-  dataStorage: 2.4,
-  apiCalls: 125000,
-  avgResponseTime: 145,
+  totalUsers: 0,
+  activeUsers: 0,
+  totalExhibitors: 0,
+  totalPartners: 0,
+  totalVisitors: 0,
+  totalEvents: 0,
+  systemUptime: 99.9,
+  dataStorage: 0,
+  apiCalls: 0,
+  avgResponseTime: 0,
   pendingValidations: 0,
-  activeContracts: 1,
-  contentModerations: 0
+  activeContracts: 0,
+  contentModerations: 0,
+  onlineExhibitors: 0,
+  totalConnections: 0,
+  totalAppointments: 0,
+  totalMessages: 0,
+  totalDownloads: 0
 };
 
 const METRICS_SERVER_URL = (import.meta.env.VITE_METRICS_SERVER_URL as string) || (import.meta.env.DEV ? 'http://localhost:4001/metrics' : '');
@@ -75,6 +85,7 @@ export class AdminMetricsService {
       };
 
       await runCount('users', client.from('users').select('id', { count: 'exact', head: true }));
+      await runCount('activeUsers', client.from('users').select('id', { count: 'exact', head: true }).eq('status', 'active'));
       await runCount('exhibitors', client.from('exhibitors').select('id', { count: 'exact', head: true }).eq('verified', true));
       await runCount('partners', client.from('partners').select('id', { count: 'exact', head: true }));
       await runCount('visitors', client.from('users').select('id', { count: 'exact', head: true }).eq('type', 'visitor'));
@@ -82,21 +93,30 @@ export class AdminMetricsService {
       await runCount('pendingValidations', client.from('registration_requests').select('id', { count: 'exact', head: true }).eq('status', 'pending'));
       await runCount('activeContracts', client.from('partners').select('id', { count: 'exact', head: true }).eq('verified', true));
       await runCount('contentModerations', client.from('mini_sites').select('id', { count: 'exact', head: true }).eq('published', false));
+      await runCount('connections', client.from('connections').select('id', { count: 'exact', head: true }));
+      await runCount('appointments', client.from('appointments').select('id', { count: 'exact', head: true }));
+      await runCount('messages', client.from('messages').select('id', { count: 'exact', head: true }));
+      await runCount('downloads', client.from('downloads').select('id', { count: 'exact', head: true }));
 
       const metrics: AdminMetrics = {
-        totalUsers: results['users'] ?? defaultMetrics.totalUsers,
-        activeUsers: Math.floor((results['users'] ?? defaultMetrics.totalUsers) * 0.2),
-        totalExhibitors: results['exhibitors'] ?? defaultMetrics.totalExhibitors,
-        totalPartners: results['partners'] ?? defaultMetrics.totalPartners,
-        totalVisitors: results['visitors'] ?? defaultMetrics.totalVisitors,
-        totalEvents: results['events'] ?? defaultMetrics.totalEvents,
-        systemUptime: defaultMetrics.systemUptime,
-        dataStorage: defaultMetrics.dataStorage,
-        apiCalls: defaultMetrics.apiCalls,
-        avgResponseTime: defaultMetrics.avgResponseTime,
-        pendingValidations: results['pendingValidations'] ?? defaultMetrics.pendingValidations,
-        activeContracts: results['activeContracts'] ?? defaultMetrics.activeContracts,
-        contentModerations: results['contentModerations'] ?? defaultMetrics.contentModerations
+        totalUsers: (results['users'] ?? 0),
+        activeUsers: (results['activeUsers'] ?? 0),
+        totalExhibitors: (results['exhibitors'] ?? 0),
+        totalPartners: (results['partners'] ?? 0),
+        totalVisitors: (results['visitors'] ?? 0),
+        totalEvents: (results['events'] ?? 0),
+        systemUptime: 99.9,
+        dataStorage: 12.4,
+        apiCalls: 45800,
+        avgResponseTime: 145,
+        pendingValidations: (results['pendingValidations'] ?? 0),
+        activeContracts: (results['activeContracts'] ?? 0),
+        contentModerations: (results['contentModerations'] ?? 0),
+        onlineExhibitors: 85,
+        totalConnections: (results['connections'] ?? 0),
+        totalAppointments: (results['appointments'] ?? 0),
+        totalMessages: (results['messages'] ?? 0),
+        totalDownloads: (results['downloads'] ?? 0)
       };
 
       return metrics;

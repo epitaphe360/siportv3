@@ -1,6 +1,9 @@
 import { test, expect, Page } from '@playwright/test';
 import { testUsers, login, register } from './helpers';
 
+// Configure timeouts
+test.setTimeout(120000); // 120 secondes par test
+
 /**
  * ============================================================================
  * SUITE DE TESTS E2E ULTRA-COMPLÈTE - SIPORTV3

@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
+import { useRecaptcha } from '../../hooks/useRecaptcha';
 import {
   User,
   Mail,
@@ -29,6 +30,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ROUTES } from '../../lib/routes';
 import { supabase } from '../../lib/supabase';
 import { COUNTRIES } from '../../data/countries';
+import { MoroccanPattern, MoroccanArch } from '../ui/MoroccanDecor';
 
 const MAX_DESCRIPTION_LENGTH = 1000;
 
@@ -63,8 +65,8 @@ const registrationSchema = z.object({
   email: z.string().email('Email invalide'),
   phone: z.string().min(8, 'Numéro de téléphone requis'),
   linkedin: z.string().url('URL LinkedIn invalide').optional().or(z.literal('')),
-  description: z.string().min(50, 'Description trop courte (minimum 50 caractères)').max(MAX_DESCRIPTION_LENGTH, `Maximum ${MAX_DESCRIPTION_LENGTH} caractères`),
-  objectives: z.array(z.string()).min(1, 'Sélectionnez au moins un objectif'),
+  description: z.string().max(MAX_DESCRIPTION_LENGTH, `Maximum ${MAX_DESCRIPTION_LENGTH} caractères`).optional().or(z.literal('')),
+  objectives: z.array(z.string()).optional(),
   password: z.string()
     .min(12, 'Minimum 12 caractères')
     .regex(/[A-Z]/, 'Doit contenir au moins une majuscule')
@@ -109,6 +111,24 @@ const registrationSchema = z.object({
   message: "Poste requis pour les exposants et partenaires",
   path: ["position"],
 }).refine((data) => {
+  // Description obligatoire uniquement pour exposants et partenaires
+  if ((data.accountType === 'exhibitor' || data.accountType === 'partner') && (!data.description || data.description.length < 50)) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Description requise (minimum 50 caractères) pour les exposants et partenaires",
+  path: ["description"],
+}).refine((data) => {
+  // Objectifs obligatoires uniquement pour exposants et partenaires
+  if ((data.accountType === 'exhibitor' || data.accountType === 'partner') && (!data.objectives || data.objectives.length < 1)) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Sélectionnez au moins un objectif",
+  path: ["objectives"],
+}).refine((data) => {
   // Validation pour secteur "Autre"
   if (data.sector === 'Autre' && (!data.customSector || data.customSector.length < 2)) {
     return false;
@@ -138,8 +158,14 @@ export default function RegisterPage() {
   const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
   const [descriptionLength, setDescriptionLength] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
-  const { register: registerUser, isLoading } = useAuthStore();
+  const { register: registerUser, isLoading, login } = useAuthStore();
   const navigate = useNavigate();
+  const { executeRecaptcha, isReady: isRecaptchaReady } = useRecaptcha();
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const requestedLevel = params.get('level');
+  const nextPath = params.get('next') || '';
 
   const {
     register,
@@ -149,7 +175,10 @@ export default function RegisterPage() {
     trigger
   } = useForm<RegistrationForm>({
     resolver: zodResolver(registrationSchema),
-    mode: 'onChange'
+    mode: 'onChange',
+    defaultValues: {
+      accountType: requestedLevel ? 'visitor' : undefined
+    }
   });
 
   const watchedAccountType = watch('accountType');
@@ -184,21 +213,21 @@ export default function RegisterPage() {
       title: 'Exposant',
       description: 'Entreprise ou organisation exposante',
       icon: Building2,
-      color: 'bg-blue-100 text-blue-600 border-blue-200'
+      color: 'bg-blue-50 text-siports-primary border-siports-primary'
     },
     {
       value: 'partner',
       title: 'Partenaire',
       description: 'Sponsor ou partenaire officiel',
       icon: Globe,
-      color: 'bg-green-100 text-green-600 border-green-200'
+      color: 'bg-amber-50 text-siports-gold border-siports-gold'
     },
     {
       value: 'visitor',
       title: 'Visiteur',
       description: 'Professionnel ou particulier visitant le salon',
       icon: User,
-      color: 'bg-purple-100 text-purple-600 border-purple-200'
+      color: 'bg-cyan-50 text-siports-secondary border-siports-secondary'
     }
   ];
 
@@ -266,25 +295,74 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: RegistrationForm) => {
     try {
-      await registerUser(data);
+      // 🔐 Exécuter reCAPTCHA avant inscription
+      let recaptchaToken: string | undefined;
+      if (isRecaptchaReady) {
+        try {
+          const action = `${data.accountType}_registration`;
+          recaptchaToken = await executeRecaptcha(action);
+        } catch (recaptchaError) {
+          console.warn('⚠️ reCAPTCHA failed, proceeding without:', recaptchaError);
+          // Continue sans reCAPTCHA si ça échoue (degraded mode)
+        }
+      }
+
+      // @ts-expect-error - recaptchaToken sera ajouté à authStore.register()
+      await registerUser(data, recaptchaToken);
+
+      // 📧 Send welcome email (non-blocking)
+      try {
+        const { EmailService } = await import('../../services/emailService');
+        const firstName = data.firstName || data.accountType;
+        const accountTypeLabel = data.accountType === 'visitor' ? 'visiteur' : 
+                                data.accountType === 'exhibitor' ? 'exposant' : 'partenaire';
+        
+        await EmailService.sendWelcomeEmail(data.email, firstName, accountTypeLabel);
+      } catch (emailError) {
+        console.warn('⚠️ Welcome email failed:', emailError);
+        // Non-blocking error - registration is already complete
+      }
+
+      // Si c'est un exposant ou partenaire, afficher un toast indiquant validation admin requise
+      if (data.accountType && data.accountType !== 'visitor') {
+        const label = data.accountType === 'exhibitor' ? 'exposant' : 'partenaire';
+        toast.success(`Inscription réussie — votre compte ${label} sera activé par un administrateur. Vous recevrez un email une fois validé.`);
+      }
+
+      // Tenter une connexion automatique pour les visiteurs
+      if (data.accountType === 'visitor') {
+        try {
+          await login(data.email, data.password, { rememberMe: true });
+          toast.success('Connexion automatique réussie — redirection vers votre tableau de bord.');
+        } catch (loginError) {
+          // Ne pas bloquer l'inscription si la connexion automatique échoue
+          console.warn('Connexion automatique échouée:', loginError);
+          toast.error('Connexion automatique impossible — veuillez vous connecter manuellement.');
+        }
+      }
 
       // Afficher la modal de succès
       setShowSuccess(true);
 
-      // Rediriger après 3 secondes
+      // Rediriger vers la page de confirmation après 3 secondes
       setTimeout(() => {
-        navigate(ROUTES.LOGIN, {
-          state: { message: 'Inscription réussie ! Votre compte est en attente de validation.' }
-        });
+        navigate(`${ROUTES.SIGNUP_CONFIRMATION}?email=${encodeURIComponent(data.email)}&type=${data.accountType}`);
       }, 3000);
     } catch (error) {
       console.error('Registration error:', error);
+      toast.error(error instanceof Error ? error.message : 'Erreur lors de l\'inscription');
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-siports-primary via-siports-secondary to-siports-accent py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Background Pattern */}
+      <MoroccanPattern className="opacity-10" color="white" scale={1.5} />
+      
+      {/* Decorative Arch at bottom */}
+      <MoroccanArch className="text-white/10" />
+
+      <div className="max-w-4xl mx-auto relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -292,12 +370,12 @@ export default function RegisterPage() {
           className="text-center mb-8"
         >
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="bg-white p-3 rounded-lg">
-              <Anchor className="h-8 w-8 text-blue-600" />
+            <div className="bg-white p-3 rounded-lg shadow-lg">
+              <Anchor className="h-8 w-8 text-siports-primary" />
             </div>
             <div>
               <span className="text-2xl font-bold text-white">SIPORTS</span>
-              <span className="text-sm text-blue-200 block leading-none">2026</span>
+              <span className="text-sm text-siports-gold block leading-none font-medium">2026</span>
             </div>
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">
@@ -318,9 +396,9 @@ export default function RegisterPage() {
           <div className="flex items-center justify-between">
             {steps.map((step, index) => (
               <div key={step.id} className="flex items-center">
-                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors duration-300 ${
                   currentStep >= step.id 
-                    ? 'bg-white text-blue-600 border-white' 
+                    ? 'bg-siports-gold text-white border-siports-gold shadow-lg shadow-siports-gold/30' 
                     : 'bg-transparent text-white border-white/30'
                 }`}>
                   {currentStep > step.id ? (
@@ -331,7 +409,7 @@ export default function RegisterPage() {
                 </div>
                 <div className="ml-3 hidden sm:block">
                   <p className={`text-sm font-medium ${
-                    currentStep >= step.id ? 'text-white' : 'text-white/60'
+                    currentStep >= step.id ? 'text-siports-gold' : 'text-white/60'
                   }`}>
                     {step.title}
                   </p>
@@ -339,7 +417,7 @@ export default function RegisterPage() {
                 </div>
                 {index < steps.length - 1 && (
                   <div className={`w-12 h-0.5 mx-4 ${
-                    currentStep > step.id ? 'bg-white' : 'bg-white/30'
+                    currentStep > step.id ? 'bg-siports-gold' : 'bg-white/30'
                   }`} />
                 )}
               </div>
@@ -352,8 +430,9 @@ export default function RegisterPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
+          className="relative z-[60]"
         >
-          <Card className="p-8">
+          <Card className="p-8 border-t-4 border-t-siports-gold shadow-2xl backdrop-blur-sm bg-white/95">
             <form onSubmit={handleSubmit(onSubmit)}>
               {/* Step 1: Account Type */}
               {currentStep === 1 && (
@@ -375,12 +454,13 @@ export default function RegisterPage() {
                     {accountTypes.map((type) => {
                       const Icon = type.icon;
                       return (
-                        <label key={type.value} className="cursor-pointer">
+                        <label key={type.value} className="cursor-pointer" data-testid={`account-type-${type.value}`}>
                           <input
                             type="radio"
                             value={type.value}
                             {...register('accountType')}
                             className="sr-only"
+                            data-testid={`radio-${type.value}`}
                           />
                           <div className={`p-6 border-2 rounded-lg transition-all ${
                             watchedAccountType === type.value
@@ -424,7 +504,8 @@ export default function RegisterPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Nom de l'organisation *
+                        Nom de l'organisation {watchedAccountType !== 'visitor' && '*'}
+                        {watchedAccountType === 'visitor' && <span className="text-gray-400 text-xs ml-1">(optionnel)</span>}
                       </label>
                       <div className="relative">
                         <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -434,7 +515,7 @@ export default function RegisterPage() {
                           placeholder="Nom de votre entreprise"
                          aria-label="Nom de votre entreprise" />
                       </div>
-                      {errors.companyName && (
+                      {errors.companyName && watchedAccountType !== 'visitor' && (
                         <p className="text-red-600 text-sm mt-1">{errors.companyName.message}</p>
                       )}
                     </div>
@@ -445,6 +526,8 @@ export default function RegisterPage() {
                       </label>
                       <select
                         {...register('sector')}
+                        name="sector"
+                        data-testid="select-sector"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="">Sélectionnez un secteur</option>
@@ -453,7 +536,7 @@ export default function RegisterPage() {
                         ))}
                       </select>
                       {errors.sector && (
-                        <p className="text-red-600 text-sm mt-1">{errors.sector.message}</p>
+                        <p className="text-red-600 text-sm mt-1" data-testid="error-sector">{errors.sector.message}</p>
                       )}
                     </div>
 
@@ -490,6 +573,8 @@ export default function RegisterPage() {
                         <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
                         <select
                           {...register('country')}
+                          name="country"
+                          data-testid="select-country"
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white"
                         >
                           <option value="">Sélectionnez un pays</option>
@@ -501,7 +586,7 @@ export default function RegisterPage() {
                         </select>
                       </div>
                       {errors.country && (
-                        <p className="text-red-600 text-sm mt-1">{errors.country.message}</p>
+                        <p className="text-red-600 text-sm mt-1" data-testid="error-country">{errors.country.message}</p>
                       )}
                     </div>
 
@@ -578,7 +663,8 @@ export default function RegisterPage() {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Poste/Fonction *
+                        Poste/Fonction {watchedAccountType !== 'visitor' && '*'}
+                        {watchedAccountType === 'visitor' && <span className="text-gray-400 text-xs ml-1">(optionnel)</span>}
                       </label>
                       <div className="relative">
                         <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
@@ -594,7 +680,7 @@ export default function RegisterPage() {
                           ))}
                         </select>
                       </div>
-                      {errors.position && (
+                      {errors.position && watchedAccountType !== 'visitor' && (
                         <p className="text-red-600 text-sm mt-1">{errors.position.message}</p>
                       )}
                     </div>
@@ -631,6 +717,7 @@ export default function RegisterPage() {
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <input type="email"
+                          data-testid="email"
                           {...register('email')}
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="votre@email.com"
@@ -693,39 +780,44 @@ export default function RegisterPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Description de votre organisation *
+                      {watchedAccountType === 'visitor' ? 'Présentez-vous' : 'Description de votre organisation'} {watchedAccountType !== 'visitor' && '*'}
+                      {watchedAccountType === 'visitor' && <span className="text-gray-400 text-xs ml-1">(optionnel)</span>}
                     </label>
                     <textarea
+                      data-testid="description"
                       {...register('description', {
                         onChange: (e) => setDescriptionLength(e.target.value.length)
                       })}
                       rows={4}
                       maxLength={MAX_DESCRIPTION_LENGTH}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                      placeholder="Décrivez votre organisation, vos activités principales, vos spécialités..."
+                      placeholder={watchedAccountType === 'visitor' ? 'Présentez-vous brièvement, vos intérêts professionnels...' : 'Décrivez votre organisation, vos activités principales, vos spécialités...'}
                     />
                     <div className="flex justify-between items-center mt-1">
                       <div>
-                        {errors.description && (
+                        {errors.description && watchedAccountType !== 'visitor' && (
                           <p className="text-red-600 text-xs">{errors.description.message}</p>
                         )}
                       </div>
                       <p className={`text-xs font-medium ${
                         descriptionLength >= MAX_DESCRIPTION_LENGTH
                           ? 'text-red-600'
+                          : watchedAccountType !== 'visitor' && descriptionLength < 50
+                          ? 'text-gray-500'
                           : descriptionLength >= 50
                           ? 'text-green-600'
                           : 'text-gray-500'
                       }`}>
                         {descriptionLength}/{MAX_DESCRIPTION_LENGTH} caractères
-                        {descriptionLength < 50 && ` (minimum 50)`}
+                        {watchedAccountType !== 'visitor' && descriptionLength < 50 && ` (minimum 50)`}
                       </p>
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Vos objectifs pour SIPORTS 2026 *
+                      Vos objectifs pour SIPORTS 2026 {watchedAccountType !== 'visitor' && '*'}
+                      {watchedAccountType === 'visitor' && <span className="text-gray-400 text-xs ml-1">(optionnel)</span>}
                     </label>
                     <p className="text-sm text-gray-500 mb-3">
                       Sélectionnez tous les objectifs qui correspondent à vos attentes
@@ -743,7 +835,7 @@ export default function RegisterPage() {
                         </label>
                       ))}
                     </div>
-                    {errors.objectives && (
+                    {errors.objectives && watchedAccountType !== 'visitor' && (
                       <p className="text-red-600 text-sm mt-1">{errors.objectives.message}</p>
                     )}
                   </div>
@@ -774,6 +866,7 @@ export default function RegisterPage() {
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <input type={showPassword ? 'text' : 'password'}
+                          data-testid="password"
                           {...register('password')}
                           onBlur={() => setPasswordTouched(true)}
                           className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -882,13 +975,15 @@ export default function RegisterPage() {
                     </ul>
                   </div>
 
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-blue-900 mb-2">Validation de votre compte</h4>
-                    <p className="text-sm text-blue-700">
-                      Après votre inscription, votre compte sera examiné par notre équipe. 
-                      Vous recevrez un email de confirmation une fois votre compte validé.
-                    </p>
-                  </div>
+                  {watchedAccountType !== 'visitor' && (
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h4 className="font-medium text-blue-900 mb-2">Validation de votre compte</h4>
+                      <p className="text-sm text-blue-700">
+                        Après votre inscription, votre compte sera examiné par notre équipe. 
+                        Vous recevrez un email de confirmation une fois votre compte validé.
+                      </p>
+                    </div>
+                  )}
                 </motion.div>
               )}
 
@@ -900,6 +995,7 @@ export default function RegisterPage() {
                       type="button"
                       variant="outline"
                       onClick={prevStep}
+                      data-testid="btn-previous"
                     >
                       Précédent
                     </Button>
@@ -911,6 +1007,7 @@ export default function RegisterPage() {
                     <Button
                       type="button"
                       onClick={nextStep}
+                      data-testid="btn-next"
                     >
                       Suivant
                     </Button>
@@ -918,6 +1015,7 @@ export default function RegisterPage() {
                     <Button
                       type="submit"
                       disabled={isLoading}
+                      data-testid="btn-submit"
                     >
                       {isLoading ? (
                         <>
@@ -1022,7 +1120,7 @@ export default function RegisterPage() {
         {/* Success Modal */}
         <AnimatePresence>
           {showSuccess && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -1040,19 +1138,33 @@ export default function RegisterPage() {
                 </motion.div>
 
                 <h2 className="text-2xl font-bold text-gray-900 mb-3">
-                  Inscription réussie !
+                  {watchedAccountType === 'visitor' ? 'Compte créé avec succès !' : 'Inscription réussie !'}
                 </h2>
-                <p className="text-gray-600 mb-2">
-                  Votre demande d'inscription a été envoyée avec succès.
-                </p>
-                <p className="text-sm text-gray-500 mb-6">
-                  Votre compte sera examiné par notre équipe. Vous recevrez un email de confirmation une fois votre compte validé.
-                </p>
+                
+                {watchedAccountType === 'visitor' ? (
+                  <>
+                    <p className="text-gray-600 mb-2">
+                      🎉 Félicitations ! Votre compte visiteur a été créé.
+                    </p>
+                    <p className="text-sm text-gray-500 mb-6">
+                      Vous pouvez maintenant accéder à toutes les fonctionnalités de SIPORTS 2026.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-gray-600 mb-2">
+                      Votre demande d'inscription a été envoyée avec succès.
+                    </p>
+                    <p className="text-sm text-gray-500 mb-6">
+                      Votre compte sera examiné par notre équipe. Vous recevrez un email de confirmation une fois votre compte validé.
+                    </p>
+                  </>
+                )}
 
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: '100%' }}
-                  transition={{ duration: 3 }}
+                  transition={{ duration: 4 }}
                   className="h-1 bg-green-600 rounded-full"
                 />
 

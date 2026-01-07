@@ -53,7 +53,7 @@ const InteractiveVenueMap: React.FC = () => {
   };
 
   const handleBoothClick = (exhibitorId: string) => {
-    navigate(`/exhibitor/${exhibitorId}`);
+    navigate(`/exhibitors/${exhibitorId}`);
   };
 
   if (loading) {

@@ -11,7 +11,6 @@ export function useFormAutoSave<T>({ key, data, delay = 1000 }: UseFormAutoSaveO
     try {
       const serializedData = JSON.stringify(data);
       localStorage.setItem(key, serializedData);
-      console.log('✅ Formulaire sauvegardé automatiquement');
     } catch (error) {
       console.error('❌ Erreur lors de la sauvegarde:', error);
     }
@@ -33,7 +32,6 @@ export function useFormAutoSave<T>({ key, data, delay = 1000 }: UseFormAutoSaveO
   const clearLocalStorage = useCallback(() => {
     try {
       localStorage.removeItem(key);
-      console.log('✅ Brouillon supprimé');
     } catch (error) {
       console.error('❌ Erreur lors de la suppression:', error);
     }

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -25,6 +26,7 @@ interface FormErrors {
 }
 
 export default function CreateUserPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -330,4 +332,7 @@ export default function CreateUserPage() {
     </div>
   );
 }
+
+
+
 

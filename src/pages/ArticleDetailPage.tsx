@@ -1,4 +1,6 @@
-import { toast } from 'sonner';
+﻿import { toast } from 'sonner';
+import { useTranslation } from '../hooks/useTranslation';
+import { getArticleTranslationKeys } from '../utils/newsTranslations';
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock, User, Eye, Share2, Bookmark, MessageCircle, Tag, ExternalLink, Download, Printer as Print, Globe, TrendingUp, BookOpen, Heart, Facebook, Twitter, Linkedin } from 'lucide-react';
@@ -46,6 +48,7 @@ const getFullArticleText = (article: NewsArticle): string => {
 };
 
 export default function ArticleDetailPage() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const { articles, fetchNews } = useNewsStore();
   const [article, setArticle] = useState<NewsArticle | null>(null);
@@ -68,8 +71,8 @@ export default function ArticleDetailPage() {
         
         // Articles similaires
         const related = articles
-          .filter(a => a.id !== id && (a.category === foundArticle.category || 
-                      a.tags.some(tag => foundArticle.tags.includes(tag))))
+          .filter(a => a.id !== id && (a.category === foundArticle.category ||
+                      (foundArticle.tags && a.tags?.some(tag => foundArticle.tags?.includes(tag)))))
           .slice(0, 3);
         setRelatedArticles(related);
 
@@ -146,19 +149,20 @@ export default function ArticleDetailPage() {
     };
 
     if (platform === 'native' && navigator.share) {
-      navigator.share(shareData);
+      navigator.share(shareData).catch(() => {});
     } else if (urls[platform as keyof typeof urls]) {
       window.open(urls[platform as keyof typeof urls], '_blank', 'width=600,height=400');
     } else {
-      navigator.clipboard.writeText(shareData.url);
-      toast.success('🔗 Lien de l\'article copié dans le presse-papiers !');
+      navigator.clipboard.writeText(shareData.url)
+        .then(() => toast.success('Lien de l\'article copié dans le presse-papiers !'))
+        .catch(() => toast.error('Impossible de copier le lien'));
     }
   };
 
   const handleBookmark = () => {
   setIsBookmarked(!isBookmarked);
   const action = isBookmarked ? 'retiré des' : 'ajouté aux';
-  toast.success(`📖 Article ${action} favoris !`);
+  toast.success(`Article ${action} favoris !`);
   };
 
   const handleLike = () => {
@@ -171,7 +175,7 @@ export default function ArticleDetailPage() {
   };
 
   const handleDownloadPDF = () => {
-    toast('📄 Génération du PDF en cours...', { icon: '📄' });
+    toast('Génération du PDF en cours...');
   };
 
   return (
@@ -313,7 +317,7 @@ export default function ArticleDetailPage() {
               <p className="text-lg italic text-blue-900">
                 "L'avenir des ports se joue aujourd'hui dans leur capacité à intégrer les technologies émergentes tout en préservant leur efficacité opérationnelle."
               </p>
-              <footer className="text-blue-700 mt-2">— {article.author}</footer>
+              <footer className="text-blue-700 mt-2">● {article.author}</footer>
             </blockquote>
 
             <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-3">
@@ -408,8 +412,8 @@ export default function ArticleDetailPage() {
             Mots-clés
           </h4>
           <div className="flex flex-wrap gap-2">
-            {article.tags.map((tag: string, index: number) => (
-              <Badge key={index} variant="info" size="sm" className="cursor-pointer hover:bg-blue-200">
+            {article.tags.map((tag: string) => (
+              <Badge key={tag} variant="info" size="sm" className="cursor-pointer hover:bg-blue-200">
                 #{tag}
               </Badge>
             ))}
@@ -501,9 +505,9 @@ export default function ArticleDetailPage() {
                   Expert en développement portuaire et innovation maritime. Contributeur régulier aux publications spécialisées du secteur.
                 </p>
                 <div className="flex items-center space-x-4 text-sm text-gray-500">
-                  <span>📧 {article.author.toLowerCase().replace(' ', '.')}@siportevent.com</span>
-                  <span>🔗 LinkedIn</span>
-                  <span>📰 12 articles publiés</span>
+                  <span>{article.author.toLowerCase().replace(' ', '.')}@siportevent.com</span>
+                  <span>LinkedIn</span>
+                  <span>12 articles publiés</span>
                 </div>
               </div>
             </div>
@@ -612,7 +616,7 @@ export default function ArticleDetailPage() {
             variant="default"
             className="rounded-full w-12 h-12 shadow-lg"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            title="Retour en haut"
+            title={t('ui.back_to_top')}
           >
             <ArrowLeft className="h-5 w-5 rotate-90" />
           </Button>
@@ -621,7 +625,7 @@ export default function ArticleDetailPage() {
             variant="default" 
             className="rounded-full w-12 h-12 shadow-lg bg-white"
             onClick={() => handleShare('native')}
-            title="Partager l'article"
+            title={t('ui.share_article')}
           >
             <Share2 className="h-5 w-5" />
           </Button>
@@ -630,3 +634,5 @@ export default function ArticleDetailPage() {
     </div>
   );
 };
+
+

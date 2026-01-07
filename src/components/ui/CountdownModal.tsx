@@ -24,8 +24,8 @@ export const CountdownModal: React.FC<CountdownModalProps> = ({ isOpen, onClose 
   useEffect(() => {
     if (!isOpen) return;
 
-    // Date du salon SIPORTS 2026
-    const salonDate = new Date('2026-02-05T09:30:00');
+    // Date du salon SIPORTS 2026 (1-3 Avril 2026)
+    const salonDate = new Date('2026-04-01T09:00:00');
 
     const calculateTimeLeft = () => {
       const now = new Date();
@@ -58,7 +58,7 @@ export const CountdownModal: React.FC<CountdownModalProps> = ({ isOpen, onClose 
   const salonInfo = {
     name: 'SIPORTS 2026',
     fullName: 'Salon International des Ports',
-    dates: '5-7 Février 2026',
+    dates: '1-3 Avril 2026',
     location: 'El Jadida, Maroc',
     venue: 'Mohammed VI Exhibition Center',
     hours: '9h30 - 18h00',
@@ -276,7 +276,7 @@ export const CountdownModal: React.FC<CountdownModalProps> = ({ isOpen, onClose 
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="text-center p-4 bg-blue-50 rounded-lg">
-                    <div className="font-bold text-blue-600 mb-2">Jour 1 - 5 Février</div>
+                    <div className="font-bold text-blue-600 mb-2">Jour 1 - 1er Avril</div>
                     <div className="text-sm text-gray-600 space-y-1">
                       <div>• Cérémonie d'ouverture</div>
                       <div>• Conférences plénières</div>
@@ -285,7 +285,7 @@ export const CountdownModal: React.FC<CountdownModalProps> = ({ isOpen, onClose 
                   </div>
                   
                   <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <div className="font-bold text-green-600 mb-2">Jour 2 - 6 Février</div>
+                    <div className="font-bold text-green-600 mb-2">Jour 2 - 2 Avril</div>
                     <div className="text-sm text-gray-600 space-y-1">
                       <div>• Ateliers techniques</div>
                       <div>• Sessions B2B</div>
@@ -294,7 +294,7 @@ export const CountdownModal: React.FC<CountdownModalProps> = ({ isOpen, onClose 
                   </div>
                   
                   <div className="text-center p-4 bg-purple-50 rounded-lg">
-                    <div className="font-bold text-purple-600 mb-2">Jour 3 - 7 Février</div>
+                    <div className="font-bold text-purple-600 mb-2">Jour 3 - 3 Avril</div>
                     <div className="text-sm text-gray-600 space-y-1">
                       <div>• Tables rondes</div>
                       <div>• Remise des prix</div>
@@ -330,8 +330,9 @@ export const CountdownModal: React.FC<CountdownModalProps> = ({ isOpen, onClose 
                       url: window.location.origin
                     });
                   } else {
-                    navigator.clipboard.writeText(shareText);
-                    toast.success('🔗 Compte à rebours copié dans le presse-papiers !');
+                    navigator.clipboard.writeText(shareText)
+                      .then(() => toast.success('🔗 Compte à rebours copié dans le presse-papiers !'))
+                      .catch(() => toast.error('Impossible de copier'));
                   }
                 }}
               >
@@ -344,8 +345,8 @@ export const CountdownModal: React.FC<CountdownModalProps> = ({ isOpen, onClose 
                 onClick={() => {
                   const calendarEvent = {
                     title: 'SIPORTS 2026 - Salon International des Ports',
-                    start: '2026-02-05T09:30:00',
-                    end: '2026-02-07T18:00:00',
+                    start: '2026-04-01T09:00:00',
+                    end: '2026-04-03T18:00:00',
                     location: 'Mohammed VI Exhibition Center, El Jadida, Maroc',
                     description: 'Le plus grand salon portuaire international - 330+ exposants, 6300+ visiteurs de 42 pays'
                   };

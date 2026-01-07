@@ -74,8 +74,8 @@ export const AboutSection: React.FC<AboutSectionProps> = memo(({
               <div className="p-6">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">Nos Valeurs</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {values.map((value, index) => (
-                    <div key={index} className="flex items-start space-x-3">
+                  {values.map((value) => (
+                    <div key={value} className="flex items-start space-x-3">
                       <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
                       <span className="text-gray-700">{value}</span>
                     </div>

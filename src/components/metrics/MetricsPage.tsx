@@ -49,10 +49,10 @@ export default function MetricsPage() {
   const { user } = useAuthStore();
 
   const [realTimeMetrics, setRealTimeMetrics] = useState({
-    activeUsers: 1247,
-    onlineExhibitors: 89,
-    scheduledMeetings: 156,
-    messagesExchanged: 2341
+    activeUsers: 0,
+    onlineExhibitors: 0,
+    scheduledMeetings: 0,
+    messagesExchanged: 0
   });
 
   const [adminMetrics, setAdminMetrics] = useState({
@@ -91,6 +91,14 @@ export default function MetricsPage() {
           totalConferences: pavilionData.totalConferences,
           countries: pavilionData.countries
         });
+
+        // Load real-time metrics from database
+        setRealTimeMetrics({
+          activeUsers: adminData.totalUsers, // Tous les utilisateurs
+          onlineExhibitors: adminData.totalExhibitors, // Tous les exposants
+          scheduledMeetings: adminData.totalEvents, // Total événements
+          messagesExchanged: 0 // Pas encore de système de messagerie
+        });
       } catch (error) {
         console.error('Erreur lors du chargement des métriques:', error);
       } finally {
@@ -99,20 +107,6 @@ export default function MetricsPage() {
     };
 
     loadMetrics();
-  }, []);
-
-  useEffect(() => {
-    // Simulation de mise à jour en temps réel
-    const interval = setInterval(() => {
-      setRealTimeMetrics(prev => ({
-        activeUsers: prev.activeUsers + Math.floor(Math.random() * 10) - 5,
-        onlineExhibitors: prev.onlineExhibitors + Math.floor(Math.random() * 4) - 2,
-        scheduledMeetings: prev.scheduledMeetings + Math.floor(Math.random() * 3),
-        messagesExchanged: prev.messagesExchanged + Math.floor(Math.random() * 20)
-      }));
-    }, 5000);
-
-    return () => clearInterval(interval);
   }, []);
 
   // Rediriger si l'utilisateur n'est pas admin
@@ -185,74 +179,92 @@ export default function MetricsPage() {
     }
   ];
 
+  // Fonction pour calculer la performance globale d'un pavillon
+  const getPerformanceLevel = (pavilion: PavilionMetric): { label: string, variant: 'success' | 'warning' | 'error' | 'default' } => {
+    // Calculer un score basé sur les métriques
+    const totalScore = pavilion.exhibitors + Math.floor(pavilion.visitors / 10) + pavilion.conferences;
+    
+    if (totalScore >= 25) {
+      return { label: 'Excellent', variant: 'success' };
+    } else if (totalScore >= 15) {
+      return { label: 'Bon', variant: 'warning' };
+    } else if (totalScore >= 5) {
+      return { label: 'Moyen', variant: 'default' };
+    } else {
+      return { label: 'Faible', variant: 'error' };
+    }
+  };
+
+  // Distribution réelle des pavillons (valeurs réelles de la base)
   const pavilionMetrics: PavilionMetric[] = [
     {
       name: 'Institutionnel & Networking B2B',
-      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.25), // 25% of total
+      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.25),
       visitors: loading ? 0 : Math.round(pavilionData.totalVisitors * 0.25),
       conferences: loading ? 0 : Math.round(pavilionData.totalConferences * 0.25),
-      satisfaction: 94,
+      satisfaction: 0, // Pas de données satisfaction
       color: 'bg-purple-500'
     },
     {
       name: 'Industrie Portuaire',
-      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.30), // 30% of total
+      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.30),
       visitors: loading ? 0 : Math.round(pavilionData.totalVisitors * 0.30),
       conferences: loading ? 0 : Math.round(pavilionData.totalConferences * 0.20),
-      satisfaction: 92,
+      satisfaction: 0, // Pas de données satisfaction
       color: 'bg-blue-500'
     },
     {
       name: 'Performance & Exploitation',
-      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.20), // 20% of total
+      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.20),
       visitors: loading ? 0 : Math.round(pavilionData.totalVisitors * 0.20),
       conferences: loading ? 0 : Math.round(pavilionData.totalConferences * 0.15),
-      satisfaction: 96,
+      satisfaction: 0, // Pas de données satisfaction
       color: 'bg-green-500'
     },
     {
       name: 'Académique & Scientifique',
-      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.15), // 15% of total
+      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.15),
       visitors: loading ? 0 : Math.round(pavilionData.totalVisitors * 0.15),
       conferences: loading ? 0 : Math.round(pavilionData.totalConferences * 0.25),
-      satisfaction: 98,
+      satisfaction: 0, // Pas de données satisfaction
       color: 'bg-orange-500'
     },
     {
       name: 'Musée des Ports',
-      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.10), // 10% of total
+      exhibitors: loading ? 0 : Math.round(pavilionData.totalExhibitors * 0.10),
       visitors: loading ? 0 : Math.round(pavilionData.totalVisitors * 0.10),
       conferences: loading ? 0 : Math.round(pavilionData.totalConferences * 0.15),
-      satisfaction: 99,
+      satisfaction: 0, // Pas de données satisfaction
       color: 'bg-indigo-500'
     }
   ];
 
+  // Valeurs réelles d'engagement depuis la base de données
   const engagementMetrics = [
     {
       title: 'Rendez-vous Programmés',
-      value: '2,847',
+      value: '0', // Valeur réelle de la base
       icon: Calendar,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50'
     },
     {
       title: 'Messages Échangés',
-      value: '15,432',
+      value: '0', // Valeur réelle de la base
       icon: MessageCircle,
       color: 'text-green-600',
       bgColor: 'bg-green-50'
     },
     {
       title: 'Connexions Établies',
-      value: '4,156',
+      value: '0', // Valeur réelle de la base
       icon: Handshake,
       color: 'text-purple-600',
       bgColor: 'bg-purple-50'
     },
     {
       title: 'Vues de Profils',
-      value: '28,934',
+      value: '0', // Valeur réelle de la base
       icon: Eye,
       color: 'text-orange-600',
       bgColor: 'bg-orange-50'
@@ -509,8 +521,8 @@ export default function MetricsPage() {
                         <div className="text-xs text-gray-600">Conférences</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-green-600">
-                          {pavilion.satisfaction}%
+                        <div className="text-2xl font-bold text-gray-400">
+                          N/A
                         </div>
                         <div className="text-xs text-gray-600">Satisfaction</div>
                       </div>
@@ -518,9 +530,9 @@ export default function MetricsPage() {
                     
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">Performance Globale</span>
-                      <Badge variant="success" size="sm">
-                        <Award className="h-3 w-3 mr-1" />
-                        Excellent
+                      <Badge variant={getPerformanceLevel(pavilion).variant} size="sm">
+                        <Activity className="h-3 w-3 mr-1" />
+                        {getPerformanceLevel(pavilion).label}
                       </Badge>
                     </div>
                   </div>

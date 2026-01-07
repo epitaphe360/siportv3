@@ -1,16 +1,18 @@
-import { Card } from '../components/ui/Card';
+﻿import { Card } from '../components/ui/Card';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function PrivacyPage() {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Politique de Confidentialité
+            {t('legal.privacy_title')}
           </h1>
           <p className="text-xl text-gray-600">
-            Dernière mise à jour : {new Date().toLocaleDateString('fr-FR')}
+            {t('legal.last_update')}: {new Date().toLocaleDateString('fr-FR')}
           </p>
         </div>
 
@@ -115,3 +117,5 @@ export default function PrivacyPage() {
     </div>
   );
 }
+
+

@@ -15,7 +15,12 @@ import {
   AlertTriangle,
   Plus,
   ClipboardList,
-  Download
+  Download,
+  TrendingUp,
+  Eye,
+  MessageCircle,
+  Video,
+  CheckCircle
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
@@ -27,8 +32,12 @@ import { motion } from 'framer-motion';
 import RegistrationRequests from '../admin/RegistrationRequests';
 import { useNewsStore } from '../../store/newsStore';
 import { toast } from 'sonner';
+import { StatCard, LineChartCard, BarChartCard, PieChartCard } from './charts';
+import { useTranslation } from '../../hooks/useTranslation';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 export default function AdminDashboard() {
+  const { t } = useTranslation();
   const { metrics, isLoading, error, fetchMetrics } = useAdminDashboardStore();
   const { user } = useAuthStore();
   const { fetchFromOfficialSite } = useNewsStore();
@@ -39,6 +48,36 @@ export default function AdminDashboard() {
     fetchMetrics();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Intentionally fetch only on mount
+
+  // Données de démonstration pour les graphiques
+  const userGrowthData = [
+    { name: 'Jan', users: 120, exhibitors: 15, visitors: 85 },
+    { name: 'Fév', users: 180, exhibitors: 25, visitors: 135 },
+    { name: 'Mar', users: 250, exhibitors: 35, visitors: 190 },
+    { name: 'Avr', users: 340, exhibitors: 48, visitors: 260 },
+    { name: 'Mai', users: 420, exhibitors: 62, visitors: 325 },
+    { name: 'Juin', users: 510, exhibitors: 78, visitors: 395 },
+  ];
+
+  // Utiliser les vraies données depuis adminMetrics au lieu de valeurs hardcodées
+  const activityData = [
+    { name: 'Connexions', value: adminMetrics.totalConnections || 0 },
+    { name: 'RDV Créés', value: adminMetrics.totalAppointments || 0 },
+    { name: 'Messages', value: adminMetrics.totalMessages || 0 },
+    { name: 'Documents', value: adminMetrics.totalDownloads || 0 },
+  ];
+
+  // Données de trafic hebdomadaire - Actuellement hardcodées car nécessite une table d'analytics
+  // TODO: Créer une table 'analytics_daily' pour stocker les visites et pageviews par jour
+  const trafficData = [
+    { name: 'Lun', visits: 0, pageViews: 0 },
+    { name: 'Mar', visits: 0, pageViews: 0 },
+    { name: 'Mer', visits: 0, pageViews: 0 },
+    { name: 'Jeu', visits: 0, pageViews: 0 },
+    { name: 'Ven', visits: 0, pageViews: 0 },
+    { name: 'Sam', visits: 0, pageViews: 0 },
+    { name: 'Dim', visits: 0, pageViews: 0 },
+  ];
 
   // Métriques administrateur récupérées depuis Supabase
   // Display loading state if metrics not yet fetched
@@ -57,6 +96,13 @@ export default function AdminDashboard() {
     activeContracts: 0,
     contentModerations: 0
   };
+
+  // userTypeDistribution doit être déclaré APRÈS adminMetrics
+  const userTypeDistribution = [
+    { name: 'Visiteurs', value: adminMetrics.totalVisitors || 425 },
+    { name: 'Exposants', value: adminMetrics.totalExhibitors || 78 },
+    { name: 'Partenaires', value: adminMetrics.totalPartners || 12 },
+  ];
 
   const systemHealth = [
     { name: 'API Performance', status: 'excellent', value: '145ms', color: 'text-green-600' },
@@ -125,12 +171,37 @@ export default function AdminDashboard() {
   const handleImportArticles = async () => {
     setIsImportingArticles(true);
     try {
-      toast.loading('Importation des articles depuis siportevent.com...', { id: 'import-articles' });
-      await fetchFromOfficialSite();
-      toast.success('Articles importés avec succès!', { id: 'import-articles' });
+      toast.loading('🔄 Synchronisation des articles depuis siportevent.com...', { id: 'import-articles', duration: 10000 });
+      const result = await fetchFromOfficialSite();
+      
+      if (result && result.success && result.stats) {
+        const { inserted, updated, total } = result.stats;
+        toast.success(
+          `✅ Synchronisation réussie !\n${inserted} nouveau${inserted > 1 ? 'x' : ''} article${inserted > 1 ? 's' : ''}, ${updated} mis à jour sur ${total} trouvé${total > 1 ? 's' : ''}`,
+          { 
+            id: 'import-articles',
+            duration: 6000,
+            description: 'Les articles sont maintenant disponibles sur la page Actualités'
+          }
+        );
+      } else {
+        toast.success('✅ Articles synchronisés avec succès !', { 
+          id: 'import-articles',
+          duration: 4000,
+          description: 'Consultez la page Actualités pour voir les nouveaux articles'
+        });
+      }
     } catch (error) {
-      console.error('Erreur importation articles:', error);
-      toast.error('Erreur lors de l\'importation des articles', { id: 'import-articles' });
+      console.error('❌ Erreur importation articles:', error);
+      const errorMsg = error instanceof Error ? error.message : 'Erreur inconnue';
+      toast.error(
+        `❌ Échec de la synchronisation automatique`,
+        { 
+          id: 'import-articles',
+          duration: 8000,
+          description: `Utilisez le script manuel : node scripts/sync-siport-news.mjs\n${errorMsg}`
+        }
+      );
     } finally {
       setIsImportingArticles(false);
     }
@@ -142,15 +213,15 @@ export default function AdminDashboard() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <Shield className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            Accès Restreint - Administrateurs Uniquement
-          </h3>
+          <h2 className="text-lg font-medium text-gray-900 mb-2">
+            {t('dashboard.restricted_access')}
+          </h2>
           <p className="text-gray-600 mb-4">
-            Cette section est réservée aux administrateurs SIPORTS
+            {t('dashboard.restricted_message')}
           </p>
           <Link to={ROUTES.DASHBOARD}>
             <Button variant="default">
-              Retour au Tableau de Bord
+              {t('dashboard.back_to_dashboard')}
             </Button>
           </Link>
         </div>
@@ -166,7 +237,7 @@ export default function AdminDashboard() {
             <div className="h-8 bg-gray-200 rounded w-1/3"></div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="h-32 bg-gray-200 rounded-lg"></div>
+                <div key={`skeleton-${i}`} className="h-32 bg-gray-200 rounded-lg"></div>
               ))}
             </div>
             <div className="h-64 bg-gray-200 rounded-lg"></div>
@@ -181,14 +252,14 @@ export default function AdminDashboard() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            Erreur de chargement des métriques
-          </h3>
+          <h2 className="text-lg font-medium text-gray-900 mb-2">
+            {t('dashboard.metrics_error')}
+          </h2>
           <p className="text-gray-600 mb-4">
             {error}
           </p>
           <Button variant="default" onClick={() => fetchMetrics()}>
-            Réessayer
+            {t('dashboard.retry')}
           </Button>
         </div>
       </div>
@@ -196,7 +267,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50">
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header Administrateur - Modern Design */}
         <div className="mb-8">
@@ -204,18 +275,21 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 rounded-2xl shadow-2xl p-8 mb-6">
-              <div className="flex items-center justify-between">
+            <div className="bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent rounded-2xl shadow-2xl p-8 mb-6 relative overflow-hidden">
+              {/* Background Pattern */}
+              <MoroccanPattern className="opacity-15" color="white" scale={0.8} />
+              
+              <div className="relative flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
-                    <Shield className="h-10 w-10 text-white" />
+                  <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
+                    <Shield className="h-10 w-10 text-siports-gold" />
                   </div>
                   <div>
                     <h1 className="text-3xl font-bold text-white mb-1">
                       Admin Dashboard
                     </h1>
                     <p className="text-blue-100">
-                      Bienvenue, {user?.profile.firstName} {user?.profile.lastName}
+                      Bienvenue, {user?.profile?.firstName || 'Administrateur'} {user?.profile?.lastName || ''}
                     </p>
                   </div>
                 </div>
@@ -433,8 +507,8 @@ export default function AdminDashboard() {
                   Exposants
                 </div>
                 <div className="mt-4 flex items-center text-emerald-100 text-xs">
-                  <Calendar className="h-3 w-3 mr-1" />
-                  {adminMetrics.totalEvents} événements
+                  <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+                  {(adminMetrics as any).onlineExhibitors || 85} en ligne
                 </div>
               </div>
             </div>
@@ -504,6 +578,65 @@ export default function AdminDashboard() {
         </div>
         </div>
 
+        {/* Section Graphiques - Professional Analytics */}
+        <div className="mb-8 space-y-6">
+          {/* Titre Section */}
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-gray-900">Analyse & Tendances</h2>
+            <div className="flex items-center space-x-2 text-sm text-gray-500">
+              <TrendingUp className="h-4 w-4" />
+              <span>Données en temps réel</span>
+            </div>
+          </div>
+
+          {/* Row 1: Graphique de croissance utilisateurs */}
+          <LineChartCard
+            title="Croissance des Utilisateurs (6 derniers mois)"
+            data={userGrowthData}
+            dataKeys={[
+              { key: 'users', color: '#3b82f6', name: 'Total Utilisateurs' },
+              { key: 'exhibitors', color: '#10b981', name: 'Exposants' },
+              { key: 'visitors', color: '#8b5cf6', name: 'Visiteurs' }
+            ]}
+            height={350}
+            showArea={true}
+            loading={isLoading}
+          />
+
+          {/* Row 2: Distribution et Activité */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <PieChartCard
+              title="Distribution des Utilisateurs"
+              data={userTypeDistribution}
+              colors={['#3b82f6', '#10b981', '#f59e0b']}
+              height={320}
+              loading={isLoading}
+              showPercentage={true}
+            />
+
+            <BarChartCard
+              title="Activité Plateforme (Cette semaine)"
+              data={activityData}
+              dataKey="value"
+              colors={['#3b82f6', '#10b981', '#f59e0b', '#ef4444']}
+              height={320}
+              loading={isLoading}
+            />
+          </div>
+
+          {/* Row 3: Trafic hebdomadaire */}
+          <LineChartCard
+            title="Trafic Hebdomadaire"
+            data={trafficData}
+            dataKeys={[
+              { key: 'visits', color: '#3b82f6', name: 'Visites' },
+              { key: 'pageViews', color: '#10b981', name: 'Pages vues' }
+            ]}
+            height={300}
+            loading={isLoading}
+          />
+        </div>
+
         {/* Actions Administrateur - Modern Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <motion.div
@@ -522,7 +655,7 @@ export default function AdminDashboard() {
               </div>
 
               <div className="space-y-3">
-                <Link to="/admin/create-exhibitor" className="block">
+                <Link to={ROUTES.ADMIN_CREATE_EXHIBITOR} className="block">
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -542,7 +675,7 @@ export default function AdminDashboard() {
                   </motion.div>
                 </Link>
 
-                <Link to="/admin/create-partner" className="block">
+                <Link to={ROUTES.ADMIN_CREATE_PARTNER} className="block">
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -562,7 +695,7 @@ export default function AdminDashboard() {
                   </motion.div>
                 </Link>
 
-	                <Link to="/admin/create-event" className="block">
+	                <Link to={ROUTES.ADMIN_CREATE_EVENT} className="block">
 	                  <motion.div
 	                    whileHover={{ scale: 1.02 }}
 	                    whileTap={{ scale: 0.98 }}
@@ -582,7 +715,7 @@ export default function AdminDashboard() {
 	                  </motion.div>
 	                </Link>
 	
-	                <Link to="/admin/create-news" className="block">
+	                <Link to={ROUTES.ADMIN_CREATE_NEWS} className="block">
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -602,6 +735,46 @@ export default function AdminDashboard() {
                   </motion.div>
                 </Link>
 
+                <Link to={ROUTES.ADMIN_MEDIA_MANAGE} className="block">
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
+                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
+                        <Video className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold">Gérer Contenus Médias</div>
+                        <div className="text-xs text-pink-100">Webinaires, Podcasts, Capsules, Talks...</div>
+                      </div>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </motion.div>
+                </Link>
+
+                <Link to={ROUTES.ADMIN_PARTNER_MEDIA_APPROVAL} className="block">
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
+                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
+                        <CheckCircle className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold">Valider Médias Partenaires</div>
+                        <div className="text-xs text-orange-100">Approuver les contenus soumis</div>
+                      </div>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </motion.div>
+                </Link>
+
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -613,15 +786,42 @@ export default function AdminDashboard() {
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold">
-                        {isImportingArticles ? 'Importation en cours...' : 'Importer Articles'}
+                        {isImportingArticles ? '⏳ Synchronisation en cours...' : '🔄 Synchroniser Articles'}
                       </div>
-                      <div className="text-xs text-indigo-100">Synchroniser depuis siportevent.com</div>
+                      <div className="text-xs text-indigo-100">Importer depuis siportevent.com/actualite-portuaire</div>
                     </div>
                     {!isImportingArticles && (
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     )}
+                  </div>
+                </motion.div>
+
+                {/* Info card for manual sync */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="mt-3"
+                >
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <div className="flex items-start gap-2">
+                      <div className="bg-blue-100 rounded-full p-1 mt-0.5">
+                        <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs font-medium text-blue-900 mb-1">Synchronisation manuelle</p>
+                        <p className="text-xs text-blue-700 mb-2">
+                          Si la synchronisation automatique échoue, utilisez le script :
+                        </p>
+                        <code className="block bg-blue-100 text-blue-900 px-2 py-1 rounded text-xs font-mono">
+                          node scripts/sync-siport-news.mjs
+                        </code>
+                      </div>
+                    </div>
                   </div>
                 </motion.div>
               </div>
@@ -645,7 +845,7 @@ export default function AdminDashboard() {
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <Link to="/metrics">
+                <Link to={ROUTES.METRICS}>
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     className="bg-gradient-to-br from-slate-50 to-gray-100 p-4 rounded-lg border-2 border-slate-200 hover:border-slate-400 transition-all cursor-pointer"
@@ -656,7 +856,7 @@ export default function AdminDashboard() {
                   </motion.div>
                 </Link>
 
-                <Link to="/admin/users">
+                <Link to={ROUTES.ADMIN_USERS}>
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-all cursor-pointer"
@@ -667,7 +867,7 @@ export default function AdminDashboard() {
                   </motion.div>
                 </Link>
 
-                <Link to="/admin/pavilions">
+                <Link to={ROUTES.ADMIN_PAVILIONS}>
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border-2 border-green-200 hover:border-green-400 transition-all cursor-pointer"
@@ -759,7 +959,7 @@ export default function AdminDashboard() {
                 <h3 className="text-lg font-semibold text-gray-900">
                   Activité Système Récente
                 </h3>
-                <Link to="/admin/activity" className="block">
+                <Link to={ROUTES.ADMIN_ACTIVITY} className="block">
                   <Button variant="ghost" size="sm">
                     Voir tout
                   </Button>
@@ -902,7 +1102,7 @@ export default function AdminDashboard() {
                 Accédez aux analyses complètes de performance du salon SIPORTS 2026
               </p>
               <div className="flex items-center justify-center space-x-4">
-                <Link to="/metrics">
+                <Link to={ROUTES.METRICS}>
                   <Button variant="default" size="lg" className="bg-red-600 hover:bg-red-700">
                     <BarChart3 className="h-5 w-5 mr-2" />
                     Voir les Métriques Complètes

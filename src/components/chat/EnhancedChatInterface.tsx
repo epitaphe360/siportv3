@@ -181,14 +181,14 @@ export const EnhancedChatInterface: React.FC = () => {
     isPinned: enhancedFeatures[conv.id]?.isPinned || false,
     isArchived: enhancedFeatures[conv.id]?.isArchived || false,
     priority: enhancedFeatures[conv.id]?.priority || 'normal',
-    participants: conv.participants.map((participantId: string) => {
+    participants: (conv.participants || []).map((participantId: string) => {
       // Map participant IDs to user info
       const isOnline = onlineUsers.includes(participantId);
       return {
         id: participantId,
         name: participantId === 'siports-bot' ? 'Assistant SIPORTS' : 
               participantId === 'user2' ? 'Contact Professionnel' : 
-              `Utilisateur ${participantId}`,
+              `Utilisateur ${participantId.substring(0, 8)}`,
         avatar: participantId === 'siports-bot' ? 
                'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=100' :
                undefined,
@@ -298,7 +298,7 @@ export const EnhancedChatInterface: React.FC = () => {
             </div>
           ) : (
             filteredConversations.map((conversation) => {
-              const otherParticipant = conversation.participants.find(p => p.id !== user?.id);
+              const otherParticipant = conversation.participants.find((p: any) => p.id !== user?.id);
               if (!otherParticipant) return null;
 
               return (
@@ -356,7 +356,7 @@ export const EnhancedChatInterface: React.FC = () => {
                       <div className="flex items-center justify-between mt-2">
                         <div className="flex items-center space-x-1">
                           {conversation.lastMessage?.reactions?.map((reaction, index) => (
-                            <span key={index} className="text-xs">
+                            <span key={`${reaction.emoji}-${index}`} className="text-xs">
                               {reaction.emoji}
                             </span>
                           ))}
@@ -385,7 +385,7 @@ export const EnhancedChatInterface: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   {(() => {
-                    const otherParticipant = activeConv.participants.find(p => p.id !== user?.id);
+                    const otherParticipant = (activeConv.participants || []).find(p => p.id !== user?.id);
                     return otherParticipant ? (
                       <>
                         <div className="relative">
@@ -456,7 +456,7 @@ export const EnhancedChatInterface: React.FC = () => {
                         {(message as any).attachments && (message as any).attachments.length > 0 && (
                           <div className="mt-2 space-y-1">
                             {(message as any).attachments.map((attachment: any, index: number) => (
-                              <div key={index} className="flex items-center space-x-2 p-2 bg-white bg-opacity-20 rounded">
+                              <div key={`attachment-${attachment.name}-${index}`} className="flex items-center space-x-2 p-2 bg-white bg-opacity-20 rounded">
                                 <Paperclip className="h-3 w-3" />
                                 <span className="text-xs truncate">{attachment.name}</span>
                                 <span className="text-xs opacity-75">({attachment.size})</span>
@@ -483,8 +483,8 @@ export const EnhancedChatInterface: React.FC = () => {
                         {(message as any).reactions && (message as any).reactions.length > 0 && (
                           <div className="absolute -bottom-6 left-0 flex space-x-1">
                             {(message as any).reactions.map((reaction: any, index: number) => (
-                              <span 
-                                key={index}
+                              <span
+                                key={`reaction-${reaction.emoji}-${reaction.userName}-${index}`}
                                 className="bg-white border border-gray-200 rounded-full px-2 py-1 text-xs shadow-sm"
                                 title={reaction.userName}
                               >

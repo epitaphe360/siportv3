@@ -217,7 +217,8 @@ export async function validateFile(
   }
 
   // 5. Vérifier le nom du fichier (pas de caractères dangereux)
-  const dangerousChars = /[<>:"|?*\x00-\x1F]/;
+  // eslint-disable-next-line no-control-regex
+  const dangerousChars = /[<>:"/\\|?*\x00-\x1F]/;
   if (dangerousChars.test(file.name)) {
     throw new FileValidationError(
       'INVALID_FILENAME',

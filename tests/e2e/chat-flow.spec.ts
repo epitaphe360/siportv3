@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Chat Flow', () => {
   test('should send message successfully', async ({ page }) => {
-    await page.goto('http://localhost:5173/connexion');
+    await page.goto('http://localhost:9323/connexion');
 
     await page.fill('input[type="email"]', 'visitor@test.com');
     await page.fill('input[type="password"]', 'TestPass123!');
@@ -25,7 +25,7 @@ test.describe('Chat Flow', () => {
   });
 
   test('should show unread badge', async ({ page }) => {
-    await page.goto('http://localhost:5173/connexion');
+    await page.goto('http://localhost:9323/connexion');
 
     await page.fill('input[type="email"]', 'visitor@test.com');
     await page.fill('input[type="password"]', 'TestPass123!');

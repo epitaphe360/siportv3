@@ -1,13 +1,16 @@
 /**
  * Configuration des quotas pour les différents niveaux de visiteurs
  * Ces valeurs doivent correspondre à celles de la table visitor_levels dans Supabase
+ * 
+ * CAHIER DES CHARGES:
+ * - Visiteur Gratuit: 0 demande RDV B2B
+ * - Visiteur VIP (700€): 10 demandes max (incitation à la sélectivité)
  */
 
 export const VISITOR_QUOTAS: Record<string, number> = {
-  free: 0,
-  basic: 2,
-  premium: 5,
-  vip: 99
+  free: 0,      // FREE: Aucun rendez-vous autorisé (CDC)
+  premium: 10,   // VIP: 10 demandes de rendez-vous maximum (CDC)
+  vip: 10       // Alias pour VIP
 };
 
 export const getVisitorQuota = (level: string | undefined): number => {
@@ -24,10 +27,9 @@ export const calculateRemainingQuota = (
 
 
 export const VISITOR_LEVELS: Record<string, { label: string, color: string, icon: string, access: string[] }> = {
-  free: { label: 'Free Pass', color: '#6c757d', icon: '🟢', access: ['Accès limité', 'Networking'] },
-  basic: { label: 'Basic Pass', color: '#007bff', icon: '🔵', access: ['Accès 1 jour', '2 RDV garantis'] },
-  premium: { label: 'Premium Pass', color: '#17a2b8', icon: '🟣', access: ['Accès 2 jours', '5 RDV garantis'] },
-  vip: { label: 'VIP Pass', color: '#ffd700', icon: '👑', access: ['Accès All Inclusive', 'Service concierge'] }
+  free: { label: 'Free Pass', color: '#6c757d', icon: '🟢', access: ['Accès limité', 'Badge uniquement', 'Aucun rendez-vous'] },
+  premium: { label: 'Premium VIP Pass', color: '#ffd700', icon: '👑', access: ['Invitation inauguration', '10 demandes de rendez-vous B2B', 'Networking illimité', 'Ateliers spécialisés', 'Soirée gala exclusive', 'Conférences', 'Déjeuners networking'] },
+  vip: { label: 'Premium VIP Pass', color: '#ffd700', icon: '👑', access: ['Invitation inauguration', '10 demandes de rendez-vous B2B', 'Networking illimité', 'Ateliers spécialisés', 'Soirée gala exclusive', 'Conférences', 'Déjeuners networking'] }
 };
 
 /**

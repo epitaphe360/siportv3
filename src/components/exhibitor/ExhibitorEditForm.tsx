@@ -593,8 +593,8 @@ export default function ExhibitorEditForm() {
                          formData.category === 'academic' ? 'Académique' : 
                          'Catégorie'}
                       </span>
-                      {formData.markets.slice(0, 3).map((market, index) => (
-                        <span key={index} className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+                      {formData.markets.slice(0, 3).map((market) => (
+                        <span key={market} className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
                           {market}
                         </span>
                       ))}

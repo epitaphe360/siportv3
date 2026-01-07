@@ -131,7 +131,7 @@ export default function AvailabilityCalendar({ user, showBooking = false, onBook
         )
       );
 
-      toast.success(`Rendez-vous réservé avec ${user.profile.firstName} ${user.profile.lastName} le ${formatDate(slot.date)} à ${slot.startTime}`);
+      toast.success(`Rendez-vous réservé avec ${user?.profile?.firstName || ''} ${user?.profile?.lastName || ''} le ${formatDate(slot.date)} à ${slot.startTime}`);
       onBookSlot?.(slot);
     } catch {
       toast.error('Erreur lors de la réservation');
@@ -154,11 +154,14 @@ export default function AvailabilityCalendar({ user, showBooking = false, onBook
         <div>
           <h3 className="text-lg font-semibold text-gray-900 flex items-center">
             <Calendar className="h-5 w-5 mr-2 text-blue-600" />
-            Disponibilités de {user.profile.firstName}
+            Disponibilités de {user?.profile?.firstName || 'l\'utilisateur'}
           </h3>
           <p className="text-sm text-gray-600 mt-1">
             {user.type === 'partner' ? 'Partenaire' : 'Exposant'} • {timeSlots.filter(s => s.available).length} créneau{timeSlots.filter(s => s.available).length !== 1 ? 'x' : ''} disponible{timeSlots.filter(s => s.available).length !== 1 ? 's' : ''}
           </p>
+          <div className="mt-2 inline-flex items-center px-2 py-1 rounded bg-blue-50 text-blue-700 text-xs font-medium">
+            📅 SIPORTS 2026 : 1-3 avril uniquement
+          </div>
         </div>
         {showBooking && (
           <Badge variant="info" className="bg-green-100 text-green-800">
@@ -210,10 +213,21 @@ export default function AvailabilityCalendar({ user, showBooking = false, onBook
           </div>
         ) : (
           <div className="space-y-3">
-            {selectedDateSlots.map((slot) => (
+            {selectedDateSlots.map((slot) => {
+              // Vérifier si le créneau est complet (toutes les places réservées)
+              const isFullyBooked = (slot.currentBookings || 0) >= (slot.maxBookings || 1);
+              const hasBookings = (slot.currentBookings || 0) > 0;
+              
+              return (
               <div
                 key={slot.id}
-                className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                className={`flex items-center justify-between p-4 border rounded-lg transition-colors ${
+                  isFullyBooked 
+                    ? 'border-red-200 bg-red-50' 
+                    : hasBookings
+                    ? 'border-orange-200 bg-orange-50'
+                    : 'border-gray-200 hover:bg-gray-50'
+                }`}
               >
                 <div className="flex items-center space-x-3">
                   <div className={`p-2 rounded-lg border ${getTypeColor(slot.type)}`}>
@@ -227,6 +241,16 @@ export default function AvailabilityCalendar({ user, showBooking = false, onBook
                       <Badge className={getTypeColor(slot.type)}>
                         {getTypeLabel(slot.type)}
                       </Badge>
+                      {isFullyBooked && (
+                        <Badge className="bg-red-100 text-red-800 border-red-300">
+                          COMPLET
+                        </Badge>
+                      )}
+                      {hasBookings && !isFullyBooked && (
+                        <Badge className="bg-orange-100 text-orange-800 border-orange-300">
+                          {slot.currentBookings} RÉSERVÉ{slot.currentBookings > 1 ? 'S' : ''}
+                        </Badge>
+                      )}
                     </div>
                     <div className="text-sm text-gray-600 mt-1">
                       {slot.location && `${slot.location} • `}
@@ -238,15 +262,16 @@ export default function AvailabilityCalendar({ user, showBooking = false, onBook
                 {showBooking && (
                   <Button
                     onClick={() => handleBookSlot(slot)}
-                    disabled={isLoading || !slot.available}
+                    disabled={isLoading || !slot.available || isFullyBooked}
                     size="sm"
-                    className="bg-blue-600 hover:bg-blue-700"
+                    className={isFullyBooked ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"}
                   >
-                    {isLoading ? 'Réservation...' : 'Réserver'}
+                    {isLoading ? 'Réservation...' : isFullyBooked ? 'Complet' : 'Réserver'}
                   </Button>
                 )}
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </Card>

@@ -19,10 +19,13 @@ import { useEventStore } from '../../store/eventStore';
 import useAuthStore from '../../store/authStore';
 import { ROUTES } from '../../lib/routes';
 import { motion } from 'framer-motion';
+import { useTranslation } from '../../hooks/useTranslation';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 // OPTIMIZATION: Memoized EventsPage to prevent unnecessary re-renders
 export default memo(function EventsPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const {
     events,
     featuredEvents,
@@ -133,13 +136,14 @@ export default memo(function EventsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent relative overflow-hidden shadow-lg">
+        <MoroccanPattern className="opacity-10" color="white" scale={0.5} />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            <h1 className="text-3xl font-bold text-white mb-4">
               Événements SIPORTS 2026
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-blue-100 max-w-2xl mx-auto">
               Participez aux conférences, webinaires et sessions de réseautage 
               organisés durant le salon
             </p>
@@ -302,7 +306,7 @@ export default memo(function EventsPage() {
                           </div>
                           
                           {/* Speakers */}
-                          {event.speakers.length > 0 && (
+                          {event.speakers && event.speakers.length > 0 && (
                             <div className="mb-6">
                               <h4 className="text-sm font-medium text-gray-900 mb-2">
                                 Intervenants :
@@ -347,13 +351,14 @@ export default memo(function EventsPage() {
                                   url: window.location.href + '#event-' + event.id
                                 };
                                 if (navigator.share) {
-                                  navigator.share(shareData);
+                                  navigator.share(shareData).catch(() => {});
                                 } else {
-                                  navigator.clipboard.writeText(shareData.url);
-                                  toast.success("Lien de l'événement copié !");
+                                  navigator.clipboard.writeText(shareData.url)
+                                    .then(() => toast.success("Lien de l'événement copié !"))
+                                    .catch(() => toast.error('Impossible de copier'));
                                 }
                               }}
-                              title="Partager cet événement"
+                              title={t('ui.share_event')}
                             >
                               <ExternalLink className="h-4 w-4" />
                             </Button>
@@ -379,7 +384,7 @@ export default memo(function EventsPage() {
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3, 4, 5, 6].map(i => (
-                <div key={i} className="animate-pulse">
+                <div key={`skeleton-${i}`} className="animate-pulse">
                   <div className="bg-white rounded-lg p-6 h-80">
                     <div className="h-4 bg-gray-200 rounded mb-4"></div>
                     <div className="h-20 bg-gray-200 rounded mb-4"></div>
@@ -400,7 +405,7 @@ export default memo(function EventsPage() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div data-testid="events-list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredEvents.map((event, index) => {
                 const EventIcon = getEventTypeIcon(event.type);
                 const isRegistered = registeredEvents.includes(event.id);

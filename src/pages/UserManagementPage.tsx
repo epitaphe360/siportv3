@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { SupabaseService } from '../services/supabaseService';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
+import { useTranslation } from '../hooks/useTranslation';
 import { 
   ArrowLeft,
   Users,
@@ -42,80 +43,51 @@ interface User {
   verified: boolean;
 }
 
-const mockUsers: User[] = [
-  {
-    id: '1',
-    name: 'Sarah Johnson',
-    email: 'sarah.johnson@portsolutions.com',
-    type: 'exhibitor',
-    company: 'Port Solutions Inc.',
-    country: 'Netherlands',
-    status: 'active',
-    registrationDate: new Date('2024-01-15'),
-    lastActivity: new Date(Date.now() - 3600000),
-    verified: true
-  },
-  {
-    id: '2',
-    name: 'Ahmed El Mansouri',
-    email: 'ahmed@portcasablanca.ma',
-    type: 'partner',
-    company: 'Autorité Portuaire Casablanca',
-    country: 'Morocco',
-    status: 'active',
-    registrationDate: new Date('2024-01-10'),
-    lastActivity: new Date(Date.now() - 7200000),
-    verified: true
-  },
-  {
-    id: '3',
-    name: 'Marie Dubois',
-    email: 'marie.dubois@maritime-consulting.fr',
-    type: 'visitor',
-    company: 'Maritime Consulting France',
-    country: 'France',
-    status: 'pending',
-    registrationDate: new Date('2024-01-20'),
-    lastActivity: new Date(Date.now() - 14400000),
-    verified: false
-  },
-  {
-    id: '4',
-    name: 'Dr. Maria Santos',
-    email: 'maria.santos@maritimeuni.es',
-    type: 'visitor',
-    company: 'Maritime University Barcelona',
-    country: 'Spain',
-    status: 'active',
-    registrationDate: new Date('2024-01-18'),
-    lastActivity: new Date(Date.now() - 1800000),
-    verified: true
-  },
-  {
-    id: '5',
-    name: 'John Smith',
-    email: 'john.smith@techport.com',
-    type: 'exhibitor',
-    company: 'TechPort Solutions',
-    country: 'United Kingdom',
-    status: 'suspended',
-    registrationDate: new Date('2024-01-12'),
-    lastActivity: new Date(Date.now() - 86400000),
-    verified: true
-  }
-];
-
 export default function UserManagementPage() {
-  const [users, setUsers] = useState<User[]>(mockUsers);
-  const [filteredUsers, setFilteredUsers] = useState<User[]>(mockUsers);
+  const { t } = useTranslation();
+  const [users, setUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [viewUser, setViewUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setIsLoading(true);
+      try {
+        const data = await SupabaseService.getUsers();
+        if (!data || data.length === 0) {
+          console.warn('Aucun utilisateur retourné par Supabase. Vérifiez les politiques RLS.');
+        }
+        const transformedUsers: User[] = data.map(u => ({
+          id: u.id,
+          name: u.name || u.email || 'Utilisateur sans nom',
+          email: u.email,
+          type: u.type as any,
+          company: u.profile?.company || 'N/A',
+          country: u.profile?.country || 'N/A',
+          status: u.status as any || 'active',
+          registrationDate: u.createdAt || new Date(),
+          lastActivity: u.updatedAt || new Date(),
+          verified: u.status === 'active'
+        }));
+        setUsers(transformedUsers);
+        setFilteredUsers(transformedUsers);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+        toast.error('Erreur lors du chargement des utilisateurs');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   // Handler pour l'export CSV
   const handleExport = () => {
@@ -738,14 +710,14 @@ export default function UserManagementPage() {
             </table>
           </div>
           
-          {filteredUsers.length === 0 && (
+          {filteredUsers.length === 0 && !isLoading && (
             <div className="text-center py-12">
               <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
                 Aucun utilisateur trouvé
               </h3>
-              <p className="text-gray-600">
-                Essayez de modifier vos critères de recherche
+              <p className="text-gray-600 max-w-md mx-auto">
+                Si vous êtes administrateur et que vous ne voyez aucun utilisateur, il est possible que les politiques de sécurité (RLS) de la base de données restreignent l'accès.
               </p>
             </div>
           )}
@@ -780,3 +752,4 @@ export default function UserManagementPage() {
     </div>
   );
 };
+

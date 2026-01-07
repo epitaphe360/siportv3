@@ -46,8 +46,8 @@ wordpress-pages/
 docs/
 deployment/
 
-# Scripts
-scripts/
+# Scripts (sauf inject-build-version.js requis pour le build)
+# scripts/
 
 # Logs
 *.log

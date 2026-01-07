@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Admin Flow', () => {
   test('should approve registration request', async ({ page }) => {
-    await page.goto('http://localhost:5173/connexion');
+    await page.goto('http://localhost:9323/connexion');
     
     // Login as admin
     await page.fill('input[type="email"]', 'admin@test.com');
@@ -22,7 +22,7 @@ test.describe('Admin Flow', () => {
   });
 
   test('should create event', async ({ page }) => {
-    await page.goto('http://localhost:5173/connexion');
+    await page.goto('http://localhost:9323/connexion');
     
     await page.fill('input[type="email"]', 'admin@test.com');
     await page.fill('input[type="password"]', 'AdminPass123!');

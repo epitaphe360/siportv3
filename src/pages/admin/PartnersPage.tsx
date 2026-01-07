@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -57,6 +58,7 @@ interface Partner {
 }
 
 export default function PartnersPage() {
+  const { t } = useTranslation();
   const [partners, setPartners] = useState<Partner[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -363,7 +365,7 @@ export default function PartnersPage() {
                     <tr>
                       <td colSpan={7} className="text-center py-12">
                         <Crown className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <p className="text-gray-600">Aucun partenaire trouvé</p>
+                        <p className="text-gray-600">{t('pages.partners.no_results')}</p>
                       </td>
                     </tr>
                   ) : (
@@ -525,8 +527,8 @@ export default function PartnersPage() {
                 <div className="mt-6">
                   <h3 className="text-sm font-semibold text-gray-700 mb-3">Contributions</h3>
                   <div className="flex flex-wrap gap-2">
-                    {selectedPartner.contributions.map((contribution, index) => (
-                      <Badge key={index} variant="info">{contribution}</Badge>
+                    {selectedPartner.contributions.map((contribution) => (
+                      <Badge key={contribution} variant="info">{contribution}</Badge>
                     ))}
                   </div>
                 </div>
@@ -555,4 +557,7 @@ export default function PartnersPage() {
     </div>
   );
 }
+
+
+
 

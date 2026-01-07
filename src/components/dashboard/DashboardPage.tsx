@@ -14,9 +14,9 @@ export default memo(function DashboardPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
             Accès non autorisé
-          </h3>
+          </h1>
           <p className="text-gray-600">
             Veuillez vous connecter pour accéder à votre tableau de bord
           </p>
@@ -26,9 +26,7 @@ export default memo(function DashboardPage() {
   }
 
   // Debug: Afficher le type d'utilisateur pour vérification (dev uniquement)
-  if (import.meta.env.DEV) {
-    console.log('User type:', user.type, 'Email:', user.email);
-  }
+  // Bloc de debug supprimé
 
   // Redirection vers le tableau de bord spécifique selon le type d'utilisateur
   switch (user.type) {
@@ -44,9 +42,9 @@ export default memo(function DashboardPage() {
       return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="text-center">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
               Type d'utilisateur non reconnu: {user.type}
-            </h3>
+            </h1>
             <p className="text-gray-600">
               Email: {user.email} - Contactez le support pour résoudre ce problème
             </p>

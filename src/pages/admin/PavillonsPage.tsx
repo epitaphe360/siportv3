@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -12,8 +13,6 @@ import {
   Edit,
   Eye,
   Plus,
-  CheckCircle,
-  XCircle,
   AlertTriangle,
   Presentation,
   Lightbulb,
@@ -24,17 +23,21 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { motion } from 'framer-motion';
-import { apiService } from '../../services/apiService';
-import { Database } from '../../lib/supabase'; // Import the Database type
 import { useFilterSearch } from '../../hooks/useFilterSearch';
 
-// Define Pavilion type based on Supabase schema
-type Pavilion = Database['public']['Tables']['pavilions']['Row'] & {
-  demoPrograms?: DemoProgram[]; // Assuming demoPrograms might be a JSONB column or related table
+// Define Pavilion type locally since the table doesn't exist in Supabase schema
+interface Pavilion {
+  id: string;
+  name: string;
+  theme: string;
+  description: string;
+  created_at: string;
+  updated_at?: string;
+  demoPrograms?: DemoProgram[];
   totalPrograms?: number;
   totalCapacity?: number;
   totalRegistered?: number;
-};
+}
 
 interface DemoProgram {
   id: string;
@@ -53,6 +56,7 @@ interface DemoProgram {
 }
 
 export default function PavillonsPage() {
+  const { t } = useTranslation();
   const [pavilions, setPavilions] = useState<Pavilion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,26 +66,55 @@ export default function PavillonsPage() {
       setIsLoading(true);
       setError(null);
       try {
-        const data = await apiService.getAll('pavilions');
-        const formattedData = data.map((item: any) => {
-          // Calculate aggregated stats if demoPrograms are part of the pavilion object
-          const demoPrograms = item.demo_programs || []; // Assuming demo_programs is the column name
-          const totalPrograms = demoPrograms.length;
-          const totalCapacity = demoPrograms.reduce((sum: number, program: DemoProgram) => sum + program.capacity, 0);
-          const totalRegistered = demoPrograms.reduce((sum: number, program: DemoProgram) => sum + program.registered, 0);
-
-          return {
-            ...item,
-            name: item.name || 'N/A',
-            theme: item.theme || 'N/A',
-            description: item.description || 'N/A',
-            demoPrograms: demoPrograms,
-            totalPrograms,
-            totalCapacity,
-            totalRegistered,
-          };
-        });
-        setPavilions(formattedData as Pavilion[]);
+        // Static pavilions data - the pavilions table doesn't exist in the database yet
+        // This provides sample data for the UI until the table is created
+        const staticPavilions: Pavilion[] = [
+          {
+            id: '1',
+            name: 'Pavillon Digitalisation',
+            theme: 'digitalization',
+            description: 'Découvrez les dernières innovations en matière de transformation numérique pour les sports.',
+            created_at: new Date().toISOString(),
+            demoPrograms: [],
+            totalPrograms: 0,
+            totalCapacity: 0,
+            totalRegistered: 0,
+          },
+          {
+            id: '2',
+            name: 'Pavillon Développement Durable',
+            theme: 'sustainability',
+            description: 'Solutions écologiques et durables pour l\'industrie sportive.',
+            created_at: new Date().toISOString(),
+            demoPrograms: [],
+            totalPrograms: 0,
+            totalCapacity: 0,
+            totalRegistered: 0,
+          },
+          {
+            id: '3',
+            name: 'Pavillon Sécurité',
+            theme: 'security',
+            description: 'Technologies de sécurité avancées pour les événements sportifs.',
+            created_at: new Date().toISOString(),
+            demoPrograms: [],
+            totalPrograms: 0,
+            totalCapacity: 0,
+            totalRegistered: 0,
+          },
+          {
+            id: '4',
+            name: 'Pavillon Innovation',
+            theme: 'innovation',
+            description: 'Les technologies de demain pour le sport d\'aujourd\'hui.',
+            created_at: new Date().toISOString(),
+            demoPrograms: [],
+            totalPrograms: 0,
+            totalCapacity: 0,
+            totalRegistered: 0,
+          },
+        ];
+        setPavilions(staticPavilions);
       } catch (err) {
         console.error('Error fetching pavilions:', err);
         setError('Failed to load pavilions. Please try again later.');
@@ -141,12 +174,10 @@ export default function PavillonsPage() {
   };
 
   const handlePavilionAction = (pavilionId: string, action: string) => {
-    console.log(`Action ${action} pour le pavillon ${pavilionId}`);
     // Ici vous pouvez implémenter les actions réelles
   };
 
   const handleDemoAction = (demoId: string, action: string) => {
-    console.log(`Action ${action} pour la démonstration ${demoId}`);
     // Ici vous pouvez implémenter les actions réelles
   };
 
@@ -415,3 +446,6 @@ export default function PavillonsPage() {
     </div>
   );
 };
+
+
+

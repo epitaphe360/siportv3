@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Calendar, Clock, Plus, Trash2, Save, X } from 'lucide-react';
+import { Calendar, Clock, Plus, Trash2, Save, X, Users } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
@@ -159,95 +159,141 @@ export default function AvailabilityManager({ userId, userType, onAvailabilityUp
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <Card className="p-6 bg-gradient-to-br from-blue-500 to-indigo-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+          <div className="flex items-center justify-between mb-2">
+            <Calendar className="h-10 w-10 opacity-80" />
+            <div className="text-right">
+              <div className="text-4xl font-black">{timeSlots.length}</div>
+              <div className="text-sm font-medium opacity-90">Total créneaux</div>
+            </div>
+          </div>
+        </Card>
+        
+        <Card className="p-6 bg-gradient-to-br from-purple-500 to-pink-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+          <div className="flex items-center justify-between mb-2">
+            <Clock className="h-10 w-10 opacity-80" />
+            <div className="text-right">
+              <div className="text-4xl font-black">{timeSlots.filter(s => s.available).length}</div>
+              <div className="text-sm font-medium opacity-90">Places disponibles</div>
+            </div>
+          </div>
+        </Card>
+        
+        <Card className="p-6 bg-gradient-to-br from-emerald-500 to-teal-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+          <div className="flex items-center justify-between mb-2">
+            <Users className="h-10 w-10 opacity-80" />
+            <div className="text-right">
+              <div className="text-4xl font-black">
+                {timeSlots.reduce((acc, slot) => acc + slot.currentBookings, 0)}
+              </div>
+              <div className="text-sm font-medium opacity-90">RDV réservés</div>
+            </div>
+          </div>
+        </Card>
+      </div>
+
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-            <Calendar className="h-5 w-5 mr-2 text-blue-600" />
-            Mes Créneaux de Disponibilité
+          <h3 className="text-2xl font-bold text-gray-900 flex items-center mb-2">
+            <Calendar className="h-6 w-6 mr-3 text-blue-600" />
+            Gestion des Disponibilités
           </h3>
-          <p className="text-sm text-gray-600 mt-1">
-            Gérez vos créneaux horaires pour les rencontres {userType === 'partner' ? 'partenaires' : 'professionnelles'}
+          <p className="text-base text-gray-600">
+            Créez et gérez vos créneaux de rendez-vous pour SIPORT 2026
           </p>
         </div>
         <Button
           onClick={() => setShowAddForm(true)}
-          className="bg-blue-600 hover:bg-blue-700"
+          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
         >
-          <Plus className="h-4 w-4 mr-2" />
-          Ajouter un créneau
+          <Plus className="h-5 w-5 mr-2" />
+          Nouveau Créneau
         </Button>
       </div>
 
       {/* Add Time Slot Form */}
       {showAddForm && (
-        <Card className="p-6 border-2 border-blue-200">
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-md font-semibold text-gray-900">Nouveau créneau</h4>
+        <Card className="p-8 border-4 border-blue-300/50 shadow-2xl bg-gradient-to-br from-white to-blue-50/30">
+          <div className="flex items-center justify-between mb-6">
+            <h4 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              ✨ Nouveau Créneau
+            </h4>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowAddForm(false)}
+              className="hover:bg-red-50 hover:text-red-600"
             >
-              <X className="h-4 w-4" />
+              <X className="h-5 w-5" />
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-bold text-gray-800 mb-2 flex items-center">
+                <Calendar className="h-4 w-4 mr-2 text-blue-600" />
                 Date *
               </label>
               <input
                 type="date"
                 value={newSlot.date}
                 onChange={(e) => setNewSlot({...newSlot, date: e.target.value})}
-                min={new Date().toISOString().split('T')[0]}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                min="2026-04-01"
+                max="2026-04-03"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
+              <p className="mt-2 text-xs bg-blue-100 text-blue-800 font-semibold px-3 py-2 rounded-lg inline-flex items-center">
+                📅 SIPORTS 2026 : Uniquement du 1 au 3 avril 2026
+              </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-bold text-gray-800 mb-2">
                 Type de rencontre
               </label>
               <select
                 value={newSlot.type}
                 onChange={(e) => setNewSlot({...newSlot, type: e.target.value as any})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               >
-                <option value="in-person">Présentiel</option>
-                <option value="virtual">Virtuel</option>
-                <option value="hybrid">Hybride</option>
+                <option value="in-person">🏢 Présentiel</option>
+                <option value="virtual">💻 Virtuel</option>
+                <option value="hybrid">🌐 Hybride</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-bold text-gray-800 mb-2 flex items-center">
+                <Clock className="h-4 w-4 mr-2 text-green-600" />
                 Heure de début *
               </label>
               <input
                 type="time"
                 value={newSlot.startTime}
                 onChange={(e) => setNewSlot({...newSlot, startTime: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-bold text-gray-800 mb-2 flex items-center">
+                <Clock className="h-4 w-4 mr-2 text-orange-600" />
                 Heure de fin *
               </label>
               <input
                 type="time"
                 value={newSlot.endTime}
                 onChange={(e) => setNewSlot({...newSlot, endTime: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-bold text-gray-800 mb-2 flex items-center">
+                <Users className="h-4 w-4 mr-2 text-purple-600" />
                 Nombre max de RDV
               </label>
               <input
@@ -256,38 +302,39 @@ export default function AvailabilityManager({ userId, userType, onAvailabilityUp
                 onChange={(e) => setNewSlot({...newSlot, maxBookings: parseInt(e.target.value)})}
                 min="1"
                 max="10"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Lieu (optionnel)
+              <label className="block text-sm font-bold text-gray-800 mb-2">
+                📍 Lieu (optionnel)
               </label>
               <input
                 type="text"
                 value={newSlot.location}
                 onChange={(e) => setNewSlot({...newSlot, location: e.target.value})}
                 placeholder="Stand A-12, Zoom, etc."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
             </div>
           </div>
 
-          <div className="flex justify-end space-x-3">
+          <div className="flex justify-end space-x-4 pt-4 border-t-2 border-gray-100">
             <Button
               variant="outline"
               onClick={() => setShowAddForm(false)}
+              className="px-6 py-3 border-2 hover:bg-gray-50"
             >
               Annuler
             </Button>
             <Button
               onClick={handleAddTimeSlot}
               disabled={isLoading}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3 shadow-lg hover:shadow-xl transition-all"
             >
-              {isLoading ? <span className="animate-spin">⚙️</span> : <Save className="h-4 w-4 mr-2" />}
-              {isLoading ? 'Ajout...' : 'Ajouter'}
+              {isLoading ? <span className="animate-spin">⚙️</span> : <Save className="h-5 w-5 mr-2" />}
+              {isLoading ? 'Ajout...' : 'Ajouter le créneau'}
             </Button>
           </div>
         </Card>
@@ -296,58 +343,68 @@ export default function AvailabilityManager({ userId, userType, onAvailabilityUp
       {/* Time Slots List */}
       <div className="space-y-4">
         {timeSlots.length === 0 ? (
-          <Card className="p-8 text-center">
-            <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h4 className="text-lg font-medium text-gray-900 mb-2">
-              Aucun créneau défini
+          <Card className="p-12 text-center bg-gradient-to-br from-gray-50 to-blue-50/30 border-2 border-dashed border-gray-300 hover:border-blue-400 transition-all">
+            <div className="bg-gradient-to-br from-blue-100 to-indigo-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Calendar className="h-10 w-10 text-blue-600" />
+            </div>
+            <h4 className="text-2xl font-bold text-gray-900 mb-3">
+              Aucune disponibilité configurée
             </h4>
-            <p className="text-gray-600 mb-4">
-              Créez vos premiers créneaux de disponibilité pour permettre aux autres participants de prendre rendez-vous avec vous.
+            <p className="text-gray-600 mb-6 max-w-md mx-auto leading-relaxed">
+              Commencez par ajouter vos créneaux de disponibilité pour permettre aux visiteurs de prendre rendez-vous avec vous pendant SIPORT 2026.
             </p>
-            <Button onClick={() => setShowAddForm(true)}>
-              <Plus className="h-4 w-4 mr-2" />
+            <Button 
+              onClick={() => setShowAddForm(true)}
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3 shadow-lg hover:shadow-xl transition-all"
+            >
+              <Plus className="h-5 w-5 mr-2" />
               Créer mon premier créneau
             </Button>
           </Card>
         ) : (
           timeSlots.map((slot) => (
-            <Card key={slot.id} className="p-4">
+            <Card key={slot.id} className="p-6 hover:shadow-xl transition-all duration-300 bg-white border-2 border-gray-100 hover:border-blue-200">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="bg-blue-100 p-3 rounded-lg">
-                    <Clock className="h-5 w-5 text-blue-600" />
+                <div className="flex items-center space-x-6">
+                  <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-4 rounded-2xl shadow-lg">
+                    <Clock className="h-7 w-7 text-white" />
                   </div>
                   <div>
-                    <div className="flex items-center space-x-2 mb-1">
-                      <span className="font-semibold text-gray-900">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <span className="font-bold text-xl text-gray-900">
                         {formatDate(slot.date)}
                       </span>
-                      <Badge className={getTypeColor(slot.type)}>
+                      <Badge className={`${getTypeColor(slot.type)} px-3 py-1 text-sm font-bold`}>
                         {getTypeLabel(slot.type)}
                       </Badge>
                     </div>
-                    <div className="text-sm text-gray-600">
-                      {slot.startTime} - {slot.endTime} ({slot.duration} min)
-                      {slot.location && ` • ${slot.location}`}
+                    <div className="text-base text-gray-700 font-medium mb-1">
+                      ⏰ {slot.startTime} - {slot.endTime} <span className="text-gray-500">({slot.duration} min)</span>
+                      {slot.location && <span className="ml-2">📍 {slot.location}</span>}
                     </div>
-                    <div className="text-xs text-gray-500 mt-1">
-                      {slot.currentBookings}/{slot.maxBookings} RDV réservés
+                    <div className="flex items-center space-x-4 mt-2">
+                      <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full font-medium">
+                        👥 {slot.currentBookings}/{slot.maxBookings} RDV réservés
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <Badge variant={slot.available ? 'success' : 'error'}>
-                    {slot.available ? 'Disponible' : 'Complet'}
+                <div className="flex items-center space-x-3">
+                  <Badge 
+                    variant={slot.available ? 'success' : 'error'}
+                    className="px-4 py-2 text-sm font-bold"
+                  >
+                    {slot.available ? '✅ Disponible' : '🔒 Complet'}
                   </Badge>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => handleDeleteTimeSlot(slot.id)}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50 p-3 rounded-xl"
                     disabled={isLoading}
                   >
-                    {isLoading ? <span className="animate-spin">⚙️</span> : <Trash2 className="h-4 w-4" />}
+                    {isLoading ? <span className="animate-spin text-lg">⚙️</span> : <Trash2 className="h-5 w-5" />}
                   </Button>
                 </div>
               </div>

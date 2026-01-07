@@ -1,17 +1,68 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import { ArrowLeft, Calendar, Crown, BadgePercent } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
+import { supabase } from '../../lib/supabase';
+import useAuthStore from '../../store/authStore';
+
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  start_time: string;
+  end_time: string;
+  event_type: string;
+  status: string;
+  max_participants: number;
+  registrations?: { count: number }[];
+}
 
 export const PartnerEventsPage: React.FC = () => {
-  const events = [
-    { id: 'e1', name: 'Conférence Innovation Portuaire', date: '2025-09-15', type: 'Conférence', status: 'À venir', reach: 450 },
-    { id: 'e2', name: 'Workshop Digitalisation', date: '2025-09-12', type: 'Atelier', status: 'En cours', reach: 120 },
-    { id: 'e3', name: 'Networking VIP', date: '2025-09-08', type: 'Networking', status: 'Terminé', reach: 65 },
-  ];
+  const { user } = useAuthStore();
+  const { t } = useTranslation();
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadEvents();
+  }, []);
+
+  async function loadEvents() {
+    try {
+      // Charger les événements depuis Supabase
+      const { data, error } = await supabase
+        .from('events')
+        .select(`
+          *,
+          registrations:event_registrations(count)
+        `)
+        .order('start_date', { ascending: false })
+        .limit(20);
+
+      if (error) throw error;
+      setEvents(data || []);
+    } catch (error) {
+      console.error('Erreur chargement événements:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const getStatusLabel = (status: string) => {
+    if (status === 'published') return t('partner.status.upcoming', 'À venir');
+    if (status === 'draft') return t('partner.status.draft', 'Brouillon');
+    return status;
+  };
+
+  const getStatusVariant = (status: string): 'info' | 'warning' | 'success' => {
+    if (status === 'published') return 'info';
+    if (status === 'draft') return 'warning';
+    return 'success';
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -19,7 +70,7 @@ export const PartnerEventsPage: React.FC = () => {
         <div className="mb-8">
           <Link to={ROUTES.DASHBOARD} className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Retour au tableau de bord
+            {t('partner.back_to_dashboard', 'Retour au tableau de bord')}
           </Link>
 
           <div className="flex items-center space-x-3 mb-4">
@@ -27,17 +78,17 @@ export const PartnerEventsPage: React.FC = () => {
               <Calendar className="h-8 w-8 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Événements Sponsorisés</h1>
-              <p className="text-gray-600">Gérez vos événements partenaires et suivez leur impact</p>
+              <h1 className="text-3xl font-bold text-gray-900">{t('partner.events.title', 'Événements Sponsorisés')}</h1>
+              <p className="text-gray-600">{t('partner.events.subtitle', 'Gérez vos événements partenaires et suivez leur impact')}</p>
             </div>
           </div>
 
           <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
             <div className="flex items-center space-x-2">
               <Crown className="h-5 w-5 text-purple-600" />
-              <span className="text-purple-800 font-medium">Programme Événements Partenaires</span>
+              <span className="text-purple-800 font-medium">{t('partner.events.program', 'Programme Événements Partenaires')}</span>
               <Badge className="bg-purple-100 text-purple-800" size="sm">
-                Prioritaire
+                {t('partner.priority', 'Prioritaire')}
               </Badge>
             </div>
           </div>
@@ -45,30 +96,52 @@ export const PartnerEventsPage: React.FC = () => {
 
         <Card>
           <div className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Vos événements</h3>
-            <div className="space-y-4">
-              {events.map(evt => (
-                <div key={evt.id} className="flex items-center justify-between border p-4 rounded-lg">
-                  <div>
-                    <div className="font-semibold text-gray-900">{evt.name}</div>
-                    <div className="text-sm text-gray-600">{evt.type} • {evt.date}</div>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <Badge variant={evt.status === 'À venir' ? 'info' : evt.status === 'En cours' ? 'warning' : 'success'} size="sm">
-                      {evt.status}
-                    </Badge>
-                    <span className="text-sm text-gray-700">Portée estimée: {evt.reach}</span>
-                    <Button variant="outline" size="sm">
-                      <BadgePercent className="h-4 w-4 mr-2" />
-                      Voir l'impact
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">
+              {t('partner.events.available', 'Événements disponibles')} ({events.length})
+            </h3>
+
+            {loading ? (
+              <div className="text-center py-12 text-gray-500">{t('partner.events.loading', 'Chargement des événements...')}</div>
+            ) : events.length === 0 ? (
+              <div className="text-center py-12 text-gray-500">
+                {t('partner.events.none', 'Aucun événement disponible pour le moment.')}
+              </div>
+            ) : (
+              <div data-testid="event-list" className="space-y-4">
+                {events.map(evt => {
+                  const registrationCount = evt.registrations?.[0]?.count || 0;
+
+                  return (
+                    <div key={evt.id} className="flex items-center justify-between border p-4 rounded-lg hover:bg-gray-50 transition">
+                      <div className="flex-1">
+                        <div className="font-semibold text-gray-900">{evt.title}</div>
+                        <div className="text-sm text-gray-600 mt-1">{evt.description?.substring(0, 100)}...</div>
+                        <div className="text-sm text-gray-500 mt-2">
+                          {evt.event_type} • {new Date(evt.start_time).toLocaleDateString('fr-FR')}
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <Badge variant={getStatusVariant(evt.status)} size="sm">
+                          {getStatusLabel(evt.status)}
+                        </Badge>
+                        <span className="text-sm text-gray-700">
+                          {registrationCount > 0 ? `${registrationCount} ${t('partner.events.registered', 'inscrits')}` : `${t('partner.events.capacity', 'Capacité')}: ${evt.max_participants || 'N/A'}`}
+                        </span>
+                        <Button variant="outline" size="sm">
+                          <BadgePercent className="h-4 w-4 mr-2" />
+                          {t('partner.details', 'Détails')}
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </Card>
       </div>
     </div>
   );
 };
+
+export default PartnerEventsPage;

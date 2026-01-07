@@ -169,8 +169,9 @@ describe('resetAllStores', () => {
     resetAllStores();
 
     const visitorState = useVisitorStore.getState();
-    expect(visitorState.visitors).toEqual([]);
-    expect(visitorState.currentVisitor).toBeNull();
+    expect(visitorState.visitorProfile).toBeNull();
+    expect(visitorState.agenda.appointments).toEqual([]);
+    expect(visitorState.favoriteExhibitors).toEqual([]);
   });
 
   it('should reset auth store (except authentication state)', () => {
@@ -243,10 +244,10 @@ describe('resetAllStores', () => {
     expect(useEventStore.getState().registeredEvents).toHaveLength(0);
     expect(useAppointmentStore.getState().appointments).toHaveLength(0);
     expect(useAppointmentStore.getState().timeSlots).toHaveLength(0);
-    expect(useVisitorStore.getState().visitors).toHaveLength(0);
+    expect(useVisitorStore.getState().agenda.appointments).toHaveLength(0);
 
     // Check null objects
-    expect(useVisitorStore.getState().currentVisitor).toBeNull();
+    expect(useVisitorStore.getState().visitorProfile).toBeNull();
   });
 
   it('should reset error states', () => {

@@ -81,14 +81,20 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
 	      // 2. Mettre à jour le statut de l'utilisateur (dans la table 'users')
 	      await SupabaseService.updateUserStatus(exhibitorId, userStatus);
 	
-	      // 3. Envoyer l'email de validation/rejet
-	      await SupabaseService.sendValidationEmail({
-	        email: exhibitorToUpdate.contactInfo?.email || 'contact@siports.com', // Utiliser l'email de contact
-	        firstName: 'Admin', // Placeholder, l'email doit être générique
-	        lastName: 'Admin', // Placeholder
-	        companyName: exhibitorToUpdate.companyName,
-	        status: newStatus,
-	      });
+	      // 3. Envoyer l'email de validation/rejet (ne pas bloquer si échec)
+	      try {
+	        await SupabaseService.sendValidationEmail({
+	          email: exhibitorToUpdate.contactInfo?.email || 'contact@siports.com',
+	          firstName: 'Admin',
+	          lastName: 'Admin',
+	          companyName: exhibitorToUpdate.companyName,
+	          status: newStatus,
+	        });
+	        console.log('✅ Email de validation envoyé');
+	      } catch (emailError) {
+	        console.warn('⚠️ Email de validation non envoyé:', emailError);
+	        // Ne pas bloquer la mise à jour si l'email échoue
+	      }
 	
 	      set(state => {
         const updateExhibitor = (ex: Exhibitor) => 
@@ -103,7 +109,7 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
         };
       });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error instanceof Error ? error.message : String(error) : 'Failed to update status';
+      const errorMessage = error instanceof Error ? error.message : String(error);
       set({ isUpdating: null, error: errorMessage });
       // Optionnel: Revert state on error
     }
@@ -114,11 +120,17 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
     const filters = { ...get().filters, ...newFilters };
     
     const filtered = exhibitors.filter(exhibitor => {
+      const sector = exhibitor.sector || '';
+      const companyName = exhibitor.companyName || '';
+      const description = exhibitor.description || '';
+      const search = filters.search.toLowerCase();
+      const filterSector = filters.sector.toLowerCase();
+
       const matchesCategory = !filters.category || exhibitor.category === filters.category;
-      const matchesSector = !filters.sector || exhibitor.sector.toLowerCase().includes(filters.sector.toLowerCase());
+      const matchesSector = !filters.sector || sector.toLowerCase().includes(filterSector);
       const matchesSearch = !filters.search || 
-        exhibitor.companyName.toLowerCase().includes(filters.search.toLowerCase()) ||
-        exhibitor.description.toLowerCase().includes(filters.search.toLowerCase());
+        companyName.toLowerCase().includes(search) ||
+        description.toLowerCase().includes(search);
       
       return matchesCategory && matchesSector && matchesSearch;
     });
@@ -129,7 +141,6 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
   selectExhibitor: (id) => {
     const { exhibitors } = get();
     const exhibitor = exhibitors.find(e => e.id === id) || null;
-    console.log('Selecting exhibitor with ID:', id, 'Found:', exhibitor);
     set({ selectedExhibitor: exhibitor });
   },
 

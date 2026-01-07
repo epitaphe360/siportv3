@@ -20,7 +20,6 @@ export class NewsScraperService {
    */
   static async scrapeNewsArticles(): Promise<ScrapedArticle[]> {
     try {
-      console.log('Starting news scraping from:', this.NEWS_URL);
 
       // Fetch the main news page
       const response = await fetch(this.NEWS_URL, {
@@ -40,11 +39,9 @@ export class NewsScraperService {
       }
 
       const html = await response.text();
-      console.log('Fetched HTML content, length:', html.length);
 
       // Parse the HTML to extract articles
       const articles = this.parseNewsArticles(html);
-      console.log(`Parsed ${articles.length} articles from the website`);
 
       return articles;
     } catch (error) {
@@ -91,14 +88,12 @@ export class NewsScraperService {
         const elements = Array.from(doc.querySelectorAll(selector));
         if (elements.length > 0) {
           articleElements = elements;
-          console.log(`Found ${elements.length} articles using selector: ${selector}`);
           break;
         }
       }
 
       // If no articles found with common selectors, try to find links to individual articles
       if (articleElements.length === 0) {
-        console.log('No article elements found on the page');
         return [];
       } else {
         // Parse found article elements
@@ -114,7 +109,6 @@ export class NewsScraperService {
         });
       }
 
-      console.log(`Successfully parsed ${articles.length} articles`);
       return articles;
 
     } catch (error) {
@@ -141,7 +135,7 @@ export class NewsScraperService {
 
       // If no title found, try the element's text content
       if (!title) {
-        title = element.textContent?.trim().split('\n')[0] || `Article ${index + 1}`;
+        title = element.textContent?.trim()?.split('\n')[0] || `Article ${index + 1}`;
       }
 
       // Extract excerpt/description

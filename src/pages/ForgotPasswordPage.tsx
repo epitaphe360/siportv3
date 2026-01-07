@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
 import { supabase, isSupabaseReady } from '../lib/supabase';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function ForgotPasswordPage() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -38,19 +40,21 @@ export default function ForgotPasswordPage() {
 
   return (
     <Card className="max-w-md mx-auto p-8 mt-12">
-      <h2 className="text-2xl font-bold mb-4">Mot de passe oublié</h2>
-      <p className="text-sm text-gray-600 mb-4">Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.</p>
+      <h2 className="text-2xl font-bold mb-4">{t('auth.forgotten_password')}</h2>
+      <p className="text-sm text-gray-600 mb-4">{t('auth.forgotten_password_desc')}</p>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label className="block font-medium mb-2">Email</label>
-          <Input type="email" name="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="votre@email.com" required />
+          <label className="block font-medium mb-2">{t('auth.email')}</label>
+          <Input type="email" name="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t('auth.email_placeholder')} required />
         </div>
         {error && <div className="text-red-500 mb-2">{error}</div>}
         {message && <div className="text-green-600 mb-2">{message}</div>}
         <div className="flex justify-end">
-          <Button type="submit" disabled={loading}>{loading ? 'Envoi...' : 'Envoyer le lien'}</Button>
+          <Button type="submit" disabled={loading}>{loading ? t('common.sending') : t('auth.send_reset_link')}</Button>
         </div>
       </form>
     </Card>
   );
 }
+
+

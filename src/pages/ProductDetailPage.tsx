@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Product } from '../types';
+import { useTranslation } from '../hooks/useTranslation';
 import { ProductService } from '../services/products/productService';
 import { ROUTES } from '../lib/routes';
 import useAuthStore from '../store/authStore';
@@ -8,13 +9,15 @@ import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { Card } from '../components/ui/Card';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, Download, Mail, Star } from 'lucide-react';
+import { ArrowLeft, Calendar, Download, Mail, Star, CheckCircle, Clock, FileText, Play, Package, Shield, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
+import { getEmbedUrl } from '../utils/videoUtils';
 
 export default function ProductDetailPage() {
   const { exhibitorId, productId } = useParams<{ exhibitorId: string; productId: string }>();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthStore();
+  const { t } = useTranslation();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -51,7 +54,7 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">Chargement du produit…</div>
+      <div className="min-h-screen flex items-center justify-center">Chargement du produitâ…</div>
     );
   }
 
@@ -88,19 +91,80 @@ export default function ProductDetailPage() {
               {product.images && product.images.length > 1 && (
                 <div className="mt-3 flex gap-2 overflow-x-auto">
                   {product.images.slice(1).map((img, idx) => (
-                    <img key={idx} src={img} alt={`${product.name}-${idx}`} className="w-20 h-16 object-cover rounded" />
+                    <img key={`img-${img.slice(-20)}-${idx}`} src={img} alt={`${product.name}-${idx}`} className="w-20 h-16 object-cover rounded" />
                   ))}
                 </div>
               )}
             </Card>
 
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.name}</h1>
-              <div className="flex items-center gap-2 mb-4">
+              {/* En-tête avec badges */}
+              <div className="flex flex-wrap items-center gap-2 mb-3">
+                {(product as any).is_new && (
+                  <Badge variant="success" size="sm" className="bg-green-500 text-white">
+                    <Sparkles className="h-3 w-3 mr-1" /> Nouveau
+                  </Badge>
+                )}
+                {(product as any).certified && (
+                  <Badge variant="default" size="sm" className="bg-blue-500 text-white">
+                    <Shield className="h-3 w-3 mr-1" /> Certifié
+                  </Badge>
+                )}
                 <Badge variant="default" size="sm">{product.category}</Badge>
                 {product.featured && <Star className="h-4 w-4 text-yellow-500 fill-current" />}
               </div>
+
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.name}</h1>
+              
+              {/* Prix et disponibilité */}
+              <div className="flex items-center gap-4 mb-4">
+                {(product as any).price && (
+                  <div className="text-2xl font-bold text-primary">
+                    {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format((product as any).price)}
+                  </div>
+                )}
+                {(product as any).original_price && (
+                  <div className="text-lg text-gray-400 line-through">{(product as any).original_price}</div>
+                )}
+              </div>
+
+              {/* Statut stock et livraison */}
+              <div className="flex flex-wrap items-center gap-4 mb-4">
+                {(product as any).in_stock !== undefined && (
+                  <div className={`flex items-center gap-1 ${(product as any).in_stock ? 'text-green-600' : 'text-red-600'}`}>
+                    {(product as any).in_stock ? (
+                      <><CheckCircle className="h-4 w-4" /> En stock</>
+                    ) : (
+                      <><Package className="h-4 w-4" /> Sur commande</>
+                    )}
+                  </div>
+                )}
+                {(product as any).delivery_time && (
+                  <div className="flex items-center gap-1 text-gray-600">
+                    <Clock className="h-4 w-4" /> {(product as any).delivery_time}
+                  </div>
+                )}
+              </div>
+
               <p className="text-gray-700 mb-6">{product.description}</p>
+
+              {/* Vidéo de présentation */}
+              {(product as any).video_url && getEmbedUrl((product as any).video_url) && (
+                <Card className="p-4 mb-6">
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <Play className="h-4 w-4 text-red-500" /> Vidéo de présentation
+                  </h3>
+                  <div className="aspect-video rounded-lg overflow-hidden">
+                    <iframe
+                      src={getEmbedUrl((product as any).video_url)!}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      title={`Vidéo ${product.name}`}
+                    />
+                  </div>
+                </Card>
+              )}
 
               {product.specifications && (
                 <Card className="p-4 mb-6">
@@ -113,14 +177,45 @@ export default function ProductDetailPage() {
                 <Card className="p-4 mb-6">
                   <h3 className="font-semibold mb-2">Caractéristiques techniques</h3>
                   <ul className="list-disc pl-6 text-sm text-gray-700">
-                    {product.technicalSpecs.map((s, i) => (
-                      <li key={i}>{s.name}: {s.value}{s.unit ? ` ${s.unit}` : ''}</li>
+                    {product.technicalSpecs.map((s) => (
+                      <li key={`spec-${s.name}`}>{s.name}: {s.value}{s.unit ? ` ${s.unit}` : ''}</li>
                     ))}
                   </ul>
                 </Card>
               )}
 
-              <div className="flex gap-3">
+              {/* Documents téléchargeables */}
+              {(product as any).documents && (product as any).documents.length > 0 && (
+                <Card className="p-4 mb-6">
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <FileText className="h-4 w-4" /> Documents à télécharger
+                  </h3>
+                  <div className="space-y-2">
+                    {(product as any).documents.map((doc: any, idx: number) => (
+                      <a
+                        key={`doc-${idx}`}
+                        href={doc.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="bg-red-100 text-red-600 px-2 py-1 rounded text-xs font-medium">
+                            {doc.type || 'PDF'}
+                          </div>
+                          <span className="text-sm font-medium text-gray-700">{doc.name}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-gray-500">
+                          <span className="text-xs">{doc.size}</span>
+                          <Download className="h-4 w-4" />
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </Card>
+              )}
+
+              <div className="flex flex-wrap gap-3">
                 <Button variant="default" onClick={bookRdv}>
                   <Calendar className="h-4 w-4 mr-2" /> Prendre RDV
                 </Button>
@@ -140,3 +235,5 @@ export default function ProductDetailPage() {
     </div>
   );
 }
+
+

@@ -1,4 +1,4 @@
-
+﻿
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
@@ -6,6 +6,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { toast } from 'react-hot-toast';
+import { useRecaptcha } from '../../hooks/useRecaptcha';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { Input } from '@/components/ui/Input';
@@ -23,6 +24,7 @@ import { useTranslation, Language } from '@/utils/translations';
 import useAuthStore from '../../store/authStore';
 import { motion } from 'framer-motion';
 import { Building, Mail, Lock, User, Phone, Globe, Briefcase, MapPin, Languages, AlertCircle, Save } from 'lucide-react';
+import { sendPartnerPaymentInstructions } from '../../services/partnerSignupEmailService';
 
 // Validation renforcée du mot de passe
 const passwordSchema = z.string()
@@ -69,9 +71,11 @@ export default function PartnerSignUpPage() {
   const { signUp, loginWithGoogle, loginWithLinkedIn } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [validatedFormData, setValidatedFormData] = useState<PartnerSignUpFormValues | null>(null);
   const [language, setLanguage] = useState<Language>('fr');
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isLinkedInLoading, setIsLinkedInLoading] = useState(false);
+  const { executeRecaptcha, isReady: isRecaptchaReady } = useRecaptcha();
   
   const t = useTranslation(language);
 
@@ -155,11 +159,22 @@ export default function PartnerSignUpPage() {
     register('sectors');
   }, [register]);
 
-  const handlePreviewSubmit = () => {
+  // Quand le formulaire est valide, stocker les données et ouvrir la preview
+  const handlePreviewSubmit: SubmitHandler<PartnerSignUpFormValues> = (data) => {
+    setValidatedFormData(data);
     setShowPreview(true);
   };
 
-  const onSubmit: SubmitHandler<PartnerSignUpFormValues> = async (data) => {
+  // Fonction appelée depuis la modal de confirmation
+  const handleConfirmSubmit = async () => {
+    if (!validatedFormData) {
+      toast.error("Erreur: données du formulaire non disponibles");
+      return;
+    }
+    await onSubmit(validatedFormData);
+  };
+
+  const onSubmit = async (data: PartnerSignUpFormValues) => {
     setIsLoading(true);
     const { email, password, confirmPassword, acceptTerms, acceptPrivacy, sectors, ...profileData } = data;
 
@@ -171,20 +186,47 @@ export default function PartnerSignUpPage() {
     };
 
     try {
-      const { error } = await signUp({ email, password }, finalProfileData);
+      //  Exécuter reCAPTCHA avant inscription
+      let recaptchaToken: string | undefined;
+      if (isRecaptchaReady) {
+        try {
+          recaptchaToken = await executeRecaptcha('partner_registration');
+        } catch (recaptchaError) {
+          console.warn('âš ï¸ reCAPTCHA failed, proceeding without:', recaptchaError);
+        }
+      }
 
-      if (error) {
-        throw error;
+      const result = await signUp({ email, password }, finalProfileData, recaptchaToken);
+
+      if (result?.error) {
+        throw result.error;
+      }
+
+      // Envoyer l'email d'instructions de paiement
+      const userId = result.user?.id;
+      if (userId) {
+        try {
+          await sendPartnerPaymentInstructions({
+            userId,
+            email,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            companyName: data.companyName
+          });
+        } catch (emailError) {
+          console.error('Erreur envoi email paiement:', emailError);
+          // Ne pas bloquer l'inscription si l'email échoue
+        }
       }
 
       // Supprimer le brouillon après succès
       clearLocalStorage();
-      
-      toast.success(t.title || 'Inscription réussie ! Votre compte est en attente de validation.');
-      navigate(ROUTES.SIGNUP_SUCCESS);
+
+      toast.success(t.title || 'Inscription réussie ! Consultez votre email pour confirmer votre compte.');
+      navigate(`${ROUTES.SIGNUP_CONFIRMATION}?email=${encodeURIComponent(email)}&type=partner`);
     } catch (error) {
       console.error("Sign up error:", error);
-      toast.error((error as Error).message || "Une erreur s'est produite lors de l'inscription.");
+      toast.error(error instanceof Error ? error.message : "Une erreur s'est produite lors de l'inscription.");
     } finally {
       setIsLoading(false);
       setShowPreview(false);
@@ -233,7 +275,7 @@ export default function PartnerSignUpPage() {
         </Card>
 
         <Card className="p-8">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={handleSubmit(handlePreviewSubmit)} className="space-y-6">{/*Changed to open preview first*/}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Informations sur l'organisation */}
               <div className="space-y-4">
@@ -481,11 +523,11 @@ export default function PartnerSignUpPage() {
 
             <div className="space-y-3">
               <Button 
-                type="button" 
-                onClick={handlePreviewSubmit} 
+                type="submit" 
                 className="w-full" 
                 disabled={isLoading}
                 variant="default"
+                data-testid="partner-submit-button"
               >
                 {isLoading ? 'Envoi en cours...' : "Prévisualiser et soumettre"}
               </Button>
@@ -507,8 +549,9 @@ export default function PartnerSignUpPage() {
           <PreviewModal
             isOpen={showPreview}
             onClose={() => setShowPreview(false)}
-            onConfirm={handleSubmit(onSubmit)}
-            data={watchedFields}
+            onConfirm={handleConfirmSubmit}
+            data={validatedFormData || watchedFields}
+            isLoading={isLoading}
           />
         </Card>
 
@@ -629,4 +672,6 @@ export default function PartnerSignUpPage() {
     </div>
   );
 };
+
+
 

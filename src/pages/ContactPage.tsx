@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
+import { useTranslation } from '../hooks/useTranslation';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { toast } from 'sonner';
 import { SupabaseService } from '../services/supabaseService';
 
 export default function ContactPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -59,7 +61,6 @@ export default function ContactPage() {
         message: formData.message.trim()
       });
 
-      console.log('✅ Message de contact sauvegardé:', result.id);
 
       // Tentative d'envoi d'email (ne bloque pas si Edge Function manquante)
       try {
@@ -71,9 +72,8 @@ export default function ContactPage() {
           subject: formData.subject,
           message: formData.message.trim()
         });
-        console.log('✅ Email de contact envoyé');
       } catch (emailError) {
-        console.warn('⚠️ Email non envoyé (Edge Function manquante):', emailError);
+        console.warn('âš ï¸ Email non envoyé (Edge Function manquante):', emailError);
         // Ne pas bloquer l'utilisateur si l'email échoue
       }
 
@@ -87,7 +87,7 @@ export default function ContactPage() {
       });
 
     } catch (error) {
-      console.error('❌ Erreur lors de l\'envoi du message:', error);
+      console.error('âŒ Erreur lors de l\'envoi du message:', error);
       toast.error('Une erreur est survenue. Veuillez réessayer plus tard.');
     } finally {
       setIsLoading(false);
@@ -100,10 +100,10 @@ export default function ContactPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Contactez-nous
+            {t('contact.title')}
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Vous avez des questions sur SIPORTS 2026 ? Notre équipe est là pour vous aider.
+            {t('contact.description')}
           </p>
         </div>
 
@@ -111,17 +111,18 @@ export default function ContactPage() {
           {/* Contact Form */}
           <Card className="p-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-              Envoyez-nous un message
+              {t('contact.form_title')}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-                    Prénom *
+                    {t('contact.first_name')} *
                   </label>
                   <input
                     type="text"
                     id="firstName"
+                    name="name"
                     value={formData.firstName}
                     onChange={handleChange}
                     required
@@ -205,6 +206,7 @@ export default function ContactPage() {
                 </label>
                 <textarea
                   id="message"
+                  name="message"
                   value={formData.message}
                   onChange={handleChange}
                   required
@@ -256,7 +258,7 @@ export default function ContactPage() {
                     <h3 className="font-semibold text-gray-900">Adresse</h3>
                     <p className="text-gray-600">
                       El Jadida, Maroc<br />
-                      5-7 Février 2026
+                      1-3 Avril 2026
                     </p>
                   </div>
                 </div>
@@ -353,3 +355,5 @@ export default function ContactPage() {
     </div>
   );
 }
+
+

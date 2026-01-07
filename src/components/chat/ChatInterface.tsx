@@ -98,7 +98,7 @@ export default function ChatInterface() {
                 {isLoading ? (
                   <div className="p-4">
                     {[1, 2, 3].map(i => (
-                      <div key={i} className="animate-pulse mb-4">
+                      <div key={`skeleton-${i}`} className="animate-pulse mb-4">
                         <div className="flex items-center space-x-3">
                           <div className="h-10 w-10 bg-gray-200 rounded-full"></div>
                           <div className="flex-1">
@@ -262,7 +262,6 @@ export default function ChatInterface() {
                             if (files && files.length > 0) {
                               // Traiter les fichiers sélectionnés
                               Array.from(files).forEach(file => {
-                                console.log(`Fichier sélectionné: ${file.name}, Taille: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
                                 // Ici vous pouvez ajouter la logique pour uploader les fichiers
                               });
                               

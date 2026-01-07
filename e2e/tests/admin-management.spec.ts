@@ -1,6 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { testUsers, login } from './helpers';
 
+// Configure timeouts
+test.setTimeout(120000); // 120 secondes par test
+
 /**
  * ============================================================================
  * TESTS E2E: ADMINISTRATION
@@ -13,7 +16,7 @@ test.describe('8. ADMINISTRATION COMPLÈTE', () => {
     await login(page, testUsers.admin.email, testUsers.admin.password);
   });
 
-  test('8.1 - Dashboard Admin : Vue d'ensemble', async ({ page }) => {
+  test('8.1 - Dashboard Admin : Vue d\'ensemble', async ({ page }) => {
     await page.goto('/admin/dashboard');
 
     // Vérifier les KPIs

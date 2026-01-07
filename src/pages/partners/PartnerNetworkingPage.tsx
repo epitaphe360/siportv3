@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -130,7 +131,6 @@ export const PartnerNetworkingPage: React.FC = () => {
   ];
 
   const handleNetworkingAction = (opportunityId: string, action: string) => {
-    console.log(`Action ${action} pour l'opportunité ${opportunityId}`);
     // Ici vous pouvez implémenter les actions réelles
   };
 
@@ -317,8 +317,8 @@ export const PartnerNetworkingPage: React.FC = () => {
                     <div className="mb-4">
                       <h4 className="text-sm font-medium text-gray-900 mb-2">Centres d'intérêt :</h4>
                       <div className="flex flex-wrap gap-2">
-                        {opportunity.interests.slice(0, 3).map((interest, idx) => (
-                          <Badge key={idx} variant="info" size="sm">{interest}</Badge>
+                        {opportunity.interests.slice(0, 3).map((interest) => (
+                          <Badge key={interest} variant="info" size="sm">{interest}</Badge>
                         ))}
                         {opportunity.interests.length > 3 && (
                           <Badge variant="info" size="sm">+{opportunity.interests.length - 3}</Badge>
@@ -378,7 +378,7 @@ export const PartnerNetworkingPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 bg-white rounded-lg border border-purple-200">
                   <h4 className="font-medium text-purple-900 mb-2">
-                    🎯 Profils Prioritaires
+                     Profils Prioritaires
                   </h4>
                   <p className="text-sm text-purple-700">
                     3 contacts identifiés comme stratégiques pour vos objectifs business
@@ -387,7 +387,7 @@ export const PartnerNetworkingPage: React.FC = () => {
 
                 <div className="p-4 bg-white rounded-lg border border-purple-200">
                   <h4 className="font-medium text-purple-900 mb-2">
-                    📈 Opportunités Sectorielles
+                     Opportunités Sectorielles
                   </h4>
                   <p className="text-sm text-purple-700">
                     Focus recommandé sur les secteurs Data & Technologie cette semaine
@@ -401,3 +401,5 @@ export const PartnerNetworkingPage: React.FC = () => {
     </div>
   );
 };
+
+export default PartnerNetworkingPage;

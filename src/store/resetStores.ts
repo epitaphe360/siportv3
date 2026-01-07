@@ -31,14 +31,16 @@ export const resetAllStores = () => {
         country: '',
         search: ''
       },
-      isLoading: false
+      isLoading: false,
+      error: null
     });
 
     // Event Store
     useEventStore.setState({
       events: [],
       registeredEvents: [],
-      isLoading: false
+      isLoading: false,
+      error: null
     });
 
     // Appointment Store
@@ -49,17 +51,24 @@ export const resetAllStores = () => {
       isBooking: false,
       isCreatingSlot: false,
       isUpdating: null,
-      isDeleting: null
+      isDeleting: null,
+      error: null
     });
 
     // Visitor Store
     useVisitorStore.setState({
       visitorProfile: null,
+      agenda: {
+        appointments: [],
+        guaranteedMeetings: { total: 0, used: 0, remaining: 0 },
+        personalEvents: []
+      },
       favoriteExhibitors: [],
+      registeredSessions: [],
       connections: [],
       messages: [],
       notifications: [],
-      recommendations: [],
+      salonInfo: null,
       isLoading: false
     });
 
@@ -69,14 +78,16 @@ export const resetAllStores = () => {
       messages: {},
       activeConversation: null,
       unreadCount: 0,
-      isLoading: false
+      isLoading: false,
+      error: null
     });
 
     // Chatbot Store
     useChatBotStore.setState({
       messages: [],
       isOpen: false,
-      isLoading: false
+      isLoading: false,
+      error: null
     });
 
     // Networking Store
@@ -98,19 +109,22 @@ export const resetAllStores = () => {
         meetings: 0,
         lastReset: new Date()
       },
-      isLoading: false
+      isLoading: false,
+      error: null
     });
 
     // Dashboard Store
     useDashboardStore.setState({
       dashboard: null,
-      isLoading: false
+      isLoading: false,
+      error: null
     });
 
     // Admin Dashboard Store
     useAdminDashboardStore.setState({
       metrics: null,
-      isLoading: false
+      isLoading: false,
+      error: null
     });
 
     // News Store
@@ -120,10 +134,10 @@ export const resetAllStores = () => {
       categories: [],
       selectedCategory: null,
       searchTerm: '',
-      isLoading: false
+      isLoading: false,
+      error: null
     });
 
-    console.log('✅ Tous les stores ont été réinitialisés avec succès');
   } catch (error) {
     console.error('❌ Erreur lors de la réinitialisation des stores:', error);
     // Ne pas throw pour ne pas bloquer le logout

@@ -1,0 +1,76 @@
+========================================
+COMPTES DE TEST E2E - SIPORT V3 (MIS À JOUR)
+========================================
+⚠️ ATTENTION: Il existe deux variantes de mot de passe selon le compte.
+Si l'un ne fonctionne pas, essayez l'autre.
+========================================
+
+📋 LISTE DES COMPTES ET LEURS MOTS DE PASSE VÉRIFIÉS
+
+---
+🟦 VISITEURS
+---
+[1] VISITEUR GRATUIT
+   Email: visitor-free@test.siport.com
+   Password: Test@1234567 (ou Test@123456)
+
+[2] VISITEUR VIP
+   Email: visitor-vip@test.siport.com
+   Password: Test@1234567 (ou Test@123456)
+
+---
+🟩 PARTENAIRES
+---
+[3] PARTENAIRE MUSÉE
+   Email: partner-museum@test.siport.com
+   Password: Test@1234567 (ou Test@123456)
+
+[4] PARTENAIRE SILVER
+   Email: partner-silver@test.siport.com
+   Password: Test@123456
+
+[5] PARTENAIRE GOLD
+   Email: partner-gold@test.siport.com
+   Password: Test@123456
+
+[6] PARTENAIRE PLATINIUM
+   Email: partner-platinium@test.siport.com
+   Password: Test@123456
+
+---
+🟨 EXPOSANTS
+---
+[7] EXPOSANT 9m²
+   Email: exhibitor-9m@test.siport.com
+   Password: Test@1234567 (ou Test@123456)
+
+[8] EXPOSANT 18m²
+   Email: exhibitor-18m@test.siport.com
+   Password: Test@123456
+
+[9] EXPOSANT 36m²
+   Email: exhibitor-36m@test.siport.com
+   Password: Test@123456
+
+[10] EXPOSANT 54m²
+   Email: exhibitor-54m@test.siport.com
+   Password: Test@123456
+
+---
+🟥 ADMINISTRATION
+---
+[11] ADMIN OFFICIEL (Demo)
+   Email: admin.siports@siports.com
+   Password: Admin123!
+
+[12] ADMIN TEST
+   Email: admin-test@test.siport.com
+   Password: Test@1234567 (ou Test@123456)
+
+========================================
+RÉSUMÉ DES MOTS DE PASSE
+========================================
+- Variante A: Test@1234567 (Utilisé pour les nouveaux comptes v3)
+- Variante B: Test@123456  (Utilisé pour les comptes issus du seed SQL)
+========================================
+

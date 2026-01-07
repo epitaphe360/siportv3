@@ -267,7 +267,7 @@ export default function ProductEditForm({
               </h3>
               
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                {formData.images.length > 0 ? (
+                {formData.images?.length > 0 ? (
                   <img 
                     src={formData.images[0]}
                     alt={formData.name} 

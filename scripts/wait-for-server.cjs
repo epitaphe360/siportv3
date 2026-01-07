@@ -1,6 +1,6 @@
 const http = require('http');
-const url = process.env.URL || 'http://127.0.0.1:5173';
-const timeout = parseInt(process.env.TIMEOUT || '15000', 10);
+const url = process.env.URL || 'http://127.0.0.1:9323';
+const timeout = parseInt(process.env.TIMEOUT || '120000', 10); // 2 minutes timeout
 
 function check(cb) {
   const req = http.get(url, res => {

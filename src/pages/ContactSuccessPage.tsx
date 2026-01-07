@@ -1,4 +1,5 @@
-import React from 'react';
+﻿import React from 'react';
+import { useTranslation } from '../hooks/useTranslation';
 import { useLocation, Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -6,6 +7,7 @@ import { CheckCircle, Home, Mail } from 'lucide-react';
 import { ROUTES } from '../lib/routes';
 
 export default function ContactSuccessPage() {
+  const { t } = useTranslation();
   const location = useLocation();
   const { firstName, email, messageId } = location.state || {};
 
@@ -137,3 +139,6 @@ export default function ContactSuccessPage() {
     </div>
   );
 }
+
+
+
