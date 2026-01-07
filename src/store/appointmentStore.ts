@@ -103,12 +103,18 @@ async function notifyInterestedVisitors(slot: TimeSlot): Promise<void> {
 
 
     // 2. Filtrer selon les préférences de notification
-    const notifiableVisitors = interestedVisitors.filter((v: any) =>
+    interface NotifiableVisitor {
+      id: string;
+      email: string;
+      name: string;
+      notificationPreferences?: { newTimeSlots?: boolean; emailNotifications?: boolean };
+    }
+    const notifiableVisitors = (interestedVisitors as NotifiableVisitor[]).filter((v: NotifiableVisitor) =>
       v.notificationPreferences?.newTimeSlots !== false  // Actif par défaut
     );
 
     // 3. Créer les notifications in-app
-    const notificationPromises = notifiableVisitors.map(async (visitor: any) => {
+    const notificationPromises = notifiableVisitors.map(async (visitor: NotifiableVisitor) => {
       try {
         // Créer notification in-app
         await SupabaseService.createNotification?.({
@@ -150,7 +156,14 @@ async function notifyInterestedVisitors(slot: TimeSlot): Promise<void> {
     });
 
     const results = await Promise.allSettled(notificationPromises);
-    const successCount = results.filter(r => r.status === 'fulfilled' && (r.value as any).success).length;
+    interface NotificationResult {
+      success: boolean;
+      visitorId: string;
+      error?: Error;
+    }
+    const successCount = results.filter((r): r is PromiseSettledResult<NotificationResult> => 
+      r.status === 'fulfilled' && (r.value as NotificationResult).success
+    ).length;
 
 
   } catch (error) {
