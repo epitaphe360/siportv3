@@ -40,7 +40,7 @@ export default function NewsArticleCreationForm() {
     title: '',
     excerpt: '',
     content: '',
-    author: user?.profile.firstName + ' ' + user?.profile.lastName || '',
+    author: (user?.profile?.firstName || '') + ' ' + (user?.profile?.lastName || ''),
     category: '',
     tags: [],
     featured: false,
@@ -122,7 +122,7 @@ export default function NewsArticleCreationForm() {
 
   const calculateReadTime = (content: string) => {
     const wordsPerMinute = 200;
-    const wordCount = content.split(/\s+/).length;
+    const wordCount = (content || '').split(/\s+/).filter(Boolean).length;
     return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
   };
 
@@ -141,7 +141,7 @@ export default function NewsArticleCreationForm() {
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4">
-            <Link to="/dashboard">
+            <Link to={ROUTES.DASHBOARD}>
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour au Tableau de Bord Admin
@@ -324,9 +324,9 @@ export default function NewsArticleCreationForm() {
                 </div>
                 
                 <div className="flex flex-wrap gap-2">
-                  {formData.tags.map((tag, index) => (
+                  {formData.tags.map((tag) => (
                     <button
-                      key={index}
+                      key={tag}
                       onClick={() => removeTag(tag)}
                       className="inline-flex items-center font-medium rounded-full px-2.5 py-1 text-sm bg-siports-primary/10 text-siports-primary border border-siports-primary/20 cursor-pointer hover:bg-siports-primary/20"
                     >
@@ -426,8 +426,8 @@ export default function NewsArticleCreationForm() {
                     <div className="mt-6 pt-4 border-t border-gray-200">
                       <h4 className="font-medium text-gray-900 mb-2">Mots-clés :</h4>
                       <div className="flex flex-wrap gap-2">
-                        {formData.tags.map((tag, index) => (
-                          <Badge key={index} variant="info" size="sm">
+                        {formData.tags.map((tag) => (
+                          <Badge key={tag} variant="info" size="sm">
                             #{tag}
                           </Badge>
                         ))}

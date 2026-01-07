@@ -1,17 +1,22 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, Grid2x2 as Grid, List, MapPin, Users, ExternalLink, Star, EggFried as Verified, Award, Building2, Crown, Handshake } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
+import LogoWithFallback from '../components/ui/LogoWithFallback';
 import { motion } from 'framer-motion';
 import { CONFIG } from '../lib/config';
 import { SupabaseService } from '../services/supabaseService';
+import { LevelBadge } from '../components/common/QuotaWidget';
+import type { PartnerTier } from '../config/partnerTiers';
+import { useTranslation } from '../hooks/useTranslation';
+import { COUNTRIES } from '../data/countries';
 
 interface Partner {
   id: string;
   name: string;
-  type: 'platinum' | 'gold' | 'silver' | 'bronze' | 'institutional';
+  partner_tier: PartnerTier; // Nouveau système: museum, silver, gold, platinium
   category: string;
   description: string;
   logo: string;
@@ -20,7 +25,6 @@ interface Partner {
   sector: string;
   verified: boolean;
   featured: boolean;
-  sponsorshipLevel: string;
   contributions: string[];
   establishedYear: number;
   employees: string;
@@ -29,20 +33,20 @@ interface Partner {
 // Les partenaires sont maintenant chargés depuis Supabase
 
 export default function PartnersPage() {
+  const { t } = useTranslation();
   const [partners, setPartners] = useState<Partner[]>([]);
   const [filteredPartners, setFilteredPartners] = useState<Partner[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedTier, setSelectedTier] = useState<string>(''); // Nouveau: filtre par tier
   const [selectedCountry, setSelectedCountry] = useState('');
   const [viewMode, setViewMode] = useState<keyof typeof CONFIG.viewModes>(CONFIG.viewModes.grid);
   const [showFilters, setShowFilters] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [partnerStats, setPartnerStats] = useState({
-    organisateur: 0,
-    platine: 0,
-    or: 0,
-    argent: 0,
-    bronze: 0,
+    museum: 0,
+    silver: 0,
+    gold: 0,
+    platinium: 0,
     total: 0
   });
 
@@ -54,29 +58,26 @@ export default function PartnersPage() {
         setPartners(data);
         setFilteredPartners(data);
 
-        // Calculer les statistiques par niveau
+        // Calculer les statistiques par tier
         const stats = {
-          organisateur: data.filter(p => p.sponsorshipLevel?.toLowerCase() === 'organisateur').length,
-          platine: data.filter(p => p.sponsorshipLevel?.toLowerCase() === 'platine').length,
-          or: data.filter(p => p.sponsorshipLevel?.toLowerCase() === 'or').length,
-          argent: data.filter(p => p.sponsorshipLevel?.toLowerCase() === 'argent').length,
-          bronze: data.filter(p => p.sponsorshipLevel?.toLowerCase() === 'bronze').length,
+          museum: data.filter(p => p.partner_tier === 'museum').length,
+          silver: data.filter(p => p.partner_tier === 'silver').length,
+          gold: data.filter(p => p.partner_tier === 'gold').length,
+          platinium: data.filter(p => p.partner_tier === 'platinium').length,
           total: data.length
         };
         setPartnerStats(stats);
       } catch (error) {
         console.error('Erreur lors du chargement des partenaires:', error);
         setPartners([]);
-// TODO: Charger depuis Supabase avec SupabaseService.getPartners()
         setFilteredPartners([]);
-        // Statistiques par défaut basées sur []
+        // Statistiques par défaut
         setPartnerStats({
-          organisateur: 1,
-          platine: 1,
-          or: 2,
-          argent: 1,
-          bronze: 1,
-          total: 6
+          museum: 0,
+          silver: 0,
+          gold: 0,
+          platinium: 0,
+          total: 0
         });
       } finally {
         setIsLoading(false);
@@ -88,60 +89,34 @@ export default function PartnersPage() {
 
   useEffect(() => {
     const filtered = partners.filter(partner => {
-      const matchesSearch = partner.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           partner.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesType = !selectedType || partner.type === selectedType;
-      const matchesCountry = !selectedCountry || partner.country === selectedCountry;
+      const name = partner.name || '';
+      const description = partner.description || '';
+      const search = searchTerm.toLowerCase();
       
-      return matchesSearch && matchesType && matchesCountry;
+      const matchesSearch = name.toLowerCase().includes(search) ||
+                           description.toLowerCase().includes(search);
+      const matchesTier = !selectedTier || partner.partner_tier === selectedTier;
+      const matchesCountry = !selectedCountry || partner.country === selectedCountry;
+
+      return matchesSearch && matchesTier && matchesCountry;
     });
 
     setFilteredPartners(filtered);
-  }, [partners, searchTerm, selectedType, selectedCountry]);
+  }, [partners, searchTerm, selectedTier, selectedCountry]);
 
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'institutional': return Crown;
-      case 'platinum': return Award;
-      case 'gold': return Star;
-      case 'silver': return Building2;
-      case 'bronze': return Handshake;
-      default: return Building2;
-    }
-  };
-
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'institutional': return 'bg-purple-100 text-purple-600';
-      case 'platinum': return 'bg-gray-100 text-gray-800';
-      case 'gold': return 'bg-yellow-100 text-yellow-600';
-      case 'silver': return 'bg-gray-100 text-gray-600';
-      case 'bronze': return 'bg-orange-100 text-orange-600';
-      default: return 'bg-blue-100 text-blue-600';
-    }
-  };
-
-  const getTypeLabel = (type: string) => {
-    switch (type) {
-      case 'institutional': return 'Institutionnel';
-      case 'platinum': return 'Platine';
-      case 'gold': return 'Or';
-      case 'silver': return 'Argent';
-      case 'bronze': return 'Bronze';
-      default: return type;
-    }
-  };
-
-  const partnerTypes = [
-    { value: '', label: 'Tous les types' },
-    { value: 'institutional', label: 'Institutionnel' },
-    { value: 'platinum', label: 'Platine' },
-    { value: 'gold', label: 'Or' },
-    { value: 'silver', label: 'Argent' },
-    { value: 'bronze', label: 'Bronze' }
+  const partnerTiers = [
+    { value: '', label: t('pages.partners.filter_tier') },
+    { value: 'museum', label: t('pages.partners.tier_museum') + ' ($20k)' },
+    { value: 'silver', label: t('pages.partners.tier_silver') + ' ($48k)' },
+    { value: 'gold', label: t('pages.partners.tier_gold') + ' ($68k)' },
+    { value: 'platinium', label: t('pages.partners.tier_platinium') + ' ($98k)' }
   ];
 
-  const countries = [...new Set(partners.map(p => p.country))];
+  // Utiliser la liste complète des pays depuis data/countries.ts
+  // Combinée avec les pays des partenaires existants
+  const partnerCountries = [...new Set(partners.map(p => p.country).filter(Boolean))];
+  const allCountryNames = COUNTRIES.map(c => c.name);
+  const countries = [...new Set([...allCountryNames, ...partnerCountries])].sort();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -154,11 +129,10 @@ export default function PartnersPage() {
               animate={{ opacity: 1, y: 0 }}
             >
               <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                Nos Partenaires SIPORTS 2026
+                {t('pages.partners.title')}
               </h1>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Découvrez les organisations qui soutiennent et participent au développement 
-                du plus grand salon portuaire international
+                {t('pages.partners.description')}
               </p>
             </motion.div>
           </div>
@@ -169,7 +143,7 @@ export default function PartnersPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Rechercher un partenaire..."
+                placeholder={t('pages.partners.search')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -213,16 +187,16 @@ export default function PartnersPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Type de partenaire
+                    Niveau partenaire
                   </label>
                   <select
-                    value={selectedType}
-                    onChange={(e) => setSelectedType(e.target.value)}
+                    value={selectedTier}
+                    onChange={(e) => setSelectedTier(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    {partnerTypes.map((type) => (
-                      <option key={type.value} value={type.value}>
-                        {type.label}
+                    {partnerTiers.map((tier) => (
+                      <option key={tier.value} value={tier.value}>
+                        {tier.label}
                       </option>
                     ))}
                   </select>
@@ -253,37 +227,41 @@ export default function PartnersPage() {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats - Données dynamiques */}
+        {/* Stats - Niveaux Partenaires */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
           <Card>
             <div className="p-6 text-center">
-              <Crown className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{partnerStats.organisateur}</div>
-              <div className="text-sm text-gray-600">Organisateur</div>
+              <div className="text-4xl mb-2">🏛️</div>
+              <div className="text-2xl font-bold text-gray-900">{partnerStats.museum}</div>
+              <div className="text-sm text-gray-600">Museum</div>
+              <div className="text-xs text-gray-500">$20k</div>
             </div>
           </Card>
 
           <Card>
             <div className="p-6 text-center">
-              <Award className="h-8 w-8 text-gray-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{partnerStats.platine}</div>
-              <div className="text-sm text-gray-600">Platine</div>
+              <div className="text-4xl mb-2">🥈</div>
+              <div className="text-2xl font-bold text-gray-900">{partnerStats.silver}</div>
+              <div className="text-sm text-gray-600">Silver</div>
+              <div className="text-xs text-gray-500">$48k</div>
             </div>
           </Card>
 
           <Card>
             <div className="p-6 text-center">
-              <Star className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{partnerStats.or}</div>
-              <div className="text-sm text-gray-600">Or</div>
+              <div className="text-4xl mb-2">🥇</div>
+              <div className="text-2xl font-bold text-gray-900">{partnerStats.gold}</div>
+              <div className="text-sm text-gray-600">Gold</div>
+              <div className="text-xs text-gray-500">$68k</div>
             </div>
           </Card>
 
           <Card>
             <div className="p-6 text-center">
-              <Building2 className="h-8 w-8 text-gray-500 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{partnerStats.argent}</div>
-              <div className="text-sm text-gray-600">Argent</div>
+              <div className="text-4xl mb-2">💎</div>
+              <div className="text-2xl font-bold text-gray-900">{partnerStats.platinium}</div>
+              <div className="text-sm text-gray-600">Platinium</div>
+              <div className="text-xs text-gray-500">$98k</div>
             </div>
           </Card>
 
@@ -300,7 +278,7 @@ export default function PartnersPage() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="animate-pulse">
+              <div key={`skeleton-${i}`} className="animate-pulse">
                 <div className="bg-white rounded-lg p-6 h-80">
                   <div className="h-4 bg-gray-200 rounded mb-4"></div>
                   <div className="h-20 bg-gray-200 rounded mb-4"></div>
@@ -316,17 +294,17 @@ export default function PartnersPage() {
               <Search className="h-12 w-12 text-gray-400" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Aucun partenaire trouvé
+              {t('pages.partners.no_results')}
             </h3>
             <p className="text-gray-600 mb-4">
-              Essayez de modifier vos critères de recherche
+              {t('pages.partners.try_modify')}
             </p>
             <Button variant="default" onClick={() => {
               setSearchTerm('');
-              setSelectedType('');
+              setSelectedTier('');
               setSelectedCountry('');
             }}>
-              Réinitialiser les filtres
+              {t('pages.partners.reset_filters')}
             </Button>
           </div>
         ) : (
@@ -335,8 +313,6 @@ export default function PartnersPage() {
             : 'space-y-6'
           }>
             {filteredPartners.map((partner, index) => {
-              const TypeIcon = getTypeIcon(partner.type);
-              
               return (
                 <motion.div
                   key={partner.id}
@@ -350,7 +326,7 @@ export default function PartnersPage() {
                         {/* Header */}
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex items-center space-x-3">
-                            <img
+                            <LogoWithFallback
                               src={partner.logo}
                               alt={partner.name}
                               className="h-12 w-12 rounded-lg object-cover"
@@ -372,12 +348,13 @@ export default function PartnersPage() {
                           </div>
                         </div>
 
-                        {/* Type Badge */}
+                        {/* Partner Tier Badge */}
                         <div className="mb-4">
-                          <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getTypeColor(partner.type)}`}>
-                            <TypeIcon className="h-4 w-4 mr-2" />
-                            {getTypeLabel(partner.type)}
-                          </div>
+                          <LevelBadge
+                            level={partner.partner_tier}
+                            type="partner"
+                            size="md"
+                          />
                         </div>
 
                         {/* Description */}
@@ -391,8 +368,8 @@ export default function PartnersPage() {
                             Contributions :
                           </h4>
                           <div className="flex flex-wrap gap-1">
-                            {partner.contributions.slice(0, 3).map((contribution, idx) => (
-                              <Badge key={idx} variant="info" size="sm">
+                            {partner.contributions.slice(0, 3).map((contribution) => (
+                              <Badge key={contribution} variant="info" size="sm">
                                 {contribution}
                               </Badge>
                             ))}
@@ -419,7 +396,7 @@ export default function PartnersPage() {
                             </Button>
                           </Link>
                           {partner.website && (
-                            <a
+                            <a aria-label="Open in new tab"
                               href={partner.website}
                               target="_blank"
                               rel="noopener noreferrer"
@@ -432,7 +409,7 @@ export default function PartnersPage() {
                       </div>
                     ) : (
                       <div className="flex items-center space-x-6 w-full">
-                        <img
+                        <LogoWithFallback
                           src={partner.logo}
                           alt={partner.name}
                           className="h-16 w-16 rounded-lg object-cover flex-shrink-0"
@@ -447,10 +424,11 @@ export default function PartnersPage() {
                               <p className="text-sm text-gray-500">{partner.sector}</p>
                             </div>
                             <div className="flex items-center space-x-2">
-                              <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(partner.type)}`}>
-                                <TypeIcon className="h-3 w-3 mr-1" />
-                                {getTypeLabel(partner.type)}
-                              </div>
+                              <LevelBadge
+                                level={partner.partner_tier}
+                                type="partner"
+                                size="sm"
+                              />
                               {partner.verified && (
                                 <Verified className="h-4 w-4 text-blue-500" />
                               )}
@@ -475,12 +453,12 @@ export default function PartnersPage() {
                             
                             <div className="flex items-center space-x-3">
                               <Link to={`/partners/${partner.id}`}>
-                                <Button variant="outline" size="sm" onClick={() => window.location.href = `/partners/${partner.id}`}>
+                                <Button variant="outline" size="sm">
                                   En savoir plus
                                 </Button>
                               </Link>
                               {partner.website && (
-                                <a
+                                <a aria-label="Open in new tab"
                                   href={partner.website}
                                   target="_blank"
                                   rel="noopener noreferrer"
@@ -504,3 +482,4 @@ export default function PartnersPage() {
     </div>
   );
 };
+

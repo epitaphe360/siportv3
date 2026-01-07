@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { toast } from 'sonner';
+import { useRecaptcha } from '../../hooks/useRecaptcha';
 import {
   User,
   Mail,
@@ -16,30 +18,61 @@ import {
   Anchor,
   AlertCircle,
   Loader,
-  CheckCircle
+  CheckCircle,
+  Check,
+  X,
+  Briefcase
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import useAuthStore from '../../store/authStore';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ROUTES } from '../../lib/routes';
 import { supabase } from '../../lib/supabase';
+import { COUNTRIES } from '../../data/countries';
+import { MoroccanPattern, MoroccanArch } from '../ui/MoroccanDecor';
+
+const MAX_DESCRIPTION_LENGTH = 1000;
+
+// Positions pour visiteurs
+const VISITOR_POSITIONS = [
+  'Directeur Général / CEO',
+  'Directeur des Opérations',
+  'Directeur Commercial',
+  'Responsable Logistique',
+  'Responsable Supply Chain',
+  'Ingénieur',
+  'Consultant',
+  'Chercheur',
+  'Enseignant',
+  'Étudiant',
+  'Journaliste',
+  'Autre'
+];
 
 const registrationSchema = z.object({
   accountType: z.enum(['exhibitor', 'partner', 'visitor']),
+  visitorType: z.enum(['professional', 'student', 'other']).optional(),
   companyName: z.string().optional(),
   sector: z.string().min(2, 'Secteur d\'activité requis'),
+  customSector: z.string().optional(),
   country: z.string().min(2, 'Pays requis'),
   website: z.string().url('URL invalide').optional().or(z.literal('')),
   firstName: z.string().min(2, 'Prénom requis'),
   lastName: z.string().min(2, 'Nom requis'),
   position: z.string().optional(),
+  customPosition: z.string().optional(),
   email: z.string().email('Email invalide'),
   phone: z.string().min(8, 'Numéro de téléphone requis'),
   linkedin: z.string().url('URL LinkedIn invalide').optional().or(z.literal('')),
-  description: z.string().min(50, 'Description trop courte (minimum 50 caractères)'),
-  objectives: z.array(z.string()).min(1, 'Sélectionnez au moins un objectif'),
-  password: z.string().min(8, 'Mot de passe trop court (minimum 8 caractères)'),
+  description: z.string().max(MAX_DESCRIPTION_LENGTH, `Maximum ${MAX_DESCRIPTION_LENGTH} caractères`).optional().or(z.literal('')),
+  objectives: z.array(z.string()).optional(),
+  password: z.string()
+    .min(12, 'Minimum 12 caractères')
+    .regex(/[A-Z]/, 'Doit contenir au moins une majuscule')
+    .regex(/[a-z]/, 'Doit contenir au moins une minuscule')
+    .regex(/[0-9]/, 'Doit contenir au moins un chiffre')
+    .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Doit contenir au moins un caractère spécial (!@#$%^&*...)'),
   confirmPassword: z.string()
 }).refine((data) => {
   // Validation du mot de passe
@@ -77,6 +110,42 @@ const registrationSchema = z.object({
 }, {
   message: "Poste requis pour les exposants et partenaires",
   path: ["position"],
+}).refine((data) => {
+  // Description obligatoire uniquement pour exposants et partenaires
+  if ((data.accountType === 'exhibitor' || data.accountType === 'partner') && (!data.description || data.description.length < 50)) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Description requise (minimum 50 caractères) pour les exposants et partenaires",
+  path: ["description"],
+}).refine((data) => {
+  // Objectifs obligatoires uniquement pour exposants et partenaires
+  if ((data.accountType === 'exhibitor' || data.accountType === 'partner') && (!data.objectives || data.objectives.length < 1)) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Sélectionnez au moins un objectif",
+  path: ["objectives"],
+}).refine((data) => {
+  // Validation pour secteur "Autre"
+  if (data.sector === 'Autre' && (!data.customSector || data.customSector.length < 2)) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Veuillez préciser votre secteur d'activité",
+  path: ["customSector"],
+}).refine((data) => {
+  // Validation pour position "Autre"
+  if (data.position === 'Autre' && (!data.customPosition || data.customPosition.length < 2)) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Veuillez préciser votre fonction",
+  path: ["customPosition"],
 });
 
 type RegistrationForm = z.infer<typeof registrationSchema>;
@@ -85,8 +154,18 @@ export default function RegisterPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { register: registerUser, isLoading } = useAuthStore();
+  const [passwordTouched, setPasswordTouched] = useState(false);
+  const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
+  const [descriptionLength, setDescriptionLength] = useState(0);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const { register: registerUser, isLoading, login } = useAuthStore();
   const navigate = useNavigate();
+  const { executeRecaptcha, isReady: isRecaptchaReady } = useRecaptcha();
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const requestedLevel = params.get('level');
+  const nextPath = params.get('next') || '';
 
   const {
     register,
@@ -96,10 +175,29 @@ export default function RegisterPage() {
     trigger
   } = useForm<RegistrationForm>({
     resolver: zodResolver(registrationSchema),
-    mode: 'onChange'
+    mode: 'onChange',
+    defaultValues: {
+      accountType: requestedLevel ? 'visitor' : undefined
+    }
   });
 
   const watchedAccountType = watch('accountType');
+  const watchedSector = watch('sector');
+  const watchedPosition = watch('position');
+  const watchedPassword = watch('password') || '';
+
+  // Fonction pour calculer la force du mot de passe
+  const getPasswordStrength = (pwd: string) => {
+    let strength = 0;
+    if (pwd.length >= 12) strength++;
+    if (/[A-Z]/.test(pwd)) strength++;
+    if (/[a-z]/.test(pwd)) strength++;
+    if (/[0-9]/.test(pwd)) strength++;
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(pwd)) strength++;
+    return strength;
+  };
+
+  const passwordStrength = getPasswordStrength(watchedPassword);
 
   const steps = [
     { id: 1, title: 'Type de compte', description: 'Choisissez votre profil' },
@@ -115,21 +213,21 @@ export default function RegisterPage() {
       title: 'Exposant',
       description: 'Entreprise ou organisation exposante',
       icon: Building2,
-      color: 'bg-blue-100 text-blue-600 border-blue-200'
+      color: 'bg-blue-50 text-siports-primary border-siports-primary'
     },
     {
       value: 'partner',
       title: 'Partenaire',
       description: 'Sponsor ou partenaire officiel',
       icon: Globe,
-      color: 'bg-green-100 text-green-600 border-green-200'
+      color: 'bg-amber-50 text-siports-gold border-siports-gold'
     },
     {
       value: 'visitor',
       title: 'Visiteur',
       description: 'Professionnel ou particulier visitant le salon',
       icon: User,
-      color: 'bg-purple-100 text-purple-600 border-purple-200'
+      color: 'bg-cyan-50 text-siports-secondary border-siports-secondary'
     }
   ];
 
@@ -197,18 +295,74 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: RegistrationForm) => {
     try {
-      await registerUser(data);
-  navigate(ROUTES.LOGIN, { 
-        state: { message: 'Inscription réussie ! Votre compte est en attente de validation.' }
-      });
+      // 🔐 Exécuter reCAPTCHA avant inscription
+      let recaptchaToken: string | undefined;
+      if (isRecaptchaReady) {
+        try {
+          const action = `${data.accountType}_registration`;
+          recaptchaToken = await executeRecaptcha(action);
+        } catch (recaptchaError) {
+          console.warn('⚠️ reCAPTCHA failed, proceeding without:', recaptchaError);
+          // Continue sans reCAPTCHA si ça échoue (degraded mode)
+        }
+      }
+
+      // @ts-expect-error - recaptchaToken sera ajouté à authStore.register()
+      await registerUser(data, recaptchaToken);
+
+      // 📧 Send welcome email (non-blocking)
+      try {
+        const { EmailService } = await import('../../services/emailService');
+        const firstName = data.firstName || data.accountType;
+        const accountTypeLabel = data.accountType === 'visitor' ? 'visiteur' : 
+                                data.accountType === 'exhibitor' ? 'exposant' : 'partenaire';
+        
+        await EmailService.sendWelcomeEmail(data.email, firstName, accountTypeLabel);
+      } catch (emailError) {
+        console.warn('⚠️ Welcome email failed:', emailError);
+        // Non-blocking error - registration is already complete
+      }
+
+      // Si c'est un exposant ou partenaire, afficher un toast indiquant validation admin requise
+      if (data.accountType && data.accountType !== 'visitor') {
+        const label = data.accountType === 'exhibitor' ? 'exposant' : 'partenaire';
+        toast.success(`Inscription réussie — votre compte ${label} sera activé par un administrateur. Vous recevrez un email une fois validé.`);
+      }
+
+      // Tenter une connexion automatique pour les visiteurs
+      if (data.accountType === 'visitor') {
+        try {
+          await login(data.email, data.password, { rememberMe: true });
+          toast.success('Connexion automatique réussie — redirection vers votre tableau de bord.');
+        } catch (loginError) {
+          // Ne pas bloquer l'inscription si la connexion automatique échoue
+          console.warn('Connexion automatique échouée:', loginError);
+          toast.error('Connexion automatique impossible — veuillez vous connecter manuellement.');
+        }
+      }
+
+      // Afficher la modal de succès
+      setShowSuccess(true);
+
+      // Rediriger vers la page de confirmation après 3 secondes
+      setTimeout(() => {
+        navigate(`${ROUTES.SIGNUP_CONFIRMATION}?email=${encodeURIComponent(data.email)}&type=${data.accountType}`);
+      }, 3000);
     } catch (error) {
       console.error('Registration error:', error);
+      toast.error(error instanceof Error ? error.message : 'Erreur lors de l\'inscription');
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-siports-primary via-siports-secondary to-siports-accent py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Background Pattern */}
+      <MoroccanPattern className="opacity-10" color="white" scale={1.5} />
+      
+      {/* Decorative Arch at bottom */}
+      <MoroccanArch className="text-white/10" />
+
+      <div className="max-w-4xl mx-auto relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -216,12 +370,12 @@ export default function RegisterPage() {
           className="text-center mb-8"
         >
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="bg-white p-3 rounded-lg">
-              <Anchor className="h-8 w-8 text-blue-600" />
+            <div className="bg-white p-3 rounded-lg shadow-lg">
+              <Anchor className="h-8 w-8 text-siports-primary" />
             </div>
             <div>
               <span className="text-2xl font-bold text-white">SIPORTS</span>
-              <span className="text-sm text-blue-200 block leading-none">2026</span>
+              <span className="text-sm text-siports-gold block leading-none font-medium">2026</span>
             </div>
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">
@@ -242,9 +396,9 @@ export default function RegisterPage() {
           <div className="flex items-center justify-between">
             {steps.map((step, index) => (
               <div key={step.id} className="flex items-center">
-                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors duration-300 ${
                   currentStep >= step.id 
-                    ? 'bg-white text-blue-600 border-white' 
+                    ? 'bg-siports-gold text-white border-siports-gold shadow-lg shadow-siports-gold/30' 
                     : 'bg-transparent text-white border-white/30'
                 }`}>
                   {currentStep > step.id ? (
@@ -255,7 +409,7 @@ export default function RegisterPage() {
                 </div>
                 <div className="ml-3 hidden sm:block">
                   <p className={`text-sm font-medium ${
-                    currentStep >= step.id ? 'text-white' : 'text-white/60'
+                    currentStep >= step.id ? 'text-siports-gold' : 'text-white/60'
                   }`}>
                     {step.title}
                   </p>
@@ -263,7 +417,7 @@ export default function RegisterPage() {
                 </div>
                 {index < steps.length - 1 && (
                   <div className={`w-12 h-0.5 mx-4 ${
-                    currentStep > step.id ? 'bg-white' : 'bg-white/30'
+                    currentStep > step.id ? 'bg-siports-gold' : 'bg-white/30'
                   }`} />
                 )}
               </div>
@@ -276,8 +430,9 @@ export default function RegisterPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
+          className="relative z-[60]"
         >
-          <Card className="p-8">
+          <Card className="p-8 border-t-4 border-t-siports-gold shadow-2xl backdrop-blur-sm bg-white/95">
             <form onSubmit={handleSubmit(onSubmit)}>
               {/* Step 1: Account Type */}
               {currentStep === 1 && (
@@ -299,12 +454,13 @@ export default function RegisterPage() {
                     {accountTypes.map((type) => {
                       const Icon = type.icon;
                       return (
-                        <label key={type.value} className="cursor-pointer">
+                        <label key={type.value} className="cursor-pointer" data-testid={`account-type-${type.value}`}>
                           <input
                             type="radio"
                             value={type.value}
                             {...register('accountType')}
                             className="sr-only"
+                            data-testid={`radio-${type.value}`}
                           />
                           <div className={`p-6 border-2 rounded-lg transition-all ${
                             watchedAccountType === type.value
@@ -348,18 +504,18 @@ export default function RegisterPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Nom de l'organisation *
+                        Nom de l'organisation {watchedAccountType !== 'visitor' && '*'}
+                        {watchedAccountType === 'visitor' && <span className="text-gray-400 text-xs ml-1">(optionnel)</span>}
                       </label>
                       <div className="relative">
                         <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type="text"
+                        <input type="text"
                           {...register('companyName')}
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="Nom de votre entreprise"
-                        />
+                         aria-label="Nom de votre entreprise" />
                       </div>
-                      {errors.companyName && (
+                      {errors.companyName && watchedAccountType !== 'visitor' && (
                         <p className="text-red-600 text-sm mt-1">{errors.companyName.message}</p>
                       )}
                     </div>
@@ -370,6 +526,8 @@ export default function RegisterPage() {
                       </label>
                       <select
                         {...register('sector')}
+                        name="sector"
+                        data-testid="select-sector"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="">Sélectionnez un secteur</option>
@@ -378,25 +536,57 @@ export default function RegisterPage() {
                         ))}
                       </select>
                       {errors.sector && (
-                        <p className="text-red-600 text-sm mt-1">{errors.sector.message}</p>
+                        <p className="text-red-600 text-sm mt-1" data-testid="error-sector">{errors.sector.message}</p>
                       )}
                     </div>
+
+                    {/* Champ conditionnel pour secteur "Autre" */}
+                    <AnimatePresence>
+                      {watchedSector === 'Autre' && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Précisez votre secteur *
+                          </label>
+                          <input
+                            type="text"
+                            {...register('customSector')}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Entrez votre secteur d'activité"
+                          />
+                          {errors.customSector && (
+                            <p className="text-red-600 text-sm mt-1">{errors.customSector.message}</p>
+                          )}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Pays *
                       </label>
                       <div className="relative">
-                        <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type="text"
+                        <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
+                        <select
                           {...register('country')}
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="Pays de votre organisation"
-                        />
+                          name="country"
+                          data-testid="select-country"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white"
+                        >
+                          <option value="">Sélectionnez un pays</option>
+                          {COUNTRIES.map((country) => (
+                            <option key={country.code} value={country.code}>
+                              {country.name}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                       {errors.country && (
-                        <p className="text-red-600 text-sm mt-1">{errors.country.message}</p>
+                        <p className="text-red-600 text-sm mt-1" data-testid="error-country">{errors.country.message}</p>
                       )}
                     </div>
 
@@ -406,12 +596,11 @@ export default function RegisterPage() {
                       </label>
                       <div className="relative">
                         <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type="url"
+                        <input type="url"
                           {...register('website')}
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="https://votre-site.com"
-                        />
+                         aria-label="https://votre-site.com" />
                       </div>
                       {errors.website && (
                         <p className="text-red-600 text-sm mt-1">{errors.website.message}</p>
@@ -444,12 +633,11 @@ export default function RegisterPage() {
                       </label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type="text"
+                        <input type="text"
                           {...register('firstName')}
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="Votre prénom"
-                        />
+                         aria-label="Votre prénom" />
                       </div>
                       {errors.firstName && (
                         <p className="text-red-600 text-sm mt-1">{errors.firstName.message}</p>
@@ -462,12 +650,11 @@ export default function RegisterPage() {
                       </label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type="text"
+                        <input type="text"
                           {...register('lastName')}
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="Votre nom"
-                        />
+                         aria-label="Votre nom" />
                       </div>
                       {errors.lastName && (
                         <p className="text-red-600 text-sm mt-1">{errors.lastName.message}</p>
@@ -476,18 +663,52 @@ export default function RegisterPage() {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Poste/Fonction *
+                        Poste/Fonction {watchedAccountType !== 'visitor' && '*'}
+                        {watchedAccountType === 'visitor' && <span className="text-gray-400 text-xs ml-1">(optionnel)</span>}
                       </label>
-                      <input
-                        type="text"
-                        {...register('position')}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Votre fonction dans l'organisation"
-                      />
-                      {errors.position && (
+                      <div className="relative">
+                        <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
+                        <select
+                          {...register('position')}
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white"
+                        >
+                          <option value="">Sélectionnez votre fonction</option>
+                          {VISITOR_POSITIONS.map((position) => (
+                            <option key={position} value={position}>
+                              {position}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      {errors.position && watchedAccountType !== 'visitor' && (
                         <p className="text-red-600 text-sm mt-1">{errors.position.message}</p>
                       )}
                     </div>
+
+                    {/* Champ conditionnel pour position "Autre" */}
+                    <AnimatePresence>
+                      {watchedPosition === 'Autre' && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Précisez votre fonction *
+                          </label>
+                          <input
+                            type="text"
+                            {...register('customPosition')}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Entrez votre fonction"
+                          />
+                          {errors.customPosition && (
+                            <p className="text-red-600 text-sm mt-1">{errors.customPosition.message}</p>
+                          )}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -495,12 +716,12 @@ export default function RegisterPage() {
                       </label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type="email"
+                        <input type="email"
+                          data-testid="email"
                           {...register('email')}
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="votre@email.com"
-                        />
+                         aria-label="votre@email.com" />
                       </div>
                       {errors.email && (
                         <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>
@@ -513,12 +734,11 @@ export default function RegisterPage() {
                       </label>
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type="tel"
+                        <input type="tel"
                           {...register('phone')}
                           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="+33 1 23 45 67 89"
-                        />
+                         aria-label="+33 1 23 45 67 89" />
                       </div>
                       {errors.phone && (
                         <p className="text-red-600 text-sm mt-1">{errors.phone.message}</p>
@@ -529,12 +749,11 @@ export default function RegisterPage() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         LinkedIn
                       </label>
-                      <input
-                        type="url"
+                      <input type="url"
                         {...register('linkedin')}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="https://linkedin.com/in/votre-profil"
-                      />
+                       aria-label="https://linkedin.com/in/votre-profil" />
                       {errors.linkedin && (
                         <p className="text-red-600 text-sm mt-1">{errors.linkedin.message}</p>
                       )}
@@ -561,22 +780,44 @@ export default function RegisterPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Description de votre organisation *
+                      {watchedAccountType === 'visitor' ? 'Présentez-vous' : 'Description de votre organisation'} {watchedAccountType !== 'visitor' && '*'}
+                      {watchedAccountType === 'visitor' && <span className="text-gray-400 text-xs ml-1">(optionnel)</span>}
                     </label>
                     <textarea
-                      {...register('description')}
+                      data-testid="description"
+                      {...register('description', {
+                        onChange: (e) => setDescriptionLength(e.target.value.length)
+                      })}
                       rows={4}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Décrivez votre organisation, vos activités principales, vos spécialités..."
+                      maxLength={MAX_DESCRIPTION_LENGTH}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                      placeholder={watchedAccountType === 'visitor' ? 'Présentez-vous brièvement, vos intérêts professionnels...' : 'Décrivez votre organisation, vos activités principales, vos spécialités...'}
                     />
-                    {errors.description && (
-                      <p className="text-red-600 text-sm mt-1">{errors.description.message}</p>
-                    )}
+                    <div className="flex justify-between items-center mt-1">
+                      <div>
+                        {errors.description && watchedAccountType !== 'visitor' && (
+                          <p className="text-red-600 text-xs">{errors.description.message}</p>
+                        )}
+                      </div>
+                      <p className={`text-xs font-medium ${
+                        descriptionLength >= MAX_DESCRIPTION_LENGTH
+                          ? 'text-red-600'
+                          : watchedAccountType !== 'visitor' && descriptionLength < 50
+                          ? 'text-gray-500'
+                          : descriptionLength >= 50
+                          ? 'text-green-600'
+                          : 'text-gray-500'
+                      }`}>
+                        {descriptionLength}/{MAX_DESCRIPTION_LENGTH} caractères
+                        {watchedAccountType !== 'visitor' && descriptionLength < 50 && ` (minimum 50)`}
+                      </p>
+                    </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Vos objectifs pour SIPORTS 2026 *
+                      Vos objectifs pour SIPORTS 2026 {watchedAccountType !== 'visitor' && '*'}
+                      {watchedAccountType === 'visitor' && <span className="text-gray-400 text-xs ml-1">(optionnel)</span>}
                     </label>
                     <p className="text-sm text-gray-500 mb-3">
                       Sélectionnez tous les objectifs qui correspondent à vos attentes
@@ -594,7 +835,7 @@ export default function RegisterPage() {
                         </label>
                       ))}
                     </div>
-                    {errors.objectives && (
+                    {errors.objectives && watchedAccountType !== 'visitor' && (
                       <p className="text-red-600 text-sm mt-1">{errors.objectives.message}</p>
                     )}
                   </div>
@@ -617,19 +858,20 @@ export default function RegisterPage() {
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Mot de passe *
                       </label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type={showPassword ? 'text' : 'password'}
+                        <input type={showPassword ? 'text' : 'password'}
+                          data-testid="password"
                           {...register('password')}
+                          onBlur={() => setPasswordTouched(true)}
                           className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="••••••••"
-                        />
+                         aria-label="••••••••" />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
@@ -638,8 +880,42 @@ export default function RegisterPage() {
                           {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                         </button>
                       </div>
-                      {errors.password && (
-                        <p className="text-red-600 text-sm mt-1">{errors.password.message}</p>
+
+                      {/* Indicateur de force */}
+                      {watchedPassword.length > 0 && (
+                        <div className="mt-2">
+                          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div
+                              className={`h-full transition-all duration-300 ${
+                                passwordStrength <= 2 ? 'bg-red-500' :
+                                passwordStrength <= 3 ? 'bg-yellow-500' :
+                                passwordStrength <= 4 ? 'bg-blue-500' :
+                                'bg-green-500'
+                              }`}
+                              style={{ width: `${(passwordStrength / 5) * 100}%` }}
+                            />
+                          </div>
+                          <p className={`text-xs mt-1 ${
+                            passwordStrength <= 2 ? 'text-red-600' :
+                            passwordStrength <= 3 ? 'text-yellow-600' :
+                            passwordStrength <= 4 ? 'text-blue-600' :
+                            'text-green-600'
+                          }`}>
+                            Force: {
+                              passwordStrength <= 2 ? 'Faible' :
+                              passwordStrength <= 3 ? 'Moyenne' :
+                              passwordStrength <= 4 ? 'Bonne' :
+                              'Excellente'
+                            }
+                          </p>
+                        </div>
+                      )}
+
+                      {passwordTouched && errors.password && (
+                        <p className="text-red-600 text-xs mt-1 flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" />
+                          {errors.password.message}
+                        </p>
                       )}
                     </div>
 
@@ -649,12 +925,12 @@ export default function RegisterPage() {
                       </label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type={showConfirmPassword ? 'text' : 'password'}
+                        <input type={showConfirmPassword ? 'text' : 'password'}
                           {...register('confirmPassword')}
+                          onBlur={() => setConfirmPasswordTouched(true)}
                           className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="••••••••"
-                        />
+                         aria-label="••••••••" />
                         <button
                           type="button"
                           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -663,19 +939,51 @@ export default function RegisterPage() {
                           {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                         </button>
                       </div>
-                      {errors.confirmPassword && (
-                        <p className="text-red-600 text-sm mt-1">{errors.confirmPassword.message}</p>
+                      {confirmPasswordTouched && errors.confirmPassword && (
+                        <p className="text-red-600 text-xs mt-1 flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" />
+                          {errors.confirmPassword.message}
+                        </p>
                       )}
                     </div>
                   </div>
 
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-blue-900 mb-2">Validation de votre compte</h4>
-                    <p className="text-sm text-blue-700">
-                      Après votre inscription, votre compte sera examiné par notre équipe. 
-                      Vous recevrez un email de confirmation une fois votre compte validé.
-                    </p>
+                  {/* Exigences du mot de passe */}
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <p className="text-sm font-medium text-gray-700 mb-2">Le mot de passe doit contenir :</p>
+                    <ul className="space-y-1 text-xs">
+                      <li className={`flex items-center gap-2 ${watchedPassword.length >= 12 ? 'text-green-600' : 'text-gray-500'}`}>
+                        {watchedPassword.length >= 12 ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                        Au moins 12 caractères
+                      </li>
+                      <li className={`flex items-center gap-2 ${/[A-Z]/.test(watchedPassword) ? 'text-green-600' : 'text-gray-500'}`}>
+                        {/[A-Z]/.test(watchedPassword) ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                        Au moins une lettre majuscule
+                      </li>
+                      <li className={`flex items-center gap-2 ${/[a-z]/.test(watchedPassword) ? 'text-green-600' : 'text-gray-500'}`}>
+                        {/[a-z]/.test(watchedPassword) ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                        Au moins une lettre minuscule
+                      </li>
+                      <li className={`flex items-center gap-2 ${/[0-9]/.test(watchedPassword) ? 'text-green-600' : 'text-gray-500'}`}>
+                        {/[0-9]/.test(watchedPassword) ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                        Au moins un chiffre
+                      </li>
+                      <li className={`flex items-center gap-2 ${/[!@#$%^&*(),.?":{}|<>]/.test(watchedPassword) ? 'text-green-600' : 'text-gray-500'}`}>
+                        {/[!@#$%^&*(),.?":{}|<>]/.test(watchedPassword) ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                        Au moins un caractère spécial (!@#$%^&*...)
+                      </li>
+                    </ul>
                   </div>
+
+                  {watchedAccountType !== 'visitor' && (
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h4 className="font-medium text-blue-900 mb-2">Validation de votre compte</h4>
+                      <p className="text-sm text-blue-700">
+                        Après votre inscription, votre compte sera examiné par notre équipe. 
+                        Vous recevrez un email de confirmation une fois votre compte validé.
+                      </p>
+                    </div>
+                  )}
                 </motion.div>
               )}
 
@@ -687,6 +995,7 @@ export default function RegisterPage() {
                       type="button"
                       variant="outline"
                       onClick={prevStep}
+                      data-testid="btn-previous"
                     >
                       Précédent
                     </Button>
@@ -698,6 +1007,7 @@ export default function RegisterPage() {
                     <Button
                       type="button"
                       onClick={nextStep}
+                      data-testid="btn-next"
                     >
                       Suivant
                     </Button>
@@ -705,6 +1015,7 @@ export default function RegisterPage() {
                     <Button
                       type="submit"
                       disabled={isLoading}
+                      data-testid="btn-submit"
                     >
                       {isLoading ? (
                         <>
@@ -725,7 +1036,7 @@ export default function RegisterPage() {
               <p className="text-sm text-gray-600">
                 Vous avez déjà un compte ?{' '}
                 <Link
-                  to="/login"
+                  to={ROUTES.LOGIN}
                   className="font-medium text-blue-600 hover:text-blue-500"
                 >
                   Se connecter
@@ -763,7 +1074,8 @@ export default function RegisterPage() {
                         });
                         if (error) throw error;
                       } catch (err: any) {
-                        alert(`Erreur: ${err.message}`);
+                        console.error('Erreur OAuth:', err);
+                        toast.error(`Erreur: ${err?.message || 'Connexion échouée'}`);
                       }
                     }}
                   >
@@ -789,7 +1101,8 @@ export default function RegisterPage() {
                         });
                         if (error) throw error;
                       } catch (err: any) {
-                        alert(`Erreur: ${err.message}`);
+                        console.error('Erreur OAuth:', err);
+                        toast.error(`Erreur: ${err?.message || 'Connexion échouée'}`);
                       }
                     }}
                   >
@@ -803,6 +1116,65 @@ export default function RegisterPage() {
             )}
           </Card>
         </motion.div>
+
+        {/* Success Modal */}
+        <AnimatePresence>
+          {showSuccess && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.3 }}
+                className="bg-white rounded-lg shadow-2xl p-8 w-full max-w-md text-center"
+              >
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+                  className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6"
+                >
+                  <CheckCircle className="h-12 w-12 text-green-600" />
+                </motion.div>
+
+                <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                  {watchedAccountType === 'visitor' ? 'Compte créé avec succès !' : 'Inscription réussie !'}
+                </h2>
+                
+                {watchedAccountType === 'visitor' ? (
+                  <>
+                    <p className="text-gray-600 mb-2">
+                      🎉 Félicitations ! Votre compte visiteur a été créé.
+                    </p>
+                    <p className="text-sm text-gray-500 mb-6">
+                      Vous pouvez maintenant accéder à toutes les fonctionnalités de SIPORTS 2026.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-gray-600 mb-2">
+                      Votre demande d'inscription a été envoyée avec succès.
+                    </p>
+                    <p className="text-sm text-gray-500 mb-6">
+                      Votre compte sera examiné par notre équipe. Vous recevrez un email de confirmation une fois votre compte validé.
+                    </p>
+                  </>
+                )}
+
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: '100%' }}
+                  transition={{ duration: 4 }}
+                  className="h-1 bg-green-600 rounded-full"
+                />
+
+                <p className="text-xs text-gray-400 mt-3">
+                  Redirection automatique vers la page de connexion...
+                </p>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

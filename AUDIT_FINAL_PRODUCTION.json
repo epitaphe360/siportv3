@@ -1,0 +1,48 @@
+{
+  "timestamp": "2025-12-16T13:12:59.288Z",
+  "database": {
+    "profiles": {
+      "status": "ok",
+      "count": null
+    },
+    "events": {
+      "status": "ok",
+      "count": 27
+    },
+    "exhibitors": {
+      "status": "ok",
+      "count": 45
+    },
+    "partners": {
+      "status": "ok",
+      "count": 3
+    },
+    "appointments": {
+      "status": "ok",
+      "count": 0
+    },
+    "messages": {
+      "status": "ok",
+      "count": 4
+    },
+    "notifications": {
+      "status": "ok",
+      "count": 0
+    },
+    "news": {
+      "status": "ok",
+      "count": 6
+    },
+    "jobs": {
+      "status": "ok",
+      "count": null
+    },
+    "products": {
+      "status": "ok",
+      "count": 10
+    }
+  },
+  "storage": {},
+  "rls": {},
+  "users": {}
+}

@@ -1,10 +1,12 @@
-import MiniSiteWizard from '../components/minisite/MiniSiteWizard';
+﻿import MiniSiteWizard from '../components/minisite/MiniSiteWizard';
 import { ROUTES } from '../lib/routes';
 import { Card } from '../components/ui/Card';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function MiniSiteCreationPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center py-12">
       <Card className="w-full max-w-2xl mx-auto p-8">
@@ -14,3 +16,5 @@ export default function MiniSiteCreationPage() {
     </div>
   );
 }
+
+

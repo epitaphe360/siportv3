@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  MessageCircle, 
-  Send, 
-  X, 
-  Bot, 
+import { useNavigate } from 'react-router-dom';
+import {
+  MessageCircle,
+  Send,
+  X,
+  Bot,
   User,
   Minimize2,
   Maximize2,
@@ -22,6 +23,7 @@ import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
 import useAuthStore from '../../store/authStore';
+import { ROUTES } from '../../lib/routes';
 import toast from 'react-hot-toast';
 
 interface ChatMessage {
@@ -45,6 +47,7 @@ interface ChatBotProps {
 }
 
 export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
+  const navigate = useNavigate();
   const { user, isAuthenticated } = useAuthStore();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -65,7 +68,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
         }
 
         const userType = user?.type;
-        const firstName = user?.profile.firstName || 'cher utilisateur';
+        const firstName = user?.profile?.firstName || 'cher utilisateur';
 
         switch (userType) {
           case 'admin':
@@ -119,7 +122,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
     const message = userMessage.toLowerCase();
     const timestamp = new Date();
     const userType = user?.type || 'visitor';
-    const firstName = user?.profile.firstName || 'cher utilisateur';
+    const firstName = user?.profile?.firstName || 'cher utilisateur';
 
     // Réponses selon l'authentification
     if (!isAuthenticated) {
@@ -168,7 +171,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
       if (message.includes('salon') || message.includes('siports') || message.includes('information')) {
         return {
           id: Date.now().toString(),
-          content: "🚢 SIPORTS 2026 - Le plus grand salon portuaire international ! 📅 5-7 Février 2026 à El Jadida, Maroc. 330+ exposants, 6000+ visiteurs de 40 pays, 40+ conférences !",
+          content: "🚢 SIPORTS 2026 - Le plus grand salon portuaire international ! 📅 1-3 Avril 2026 à El Jadida, Maroc. 330+ exposants, 6000+ visiteurs de 40 pays, 40+ conférences !",
           isBot: true,
           timestamp,
           type: 'quick_reply',
@@ -210,7 +213,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
     if (message.includes('salon') || message.includes('siports') || message.includes('information')) {
       return {
         id: Date.now().toString(),
-        content: `🚢 Bonjour ${firstName} ! SIPORTS 2026 se déroule du 5 au 7 février 2026 à El Jadida, Maroc. C'est le plus grand salon portuaire international avec 330+ exposants, 6000+ visiteurs de 40 pays !`,
+        content: `🚢 Bonjour ${firstName} ! SIPORTS 2026 se déroule du 1er au 3 avril 2026 à El Jadida, Maroc. C'est le plus grand salon portuaire international avec 330+ exposants, 6000+ visiteurs de 40 pays !`,
         isBot: true,
         timestamp,
         type: 'suggestion',
@@ -583,17 +586,16 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
       // Vérifier l'authentification pour les pages protégées
       if (action === '/appointments' && !isAuthenticated) {
         // Rediriger vers la page de connexion avec retour vers les RDV
-        window.location.href = '/login?redirect=/appointments';
+        navigate(`${ROUTES.LOGIN}?redirect=${encodeURIComponent(ROUTES.APPOINTMENTS)}`);
         return;
       }
-      
+
       // Navigation interne
-      window.location.hash = action;
-      window.location.pathname = action;
+      navigate(action);
     } else {
       // Action personnalisée
       const actionMessages = {
-        'info_salon': `ℹ️ SIPORTS 2026 - Salon International des Ports\n📅 5-7 Février 2026\n📍 El Jadida, Maroc\n🏢 330+ exposants\n👥 6000+ visiteurs\n🌍 40 pays`,
+        'info_salon': `ℹ️ SIPORTS 2026 - Salon International des Ports\n📅 1-3 Avril 2026\n📍 El Jadida, Maroc\n🏢 330+ exposants\n👥 6000+ visiteurs\n🌍 40 pays`,
         'support': `📞 SUPPORT SIPORTS\n📧 Email: support@siportevent.com\n📱 Tél: +212 1 23 45 67 89\n🕒 Lun-Ven: 9h-18h\n💬 Chat en direct disponible`,
         'contact_commercial': `💼 ÉQUIPE COMMERCIALE\n📧 commercial@siportevent.com\n📱 +212 1 23 45 67 90\n🤝 Partenariats & Sponsoring\n📋 Devis personnalisés`
       };
@@ -617,7 +619,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
       initial={{ opacity: 0, scale: 0.8, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.8, y: 20 }}
-      className={`fixed bottom-4 right-4 z-50 ${
+      className={`fixed bottom-4 right-4 z-[9998] ${
         isMinimized ? 'w-80 h-16' : 'w-80 h-96'
       } transition-all duration-300`}
     >
@@ -645,7 +647,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
               >
                 {isMinimized ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
               </button>
-              <button
+              <button aria-label="Close"
                 onClick={onToggle}
                 className="p-1 hover:bg-white hover:bg-opacity-20 rounded transition-colors"
               >
@@ -682,9 +684,9 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
                       {/* Quick Replies */}
                       {message.quickReplies && (
                         <div className="mt-3 space-y-1">
-                          {message.quickReplies.map((reply, idx) => (
+                          {message.quickReplies.map((reply) => (
                             <button
-                              key={idx}
+                              key={reply}
                               onClick={() => handleQuickReply(reply)}
                               className="block w-full text-left px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs transition-colors"
                             >
@@ -697,9 +699,9 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
                       {/* Suggestions */}
                       {message.suggestions && (
                         <div className="mt-3 space-y-2">
-                          {message.suggestions.map((suggestion, idx) => (
+                          {message.suggestions.map((suggestion) => (
                             <button
-                              key={idx}
+                              key={suggestion.title}
                               onClick={() => handleSuggestionClick(suggestion.action)}
                               className="flex items-center space-x-2 w-full p-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs transition-colors"
                             >
@@ -772,9 +774,9 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onToggle }) => {
                   "Mes statistiques", 
                   "Contact support",
                   "Infos pratiques"
-                ].map((suggestion, idx) => (
+                ].map((suggestion) => (
                   <button
-                    key={idx}
+                    key={suggestion}
                     onClick={() => handleQuickReply(suggestion)}
                     className="px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded text-xs transition-colors"
                   >

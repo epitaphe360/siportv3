@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import AdminMediaManager from '../../components/admin/media/AdminMediaManager';
+import { toast } from 'sonner';
 
 const MediaManagerPage: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -32,17 +34,17 @@ const MediaManagerPage: React.FC = () => {
             <div className="flex-1">
               <p className="text-sm font-medium mb-1">URL de l'image :</p>
               <div className="flex">
-                <input
-                  type="text"
+                <input type="text"
                   value={selectedImage}
                   readOnly
                   className="flex-1 p-2 border rounded-l-md text-sm bg-white"
-                />
+                 aria-label="Text" />
                 <button
                   type="button"
                   onClick={() => {
-                    navigator.clipboard.writeText(selectedImage);
-                    alert('URL copiée dans le presse-papier');
+                    navigator.clipboard.writeText(selectedImage)
+                      .then(() => toast.success('URL copiée dans le presse-papier'))
+                      .catch(() => toast.error('Impossible de copier'));
                   }}
                   className="bg-blue-500 text-white px-3 py-2 rounded-r-md text-sm"
                 >
@@ -56,7 +58,7 @@ const MediaManagerPage: React.FC = () => {
 
       <AdminMediaManager 
         onImageSelect={handleImageSelect}
-        title="Gestionnaire de médias administrateur"
+        title={t('admin_media.manager_title')}
         showUploadButton={true}
         maxSelections={1}
       />
@@ -65,3 +67,6 @@ const MediaManagerPage: React.FC = () => {
 };
 
 export default MediaManagerPage;
+
+
+

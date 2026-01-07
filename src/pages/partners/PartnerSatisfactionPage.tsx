@@ -1,4 +1,5 @@
-import React from 'react';
+﻿import React from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -96,7 +97,7 @@ export const PartnerSatisfactionPage: React.FC = () => {
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
-        key={i}
+        key={`star-${i}`}
         className={`h-4 w-4 ${i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
       />
     ));
@@ -282,3 +283,5 @@ export const PartnerSatisfactionPage: React.FC = () => {
     </div>
   );
 };
+
+export default PartnerSatisfactionPage;

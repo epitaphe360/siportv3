@@ -14,27 +14,127 @@ import {
 } from '@/lib/networkingPermissions';
 
 // Types
+interface SectorData {
+  subject: string;
+  A: number;
+  fullMark: number;
+}
+
 interface AIInsights {
   summary: string;
   suggestions: string[];
   topKeywords: string[];
+  sectorData?: SectorData[];
+  networkStats?: {
+    totalConnections: number;
+    totalFavorites: number;
+    pendingCount: number;
+  };
 }
 
 // AI Insights will be fetched from backend
 const generateAIInsights = async (userId: string): Promise<AIInsights> => {
   try {
-    // Call to AI service would be here
-    const insights = await SupabaseService.getNetworkingInsights?.(userId);
-    return insights || {
-      summary: "Analyse de votre réseau en cours...",
-      suggestions: ["Connectez-vous avec plus d'exposants", "Participez aux événements recommandés"],
-      topKeywords: ["Réseautage", "Opportunités"],
-    };
-  } catch {
+    // Récupérer les données réelles de l'utilisateur
+    const [connections, favorites, pendingConns] = await Promise.all([
+      SupabaseService.getUserConnections(userId).catch(() => []),
+      SupabaseService.getUserFavorites(userId).catch(() => []),
+      SupabaseService.getPendingConnections(userId).catch(() => [])
+    ]);
+
+    // Récupérer tous les utilisateurs pour analyser le réseau
+    const allUsers = await SupabaseService.getUsers().catch(() => []);
+    
+    // Analyser les secteurs des connexions
+    const connectedUsers = allUsers.filter(u => connections.includes(u.id));
+    const sectors = connectedUsers.map(u => u.profile?.sector).filter(Boolean);
+    const sectorCounts = sectors.reduce((acc, sector) => {
+      acc[sector!] = (acc[sector!] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const topSectors = Object.entries(sectorCounts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 3)
+      .map(([sector]) => sector);
+
+    // Générer les données pour le graphique radar
+    const allSectors = ['Portuaire', 'Logistique', 'Technologie', 'Finance', 'Formation', 'Institutionnel'];
+    const sectorData: SectorData[] = allSectors.map(sector => ({
+      subject: sector,
+      A: sectorCounts[sector] || 0,
+      fullMark: Math.max(...Object.values(sectorCounts), 10),
+    }));
+
+    // Générer un résumé intelligent
+    const totalConnections = connections.length;
+    const totalFavorites = favorites.length;
+    const pendingCount = pendingConns.length;
+    
+    let summary = `Votre réseau compte ${totalConnections} connexion${totalConnections > 1 ? 's' : ''} active${totalConnections > 1 ? 's' : ''}`;
+    if (topSectors.length > 0) {
+      summary += ` principalement dans ${topSectors.length > 1 ? 'les secteurs' : 'le secteur'} ${topSectors.join(', ')}`;
+    }
+    summary += `. Vous avez ${totalFavorites} favori${totalFavorites > 1 ? 's' : ''} et ${pendingCount} demande${pendingCount > 1 ? 's' : ''} en attente.`;
+
+    // Générer des suggestions intelligentes
+    const suggestions: string[] = [];
+    if (totalConnections < 10) {
+      suggestions.push("💡 Développez votre réseau en contactant au moins 10 professionnels du salon");
+    }
+    if (pendingCount > 0) {
+      suggestions.push(`⏳ ${pendingCount} demande${pendingCount > 1 ? 's' : ''} de connexion en attente de validation`);
+    }
+    if (totalFavorites > 0 && totalConnections < totalFavorites) {
+      suggestions.push("🎯 Transformez vos favoris en connexions actives pour enrichir vos échanges");
+    }
+    if (topSectors.length > 0) {
+      const otherSectors = allUsers
+        .filter(u => u.profile?.sector && !topSectors.includes(u.profile.sector))
+        .map(u => u.profile!.sector!)
+        .filter((v, i, a) => a.indexOf(v) === i)
+        .slice(0, 2);
+      if (otherSectors.length > 0) {
+        suggestions.push(`🌐 Explorez de nouveaux secteurs: ${otherSectors.join(', ')}`);
+      }
+    }
+    if (suggestions.length === 0) {
+      suggestions.push("🚀 Explorez les recommandations personnalisées pour agrandir votre réseau");
+    }
+
+    // Mots-clés basés sur les profils connectés
+    const keywords = topSectors.length > 0 ? topSectors : ["Réseautage", "Business", "Innovation"];
+
     return {
-      summary: "Développez votre réseau professionnel.",
-      suggestions: ["Explorez les profils d'exposants", "Participez aux événements"],
-      topKeywords: ["Networking", "Connections"],
+      summary,
+      suggestions,
+      topKeywords: keywords,
+      sectorData,
+      networkStats: {
+        totalConnections,
+        totalFavorites,
+        pendingCount,
+      },
+    };
+  } catch (error) {
+    console.error('Erreur lors de la génération des insights:', error);
+    return {
+      summary: "Développez votre réseau professionnel en explorant les profils disponibles.",
+      suggestions: ["Explorez les profils d'exposants", "Ajoutez des contacts en favoris", "Participez aux événements du salon"],
+      topKeywords: ["Networking", "Connections", "Opportunités"],
+      sectorData: [
+        { subject: 'Portuaire', A: 0, fullMark: 10 },
+        { subject: 'Logistique', A: 0, fullMark: 10 },
+        { subject: 'Technologie', A: 0, fullMark: 10 },
+        { subject: 'Finance', A: 0, fullMark: 10 },
+        { subject: 'Formation', A: 0, fullMark: 10 },
+        { subject: 'Institutionnel', A: 0, fullMark: 10 },
+      ],
+      networkStats: {
+        totalConnections: 0,
+        totalFavorites: 0,
+        pendingCount: 0,
+      },
     };
   }
 };
@@ -46,11 +146,21 @@ interface DailyUsage {
   lastReset: Date;
 }
 
+interface PendingConnection {
+  id: string;
+  requester_id: string;
+  addressee_id: string;
+  status: string;
+  created_at: string;
+  message?: string;
+  requester: any; // User object
+}
+
 interface NetworkingState {
   recommendations: NetworkingRecommendation[];
   connections: string[]; // Array of user IDs
   favorites: string[]; // Array of user IDs
-  pendingConnections: string[]; // Array of user IDs
+  pendingConnections: PendingConnection[]; // Array of pending connection objects
   aiInsights: AIInsights | null;
   isLoading: boolean;
   error: string | null;
@@ -130,6 +240,7 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     const { user } = useAuthStore.getState();
     if (!user) {
       set({ error: 'User not authenticated.', isLoading: false });
+      console.log('❌ No user authenticated');
       return;
     }
     set({ isLoading: true, error: null });
@@ -140,13 +251,27 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     } catch (e) {
       const error = e instanceof Error ? e.message : 'An unknown error occurred.';
       set({ error, isLoading: false });
-      console.error("Failed to fetch recommendations:", error);
+      console.error("Failed to fetch recommendations:", error, e);
     }
   },
 
   generateRecommendations: async (userId: string) => {
-    toast.info(`Génération de recommandations pour l'utilisateur ${userId}...`);
-    await get().fetchRecommendations();
+    console.log('🎯 generateRecommendations called for userId:', userId);
+    set({ isLoading: true, error: null });
+    try {
+      await get().fetchRecommendations();
+      
+      const currentRecs = get().recommendations;
+      if (currentRecs.length > 0) {
+        await get().loadAIInsights();
+      }
+    } catch (error) {
+      console.error('Erreur lors de la génération des recommandations:', error);
+      set({ error: 'Erreur lors de la génération des recommandations' });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
   },
 
   markAsContacted: (recommendedUserId: string) => {
@@ -167,18 +292,28 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
 
     // Check permissions
     if (!get().checkActionPermission('connect')) {
-      const errorMessage = getPermissionErrorMessage(user.type, user.profile.passType || user.profile.status, 'connection');
+      const errorMessage = getPermissionErrorMessage(user.type, user.profile?.passType || user.profile?.status || 'free', 'connection');
       toast.error(errorMessage);
       return;
     }
 
     try {
       // Créer la connexion dans Supabase
-      await SupabaseService.createConnection(user.id, userId);
+      // Note: createConnection prend seulement l'ID du destinataire, l'utilisateur courant est récupéré via auth
+      const result = await SupabaseService.createConnection(userId);
       
-      // Mettre à jour le state local
+      // Mettre à jour le state local avec un objet correctement formaté
+      const newPendingConnection: PendingConnection = {
+        id: result?.id || `temp-${Date.now()}`,
+        requester_id: user.id,
+        addressee_id: userId,
+        status: 'pending',
+        created_at: new Date().toISOString(),
+        requester: user
+      };
+      
       set(state => ({
-        pendingConnections: [...state.pendingConnections, userId],
+        pendingConnections: [...state.pendingConnections, newPendingConnection],
       }));
       
       // Recharger l'usage quotidien depuis la DB
@@ -191,9 +326,9 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
       if (remaining.connections > 0 && remaining.connections < 5) {
         toast.info(`📊 Il vous reste ${remaining.connections} connexion(s) aujourd'hui.`);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Erreur lors de la connexion:', error);
-      toast.error(error.message || 'Erreur lors de l\'envoi de la demande de connexion.');
+      toast.error(error instanceof Error ? error.message : String(error) || 'Erreur lors de l\'envoi de la demande de connexion.');
     }
   },
 
@@ -205,7 +340,8 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     }
 
     try {
-      await SupabaseService.addFavorite(user.id, userId);
+      // Note: addFavorite prend (entityType, entityId), l'utilisateur courant est récupéré via auth
+      await SupabaseService.addFavorite('user', userId);
       set(state => ({
         favorites: [...state.favorites, userId],
       }));
@@ -223,7 +359,8 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     }
 
     try {
-      await SupabaseService.removeFavorite(user.id, userId);
+      // Note: removeFavorite prend (entityType, entityId), l'utilisateur courant est récupéré via auth
+      await SupabaseService.removeFavorite('user', userId);
       set(state => ({
         favorites: state.favorites.filter(id => id !== userId),
       }));
@@ -299,8 +436,13 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     if (!user) return;
 
     try {
-      const connections = await SupabaseService.getUserConnections(user.id);
-      set({ connections });
+      const connectionsData = await SupabaseService.getUserConnections(user.id);
+      // Extract the IDs of connected users (the other party, not the current user)
+      const connectionIds = connectionsData.map((conn: Record<string, unknown>) => {
+        // Return the ID of the other user (not the current user)
+        return conn.requester_id === user.id ? conn.addressee_id : conn.requester_id;
+      }).filter(Boolean);
+      set({ connections: connectionIds });
     } catch (error) {
       console.error('Erreur lors du chargement des connexions:', error);
     }
@@ -312,9 +454,16 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
 
     try {
       const favorites = await SupabaseService.getUserFavorites(user.id);
-      set({ favorites });
+      if (!favorites || favorites.length === 0) {
+        // Friendly UI fallback: keep existing favorites but notify user if none
+        set({ favorites: [] });
+      } else {
+        set({ favorites });
+      }
     } catch (error) {
       console.error('Erreur lors du chargement des favoris:', error);
+      // Show a non-blocking notification to the user
+      try { const { toast } = await import('sonner'); toast?.error?.('Impossible de charger vos favoris pour le moment.'); } catch { /* Toast failed, ignore */ }
     }
   },
 
@@ -354,8 +503,8 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     const { user } = useAuthStore.getState();
     if (!user) return;
 
-    const permissions = getNetworkingPermissions(user.type, user.profile.passType || user.profile.status);
-    const eventPermissions = getEventAccessPermissions(user.type, user.profile.passType || user.profile.status);
+    const permissions = getNetworkingPermissions(user.type, user.profile?.passType || user.profile?.status || 'free');
+    const eventPermissions = getEventAccessPermissions(user.type, user.profile?.passType || user.profile?.status || 'free');
     
     set({ permissions, eventPermissions });
   },
@@ -414,16 +563,41 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
 
   loadAIInsights: async () => {
     const { user } = useAuthStore.getState();
-    if (!user) return;
+    if (!user) {
+      toast.error('Vous devez être connecté pour accéder aux insights.');
+      return;
+    }
 
-    set({ isLoading: true });
+    set({ isLoading: true, aiInsights: null });
+    
     try {
+      // S'assurer que les données de base sont chargées
+      const state = get();
+      if (state.connections.length === 0) {
+        await state.loadConnections();
+      }
+      if (state.favorites.length === 0) {
+        await state.loadFavorites();
+      }
+      if (state.pendingConnections.length === 0) {
+        await state.loadPendingConnections();
+      }
+      
+      // Générer les insights
       const insights = await generateAIInsights(user.id);
       set({ aiInsights: insights, isLoading: false });
-      toast.success('Insights IA générés avec succès !');
+      toast.success('✨ Insights IA générés avec succès !');
     } catch (error) {
-      set({ isLoading: false });
-      toast.error('Erreur lors de la génération des insights.');
+      console.error('Erreur lors de la génération des insights:', error);
+      set({ 
+        isLoading: false,
+        aiInsights: {
+          summary: "Une erreur s'est produite lors de l'analyse de votre réseau. Veuillez réessayer.",
+          suggestions: ["Vérifiez votre connexion", "Réessayez dans quelques instants"],
+          topKeywords: ["Erreur"],
+        }
+      });
+      toast.error('❌ Erreur lors de la génération des insights.');
     }
   },
 

@@ -37,9 +37,9 @@ const ProductImageForm: React.FC<ProductImageFormProps> = ({
 
     try {
       await onSave(images);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de la sauvegarde:', err);
-      setError(err.message || 'Erreur lors de la sauvegarde des images');
+      setError(err instanceof Error ? err.message : 'Erreur lors de la sauvegarde des images');
     } finally {
       setIsSaving(false);
     }

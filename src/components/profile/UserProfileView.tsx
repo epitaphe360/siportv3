@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { MapPin, Mail, Phone, Globe, Calendar, Building2, Users, Star } from 'lucide-react';
+import { MapPin, Mail, Phone, Globe, Calendar, Building2, Users, Star, Rocket, Target, TrendingUp, DollarSign, Clock } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/Avatar';
-import { User } from '../../types';
+import { User, PartnerProject } from '../../types';
 import AvailabilityCalendar from '../availability/AvailabilityCalendar';
 import { toast } from 'sonner';
 
@@ -27,12 +27,12 @@ export default function UserProfileView({
 
   const handleConnect = () => {
     onConnect?.(user.id);
-    toast.success(`Demande de connexion envoyée à ${user.profile.firstName} ${user.profile.lastName}`);
+    toast.success(`Demande de connexion envoyée à ${user?.profile?.firstName || ''} ${user?.profile?.lastName || ''}`);
   };
 
   const handleMessage = () => {
-    onMessage?.(`${user.profile.firstName} ${user.profile.lastName}`);
-    toast.success(`Ouverture du chat avec ${user.profile.firstName} ${user.profile.lastName}`);
+    onMessage?.(`${user?.profile?.firstName || ''} ${user?.profile?.lastName || ''}`);
+    toast.success(`Ouverture du chat avec ${user?.profile?.firstName || ''} ${user?.profile?.lastName || ''}`);
   };
 
   const getUserTypeLabel = (type: string) => {
@@ -62,17 +62,17 @@ export default function UserProfileView({
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-4">
             <Avatar className="h-20 w-20 border-4 border-white">
-              <AvatarImage src={user.profile.avatar} alt={`${user.profile.firstName} ${user.profile.lastName}`} />
+              <AvatarImage src={user?.profile?.avatar} alt={`${user?.profile?.firstName || ''} ${user?.profile?.lastName || ''}`} />
               <AvatarFallback className="bg-white/20 text-white text-xl font-bold">
-                {user.profile.firstName[0]}{user.profile.lastName[0]}
+                {user?.profile?.firstName?.[0] || 'U'}{user?.profile?.lastName?.[0] || 'U'}
               </AvatarFallback>
             </Avatar>
             <div>
               <h1 className="text-2xl font-bold">
-                {user.profile.firstName} {user.profile.lastName}
+                {user?.profile?.firstName || ''} {user?.profile?.lastName || ''}
               </h1>
-              <p className="text-blue-100">{user.profile.position}</p>
-              <p className="text-blue-100">{user.profile.company}</p>
+              <p className="text-blue-100">{user?.profile?.position || ''}</p>
+              <p className="text-blue-100">{user?.profile?.company || ''}</p>
               <div className="flex items-center space-x-2 mt-2">
                 <Badge className={`${getUserTypeColor(user.type)} border-white/30`}>
                   {getUserTypeLabel(user.type)}
@@ -220,8 +220,8 @@ export default function UserProfileView({
               <Card className="p-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Centres d'intérêt</h3>
                 <div className="flex flex-wrap gap-2">
-                  {user.profile.interests.map((interest, index) => (
-                    <Badge key={index} variant="default">
+                  {user.profile.interests.map((interest) => (
+                    <Badge key={interest} variant="default">
                       {interest}
                     </Badge>
                   ))}
@@ -234,8 +234,8 @@ export default function UserProfileView({
               <Card className="p-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Secteurs d'activité</h3>
                 <div className="flex flex-wrap gap-2">
-                  {user.profile.sectors.map((sector, index) => (
-                    <Badge key={index} className="bg-blue-100 text-blue-800">
+                  {user.profile.sectors.map((sector) => (
+                    <Badge key={sector} className="bg-blue-100 text-blue-800">
                       {sector}
                     </Badge>
                   ))}
@@ -265,13 +265,68 @@ export default function UserProfileView({
               </Card>
             )}
 
+            {/* Partner Projects */}
+            {user.type === 'partner' && user.projects && user.projects.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="text-xl font-black text-slate-900 flex items-center">
+                  <Rocket className="h-6 w-6 mr-2 text-blue-600" />
+                  Projets & Initiatives Stratégiques
+                </h3>
+                <div className="grid grid-cols-1 gap-6">
+                  {user.projects.map((project: PartnerProject) => (
+                    <Card key={project.id} className="overflow-hidden border-slate-100 hover:shadow-lg transition-shadow">
+                      <div className="p-6">
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <h4 className="text-lg font-bold text-slate-900">{project.title}</h4>
+                            <Badge className="mt-1 bg-blue-50 text-blue-700 border-blue-100">
+                              {project.status === 'planned' ? 'Planifié' : project.status === 'in_progress' ? 'En cours' : 'Terminé'}
+                            </Badge>
+                          </div>
+                          <div className="bg-slate-50 p-2 rounded-lg">
+                            <Target className="h-5 w-5 text-slate-400" />
+                          </div>
+                        </div>
+                        <p className="text-slate-600 text-sm mb-6 leading-relaxed">
+                          {project.description}
+                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-50">
+                          <div className="flex items-center space-x-2">
+                            <DollarSign className="h-4 w-4 text-emerald-500" />
+                            <div>
+                              <p className="text-[10px] font-black text-slate-400 uppercase">Budget</p>
+                              <p className="text-xs font-bold text-slate-700">{project.kpi_budget}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Clock className="h-4 w-4 text-blue-500" />
+                            <div>
+                              <p className="text-[10px] font-black text-slate-400 uppercase">Timeline</p>
+                              <p className="text-xs font-bold text-slate-700">{project.kpi_timeline}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <TrendingUp className="h-4 w-4 text-indigo-500" />
+                            <div>
+                              <p className="text-[10px] font-black text-slate-400 uppercase">Impact</p>
+                              <p className="text-xs font-bold text-slate-700">{project.kpi_impact}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Objectives */}
             {user.profile.objectives && user.profile.objectives.length > 0 && (
               <Card className="p-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Objectifs à SIPORTS 2026</h3>
                 <div className="space-y-2">
-                  {user.profile.objectives.map((objective, index) => (
-                    <div key={index} className="flex items-start space-x-2">
+                  {user.profile.objectives.map((objective) => (
+                    <div key={objective} className="flex items-start space-x-2">
                       <Star className="h-4 w-4 text-yellow-500 mt-0.5 flex-shrink-0" />
                       <span className="text-gray-700">{objective}</span>
                     </div>

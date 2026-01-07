@@ -1,9 +1,11 @@
-import { Card } from '../components/ui/Card';
+﻿import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
+import { useTranslation } from '../hooks/useTranslation';
 import { Cookie, Settings, Shield } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function CookiesPage() {
+  const { t } = useTranslation();
   const handleCookieSettings = () => {
     toast.success('Préférences de cookies mises à jour !');
   };
@@ -14,10 +16,10 @@ export default function CookiesPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Politique des Cookies
+            {t('legal.cookies_title')}
           </h1>
           <p className="text-xl text-gray-600">
-            Dernière mise à jour : {new Date().toLocaleDateString('fr-FR')}
+            {t('legal.last_update')}: {new Date().toLocaleDateString('fr-FR')}
           </p>
         </div>
 
@@ -176,25 +178,25 @@ export default function CookiesPage() {
             <div>
               <h3 className="font-semibold text-gray-900 mb-2">Google Chrome</h3>
               <p className="text-gray-600 text-sm mb-2">
-                Paramètres → Confidentialité → Cookies et autres données des sites
+                Paramètres â†’ Confidentialité â†’ Cookies et autres données des sites
               </p>
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 mb-2">Mozilla Firefox</h3>
               <p className="text-gray-600 text-sm mb-2">
-                Préférences → Vie privée → Cookies
+                Préférences â†’ Vie privée â†’ Cookies
               </p>
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 mb-2">Safari</h3>
               <p className="text-gray-600 text-sm mb-2">
-                Préférences → Confidentialité → Gérer les données de sites web
+                Préférences â†’ Confidentialité â†’ Gérer les données de sites web
               </p>
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 mb-2">Microsoft Edge</h3>
               <p className="text-gray-600 text-sm mb-2">
-                Paramètres → Cookies et autorisations de site
+                Paramètres â†’ Cookies et autorisations de site
               </p>
             </div>
           </div>
@@ -224,3 +226,5 @@ export default function CookiesPage() {
     </div>
   );
 }
+
+

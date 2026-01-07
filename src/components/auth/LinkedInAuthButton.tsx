@@ -3,8 +3,7 @@ import { Loader } from 'lucide-react';
 import { Button, buttonVariants } from '../ui/Button';
 import { VariantProps } from 'class-variance-authority';
 import useAuthStore from '../../store/authStore';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../../lib/routes';
+import { toast } from 'sonner';
 
 interface LinkedInAuthButtonProps extends Omit<VariantProps<typeof buttonVariants>, 'variant'> {
   className?: string;
@@ -19,24 +18,24 @@ export const LinkedInAuthButton: React.FC<LinkedInAuthButtonProps> = ({
   onError
 }) => {
   const { loginWithLinkedIn, isLinkedInLoading } = useAuthStore();
-  const navigate = useNavigate();
 
   const handleLinkedInLogin = async () => {
     try {
+      // Start LinkedIn OAuth flow - will redirect to LinkedIn
       await loginWithLinkedIn();
-      
+
+      // Note: This code may not execute because OAuth redirects the page
       if (onSuccess) {
         onSuccess();
-      } else {
-  navigate(ROUTES.DASHBOARD);
       }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Erreur lors de la connexion LinkedIn';
-      
+      console.error('Erreur OAuth LinkedIn:', error);
+
       if (onError) {
         onError(errorMessage);
       } else {
-        alert(`❌ ${errorMessage}`);
+        toast.error(errorMessage);
       }
     }
   };

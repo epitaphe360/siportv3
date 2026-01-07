@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { useTranslation } from '../hooks/useTranslation';
+import { getArticleTranslationKeys } from '../utils/newsTranslations';
 import { 
   Search, 
   Filter, 
@@ -24,7 +26,22 @@ import { useNewsStore } from '../store/newsStore';
 import { motion } from 'framer-motion';
 import { CONFIG } from '../lib/config';
 
+// Helper function to translate article content
+function getTranslatedArticle(article: any, t: any) {
+  const keys = getArticleTranslationKeys(article.id);
+  if (keys) {
+    return {
+      ...article,
+      title: t(keys.titleKey),
+      excerpt: t(keys.excerptKey),
+      content: t(keys.contentKey)
+    };
+  }
+  return article;
+}
+
 export default function NewsPage() {
+  const { t } = useTranslation();
   const {
     articles,
     featuredArticles,
@@ -45,10 +62,12 @@ export default function NewsPage() {
     fetchNews();
   }, [fetchNews]);
 
-  const filteredArticles = getFilteredArticles();
+  const filteredArticles = getFilteredArticles().map(a => getTranslatedArticle(a, t));
 
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('fr-FR', {
+    const currentLang = document.documentElement.lang || 'fr';
+    const locale = currentLang === 'ar' ? 'ar-MA' : currentLang === 'en' ? 'en-GB' : 'fr-FR';
+    return new Intl.DateTimeFormat(locale, {
       day: 'numeric',
       month: 'long',
       year: 'numeric'
@@ -56,7 +75,7 @@ export default function NewsPage() {
   };
 
   const formatReadTime = (minutes: number) => {
-    return `${minutes} min de lecture`;
+    return `${minutes} ${t('pages.news.min_read')}`;
   };
 
   const getCategoryColor = (category: string) => {
@@ -72,7 +91,26 @@ export default function NewsPage() {
   };
 
   const handleRefreshFromOfficialSite = async () => {
-    await fetchFromOfficialSite();
+    try {
+      toast.loading('Synchronisation en cours...', { id: 'sync-articles' });
+      const result = await fetchFromOfficialSite();
+      
+      if (result && result.success) {
+        const { inserted, updated, total } = result.stats;
+        toast.success(
+          `✅ Synchronisation réussie ! ${inserted} nouveaux articles, ${updated} mis à jour sur ${total} trouvés`,
+          { id: 'sync-articles', duration: 5000 }
+        );
+      } else {
+        toast.success('Articles actualisés', { id: 'sync-articles' });
+      }
+    } catch (error: unknown) {
+      console.error('Error syncing articles:', error);
+      toast.error(
+        `Erreur lors de la synchronisation : ${error instanceof Error ? error.message : String(error) || 'Erreur inconnue'}`,
+        { id: 'sync-articles' }
+      );
+    }
   };
 
   return (
@@ -134,7 +172,7 @@ export default function NewsPage() {
                 variant="outline"
                 onClick={handleRefreshFromOfficialSite}
                 disabled={isLoading}
-                title="Synchroniser avec le site officiel SIPORTS"
+                title={t('ui.sync_official')}
               >
                 {isLoading ? (
                   <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
@@ -205,6 +243,11 @@ export default function NewsPage() {
                         src={article.image}
                         alt={article.title}
                         className="w-full h-64 object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null;
+                          target.src = `https://placehold.co/800x400/e2e8f0/64748b?text=${encodeURIComponent(article.title.substring(0, 20))}`;
+                        }}
                       />
                       <div className="absolute top-4 left-4">
                         <Star className="h-5 w-5 text-yellow-500 fill-current" />
@@ -247,12 +290,12 @@ export default function NewsPage() {
                         </div>
                         
                         <div className="flex space-x-2">
-                          <Button variant="default" size="sm">
-                            <BookOpen className="h-4 w-4 mr-2" />
-                            <Link to={`/news/${article.id}`} className="flex items-center">
-                              Lire l'article
-                            </Link>
-                          </Button>
+                          <Link to={`/news/${article.id}`}>
+                            <Button variant="default" size="sm">
+                              <BookOpen className="h-4 w-4 mr-2" />
+                              {t('pages.news.read_more')}
+                            </Button>
+                          </Link>
                           <Button 
                             variant="outline" 
                             size="sm"
@@ -264,13 +307,14 @@ export default function NewsPage() {
                               };
                               
                               if (navigator.share) {
-                                navigator.share(shareData);
+                                navigator.share(shareData).catch(() => {});
                               } else {
-                                navigator.clipboard.writeText(shareData.url);
-                                toast.success('Lien copié dans le presse-papiers !');
+                                navigator.clipboard.writeText(shareData.url)
+                                  .then(() => toast.success(t('contact.success')))
+                                  .catch(() => toast.error('Impossible de copier'));
                               }
                             }}
-                            title="Partager cet article"
+                            title={t('ui.share_article')}
                           >
                             <Share2 className="h-4 w-4" />
                           </Button>
@@ -309,7 +353,7 @@ export default function NewsPage() {
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3, 4, 5, 6].map(i => (
-                <div key={i} className="animate-pulse">
+                <div key={`skeleton-${i}`} className="animate-pulse">
                   <div className="bg-white rounded-lg overflow-hidden">
                     <div className="h-48 bg-gray-200"></div>
                     <div className="p-6">
@@ -354,6 +398,11 @@ export default function NewsPage() {
                         src={article.image}
                         alt={article.title}
                         className="w-full h-48 object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null;
+                          target.src = `https://placehold.co/600x400/e2e8f0/64748b?text=${encodeURIComponent(article.title.substring(0, 20))}`;
+                        }}
                       />
                       <div className="absolute top-4 right-4">
                         <Badge className={getCategoryColor(article.category)} size="sm">
@@ -389,9 +438,9 @@ export default function NewsPage() {
                       
                       {/* Tags */}
                       <div className="flex flex-wrap gap-1 mb-4">
-                        {article.tags.slice(0, 3).map((tag, idx) => (
+                        {article.tags.slice(0, 3).map((tag) => (
                           <span
-                            key={idx}
+                            key={tag}
                             className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-600"
                           >
                             <Tag className="h-3 w-3 mr-1" />
@@ -424,7 +473,7 @@ export default function NewsPage() {
                             <Share2 className="h-4 w-4" />
                           </Button>
                           {article.sourceUrl && (
-                            <a
+                            <a aria-label="Open in new tab"
                               href={article.sourceUrl}
                               target="_blank"
                               rel="noopener noreferrer"
@@ -461,11 +510,10 @@ export default function NewsPage() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                <input
-                  type="email"
+                <input type="email"
                   placeholder="votre@email.com"
                   className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-white"
-                />
+                 aria-label="votre@email.com" />
                 <Button 
                   variant="default"
                   size="lg" 
@@ -522,9 +570,9 @@ export default function NewsPage() {
                   'Énergies renouvelables',
                   'Formation maritime',
                   'Partenariats internationaux'
-                ].map((topic, index) => (
+                ].map((topic) => (
                   <button
-                    key={index}
+                    key={topic}
                     onClick={() => setSearchTerm(topic)}
                     className="px-3 py-2 bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-700 rounded-lg text-sm font-medium transition-colors"
                   >
@@ -589,3 +637,4 @@ export default function NewsPage() {
     </div>
   );
 };
+

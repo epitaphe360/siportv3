@@ -3,7 +3,8 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Client-Info, Apikey',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, Accept, X-Requested-With',
+  'Access-Control-Max-Age': '86400',
 };
 
 interface TextToSpeechRequest {
@@ -14,8 +15,9 @@ interface TextToSpeechRequest {
 }
 
 Deno.serve(async (req: Request) => {
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return new Response(null, {
+    return new Response('ok', {
       status: 200,
       headers: corsHeaders,
     });
@@ -108,8 +110,28 @@ Deno.serve(async (req: Request) => {
       console.log('🌟 Utilisation de Google Cloud Text-to-Speech...');
       
       try {
-        // Nettoyer le texte HTML et limiter la longueur
-        const cleanText = text.replace(/<[^>]*>/g, '').substring(0, 5000);
+        // Nettoyer le texte HTML
+        // Google Cloud TTS limite à 5000 caractères par requête
+        // Pour les articles plus longs, on prend les premiers 5000 caractères
+        let cleanText = text.replace(/<[^>]*>/g, '').trim();
+        
+        // Si le texte dépasse 5000 caractères, on le tronque intelligemment
+        // en cherchant la fin de la dernière phrase complète avant 5000 caractères
+        if (cleanText.length > 5000) {
+          const truncated = cleanText.substring(0, 5000);
+          const lastPeriod = truncated.lastIndexOf('.');
+          const lastExclamation = truncated.lastIndexOf('!');
+          const lastQuestion = truncated.lastIndexOf('?');
+          const lastSentenceEnd = Math.max(lastPeriod, lastExclamation, lastQuestion);
+          
+          if (lastSentenceEnd > 0) {
+            cleanText = truncated.substring(0, lastSentenceEnd + 1);
+          } else {
+            cleanText = truncated;
+          }
+          
+          console.log(`⚠️ Texte tronqué de ${text.length} à ${cleanText.length} caractères`);
+        }
         
         // Mapper les langues aux codes Google Cloud
         const languageCodeMap: { [key: string]: string } = {

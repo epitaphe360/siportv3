@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { Mail, Phone, MapPin, Calendar, Edit2, Save, X } from 'lucide-react';
 import useAuthStore from '../../store/authStore';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface UserProfile {
   id: string;
@@ -18,6 +19,7 @@ interface UserProfile {
 }
 
 export default function DetailedProfilePage() {
+  const { t } = useTranslation();
   const { user } = useAuthStore();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -41,7 +43,6 @@ export default function DetailedProfilePage() {
       setProfile({ ...profile, ...editedProfile });
       setIsEditing(false);
       // Here you would typically save to your backend
-      console.log('Profile updated:', editedProfile);
   toast.success('Profil mis à jour avec succès !');
     }
   };
@@ -67,7 +68,7 @@ export default function DetailedProfilePage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Profile not found</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('profile.not_found')}</h2>
           <p className="text-gray-600">Unable to load profile information.</p>
         </div>
       </div>
@@ -101,22 +102,22 @@ export default function DetailedProfilePage() {
                 {isEditing ? (
                   <>
                     <Save className="w-4 h-4" />
-                    <span>Save</span>
+                    <span>{t('common.save')}</span>
                   </>
                 ) : (
                   <>
                     <Edit2 className="w-4 h-4" />
-                    <span>Edit</span>
+                    <span>{t('common.edit')}</span>
                   </>
                 )}
               </button>
               {isEditing && (
                 <button
                   onClick={handleCancel}
-                  className="ml-2 bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors flex items-center space-x-2"
+                  className="ml-2 bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors flex items-center space-x-2"
                 >
                   <X className="w-4 h-4" />
-                  <span>Cancel</span>
+                  <span>{t('common.cancel')}</span>
                 </button>
               )}
             </div>

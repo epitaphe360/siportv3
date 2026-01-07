@@ -10,7 +10,7 @@ export type Database = {
           id: string;
           email: string;
           name: string;
-          type: 'exhibitor' | 'partner' | 'visitor' | 'admin';
+          type: 'exhibitor' | 'partner' | 'visitor' | 'admin' | 'security';
           visitor_level?: 'free' | 'basic' | 'premium' | 'vip'; // Ajouté
           profile: UserProfile;
           status?: 'active' | 'pending' | 'suspended' | 'rejected';
@@ -21,7 +21,7 @@ export type Database = {
           id?: string;
           email: string;
           name: string;
-          type: 'exhibitor' | 'partner' | 'visitor' | 'admin';
+          type: 'exhibitor' | 'partner' | 'visitor' | 'admin' | 'security';
           visitor_level?: 'free' | 'basic' | 'premium' | 'vip'; // Ajouté
           profile: UserProfile;
           status?: 'active' | 'pending' | 'suspended' | 'rejected';
@@ -678,10 +678,7 @@ if (typeof window !== 'undefined' && (window as any).SIPORTS_CONFIG) {
 }
 
 // Debug logging (safe): do not print keys or lengths in client
-console.log('🔍 Supabase config:', {
-  urlProvided: !!supabaseUrl,
-  anonKeyPresent: !!supabaseAnonKey
-});
+// Bloc de debug supprimé (console.log retiré)
 
 // Vérifier si Supabase est configuré avec de vraies valeurs
 const isSupabaseConfigured = supabaseUrl &&
@@ -689,13 +686,24 @@ const isSupabaseConfigured = supabaseUrl &&
                              supabaseUrl.startsWith('https://') &&
                              !supabaseUrl.includes('placeholder') &&
                              !supabaseUrl.includes('votre-project-id') &&
-                             supabaseAnonKey.length > 50 &&
+                             !supabaseUrl.includes('your-project-id') &&
+                             !supabaseUrl.includes('your-project.supabase') &&
+                             supabaseAnonKey.length > 30 && // Reduced from 50 to support shorter keys
                              !supabaseAnonKey.includes('placeholder') &&
+                             !supabaseAnonKey.includes('your_supabase') &&
+                             !supabaseAnonKey.includes('your-supabase') &&
                              !supabaseAnonKey.startsWith('demo_');
 
 if (!isSupabaseConfigured) {
-  const errorMessage = 'Supabase env vars missing or invalid. Some features requiring Supabase will be disabled in this session.';
+  const errorMessage = '⚠️ Configuration Supabase invalide détectée!';
+  const detailMessage = supabaseUrl?.includes('your-project') || supabaseUrl?.includes('votre-project')
+    ? `L'URL Supabase contient encore des valeurs placeholder ("your-project-id"). Veuillez configurer les vraies valeurs dans Railway Dashboard > Variables.`
+    : `Variables Supabase manquantes ou invalides. Vérifiez VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY dans Railway Dashboard > Variables.`;
+
   console.warn(errorMessage);
+  console.warn(detailMessage);
+  console.warn('📖 Guide: deployment/RAILWAY_VARIABLES_QUICK.md');
+
   // Show a non-fatal banner on the page to inform developers
   try {
     const rootElement =
@@ -704,12 +712,21 @@ if (!isSupabaseConfigured) {
       document.body;
     if (rootElement) {
       const banner = document.createElement('div');
-      banner.style.padding = '12px';
+      banner.style.padding = '16px';
       banner.style.backgroundColor = '#fff4e5';
-      banner.style.border = '1px solid #f1c40f';
+      banner.style.border = '2px solid #f39c12';
+      banner.style.borderRadius = '8px';
       banner.style.color = '#663c00';
-      banner.style.margin = '8px';
-      banner.textContent = errorMessage + ' (see console for details)';
+      banner.style.margin = '12px';
+      banner.style.fontFamily = 'system-ui, -apple-system, sans-serif';
+      banner.style.lineHeight = '1.6';
+      banner.innerHTML = `
+        <strong style="display: block; margin-bottom: 8px; font-size: 14px;">${errorMessage}</strong>
+        <div style="font-size: 13px;">${detailMessage}</div>
+        <div style="margin-top: 8px; font-size: 12px; opacity: 0.8;">
+          Certaines fonctionnalités seront désactivées jusqu'à la configuration correcte.
+        </div>
+      `;
       rootElement.insertBefore(banner, rootElement.firstChild);
     }
   } catch (e) {
@@ -730,8 +747,19 @@ function getSupabaseClient(): ReturnType<typeof createClient<Database>> | null {
   
   // Créer le client une seule fois
   if (!supabaseClientInstance) {
-    console.log('🔧 Creating Supabase client instance');
-    supabaseClientInstance = createClient<Database>(supabaseUrl, supabaseAnonKey);
+    supabaseClientInstance = createClient<Database>(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true
+      },
+      global: {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }
+    });
   }
   
   return supabaseClientInstance;

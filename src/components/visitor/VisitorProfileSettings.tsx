@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -15,18 +15,31 @@ import {
   Award,
   Bell,
   Shield,
-  ArrowLeft
+  ArrowLeft,
+  Calendar,
+  CheckCircle
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { useVisitorStore } from '../../store/visitorStore';
 import { motion } from 'framer-motion';
+import { LevelBadge, QuotaWidget } from '../common/QuotaWidget';
+import { getVisitorQuota } from '../../config/quotas';
+import useAuthStore from '../../store/authStore';
 
 export default function VisitorProfileSettings() {
-  const { visitorProfile, updateProfile, updateNotificationPreferences, isLoading } = useVisitorStore();
+  const { visitorProfile, updateProfile, updateNotificationPreferences, isLoading, fetchVisitorData } = useVisitorStore();
+  const { user } = useAuthStore();
   const [isEditing, setIsEditing] = useState(false);
-  const [activeSection, setActiveSection] = useState<'profile' | 'interests' | 'notifications' | 'privacy'>('profile');
+  const [activeSection, setActiveSection] = useState<'profile' | 'interests' | 'notifications' | 'privacy' | 'quotas'>('profile');
+
+  // Charger les données du visiteur au montage du composant
+  useEffect(() => {
+    if (user && !visitorProfile) {
+      fetchVisitorData();
+    }
+  }, [user, visitorProfile, fetchVisitorData]);
 
   const [formData, setFormData] = useState({
     firstName: visitorProfile?.firstName || '',
@@ -169,13 +182,14 @@ export default function VisitorProfileSettings() {
                 <nav className="space-y-2">
                   {[
                     { id: 'profile', label: 'Profil Personnel', icon: User },
+                    { id: 'quotas', label: 'Mes Quotas', icon: Award },
                     { id: 'interests', label: 'Intérêts & Objectifs', icon: Target },
                     { id: 'notifications', label: 'Notifications', icon: Bell },
                     { id: 'privacy', label: 'Confidentialité', icon: Shield }
                   ].map((section) => (
                     <button
                       key={section.id}
-                      onClick={() => setActiveSection(section.id as 'profile' | 'interests' | 'notifications' | 'privacy')}
+                      onClick={() => setActiveSection(section.id as 'profile' | 'interests' | 'notifications' | 'privacy' | 'quotas')}
                       className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
                         activeSection === section.id
                           ? 'bg-blue-100 text-blue-700'
@@ -250,6 +264,7 @@ export default function VisitorProfileSettings() {
                             checked={formData.visitorType === 'individual'}
                             onChange={(e) => setFormData({ ...formData, visitorType: e.target.value as 'individual' | 'freelancer' | 'company' })}
                             className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                            aria-label="Particulier"
                           />
                           <span className="text-sm text-gray-700">Particulier</span>
                         </label>
@@ -261,6 +276,7 @@ export default function VisitorProfileSettings() {
                             checked={formData.visitorType === 'freelancer'}
                             onChange={(e) => setFormData({ ...formData, visitorType: e.target.value as 'individual' | 'freelancer' | 'company' })}
                             className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                            aria-label="Travailleur autonome"
                           />
                           <span className="text-sm text-gray-700">Travailleur autonome</span>
                         </label>
@@ -272,6 +288,7 @@ export default function VisitorProfileSettings() {
                             checked={formData.visitorType === 'company'}
                             onChange={(e) => setFormData({ ...formData, visitorType: e.target.value as 'individual' | 'freelancer' | 'company' })}
                             className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                            aria-label="Entreprise"
                           />
                           <span className="text-sm text-gray-700">Entreprise</span>
                         </label>
@@ -292,7 +309,7 @@ export default function VisitorProfileSettings() {
                             <User className="h-10 w-10 text-gray-600" />
                           )}
                         </div>
-                        <button className="absolute bottom-0 right-0 bg-blue-600 text-white p-1.5 rounded-full shadow-lg hover:bg-blue-700 transition-colors">
+                        <button aria-label="Upload photo" className="absolute bottom-0 right-0 bg-blue-600 text-white p-1.5 rounded-full shadow-lg hover:bg-blue-700 transition-colors">
                           <Camera className="h-3 w-3" />
                         </button>
                       </div>
@@ -458,22 +475,96 @@ export default function VisitorProfileSettings() {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Type de Pass
+                          Niveau Visiteur
                         </label>
-                        <Badge
-                          className={`${
-                            visitorProfile.passType === 'vip' ? 'bg-yellow-100 text-yellow-800' :
-                            visitorProfile.passType === 'premium' ? 'bg-purple-100 text-purple-800' :
-                            visitorProfile.passType === 'basic' ? 'bg-blue-100 text-blue-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}
-                        >
-                          {visitorProfile.passType === 'vip' ? 'Pass VIP' :
-                           visitorProfile.passType === 'premium' ? 'Pass Premium' :
-                           visitorProfile.passType === 'basic' ? 'Pass Basic' :
-                           'Pass Gratuit'}
-                        </Badge>
+                        <LevelBadge
+                          level={user?.visitor_level || 'free'}
+                          type="visitor"
+                          size="md"
+                        />
+                        {user?.visitor_level === 'free' && (
+                          <Link to={ROUTES.VISITOR_UPGRADE} className="block mt-2">
+                            <Button variant="outline" size="sm">
+                              Passer au Pass VIP
+                            </Button>
+                          </Link>
+                        )}
                       </div>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            )}
+
+            {/* Mes Quotas */}
+            {activeSection === 'quotas' && (
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+              >
+                <Card>
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-6">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                          Mes Quotas Visiteur
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          Consultez vos limites et votre utilisation actuelle
+                        </p>
+                      </div>
+                      <LevelBadge
+                        level={user?.visitor_level || 'free'}
+                        type="visitor"
+                        size="lg"
+                      />
+                    </div>
+
+                    <div className="space-y-4">
+                      {/* Quota Rendez-vous B2B */}
+                      <QuotaWidget
+                        label="Rendez-vous B2B"
+                        current={0} // TODO: Récupérer depuis la base de données
+                        limit={getVisitorQuota(user?.visitor_level || 'free')}
+                        icon={<Calendar className="h-4 w-4 text-gray-400" />}
+                        showUpgrade={user?.visitor_level === 'free'}
+                        upgradeLink={ROUTES.VISITOR_UPGRADE}
+                      />
+
+                      {user?.visitor_level === 'free' && (
+                        <div className="mt-6 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg">
+                          <div className="flex items-start space-x-3">
+                            <Award className="h-5 w-5 text-yellow-600 mt-0.5" />
+                            <div>
+                              <h4 className="font-medium text-gray-900 mb-1">
+                                Passez au Pass VIP
+                              </h4>
+                              <p className="text-sm text-gray-600 mb-3">
+                                Débloquez 10 rendez-vous B2B et profitez de tous les avantages du salon
+                              </p>
+                              <Link to={ROUTES.VISITOR_UPGRADE}>
+                                <Button size="sm" className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600">
+                                  Upgrader maintenant
+                                </Button>
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {user?.visitor_level === 'premium' && (
+                        <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
+                          <div className="flex items-center space-x-3">
+                            <CheckCircle className="h-5 w-5 text-green-600" />
+                            <div>
+                              <h4 className="font-medium text-gray-900">Pass VIP Actif</h4>
+                              <p className="text-sm text-gray-600">
+                                Vous bénéficiez de 10 rendez-vous B2B et de tous les avantages premium
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Card>
@@ -516,6 +607,7 @@ export default function VisitorProfileSettings() {
                                 }
                               }}
                               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                              aria-label={sector}
                             />
                             <span className="text-sm text-gray-700">{sector}</span>
                           </label>
@@ -562,6 +654,7 @@ export default function VisitorProfileSettings() {
                                 }
                               }}
                               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                              aria-label={objective}
                             />
                             <span className="text-sm text-gray-700">{objective}</span>
                           </label>
@@ -608,6 +701,7 @@ export default function VisitorProfileSettings() {
                                 }
                               }}
                               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                              aria-label={competency}
                             />
                             <span className="text-sm text-gray-700">{competency}</span>
                           </label>
@@ -653,6 +747,7 @@ export default function VisitorProfileSettings() {
                                 }
                               }}
                               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                              aria-label={thematic}
                             />
                             <span className="text-sm text-gray-700">{thematic}</span>
                           </label>
@@ -697,6 +792,7 @@ export default function VisitorProfileSettings() {
                             checked={visitorProfile.notificationPreferences.email}
                             onChange={(e) => updateNotificationPreferences({ email: e.target.checked })}
                             className="sr-only peer"
+                            aria-label="Notifications Email"
                           />
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
@@ -713,6 +809,7 @@ export default function VisitorProfileSettings() {
                             checked={visitorProfile.notificationPreferences.push}
                             onChange={(e) => updateNotificationPreferences({ push: e.target.checked })}
                             className="sr-only peer"
+                            aria-label="Notifications Push"
                           />
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
@@ -729,6 +826,7 @@ export default function VisitorProfileSettings() {
                             checked={visitorProfile.notificationPreferences.inApp}
                             onChange={(e) => updateNotificationPreferences({ inApp: e.target.checked })}
                             className="sr-only peer"
+                            aria-label="Notifications In-App"
                           />
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
@@ -764,6 +862,7 @@ export default function VisitorProfileSettings() {
                               name="profileVisibility"
                               value="public"
                               className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                              aria-label="Public - Visible par tous les participants"
                             />
                             <span className="text-sm text-gray-700">Public - Visible par tous les participants</span>
                           </label>
@@ -774,6 +873,7 @@ export default function VisitorProfileSettings() {
                               value="connections"
                               defaultChecked
                               className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                              aria-label="Connexions uniquement - Visible par mes connexions"
                             />
                             <span className="text-sm text-gray-700">Connexions uniquement - Visible par mes connexions</span>
                           </label>
@@ -783,6 +883,7 @@ export default function VisitorProfileSettings() {
                               name="profileVisibility"
                               value="private"
                               className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                              aria-label="Privé - Non visible dans les recherches"
                             />
                             <span className="text-sm text-gray-700">Privé - Non visible dans les recherches</span>
                           </label>
@@ -797,7 +898,7 @@ export default function VisitorProfileSettings() {
                           <div className="flex items-center justify-between">
                             <span className="text-sm text-gray-700">Permettre aux exposants de me contacter</span>
                             <label className="relative inline-flex items-center cursor-pointer">
-                              <input type="checkbox" defaultChecked className="sr-only peer" />
+                              <input type="checkbox" defaultChecked className="sr-only peer" aria-label="Permettre aux exposants de me contacter" />
                               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                             </label>
                           </div>
@@ -805,7 +906,7 @@ export default function VisitorProfileSettings() {
                           <div className="flex items-center justify-between">
                             <span className="text-sm text-gray-700">Inclure dans les recommandations IA</span>
                             <label className="relative inline-flex items-center cursor-pointer">
-                              <input type="checkbox" defaultChecked className="sr-only peer" />
+                              <input type="checkbox" defaultChecked className="sr-only peer" aria-label="Inclure dans les recommandations IA" />
                               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                             </label>
                           </div>

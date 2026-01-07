@@ -36,9 +36,9 @@ const MiniSiteGalleryEditor: React.FC<MiniSiteGalleryEditorProps> = ({
       setTimeout(() => {
         setSuccess(false);
       }, 3000);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors de la sauvegarde:', err);
-      setError(err.message || 'Erreur lors de la sauvegarde de la galerie');
+      setError(err instanceof Error ? err.message : 'Erreur lors de la sauvegarde de la galerie');
     } finally {
       setIsSaving(false);
     }

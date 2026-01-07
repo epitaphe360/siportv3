@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
+import { toast } from 'sonner';
 import {
   ArrowLeft,
   BarChart3,
@@ -87,11 +89,11 @@ export const PartnerAnalyticsPage: React.FC = () => {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
 
-    alert('📊 Rapport d\'analyse exporté avec succès !');
+    toast.success('Rapport d\'analyse exporté avec succès !');
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div data-testid="analytics-dashboard" className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -234,9 +236,9 @@ export const PartnerAnalyticsPage: React.FC = () => {
                   <div key={month.month} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <span className="font-medium text-gray-900">{month.month}</span>
                     <div className="flex space-x-6 text-sm">
-                      <span className="text-blue-600">👁️ {formatNumber(month.views)}</span>
-                      <span className="text-green-600">🤝 {month.connections}</span>
-                      <span className="text-orange-600">🎯 {month.leads}</span>
+                      <span className="text-blue-600"> {formatNumber(month.views)}</span>
+                      <span className="text-green-600"> {month.connections}</span>
+                      <span className="text-orange-600"> {month.leads}</span>
                     </div>
                   </div>
                 ))}
@@ -324,7 +326,7 @@ export const PartnerAnalyticsPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="p-4 bg-white rounded-lg border border-green-200">
                 <h4 className="font-medium text-green-900 mb-2">
-                  💰 Retour sur Investissement
+                   Retour sur Investissement
                 </h4>
                 <p className="text-sm text-green-700">
                   Votre investissement initial de 50K€ a généré 142K€ de valeur ajoutée
@@ -333,7 +335,7 @@ export const PartnerAnalyticsPage: React.FC = () => {
 
               <div className="p-4 bg-white rounded-lg border border-green-200">
                 <h4 className="font-medium text-green-900 mb-2">
-                  📈 Croissance Mensuelle
+                   Croissance Mensuelle
                 </h4>
                 <p className="text-sm text-green-700">
                   +15% de croissance mensuelle moyenne sur les 6 derniers mois
@@ -342,7 +344,7 @@ export const PartnerAnalyticsPage: React.FC = () => {
 
               <div className="p-4 bg-white rounded-lg border border-green-200">
                 <h4 className="font-medium text-green-900 mb-2">
-                  🎯 Objectifs Atteints
+                   Objectifs Atteints
                 </h4>
                 <p className="text-sm text-green-700">
                   89% des objectifs business fixés ont été dépassés
@@ -355,3 +357,5 @@ export const PartnerAnalyticsPage: React.FC = () => {
     </div>
   );
 };
+
+export default PartnerAnalyticsPage;

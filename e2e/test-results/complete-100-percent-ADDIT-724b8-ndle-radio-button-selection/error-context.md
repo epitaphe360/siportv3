@@ -1,0 +1,327 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Aller au contenu principal" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - banner [ref=e5]:
+      - generic [ref=e7]:
+        - link "SIPORTS Logo" [ref=e8] [cursor=pointer]:
+          - /url: /
+          - img "SIPORTS Logo" [ref=e10]
+        - navigation [ref=e11]:
+          - link "Accueil" [ref=e12] [cursor=pointer]:
+            - /url: /
+            - text: Accueil
+          - link "Exposants" [ref=e13] [cursor=pointer]:
+            - /url: /exhibitors
+            - text: Exposants
+          - link "Partenaires" [ref=e14] [cursor=pointer]:
+            - /url: /partners
+            - text: Partenaires
+          - link "Réseautage" [ref=e15] [cursor=pointer]:
+            - /url: /networking
+            - text: Réseautage
+          - button "Média" [ref=e17] [cursor=pointer]:
+            - img [ref=e18]
+            - generic [ref=e21]: Média
+            - img [ref=e22]
+          - button "Informations" [ref=e25] [cursor=pointer]:
+            - generic [ref=e26]: Informations
+            - img [ref=e27]
+        - generic [ref=e29]:
+          - button "🇫🇷 Français" [ref=e31] [cursor=pointer]:
+            - img [ref=e32]
+            - generic [ref=e35]: 🇫🇷 Français
+            - img [ref=e36]
+          - button "3" [ref=e38] [cursor=pointer]:
+            - img [ref=e39]
+            - generic [ref=e42]: "3"
+          - link "2" [ref=e43] [cursor=pointer]:
+            - /url: /messages
+            - img [ref=e44]
+            - generic [ref=e46]: "2"
+          - link "Calendar" [ref=e47] [cursor=pointer]:
+            - /url: /appointments
+            - img [ref=e48]
+          - button "Mon compte" [ref=e51] [cursor=pointer]:
+            - img [ref=e53]
+            - generic [ref=e56]: Mon compte
+    - main [ref=e57]:
+      - generic [ref=e59]:
+        - generic [ref=e60]:
+          - generic [ref=e61]:
+            - img [ref=e63]
+            - generic [ref=e66]:
+              - text: SIPORTS
+              - generic [ref=e67]: "2026"
+          - heading "Inscription Visiteur" [level=1] [ref=e68]
+          - paragraph [ref=e69]: Choisissez le pass qui correspond à vos besoins pour SIPORTS 2026
+        - generic [ref=e70]:
+          - generic [ref=e72]:
+            - generic [ref=e73]: GRATUIT
+            - generic [ref=e74]:
+              - generic [ref=e75]:
+                - img [ref=e77]
+                - generic [ref=e79]:
+                  - heading "Pass Gratuit" [level=2] [ref=e80]
+                  - paragraph [ref=e81]: Accès salon de base
+              - generic [ref=e82]:
+                - generic [ref=e83]:
+                  - generic [ref=e84]: "0"
+                  - generic [ref=e85]: USD
+                - paragraph [ref=e86]: Inscription simple et rapide
+              - generic [ref=e87]:
+                - generic [ref=e88]:
+                  - img [ref=e89]
+                  - generic [ref=e92]: Accès au salon SIPORTS 2026
+                - generic [ref=e93]:
+                  - img [ref=e94]
+                  - generic [ref=e97]: Badge QR sécurisé
+                - generic [ref=e98]:
+                  - img [ref=e99]
+                  - generic [ref=e102]: Accès aux zones publiques
+                - generic [ref=e103]:
+                  - img [ref=e104]
+                  - generic [ref=e107]: Conférences publiques
+                - generic [ref=e108]:
+                  - img [ref=e109]
+                  - generic [ref=e112]: Inscription rapide sans mot de passe
+                - generic [ref=e113]:
+                  - img [ref=e114]
+                  - generic [ref=e117]: Gratuit - 0 USD
+              - button "S'inscrire gratuitement" [ref=e118] [cursor=pointer]:
+                - text: S'inscrire gratuitement
+                - img [ref=e119]
+              - paragraph [ref=e122]: ✅ Aucun mot de passe requis • Badge envoyé par email
+          - generic [ref=e124]:
+            - generic [ref=e126]:
+              - img [ref=e127]
+              - text: PREMIUM
+            - generic [ref=e129]:
+              - generic [ref=e130]:
+                - img [ref=e132]
+                - generic [ref=e134]:
+                  - heading "Pass Premium VIP" [level=2] [ref=e135]
+                  - paragraph [ref=e136]: Accès complet et exclusif
+              - generic [ref=e137]:
+                - generic [ref=e138]:
+                  - generic [ref=e139]: "299.99"
+                  - generic [ref=e140]: USD
+                - paragraph [ref=e141]: Paiement sécurisé unique
+              - generic [ref=e142]:
+                - generic [ref=e143]:
+                  - img [ref=e144]
+                  - generic [ref=e147]: Tous les avantages du Pass Gratuit
+                - generic [ref=e148]:
+                  - img [ref=e149]
+                  - generic [ref=e152]: Rendez-vous B2B ILLIMITÉS
+                - generic [ref=e153]:
+                  - img [ref=e154]
+                  - generic [ref=e157]: Accès zones VIP premium
+                - generic [ref=e158]:
+                  - img [ref=e159]
+                  - generic [ref=e162]: Badge ultra-sécurisé avec photo
+                - generic [ref=e163]:
+                  - img [ref=e164]
+                  - generic [ref=e167]: Networking area exclusif
+                - generic [ref=e168]:
+                  - img [ref=e169]
+                  - generic [ref=e172]: Ateliers et conférences VIP
+                - generic [ref=e173]:
+                  - img [ref=e174]
+                  - generic [ref=e177]: Gala de clôture exclusif
+                - generic [ref=e178]:
+                  - img [ref=e179]
+                  - generic [ref=e182]: Tableau de bord complet
+                - generic [ref=e183]:
+                  - img [ref=e184]
+                  - generic [ref=e187]: Support prioritaire
+                - generic [ref=e188]:
+                  - img [ref=e189]
+                  - generic [ref=e192]: 299,99 USD
+              - button "Devenir VIP Premium" [ref=e193] [cursor=pointer]:
+                - img [ref=e194]
+                - text: Devenir VIP Premium
+                - img [ref=e196]
+              - generic [ref=e198]:
+                - paragraph [ref=e199]: 🎯 Rendez-vous B2B ILLIMITÉS
+                - paragraph [ref=e200]: Planifiez autant de meetings stratégiques que vous le souhaitez avec les exposants et partenaires du salon.
+        - generic [ref=e202]:
+          - generic [ref=e203]:
+            - heading "Comparaison détaillée" [level=3] [ref=e204]
+            - paragraph [ref=e205]: Choisissez le pass adapté à vos objectifs
+          - table [ref=e207]:
+            - rowgroup [ref=e208]:
+              - row "Fonctionnalité Pass Gratuit Pass VIP Premium" [ref=e209]:
+                - columnheader "Fonctionnalité" [ref=e210]
+                - columnheader "Pass Gratuit" [ref=e211]
+                - columnheader "Pass VIP Premium" [ref=e212]
+            - rowgroup [ref=e213]:
+              - row "Accès au salon ✅ ✅" [ref=e214]:
+                - cell "Accès au salon" [ref=e215]
+                - cell "✅" [ref=e216]
+                - cell "✅" [ref=e217]
+              - row "Badge QR sécurisé ✅ Simple ✅ Avec photo" [ref=e218]:
+                - cell "Badge QR sécurisé" [ref=e219]
+                - cell "✅ Simple" [ref=e220]
+                - cell "✅ Avec photo" [ref=e221]
+              - row "Conférences publiques ✅ ✅" [ref=e222]:
+                - cell "Conférences publiques" [ref=e223]
+                - cell "✅" [ref=e224]
+                - cell "✅" [ref=e225]
+              - row "Rendez-vous B2B ❌ 0 ✅ ILLIMITÉS" [ref=e226]:
+                - cell "Rendez-vous B2B" [ref=e227]
+                - cell "❌ 0" [ref=e228]
+                - cell "✅ ILLIMITÉS" [ref=e229]
+              - row "Tableau de bord ❌ ✅" [ref=e230]:
+                - cell "Tableau de bord" [ref=e231]
+                - cell "❌" [ref=e232]
+                - cell "✅" [ref=e233]
+              - row "Zones VIP ❌ ✅" [ref=e234]:
+                - cell "Zones VIP" [ref=e235]
+                - cell "❌" [ref=e236]
+                - cell "✅" [ref=e237]
+              - row "Networking area ❌ ✅" [ref=e238]:
+                - cell "Networking area" [ref=e239]
+                - cell "❌" [ref=e240]
+                - cell "✅" [ref=e241]
+              - row "Gala de clôture ❌ ✅" [ref=e242]:
+                - cell "Gala de clôture" [ref=e243]
+                - cell "❌" [ref=e244]
+                - cell "✅" [ref=e245]
+              - row "Prix 0 USD 299.99 USD" [ref=e246]:
+                - cell "Prix" [ref=e247]
+                - cell "0 USD" [ref=e248]
+                - cell "299.99 USD" [ref=e249]
+        - generic [ref=e251]:
+          - heading "Questions fréquentes" [level=3] [ref=e252]
+          - generic [ref=e253]:
+            - paragraph [ref=e254]:
+              - strong [ref=e255]: "Q: Puis-je passer du Pass Gratuit au Pass VIP plus tard ?"
+              - text: "R: Oui, vous pourrez upgrader votre compte à tout moment depuis votre badge."
+            - paragraph [ref=e256]:
+              - strong [ref=e257]: "Q: Le paiement est-il sécurisé ?"
+              - text: "R: Oui, nous utilisons Stripe, PayPal et CMI pour des paiements 100% sécurisés."
+            - paragraph [ref=e258]:
+              - strong [ref=e259]: "Q: Comment recevoir mon badge ?"
+              - text: "R: Pass Gratuit : badge envoyé par email immédiatement. Pass VIP : badge avec photo envoyé après validation du paiement."
+        - button "← Retour à l'accueil" [ref=e261] [cursor=pointer]
+    - contentinfo [ref=e262]:
+      - generic [ref=e263]:
+        - generic [ref=e264]:
+          - generic [ref=e265]:
+            - generic [ref=e266]:
+              - img [ref=e268]
+              - generic [ref=e271]:
+                - text: SIPORTS
+                - generic [ref=e272]: "2026"
+            - paragraph [ref=e273]: Salon International des Ports - La plateforme de référence pour l'écosystème portuaire mondial.
+            - generic [ref=e274]:
+              - link "Facebook" [ref=e275] [cursor=pointer]:
+                - /url: https://facebook.com/siports2026
+                - img [ref=e276]
+              - link "Twitter" [ref=e278] [cursor=pointer]:
+                - /url: https://twitter.com/siports2026
+                - img [ref=e279]
+              - link "Linkedin" [ref=e281] [cursor=pointer]:
+                - /url: https://linkedin.com/company/siports2026
+                - img [ref=e282]
+              - link "Youtube" [ref=e286] [cursor=pointer]:
+                - /url: https://youtube.com/@siports2026
+                - img [ref=e287]
+          - generic [ref=e290]:
+            - heading "Navigation" [level=3] [ref=e291]
+            - list [ref=e292]:
+              - listitem [ref=e293]:
+                - link "Accueil" [ref=e294] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e295]:
+                - link "Exposants" [ref=e296] [cursor=pointer]:
+                  - /url: /exhibitors
+              - listitem [ref=e297]:
+                - link "Réseautage" [ref=e298] [cursor=pointer]:
+                  - /url: /networking
+              - listitem [ref=e299]:
+                - link "Événements" [ref=e300] [cursor=pointer]:
+                  - /url: /events
+              - listitem [ref=e301]:
+                - link "Actualités" [ref=e302] [cursor=pointer]:
+                  - /url: /news
+          - generic [ref=e303]:
+            - heading "Média" [level=3] [ref=e304]
+            - list [ref=e305]:
+              - listitem [ref=e306]:
+                - link "Webinaires" [ref=e307] [cursor=pointer]:
+                  - /url: /media/webinars
+              - listitem [ref=e308]:
+                - link "Podcasts" [ref=e309] [cursor=pointer]:
+                  - /url: /media/podcasts
+              - listitem [ref=e310]:
+                - link "Capsules Inside" [ref=e311] [cursor=pointer]:
+                  - /url: /media/inside-siport
+              - listitem [ref=e312]:
+                - link "Live Studio" [ref=e313] [cursor=pointer]:
+                  - /url: /media/live-studio
+              - listitem [ref=e314]:
+                - link "Bibliothèque" [ref=e315] [cursor=pointer]:
+                  - /url: /media
+          - generic [ref=e316]:
+            - heading "Services" [level=3] [ref=e317]
+            - list [ref=e318]:
+              - listitem [ref=e319]:
+                - link "Devenir Exposant" [ref=e320] [cursor=pointer]:
+                  - /url: /register/exhibitor
+              - listitem [ref=e321]:
+                - link "Partenariat" [ref=e322] [cursor=pointer]:
+                  - /url: /partnership
+              - listitem [ref=e323]:
+                - link "Support" [ref=e324] [cursor=pointer]:
+                  - /url: /support
+              - listitem [ref=e325]:
+                - link "API Documentation" [ref=e326] [cursor=pointer]:
+                  - /url: /api
+          - generic [ref=e327]:
+            - heading "Contact" [level=3] [ref=e328]
+            - generic [ref=e329]:
+              - generic [ref=e330]:
+                - img [ref=e331]
+                - generic [ref=e334]:
+                  - text: El Jadida, Maroc
+                  - text: 1-3 Avril 2026
+              - generic [ref=e335]:
+                - img [ref=e336]
+                - link "contact@siportevent.com" [ref=e339] [cursor=pointer]:
+                  - /url: mailto:contact@siportevent.com
+              - generic [ref=e340]:
+                - img [ref=e341]
+                - link "+212 1 23 45 67 89" [ref=e343] [cursor=pointer]:
+                  - /url: tel:+212123456789
+        - generic [ref=e344]:
+          - paragraph [ref=e345]: © 2025 SIPORTS. Tous droits réservés.
+          - generic [ref=e346]:
+            - link "Politique de Confidentialité" [ref=e347] [cursor=pointer]:
+              - /url: /privacy
+            - link "Conditions d'Utilisation" [ref=e348] [cursor=pointer]:
+              - /url: /terms
+            - link "Cookies" [ref=e349] [cursor=pointer]:
+              - /url: /cookies
+    - button [ref=e351] [cursor=pointer]:
+      - img [ref=e353]
+  - iframe [ref=e359]:
+    - generic [active] [ref=f6e1]:
+      - generic [ref=f6e2]: This reCAPTCHA is for testing purposes only. Please report to the site admin if you are seeing this.
+      - generic [ref=f6e3]:
+        - generic [ref=f6e6]:
+          - link "Privacy" [ref=f6e7] [cursor=pointer]:
+            - /url: https://www.google.com/intl/en/policies/privacy/
+          - text: "-"
+          - link "Terms" [ref=f6e8] [cursor=pointer]:
+            - /url: https://www.google.com/intl/en/policies/terms/
+        - generic [ref=f6e9]:
+          - generic [ref=f6e10]:
+            - text: protected by
+            - strong [ref=f6e11]: reCAPTCHA
+          - generic [ref=f6e12]: "-"
+```

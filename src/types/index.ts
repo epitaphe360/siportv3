@@ -1,11 +1,26 @@
+export interface PartnerProject {
+  id: string;
+  partner_id: string;
+  title: string;
+  description: string;
+  kpi_budget: string;
+  kpi_timeline: string;
+  kpi_impact: string;
+  status: 'planned' | 'in_progress' | 'completed';
+  image_url?: string;
+  created_at: string;
+}
+
 export interface User {
   id: string;
   email: string;
   name: string;
-  type: 'exhibitor' | 'partner' | 'visitor' | 'admin';
-  visitor_level?: 'free' | 'basic' | 'premium' | 'vip';
+  type: 'exhibitor' | 'partner' | 'visitor' | 'admin' | 'security';
+  visitor_level?: 'free' | 'premium' | 'vip';
+  partner_tier?: 'museum' | 'silver' | 'gold' | 'platinium'; // Niveau partenaire
   profile: UserProfile;
-  status: 'pending' | 'active' | 'suspended' | 'rejected';
+  status: 'pending' | 'active' | 'suspended' | 'rejected' | 'pending_payment';
+  projects?: PartnerProject[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -40,10 +55,13 @@ export interface UserProfile {
   visitObjectives?: string[];
   competencies?: string[];
   // Networking system fields
-  passType?: 'free' | 'basic' | 'premium' | 'vip';
+  passType?: 'free' | 'premium' | 'vip';
   status?: 'active' | 'pending' | 'suspended' | 'rejected';
   // Exhibitor specific fields
   standNumber?: string; // Numéro de stand pour les exposants
+  standArea?: number; // Surface du stand en m² (9, 18, 36, 54+)
+  // Partner specific fields  
+  partner_tier?: 'museum' | 'silver' | 'gold' | 'platinium'; // Niveau de partenariat
 }
 
 export interface Exhibitor {
@@ -69,6 +87,31 @@ export interface Exhibitor {
   standNumber?: string; // Numéro de stand pour la carte interactive
 }
 
+export interface Partner {
+  id: string;
+  userId: string;
+  organizationName: string;
+  partnerType: 'institutional' | 'platinum' | 'gold' | 'silver' | 'bronze';
+  sector: string;
+  country: string;
+  website?: string;
+  description: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
+  contactPosition: string;
+  sponsorshipLevel: string;
+  contractValue?: string;
+  contributions: string[];
+  establishedYear?: number;
+  employees?: string;
+  logo?: string;
+  featured: boolean;
+  verified: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface ContactInfo {
   email: string;
   phone: string;
@@ -86,6 +129,7 @@ export type ExhibitorCategory =
 
 export interface Product {
   id: string;
+  exhibitorId?: string;
   name: string;
   description: string;
   category: string;
@@ -93,8 +137,16 @@ export interface Product {
   specifications?: string;
   brochure?: string;
   price?: number;
+  originalPrice?: number;
   featured: boolean;
   technicalSpecs: TechnicalSpec[];
+  // Champs additionnels pour le modal produit
+  isNew?: boolean;
+  inStock?: boolean;
+  certified?: boolean;
+  deliveryTime?: string;
+  videoUrl?: string;
+  documents?: Array<{ name: string; url: string; type?: string }>;
 }
 
 export interface TechnicalSpec {
@@ -129,8 +181,8 @@ export interface MiniSiteSection {
 
 export interface TimeSlot {
   id: string;
-  // userId links the timeslot to the owner (exhibitor/partner user id)
-  userId?: string;
+  // exhibitorId links the timeslot to the exhibitor (references exhibitors.id in DB)
+  exhibitorId: string;
   date: Date;
   startTime: string;
   endTime: string;
@@ -140,6 +192,12 @@ export interface TimeSlot {
   currentBookings: number;
   available: boolean;
   location?: string;
+  // Optional: exhibitor details via JOIN
+  exhibitor?: {
+    id: string;
+    userId: string; // The actual users.id
+    companyName: string;
+  };
 }
 
 export interface Appointment {
@@ -215,19 +273,28 @@ export interface Event {
   id: string;
   title: string;
   description: string;
-  type: 'webinar' | 'roundtable' | 'networking' | 'workshop' | 'conference';
-  date: Date;
-  startTime: string;
-  endTime: string;
-  capacity: number;
+  type: 'conference' | 'workshop' | 'networking' | 'exhibition';
+  // DB uses start_time and end_time (timestamptz)
+  startDate: Date;
+  endDate: Date;
+  capacity?: number;
   registered: number;
-  speakers: Speaker[];
-  category: string;
-  virtual: boolean;
-  featured: boolean;
+  // Optional fields from DB
   location?: string;
-  meetingLink?: string;
+  pavilionId?: string;
+  organizerId?: string;
+  featured: boolean;
+  imageUrl?: string;
+  registrationUrl?: string;
   tags: string[];
+  // Legacy/computed fields for backward compatibility
+  date?: Date;  // Alias for startDate
+  startTime?: string;  // Computed from startDate
+  endTime?: string;  // Computed from endDate
+  speakers?: Speaker[];  // Legacy field
+  category?: string;  // Legacy field
+  virtual?: boolean;  // Legacy field
+  meetingLink?: string;  // Legacy field
 }
 
 export interface Speaker {
@@ -337,6 +404,36 @@ export interface EventRegistration {
   attendedAt?: Date;
   notes?: string;
   specialRequirements?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface UserBadge {
+  id: string;
+  userId: string;
+  badgeCode: string; // Code unique pour le QR code
+  userType: 'visitor' | 'exhibitor' | 'partner' | 'admin';
+  userLevel?: string; // 'free', 'premium' pour visiteurs, etc.
+  fullName: string;
+  companyName?: string;
+  position?: string;
+  email: string;
+  phone?: string;
+  avatarUrl?: string;
+  standNumber?: string; // Pour exposants
+  accessLevel: 'standard' | 'vip' | 'exhibitor' | 'partner' | 'admin';
+  validFrom: Date;
+  validUntil: Date;
+  status: 'active' | 'expired' | 'revoked' | 'pending';
+  qrData?: {
+    user_id: string;
+    badge_code: string;
+    user_type: string;
+    access_level: string;
+    generated_at: string;
+  };
+  scanCount: number;
+  lastScannedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }

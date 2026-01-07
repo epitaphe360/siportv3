@@ -48,11 +48,11 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
         filteredExhibitors: exhibitors,
         isLoading: false 
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Erreur lors du chargement des exposants:', error);
       
       // Message d'erreur simple et clair
-      const errorMessage = error?.message || 'Erreur de connexion à la base de données';
+      const errorMessage = error instanceof Error ? error.message : String(error) || 'Erreur de connexion à la base de données';
       
       set({ 
         exhibitors: [],
@@ -63,14 +63,40 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
     }
   },
 
-  updateExhibitorStatus: async (exhibitorId, newStatus) => {
-    set({ isUpdating: exhibitorId, error: null });
-    try {
-      await SupabaseService.updateExhibitor(exhibitorId, {
-        verified: newStatus === 'approved',
-      });
-
-      set(state => {
+	  updateExhibitorStatus: async (exhibitorId, newStatus) => {
+	    set({ isUpdating: exhibitorId, error: null });
+	    try {
+	      const isVerified = newStatus === 'approved';
+	      const userStatus = isVerified ? 'active' : 'rejected';
+	
+	      // Récupérer les données de l'exposant pour l'email
+	      const exhibitorToUpdate = get().exhibitors.find(ex => ex.id === exhibitorId);
+	      if (!exhibitorToUpdate) throw new Error('Exposant non trouvé dans le store');
+	
+	      // 1. Mettre à jour le statut 'verified' de l'exposant
+	      await SupabaseService.updateExhibitor(exhibitorId, {
+	        verified: isVerified,
+	      });
+	
+	      // 2. Mettre à jour le statut de l'utilisateur (dans la table 'users')
+	      await SupabaseService.updateUserStatus(exhibitorId, userStatus);
+	
+	      // 3. Envoyer l'email de validation/rejet (ne pas bloquer si échec)
+	      try {
+	        await SupabaseService.sendValidationEmail({
+	          email: exhibitorToUpdate.contactInfo?.email || 'contact@siports.com',
+	          firstName: 'Admin',
+	          lastName: 'Admin',
+	          companyName: exhibitorToUpdate.companyName,
+	          status: newStatus,
+	        });
+	        console.log('✅ Email de validation envoyé');
+	      } catch (emailError) {
+	        console.warn('⚠️ Email de validation non envoyé:', emailError);
+	        // Ne pas bloquer la mise à jour si l'email échoue
+	      }
+	
+	      set(state => {
         const updateExhibitor = (ex: Exhibitor) => 
           ex.id === exhibitorId 
             ? { ...ex, verified: newStatus === 'approved' } 
@@ -83,7 +109,7 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
         };
       });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to update status';
+      const errorMessage = error instanceof Error ? error.message : String(error);
       set({ isUpdating: null, error: errorMessage });
       // Optionnel: Revert state on error
     }
@@ -94,11 +120,17 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
     const filters = { ...get().filters, ...newFilters };
     
     const filtered = exhibitors.filter(exhibitor => {
+      const sector = exhibitor.sector || '';
+      const companyName = exhibitor.companyName || '';
+      const description = exhibitor.description || '';
+      const search = filters.search.toLowerCase();
+      const filterSector = filters.sector.toLowerCase();
+
       const matchesCategory = !filters.category || exhibitor.category === filters.category;
-      const matchesSector = !filters.sector || exhibitor.sector.toLowerCase().includes(filters.sector.toLowerCase());
+      const matchesSector = !filters.sector || sector.toLowerCase().includes(filterSector);
       const matchesSearch = !filters.search || 
-        exhibitor.companyName.toLowerCase().includes(filters.search.toLowerCase()) ||
-        exhibitor.description.toLowerCase().includes(filters.search.toLowerCase());
+        companyName.toLowerCase().includes(search) ||
+        description.toLowerCase().includes(search);
       
       return matchesCategory && matchesSector && matchesSearch;
     });
@@ -109,7 +141,6 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
   selectExhibitor: (id) => {
     const { exhibitors } = get();
     const exhibitor = exhibitors.find(e => e.id === id) || null;
-    console.log('Selecting exhibitor with ID:', id, 'Found:', exhibitor);
     set({ selectedExhibitor: exhibitor });
   },
 

@@ -9,17 +9,25 @@ export const ROUTES = {
   NETWORKING: '/networking',
   EVENTS: '/events',
   LOGIN: '/login',
+  DEMO_ACCOUNTS: '/demo',
   FORGOT_PASSWORD: '/forgot-password',
   REGISTER: '/register',
+  REGISTER_VISITOR: '/register/visitor',
   REGISTER_EXHIBITOR: '/register/exhibitor',
   REGISTER_PARTNER: '/register/partner',
   SIGNUP_SUCCESS: '/signup-success',
+  SIGNUP_CONFIRMATION: '/signup-confirmation',
   PENDING_ACCOUNT: '/pending-account',
+  OAUTH_CALLBACK: '/auth/callback',
   PROFILE: '/profile',
   PROFILE_DETAILED: '/profile/detailed',
+  PROFILE_MATCHING: '/profile/matching',
   DASHBOARD: '/dashboard',
   EXHIBITOR_PROFILE: '/exhibitor/profile',
   EXHIBITOR_DASHBOARD: '/exhibitor/dashboard',
+  PARTNER_DASHBOARD: '/partner/dashboard',
+  PARTNER_PROFILE: '/partner/profile',
+  PARTNER_SETTINGS: '/partner/settings',
   VISITOR_DASHBOARD: '/visitor/dashboard',
   VISITOR_SETTINGS: '/visitor/settings',
   MESSAGES: '/messages',
@@ -32,6 +40,8 @@ export const ROUTES = {
   MINISITE_EDITOR: '/minisite/editor',
   ADMIN_CREATE_EXHIBITOR: '/admin/create-exhibitor',
   ADMIN_CREATE_PARTNER: '/admin/create-partner',
+  ADMIN_CREATE_EVENT: '/admin/create-event',
+  ADMIN_EVENTS: '/admin/events',
   ADMIN_CREATE_NEWS: '/admin/create-news',
   MINISITE_PREVIEW: '/minisite/:exhibitorId',
   ADMIN_ACTIVITY: '/admin/activity',
@@ -41,11 +51,13 @@ export const ROUTES = {
   NEWS_DETAIL: '/news/:id',
   ADMIN_DASHBOARD: '/admin/dashboard',
   ADMIN_USERS: '/admin/users',
+  ADMIN_CREATE_USER: '/admin/users/create',
   ADMIN_PAVILIONS: '/admin/pavilions',
   ADMIN_CREATE_PAVILION: '/admin/create-pavilion',
   ADMIN_PAVILION_ADD_DEMO: '/admin/pavilion/:pavilionId/add-demo',
   ADMIN_CONTENT: '/admin/content',
   CONTACT: '/contact',
+  CONTACT_SUCCESS: '/contact/success',
   PARTNERSHIP: '/partnership',
   SUPPORT: '/support',
   API: '/api',
@@ -54,6 +66,97 @@ export const ROUTES = {
   COOKIES: '/cookies',
   AVAILABILITY_SETTINGS: '/availability/settings',
   VENUE: '/venue',
+
+  // Pages partenaires
+  PARTNER_ACTIVITY: '/partner/activity',
+  PARTNER_ANALYTICS: '/partner/analytics',
+  PARTNER_EVENTS: '/partner/events',
+  PARTNER_LEADS: '/partner/leads',
+  PARTNER_MEDIA: '/partner/media',
+  PARTNER_NETWORKING: '/partner/networking',
+  PARTNER_PROFILE_EDIT: '/partner/profile/edit',
+  PARTNER_SATISFACTION: '/partner/satisfaction',
+  PARTNER_SUPPORT_PAGE: '/partner/support-page',
+
+  // Pages admin manquantes
+  ADMIN_PARTNERS: '/admin/partners',
+  ADMIN_MEDIA: '/admin/media',
+  ADMIN_EXHIBITORS_LIST: '/admin/exhibitors-list',
+  ADMIN_USERS_LIST: '/admin/users-list',
+
+  // Pages erreur
+  UNAUTHORIZED: '/unauthorized',
+  FORBIDDEN: '/forbidden',
+  NOT_FOUND: '/404',
+
+  // Pages visiteur
+  VISITOR_SUBSCRIPTION: '/visitor/subscription',
+  VISITOR_UPGRADE: '/visitor/upgrade',
+  VISITOR_PAYMENT: '/visitor/payment',
+  VISITOR_PAYMENT_SUCCESS: '/visitor/payment-success',
+  VISITOR_PAYMENT_INSTRUCTIONS: '/visitor/payment-instructions',
+  VISITOR_FREE_REGISTRATION: '/visitor/register/free',
+  VISITOR_VIP_REGISTRATION: '/visitor/register/vip',
+  BADGE: '/badge',
+
+  // Mini-Site Builder
+  CREATE_MINI_SITE: '/exhibitor/mini-site/create',
+  EDIT_MINI_SITE: '/exhibitor/mini-site/:siteId/edit',
+  MINI_SITE_VIEW: '/mini-sites/:siteId',
+
+  // Networking & Matchmaking
+  NETWORKING_MATCHMAKING: '/networking/matchmaking',
+  NETWORKING_ROOMS: '/networking/rooms/:eventId',
+  SPEED_NETWORKING: '/networking/speed/:sessionId',
+  INTERACTION_HISTORY: '/networking/history',
+  BADGE_DIGITAL: '/badge/digital',
+  BADGE_SCANNER: '/badge/scanner',
+  SECURITY_SCANNER: '/security/scanner',
+
+  // Partner upgrade routes
+  PARTNER_UPGRADE: '/partner/upgrade',
+  PARTNER_PAYMENT_SELECTION: '/partner/payment-selection',
+  PARTNER_BANK_TRANSFER: '/partner/bank-transfer',
+
+  // Admin payment
+  ADMIN_PAYMENT_VALIDATION: '/admin/payment-validation',
+
+  // Marketing Dashboard
+  MARKETING_DASHBOARD: '/marketing/dashboard',
+
+  // Media Routes - Nouvelles fonctionnalités
+  MEDIA_LIBRARY: '/media',
+  MEDIA_DETAIL: '/media/:id',
+  WEBINARS: '/media/webinars',
+  WEBINAR_DETAIL: '/media/webinar/:id',
+  PODCASTS: '/media/podcasts',
+  PODCAST_DETAIL: '/media/podcast/:id',
+  CAPSULES_INSIDE: '/media/inside-siport',
+  CAPSULE_DETAIL: '/media/capsule/:id',
+  LIVE_STUDIO: '/media/live-studio',
+  LIVE_STUDIO_DETAIL: '/media/live-studio/:id',
+  BEST_MOMENTS: '/media/best-moments',
+  BEST_MOMENTS_DETAIL: '/media/best-moments/:id',
+  TESTIMONIALS: '/media/testimonials',
+  TESTIMONIAL_DETAIL: '/media/testimonial/:id',
+  
+  // Admin Media Management
+  ADMIN_MEDIA_CREATE: '/admin/media/create',
+  ADMIN_MEDIA_MANAGE: '/admin/media/manage',
+  ADMIN_MEDIA_EDIT: '/admin/media/edit/:id',
+  ADMIN_LIVE_EVENTS: '/admin/live-events',
+  ADMIN_LIVE_EVENT_CREATE: '/admin/live-events/create',
+  ADMIN_PARTNER_MEDIA_APPROVAL: '/admin/partner-media/approval',
+
+  // Partner Media Management
+  PARTNER_MEDIA_UPLOAD: '/partner/media/upload',
+  PARTNER_MEDIA_ANALYTICS: '/partner/media/analytics',
+  PARTNER_MEDIA_LIBRARY: '/partner/media/library',
+
+  // Autres
+  PRODUCT_DETAIL: '/products/:id',
+  EXHIBITOR_PROFILE_EDIT: '/exhibitor/profile/edit',
+  DEV_TEST_FLOW: '/dev/test-flow',
 } as const;
 
 export type RouteKey = keyof typeof ROUTES;

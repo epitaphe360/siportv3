@@ -57,12 +57,28 @@ export default function RegistrationRequests() {
     if (!user) return;
 
     try {
+      // 1. Mettre à jour le statut de la demande
       await SupabaseService.updateRegistrationRequestStatus(
         request.id,
         'approved',
         user.id
       );
-      toast.success(`Demande de ${request.first_name} ${request.last_name} approuvée`);
+
+      // 2. Envoyer l'email de validation à l'utilisateur (ne pas bloquer si échec)
+      try {
+        await SupabaseService.sendValidationEmail({
+          email: request.email,
+          firstName: request.first_name,
+          lastName: request.last_name,
+          companyName: request.company_name || '',
+          status: 'approved'
+        });
+        toast.success(`Demande approuvée et email envoyé à ${request.first_name} ${request.last_name}`);
+      } catch (emailError) {
+        console.warn('⚠️ Email non envoyé:', emailError);
+        toast.success(`Demande approuvée pour ${request.first_name} ${request.last_name} (email non envoyé)`);
+      }
+
       fetchRequests();
       setSelectedRequest(null);
     } catch (error) {
@@ -78,13 +94,29 @@ export default function RegistrationRequests() {
     }
 
     try {
+      // 1. Mettre à jour le statut de la demande
       await SupabaseService.updateRegistrationRequestStatus(
         request.id,
         'rejected',
         user.id,
         rejectionReason
       );
-      toast.success(`Demande de ${request.first_name} ${request.last_name} rejetée`);
+
+      // 2. Envoyer l'email de rejet à l'utilisateur (ne pas bloquer si échec)
+      try {
+        await SupabaseService.sendValidationEmail({
+          email: request.email,
+          firstName: request.first_name,
+          lastName: request.last_name,
+          companyName: request.company_name || '',
+          status: 'rejected'
+        });
+        toast.success(`Demande rejetée et email envoyé à ${request.first_name} ${request.last_name}`);
+      } catch (emailError) {
+        console.warn('⚠️ Email non envoyé:', emailError);
+        toast.success(`Demande rejetée pour ${request.first_name} ${request.last_name} (email non envoyé)`);
+      }
+
       fetchRequests();
       setSelectedRequest(null);
       setRejectionReason('');

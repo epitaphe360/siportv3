@@ -8,6 +8,7 @@ import AiAgentService from '../../services/aiAgentService';
 import { validateUrl, extractDomain } from '../../utils/urlValidator';
 import { MiniSitePreviewModal } from './MiniSitePreviewModal';
 import { AlertCircle, Loader } from 'lucide-react';
+import useAuthStore from '../../store/authStore';
 
 interface MiniSiteWizardProps {
   onSuccess?: () => void;
@@ -23,6 +24,7 @@ const steps = [
 ];
 
 export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
+  const { user } = useAuthStore();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<any>({});
   const [loading, setLoading] = useState(false);
@@ -81,11 +83,9 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
     
     try {
       const domain = extractDomain(validation.normalizedUrl || importUrl);
-      console.log(`🚀 Génération automatique depuis: ${validation.normalizedUrl}`);
       
       // Appel au service de scraping
       const generated = await AiAgentService.generate(validation.normalizedUrl || importUrl);
-      console.log('✅ Contenu généré:', generated);
       
       // Stocker les données scrapées
       setScrapedData(generated);
@@ -131,23 +131,31 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
         contact: scrapedData.contact || {}
       };
 
-      console.log('🔄 Création du mini-site avec les données:', miniSiteData);
-      
-      // Création du mini-site
-      const created = await SupabaseService.createMiniSite(miniSiteData);
-      console.log('✅ Mini-site créé:', created);
+
+      // Vérifier que l'utilisateur est connecté
+      if (!user?.id) {
+        throw new Error('Vous devez être connecté pour créer un mini-site');
+      }
+
+      // CRITICAL FIX: Récupérer l'exhibitorId depuis le profil utilisateur
+      let exhibitorId = user.id; // Fallback au userId
+      try {
+        const exhibitor = await SupabaseService.getExhibitorByUserId(user.id);
+        if (exhibitor?.id) {
+          exhibitorId = exhibitor.id;
+        }
+      } catch (err) {
+        console.warn('Utilisation du userId comme exhibitorId:', err);
+      }
+
+      // Création du mini-site avec l'exhibitorId correct
+      const created = await SupabaseService.createMiniSite(exhibitorId, miniSiteData);
 
       // Publication automatique
       try {
-        const miniSite = Array.isArray(created) ? created[0] : created;
-        if (miniSite && (miniSite.id || miniSite.exhibitor_id)) {
-          const exhibitorId = miniSite.exhibitor_id || miniSite.id;
-          await SupabaseService.updateMiniSite(exhibitorId, { 
-            ...miniSite, 
-            published: true 
-          });
-          console.log('✅ Mini-site publié automatiquement');
-        }
+        await SupabaseService.updateMiniSite(exhibitorId, {
+          published: true
+        });
       } catch (pubErr) {
         console.warn('⚠️ Impossible de publier automatiquement:', pubErr);
       }
@@ -199,28 +207,37 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
         documents: form.documents || [],
       };
 
-      console.log('🔄 Création manuelle du mini-site:', miniSiteData);
-      
-      const created = await SupabaseService.createMiniSite(miniSiteData);
-      console.log('✅ Mini-site créé:', created);
+
+      // Vérifier que l'utilisateur est connecté
+      if (!user?.id) {
+        throw new Error('Vous devez être connecté pour créer un mini-site');
+      }
+
+      // CRITICAL FIX: Récupérer l'exhibitorId depuis le profil utilisateur
+      let exhibitorId = user.id; // Fallback au userId
+      try {
+        const exhibitor = await SupabaseService.getExhibitorByUserId(user.id);
+        if (exhibitor?.id) {
+          exhibitorId = exhibitor.id;
+        }
+      } catch (err) {
+        console.warn('Utilisation du userId comme exhibitorId:', err);
+      }
+
+      const created = await SupabaseService.createMiniSite(exhibitorId, miniSiteData);
 
       // Publication automatique
       try {
-        const miniSite = Array.isArray(created) ? created[0] : created;
-        if (miniSite && (miniSite.id || miniSite.exhibitor_id)) {
-          const exhibitorId = miniSite.exhibitor_id || miniSite.id;
-          await SupabaseService.updateMiniSite(exhibitorId, { 
-            ...miniSite, 
-            published: true 
-          });
-        }
+        await SupabaseService.updateMiniSite(exhibitorId, {
+          published: true
+        });
       } catch (pubErr) {
         console.warn('⚠️ Publication automatique échouée:', pubErr);
       }
 
       setSuccess(true);
       if (onSuccess) onSuccess();
-      
+
     } catch (e: any) {
       console.error('❌ Erreur création mini-site:', e);
       setError(e?.message || 'Erreur lors de la création du mini-site.');

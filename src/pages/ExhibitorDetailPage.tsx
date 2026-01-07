@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from '../hooks/useTranslation';
 import {
   ArrowLeft,
   ExternalLink,
@@ -29,6 +30,7 @@ import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { motion } from 'framer-motion';
 import { CONFIG } from '../lib/config';
+import { ROUTES } from '../lib/routes';
 import { useExhibitorStore } from '../store/exhibitorStore';
 import useAuthStore from '../store/authStore';
 import { toast } from 'sonner';
@@ -36,6 +38,7 @@ import { toast } from 'sonner';
 export default function ExhibitorDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { isAuthenticated } = useAuthStore();
   const { exhibitors, selectExhibitor, selectedExhibitor } = useExhibitorStore();
   const [activeTab, setActiveTab] = useState<keyof typeof CONFIG.tabIds>(CONFIG.tabIds.overview);
@@ -73,19 +76,26 @@ export default function ExhibitorDetailPage() {
     };
 
     if (navigator.share) {
-      navigator.share(shareData);
+      navigator.share(shareData).catch(() => {});
     } else {
-      navigator.clipboard.writeText(shareData.url);
-      toast.success('Lien copié dans le presse-papiers !');
+      navigator.clipboard.writeText(shareData.url)
+        .then(() => toast.success('Lien copié dans le presse-papiers !'))
+        .catch(() => toast.error('Impossible de copier le lien'));
     }
   };
 
   const handleDownloadBrochure = () => {
-    // Simulate brochure download - replace with real download logic
-    const brochureUrl = 'https://example.com/brochure.pdf'; // Replace with actual brochure URL from exhibitor data
+    // Get brochure URL from exhibitor data
+    const brochureUrl = exhibitor?.brochure_url || exhibitor?.documents?.[0]?.url;
+
+    if (!brochureUrl) {
+      toast.error('Brochure non disponible pour cet exposant');
+      return;
+    }
+
     const link = document.createElement('a');
     link.href = brochureUrl;
-    link.download = `${exhibitor?.companyName}-brochure.pdf`;
+    link.download = `${exhibitor?.companyName || 'exposant'}-brochure.pdf`;
     link.target = '_blank';
     document.body.appendChild(link);
     link.click();
@@ -140,12 +150,26 @@ export default function ExhibitorDetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="mb-4">
-            <Link to="/exhibitors">
-              <Button variant="ghost" size="sm">
+      {/* Hero Banner avec image de fond */}
+      <div className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 overflow-hidden">
+        {/* Image de fond avec overlay */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
+          style={{ 
+            backgroundImage: 'url(https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=2000&q=80)',
+            filter: 'blur(1px)'
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/95 via-blue-800/90 to-indigo-900/95" />
+        
+        {/* Éléments décoratifs */}
+        <div className="absolute top-0 right-0 -mr-40 -mt-40 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+        <div className="absolute bottom-0 left-0 -ml-40 -mb-40 w-80 h-80 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="mb-6">
+            <Link to={ROUTES.EXHIBITORS}>
+              <Button variant="ghost" size="sm" className="text-white/90 hover:text-white hover:bg-white/10">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour aux exposants
               </Button>
@@ -155,72 +179,105 @@ export default function ExhibitorDetailPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-start space-x-6"
+            className="flex flex-col lg:flex-row items-start lg:items-center space-y-6 lg:space-y-0 lg:space-x-8 pb-12"
           >
-            <img
-              src={exhibitor.logo || 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=200'}
-              alt={exhibitor.companyName}
-              className="h-24 w-24 rounded-xl object-cover border-2 border-gray-200"
-            />
+            {/* Logo avec effet de brillance */}
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000" />
+              <img
+                src={exhibitor.logo || 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=200'}
+                alt={exhibitor.companyName}
+                className="relative h-32 w-32 rounded-2xl object-cover border-4 border-white/20 shadow-2xl"
+              />
+            </div>
 
             <div className="flex-1">
-              <div className="flex items-center space-x-3 mb-2">
-                <h1 className="text-3xl font-bold text-gray-900">
+              {/* Badge SIPORTS */}
+              <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-medium mb-4">
+                <Award className="h-4 w-4 mr-2 text-yellow-400" />
+                SIPORTS 2026 - Exposant Officiel
+              </div>
+
+              <div className="flex items-center space-x-3 mb-3">
+                <h1 className="text-4xl lg:text-5xl font-bold text-white">
                   {exhibitor.companyName}
                 </h1>
                 {exhibitor.verified && (
-                  <CheckCircle className="h-6 w-6 text-blue-500" />
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-blue-400 rounded-full blur-lg opacity-50" />
+                    <CheckCircle className="relative h-8 w-8 text-blue-400" />
+                  </div>
                 )}
                 {exhibitor.featured && (
-                  <Star className="h-6 w-6 text-yellow-500 fill-current" />
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-yellow-400 rounded-full blur-lg opacity-50" />
+                    <Star className="relative h-8 w-8 text-yellow-400 fill-current" />
+                  </div>
                 )}
               </div>
 
-              <div className="flex items-center space-x-4 mb-4">
-                <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getCategoryColor(exhibitor.category)}`}>
+              <div className="flex flex-wrap items-center gap-3 mb-6">
+                <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-white/90 ${getCategoryColor(exhibitor.category)}`}>
                   <CategoryIcon className="h-4 w-4 mr-2" />
                   {getCategoryLabel(exhibitor.category)}
                 </div>
-                <Badge variant="info" size="sm">
+                <Badge variant="info" size="sm" className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
                   {exhibitor.sector}
                 </Badge>
-                <div className="flex items-center space-x-1 text-sm text-gray-500">
-                  <MapPin className="h-4 w-4" />
-                  <span>{exhibitor.contactInfo?.city}, {exhibitor.contactInfo?.country}</span>
-                </div>
+                {exhibitor.contactInfo?.city && (
+                  <div className="flex items-center space-x-2 text-sm text-white/80 bg-white/10 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                    <MapPin className="h-4 w-4" />
+                    <span>{exhibitor.contactInfo.city}, {exhibitor.contactInfo.country}</span>
+                  </div>
+                )}
               </div>
 
-              <p className="text-gray-600 mb-6 max-w-3xl">
+              <p className="text-white/90 text-lg mb-8 max-w-3xl leading-relaxed">
                 {exhibitor.description}
               </p>
 
-              <div className="flex items-center space-x-4">
+              <div className="flex flex-wrap items-center gap-4">
+                <Button 
+                  variant="default" 
+                  size="lg" 
+                  onClick={handleAppointmentClick}
+                  className="bg-white text-blue-900 hover:bg-blue-50 shadow-xl hover:shadow-2xl transform hover:-translate-y-0.5 transition-all duration-200"
+                >
+                  <Calendar className="h-5 w-5 mr-2" />
+                  Découvrir nos solutions
+                </Button>
+
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  onClick={handleContact}
+                  className="bg-white/10 text-white border-white/30 hover:bg-white/20 backdrop-blur-sm"
+                >
+                  <MessageCircle className="h-5 w-5 mr-2" />
+                  Nous contacter
+                </Button>
+
                 {exhibitor.website && (
                   <a
                     href={exhibitor.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center space-x-2 text-blue-600 hover:text-blue-700"
+                    className="inline-flex items-center space-x-2 text-white/90 hover:text-white px-4 py-2.5 rounded-lg hover:bg-white/10 transition-colors"
                   >
-                    <Globe className="h-4 w-4" />
+                    <Globe className="h-5 w-5" />
                     <span>Site officiel</span>
-                    <ExternalLink className="h-3 w-3" />
+                    <ExternalLink className="h-4 w-4" />
                   </a>
                 )}
 
-                <Button variant="default" size="sm" onClick={handleContact}>
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  Contacter
-                </Button>
-
-                <Button variant="default" size="sm" onClick={handleAppointmentClick}>
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Prendre RDV
-                </Button>
-
-                <Button variant="default" size="sm" onClick={handleShare}>
-                  <Share2 className="h-4 w-4 mr-2" />
+                <Button variant="ghost" size="lg" onClick={handleShare} className="text-white/90 hover:text-white hover:bg-white/10">
+                  <Share2 className="h-5 w-5 mr-2" />
                   Partager
+                </Button>
+
+                <Button variant="ghost" size="lg" onClick={handleDownloadBrochure} className="text-white/90 hover:text-white hover:bg-white/10">
+                  <Download className="h-5 w-5 mr-2" />
+                  Brochure
                 </Button>
               </div>
             </div>
@@ -307,15 +364,15 @@ export default function ExhibitorDetailPage() {
             </div>
 
             {/* Certifications */}
-            {exhibitor.certifications.length > 0 && (
+            {exhibitor.certifications?.length > 0 && (
               <Card>
                 <div className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">
                     Certifications & Accréditations
                   </h3>
                   <div className="flex flex-wrap gap-3">
-                    {exhibitor.certifications.map((cert, index) => (
-                      <div key={index} className="flex items-center space-x-2 bg-green-50 px-4 py-2 rounded-lg">
+                    {exhibitor.certifications.map((cert) => (
+                      <div key={cert} className="flex items-center space-x-2 bg-green-50 px-4 py-2 rounded-lg">
                         <Shield className="h-5 w-5 text-green-600" />
                         <span className="font-medium text-green-800">{cert}</span>
                       </div>
@@ -332,8 +389,8 @@ export default function ExhibitorDetailPage() {
                   Marchés Ciblés
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {exhibitor.markets.map((market, index) => (
-                    <Badge key={index} variant="info" size="sm">
+                  {exhibitor.markets.map((market) => (
+                    <Badge key={market} variant="info" size="sm">
                       <Globe className="h-3 w-3 mr-1" />
                       {market}
                     </Badge>
@@ -370,7 +427,7 @@ export default function ExhibitorDetailPage() {
                     transition={{ delay: index * 0.1 }}
                   >
                     <Card hover className="h-full">
-                      {product.images.length > 0 && (
+                      {product.images?.length > 0 && (
                         <img
                           src={product.images[0]}
                           alt={product.name}
@@ -575,3 +632,5 @@ export default function ExhibitorDetailPage() {
     </div>
   );
 }
+
+

@@ -1,90 +1,195 @@
 import React, { Suspense } from 'react';
-const MiniSiteCreationPage = React.lazy(() => import('./pages/MiniSiteCreationPage'));
+import { Toaster } from 'react-hot-toast';
+import { lazyRetry } from './utils/lazyRetry';
+const MiniSiteCreationPage = lazyRetry(() => import('./pages/MiniSiteCreationPage'));
 import { Routes, Route } from 'react-router-dom';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
+import { SkipToContent } from './components/common/SkipToContent';
 
 // Lazy load pages
-const HomePage = React.lazy(() => import('./pages/HomePage'));
-const ExhibitorsPage = React.lazy(() => import('./pages/ExhibitorsPage'));
-const NetworkingPage = React.lazy(() => import('./pages/NetworkingPage'));
-const LoginPage = React.lazy(() => import('./components/auth/LoginPage'));
-const RegisterPage = React.lazy(() => import('./components/auth/RegisterPage'));
-const ForgotPasswordPage = React.lazy(() => import('./pages/ForgotPasswordPage'));
-const ProfilePage = React.lazy(() => import('./components/profile/ProfilePage'));
-const DashboardPage = React.lazy(() => import('./components/dashboard/DashboardPage'));
-const EventsPage = React.lazy(() => import('./components/events/EventsPage'));
-const ChatInterface = React.lazy(() => import('./components/chat/ChatInterface'));
-const AppointmentCalendar = React.lazy(() => import('./components/appointments/AppointmentCalendar'));
-const MiniSitePreview = React.lazy(() => import('./components/minisite/MiniSitePreview'));
-const ExhibitorDetailPage = React.lazy(() => import('./pages/ExhibitorDetailPage'));
-const ProfileEdit = React.lazy(() => import('./pages/exhibitor/ProfileEdit'));
-const ActivityPage = React.lazy(() => import('./pages/admin/ActivityPage'));
-const ResetPasswordPage = React.lazy(() => import('./pages/ResetPasswordPage'));
-const PartnersPage = React.lazy(() => import('./pages/PartnersPage'));
-const PartnerDetailPage = React.lazy(() => import('./pages/PartnerDetailPage'));
-const PavillonsPage = React.lazy(() => import('./components/pavilions/PavillonsPage'));
-const MetricsPage = React.lazy(() => import('./components/metrics/MetricsPage'));
-const DetailedProfilePage = React.lazy(() => import('./components/profile/DetailedProfilePage'));
-const VisitorDashboard = React.lazy(() => import('./components/visitor/VisitorDashboard'));
-const TestFlowPage = React.lazy(() => import('./pages/dev/TestFlowPage'));
-const VisitorProfileSettings = React.lazy(() => import('./components/visitor/VisitorProfileSettings'));
-const AdminDashboard = React.lazy(() => import('./components/dashboard/AdminDashboard'));
-const ExhibitorDashboard = React.lazy(() => import('./components/dashboard/ExhibitorDashboard'));
-const ExhibitorValidation = React.lazy(() => import('./components/admin/ExhibitorValidation'));
-const ModerationPanel = React.lazy(() => import('./components/admin/ModerationPanel'));
-const MiniSiteEditor = React.lazy(() => import('./components/minisite/MiniSiteEditor'));
-const NewsPage = React.lazy(() => import('./pages/NewsPage'));
-const ArticleDetailPage = React.lazy(() => import('./pages/ArticleDetailPage'));
-const ExhibitorCreationSimulator = React.lazy(() => import('./components/admin/ExhibitorCreationSimulator'));
-const PartnerCreationForm = React.lazy(() => import('./components/admin/PartnerCreationForm'));
-const NewsArticleCreationForm = React.lazy(() => import('./components/admin/NewsArticleCreationForm'));
-const UserManagementPage = React.lazy(() => import('./pages/UserManagementPage'));
-const ExhibitorSignUpPage = React.lazy(() => import('./pages/auth/ExhibitorSignUpPage'));
-const PartnerSignUpPage = React.lazy(() => import('./pages/auth/PartnerSignUpPage'));
-const SignUpSuccessPage = React.lazy(() => import('./pages/auth/SignUpSuccessPage'));
-const PendingAccountPage = React.lazy(() => import('./pages/auth/PendingAccountPage'));
+const HomePage = lazyRetry(() => import('./pages/HomePage'));
+const ExhibitorsPage = lazyRetry(() => import('./pages/ExhibitorsPage'));
+const NetworkingPage = lazyRetry(() => import('./pages/NetworkingPage'));
+const LoginPage = lazyRetry(() => import('./components/auth/LoginPage'));
+const DemoAccountsPage = lazyRetry(() => import('./pages/DemoAccountsPage'));
+const RegisterPage = lazyRetry(() => import('./components/auth/RegisterPage'));
+const ForgotPasswordPage = lazyRetry(() => import('./pages/ForgotPasswordPage'));
+const ProfilePage = lazyRetry(() => import('./components/profile/ProfilePage'));
+const DashboardPage = lazyRetry(() => import('./components/dashboard/DashboardPage'));
+const EventsPage = lazyRetry(() => import('./components/events/EventsPage'));
+const ChatInterface = lazyRetry(() => import('./components/chat/ChatInterface'));
+const AppointmentCalendar = lazyRetry(() => import('./components/appointments/AppointmentCalendar'));
+const MiniSitePreview = lazyRetry(() => import('./components/minisite/MiniSitePreviewSimple'));
+const ExhibitorDetailPage = lazyRetry(() => import('./pages/ExhibitorDetailPage'));
+const ProfileEdit = lazyRetry(() => import('./pages/exhibitor/ProfileEdit'));
+const ActivityPage = lazyRetry(() => import('./pages/admin/ActivityPage'));
+const ResetPasswordPage = lazyRetry(() => import('./pages/ResetPasswordPage'));
+const PartnersPage = lazyRetry(() => import('./pages/PartnersPage'));
+const PartnerDetailPage = lazyRetry(() => import('./pages/PartnerDetailPage'));
+const PavillonsPage = lazyRetry(() => import('./components/pavilions/PavillonsPage'));
+const MetricsPage = lazyRetry(() => import('./components/metrics/MetricsPage'));
+const DetailedProfilePage = lazyRetry(() => import('./components/profile/DetailedProfilePage'));
+const ProfileMatchingPage = lazyRetry(() => import('./pages/ProfileMatchingPage'));
+const VisitorDashboard = lazyRetry(() => import('./components/visitor/VisitorDashboard'));
+
+const VisitorProfileSettings = lazyRetry(() => import('./components/visitor/VisitorProfileSettings'));
+const AdminDashboard = lazyRetry(() => import('./components/dashboard/AdminDashboard'));
+const ExhibitorDashboard = lazyRetry(() => import('./components/dashboard/ExhibitorDashboard'));
+const PartnerDashboard = lazyRetry(() => import('./components/dashboard/PartnerDashboard'));
+const ExhibitorValidation = lazyRetry(() => import('./components/admin/ExhibitorValidation'));
+const ModerationPanel = lazyRetry(() => import('./components/admin/ModerationPanel'));
+const MiniSiteEditor = lazyRetry(() => import('./components/minisite/MiniSiteEditor'));
+const NewsPage = lazyRetry(() => import('./pages/NewsPage'));
+const ArticleDetailPage = lazyRetry(() => import('./pages/ArticleDetailPage'));
+const ExhibitorCreationSimulator = lazyRetry(() => import('./components/admin/ExhibitorCreationSimulator'));
+const PartnerCreationForm = lazyRetry(() => import('./components/admin/PartnerCreationForm'));
+const NewsArticleCreationForm = lazyRetry(() => import('./components/admin/NewsArticleCreationForm'));
+const EventCreationForm = lazyRetry(() => import('./components/admin/EventCreationForm'));
+const EventManagementPage = lazyRetry(() => import('./components/admin/EventManagementPage'));
+const UserManagementPage = lazyRetry(() => import('./pages/UserManagementPage'));
+const ExhibitorSignUpPage = lazyRetry(() => import('./pages/auth/ExhibitorSignUpPage'));
+const PartnerSignUpPage = lazyRetry(() => import('./pages/auth/PartnerSignUpPage'));
+const SignUpSuccessPage = lazyRetry(() => import('./pages/auth/SignUpSuccessPage'));
+const SignupConfirmationPage = lazyRetry(() => import('./pages/auth/SignupConfirmationPage'));
+const PendingAccountPage = lazyRetry(() => import('./pages/auth/PendingAccountPage'));
+const OAuthCallbackPage = lazyRetry(() => import('./pages/auth/OAuthCallbackPage'));
+const SubscriptionPage = lazyRetry(() => import('./pages/SubscriptionPage'));
+// VisitorSubscriptionPage removed - route was duplicated with SubscriptionPage
+const VisitorUpgradePage = lazyRetry(() => import('./pages/VisitorUpgradePage'));
+const VisitorPaymentPage = lazyRetry(() => import('./pages/VisitorPaymentPage'));
+const PaymentSuccessPage = lazyRetry(() => import('./pages/visitor/PaymentSuccessPage'));
+const PaymentInstructionsPage = lazyRetry(() => import('./pages/visitor/PaymentInstructionsPage'));
+const PaymentValidationPage = lazyRetry(() => import('./pages/admin/PaymentValidationPage'));
+const BadgePage = lazyRetry(() => import('./pages/BadgePage'));
+const PartnerUpgradePage = lazyRetry(() => import('./pages/PartnerUpgradePage'));
+const BadgeScannerPage = lazyRetry(() => import('./pages/BadgeScannerPage'));
+const PartnerBankTransferPage = lazyRetry(() => import('./pages/partner/PartnerBankTransferPage'));
+const PartnerPaymentSelectionPage = lazyRetry(() => import('./pages/partner/PartnerPaymentSelectionPage'));
+const DigitalBadge = lazyRetry(() => import('./components/badge/DigitalBadge'));
+const QRScanner = lazyRetry(() => import('./components/security/QRScanner'));
+
+// Visitor registration pages
+const VisitorFreeRegistration = lazyRetry(() => import('./pages/visitor/VisitorFreeRegistration'));
+const VisitorVIPRegistration = lazyRetry(() => import('./pages/visitor/VisitorVIPRegistration'));
 
 // Admin pages
-const PavillonsAdminPage = React.lazy(() => import('./pages/admin/PavillonsPage'));
-const CreatePavilionPage = React.lazy(() => import('./pages/admin/CreatePavilionPage'));
-const AddDemoProgramPage = React.lazy(() => import('./pages/admin/AddDemoProgramPage'));
-const ContentManagementPage = React.lazy(() => import('./pages/admin/ContentManagementPage'));
+const PavillonsAdminPage = lazyRetry(() => import('./pages/admin/PavillonsPage'));
+const CreatePavilionPage = lazyRetry(() => import('./pages/admin/CreatePavilionPage'));
+const AddDemoProgramPage = lazyRetry(() => import('./pages/admin/AddDemoProgramPage'));
+const ContentManagementPage = lazyRetry(() => import('./pages/admin/ContentManagementPage'));
+const CreateUserPage = lazyRetry(() => import('./pages/admin/CreateUserPage'));
+const AdminPartnersPage = lazyRetry(() => import('./pages/admin/PartnersPage'));
+const MarketingDashboard = lazyRetry(() => import('./pages/MarketingDashboard'));
 
 // New pages for footer links
-const ContactPage = React.lazy(() => import('./pages/ContactPage'));
-const PartnershipPage = React.lazy(() => import('./pages/PartnershipPage'));
-const SupportPage = React.lazy(() => import('./pages/SupportPage'));
-const APIPage = React.lazy(() => import('./pages/APIPage'));
-const PrivacyPage = React.lazy(() => import('./pages/PrivacyPage'));
-const TermsPage = React.lazy(() => import('./pages/TermsPage'));
-const CookiesPage = React.lazy(() => import('./pages/CookiesPage'));
-const AvailabilitySettingsPage = React.lazy(() => import('./pages/AvailabilitySettingsPage'));
-const VenuePage = React.lazy(() => import('./pages/VenuePage'));
+const ContactPage = lazyRetry(() => import('./pages/ContactPage'));
+const ContactSuccessPage = lazyRetry(() => import('./pages/ContactSuccessPage'));
+const PartnershipPage = lazyRetry(() => import('./pages/PartnershipPage'));
+const SupportPage = lazyRetry(() => import('./pages/SupportPage'));
+const APIPage = lazyRetry(() => import('./pages/APIPage'));
+const PrivacyPage = lazyRetry(() => import('./pages/PrivacyPage'));
+const TermsPage = lazyRetry(() => import('./pages/TermsPage'));
+const CookiesPage = lazyRetry(() => import('./pages/CookiesPage'));
+const AvailabilitySettingsPage = lazyRetry(() => import('./pages/AvailabilitySettingsPage'));
+const VenuePage = lazyRetry(() => import('./pages/VenuePage'));
+
+// Partner pages
+const PartnerActivityPage = lazyRetry(() => import('./pages/partners/PartnerActivityPage'));
+const PartnerAnalyticsPage = lazyRetry(() => import('./pages/partners/PartnerAnalyticsPage'));
+const PartnerEventsPage = lazyRetry(() => import('./pages/partners/PartnerEventsPage'));
+const PartnerLeadsPage = lazyRetry(() => import('./pages/partners/PartnerLeadsPage'));
+const PartnerMediaPage = lazyRetry(() => import('./pages/partners/PartnerMediaPage'));
+const PartnerNetworkingPage = lazyRetry(() => import('./pages/partners/PartnerNetworkingPage'));
+const PartnerProfileEditPage = lazyRetry(() => import('./pages/partners/PartnerProfileEditPage'));
+const PartnerSatisfactionPage = lazyRetry(() => import('./pages/partners/PartnerSatisfactionPage'));
+const PartnerSupportPageComponent = lazyRetry(() => import('./pages/partners/PartnerSupportPage'));
+
+// Admin media approval
+const PartnerMediaApprovalPage = lazyRetry(() => import('./pages/admin/PartnerMediaApprovalPage'));
+
+// Error pages
+const UnauthorizedPage = lazyRetry(() => import('./pages/UnauthorizedPage'));
+const ForbiddenPage = lazyRetry(() => import('./pages/ForbiddenPage'));
+
+// Media pages
+const WebinarsPage = lazyRetry(() => import('./pages/media/WebinarsPage'));
+const PodcastsPage = lazyRetry(() => import('./pages/media/PodcastsPage'));
+const CapsulesPage = lazyRetry(() => import('./pages/media/CapsulesPage'));
+const LiveStudioPage = lazyRetry(() => import('./pages/media/LiveStudioPage'));
+const BestMomentsPage = lazyRetry(() => import('./pages/media/BestMomentsPage'));
+const TestimonialsPage = lazyRetry(() => import('./pages/media/TestimonialsPage'));
+const MediaLibraryPage = lazyRetry(() => import('./pages/media/MediaLibraryPage'));
+const MediaDetailPage = lazyRetry(() => import('./pages/media/MediaDetailPage'));
+
+// Admin Media pages
+const MediaManagementPage = lazyRetry(() => import('./pages/admin/media/MediaManagementPage'));
+const CreateMediaPage = lazyRetry(() => import('./pages/admin/media/CreateMediaPage'));
+
+// Partner Media pages
+const PartnerMediaUploadPage = lazyRetry(() => import('./pages/partners/PartnerMediaUploadPage'));
+const PartnerMediaAnalyticsPage = lazyRetry(() => import('./pages/partners/PartnerMediaAnalyticsPage'));
+const PartnerMediaLibraryPage = lazyRetry(() => import('./pages/partners/PartnerMediaLibraryPage'));
 
 import { ChatBot } from './components/chatbot/ChatBot';
 import { ChatBotToggle } from './components/chatbot/ChatBotToggle';
 import { useLanguageStore } from './store/languageStore';
 import { ROUTES } from './lib/routes';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import { initializeAuth } from './lib/initAuth';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import DevSubscriptionSwitcher from './components/dev/DevSubscriptionSwitcher';
+import { usePushNotifications } from './hooks/usePushNotifications';
+
+// Import cleanup functions for dev debugging (not used in production)
+if (import.meta.env.DEV) {
+  import('./lib/cleanupAuth').then(({ cleanupAuth, checkAuthStatus }) => {
+    // Make available in browser console for debugging
+    (window as any).cleanupAuth = cleanupAuth;
+    (window as any).checkAuthStatus = checkAuthStatus;
+    console.log('🛠️ Dev tools disponibles: checkAuthStatus(), cleanupAuth()');
+  });
+}
 
 
 const App = () => {
   const [isChatBotOpen, setIsChatBotOpen] = React.useState(false);
   const { currentLanguage, getCurrentLanguage } = useLanguageStore();
 
+  // Initialize push notifications on app startup
+  usePushNotifications();
+
+  // Initialize auth from Supabase session on app start
+  React.useEffect(() => {
+    // Run async init without blocking
+    initializeAuth().catch(err => {
+      console.error('Erreur initialisation auth:', err);
+    });
+  }, []);
+
+  // BUGFIX: Removed getCurrentLanguage from deps to prevent unnecessary re-renders
   // Appliquer la direction du texte selon la langue
   React.useEffect(() => {
-    const currentLang = getCurrentLanguage();
+    const currentLang = useLanguageStore.getState().getCurrentLanguage();
     document.documentElement.dir = currentLang.rtl ? 'rtl' : 'ltr';
     document.documentElement.lang = currentLang.code;
-  }, [currentLanguage, getCurrentLanguage]);
+  }, [currentLanguage]);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1">
-        <Suspense fallback={<div className="flex justify-center items-center h-full"><div>Chargement...</div></div>}>
-          <Routes>
+    <ErrorBoundary>
+      <div className="min-h-screen flex flex-col">
+        <SkipToContent />
+        <Header />
+        <main id="main-content" className="flex-1">
+          <Suspense fallback={
+            <div className="flex items-center justify-center min-h-screen bg-gray-50">
+              <div className="flex flex-col items-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+                <p className="text-gray-600">Chargement...</p>
+              </div>
+            </div>
+          }>
+            <Routes>
             <Route path={ROUTES.HOME} element={<HomePage />} />
             <Route path={ROUTES.EXHIBITORS} element={<ExhibitorsPage />} />
             <Route path={ROUTES.EXHIBITOR_DETAIL} element={<ExhibitorDetailPage />} />
@@ -95,46 +200,97 @@ const App = () => {
             <Route path={ROUTES.NETWORKING} element={<NetworkingPage />} />
             <Route path={ROUTES.EVENTS} element={<EventsPage />} />
             <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+            <Route path={ROUTES.DEMO_ACCOUNTS} element={<DemoAccountsPage />} />
             <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
             <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
+            <Route path={ROUTES.REGISTER_VISITOR} element={<RegisterPage />} />
             <Route path={ROUTES.REGISTER_EXHIBITOR} element={<ExhibitorSignUpPage />} />
             <Route path={ROUTES.REGISTER_PARTNER} element={<PartnerSignUpPage />} />
+            <Route path={ROUTES.VISITOR_FREE_REGISTRATION} element={<VisitorFreeRegistration />} />
+            <Route path={ROUTES.VISITOR_VIP_REGISTRATION} element={<VisitorVIPRegistration />} />
             <Route path={ROUTES.SIGNUP_SUCCESS} element={<SignUpSuccessPage />} />
+            <Route path={ROUTES.SIGNUP_CONFIRMATION} element={<SignupConfirmationPage />} />
             <Route path={ROUTES.PENDING_ACCOUNT} element={<PendingAccountPage />} />
-            <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
-            <Route path={ROUTES.PROFILE_DETAILED} element={<DetailedProfilePage />} />
-            <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
-            <Route path={ROUTES.EXHIBITOR_PROFILE} element={<ProfilePage />} />
-            <Route path={`${ROUTES.EXHIBITOR_PROFILE}/edit`} element={<ProfileEdit />} />
-            <Route path={ROUTES.EXHIBITOR_DASHBOARD} element={<ExhibitorDashboard />} />
-            <Route path={ROUTES.VISITOR_DASHBOARD} element={<VisitorDashboard />} />
-            <Route path="/dev/test-flow" element={<TestFlowPage />} />
-            <Route path={ROUTES.VISITOR_SETTINGS} element={<VisitorProfileSettings />} />
-            <Route path={ROUTES.MESSAGES} element={<ChatInterface />} />
-            <Route path={ROUTES.CHAT} element={<ChatInterface />} />
-            <Route path={ROUTES.APPOINTMENTS} element={<AppointmentCalendar />} />
-            <Route path={ROUTES.CALENDAR} element={<AppointmentCalendar />} />
-            <Route path={ROUTES.MINISITE_CREATION} element={<MiniSiteCreationPage />} />
-            <Route path={ROUTES.MINISITE_EDITOR} element={<MiniSiteEditor />} />
+            <Route path={ROUTES.OAUTH_CALLBACK} element={<OAuthCallbackPage />} />
+            <Route path={ROUTES.VISITOR_SUBSCRIPTION} element={<SubscriptionPage />} />
+            {/* Protected routes - require authentication */}
+            <Route path={ROUTES.PROFILE} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path={ROUTES.PROFILE_DETAILED} element={<ProtectedRoute><DetailedProfilePage /></ProtectedRoute>} />
+            <Route path={ROUTES.PROFILE_MATCHING} element={<ProtectedRoute><ProfileMatchingPage /></ProtectedRoute>} />
+            <Route path={ROUTES.DASHBOARD} element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+            <Route path={ROUTES.EXHIBITOR_PROFILE} element={<ProtectedRoute requiredRole="exhibitor"><ProfilePage /></ProtectedRoute>} />
+            <Route path={`${ROUTES.EXHIBITOR_PROFILE}/edit`} element={<ProtectedRoute requiredRole="exhibitor"><ProfileEdit /></ProtectedRoute>} />
+            <Route path={ROUTES.EXHIBITOR_DASHBOARD} element={<ProtectedRoute requiredRole="exhibitor"><ExhibitorDashboard /></ProtectedRoute>} />
+            <Route path={ROUTES.VISITOR_DASHBOARD} element={<ProtectedRoute requiredRole="visitor"><VisitorDashboard /></ProtectedRoute>} />
+            {/* Partner routes - NEW */}
+            <Route path={ROUTES.PARTNER_DASHBOARD} element={<ProtectedRoute requiredRole="partner"><PartnerDashboard /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_PROFILE} element={<ProtectedRoute requiredRole="partner"><ProfilePage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_SETTINGS} element={<ProtectedRoute requiredRole="partner"><VisitorProfileSettings /></ProtectedRoute>} />
+
+            {/* Pages partenaires détaillées */}
+            <Route path={ROUTES.PARTNER_ACTIVITY} element={<ProtectedRoute requiredRole="partner"><PartnerActivityPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_ANALYTICS} element={<ProtectedRoute requiredRole="partner"><PartnerAnalyticsPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_EVENTS} element={<ProtectedRoute requiredRole="partner"><PartnerEventsPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_LEADS} element={<ProtectedRoute requiredRole="partner"><PartnerLeadsPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_MEDIA} element={<ProtectedRoute requiredRole="partner"><PartnerMediaPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_NETWORKING} element={<ProtectedRoute requiredRole="partner"><PartnerNetworkingPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_PROFILE_EDIT} element={<ProtectedRoute requiredRole="partner"><PartnerProfileEditPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_SATISFACTION} element={<ProtectedRoute requiredRole="partner"><PartnerSatisfactionPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_SUPPORT_PAGE} element={<ProtectedRoute requiredRole="partner"><PartnerSupportPageComponent /></ProtectedRoute>} />
+
+            {/* Pages erreur */}
+            <Route path={ROUTES.UNAUTHORIZED} element={<UnauthorizedPage />} />
+            <Route path={ROUTES.FORBIDDEN} element={<ForbiddenPage />} />
+
+
+            <Route path={ROUTES.VISITOR_SETTINGS} element={<ProtectedRoute requiredRole="visitor"><VisitorProfileSettings /></ProtectedRoute>} />
+            {/* BUG FIX: Route VISITOR_SUBSCRIPTION dupliquée - supprimée car déjà définie ligne 180 comme route publique */}
+            <Route path={ROUTES.VISITOR_UPGRADE} element={<ProtectedRoute requiredRole="visitor"><VisitorUpgradePage /></ProtectedRoute>} />
+            <Route path={ROUTES.VISITOR_PAYMENT} element={<ProtectedRoute requiredRole="visitor" allowPendingPayment={true}><VisitorPaymentPage /></ProtectedRoute>} />
+            <Route path={ROUTES.VISITOR_PAYMENT_SUCCESS} element={<ProtectedRoute requiredRole="visitor" allowPendingPayment={true}><PaymentSuccessPage /></ProtectedRoute>} />
+            <Route path={ROUTES.VISITOR_PAYMENT_INSTRUCTIONS} element={<ProtectedRoute requiredRole="visitor" allowPendingPayment={true}><PaymentInstructionsPage /></ProtectedRoute>} />
+            <Route path={ROUTES.BADGE} element={<ProtectedRoute><BadgePage /></ProtectedRoute>} />
+            <Route path={ROUTES.BADGE_DIGITAL} element={<ProtectedRoute><DigitalBadge /></ProtectedRoute>} />
+            <Route path={ROUTES.BADGE_SCANNER} element={<ProtectedRoute><BadgeScannerPage /></ProtectedRoute>} />
+            {/* FIXED: Permettre aux admins d'accéder au scanner QR (pas seulement 'security') */}
+            <Route path={ROUTES.SECURITY_SCANNER} element={<ProtectedRoute requiredRole={['admin', 'exhibitor', 'partner']}><QRScanner /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_UPGRADE} element={<ProtectedRoute requiredRole="partner"><PartnerUpgradePage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_PAYMENT_SELECTION} element={<ProtectedRoute requiredRole="partner"><PartnerPaymentSelectionPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_BANK_TRANSFER} element={<ProtectedRoute requiredRole="partner"><PartnerBankTransferPage /></ProtectedRoute>} />
+            <Route path={ROUTES.MESSAGES} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
+            <Route path={ROUTES.CHAT} element={<ProtectedRoute><ChatInterface /></ProtectedRoute>} />
+            <Route path={ROUTES.APPOINTMENTS} element={<ProtectedRoute><AppointmentCalendar /></ProtectedRoute>} />
+            <Route path={ROUTES.CALENDAR} element={<ProtectedRoute><AppointmentCalendar /></ProtectedRoute>} />
+            <Route path={ROUTES.MINISITE_CREATION} element={<ProtectedRoute requiredRole="exhibitor"><MiniSiteCreationPage /></ProtectedRoute>} />
+            <Route path={ROUTES.MINISITE_EDITOR} element={<ProtectedRoute requiredRole="exhibitor"><MiniSiteEditor /></ProtectedRoute>} />
             <Route path={ROUTES.MINISITE_PREVIEW} element={<MiniSitePreview />} />
             <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
-            <Route path={ROUTES.ADMIN_CREATE_EXHIBITOR} element={<ExhibitorCreationSimulator />} />
-            <Route path={ROUTES.ADMIN_CREATE_PARTNER} element={<PartnerCreationForm />} />
-            <Route path={ROUTES.ADMIN_CREATE_NEWS} element={<NewsArticleCreationForm />} />
-            <Route path={ROUTES.ADMIN_ACTIVITY} element={<ActivityPage />} />
-            <Route path={ROUTES.ADMIN_VALIDATION} element={<ExhibitorValidation />} />
-            <Route path={ROUTES.ADMIN_MODERATION} element={<ModerationPanel />} />
+
+            {/* Admin routes - require admin role */}
+            <Route path={ROUTES.ADMIN_CREATE_EXHIBITOR} element={<ProtectedRoute requiredRole="admin"><ExhibitorCreationSimulator /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_CREATE_PARTNER} element={<ProtectedRoute requiredRole="admin"><PartnerCreationForm /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_CREATE_NEWS} element={<ProtectedRoute requiredRole="admin"><NewsArticleCreationForm /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_CREATE_EVENT} element={<ProtectedRoute requiredRole="admin"><EventCreationForm /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_EVENTS} element={<ProtectedRoute requiredRole="admin"><EventManagementPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_ACTIVITY} element={<ProtectedRoute requiredRole="admin"><ActivityPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_VALIDATION} element={<ProtectedRoute requiredRole="admin"><ExhibitorValidation /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_MODERATION} element={<ProtectedRoute requiredRole="admin"><ModerationPanel /></ProtectedRoute>} />
             <Route path={ROUTES.NEWS} element={<NewsPage />} />
             <Route path={ROUTES.NEWS_DETAIL} element={<ArticleDetailPage />} />
-            <Route path={ROUTES.ADMIN_DASHBOARD} element={<AdminDashboard />} />
-            <Route path={ROUTES.ADMIN_USERS} element={<UserManagementPage />} />
-            <Route path={ROUTES.ADMIN_PAVILIONS} element={<PavillonsAdminPage />} />
-            <Route path={ROUTES.ADMIN_CREATE_PAVILION} element={<CreatePavilionPage />} />
-            <Route path={ROUTES.ADMIN_PAVILION_ADD_DEMO} element={<AddDemoProgramPage />} />
-            <Route path={ROUTES.ADMIN_CONTENT} element={<ContentManagementPage />} />
+            <Route path={ROUTES.ADMIN_DASHBOARD} element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_PAYMENT_VALIDATION} element={<ProtectedRoute requiredRole="admin"><PaymentValidationPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_USERS} element={<ProtectedRoute requiredRole="admin"><UserManagementPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_CREATE_USER} element={<ProtectedRoute requiredRole="admin"><CreateUserPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_PARTNERS} element={<ProtectedRoute requiredRole="admin"><AdminPartnersPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_PAVILIONS} element={<ProtectedRoute requiredRole="admin"><PavillonsAdminPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_CREATE_PAVILION} element={<ProtectedRoute requiredRole="admin"><CreatePavilionPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_PAVILION_ADD_DEMO} element={<ProtectedRoute requiredRole="admin"><AddDemoProgramPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_CONTENT} element={<ProtectedRoute requiredRole="admin"><ContentManagementPage /></ProtectedRoute>} />
+            <Route path={ROUTES.MARKETING_DASHBOARD} element={<ProtectedRoute requiredRole="admin"><MarketingDashboard /></ProtectedRoute>} />
 
             {/* New routes for footer links */}
             <Route path={ROUTES.CONTACT} element={<ContactPage />} />
+            <Route path={ROUTES.CONTACT_SUCCESS} element={<ContactSuccessPage />} />
             <Route path={ROUTES.PARTNERSHIP} element={<PartnershipPage />} />
             <Route path={ROUTES.SUPPORT} element={<SupportPage />} />
             <Route path={ROUTES.API} element={<APIPage />} />
@@ -143,6 +299,40 @@ const App = () => {
             <Route path={ROUTES.COOKIES} element={<CookiesPage />} />
             <Route path={ROUTES.AVAILABILITY_SETTINGS} element={<AvailabilitySettingsPage />} />
             <Route path={ROUTES.VENUE} element={<VenuePage />} />
+
+            {/* Media routes - public access */}
+            <Route path={ROUTES.WEBINARS} element={<WebinarsPage />} />
+            <Route path={ROUTES.WEBINAR_DETAIL} element={<MediaDetailPage />} />
+            <Route path={ROUTES.PODCASTS} element={<PodcastsPage />} />
+            <Route path={ROUTES.PODCAST_DETAIL} element={<MediaDetailPage />} />
+            <Route path={ROUTES.CAPSULES_INSIDE} element={<CapsulesPage />} />
+            <Route path={ROUTES.CAPSULE_DETAIL} element={<MediaDetailPage />} />
+            <Route path={ROUTES.LIVE_STUDIO} element={<LiveStudioPage />} />
+            <Route path={ROUTES.LIVE_STUDIO_DETAIL} element={<MediaDetailPage />} />
+            <Route path={ROUTES.BEST_MOMENTS} element={<BestMomentsPage />} />
+            <Route path={ROUTES.BEST_MOMENTS_DETAIL} element={<MediaDetailPage />} />
+            <Route path={ROUTES.TESTIMONIALS} element={<TestimonialsPage />} />
+            <Route path={ROUTES.TESTIMONIAL_DETAIL} element={<MediaDetailPage />} />
+            <Route path={ROUTES.MEDIA_LIBRARY} element={<MediaLibraryPage />} />
+
+            {/* Partner Media routes - protected */}
+            <Route path={ROUTES.PARTNER_MEDIA_UPLOAD} element={<ProtectedRoute requiredRole="partner"><PartnerMediaUploadPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_MEDIA_ANALYTICS} element={<ProtectedRoute requiredRole="partner"><PartnerMediaAnalyticsPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_MEDIA_LIBRARY} element={<ProtectedRoute requiredRole="partner"><PartnerMediaLibraryPage /></ProtectedRoute>} />
+
+            {/* Admin Media routes - protected */}
+            <Route path={ROUTES.ADMIN_MEDIA_MANAGE} element={<ProtectedRoute requiredRole="admin"><MediaManagementPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_MEDIA_CREATE} element={<ProtectedRoute requiredRole="admin"><CreateMediaPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_PARTNER_MEDIA_APPROVAL} element={<ProtectedRoute requiredRole="admin"><PartnerMediaApprovalPage /></ProtectedRoute>} />
+
+            {/* 404 catch-all route - must be last */}
+            <Route path="*" element={<div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">404</h1>
+              <p className="text-xl text-gray-600 mb-8">Page non trouvée</p>
+              <a href={ROUTES.HOME} className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                Retour à l'accueil
+              </a>
+            </div>} />
           </Routes>
         </Suspense>
       </main>
@@ -161,7 +351,13 @@ const App = () => {
           hasUnreadMessages={false}
         />
       )}
+
+      {/* Dev Tools - Subscription Switcher (Development Only) */}
+      {import.meta.env.DEV && <DevSubscriptionSwitcher />}
+
+      <Toaster position="top-right" />
     </div>
+    </ErrorBoundary>
   );
 }
 

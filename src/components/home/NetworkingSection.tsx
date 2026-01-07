@@ -1,4 +1,5 @@
 import React from 'react';
+import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { 
   Users, 
@@ -15,45 +16,59 @@ import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { motion } from 'framer-motion';
 import { ROUTES } from '../../lib/routes';
+import { useTranslation } from '../../hooks/useTranslation';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 export const NetworkingSection: React.FC = () => {
+  const { t } = useTranslation();
+  
   const features = [
     {
       icon: Brain,
-      title: 'IA de Matching',
-      description: 'Algorithme intelligent qui analyse vos objectifs et recommande les contacts les plus pertinents.',
+      titleKey: 'home.feature_matching',
+      descKey: 'home.feature_matching_desc',
       color: 'bg-purple-100 text-purple-600'
     },
     {
       icon: MessageCircle,
-      title: 'Chat Assisté',
-      description: 'Messagerie instantanée avec chatbot IA pour faciliter vos premiers échanges.',
+      titleKey: 'home.feature_chat',
+      descKey: 'home.feature_chat_desc',
       color: 'bg-blue-100 text-blue-600'
     },
     {
       icon: Calendar,
-      title: 'Rendez-vous Intelligents',
-      description: 'Planification automatique avec gestion des disponibilités et suggestions de créneaux.',
+      titleKey: 'home.feature_appointments',
+      descKey: 'home.feature_appointments_desc',
       color: 'bg-green-100 text-green-600'
     },
     {
       icon: Globe,
-      title: 'Réseautage Global',
-      description: 'Connectez-vous avec des professionnels de 40 pays dans l\'écosystème portuaire.',
+      titleKey: 'home.feature_global',
+      descKey: 'home.feature_global_desc',
       color: 'bg-orange-100 text-orange-600'
     }
   ];
 
   const stats = [
-    { number: '6,000+', label: 'Professionnels connectés' },
-    { number: '40', label: 'Pays représentés' },
-    { number: '300+', label: 'Exposants actifs' },
-    { number: '95%', label: 'Taux de satisfaction' }
+    { number: '6,000+', labelKey: 'home.stats_professionals' },
+    { number: '40', labelKey: 'home.stats_countries' },
+    { number: '300+', labelKey: 'home.stats_exhibitors' },
+    { number: '95%', labelKey: 'home.stats_satisfaction' }
   ];
 
   return (
-    <section className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-sky-50 relative overflow-hidden">
+      {/* Moroccan Geometric Background */}
+      <div className="absolute inset-0 opacity-[0.05]">
+        <div className="absolute top-10 left-10 w-32 h-32 border-4 border-siports-gold rounded-full" />
+        <div className="absolute top-20 right-20 w-24 h-24 border-4 border-red-600 rotate-45 transform" />
+        <div className="absolute bottom-20 left-1/4 w-40 h-40 border-4 border-green-600" style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }} />
+        <div className="absolute bottom-10 right-1/3 w-36 h-36 border-4 border-siports-gold rotate-12 transform" />
+      </div>
+      {/* Background Pattern */}
+      <MoroccanPattern className="opacity-[0.03] text-siports-primary" scale={1.5} />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
           <motion.div
@@ -64,18 +79,18 @@ export const NetworkingSection: React.FC = () => {
           >
             <div className="mb-8">
               <div className="flex items-center space-x-2 mb-4">
-                <div className="bg-blue-600 p-2 rounded-lg">
+                <div className="bg-siports-primary p-2 rounded-lg">
                   <Network className="h-6 w-6 text-white" />
                 </div>
-                <span className="text-blue-600 font-semibold">Réseautage Intelligent</span>
+                <span className="text-siports-primary font-semibold">{t('home.networking_label')}</span>
               </div>
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-                Connectez-vous avec les{' '}
-                <span className="text-blue-600">bons partenaires</span>
+                {t('home.networking_title').split('bons').map((part, i) => (
+                  i === 0 ? part : <span key={`part-${i}`} className="text-siports-primary">bons{part}</span>
+                ))}
               </h2>
               <p className="text-lg text-gray-600 mb-8">
-                Notre plateforme utilise l'intelligence artificielle pour vous mettre en relation 
-                avec les professionnels les plus pertinents selon vos objectifs et votre secteur d'activité.
+                {t('home.networking_desc')}
               </p>
             </div>
 
@@ -83,7 +98,7 @@ export const NetworkingSection: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
               {features.map((feature, index) => (
                 <motion.div
-                  key={feature.title}
+                  key={feature.titleKey}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
@@ -95,10 +110,10 @@ export const NetworkingSection: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">
-                      {feature.title}
+                      {t(feature.titleKey)}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      {feature.description}
+                      {t(feature.descKey)}
                     </p>
                   </div>
                 </motion.div>
@@ -110,13 +125,13 @@ export const NetworkingSection: React.FC = () => {
               <Link to={ROUTES.NETWORKING}>
                 <Button size="lg" className="w-full sm:w-auto">
                   <Zap className="mr-2 h-5 w-5" />
-                  Commencer le Réseautage
+                  {t('home.cta_networking')}
                 </Button>
               </Link>
-              <Link to={ROUTES.REGISTER}>
+              <Link to={ROUTES.VISITOR_SUBSCRIPTION}>
                 <Button variant="outline" size="lg" className="w-full sm:w-auto">
                   <Target className="mr-2 h-5 w-5" />
-                  Devenir Membre
+                  {t('home.cta_member')}
                 </Button>
               </Link>
               <Button 
@@ -124,31 +139,7 @@ export const NetworkingSection: React.FC = () => {
                 size="lg" 
                 className="w-full sm:w-auto"
                 onClick={() => {
-                  const aiAssistantData = {
-                    name: 'SIPORTS AI Assistant',
-                    version: '3.0',
-                    capabilities: [
-                      'Recommandations de contacts intelligentes',
-                      'Matching par secteur d\'activité',
-                      'Suggestions de rendez-vous optimales',
-                      'Analyse de compatibilité avancée',
-                      'Prédictions de succès commercial',
-                      'Optimisation d\'agenda automatique',
-                      'Traduction en temps réel',
-                      'Analyse de sentiment'
-                    ],
-                    stats: {
-                      accuracy: '92%',
-                      users: '6,300+',
-                      matches: '12,847',
-                      satisfaction: '94%',
-                      responseTime: '< 2 secondes'
-                    },
-                    languages: ['Français', 'Anglais', 'Arabe', 'Espagnol'],
-                    availability: '24/7 pendant SIPORTS'
-                  };
-                  
-                  alert(`🤖 ${aiAssistantData.name} v${aiAssistantData.version}\n\n📊 Statistiques:\n🎯 Précision: ${aiAssistantData.stats.accuracy}\n👥 Utilisateurs actifs: ${aiAssistantData.stats.users}\n🤝 Matches réalisés: ${aiAssistantData.stats.matches}\n⭐ Satisfaction: ${aiAssistantData.stats.satisfaction}\n⚡ Temps de réponse: ${aiAssistantData.stats.responseTime}\n\n🌐 Langues supportées: ${aiAssistantData.languages.join(', ')}\n⏰ Disponibilité: ${aiAssistantData.availability}\n\n🧠 Capacités IA avancées:\n${aiAssistantData.capabilities.map(cap => `• ${cap}`).join('\n')}\n\n🚀 Connectez-vous pour accéder à l'IA complète !`);
+                  toast.info('SIPORTS AI Assistant v3.0 - Connectez-vous pour accéder à l\'IA complète avec recommandations intelligentes, matching par secteur et optimisation d\'agenda !');
                 }}
               >
                 <Brain className="mr-2 h-5 w-5" />

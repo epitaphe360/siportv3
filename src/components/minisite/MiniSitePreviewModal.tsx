@@ -33,7 +33,7 @@ export const MiniSitePreviewModal: React.FC<MiniSitePreviewModalProps> = ({
               <h2 className="text-2xl font-bold mb-2">Prévisualisation de votre mini-site</h2>
               <p className="text-blue-100">Vérifiez les informations avant de créer votre mini-site</p>
             </div>
-            <button
+            <button aria-label="Close"
               onClick={onCancel}
               className="text-white hover:bg-white/20 p-2 rounded-full transition"
               disabled={isCreating}
@@ -129,8 +129,8 @@ export const MiniSitePreviewModal: React.FC<MiniSitePreviewModalProps> = ({
                   <Badge variant="info">{products.length} trouvés</Badge>
                 </h3>
                 <div className="space-y-3 max-h-60 overflow-y-auto">
-                  {products.slice(0, 5).map((product: any, index: number) => (
-                    <div key={index} className="border border-gray-200 rounded-lg p-3">
+                  {products.slice(0, 5).map((product: any) => (
+                    <div key={`product-${product.name || product.id}`} className="border border-gray-200 rounded-lg p-3">
                       <div className="flex items-start space-x-3">
                         {product.image && (
                           <img 
@@ -174,9 +174,9 @@ export const MiniSitePreviewModal: React.FC<MiniSitePreviewModalProps> = ({
                   <Badge variant="info">{socials.length} trouvés</Badge>
                 </h3>
                 <div className="space-y-2">
-                  {socials.map((social: string, index: number) => (
+                  {socials.map((social: string) => (
                     <a
-                      key={index}
+                      key={social}
                       href={social}
                       target="_blank"
                       rel="noopener noreferrer"

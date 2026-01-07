@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback, memo } from 'react';
 import { useNetworkingStore } from '@/store/networkingStore';
 import { Card } from '@/components/ui/Card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/Badge';
 import { Loader2, UserX, WifiOff } from 'lucide-react';
 import useAuthStore from '@/store/authStore';
 
-const RecommendationList: React.FC = () => {
+// OPTIMIZATION: Memoized RecommendationList to prevent unnecessary re-renders
+const RecommendationList: React.FC = memo(() => {
   const { user } = useAuthStore();
   const { recommendations, isLoading, error, fetchRecommendations, markAsContacted } = useNetworkingStore();
 
@@ -16,6 +17,11 @@ const RecommendationList: React.FC = () => {
       fetchRecommendations();
     }
   }, [user, fetchRecommendations]);
+
+  // OPTIMIZATION: Memoized callback
+  const handleMarkAsContacted = useCallback((userId: string) => {
+    markAsContacted(userId);
+  }, [markAsContacted]);
 
   if (isLoading) {
     return (
@@ -55,23 +61,23 @@ const RecommendationList: React.FC = () => {
         <Card key={rec.recommendedUserId} className="flex flex-col" padding="none">
           <div className="p-6 flex flex-row items-center gap-4">
             <Avatar className="h-16 w-16">
-              <AvatarImage src={rec.recommendedUser.profile.avatar} alt={rec.recommendedUser.name} />
-              <AvatarFallback>{rec.recommendedUser.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+              <AvatarImage src={rec.recommendedUser?.profile?.avatar} alt={rec.recommendedUser?.name || ''} />
+              <AvatarFallback>{rec.recommendedUser?.name?.substring(0, 2)?.toUpperCase() || 'UN'}</AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <h3 className="text-xl font-semibold">{rec.recommendedUser.name}</h3>
-              <p className="text-sm text-muted-foreground">{rec.recommendedUser.profile.company}</p>
-              <Badge variant="default" className="mt-1">{rec.recommendedUser.type}</Badge>
+              <h3 className="text-xl font-semibold">{rec.recommendedUser?.name || 'Utilisateur'}</h3>
+              <p className="text-sm text-muted-foreground">{rec.recommendedUser?.profile?.company || ''}</p>
+              <Badge variant="default" className="mt-1">{rec.recommendedUser?.type || 'visitor'}</Badge>
             </div>
           </div>
           <div className="p-6 pt-0 flex-1 flex flex-col justify-between">
             <div>
-              <p className="text-sm mb-4">{rec.recommendedUser.profile.bio}</p>
+              <p className="text-sm mb-4">{rec.recommendedUser?.profile?.bio || ''}</p>
               <div className="mb-4">
                 <h4 className="font-semibold text-sm mb-2">Principales raisons de se connecter :</h4>
                 <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                  {rec.reasons.slice(0, 3).map((reason, index) => (
-                    <li key={index}>{reason}</li>
+                  {rec.reasons.slice(0, 3).map((reason) => (
+                    <li key={reason}>{reason}</li>
                   ))}
                 </ul>
               </div>
@@ -81,9 +87,9 @@ const RecommendationList: React.FC = () => {
                 <span className="text-sm font-bold text-primary">Score de compatibilité :</span>
                 <span className="text-lg font-bold text-primary">{rec.score.toFixed(0)}%</span>
               </div>
-              <Button 
-                className="w-full" 
-                onClick={() => markAsContacted(rec.recommendedUserId)}
+              <Button
+                className="w-full"
+                onClick={() => handleMarkAsContacted(rec.recommendedUserId)}
                 disabled={rec.contacted}
               >
                 {rec.contacted ? 'Contacté' : 'Initier le contact'}
@@ -94,6 +100,6 @@ const RecommendationList: React.FC = () => {
       ))}
     </div>
   );
-};
+});
 
 export default RecommendationList;

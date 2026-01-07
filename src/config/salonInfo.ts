@@ -24,8 +24,8 @@ export interface SalonConfig {
 export const DEFAULT_SALON_CONFIG: SalonConfig = {
   name: 'SIPORTS 2026',
   dates: {
-    start: '5 Février 2026',
-    end: '7 Février 2026'
+    start: '1 Avril 2026',
+    end: '3 Avril 2026'
   },
   location: {
     venue: 'Mohammed VI Exhibition Center',
@@ -38,6 +38,51 @@ export const DEFAULT_SALON_CONFIG: SalonConfig = {
   },
   expectedVisitors: 6300
 };
+
+/**
+ * Dates du salon en format Date pour les validations
+ */
+export const SALON_DATE_RANGE = {
+  start: new Date(2026, 3, 1), // 1 avril 2026 (mois 0-indexé)
+  end: new Date(2026, 3, 3),   // 3 avril 2026
+  year: 2026,
+  month: 3, // Avril (0-indexé)
+  startDay: 1,
+  endDay: 3
+};
+
+/**
+ * Vérifie si une date est dans la période du salon
+ */
+export const isDateInSalonRange = (date: Date): boolean => {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+
+  const startDate = new Date(SALON_DATE_RANGE.start);
+  startDate.setHours(0, 0, 0, 0);
+
+  const endDate = new Date(SALON_DATE_RANGE.end);
+  endDate.setHours(23, 59, 59, 999);
+
+  return d >= startDate && d <= endDate;
+};
+
+/**
+ * Retourne les dates valides du salon sous forme de chaîne ISO (YYYY-MM-DD)
+ */
+export const getSalonDateStrings = (): string[] => {
+  return ['2026-04-01', '2026-04-02', '2026-04-03'];
+};
+
+/**
+ * Retourne la date minimum pour le sélecteur de date
+ */
+export const getMinSlotDate = (): string => '2026-04-01';
+
+/**
+ * Retourne la date maximum pour le sélecteur de date
+ */
+export const getMaxSlotDate = (): string => '2026-04-03';
 
 /**
  * Formate les dates du salon pour l'affichage

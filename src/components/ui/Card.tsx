@@ -1,18 +1,19 @@
 import React from 'react';
 import { clsx } from 'clsx';
 
-interface CardProps {
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   className?: string;
   padding?: 'none' | 'sm' | 'md' | 'lg';
   hover?: boolean;
 }
 
-export const Card: React.FC<CardProps> = ({
+const CardComponent: React.FC<CardProps> = ({
   children,
   className,
   padding = 'md',
-  hover = false
+  hover = false,
+  ...props
 }) => {
   const paddingClasses = {
     none: '',
@@ -29,8 +30,12 @@ export const Card: React.FC<CardProps> = ({
         hover && 'hover:shadow-siports-lg transition-all duration-300 hover:-translate-y-1',
         className
       )}
+      {...props}
     >
       {children}
     </div>
   );
 };
+
+// OPTIMIZATION: Memo to prevent re-renders when props don't change
+export const Card = React.memo(CardComponent);

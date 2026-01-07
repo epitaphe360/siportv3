@@ -90,9 +90,9 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         setSuccess(false);
       }, 3000);
       
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur upload:', err);
-      setError(err.message || 'Erreur lors du téléchargement');
+      setError(err instanceof Error ? err.message : 'Erreur lors du téléchargement');
     } finally {
       setIsUploading(false);
     }
@@ -118,8 +118,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         setTimeout(() => {
           setSuccess(false);
         }, 3000);
-      } catch (err: any) {
-        setError(err.message || 'Erreur lors de la suppression');
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Erreur lors de la suppression');
       } finally {
         setIsUploading(false);
       }
@@ -165,7 +165,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                   {isUploading ? <RefreshCw className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
                 </button>
                 {!disableDelete && (
-                  <button
+                  <button aria-label="Close"
                     type="button"
                     className="bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-colors"
                     onClick={removeImage}

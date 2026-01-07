@@ -19,15 +19,12 @@ export class AiAgentService {
       '/api/ai-generate', // Endpoint local via serveur principal
     ].filter(Boolean);
 
-    console.log('🔍 Tentative de génération IA pour:', websiteUrl);
-    console.log('📡 URLs d\'agent disponibles:', possibleUrls);
 
     let lastError: Error | null = null;
 
     // Essayer chaque URL dans l'ordre
     for (const agentUrl of possibleUrls) {
       try {
-        console.log(`🌐 Tentative avec: ${agentUrl}`);
         
         const headers: Record<string, string> = { 'Content-Type': 'application/json' };
         if (apiKey) headers['x-ai-agent-key'] = apiKey;
@@ -51,7 +48,6 @@ export class AiAgentService {
           throw new Error('Réponse invalide de l\'agent IA');
         }
         
-        console.log('✅ Génération IA réussie avec:', agentUrl);
         return {
           company: result.company || 'Entreprise',
           description: result.description || '',
@@ -74,7 +70,6 @@ export class AiAgentService {
     console.error('❌ Toutes les tentatives d\'agent IA ont échoué:', lastError?.message);
     
     // Fallback: retourner des données basiques extraites de l'URL
-    console.log('🔄 Utilisation du fallback basique...');
     return this.generateFallbackData(websiteUrl);
   }
 

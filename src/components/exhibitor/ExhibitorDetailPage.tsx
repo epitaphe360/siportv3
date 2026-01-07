@@ -89,7 +89,7 @@ export default function ExhibitorDetailPage() {
           <p className="text-gray-600 mb-4">
             L'exposant avec l'ID "{id}" n'existe pas ou a été supprimé.
           </p>
-          <Link to="/exhibitors">
+          <Link to={ROUTES.EXHIBITORS}>
             <Button>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Retour aux exposants
@@ -121,7 +121,7 @@ export default function ExhibitorDetailPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Bouton de retour */}
-            <Link to="/exhibitors">
+            <Link to={ROUTES.EXHIBITORS}>
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour aux exposants
@@ -231,7 +231,7 @@ export default function ExhibitorDetailPage() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {exhibitor.miniSite?.hero?.stats.map((stat, index) => (
                 <motion.div
-                  key={index}
+                  key={`stat-${stat.label || stat.number}-${index}`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 + index * 0.1 }}
@@ -269,7 +269,7 @@ export default function ExhibitorDetailPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {exhibitor.miniSite?.about?.features.map((feature, index) => (
               <motion.div
-                key={index}
+                key={feature}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -295,8 +295,8 @@ export default function ExhibitorDetailPage() {
               Certifications & Accréditations
             </h3>
             <div className="flex flex-wrap justify-center gap-4">
-              {exhibitor.miniSite?.about?.certifications.map((cert, index) => (
-                <Badge key={index} variant="success" className="px-4 py-2">
+              {exhibitor.miniSite?.about?.certifications.map((cert) => (
+                <Badge key={cert} variant="success" className="px-4 py-2">
                   <Award className="h-4 w-4 mr-2" />
                   {cert}
                 </Badge>
@@ -333,11 +333,13 @@ export default function ExhibitorDetailPage() {
                 transition={{ delay: index * 0.1 }}
               >
                 <Card hover className="h-full">
-                  <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    className="w-full h-48 object-cover rounded-t-lg"
-                  />
+                  {product.images?.[0] && (
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      className="w-full h-48 object-cover rounded-t-lg"
+                    />
+                  )}
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-3">
                       <Badge variant="info" size="sm">
@@ -521,7 +523,7 @@ export default function ExhibitorDetailPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {exhibitor.miniSite.gallery.map((image, index) => (
               <motion.div
-                key={index}
+                key={`gallery-${image.slice(-30)}-${index}`}
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
@@ -559,7 +561,7 @@ export default function ExhibitorDetailPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {exhibitor.miniSite.testimonials.map((testimonial, index) => (
               <motion.div
-                key={index}
+                key={testimonial.name}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -582,7 +584,7 @@ export default function ExhibitorDetailPage() {
                     
                     <div className="flex items-center mb-3">
                       {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 text-yellow-500 fill-current" />
+                        <Star key={`star-${i}`} className="h-4 w-4 text-yellow-500 fill-current" />
                       ))}
                     </div>
                     
@@ -718,25 +720,23 @@ export default function ExhibitorDetailPage() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Prénom *
                       </label>
-                      <input
-                        type="text"
+                      <input type="text"
                         name="firstName"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Votre prénom"
                         required
-                      />
+                       aria-label="Votre prénom" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Nom *
                       </label>
-                      <input
-                        type="text"
+                      <input type="text"
                         name="lastName"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Votre nom"
                         required
-                      />
+                       aria-label="Votre nom" />
                     </div>
                   </div>
 
@@ -744,37 +744,34 @@ export default function ExhibitorDetailPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Email *
                     </label>
-                    <input
-                      type="email"
+                    <input type="email"
                       name="email"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="votre.email@entreprise.com"
                       required
-                    />
+                     aria-label="votre.email@entreprise.com" />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Société
                     </label>
-                    <input
-                      type="text"
+                    <input type="text"
                       name="company"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Nom de votre société"
-                    />
+                     aria-label="Nom de votre société" />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Téléphone
                     </label>
-                    <input
-                      type="tel"
+                    <input type="tel"
                       name="phone"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="+33 1 23 45 67 89"
-                    />
+                     aria-label="+33 1 23 45 67 89" />
                   </div>
 
                   <div>
@@ -927,7 +924,7 @@ export default function ExhibitorDetailPage() {
               <div className="space-y-2 text-sm text-gray-400">
                 <div className="flex items-center space-x-2">
                   <Calendar className="h-4 w-4" />
-                  <span>5-7 Février 2026</span>
+                  <span>1-3 Avril 2026</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <MapPin className="h-4 w-4" />
@@ -958,7 +955,7 @@ export default function ExhibitorDetailPage() {
           <Button 
             variant="outline" 
             className="rounded-full w-12 h-12 shadow-lg bg-white"
-            title="Informations de contact"
+            title={t('ui.contact_info')}
             onClick={() => {
               const email = exhibitor.contactInfo?.email || 'contact@portsolutions.com';
               window.open(`mailto:${email}?subject=Demande de contact - ${exhibitor.companyName}`, '_blank');
@@ -969,7 +966,7 @@ export default function ExhibitorDetailPage() {
           <Button 
             variant="outline" 
             className="rounded-full w-12 h-12 shadow-lg bg-white"
-            title="Prendre rendez-vous"
+            title={t('ui.book_appointment')}
             onClick={() => handleAppointmentClick(exhibitor.id)}
           >
             <Calendar className="h-5 w-5" />
@@ -978,7 +975,16 @@ export default function ExhibitorDetailPage() {
             variant="outline" 
             className="rounded-full w-12 h-12 shadow-lg bg-white"
             onClick={() => {
-              const favorites = JSON.parse(localStorage.getItem('siports-favorites') || '[]');
+              let favorites: string[] = [];
+              try {
+                const stored = localStorage.getItem('siports-favorites');
+                if (stored) {
+                  favorites = JSON.parse(stored);
+                }
+              } catch (e) {
+                console.error('Failed to parse favorites:', e);
+                favorites = [];
+              }
               const isFavorite = favorites.includes(exhibitor.id);
 
               if (isFavorite) {
@@ -991,7 +997,7 @@ export default function ExhibitorDetailPage() {
                 toast.success(`Favoris mis à jour — ajouté: ${exhibitor.companyName}`);
               }
             }}
-            title="Ajouter/Retirer des favoris"
+            title={t('ui.add_remove_favorite')}
           >
             <Heart className="h-5 w-5" />
           </Button>

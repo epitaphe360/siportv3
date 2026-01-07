@@ -3,10 +3,20 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { ThemeProvider } from './context/ThemeContext';
+
+// Kill any existing service worker that might be caching old assets
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    for (const registration of registrations) {
+      registration.unregister();
+    }
+  }).catch(() => {
+    // Silently ignore service worker cleanup errors
+  });
+}
 
 // Version check
-console.log('SIPORTS v2.0 - Build:', new Date().toISOString());
-console.log('React version:', React.version);
 
 // Supporte les deux shortcodes: [siports_networking] et [siports_exhibitor_dashboard]
 
@@ -28,9 +38,11 @@ const mount = (el: Element) => {
   isMounted = true;
   ReactDOM.createRoot(el as HTMLElement).render(
     <React.StrictMode>
-      <Router>
-        <App />
-      </Router>
+      <ThemeProvider>
+        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <App />
+        </Router>
+      </ThemeProvider>
     </React.StrictMode>
   );
 };

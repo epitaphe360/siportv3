@@ -1,6 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
+import { SupabaseService } from '../../services/supabaseService';
+import useAuthStore from '../../store/authStore';
 import {
   Layout,
   Image,
@@ -28,6 +30,7 @@ import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { motion } from 'framer-motion';
+import { ROUTES } from '../../lib/routes';
 
 interface SectionContent {
   title?: string;
@@ -71,6 +74,10 @@ interface Section {
 }
 
 export default function MiniSiteEditor() {
+  const { user } = useAuthStore();
+  const [exhibitorId, setExhibitorId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [previewMode, setPreviewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [editingField, setEditingField] = useState<string | null>(null);
@@ -116,19 +123,30 @@ export default function MiniSiteEditor() {
         products: [
           {
             id: '1',
-            name: 'SmartPort Management',
-            description: 'Plateforme complète de gestion portuaire',
+            name: 'Système IA Maritime',
+            description: 'Plateforme intelligente d\'optimisation des opérations portuaires avec IA prédictive',
             image: 'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=400',
-            features: ['Analytics temps réel', 'API intégrée', 'Multi-langues'],
-            price: 'Sur devis'
+            features: ['Analytics prédictifs en temps réel', 'Automatisation IA', 'Intégration API complète'],
+            price: 'Sur devis',
+            inStock: true
           },
           {
             id: '2',
-            name: 'Port Analytics',
-            description: 'Outils d\'analyse et de reporting avancés',
+            name: 'Plateforme IoT Connectée',
+            description: 'Solution IoT de supervision et monitoring des équipements portuaires',
             image: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=400',
-            features: ['Dashboards personnalisés', 'Prédictions IA', 'Export données'],
-            price: 'À partir de 5000€'
+            features: ['Capteurs intelligents', 'Maintenance prédictive', 'Alertes instantanées'],
+            price: 'À partir de 15 000€',
+            inStock: true
+          },
+          {
+            id: '3',
+            name: 'Support Premium 24/7',
+            description: 'Assistance technique dédiée et formation continue de vos équipes',
+            image: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400',
+            features: ['Équipe dédiée multilingue', 'Intervention sous 2h', 'Formation personnalisée'],
+            price: '2 500€/mois',
+            inStock: true
           }
         ]
       },
@@ -342,20 +360,88 @@ export default function MiniSiteEditor() {
     }
   }, []);
 
+  // Charger le mini-site existant au montage
+  useEffect(() => {
+    const loadMiniSite = async () => {
+      if (!user?.id) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        // D'abord récupérer l'exhibitor correspondant à l'utilisateur
+        const exhibitor = await SupabaseService.getExhibitorByUserId(user.id);
+        if (!exhibitor) {
+          console.warn('Aucun exposant trouvé pour cet utilisateur');
+          setIsLoading(false);
+          return;
+        }
+
+        setExhibitorId(exhibitor.id);
+
+        // Puis charger le mini-site avec l'exhibitor ID
+        const miniSite = await SupabaseService.getMiniSite(exhibitor.id);
+        if (miniSite && miniSite.sections) {
+          // Convertir les sections de la DB au format du composant
+          const loadedSections = miniSite.sections.map((s: any, index: number) => ({
+            id: String(index + 1),
+            type: s.type || 'about',
+            title: s.title || '',
+            content: s.content || {},
+            visible: s.visible !== false,
+            order: s.order || index
+          }));
+          setSections(loadedSections as Section[]);
+        }
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Erreur chargement mini-site:', error);
+        toast.error('Impossible de charger le mini-site');
+        setIsLoading(false);
+      }
+    };
+
+    loadMiniSite();
+  }, [user?.id]);
+
   const handleSave = useCallback(async () => {
-    try {
-      // Simulation de sauvegarde
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      toast.success('💾 Mini-site sauvegardé. Toutes les modifications enregistrées.');
-    } catch {
-      toast.error('❌ Erreur lors de la sauvegarde');
+    if (!exhibitorId) {
+      toast.error('Vous devez être connecté en tant qu\'exposant pour sauvegarder');
+      return;
     }
-  }, []);
+
+    setIsSaving(true);
+    try {
+      // Préparer les données pour la sauvegarde
+      const miniSiteData = {
+        sections: sections.map(s => ({
+          type: s.type,
+          title: s.title,
+          content: s.content,
+          visible: s.visible,
+          order: s.order
+        })),
+        published: true
+      };
+
+      await SupabaseService.updateMiniSite(exhibitorId, miniSiteData);
+      toast.success('💾 Mini-site sauvegardé avec succès');
+    } catch (error) {
+      console.error('Erreur sauvegarde:', error);
+      toast.error('❌ Erreur lors de la sauvegarde');
+    } finally {
+      setIsSaving(false);
+    }
+  }, [exhibitorId, sections]);
 
   const handlePreview = useCallback(() => {
+    if (!user?.id) {
+      toast.error('Vous devez être connecté');
+      return;
+    }
     toast(`👁️ Aperçu — Mode: ${previewMode}`, { icon: '👁️' });
-    window.open('/minisite/1', '_blank');
-  }, [previewMode]);
+    window.open(`/minisite/${user.id}`, '_blank');
+  }, [previewMode, user?.id]);
 
   const getPreviewWidth = () => {
     switch (previewMode) {
@@ -394,6 +480,7 @@ export default function MiniSiteEditor() {
               value={editingValue}
               onChange={(e) => setEditingValue(e.target.value)}
               placeholder={placeholder}
+              aria-label={placeholder || "Edit field"}
               className={`w-full px-3 py-2 border-2 border-blue-500 rounded-lg focus:outline-none bg-white ${className}`}
               autoFocus
             />
@@ -423,9 +510,18 @@ export default function MiniSiteEditor() {
 
     return (
       <div
+        role="button"
+        tabIndex={0}
         onClick={() => startEditing(fieldKey, value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            startEditing(fieldKey, value);
+          }
+        }}
         className={`cursor-pointer hover:bg-blue-50 hover:border-blue-200 border-2 border-transparent rounded-lg p-2 transition-colors group ${className}`}
         title="Cliquer pour modifier"
+        aria-label="Modifier ce champ"
       >
         {value || (
           <span className="text-gray-400 italic">{placeholder || 'Cliquer pour modifier'}</span>
@@ -440,7 +536,7 @@ export default function MiniSiteEditor() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-6">
-          <Link to="/dashboard">
+          <Link to={ROUTES.DASHBOARD}>
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Retour au Tableau de Bord Exposant
@@ -495,9 +591,9 @@ export default function MiniSiteEditor() {
               Prévisualiser
             </Button>
             
-            <Button variant="default" onClick={handleSave}>
+            <Button variant="default" onClick={handleSave} disabled={isSaving}>
               <Save className="h-4 w-4 mr-2" />
-              Sauvegarder
+              {isSaving ? 'Sauvegarde...' : 'Sauvegarder'}
             </Button>
           </div>
         </div>
@@ -526,12 +622,14 @@ export default function MiniSiteEditor() {
                           setSiteSettings({...siteSettings, primaryColor: e.target.value});
                           toast.success(`Couleur principale mise à jour: ${e.target.value}`);
                         }}
+                        aria-label="Sélecteur de couleur principale"
                         className="w-8 h-8 rounded border border-gray-300 cursor-pointer"
                       />
                       <input
                         type="text"
                         value={siteSettings.primaryColor}
                         onChange={(e) => setSiteSettings({...siteSettings, primaryColor: e.target.value})}
+                        aria-label="Code couleur principale (hex)"
                         className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded"
                       />
                     </div>
@@ -636,12 +734,21 @@ export default function MiniSiteEditor() {
                   {sections.map((section) => (
                     <div
                       key={section.id}
+                      role="button"
+                      tabIndex={0}
                       className={`p-3 border rounded-lg cursor-pointer transition-colors group ${
-                        activeSection === section.id 
-                          ? 'border-blue-300 bg-blue-50' 
+                        activeSection === section.id
+                          ? 'border-blue-300 bg-blue-50'
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                       onClick={() => setActiveSection(section.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setActiveSection(section.id);
+                        }
+                      }}
+                      aria-label={`Sélectionner la section ${section.title}`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
@@ -718,10 +825,19 @@ export default function MiniSiteEditor() {
                         .map((section) => (
                           <motion.div
                             key={section.id}
+                            role="button"
+                            tabIndex={0}
                             className={`border-2 border-transparent hover:border-blue-300 transition-colors group ${
                               activeSection === section.id ? 'border-blue-500' : ''
                             }`}
                             onClick={() => setActiveSection(section.id)}
+                            onKeyDown={(e: React.KeyboardEvent) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                setActiveSection(section.id);
+                              }
+                            }}
+                            aria-label={`Prévisualiser la section ${section.title}`}
                           >
                             {/* Section Hero */}
                             {section.type === 'hero' && (
@@ -782,7 +898,7 @@ export default function MiniSiteEditor() {
                                 {section.content.features && section.content.features.length > 0 && (
                                   <div className="grid grid-cols-2 gap-4">
                                     {section.content.features.map((feature: string, index: number) => (
-                                      <div key={index} className="flex items-center space-x-2">
+                                      <div key={`${section.id}-feature-${index}-${feature.substring(0, 10)}`} className="flex items-center space-x-2">
                                         <div 
                                           className="w-2 h-2 rounded-full"
                                           style={{ backgroundColor: siteSettings.primaryColor }}
@@ -842,7 +958,7 @@ export default function MiniSiteEditor() {
                                 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                   {section.content.products?.map((product, index: number) => (
-                                    <div key={index} className="bg-white rounded-lg p-6 shadow-sm relative group">
+                                    <div key={product.id || `${section.id}-product-${index}`} className="bg-white rounded-lg p-6 shadow-sm relative group">
                                       <button
                                         onClick={() => removeProduct(section.id, index)}
                                         className="absolute top-2 right-2 p-1 bg-red-100 text-red-600 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
@@ -967,7 +1083,7 @@ export default function MiniSiteEditor() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                   {section.content.articles?.map((article: any, index: number) => (
-                                    <div key={index} className="bg-white rounded-lg p-6 shadow-sm relative group">
+                                    <div key={article.id || `${section.id}-article-${index}`} className="bg-white rounded-lg p-6 shadow-sm relative group">
                                       <button
                                         onClick={() => {
                                           const currentArticles = section.content.articles ?? [];
@@ -1171,6 +1287,7 @@ export default function MiniSiteEditor() {
                                               updateSectionContent(section.id, 'nameFieldEnabled', checked);
                                               toast.success(`Champ Nom ${checked ? 'activé' : 'désactivé'}`);
                                             }}
+                                            aria-label="Activer le champ Nom"
                                             className="sr-only peer"
                                           />
                                           <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
@@ -1187,6 +1304,7 @@ export default function MiniSiteEditor() {
                                               updateSectionContent(section.id, 'phoneFieldEnabled', checked);
                                               toast.success(`Champ Téléphone ${checked ? 'activé' : 'désactivé'}`);
                                             }}
+                                            aria-label="Activer le champ Téléphone"
                                             className="sr-only peer"
                                           />
                                           <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
@@ -1204,6 +1322,7 @@ export default function MiniSiteEditor() {
                                               updateSectionContent(section.id, 'companyFieldEnabled', checked);
                                               toast.success(`Champ Entreprise ${checked ? 'activé' : 'désactivé'}`);
                                             }}
+                                            aria-label="Activer le champ Entreprise"
                                             className="sr-only peer"
                                           />
                                           <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
@@ -1221,6 +1340,7 @@ export default function MiniSiteEditor() {
                                               updateSectionContent(section.id, 'recaptchaEnabled', checked);
                                               toast.success(`Anti-spam (reCAPTCHA) ${checked ? 'activé' : 'désactivé'}`);
                                             }}
+                                            aria-label="Activer Anti-spam (reCAPTCHA)"
                                             className="sr-only peer"
                                           />
                                           <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
@@ -1238,6 +1358,7 @@ export default function MiniSiteEditor() {
                                             updateSectionContent(section.id, 'notificationEmail', e.target.value);
                                           }}
                                           placeholder="email@entreprise.com"
+                                          aria-label="Email de notification"
                                           className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         />
                                       </div>

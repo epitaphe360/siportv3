@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { 
+import { ROUTES } from '../../lib/routes';
+import {
   ArrowLeft,
   CheckCircle,
   X,
@@ -163,7 +164,7 @@ export default function ModerationPanel() {
         {/* Header */}
         <div className="mb-8">
           <div className="mb-4">
-            <Link to="/dashboard">
+            <Link to={ROUTES.DASHBOARD}>
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour au Tableau de Bord Admin
@@ -282,8 +283,8 @@ export default function ModerationPanel() {
                   <div className="mb-4">
                     <h4 className="font-medium text-gray-900 mb-2">Modifications apportées :</h4>
                     <div className="flex flex-wrap gap-2">
-                      {content.changes.map((change, idx) => (
-                        <Badge key={idx} variant="info" size="sm">
+                      {content.changes.map((change) => (
+                        <Badge key={change} variant="info" size="sm">
                           {change}
                         </Badge>
                       ))}
@@ -340,16 +341,16 @@ export default function ModerationPanel() {
                     
                     <Button
                       variant="outline"
-                      onClick={() => navigate(`/minisite/${content.exhibitorId}`)}
+                      onClick={() => navigate(ROUTES.MINISITE_PREVIEW.replace(':exhibitorId', content.exhibitorId))}
                       aria-label={`Prévisualiser ${content.exhibitorName}`}
                     >
                       <Eye className="h-4 w-4 mr-2" />
                       Prévisualiser
                     </Button>
-                    
+
                     <Button
                       variant="outline"
-                      onClick={() => navigate(`/exhibitors/${content.exhibitorId}`)}
+                      onClick={() => navigate(ROUTES.EXHIBITOR_DETAIL.replace(':id', content.exhibitorId))}
                       aria-label={`Contacter ${content.exhibitorName}`}
                     >
                       <MessageCircle className="h-4 w-4 mr-2" />
@@ -374,7 +375,7 @@ export default function ModerationPanel() {
             <p className="text-gray-600 mb-6">
               Aucun contenu en attente de validation
             </p>
-            <Link to="/dashboard">
+            <Link to={ROUTES.DASHBOARD}>
               <Button>
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour au Tableau de Bord Admin

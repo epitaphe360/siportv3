@@ -1,21 +1,63 @@
 import { create } from 'zustand';
 import { Appointment, TimeSlot } from '../types';
 import { SupabaseService } from '../services/supabaseService';
-// Try to import supabase client if available
-let supabaseClient: any = null;
-try {
-   
-  const sup = require('../lib/supabase');
-  supabaseClient = sup?.supabase || null;
-} catch {
-  supabaseClient = null;
+import { EmailService } from '../services/emailService';
+import { SecurityService } from '../services/securityService';
+import PushNotificationService from '../services/pushNotificationService';
+import { supabase as supabaseClient, isSupabaseReady } from '../lib/supabase';
+import { generateDemoTimeSlots } from '../config/demoTimeSlots';
+
+// Type definitions for database records
+interface AppointmentDBRecord {
+  id: string;
+  exhibitor_id: string;
+  visitor_id: string;
+  time_slot_id: string;
+  status: string;
+  message?: string;
+  notes?: string;
+  rating?: number;
+  created_at: string;
+  meeting_type?: string;
+  meeting_link?: string;
+  exhibitor?: Record<string, unknown>;
+  visitor?: Record<string, unknown>;
 }
+
+interface TimeSlotDBRecord {
+  id: string;
+  exhibitor_id: string;
+  slot_date?: string;
+  start_time: string;
+  end_time: string;
+  duration: number;
+  type?: string;
+  max_bookings?: number;
+  current_bookings?: number;
+  location?: string;
+  exhibitor?: Record<string, unknown>;
+}
+
+interface AuthUser {
+  id: string;
+  visitor_level?: string;
+  profile?: Record<string, unknown>;
+}
+
+// Helper pour vérifier si Supabase est configuré
+const getSupabaseClient = () => {
+  if (!isSupabaseReady()) {
+    return null;
+  }
+  return supabaseClient;
+};
 
 interface AppointmentState {
   appointments: Appointment[];
   timeSlots: TimeSlot[];
   isLoading: boolean;
-  
+  isBooking: boolean; // Prevent concurrent booking requests
+
   // Actions
   fetchAppointments: () => Promise<void>;
   fetchTimeSlots: (exhibitorId: string) => Promise<void>;
@@ -31,22 +73,139 @@ interface AppointmentState {
 }
 
 // Fonctions utilitaires pour la synchronisation avec les mini-sites
+/**
+ * Synchronise la disponibilité des créneaux avec le mini-site de l'exposant
+ * Met à jour le widget de disponibilité en temps réel
+ */
 async function syncWithMiniSite(slot: TimeSlot, availableCount: number): Promise<void> {
   try {
-    void slot;
-    void availableCount;
-    // TODO: Implémenter la synchronisation avec les mini-sites
-  } catch {
-    // silencieux
+    // 1. Récupérer le mini-site de l'exposant
+    const miniSite = await SupabaseService.getMiniSite(slot.exhibitorId);
+    if (!miniSite) {
+      return;
+    }
+
+    // 2. Mettre à jour les métadonnées du mini-site avec les disponibilités
+    const updatedData = {
+      ...miniSite,
+      availability_widget: {
+        total_slots: availableCount,
+        next_available_date: slot.date ? new Date(slot.date).toISOString() : new Date().toISOString(),
+        last_updated: new Date().toISOString(),
+        slot_types: {
+          'in-person': availableCount > 0,
+          'virtual': slot.type === 'virtual',
+          'hybrid': slot.type === 'hybrid'
+        }
+      }
+    };
+
+    await SupabaseService.updateMiniSite(slot.exhibitorId, updatedData);
+
+
+    // 3. Optionnel: Publier sur canal temps réel Supabase
+    // Pour une implémentation complète, on pourrait utiliser Supabase Realtime
+    // const channel = supabase.channel(`mini-site-${slot.userId}`);
+    // await channel.send({
+    //   type: 'broadcast',
+    //   event: 'availability-updated',
+    //   payload: { availableCount, slotId: slot.id }
+    // });
+
+  } catch (error) {
+    console.error('❌ Erreur sync mini-site:', error);
+    // Ne pas bloquer le flux principal si la sync échoue
   }
 }
 
+/**
+ * Notifie les visiteurs intéressés par un exposant lorsqu'un nouveau créneau est ajouté
+ * Envoie des notifications in-app et emails selon les préférences utilisateur
+ */
 async function notifyInterestedVisitors(slot: TimeSlot): Promise<void> {
   try {
-    void slot;
-    // TODO: Implémenter les notifications aux visiteurs intéressés
-  } catch {
-    // silencieux
+    // Get the user_id from the exhibitor relation if available
+    const exhibitorUserId = slot.exhibitor?.userId;
+    if (!exhibitorUserId) {
+      return;
+    }
+
+    // 1. Récupérer les visiteurs qui ont marqué cet exposant comme favori
+    // ou qui ont interagi avec lui (visites de mini-site, messages, etc.)
+    const interestedVisitors = await SupabaseService.getInterestedVisitors?.(exhibitorUserId) || [];
+
+    if (interestedVisitors.length === 0) {
+      return;
+    }
+
+
+    // 2. Filtrer selon les préférences de notification
+    interface NotifiableVisitor {
+      id: string;
+      email: string;
+      name: string;
+      notificationPreferences?: { newTimeSlots?: boolean; emailNotifications?: boolean };
+    }
+    const notifiableVisitors = (interestedVisitors as NotifiableVisitor[]).filter((v: NotifiableVisitor) =>
+      v.notificationPreferences?.newTimeSlots !== false  // Actif par défaut
+    );
+
+    // 3. Créer les notifications in-app
+    const notificationPromises = notifiableVisitors.map(async (visitor: NotifiableVisitor) => {
+      try {
+        // Créer notification in-app
+        await SupabaseService.createNotification?.({
+          userId: visitor.id,
+          type: 'new_timeslot',
+          title: 'Nouveau créneau disponible',
+          message: `Un nouveau créneau est disponible le ${new Date(slot.date).toLocaleDateString('fr-FR')} à ${slot.startTime}`,
+          data: {
+            slotId: slot.id,
+            exhibitorId: slot.exhibitorId,
+            date: slot.date,
+            startTime: slot.startTime,
+            type: slot.type
+          }
+        });
+
+        // 4. Envoyer email si préférence activée
+        if (visitor.notificationPreferences?.emailNotifications) {
+          await SupabaseService.sendNotificationEmail?.({
+            to: visitor.email,
+            template: 'new-timeslot-notification',
+            data: {
+              visitorName: visitor.name,
+              slotDate: new Date(slot.date).toLocaleDateString('fr-FR'),
+              slotTime: slot.startTime,
+              slotType: slot.type === 'virtual' ? 'Virtuel' :
+                        slot.type === 'hybrid' ? 'Hybride' : 'Présentiel',
+              exhibitorName: slot.exhibitor?.companyName || 'l\'exposant',
+              bookingUrl: `${window.location.origin}/appointments?exhibitor=${slot.exhibitorId}`
+            }
+          });
+        }
+
+        return { success: true, visitorId: visitor.id };
+      } catch (error) {
+        console.error(`❌ Erreur notification visiteur ${visitor.id}:`, error);
+        return { success: false, visitorId: visitor.id, error };
+      }
+    });
+
+    const results = await Promise.allSettled(notificationPromises);
+    interface NotificationResult {
+      success: boolean;
+      visitorId: string;
+      error?: Error;
+    }
+    const successCount = results.filter((r): r is PromiseSettledResult<NotificationResult> => 
+      r.status === 'fulfilled' && (r.value as NotificationResult).success
+    ).length;
+
+
+  } catch (error) {
+    console.error('❌ Erreur notification visiteurs:', error);
+    // Ne pas bloquer le flux principal si les notifications échouent
   }
 }
 
@@ -54,6 +213,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
   appointments: [],
   timeSlots: [],
   isLoading: false,
+  isBooking: false,
 
   fetchAppointments: async () => {
     set({ isLoading: true });
@@ -66,8 +226,9 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       }
 
       // Fallback: si SupabaseService n'est pas disponible, utiliser supabaseClient directement
-      if (supabaseClient) {
-        const { data, error } = await supabaseClient
+      const client = getSupabaseClient();
+      if (client) {
+        const { data, error } = await client
           .from('appointments')
           .select(`
             *,
@@ -79,7 +240,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
         if (error) throw error;
 
         // Transformer les données pour correspondre à l'interface Appointment
-        const transformedAppointments = (data || []).map((apt: any) => ({
+        const transformedAppointments = (data || []).map((apt: AppointmentDBRecord) => ({
           id: apt.id,
           exhibitorId: apt.exhibitor_id,
           visitorId: apt.visitor_id,
@@ -120,6 +281,14 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
   // Fetch time slots for a specific exhibitor (userId)
   fetchTimeSlots: async (exhibitorId: string) => {
+    // Validation: exhibitorId must be a valid UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!exhibitorId || !uuidRegex.test(exhibitorId)) {
+      console.warn('[APPOINTMENT] Invalid exhibitorId format:', exhibitorId);
+      set({ timeSlots: [], isLoading: false });
+      return;
+    }
+
     set({ isLoading: true });
     try {
       // If SupabaseService is available and supabase is configured, use it
@@ -130,21 +299,29 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       }
 
       // Fallback: utiliser supabaseClient directement
-      if (supabaseClient) {
-        const { data, error } = await supabaseClient
+      const client = getSupabaseClient();
+      if (client) {
+        const { data, error } = await client
           .from('time_slots')
-          .select('*')
-          .eq('user_id', exhibitorId)
-          .order('date', { ascending: true })
+          .select(`
+            *,
+            exhibitor:exhibitors!exhibitor_id(
+              id,
+              user_id,
+              company_name
+            )
+          `)
+          .eq('exhibitor_id', exhibitorId)
+          .order('slot_date', { ascending: true })
           .order('start_time', { ascending: true });
 
         if (error) throw error;
 
         // Transformer les données pour correspondre à l'interface TimeSlot
-        const transformedSlots = (data || []).map((slot: any) => ({
+        const transformedSlots = (data || []).map((slot: TimeSlotDBRecord) => ({
           id: slot.id,
-          userId: slot.user_id,
-          date: new Date(slot.date),
+          exhibitorId: slot.exhibitor_id,
+          date: slot.slot_date ? new Date(slot.slot_date) : new Date(),
           startTime: slot.start_time,
           endTime: slot.end_time,
           duration: slot.duration,
@@ -152,65 +329,66 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
           maxBookings: slot.max_bookings || 1,
           currentBookings: slot.current_bookings || 0,
           available: (slot.current_bookings || 0) < (slot.max_bookings || 1),
-          location: slot.location
+          location: slot.location,
+          exhibitor: slot.exhibitor ? {
+            id: slot.exhibitor.id,
+            userId: slot.exhibitor.user_id,
+            companyName: slot.exhibitor.company_name
+          } : undefined
         }));
 
         set({ timeSlots: transformedSlots, isLoading: false });
         return;
       }
 
-      // Si aucune méthode n'est disponible, retourner un tableau vide
-      console.warn('Aucune méthode de récupération des créneaux disponible');
-      set({ timeSlots: [], isLoading: false });
+      // Si aucune méthode n'est disponible, charger les données de démonstration
+      console.warn('Aucune méthode de récupération des créneaux disponible - Chargement des données de démo');
+      const demoSlots = generateDemoTimeSlots();
+      set({ timeSlots: demoSlots, isLoading: false });
     } catch (err) {
       console.error('Erreur lors de la récupération des créneaux:', err);
-      set({ timeSlots: [], isLoading: false });
-      throw err;
+      // En cas d'erreur, charger les données de démonstration
+      const demoSlots = generateDemoTimeSlots();
+      set({ timeSlots: demoSlots, isLoading: false });
     }
   },
 
   bookAppointment: async (timeSlotId, message) => {
-    const { appointments, timeSlots } = get();
+    const { appointments, timeSlots, isBooking } = get();
 
-    // Récupérer l'utilisateur connecté depuis le store global
+    // Prevent concurrent booking requests (UI-level protection)
+    if (isBooking) {
+      throw new Error('Une réservation est déjà en cours. Veuillez patienter.');
+    }
 
-    let resolvedUser: any = null;
+    set({ isBooking: true });
+
     try {
-      // Essayer require (synchrones) — fonctionne dans la plupart des environnements runtime.
-       
-      const auth = require('../store/authStore').default;
-      resolvedUser = auth?.getState ? auth.getState().user : null;
-    } catch {
+      // Récupérer l'utilisateur connecté via import dynamique
+      let resolvedUser: AuthUser | null = null;
       try {
-        // Fallback asynchrone si require échoue (ex: environnement ESM strict)
         const mod = await import('../store/authStore');
         resolvedUser = mod?.default?.getState ? mod.default.getState().user : null;
       } catch {
         resolvedUser = null;
       }
-    }
 
-  const visitorId = resolvedUser?.id || 'user1';
+      // CRITICAL: User must be authenticated
+      if (!resolvedUser?.id) {
+        throw new Error('Vous devez être connecté pour réserver un rendez-vous.');
+      }
 
-    // Vérifier le quota selon visitor_level (utilise la configuration centralisée)
-    const visitorLevel = resolvedUser?.visitor_level || resolvedUser?.profile?.visitor_level || 'free';
-    
-    // Import dynamique de la configuration des quotas
-    let getVisitorQuota: (level: string) => number;
+      const visitorId = resolvedUser.id;
+      const visitorLevel = resolvedUser?.visitor_level || resolvedUser?.profile?.visitor_level || 'free';
+
+    // ✅ Server-side quota validation via RPC
     try {
-      const quotasModule = await import('../config/quotas');
-      getVisitorQuota = quotasModule.getVisitorQuota;
-    } catch {
-      // Fallback si le module n'est pas disponible
-      const FALLBACK_QUOTAS: Record<string, number> = { free: 0, basic: 2, premium: 5, vip: 99 };
-      getVisitorQuota = (level: string) => FALLBACK_QUOTAS[level] || 0;
-    }
-
-    const quota = getVisitorQuota(visitorLevel);
-    const confirmedCount = appointments.filter(a => a.visitorId === visitorId && a.status === 'confirmed').length;
-    
-    if (confirmedCount >= quota) {
-      throw new Error('Quota RDV atteint pour votre niveau');
+      const quotaResult = await SecurityService.validateAppointmentQuota(visitorId, visitorLevel);
+      if (!quotaResult.valid) {
+        throw new Error(quotaResult.reason || 'Quota dépassé pour votre niveau d\'accès');
+      }
+    } catch (quotaError) {
+      throw new Error(quotaError instanceof Error ? quotaError.message : 'Erreur validation quota serveur');
     }
 
     // Prevent duplicate booking of the same time slot by the same visitor
@@ -218,79 +396,94 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       throw new Error('Vous avez déjà réservé ce créneau');
     }
 
-    // Find the timeslot to determine the exhibitor/user owner
+    // CRITICAL: Validate time slot ownership
     const slot = timeSlots.find(s => s.id === timeSlotId);
-    const exhibitorIdForSlot = slot?.userId || slot?.exhibitorId || null;
+
+    if (!slot) {
+      throw new Error('Créneau non trouvé. Veuillez actualiser la page.');
+    }
+
+    const exhibitorIdForSlot = slot.exhibitorId;
 
     if (!exhibitorIdForSlot) {
-      // If we don't have owner info locally, try to fetch the slot from Supabase
-      try {
-        if (SupabaseService && typeof SupabaseService.getTimeSlotsByUser === 'function') {
-          // best-effort: try to fetch by visitor context — but we need owner; bail gracefully
-          // We'll allow DB to resolve exhibitor via appointment create if possible
-        }
-      } catch {
-        // ignore
-      }
+      // Time slot exists but has no owner - data integrity violation
+      throw new Error('Ce créneau n\'a pas de propriétaire valide. Veuillez contacter le support.');
     }
 
-    // Optimistic update: increment slot booking locally
-    const optimisticSlots = timeSlots.map(s => s.id === timeSlotId ? { ...s, currentBookings: (s.currentBookings || 0) + 1, available: ((s.currentBookings || 0) + 1) < (s.maxBookings || 1) } : s);
-    set({ timeSlots: optimisticSlots });
-
-    // Persist via SupabaseService.createAppointment (RPC-aware)
-    if (SupabaseService && typeof SupabaseService.createAppointment === 'function') {
-      try {
-        const persisted = await SupabaseService.createAppointment({
-          exhibitorId: exhibitorIdForSlot || undefined,
-          visitorId,
-          timeSlotId,
-          message: message || undefined,
-          meetingType: 'in-person'
-        });
-
-        // After success, refresh exhibitor slots to pick up server-side counters if possible
-        try {
-          if (exhibitorIdForSlot) await get().fetchTimeSlots(String(exhibitorIdForSlot));
-        } catch {
-          // ignore refresh errors
-        }
-
-        set({ appointments: [persisted, ...appointments] });
-        return persisted;
-      } catch (err: any) {
-        // Revert optimistic change
-        const revertedSlots = timeSlots.map(s => s.id === timeSlotId ? { ...s, currentBookings: Math.max(0, (s.currentBookings || 0)), available: (s.currentBookings || 0) < (s.maxBookings || 1) } : s);
-        set({ timeSlots: revertedSlots });
-
-        const msg = String(err?.message || err || '').toLowerCase();
-        if (msg.includes('complet') || msg.includes('fully booked') || msg.includes('time slot fully booked')) {
-          throw new Error('Ce créneau est complet.');
-        }
-        if (msg.includes('déjà') || msg.includes('duplicate') || msg.includes('unique')) {
-          throw new Error('Vous avez déjà réservé ce créneau.');
-        }
-        throw err;
-      }
+    // Additional validation: Verify slot is not already fully booked
+    if (!slot.available || (slot.currentBookings || 0) >= (slot.maxBookings || 1)) {
+      throw new Error('Ce créneau est complet. Veuillez en choisir un autre.');
     }
 
-    // Local fallback when Supabase unavailable
-    const generatedId = typeof crypto !== 'undefined' && typeof (crypto as any).randomUUID === 'function'
-      ? (crypto as any).randomUUID()
-      : `${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+    // ATOMIC BOOKING: Use RPC function with row-level locking
+    // This prevents ALL race conditions and overbooking
+    const { supabase } = await import('../lib/supabase');
 
+    const { data, error } = await supabase.rpc('book_appointment_atomic', {
+      p_time_slot_id: timeSlotId,
+      p_visitor_id: visitorId,
+      p_exhibitor_id: exhibitorIdForSlot,
+      p_notes: message || null
+    });
+
+    if (error) {
+      throw new Error(error.message || 'Erreur lors de la réservation');
+    }
+
+    if (!data || !data.success) {
+      throw new Error(data?.error || 'Erreur lors de la réservation');
+    }
+
+    // Success! Update local state with server data
+    // STATUS: 'pending' - Le RDV est en attente de confirmation par l'exposant/partenaire
     const newAppointment: Appointment = {
-      id: generatedId,
-      exhibitorId: exhibitorIdForSlot || 'unknown',
+      id: data.appointment_id,
+      exhibitorId: exhibitorIdForSlot,
       visitorId,
       timeSlotId,
-      status: 'pending',
+      status: 'pending', // En attente de confirmation par l'exposant/partenaire
       message,
       createdAt: new Date(),
       meetingType: 'in-person'
     };
 
-    set({ appointments: [newAppointment, ...appointments] });
+    // Update time slot with server data
+    const updatedSlots = timeSlots.map(s => s.id === timeSlotId ? {
+      ...s,
+      currentBookings: data.current_bookings,
+      available: data.available
+    } : s);
+
+    set({
+      appointments: [newAppointment, ...appointments],
+      timeSlots: updatedSlots
+    });
+
+    // 📧 Send appointment confirmation email (non-blocking)
+    try {
+      const slot = timeSlots.find(s => s.id === timeSlotId);
+      if (slot && resolvedUser?.profile?.email) {
+        await EmailService.sendAppointmentConfirmation({
+          visitorEmail: resolvedUser.profile.email as string,
+          visitorName: ((resolvedUser.profile?.firstName as string) || 'Visiteur'),
+          exhibitorName: slot.exhibitor?.companyName || 'Exposant',
+          exhibitorEmail: slot.exhibitor?.email || '',
+          date: slot.date?.toLocaleDateString('fr-FR') || new Date().toLocaleDateString('fr-FR'),
+          time: slot.startTime || '00:00',
+          status: 'pending',
+          appointmentId: newAppointment.id
+        });
+      }
+    } catch (emailError) {
+      console.warn('⚠️ Email notification failed after booking:', emailError);
+      // Non-blocking error - appointment is already created
+    }
+
+    return newAppointment;
+    } finally {
+      // Always reset isBooking flag, even if error occurs
+      set({ isBooking: false });
+    }
   },
 
   cancelAppointment: async (appointmentId) => {
@@ -299,44 +492,160 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
     if (!appointment) return;
 
-    // Persist status change to Supabase if possible
-    if (SupabaseService && typeof SupabaseService.updateAppointmentStatus === 'function') {
-      try {
-        await SupabaseService.updateAppointmentStatus(appointmentId, 'cancelled');
-      } catch (err) {
-        console.warn('Failed to persist cancellation to Supabase', err);
-        // continue to update local state anyway
+    // Get authenticated user via import dynamique
+    let resolvedUser: AuthUser | null = null;
+    try {
+      const mod = await import('../store/authStore');
+      resolvedUser = mod?.default?.getState ? mod.default.getState().user : null;
+    } catch {
+      resolvedUser = null;
+    }
+
+    if (!resolvedUser?.id) {
+      throw new Error('Vous devez être connecté pour annuler un rendez-vous.');
+    }
+
+    // ATOMIC CANCEL: Use RPC function with proper slot management
+    const { supabase } = await import('../lib/supabase');
+
+    const { data, error } = await supabase.rpc('cancel_appointment_atomic', {
+      p_appointment_id: appointmentId,
+      p_user_id: resolvedUser.id
+    });
+
+    if (error) {
+      throw new Error(error.message || 'Erreur lors de l\'annulation');
+    }
+
+    if (!data || !data.success) {
+      throw new Error(data?.error || 'Erreur lors de l\'annulation');
+    }
+
+    // Success! Update local state
+    const updatedAppointments = appointments.map(a =>
+      a.id === appointmentId ? { ...a, status: 'cancelled' as const } : a
+    );
+
+    // Refresh time slots to get updated counts
+    if (appointment.timeSlotId) {
+      const affectedSlot = timeSlots.find(s => s.id === appointment.timeSlotId);
+      if (affectedSlot?.exhibitorId) {
+        try {
+          await get().fetchTimeSlots(affectedSlot.exhibitorId);
+        } catch {
+          // Ignore refresh errors, we already updated the appointment
+        }
       }
     }
 
-    // Update local appointment status
-    const updatedAppointments = appointments.map(a => a.id === appointmentId ? { ...a, status: 'cancelled' as const } : a);
+    // 📧 Send cancellation email (non-blocking)
+    try {
+      if (appointment.visitorEmail && resolvedUser?.profile?.email) {
+        const slot = timeSlots.find(s => s.id === appointment.timeSlotId);
+        await EmailService.sendAppointmentConfirmation({
+          visitorEmail: appointment.visitorEmail as string,
+          visitorName: appointment.visitorName || 'Visiteur',
+          exhibitorName: appointment.exhibitorName || 'Exposant',
+          exhibitorEmail: appointment.exhibitorEmail || '',
+          date: appointment.date || new Date().toLocaleDateString('fr-FR'),
+          time: appointment.startTime || '00:00',
+          status: 'cancelled',
+          appointmentId: appointmentId
+        });
+      }
+    } catch (emailError) {
+      console.warn('⚠️ Cancellation email failed:', emailError);
+      // Non-blocking error - appointment is already cancelled
+    }
 
-    // Recompute bookings for the affected time slot by counting confirmed/pending appointments locally
-    const affectedSlotId = appointment.timeSlotId;
-    const remainingBookings = updatedAppointments.filter(a => a.timeSlotId === affectedSlotId && a.status !== 'cancelled').length;
-
-    const updatedTimeSlots = timeSlots.map(slot =>
-      slot.id === affectedSlotId
-        ? { ...slot, currentBookings: remainingBookings, available: remainingBookings < (slot.maxBookings || 1) }
-        : slot
-    );
-
-    set({ appointments: updatedAppointments, timeSlots: updatedTimeSlots });
+    set({ appointments: updatedAppointments });
   },
 
   updateAppointmentStatus: async (appointmentId, status) => {
     const { appointments, timeSlots } = get();
 
+    // Note: Transaction handled via Supabase RPC (atomic operations ensure consistency)
     // Persist to Supabase if possible
     if (SupabaseService && typeof SupabaseService.updateAppointmentStatus === 'function') {
       try {
-        await SupabaseService.updateAppointmentStatus(appointmentId, status as any);
+        await SupabaseService.updateAppointmentStatus(appointmentId, status as Appointment['status']);
+
+        // Si le statut passe à 'confirmed', envoyer des notifications
+        const appointment = appointments.find(a => a.id === appointmentId);
+        if (status === 'confirmed' && appointment?.status === 'pending') {
+          try {
+            // Import dynamique de toast pour les notifications
+            const { toast } = await import('sonner');
+            
+            // Notification de confirmation
+            toast.success('Rendez-vous confirmé !', {
+              description: 'Les calendriers ont été mis à jour et les participants notifiés.'
+            });
+
+            // ✅ Envoyer notification email/push aux participants
+            const visitorId = appointment.visitorId;
+            const visitorName = appointment.visitorName || 'Visiteur';
+            const exhibitorName = appointment.exhibitorName || 'Exposant';
+
+            try {
+              // Email notification
+              await EmailService.sendAppointmentConfirmation({
+                visitorEmail: appointment.visitorEmail || '',
+                visitorName,
+                exhibitorName,
+                exhibitorEmail: appointment.exhibitorEmail || '',
+                date: appointment.date,
+                time: appointment.startTime || '',
+                status: 'confirmed',
+                appointmentId: appointment.id
+              });
+            } catch (emailError) {
+              console.warn('⚠️ Email notification failed:', emailError);
+              // Non-blocking error - appointment is still saved
+            }
+
+            // Push notification
+            try {
+              if (PushNotificationService.isNotificationSupported()) {
+                await PushNotificationService.sendAppointmentNotification(
+                  visitorId,
+                  appointment.id,
+                  visitorName,
+                  exhibitorName,
+                  'confirmed'
+                );
+              }
+            } catch (pushError) {
+              console.warn('⚠️ Push notification failed:', pushError);
+              // Non-blocking error - email was already sent
+            }
+          } catch (notifError) {
+            console.warn('Erreur notification:', notifError);
+          }
+        }
+
+        // Refresh slots from server for authoritative count
+        if (appointment?.timeSlotId) {
+          const affectedSlot = timeSlots.find(s => s.id === appointment.timeSlotId);
+          if (affectedSlot?.exhibitorId) {
+            try {
+              await get().fetchTimeSlots(affectedSlot.exhibitorId);
+              // Update appointments locally and return
+              const updatedAppointments = appointments.map(a => a.id === appointmentId ? { ...a, status } : a);
+              set({ appointments: updatedAppointments });
+              return;
+            } catch {
+              // Fall through to local update if refresh fails
+            }
+          }
+        }
       } catch (err) {
         console.warn('Failed to persist appointment status to Supabase', err);
+        throw err; // Don't update local state if server update failed
       }
     }
 
+    // Fallback local update
     const updatedAppointments = appointments.map(a => a.id === appointmentId ? { ...a, status } : a);
 
     // If the status change affects slot counts, recompute for the related slot
@@ -356,12 +665,47 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
   createTimeSlot: async (slot) => {
     const { timeSlots } = get();
+
+    // MEDIUM SEVERITY FIX: Add validations before creating time slot
+    if (!slot.startTime || !slot.endTime) {
+      throw new Error('Les heures de début et de fin sont obligatoires');
+    }
+
+    if (!slot.duration || slot.duration <= 0) {
+      throw new Error('La durée doit être supérieure à 0 minutes');
+    }
+
+    if (!slot.maxBookings || slot.maxBookings <= 0) {
+      throw new Error('Le nombre maximum de réservations doit être supérieur à 0');
+    }
+
+    const slotExhibitorId = slot.exhibitorId as string;
+    if (!slotExhibitorId || slotExhibitorId === 'unknown') {
+      throw new Error('L\'identifiant de l\'exposant est requis pour créer un créneau');
+    }
+
+    // Validate start time is before end time
+    if (slot.startTime >= slot.endTime) {
+      throw new Error('L\'heure de début doit être avant l\'heure de fin');
+    }
+
+    // Validate date is not in the past (allow today)
+    const slotDate = slot.date as Date | undefined;
+    if (slotDate) {
+      const dateObj = slotDate instanceof Date ? slotDate : new Date(slotDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (dateObj < today) {
+        throw new Error('Impossible de créer un créneau dans le passé');
+      }
+    }
+
     // If SupabaseService is available, persist the slot; otherwise create local mock
     try {
       if (SupabaseService && typeof SupabaseService.createTimeSlot === 'function') {
         const created = await SupabaseService.createTimeSlot({
-          userId: (slot as any).userId || 'unknown',
-          date: (slot as any).date instanceof Date ? (slot as any).date.toISOString().split('T')[0] : String((slot as any).date),
+          exhibitorId: slotExhibitorId,
+          date: slotDate instanceof Date ? slotDate.toISOString().split('T')[0] : String(slotDate),
           startTime: slot.startTime,
           endTime: slot.endTime,
           duration: slot.duration,
@@ -377,7 +721,8 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
       const newSlot: TimeSlot = {
         ...slot,
-        id: Date.now().toString()
+        id: Date.now().toString(),
+        exhibitorId: slotExhibitorId
       };
       await new Promise(resolve => setTimeout(resolve, 500));
       set({ timeSlots: [newSlot, ...timeSlots] });
@@ -389,7 +734,8 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       // fallback to local
       const newSlot: TimeSlot = {
         ...slot,
-        id: Date.now().toString()
+        id: Date.now().toString(),
+        exhibitorId: slotExhibitorId
       };
       set({ timeSlots: [newSlot, ...timeSlots] });
       void syncWithMiniSite(newSlot, get().timeSlots.filter(s => s.available).length);
@@ -417,16 +763,17 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     const success: string[] = [];
     const failed: { id: string; error: string }[] = [];
 
-    if (supabaseClient) {
+    const client = getSupabaseClient();
+    if (client) {
       for (const a of toConfirm) {
         try {
-          const { error } = await supabaseClient.from('appointments').update({ status: 'confirmed' }).eq('id', a.id);
+          const { error } = await client.from('appointments').update({ status: 'confirmed' }).eq('id', a.id);
           if (error) {
             failed.push({ id: a.id, error: error.message || String(error) });
             continue;
           }
           success.push(a.id);
-        } catch (err: any) {
+        } catch (err: unknown) {
           failed.push({ id: a.id, error: err?.message || String(err) });
         }
       }

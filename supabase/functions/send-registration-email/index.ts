@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { SendGrid } from 'npm:@sendgrid/mail';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -14,6 +15,19 @@ interface RegistrationEmailRequest {
   companyName?: string;
 }
 
+/**
+ * Escape HTML to prevent XSS attacks
+ */
+function escapeHtml(text: string | undefined | null): string {
+  if (!text) return '';
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, {
@@ -23,12 +37,18 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
+    const SENDGRID_API_KEY = Deno.env.get('SENDGRID_API_KEY');
+    const SENDER_EMAIL = Deno.env.get('SENDER_EMAIL') || 'no-reply@siports.com';
+
+    if (!SENDGRID_API_KEY) {
+      throw new Error('SENDGRID_API_KEY non configurée');
+    }
 
     const { userType, email, firstName, lastName, companyName }: RegistrationEmailRequest = await req.json();
+
+    const sgMail = new SendGrid(SENDGRID_API_KEY);
+    
+    // Déterminer le type de compte en français
 
     // Déterminer le type de compte en français
     const accountTypeLabel = {
@@ -61,16 +81,16 @@ Deno.serve(async (req: Request) => {
               <h1>🎉 Bienvenue sur SIPORTS 2026</h1>
             </div>
             <div class="content">
-              <h2>Bonjour ${firstName} ${lastName},</h2>
-              
-              <p>Votre demande d'inscription en tant que <strong>${accountTypeLabel}</strong> a bien été reçue !</p>
-              
+              <h2>Bonjour ${escapeHtml(firstName)} ${escapeHtml(lastName)},</h2>
+
+              <p>Votre demande d'inscription en tant que <strong>${escapeHtml(accountTypeLabel)}</strong> a bien été reçue !</p>
+
               <div class="info-box">
                 <h3>📋 Informations de votre demande</h3>
                 <ul>
-                  <li><strong>Type de compte :</strong> ${accountTypeLabel}</li>
-                  <li><strong>Email :</strong> ${email}</li>
-                  ${companyName ? `<li><strong>Entreprise :</strong> ${companyName}</li>` : ''}
+                  <li><strong>Type de compte :</strong> ${escapeHtml(accountTypeLabel)}</li>
+                  <li><strong>Email :</strong> ${escapeHtml(email)}</li>
+                  ${companyName ? `<li><strong>Entreprise :</strong> ${escapeHtml(companyName)}</li>` : ''}
                 </ul>
               </div>
               
@@ -117,40 +137,22 @@ Deno.serve(async (req: Request) => {
       </html>
     `;
 
-    // Note: Pour un véritable envoi d'email, vous devrez intégrer un service comme:
-    // - Resend (https://resend.com)
-    // - SendGrid
-    // - Postmark
-    // - AWS SES
-    
-    // Pour l'instant, nous logguons l'email et stockons la notification dans la base
-    console.log('📧 Email préparé pour:', email);
-    console.log('Sujet:', subject);
-    
-    // Stocker la notification d'email dans la base de données
-    const { error: notificationError } = await supabaseClient
-      .from('email_notifications')
-      .insert({
-        recipient_email: email,
-        subject: subject,
-        html_content: htmlContent,
-        status: 'pending',
-        metadata: {
-          user_type: userType,
-          first_name: firstName,
-          last_name: lastName,
-          company_name: companyName
-        }
-      });
+    // Envoi de l'email via SendGrid
+    const msg = {
+      to: email,
+      from: SENDER_EMAIL,
+      subject: subject,
+      html: htmlContent,
+    };
 
-    if (notificationError && notificationError.code !== '42P01') {
-      console.error('Erreur lors du stockage de la notification:', notificationError);
-    }
+    await sgMail.send(msg);
+
+    console.log('📧 Email de confirmation envoyé via SendGrid à:', email);
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: 'Email de confirmation préparé',
+        message: 'Email de confirmation envoyé',
         emailDetails: {
           to: email,
           subject: subject,

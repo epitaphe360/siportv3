@@ -11,20 +11,42 @@ const PORT = process.env.AUTH_PORT || 3003;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const AUTH_MODE = process.env.AUTH_MODE || (NODE_ENV === 'production' ? 'supabase' : 'local');
 
-// SECURITY: JWT_SECRET must be set in production
+// SECURITY: JWT_SECRET must be set and must be strong
 const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET && NODE_ENV === 'production') {
-  console.error('❌ FATAL: JWT_SECRET environment variable is required in production');
+
+if (!JWT_SECRET || JWT_SECRET.length < 32) {
+  if (NODE_ENV === 'production') {
+    console.error('❌ FATAL: JWT_SECRET environment variable is required in production');
+    console.error('   JWT_SECRET must be at least 32 characters long');
+    console.error('   Generate with: openssl rand -hex 32');
+    process.exit(1);
+  }
+  console.warn('⚠️  WARNING: JWT_SECRET not set or too weak for development');
+  console.warn('   Generate a secure key with: openssl rand -hex 32');
+}
+
+// Never use default secrets in any environment
+const EFFECTIVE_JWT_SECRET = JWT_SECRET || require('crypto').randomBytes(32).toString('hex');
+
+// CORS Configuration
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
+  : ['http://localhost:5000', 'http://localhost:3000'];
+
+if (NODE_ENV === 'production' && !process.env.ALLOWED_ORIGINS) {
+  console.error('❌ FATAL: ALLOWED_ORIGINS environment variable is required in production');
+  console.error('   Example: ALLOWED_ORIGINS=https://yourdomain.com,https://www.yourdomain.com');
   process.exit(1);
 }
-if (!JWT_SECRET && NODE_ENV !== 'production') {
-  console.warn('⚠️  WARNING: Using default JWT_SECRET for development. Set JWT_SECRET env var for production!');
-}
-const EFFECTIVE_JWT_SECRET = JWT_SECRET || 'dev-only-secret-change-in-production';
 
 const app = express();
-app.use(cors());
-app.use(express.json());
+app.use(cors({
+  origin: ALLOWED_ORIGINS,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+app.use(express.json({ limit: '1mb' }));
 
 // Configuration de la base de données locale (PostgreSQL)
 const pool = new Pool({
@@ -94,29 +116,14 @@ app.post('/api/auth/login', async (req, res) => {
       }
       
       const userData = result.rows[0];
-      
-      // Vérifier le mot de passe
-      // SECURITY: Les comptes de démo sont seulement disponibles en mode développement
-      const testAccounts = [
-        'admin@siports.com',
-        'exposant@siports.com',
-        'partenaire@siports.com',
-        'visiteur@siports.com'
-      ];
-      
-      let isPasswordValid = false;
-      
-      if (testAccounts.includes(email) && NODE_ENV === 'development') {
-        // Comptes de démo - seulement en développement
-        isPasswordValid = (password === 'demo123');
-      } else if (userData.password_hash) {
-        // Production : comparer avec le hash bcrypt stocké dans la base
-        isPasswordValid = await bcrypt.compare(password, userData.password_hash);
-      } else {
-        // Pas de hash de mot de passe disponible
+
+      // Vérifier le mot de passe avec bcrypt
+      if (!userData.password_hash) {
         console.error('❌ Aucun password_hash trouvé pour:', email);
         return res.status(500).json({ error: 'Configuration du compte invalide' });
       }
+
+      const isPasswordValid = await bcrypt.compare(password, userData.password_hash);
       
       if (!isPasswordValid) {
         return res.status(401).json({ error: 'Email ou mot de passe incorrect' });

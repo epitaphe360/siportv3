@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
+import { toast } from 'sonner';
 import { 
   Send,
   Paperclip,
@@ -86,11 +87,10 @@ export default function ChatInterface() {
               <div className="p-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Messages</h3>
                 <div className="relative">
-                  <input
-                    type="text"
+                  <input type="text"
                     placeholder="Rechercher une conversation..."
                     className="w-full pl-3 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                   aria-label="Rechercher une conversation..." />
                 </div>
               </div>
 
@@ -98,7 +98,7 @@ export default function ChatInterface() {
                 {isLoading ? (
                   <div className="p-4">
                     {[1, 2, 3].map(i => (
-                      <div key={i} className="animate-pulse mb-4">
+                      <div key={`skeleton-${i}`} className="animate-pulse mb-4">
                         <div className="flex items-center space-x-3">
                           <div className="h-10 w-10 bg-gray-200 rounded-full"></div>
                           <div className="flex-1">
@@ -262,13 +262,12 @@ export default function ChatInterface() {
                             if (files && files.length > 0) {
                               // Traiter les fichiers sélectionnés
                               Array.from(files).forEach(file => {
-                                console.log(`Fichier sélectionné: ${file.name}, Taille: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
                                 // Ici vous pouvez ajouter la logique pour uploader les fichiers
                               });
                               
                               // Afficher un message de confirmation
                               const fileNames = Array.from(files).map(f => f.name).join(', ');
-                              alert(`📎 ${files.length} fichier(s) sélectionné(s):\n${fileNames}\n\n🚀 Upload en cours...`);
+                              toast.success(`${files.length} fichier(s) sélectionné(s): ${fileNames}\n\nUpload en cours...`);
                             }
                           };
                           input.click();

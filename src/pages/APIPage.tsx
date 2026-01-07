@@ -1,10 +1,12 @@
-import { Card } from '../components/ui/Card';
+﻿import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Code, Key, FileText, Zap } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from '../hooks/useTranslation';
 import { CONFIG, getSupportEmail, getSupportPhone, getSupportMessage, getApiUrl } from '../lib/config';
 
 export default function APIPage() {
+  const { t } = useTranslation();
   const handleAPIRequest = () => {
     toast.success(getSupportMessage('api'));
   };
@@ -121,9 +123,9 @@ export default function APIPage() {
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
             Démarrage Rapide
           </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 1. Obtenir une clé API
               </h3>
               <p className="text-gray-600 mb-4">
@@ -175,3 +177,5 @@ export default function APIPage() {
     </div>
   );
 }
+
+

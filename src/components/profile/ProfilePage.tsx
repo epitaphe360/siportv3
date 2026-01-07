@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
-import { 
+import { useTranslation } from '../../hooks/useTranslation';
+import {
   User, 
   Building2, 
   Mail, 
@@ -18,13 +19,16 @@ import {
   Award,
   Calendar,
   Eye,
-  ArrowLeft
+  ArrowLeft,
+  Sparkles,
+  ArrowRight
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import useAuthStore from '../../store/authStore';
 import { motion } from 'framer-motion';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 export default function ProfilePage() {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -139,9 +143,11 @@ export default function ProfilePage() {
             animate={{ opacity: 1, x: 0 }}
             className="lg:col-span-1"
           >
-            <Card className="text-center">
+            <Card className="text-center border-t-4 border-t-siports-gold">
               <div className="relative">
-                <div className="h-32 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-t-lg"></div>
+                <div className="h-32 bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent rounded-t-lg relative overflow-hidden">
+                   <MoroccanPattern className="opacity-10" color="white" scale={0.5} />
+                </div>
                 <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
                   <div className="relative">
                     <div className="h-24 w-24 bg-white rounded-full flex items-center justify-center shadow-lg">
@@ -162,7 +168,7 @@ export default function ProfilePage() {
                         type="button"
                         className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
                         onClick={() => fileInputRef.current?.click()}
-                        title="Changer la photo de profil"
+                        title={t('profile.change_photo')}
                         style={{ zIndex: 2 }}
                       >
                         <Camera className="h-4 w-4" />
@@ -236,6 +242,29 @@ export default function ProfilePage() {
                     <span className="font-semibold text-gray-900">15</span>
                   </div>
                 </div>
+              </div>
+            </Card>
+
+            {/* Matching Profile CTA */}
+            <Card className="mt-6 bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200">
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="h-5 w-5 text-purple-600" />
+                  <h3 className="font-semibold text-purple-900">Matching IA</h3>
+                </div>
+                <p className="text-sm text-purple-700 mb-4">
+                  Complétez votre profil de matching pour obtenir des recommandations personnalisées
+                </p>
+                <Link to={ROUTES.PROFILE_MATCHING}>
+                  <Button 
+                    variant="default" 
+                    size="sm" 
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                  >
+                    Configurer mon matching
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Button>
+                </Link>
               </div>
             </Card>
           </motion.div>
@@ -422,7 +451,7 @@ export default function ProfilePage() {
                       onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                       rows={4}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Parlez-nous de vous et de votre expertise..."
+                      placeholder={t('profile.about_placeholder')}
                     />
                   ) : (
                     <p className="text-gray-900">{user.profile.bio || 'Aucune biographie renseignée'}</p>
@@ -467,12 +496,12 @@ export default function ProfilePage() {
                   </div>
                 ) : (
                   <div className="flex flex-wrap gap-2">
-                    {user.profile.interests.map((interest) => (
+                    {user?.profile?.interests?.map((interest) => (
                       <Badge key={interest} variant="info" size="sm">
                         {interest}
                       </Badge>
                     ))}
-                    {user.profile.interests.length === 0 && (
+                    {(!user?.profile?.interests || user.profile.interests.length === 0) && (
                       <p className="text-gray-500 text-sm">Aucun centre d'intérêt renseigné</p>
                     )}
                   </div>
@@ -516,13 +545,13 @@ export default function ProfilePage() {
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    {user.profile.objectives.map((objective) => (
+                    {user?.profile?.objectives?.map((objective) => (
                       <div key={objective} className="flex items-center space-x-2">
                         <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
                         <span className="text-sm text-gray-700">{objective}</span>
                       </div>
                     ))}
-                    {user.profile.objectives.length === 0 && (
+                    {(!user?.profile?.objectives || user.profile.objectives.length === 0) && (
                       <p className="text-gray-500 text-sm">Aucun objectif renseigné</p>
                     )}
                   </div>

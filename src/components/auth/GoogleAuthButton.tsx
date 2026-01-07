@@ -2,9 +2,8 @@ import React from 'react';
 import { Loader } from 'lucide-react';
 import { Button, buttonVariants } from '../ui/Button';
 import useAuthStore from '../../store/authStore';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../../lib/routes';
 import { VariantProps } from 'class-variance-authority';
+import { toast } from 'sonner';
 
 interface GoogleAuthButtonProps extends VariantProps<typeof buttonVariants> {
   className?: string;
@@ -20,29 +19,24 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
   onError
 }) => {
   const { loginWithGoogle, isGoogleLoading } = useAuthStore();
-  const navigate = useNavigate();
 
   const handleGoogleLogin = async () => {
     try {
-      // Vérifier si Firebase est configuré
-      if (!import.meta.env.VITE_FIREBASE_API_KEY) {
-        throw new Error('L\'authentification Google n\'est pas configurée. Utilisez l\'authentification par email.');
-      }
-      
+      // Start Google OAuth flow - will redirect to Google
       await loginWithGoogle();
-      
+
+      // Note: This code may not execute because OAuth redirects the page
       if (onSuccess) {
         onSuccess();
-      } else {
-  navigate(ROUTES.DASHBOARD);
       }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Erreur lors de la connexion Google';
-      
+      console.error('Erreur OAuth Google:', error);
+
       if (onError) {
         onError(errorMessage);
       } else {
-        alert(`❌ ${errorMessage}`);
+        toast.error(errorMessage);
       }
     }
   };

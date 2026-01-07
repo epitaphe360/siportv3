@@ -1,5 +1,5 @@
 export type UserType = 'admin' | 'partner' | 'exhibitor' | 'visitor';
-export type VisitorPassType = 'free' | 'basic' | 'premium' | 'vip';
+export type VisitorPassType = 'free' | 'premium';
 export type ExhibitorStatus = 'basic' | 'premium' | 'platinum';
 export type PartnerTier = 'bronze' | 'silver' | 'gold' | 'platinum';
 
@@ -77,7 +77,7 @@ export function getNetworkingPermissions(userType: UserType, userLevel?: string)
         canAccessAnalytics: true,
       };
 
-    case 'partner':
+    case 'partner': {
       const partnerTier = (userLevel as PartnerTier) || 'bronze';
       const partnerMultiplier = getPartnerMultiplier(partnerTier);
       return {
@@ -98,8 +98,9 @@ export function getNetworkingPermissions(userType: UserType, userLevel?: string)
         canAccessAIRecommendations: true,
         canAccessAnalytics: partnerTier !== 'bronze',
       };
+    }
 
-    case 'exhibitor':
+    case 'exhibitor': {
       const exhibitorStatus = (userLevel as ExhibitorStatus) || 'basic';
       const exhibitorMultiplier = getExhibitorMultiplier(exhibitorStatus);
       return {
@@ -120,10 +121,12 @@ export function getNetworkingPermissions(userType: UserType, userLevel?: string)
         canAccessAIRecommendations: true,
         canAccessAnalytics: exhibitorStatus !== 'basic',
       };
+    }
 
-    case 'visitor':
+    case 'visitor': {
       const visitorPass = (userLevel as VisitorPassType) || 'free';
       return getVisitorPermissions(visitorPass);
+    }
 
     default:
       return basePermissions;
@@ -161,21 +164,9 @@ function getVisitorPermissions(passType: VisitorPassType): NetworkingPermissions
         canViewProfiles: true, // Peut seulement voir les profils publics
       };
 
-    case 'basic':
-      return {
-        ...baseVisitorPermissions,
-        canAccessNetworking: true,
-        canSendMessages: true,
-        canMakeConnections: true,
-        canScheduleMeetings: true,
-        maxConnectionsPerDay: 5,
-        maxMessagesPerDay: 10,
-        maxMeetingsPerDay: 2,
-        priorityLevel: 2,
-        canAccessAIRecommendations: true,
-      };
-
     case 'premium':
+      // Pass Premium VIP 700€ : Accès VIP complet et illimité (équivalent ancien VIP)
+      // CDC: Networking illimité, Soirée gala, Ateliers spécialisés
       return {
         ...baseVisitorPermissions,
         canAccessNetworking: true,
@@ -183,29 +174,14 @@ function getVisitorPermissions(passType: VisitorPassType): NetworkingPermissions
         canMakeConnections: true,
         canScheduleMeetings: true,
         canAccessPremiumFeatures: true,
-        maxConnectionsPerDay: 15,
-        maxMessagesPerDay: 30,
-        maxMeetingsPerDay: 5,
-        priorityLevel: 3,
-        canAccessAIRecommendations: true,
-        canAccessAnalytics: true,
-      };
-
-    case 'vip':
-      return {
-        ...baseVisitorPermissions,
-        canAccessNetworking: true,
-        canSendMessages: true,
-        canMakeConnections: true,
-        canScheduleMeetings: true,
-        canAccessPremiumFeatures: true,
-        canAccessVIPLounge: true,
-        maxConnectionsPerDay: 25,
-        maxMessagesPerDay: 50,
-        maxMeetingsPerDay: 8,
-        priorityLevel: 4,
+        canAccessVIPLounge: true, // CDC: Networking illimité inclut VIP Lounge
+        canAccessPartnerEvents: true,
+        maxConnectionsPerDay: -1, // Illimité
+        maxMessagesPerDay: -1, // Illimité
+        maxMeetingsPerDay: -1, // Illimité
+        priorityLevel: 10, // Priorité maximale
         canBypassQueue: true,
-        canAccessAIRecommendations: true,
+        canAccessAIRecommendations: false,
         canAccessAnalytics: true,
       };
 
@@ -246,7 +222,7 @@ export function getEventAccessPermissions(userType: UserType, userLevel?: string
         qrAccessLevel: 'partner',
       };
 
-    case 'partner':
+    case 'partner': {
       const partnerTier = (userLevel as PartnerTier) || 'bronze';
       return {
         ...baseEventPermissions,
@@ -260,8 +236,9 @@ export function getEventAccessPermissions(userType: UserType, userLevel?: string
         hasQRAccess: true,
         qrAccessLevel: 'partner',
       };
+    }
 
-    case 'exhibitor':
+    case 'exhibitor': {
       const exhibitorStatus = (userLevel as ExhibitorStatus) || 'basic';
       return {
         ...baseEventPermissions,
@@ -275,10 +252,12 @@ export function getEventAccessPermissions(userType: UserType, userLevel?: string
         hasQRAccess: true,
         qrAccessLevel: 'exhibitor',
       };
+    }
 
-    case 'visitor':
+    case 'visitor': {
       const visitorPass = (userLevel as VisitorPassType) || 'free';
       return getVisitorEventPermissions(visitorPass);
+    }
 
     default:
       return baseEventPermissions;
@@ -311,34 +290,17 @@ function getVisitorEventPermissions(passType: VisitorPassType): EventAccessPermi
         qrAccessLevel: 'basic',
       };
 
-    case 'basic':
-      return {
-        ...baseVisitorEventPermissions,
-        maxEventsPerDay: 4,
-        canAccessNetworkingBreakfast: true,
-        hasQRAccess: true,
-        qrAccessLevel: 'basic',
-      };
-
     case 'premium':
-      return {
-        ...baseVisitorEventPermissions,
-        canAccessPremiumWorkshops: true,
-        canAccessNetworkingBreakfast: true,
-        maxEventsPerDay: 6,
-        hasQRAccess: true,
-        qrAccessLevel: 'premium',
-      };
-
-    case 'vip':
+      // Pass Premium VIP 700€ : Accès VIP complet à tous les événements
       return {
         ...baseVisitorEventPermissions,
         canAccessPremiumWorkshops: true,
         canAccessVIPEvents: true,
+        canAccessPartnerExclusives: true,
         canAccessNetworkingBreakfast: true,
         canAccessGalaDinner: true,
-        canAccessExecutiveLounge: true,
-        maxEventsPerDay: -1,
+        canAccessExecutiveLounge: false,
+        maxEventsPerDay: -1, // Illimité
         hasQRAccess: true,
         qrAccessLevel: 'vip',
       };

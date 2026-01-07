@@ -22,7 +22,18 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# SECURITY FIX: Comprehensive .env file protection
 .env
+.env.*
+!.env.example
+*.env
+.env.local
+.env.development
+.env.production
+.env.test
+.env.railway
+.env.vercel
 
 # Build / artifact folders
 .cache
@@ -38,10 +49,6 @@ npm-debug.log*
 pnpm-lock.yaml
 yarn.lock
 
-# local env
-.env.local
-.env.*.local
-
 # JetBrains
 .idea/
 
@@ -49,3 +56,14 @@ yarn.lock
 *.zip
 *.zip/
 .eslint-report.json
+
+# Playwright test artifacts
+/playwright-report/
+/test-results/
+/test-results.json
+/test-results.xml
+package-lock.json
+-e 
+# Environment files
+*.env
+*.env.*

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -10,93 +11,103 @@ import {
   Phone,
   Crown,
   CheckCircle,
-  Clock
+  Clock,
+  Users
 } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
+import { supabase } from '../../lib/supabase';
+import useAuthStore from '../../store/authStore';
+
+interface Connection {
+  id: string;
+  created_at: string;
+  status: string;
+  addressee?: {
+    id: string;
+    name: string;
+    email: string;
+    type: string;
+    company: string;
+  };
+}
 
 export const PartnerLeadsPage: React.FC = () => {
+  const { user } = useAuthStore();
+  const { t } = useTranslation();
+  const [connections, setConnections] = useState<Connection[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadConnections();
+  }, []);
+
+  async function loadConnections() {
+    try {
+      // Charger les connexions du partenaire
+      const { data, error } = await supabase
+        .from('connections')
+        .select(`
+          id,
+          created_at,
+          status,
+          addressee:users!connections_addressee_id_fkey(
+            id,
+            name,
+            email,
+            type,
+            company
+          )
+        `)
+        .eq('requester_id', user?.id)
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (error) {
+        console.error('Erreur chargement connexions:', error);
+        setConnections([]);
+      } else {
+        setConnections(data || []);
+      }
+    } catch (error) {
+      console.error('Erreur chargement connexions:', error);
+      setConnections([]);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const leadsData = {
     overview: {
-      totalLeads: 89,
-      qualifiedLeads: 67,
-      conversionRate: 12,
-      totalValue: 2850000
+      totalLeads: connections.length,
+      qualifiedLeads: connections.filter(c => c.status === 'accepted').length,
+      conversionRate: connections.length > 0 ? Math.round((connections.filter(c => c.status === 'accepted').length / connections.length) * 100) : 0,
+      totalValue: 0
     },
-    recentLeads: [
-      {
-        id: '1',
-        company: 'Port Solutions Inc.',
-        contact: 'Marie Dubois',
-        position: 'Directrice Commerciale',
-        sector: 'Port Operations',
-        value: '850K€',
-        status: 'Hot Lead',
-        lastContact: '2024-01-15',
-        nextAction: 'Présentation produit',
-        priority: 'high'
-      },
-      {
-        id: '2',
-        company: 'TechMarine Solutions',
-        contact: 'Pierre Martin',
-        position: 'CTO',
-        sector: 'Technology',
-        value: '1.2M€',
-        status: 'Qualified',
-        lastContact: '2024-01-12',
-        nextAction: 'Démo technique',
-        priority: 'high'
-      },
-      {
-        id: '3',
-        company: 'LogiFlow Systems',
-        contact: 'Sophie Bernard',
-        position: 'VP Sales',
-        sector: 'Logistics',
-        value: '650K€',
-        status: 'Nurturing',
-        lastContact: '2024-01-10',
-        nextAction: 'Suivi email',
-        priority: 'medium'
-      },
-      {
-        id: '4',
-        company: 'Maritime Data Hub',
-        contact: 'Jean-François Moreau',
-        position: 'CEO',
-        sector: 'Data & Analytics',
-        value: '950K€',
-        status: 'Qualified',
-        lastContact: '2024-01-08',
-        nextAction: 'Proposition commerciale',
-        priority: 'high'
-      },
-      {
-        id: '5',
-        company: 'SecurePort Technologies',
-        contact: 'Claire Leroy',
-        position: 'Directrice Sécurité',
-        sector: 'Sécurité',
-        value: '720K€',
-        status: 'Hot Lead',
-        lastContact: '2024-01-05',
-        nextAction: 'Réunion stratégique',
-        priority: 'high'
-      }
-    ],
+    recentLeads: connections.slice(0, 10).map(conn => ({
+      id: conn.id,
+      company: conn.addressee?.company || 'N/A',
+      contact: conn.addressee?.name || 'Utilisateur',
+      position: conn.addressee?.type || 'N/A',
+      sector: conn.addressee?.type === 'exhibitor' ? t('partner.leads.exhibitor', 'Exposant') : conn.addressee?.type === 'visitor' ? t('partner.leads.visitor', 'Visiteur') : t('partner.leads.other', 'Autre'),
+      value: 'N/A',
+      status: conn.status === 'accepted' ? t('partner.leads.connected', 'Connecté') : conn.status === 'pending' ? t('partner.leads.pending', 'En attente') : t('partner.leads.rejected', 'Rejeté'),
+      lastContact: new Date(conn.created_at).toISOString().split('T')[0],
+      nextAction: conn.status === 'accepted' ? t('partner.leads.active_followup', 'Suivi actif') : t('partner.leads.awaiting_response', 'En attente de réponse'),
+      priority: conn.status === 'accepted' ? 'high' : 'medium'
+    })),
     leadSources: [
-      { source: 'Événements SIPORTS', count: 34, percentage: 38 },
-      { source: 'Networking Partenaires', count: 28, percentage: 31 },
-      { source: 'Références Clients', count: 15, percentage: 17 },
-      { source: 'Campagnes Marketing', count: 12, percentage: 14 }
+      { source: t('partner.leads.sources.events', 'Événements SIPORTS'), count: 34, percentage: 38 },
+      { source: t('partner.leads.sources.networking', 'Networking Partenaires'), count: 28, percentage: 31 },
+      { source: t('partner.leads.sources.referrals', 'Références Clients'), count: 15, percentage: 17 },
+      { source: t('partner.leads.sources.marketing', 'Campagnes Marketing'), count: 12, percentage: 14 }
     ],
     conversionFunnel: [
-      { stage: 'Leads Générés', count: 89, percentage: 100 },
-      { stage: 'Qualifiés', count: 67, percentage: 75 },
-      { stage: 'Proposition', count: 23, percentage: 26 },
-      { stage: 'Négociation', count: 12, percentage: 13 },
-      { stage: 'Conversion', count: 11, percentage: 12 }
+      { stage: t('partner.leads.funnel.generated', 'Leads Générés'), count: 89, percentage: 100 },
+      { stage: t('partner.leads.funnel.qualified', 'Qualifiés'), count: 67, percentage: 75 },
+      { stage: t('partner.leads.funnel.proposal', 'Proposition'), count: 23, percentage: 26 },
+      { stage: t('partner.leads.funnel.negotiation', 'Négociation'), count: 12, percentage: 13 },
+      { stage: t('partner.leads.funnel.conversion', 'Conversion'), count: 11, percentage: 12 }
     ]
   };
 
@@ -135,7 +146,7 @@ export const PartnerLeadsPage: React.FC = () => {
         <div className="mb-8">
           <Link to={ROUTES.DASHBOARD} className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Retour au tableau de bord
+            {t('partner.back_to_dashboard', 'Retour au tableau de bord')}
           </Link>
 
           <div className="flex items-center space-x-3 mb-4">
@@ -144,10 +155,10 @@ export const PartnerLeadsPage: React.FC = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                Leads & Prospects
+                {t('partner.leads.title', 'Leads & Prospects')}
               </h1>
               <p className="text-gray-600">
-                Gérez vos leads qualifiés et suivez leur progression dans le pipeline commercial
+                {t('partner.leads.subtitle', 'Gérez vos leads qualifiés et suivez leur progression dans le pipeline commercial')}
               </p>
             </div>
           </div>
@@ -155,9 +166,9 @@ export const PartnerLeadsPage: React.FC = () => {
           <div className="bg-green-50 border border-green-200 rounded-lg p-4">
             <div className="flex items-center space-x-2">
               <Crown className="h-5 w-5 text-green-600" />
-              <span className="text-green-800 font-medium">Programme Leads Premium</span>
+              <span className="text-green-800 font-medium">{t('partner.leads.premium_program', 'Programme Leads Premium')}</span>
               <Badge className="bg-green-100 text-green-800" size="sm">
-                12% Taux de Conversion
+                {t('partner.leads.conversion_rate', '12% Taux de Conversion')}
               </Badge>
             </div>
           </div>
@@ -173,7 +184,7 @@ export const PartnerLeadsPage: React.FC = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold text-gray-900">{leadsData.overview.totalLeads}</p>
-                  <p className="text-sm text-gray-600">Leads générés</p>
+                  <p className="text-sm text-gray-600">{t('partner.leads.generated', 'Leads générés')}</p>
                 </div>
               </div>
             </div>
@@ -187,7 +198,7 @@ export const PartnerLeadsPage: React.FC = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold text-gray-900">{leadsData.overview.qualifiedLeads}</p>
-                  <p className="text-sm text-gray-600">Leads qualifiés</p>
+                  <p className="text-sm text-gray-600">{t('partner.leads.qualified', 'Leads qualifiés')}</p>
                 </div>
               </div>
             </div>
@@ -201,7 +212,7 @@ export const PartnerLeadsPage: React.FC = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold text-gray-900">{leadsData.overview.conversionRate}%</p>
-                  <p className="text-sm text-gray-600">Taux de conversion</p>
+                  <p className="text-sm text-gray-600">{t('partner.leads.conversion', 'Taux de conversion')}</p>
                 </div>
               </div>
             </div>
@@ -215,7 +226,7 @@ export const PartnerLeadsPage: React.FC = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold text-gray-900">{leadsData.overview.totalValue.toLocaleString()}€</p>
-                  <p className="text-sm text-gray-600">Valeur estimée</p>
+                  <p className="text-sm text-gray-600">{t('partner.leads.estimated_value', 'Valeur estimée')}</p>
                 </div>
               </div>
             </div>
@@ -225,7 +236,7 @@ export const PartnerLeadsPage: React.FC = () => {
         {/* Recent Leads */}
         <Card className="mb-8">
           <div className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Leads Récents</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">{t('partner.leads.recent', 'Leads Récents')}</h3>
             <div className="space-y-4">
               {leadsData.recentLeads.map((lead) => (
                 <div key={lead.id} className="border border-gray-200 rounded-lg p-4">
@@ -346,44 +357,44 @@ export const PartnerLeadsPage: React.FC = () => {
                 <Award className="h-5 w-5 text-blue-600" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900">
-                Conseils de Gestion des Leads
+                {t('partner.leads.tips.title', 'Conseils de Gestion des Leads')}
               </h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="p-4 bg-white rounded-lg border border-blue-200">
                 <h4 className="font-medium text-blue-900 mb-2">
-                  🎯 Qualification Rapide
+                  🎯 {t('partner.leads.tips.qualification', 'Qualification Rapide')}
                 </h4>
                 <p className="text-sm text-blue-700">
-                  Contactez les leads chauds dans les 24h pour maximiser vos chances de conversion
+                  {t('partner.leads.tips.qualification_desc', 'Contactez les leads chauds dans les 24h pour maximiser vos chances de conversion')}
                 </p>
               </div>
 
               <div className="p-4 bg-white rounded-lg border border-blue-200">
                 <h4 className="font-medium text-blue-900 mb-2">
-                  📊 Suivi Régulier
+                  📊 {t('partner.leads.tips.followup', 'Suivi Régulier')}
                 </h4>
                 <p className="text-sm text-blue-700">
-                  Planifiez des points de suivi hebdomadaires pour maintenir l'engagement
+                  {t('partner.leads.tips.followup_desc', "Planifiez des points de suivi hebdomadaires pour maintenir l'engagement")}
                 </p>
               </div>
 
               <div className="p-4 bg-white rounded-lg border border-blue-200">
                 <h4 className="font-medium text-blue-900 mb-2">
-                  🎪 Personnalisation
+                  🎪 {t('partner.leads.tips.personalization', 'Personnalisation')}
                 </h4>
                 <p className="text-sm text-blue-700">
-                  Adaptez vos propositions aux besoins spécifiques de chaque prospect
+                  {t('partner.leads.tips.personalization_desc', 'Adaptez vos propositions aux besoins spécifiques de chaque prospect')}
                 </p>
               </div>
 
               <div className="p-4 bg-white rounded-lg border border-blue-200">
                 <h4 className="font-medium text-blue-900 mb-2">
-                  📈 Mesure des Résultats
+                  📈 {t('partner.leads.tips.measure', 'Mesure des Résultats')}
                 </h4>
                 <p className="text-sm text-blue-700">
-                  Analysez régulièrement vos taux de conversion pour optimiser votre approche
+                  {t('partner.leads.tips.measure_desc', 'Analysez régulièrement vos taux de conversion pour optimiser votre approche')}
                 </p>
               </div>
             </div>
@@ -393,3 +404,5 @@ export const PartnerLeadsPage: React.FC = () => {
     </div>
   );
 };
+
+export default PartnerLeadsPage;

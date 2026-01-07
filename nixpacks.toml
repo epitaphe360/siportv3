@@ -1,0 +1,22 @@
+# Nixpacks Configuration for SIPORTS Web Application
+# Force Node.js build only, ignore Deno/mobile apps detection
+
+# Use Node.js 20 (Railway will use available version)
+# .npmrc configured to ignore EBADENGINE warnings
+[phases.setup]
+nixPkgs = ["nodejs_20"]
+
+# Install dependencies with optimizations
+[phases.install]
+cmds = [
+  "npm ci --prefer-offline --no-audit --loglevel=error || npm install --prefer-offline --no-audit"
+]
+
+# Build the web application with Vite
+[phases.build]
+cmds = ["npm run build"]
+
+# Start command for production server
+[start]
+cmd = "node server.js"
+

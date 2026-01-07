@@ -1,6 +1,59 @@
 import { supabase } from '../../lib/supabase';
-import { Product } from '../../types';
+import { Product, TechnicalSpec } from '../../types';
 import { StorageService } from '../storage/storageService';
+
+/**
+ * Interface représentant un produit dans la base de données (snake_case)
+ */
+interface ProductDB {
+  id: string;
+  exhibitor_id: string;
+  name: string;
+  description: string;
+  category: string;
+  images: string[];
+  specifications?: string | null;
+  price?: number | null;
+  original_price?: number | null;
+  featured: boolean;
+  technical_specs?: TechnicalSpec[];
+  is_new?: boolean;
+  in_stock?: boolean;
+  certified?: boolean;
+  delivery_time?: string | null;
+  video_url?: string | null;
+  documents?: Array<{ name: string; url: string; type?: string }> | null;
+  brochure?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+/**
+ * Transforme un ProductDB en Product
+ */
+function transformProductDBToProduct(productDB: ProductDB): Product {
+  return {
+    id: productDB.id,
+    exhibitorId: productDB.exhibitor_id,
+    name: productDB.name,
+    description: productDB.description,
+    category: productDB.category,
+    images: productDB.images || [],
+    specifications: productDB.specifications || undefined,
+    price: productDB.price || undefined,
+    originalPrice: productDB.original_price || undefined,
+    featured: productDB.featured,
+    technicalSpecs: productDB.technical_specs || [],
+    // Champs additionnels
+    isNew: productDB.is_new ?? false,
+    inStock: productDB.in_stock ?? true,
+    certified: productDB.certified ?? false,
+    deliveryTime: productDB.delivery_time || undefined,
+    videoUrl: productDB.video_url || undefined,
+    documents: productDB.documents || [],
+    brochure: productDB.brochure || undefined
+  };
+}
 
 /**
  * Service pour gérer les produits des exposants
@@ -27,17 +80,7 @@ export class ProductService {
     }
 
     // Convertir en format Product
-    return (data as any[]).map(item => ({
-      id: item.id,
-      name: item.name,
-      description: item.description,
-      category: item.category,
-      images: item.images || [],
-      specifications: item.specifications || undefined,
-      price: item.price || undefined,
-      featured: item.featured,
-      technicalSpecs: item.technical_specs || []
-    }));
+    return (data || []).map(transformProductDBToProduct);
   }
 
   /**
@@ -61,17 +104,7 @@ export class ProductService {
       throw error;
     }
 
-    return {
-      id: (data as any).id,
-      name: (data as any).name,
-      description: (data as any).description,
-      category: (data as any).category,
-      images: (data as any).images || [],
-      specifications: (data as any).specifications || undefined,
-      price: (data as any).price || undefined,
-      featured: (data as any).featured,
-      technicalSpecs: (data as any).technical_specs || []
-    };
+    return transformProductDBToProduct(data);
   }
 
   /**
@@ -124,60 +157,52 @@ export class ProductService {
         price: product.price,
         featured: product.featured,
         technical_specs: product.technicalSpecs
-      }] as any)
+      }])
       .select()
       .single();
 
     if (error) {
       console.error('Erreur lors de la création du produit:', error);
-      
+
       // En cas d'erreur, supprimer les images téléchargées
       if (imageUrls.length > 0) {
         await Promise.all(
           imageUrls.map(url => StorageService.deleteImage(url, 'products'))
         ).catch(err => console.error('Erreur lors de la suppression des images:', err));
       }
-      
+
       throw error;
     }
+
+    let productData = data;
 
     // Si les images ont été téléchargées avec un ID temporaire, les déplacer vers le dossier avec l'ID réel
     if (imageUrls.length > 0) {
       try {
         const updatedImageUrls = await this.moveProductImages(
           exhibitorId,
-          (data as any).id,
+          data.id,
           imageUrls
         );
-        
+
         // Mettre à jour le produit avec les nouvelles URLs
-        const { error: updateError } = await (supabase as any)
+        const { error: updateError } = await supabase
           .from('products')
           .update({ images: updatedImageUrls })
-          .eq('id', (data as any).id);
-          
+          .eq('id', data.id);
+
         if (updateError) {
           console.error('Erreur lors de la mise à jour des URLs d\'images:', updateError);
         } else {
           // Remplacer les URLs dans l'objet à retourner
-          (data as any).images = updatedImageUrls;
+          productData = { ...data, images: updatedImageUrls };
         }
       } catch (err) {
         console.error('Erreur lors du déplacement des images:', err);
       }
     }
 
-    return {
-      id: (data as any).id,
-      name: (data as any).name,
-      description: (data as any).description,
-      category: (data as any).category,
-      images: (data as any).images || [],
-      specifications: (data as any).specifications || undefined,
-      price: (data as any).price || undefined,
-      featured: (data as any).featured,
-      technicalSpecs: (data as any).technical_specs || []
-    };
+    return transformProductDBToProduct(productData);
   }
 
   /**
@@ -234,21 +259,23 @@ export class ProductService {
     
     // Combiner les images restantes et les nouvelles images
     const updatedImages = [...remainingImages, ...newImageUrls];
-    
-    // Préparer les données à mettre à jour
-    const updateData: any = {
-      ...updates,
+
+    // Préparer les données à mettre à jour (conversion camelCase vers snake_case)
+    const updateData: Partial<ProductDB> = {
       images: updatedImages
     };
-    
-    // Convertir les champs techniques pour la base de données
-    if (updates.technicalSpecs) {
-      updateData.technical_specs = updates.technicalSpecs;
-      delete updateData.technicalSpecs;
-    }
+
+    // Copier les autres champs en convertissant la nomenclature
+    if (updates.name !== undefined) updateData.name = updates.name;
+    if (updates.description !== undefined) updateData.description = updates.description;
+    if (updates.category !== undefined) updateData.category = updates.category;
+    if (updates.specifications !== undefined) updateData.specifications = updates.specifications;
+    if (updates.price !== undefined) updateData.price = updates.price;
+    if (updates.featured !== undefined) updateData.featured = updates.featured;
+    if (updates.technicalSpecs !== undefined) updateData.technical_specs = updates.technicalSpecs;
     
     // Mettre à jour le produit
-    const { data, error } = await (supabase as any)
+    const { data, error } = await supabase
       .from('products')
       .update(updateData)
       .eq('id', productId)
@@ -269,15 +296,15 @@ export class ProductService {
     }
 
     return {
-      id: (data as any).id,
-      name: (data as any).name,
-      description: (data as any).description,
-      category: (data as any).category,
-      images: (data as any).images || [],
-      specifications: (data as any).specifications || undefined,
-      price: (data as any).price || undefined,
-      featured: (data as any).featured,
-      technicalSpecs: (data as any).technical_specs || []
+      id: data.id,
+      name: data.name,
+      description: data.description,
+      category: data.category,
+      images: data.images || [],
+      specifications: data.specifications || undefined,
+      price: data.price || undefined,
+      featured: data.featured,
+      technicalSpecs: data.technical_specs || []
     };
   }
 
@@ -379,7 +406,7 @@ export class ProductService {
       throw new Error('Supabase non configuré');
     }
 
-    const { data, error } = await (supabase as any)
+    const { data, error } = await supabase
       .from('products')
       .update({ images: newOrder })
       .eq('id', productId)
@@ -392,15 +419,15 @@ export class ProductService {
     }
 
     return {
-      id: (data as any).id,
-      name: (data as any).name,
-      description: (data as any).description,
-      category: (data as any).category,
-      images: (data as any).images || [],
-      specifications: (data as any).specifications || undefined,
-      price: (data as any).price || undefined,
-      featured: (data as any).featured,
-      technicalSpecs: (data as any).technical_specs || []
+      id: data.id,
+      name: data.name,
+      description: data.description,
+      category: data.category,
+      images: data.images || [],
+      specifications: data.specifications || undefined,
+      price: data.price || undefined,
+      featured: data.featured,
+      technicalSpecs: data.technical_specs || []
     };
   }
 }

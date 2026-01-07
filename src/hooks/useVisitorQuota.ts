@@ -22,10 +22,10 @@ export const useVisitorQuota = (): VisitorQuotaInfo => {
   return useMemo(() => {
     const level = user?.visitor_level || 'free';
     const total = getVisitorQuota(level);
-    
-    // Compter les rendez-vous confirmés pour l'utilisateur actuel
+
+    // Compter TOUS les rendez-vous actifs (pending + confirmed) pour éviter contournement du quota
     const used = appointments.filter(
-      (a) => a.visitorId === user?.id && a.status === 'confirmed'
+      (a) => a.visitorId === user?.id && (a.status === 'confirmed' || a.status === 'pending')
     ).length;
 
     const remaining = calculateRemainingQuota(level, used);

@@ -1,14 +1,17 @@
 import { create } from 'zustand';
 import { ChatMessage, ChatConversation, ChatBot } from '../types';
+import { SupabaseService } from '../services/supabaseService';
+import { useAuthStore } from './authStore';
 
 interface ChatState {
   conversations: ChatConversation[];
   activeConversation: string | null;
   messages: Record<string, ChatMessage[]>;
   isLoading: boolean;
+  error: string | null;
   chatBot: ChatBot;
   onlineUsers: string[];
-  
+
   // Actions
   fetchConversations: () => Promise<void>;
   setActiveConversation: (conversationId: string) => void;
@@ -36,17 +39,28 @@ const mockChatBot: ChatBot = {
 // Chat conversations and messages will be loaded from Supabase
 const loadChatData = async (userId: string) => {
   try {
-    // In a real implementation, these would call Supabase
-    // const conversations = await SupabaseService.getChatConversations(userId);
-    // const messages = await SupabaseService.getChatMessages(conversationIds);
-    
-    // For now, return empty structures - will be populated by real data
+
+    // Charger les conversations depuis Supabase
+    const conversations = await SupabaseService.getConversations(userId);
+
+    // Charger les messages pour chaque conversation
+    const messages: Record<string, ChatMessage[]> = {};
+    for (const conversation of conversations) {
+      try {
+        const convMessages = await SupabaseService.getMessages(conversation.id);
+        messages[conversation.id] = convMessages || [];
+      } catch (err) {
+        console.warn(`Failed to load messages for conversation ${conversation.id}:`, err);
+        messages[conversation.id] = [];
+      }
+    }
+
     return {
-      conversations: [],
-      messages: {}
+      conversations,
+      messages
     };
   } catch (error) {
-    console.error('Error loading chat data:', error);
+    console.error('❌ Error loading chat data:', error);
     return {
       conversations: [],
       messages: {}
@@ -59,23 +73,33 @@ export const useChatStore = create<ChatState>((set, get) => ({
   activeConversation: null,
   messages: {},
   isLoading: false,
+  error: null,
   chatBot: mockChatBot,
-  onlineUsers: ['user2', 'siports-bot'],
+  onlineUsers: [],
 
   fetchConversations: async () => {
-    set({ isLoading: true });
+    set({ isLoading: true, error: null });
     try {
-      // This would normally fetch from Supabase
-      // For now, we'll initialize with empty data - real chat will be implemented with backend
-      const chatData = await loadChatData('current-user');
-      set({ 
+      // Récupérer l'utilisateur connecté depuis authStore
+      const authStoreModule = await import('./authStore');
+      const authStore = authStoreModule.default;
+      const user = authStore.getState ? authStore.getState().user : null;
+
+      if (!user) {
+        console.warn('⚠️ No authenticated user found');
+        set({ conversations: [], messages: {}, isLoading: false });
+        return;
+      }
+
+      const chatData = await loadChatData(user.id);
+      set({
         conversations: chatData.conversations,
         messages: chatData.messages,
-        isLoading: false 
+        isLoading: false
       });
     } catch (error) {
-      console.error('Error fetching conversations:', error);
-      set({ isLoading: false });
+      console.error('❌ Error fetching conversations:', error);
+      set({ isLoading: false, error: error instanceof Error ? error.message : 'Erreur lors du chargement des conversations' });
     }
   },
 
@@ -86,45 +110,100 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   sendMessage: async (conversationId, content, type = 'text') => {
-    const { messages, conversations } = get();
-    const newMessage: ChatMessage = {
-      id: Date.now().toString(),
-      senderId: 'user1', // Current user
-      receiverId: conversationId === '2' ? 'siports-bot' : 'user2',
-      content,
-      type,
-      timestamp: new Date(),
-      read: false
-    };
+    try {
 
-    // Add message to conversation
-    const updatedMessages = {
-      ...messages,
-      [conversationId]: [...(messages[conversationId] || []), newMessage]
-    };
+      const { messages, conversations } = get();
+      const conversation = conversations.find(c => c.id === conversationId);
 
-    // Update conversation last message
-    const updatedConversations = conversations.map(conv => 
-      conv.id === conversationId 
-        ? { ...conv, lastMessage: newMessage, updatedAt: new Date() }
-        : conv
-    );
+      if (!conversation) {
+        throw new Error('Conversation non trouvée');
+      }
 
-    set({ 
-      messages: updatedMessages,
-      conversations: updatedConversations
-    });
+      // Récupérer l'utilisateur connecté depuis authStore
+      const authStoreModule = await import('./authStore');
+      const authStore = authStoreModule.default;
+      const user = authStore.getState ? authStore.getState().user : null;
 
-    // Simulate bot response if talking to bot
-    if (conversationId === '2') {
-      setTimeout(() => {
-        get().sendBotMessage('Merci pour votre message. Je traite votre demande...');
-      }, 1000);
+      if (!user) {
+        throw new Error('Utilisateur non authentifié');
+      }
+
+      // Identifier l'expéditeur et le destinataire
+      // Note: participants est un string[] (array d'IDs), pas un array d'objets
+      const senderId = user.id;
+      const participants = conversation.participants || [];
+      const receiverId = participants.find(p => p !== senderId);
+
+      if (!receiverId) {
+        throw new Error('Destinataire non trouvé dans la conversation');
+      }
+
+      // Envoyer via Supabase
+      const sentMessage = await SupabaseService.sendMessage(
+        conversationId,
+        senderId,
+        receiverId,
+        content,
+        type
+      );
+
+      if (!sentMessage) {
+        throw new Error('Échec envoi message');
+      }
+
+
+      // Add message to conversation local state
+      const updatedMessages = {
+        ...messages,
+        [conversationId]: [...(messages[conversationId] || []), sentMessage]
+      };
+
+      // Update conversation last message
+      const updatedConversations = conversations.map(conv =>
+        conv.id === conversationId
+          ? { ...conv, lastMessage: sentMessage, updatedAt: new Date() }
+          : conv
+      );
+
+      set({
+        messages: updatedMessages,
+        conversations: updatedConversations
+      });
+
+      // Simulate bot response if talking to bot
+      if (conversationId === '2') {
+        setTimeout(() => {
+          get().sendBotMessage('Merci pour votre message. Je traite votre demande...');
+        }, 1000);
+      }
+    } catch (error) {
+      console.error('❌ Erreur envoi message:', error);
+      throw error;
     }
   },
 
-  markAsRead: (conversationId) => {
+  markAsRead: async (conversationId) => {
     const { conversations } = get();
+
+    // Récupérer l'utilisateur connecté
+    const authStoreModule = await import('./authStore');
+    const authStore = authStoreModule.default;
+    const user = authStore.getState ? authStore.getState().user : null;
+
+    if (!user) {
+      console.warn('⚠️ Cannot mark as read: no authenticated user');
+      return;
+    }
+
+    // Marquer comme lus dans la base de données
+    try {
+      await SupabaseService.markMessagesAsRead(conversationId, user.id);
+    } catch (error) {
+      console.error('❌ Erreur lors du marquage des messages comme lus:', error);
+      // Continue quand même avec la mise à jour locale
+    }
+
+    // Mise à jour locale du compteur
     const updatedConversations = conversations.map(conv =>
       conv.id === conversationId
         ? { ...conv, unreadCount: 0 }
@@ -134,10 +213,15 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   startConversation: async (userId) => {
+    const currentUserId = useAuthStore.getState().user?.id;
+    if (!currentUserId) {
+      throw new Error('Utilisateur non connecté');
+    }
+
     const newConversationId = Date.now().toString();
     const newConversation: ChatConversation = {
       id: newConversationId,
-      participants: ['user1', userId],
+      participants: [currentUserId, userId],
       unreadCount: 0,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -156,10 +240,15 @@ export const useChatStore = create<ChatState>((set, get) => ({
     const { messages, conversations, activeConversation } = get();
     if (!activeConversation) return;
 
+    const currentUserId = useAuthStore.getState().user?.id;
+    if (!currentUserId) {
+      throw new Error('Utilisateur non connecté');
+    }
+
     const botMessage: ChatMessage = {
       id: Date.now().toString(),
       senderId: 'siports-bot',
-      receiverId: 'user1',
+      receiverId: currentUserId,
       content: message,
       type: 'text',
       timestamp: new Date(),

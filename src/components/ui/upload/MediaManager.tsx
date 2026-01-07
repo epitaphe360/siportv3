@@ -94,9 +94,9 @@ const MediaManager: React.FC<MediaManagerProps> = ({
       });
       
       setFiles(mediaFiles);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors du chargement des fichiers:', err);
-      setError(err.message || 'Erreur lors du chargement des fichiers');
+      setError(err instanceof Error ? err.message : 'Erreur lors du chargement des fichiers');
     } finally {
       setLoading(false);
     }
@@ -124,9 +124,9 @@ const MediaManager: React.FC<MediaManagerProps> = ({
       
       // Recharger la liste des fichiers
       await loadFiles();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Erreur lors du téléchargement:', err);
-      setError(err.message || 'Erreur lors du téléchargement des fichiers');
+      setError(err instanceof Error ? err.message : 'Erreur lors du téléchargement des fichiers');
     } finally {
       setUploading(false);
     }
@@ -139,9 +139,9 @@ const MediaManager: React.FC<MediaManagerProps> = ({
       try {
         await StorageService.deleteImage(file.url, bucket);
         await loadFiles();
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Erreur lors de la suppression:', err);
-        setError(err.message || 'Erreur lors de la suppression du fichier');
+        setError(err instanceof Error ? err.message : 'Erreur lors de la suppression du fichier');
       }
     }
   };
@@ -243,7 +243,7 @@ const MediaManager: React.FC<MediaManagerProps> = ({
             <Search className="h-4 w-4 absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Rechercher..."
+              placeholder={t('ui.search')}
               className="pl-8 pr-3 py-1 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}

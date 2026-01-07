@@ -9,12 +9,19 @@ import { Button } from '../ui/Button';
 import { useExhibitorStore } from '../../store/exhibitorStore';
 import useAuthStore from '../../store/authStore';
 import { motion } from 'framer-motion';
+import { useTranslation } from '../../hooks/useTranslation';
+import { translateSector } from '../../utils/sectorTranslations';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 export const FeaturedExhibitors: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthStore();
   const { exhibitors, fetchExhibitors, isLoading } = useExhibitorStore();
-  const featuredExhibitors = exhibitors.filter(e => e.featured).slice(0, 4);
+  const { t } = useTranslation();
+  // Show featured exhibitors, or all exhibitors if none are featured
+  const featuredExhibitors = exhibitors.filter(e => e.featured).slice(0, 3).length > 0
+    ? exhibitors.filter(e => e.featured).slice(0, 3)
+    : exhibitors.slice(0, 3);
 
   useEffect(() => {
     if (exhibitors.length === 0) {
@@ -63,8 +70,8 @@ export const FeaturedExhibitors: React.FC = () => {
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="animate-pulse">
+            {[1, 2, 3].map((i) => (
+              <div key={`skeleton-${i}`} className="animate-pulse">
                 <div className="bg-white rounded-lg p-6 h-80">
                   <div className="h-4 bg-gray-200 rounded mb-4"></div>
                   <div className="h-20 bg-gray-200 rounded mb-4"></div>
@@ -80,8 +87,20 @@ export const FeaturedExhibitors: React.FC = () => {
   }
 
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 bg-gradient-to-b from-white via-green-50/20 to-white relative overflow-hidden">
+      {/* Moroccan Zellige Background Pattern */}
+      <div className="absolute inset-0 opacity-[0.04]">
+        <div className="absolute w-full h-full" style={{
+          backgroundImage: `radial-gradient(circle, transparent 20%, #D4AF37 21%, #D4AF37 22%, transparent 23%),
+                           radial-gradient(circle, transparent 20%, #C1272D 21%, #C1272D 22%, transparent 23%),
+                           radial-gradient(circle, transparent 20%, #006233 21%, #006233 22%, transparent 23%)`,
+          backgroundSize: '80px 80px',
+          backgroundPosition: '0 0, 40px 40px, 20px 60px'
+        }} />
+      </div>
+      <MoroccanPattern className="opacity-[0.03] text-siports-primary" scale={2} />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -89,16 +108,16 @@ export const FeaturedExhibitors: React.FC = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Exposants à la Une
+            <h2 className="text-3xl font-bold text-siports-primary mb-4">
+              {t('home.featured_exhibitors_title')}
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Découvrez les leaders de l'industrie portuaire qui participent au salon SIPORTS 2026
+              {t('home.featured_exhibitors_desc')}
             </p>
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {featuredExhibitors.map((exhibitor, index) => (
             <motion.div
               key={exhibitor.id}
@@ -135,13 +154,13 @@ export const FeaturedExhibitors: React.FC = () => {
                         <h3 className="font-semibold text-gray-900 text-lg">
                           {exhibitor.companyName}
                         </h3>
-                        <p className="text-sm text-gray-600 font-medium">{exhibitor.sector}</p>
+                        <p className="text-sm text-gray-600 font-medium">{translateSector(exhibitor.sector, t)}</p>
                       </div>
                     </div>
                     {exhibitor.verified && (
                       <Badge variant="success" size="sm" className="flex items-center">
                         <CheckCircle className="h-3 w-3 mr-1" />
-                        Vérifié
+                        {t('home.verified')}
                       </Badge>
                     )}
                   </div>
@@ -204,7 +223,7 @@ export const FeaturedExhibitors: React.FC = () => {
                           
                           toast.success(`💬 Contact : ${contactData.company} — ${contactData.contact}`);
                         }}
-                        title="Contacter directement"
+                        title={t('ui.contact_directly')}
                       >
                         <MessageCircle className="h-4 w-4" />
                       </Button>
@@ -224,9 +243,9 @@ export const FeaturedExhibitors: React.FC = () => {
           viewport={{ once: true }}
           className="text-center"
         >
-          <Link to="/exhibitors">
+          <Link to={ROUTES.EXHIBITORS}>
             <Button size="lg">
-              Voir Tous les Exposants
+              {t('home.discover_all')}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>

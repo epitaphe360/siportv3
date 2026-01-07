@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { Calendar, Search, Filter, Users, Clock, MapPin, Video, MoreVertical, Edit, Eye, Plus, CheckCircle, XCircle, AlertTriangle, RefreshCw } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
@@ -9,6 +10,7 @@ import { EventsService, Event } from '../../services/eventsService';
 import { useFilterSearch } from '../../hooks/useFilterSearch';
 
 export default function EventsPage() {
+  const { t } = useTranslation();
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +26,7 @@ export default function EventsPage() {
       const data = await EventsService.getAllEvents();
 
       const formattedEvents = data.map((event: Event) => {
-        const startDate = new Date(event.start_date);
+        const startDate = new Date(event.start_time);
         const endDate = new Date(event.end_date);
         const now = new Date();
 
@@ -113,7 +115,6 @@ export default function EventsPage() {
   };
 
   const handleEventAction = (eventId: string, action: string) => {
-    console.log(`Action ${action} pour l'événement ${eventId}`);
     // Ici vous pouvez implémenter les actions réelles
   };
 
@@ -341,8 +342,8 @@ export default function EventsPage() {
                     <div className="mb-4">
                       <h4 className="text-sm font-medium text-gray-900 mb-2">Intervenants :</h4>
                       <div className="space-y-1">
-                        {event.speakers.slice(0, 2).map((speaker, idx) => (
-                          <div key={idx} className="text-sm text-gray-600">
+                        {event.speakers.slice(0, 2).map((speaker) => (
+                          <div key={speaker.name} className="text-sm text-gray-600">
                             {speaker.name} - {speaker.company}
                           </div>
                         ))}
@@ -401,3 +402,6 @@ export default function EventsPage() {
     </div>
   );
 };
+
+
+

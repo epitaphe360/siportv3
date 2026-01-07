@@ -1,4 +1,5 @@
-import React from 'react';
+﻿import React from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -11,18 +12,23 @@ import {
   Award,
   Crown,
   Calendar,
-  ExternalLink
+  ExternalLink,
+  Upload,
+  BarChart3,
+  Library
 } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 
 export const PartnerMediaPage: React.FC = () => {
+  // TODO: Connecter aux vraies données depuis une table 'media_mentions' dans la BDD
+  // Pour l'instant, utilise des données de démonstration statiques
   const mediaData = {
     overview: {
-      totalMentions: 12,
-      socialImpressions: 45000,
-      engagementRate: 98,
-      mediaValue: 25000
+      totalMentions: 0, // À compter depuis la table media_mentions
+      socialImpressions: 0, // À calculer depuis les analytics sociaux
+      engagementRate: 0, // À calculer depuis les métriques d'engagement
+      mediaValue: 0 // À estimer selon un algorithme de valorisation
     },
     television: [
       {
@@ -189,12 +195,37 @@ export const PartnerMediaPage: React.FC = () => {
           </div>
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <div className="flex items-center space-x-2">
-              <Crown className="h-5 w-5 text-blue-600" />
-              <span className="text-blue-800 font-medium">Couverture Médiatique Premium</span>
-              <Badge className="bg-blue-100 text-blue-800" size="sm">
-                Temps Réel
-              </Badge>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Crown className="h-5 w-5 text-blue-600" />
+                <span className="text-blue-800 font-medium">Couverture Médiatique Premium</span>
+                <Badge className="bg-blue-100 text-blue-800" size="sm">
+                  Temps Réel
+                </Badge>
+              </div>
+              <div className="flex gap-3">
+                <Link
+                  to={ROUTES.PARTNER_MEDIA_UPLOAD}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <Upload className="w-4 h-4" />
+                  Uploader un média
+                </Link>
+                <Link
+                  to={ROUTES.PARTNER_MEDIA_ANALYTICS}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                >
+                  <BarChart3 className="w-4 h-4" />
+                  Analytics
+                </Link>
+                <Link
+                  to={ROUTES.MEDIA_LIBRARY}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                >
+                  <Library className="w-4 h-4" />
+                  Bibliothèque
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -278,9 +309,9 @@ export const PartnerMediaPage: React.FC = () => {
                     </div>
                     <p className="text-gray-600 text-sm mb-2">{item.description}</p>
                     <div className="flex items-center space-x-4 text-sm text-gray-500">
-                      <span>📅 {item.date}</span>
-                      <span>👁️ {item.reach} téléspectateurs</span>
-                      <span>⏱️ {item.duration}</span>
+                      <span> {item.date}</span>
+                      <span> {item.reach} téléspectateurs</span>
+                      <span>â±ï¸ {item.duration}</span>
                     </div>
                   </div>
                   <ExternalLink className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
@@ -343,9 +374,9 @@ export const PartnerMediaPage: React.FC = () => {
                     </div>
                     <p className="text-gray-900 text-sm mb-1">{item.content}</p>
                     <div className="flex items-center space-x-4 text-sm text-gray-500">
-                      <span>📅 {item.date}</span>
-                      <span>📊 {item.engagement}</span>
-                      <span>👁️ {item.reach} impressions</span>
+                      <span> {item.date}</span>
+                      <span> {item.engagement}</span>
+                      <span> {item.reach} impressions</span>
                     </div>
                   </div>
                   <ExternalLink className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
@@ -375,7 +406,7 @@ export const PartnerMediaPage: React.FC = () => {
                       </span>
                     </div>
                     <p className="text-gray-600 text-sm mb-2">{item.topic}</p>
-                    <span className="text-sm text-gray-500">📅 {item.date}</span>
+                    <span className="text-sm text-gray-500"> {item.date}</span>
                   </div>
                   <Calendar className="h-5 w-5 text-gray-400" />
                 </div>
@@ -387,3 +418,5 @@ export const PartnerMediaPage: React.FC = () => {
     </div>
   );
 };
+
+export default PartnerMediaPage;

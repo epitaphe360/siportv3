@@ -3,29 +3,100 @@ import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { Link, Navigate } from 'react-router-dom';
+import { useTranslation } from '../../hooks/useTranslation';
 import useAuthStore from '../../store/authStore';
+import { ROUTES } from '../../lib/routes';
 import { useDashboardStore } from '../../store/dashboardStore';
+import { useRef } from 'react';
 import { QRCodeCanvas as QRCode } from 'qrcode.react';
 import { useAppointmentStore } from '../../store/appointmentStore';
 import PublicAvailabilityCalendar from '../calendar/PublicAvailabilityCalendar';
 import PersonalAppointmentsCalendar from '../calendar/PersonalAppointmentsCalendar';
-import { Calendar, Zap } from 'lucide-react';
+import { Calendar, Zap, Building2, Eye, MessageSquare, Download, TrendingUp, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getVisitorDisplayName } from '../../utils/visitorHelpers';
 import { useDashboardStats } from '../../hooks/useDashboardStats';
 import { DEFAULT_SALON_CONFIG, formatSalonDates, formatSalonLocation, formatSalonHours } from '../../config/salonInfo';
 import { ErrorMessage } from '../common/ErrorMessage';
+import { LevelBadge, QuotaSummaryCard } from '../common/QuotaWidget';
+import { getExhibitorLevelByArea, getExhibitorQuota } from '../../config/exhibitorQuotas';
+import { Users, FileText, Award, Scan } from 'lucide-react';
+import { MiniSiteSetupModal } from '../exhibitor/MiniSiteSetupModal';
+import { supabase } from '../../lib/supabase';
+import { LineChartCard, BarChartCard, PieChartCard } from './charts';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
+
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5 }
+  }
+};
 
 export default function ExhibitorDashboard() {
+  const qrCodeRef = useRef<HTMLCanvasElement>(null);
+  const { t } = useTranslation();
   const [showQRModal, setShowQRModal] = useState(false);
   const [modal, setModal] = useState<{title: string, content: React.ReactNode} | null>(null);
   const [isDownloadingQR, setIsDownloadingQR] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+  const [processingAppointment, setProcessingAppointment] = useState<string | null>(null);
+  const [showMiniSiteSetup, setShowMiniSiteSetup] = useState(false);
+
   const { user } = useAuthStore();
   const { dashboard, fetchDashboard, error: dashboardError } = useDashboardStore();
   const { appointments, fetchAppointments, updateAppointmentStatus, cancelAppointment, isLoading: isAppointmentsLoading } = useAppointmentStore();
   const dashboardStats = useDashboardStats();
+
+  // Check if user needs to create mini-site (first login after activation)
+  useEffect(() => {
+    let isMounted = true;
+    let timeoutId: NodeJS.Timeout;
+
+    const checkMiniSiteStatus = async () => {
+      if (!user?.id || user?.status !== 'active') return;
+
+      try {
+        const { data, error } = await supabase
+          .from('users')
+          .select('minisite_created')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        if (error) throw error;
+
+        // Show popup if mini-site not created yet
+        if (isMounted && !data?.minisite_created) {
+          // Small delay so dashboard loads first
+          timeoutId = setTimeout(() => {
+            if (isMounted) setShowMiniSiteSetup(true);
+          }, 1500);
+        }
+      } catch (err) {
+        if (isMounted) console.error('Error checking minisite status:', err);
+      }
+    };
+
+    checkMiniSiteStatus();
+
+    return () => {
+      isMounted = false;
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [user?.id, user?.status]);
 
   useEffect(() => {
     const loadAppointments = async () => {
@@ -37,38 +108,132 @@ export default function ExhibitorDashboard() {
       }
     };
     loadAppointments();
-  }, [fetchAppointments]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Intentionally fetch only on mount
 
-  // Filtrer les rendez-vous reçus (où l'exposant est le user connecté)
-  const receivedAppointments = appointments.filter((a: any) => user && a.exhibitorId === user.id);
-  const pendingAppointments = receivedAppointments.filter((a: any) => a.status === 'pending');
-  const confirmedAppointments = receivedAppointments.filter((a: any) => a.status === 'confirmed');
+  // FIXED: Données réelles pour les graphiques (plus de valeurs hardcodées)
+  // Les données d'engagement seront remplies depuis les vraies métriques quand disponibles
+  const visitorEngagementData = React.useMemo(() => {
+    // Retourner des données réelles si disponibles, sinon tableau vide avec message
+    const realData = dashboardStats?.weeklyEngagement || [];
+    if (realData.length > 0) return realData;
+
+    // Données placeholder avec valeurs à 0 pour indiquer l'absence de données
+    return [
+      { name: 'Lun', visits: 0, interactions: 0 },
+      { name: 'Mar', visits: 0, interactions: 0 },
+      { name: 'Mer', visits: 0, interactions: 0 },
+      { name: 'Jeu', visits: 0, interactions: 0 },
+      { name: 'Ven', visits: 0, interactions: 0 },
+      { name: 'Sam', visits: 0, interactions: 0 },
+      { name: 'Dim', visits: 0, interactions: 0 },
+    ];
+  }, [dashboardStats?.weeklyEngagement]);
+
+  // FIXED: Utiliser les vraies données de rendez-vous filtrées par l'exposant actuel
+  const myAppointments = React.useMemo(() => {
+    if (!user?.id || !appointments) return [];
+    // Filtrer par exhibitorUserId (user_id de l'exhibitor) ou exhibitor.user_id
+    return appointments.filter(a => 
+      (a as any).exhibitorUserId === user.id || 
+      (a as any).exhibitor?.user_id === user.id
+    );
+  }, [appointments, user?.id]);
+
+  const appointmentStatusData = React.useMemo(() => [
+    { name: 'Confirmés', value: myAppointments?.filter(a => a.status === 'confirmed').length || 0 },
+    { name: 'En attente', value: myAppointments?.filter(a => a.status === 'pending').length || 0 },
+    { name: 'Terminés', value: myAppointments?.filter(a => a.status === 'completed').length || 0 },
+  ], [myAppointments]);
+
+  // FIXED: Utiliser les vraies métriques (0 par défaut)
+  const activityBreakdownData = React.useMemo(() => [
+    { name: 'Vues Mini-Site', value: dashboardStats?.miniSiteViews?.value || 0 },
+    { name: 'Téléchargements', value: dashboardStats?.catalogDownloads?.value || 0 },
+    { name: 'Messages', value: dashboardStats?.messages?.value || 0 },
+    { name: 'Connexions', value: dashboardStats?.connections?.value || 0 },
+  ], [dashboardStats]);
+
+  // Indicateur si aucune donnée réelle n'est disponible
+  const hasRealData = React.useMemo(() => {
+    const totalActivity = activityBreakdownData.reduce((sum, item) => sum + item.value, 0);
+    const totalAppointments = appointmentStatusData.reduce((sum, item) => sum + item.value, 0);
+    return totalActivity > 0 || totalAppointments > 0;
+  }, [activityBreakdownData, appointmentStatusData]);
+
+  // CRITICAL #12 FIX: Utiliser myAppointments déjà filtré par exhibitorUserId
+  const receivedAppointments = myAppointments;
+  const pendingAppointments = receivedAppointments.filter(a => a.status === 'pending');
+  const confirmedAppointments = receivedAppointments.filter(a => a.status === 'confirmed');
 
   const handleAccept = async (appointmentId: string) => {
+    // Role validation: Verify user owns this appointment via exhibitorUserId
+    const appointment = appointments.find(a => a.id === appointmentId);
+    const exhibitorUserId = (appointment as any)?.exhibitorUserId || (appointment as any)?.exhibitor?.user_id;
+    if (!appointment || !user?.id || exhibitorUserId !== user.id) {
+      setError('Vous n\'êtes pas autorisé à confirmer ce rendez-vous');
+      return;
+    }
+
+    setProcessingAppointment(appointmentId);
     try {
       await updateAppointmentStatus(appointmentId, 'confirmed');
-      await fetchAppointments();
+      // Note: fetchAppointments() removed - store already updates local state
     } catch (err) {
       console.error('Erreur lors de l\'acceptation:', err);
       setError('Impossible d\'accepter le rendez-vous');
+    } finally {
+      setProcessingAppointment(null);
     }
   };
 
   const handleReject = async (appointmentId: string) => {
+    // Role validation: Verify user owns this appointment via exhibitorUserId
+    const appointment = appointments.find(a => a.id === appointmentId);
+    const exhibitorUserId = (appointment as any)?.exhibitorUserId || (appointment as any)?.exhibitor?.user_id;
+    if (!appointment || !user?.id || exhibitorUserId !== user.id) {
+      setError('Vous n\'êtes pas autorisé à refuser ce rendez-vous');
+      return;
+    }
+
+    // Confirmation dialog before rejecting
+    const confirmed = window.confirm(
+      'Êtes-vous sûr de vouloir refuser ce rendez-vous ? Cette action est irréversible.'
+    );
+
+    if (!confirmed) {
+      return; // User cancelled, do nothing
+    }
+
+    setProcessingAppointment(appointmentId);
     try {
+      // Note: 'rejected' status handled via appointment cancellation workflow
+      // Uses 'cancelled' status which is semantically appropriate
       await cancelAppointment(appointmentId);
-      await fetchAppointments();
+      // Note: fetchAppointments() removed - store already updates local state
     } catch (err) {
       console.error('Erreur lors du refus:', err);
       setError('Impossible de refuser le rendez-vous');
+    } finally {
+      setProcessingAppointment(null);
     }
   };
+
+  // Auto-clear error messages after 5 seconds
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
 
   useEffect(() => {
     if (user?.status === 'pending') {
       return;
     }
-    
+
     const loadDashboard = async () => {
       try {
         await fetchDashboard();
@@ -77,25 +242,28 @@ export default function ExhibitorDashboard() {
         setError('Impossible de charger le tableau de bord');
       }
     };
-    
+
     loadDashboard();
-  }, [fetchDashboard, user?.status]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.status]); // Refetch when user status changes
 
   if (user?.status === 'pending') {
-    return <Navigate to="/pending-account" replace />;
+    return <Navigate to={ROUTES.PENDING_ACCOUNT} replace />;
   }
 
   // Fonction pour télécharger le QR code
   const downloadQRCode = async () => {
     setIsDownloadingQR(true);
     try {
-      const canvas = document.querySelector('canvas') as HTMLCanvasElement;
+      const canvas = qrCodeRef.current;
       if (canvas) {
         const link = document.createElement('a');
-        link.download = `qr-code-${user?.profile.company || 'stand'}.png`;
+        // HIGH #2 FIX: Proper optional chaining for profile.company
+        const companyName = user?.profile?.company || user?.profile?.companyName || 'stand';
+        link.download = `qr-code-${companyName}.png`;
         link.href = canvas.toDataURL();
         link.click();
-        
+
         setModal({
           title: 'Téléchargement Réussi',
           content: (
@@ -105,7 +273,7 @@ export default function ExhibitorDashboard() {
                 Le QR code de votre stand a été téléchargé avec succès !
               </p>
               <p className="text-sm text-gray-500 mt-2">
-                Fichier : qr-code-{user?.profile.company || 'stand'}.png
+                Fichier : qr-code-{companyName}.png
               </p>
             </div>
           )
@@ -203,7 +371,7 @@ export default function ExhibitorDashboard() {
                 </p>
               </div>
               <div className="space-y-2">
-                <Link to="/appointments">
+                <Link to={ROUTES.APPOINTMENTS}>
                   <Button variant="outline" className="w-full">
                     Voir tous les rendez-vous
                   </Button>
@@ -240,7 +408,7 @@ export default function ExhibitorDashboard() {
                 </p>
               </div>
               <div className="space-y-2">
-                <Link to="/chat">
+                <Link to={ROUTES.CHAT}>
                   <Button variant="outline" className="w-full">
                     Ouvrir le chat
                   </Button>
@@ -256,34 +424,34 @@ export default function ExhibitorDashboard() {
   const stats = [
     {
       title: 'Vues Mini-Site',
-      value: dashboardStats?.miniSiteViews.value.toLocaleString() || '0',
+      value: dashboardStats?.miniSiteViews?.value?.toLocaleString?.() || '0',
       icon: '👁️',
-      change: dashboardStats?.miniSiteViews.growth || '--',
-      changeType: dashboardStats?.miniSiteViews.growthType || 'neutral',
+      change: dashboardStats?.miniSiteViews?.growth || '--',
+      changeType: dashboardStats?.miniSiteViews?.growthType || 'neutral',
       type: 'miniSiteViews' as const
     },
     {
       title: 'Demandes de RDV',
-      value: dashboardStats?.appointments.value.toString() || '0',
+      value: dashboardStats?.appointments?.value?.toString() || '0',
       icon: '📅',
-      change: dashboardStats?.appointments.growth || '--',
-      changeType: dashboardStats?.appointments.growthType || 'neutral',
+      change: dashboardStats?.appointments?.growth || '--',
+      changeType: dashboardStats?.appointments?.growthType || 'neutral',
       type: 'appointments' as const
     },
     {
       title: 'Téléchargements',
-      value: dashboardStats?.catalogDownloads.value.toString() || '0',
+      value: dashboardStats?.catalogDownloads?.value?.toString() || '0',
       icon: '📥',
-      change: dashboardStats?.catalogDownloads.growth || '--',
-      changeType: dashboardStats?.catalogDownloads.growthType || 'neutral',
+      change: dashboardStats?.catalogDownloads?.growth || '--',
+      changeType: dashboardStats?.catalogDownloads?.growthType || 'neutral',
       type: 'downloads' as const
     },
     {
       title: 'Messages',
-      value: dashboardStats?.messages.value.toString() || '0',
+      value: dashboardStats?.messages?.value?.toString() || '0',
       icon: '💬',
-      change: dashboardStats?.messages.growth || '--',
-      changeType: dashboardStats?.messages.growthType || 'neutral',
+      change: dashboardStats?.messages?.growth || '--',
+      changeType: dashboardStats?.messages?.growthType || 'neutral',
       type: 'messages' as const
     }
   ];
@@ -293,21 +461,21 @@ export default function ExhibitorDashboard() {
       title: 'Réseautage IA',
       description: 'Découvrez des connexions pertinentes avec l\'IA',
       icon: '🤖',
-      link: '/networking',
+      link: ROUTES.NETWORKING,
       variant: 'default' as const
     },
     {
       title: 'Modifier mon Mini-Site',
       description: 'Personnalisez votre présence digitale',
       icon: '🎨',
-      link: '/minisite/editor',
+      link: ROUTES.MINISITE_EDITOR,
       variant: 'outline' as const
     },
     {
       title: 'Mon Profil Exposant',
       description: 'Mettez à jour vos informations',
       icon: '👤',
-      link: '/profile',
+      link: ROUTES.PROFILE,
       variant: 'outline' as const
     },
     {
@@ -320,36 +488,125 @@ export default function ExhibitorDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-siports-light via-white to-siports-secondary/20">
-      {/* Header avec gradient SIPORTS */}
-      <div className="bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent text-white">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold mb-2">Tableau de Bord Exposant</h1>
-              <p className="text-xl opacity-90">Bienvenue {user?.profile.firstName}, gérez votre présence SIPORTS 2026</p>
-              <div className="mt-4 flex items-center space-x-3">
-                <Badge variant="info" size="md" className="bg-white/20 text-white border-white/30">
-                  {user?.profile.company}
-                </Badge>
-                <Badge variant="success" size="md" className="bg-green-500/20 text-green-100 border-green-400/30">
-                  Exposant Vérifié
-                </Badge>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header avec gradient premium et glass morphism */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent rounded-2xl shadow-2xl mx-4 mt-4 mb-6 relative overflow-hidden"
+      >
+        {/* Background Pattern */}
+        <MoroccanPattern className="opacity-15" color="white" scale={0.8} />
+        
+        <div className="relative max-w-7xl mx-auto px-6 py-8">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center space-x-4">
+              <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
+                <Building2 className="h-10 w-10 text-siports-gold" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-white mb-1">{t('exhibitor.my_booth')}</h1>
+                <p className="text-blue-100">{t('dashboard.welcome')} {user?.profile?.firstName || 'Exposant'}, {t('exhibitor.booth_location')} ✨</p>
+                <div className="mt-3 flex items-center space-x-3">
+                  <Badge variant="info" size="md" className="bg-white/20 text-white border-white/30">
+                    {user?.profile?.company || 'Entreprise'}
+                  </Badge>
+                  <Badge variant="success" size="md" className="bg-green-500/20 text-green-100 border-green-400/30">
+                    {t('admin.verified')} ✓
+                  </Badge>
+                </div>
               </div>
             </div>
-            <div className="hidden md:block">
+            <div className="hidden md:flex flex-col items-end space-y-3">
+              <LevelBadge
+                level={getExhibitorLevelByArea(user?.profile?.standArea || 9)}
+                type="exhibitor"
+                size="lg"
+              />
               <div className="text-right">
-                <div className="text-2xl font-bold">{new Date().toLocaleDateString('fr-FR')}</div>
-                <div className="text-sm opacity-75">{DEFAULT_SALON_CONFIG.name} - {DEFAULT_SALON_CONFIG.location.city}</div>
+                <div className="text-2xl font-bold text-white">{new Date().toLocaleDateString('fr-FR')}</div>
+                <div className="text-sm text-blue-100">{DEFAULT_SALON_CONFIG.name} - {DEFAULT_SALON_CONFIG.location.city}</div>
               </div>
             </div>
           </div>
+
+          {/* Mini Stats dans le header */}
+          <div className="relative mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-white/80 text-sm mb-1">Vues Mini-Site</div>
+                  <div className="text-2xl font-bold text-white">
+                    {dashboardStats?.miniSiteViews?.value?.toLocaleString?.() || '0'}
+                  </div>
+                </div>
+                <Eye className="h-8 w-8 text-white/60" />
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-white/80 text-sm mb-1">RDV</div>
+                  <div className="text-2xl font-bold text-white">
+                    {dashboardStats?.appointments?.value?.toString() || '0'}
+                  </div>
+                </div>
+                <Calendar className="h-8 w-8 text-white/60" />
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4 }}
+              className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-white/80 text-sm mb-1">Téléchargements</div>
+                  <div className="text-2xl font-bold text-white">
+                    {dashboardStats?.catalogDownloads?.value?.toString() || '0'}
+                  </div>
+                </div>
+                <Download className="h-8 w-8 text-white/60" />
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5 }}
+              className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-white/80 text-sm mb-1">Messages</div>
+                  <div className="text-2xl font-bold text-white">
+                    {dashboardStats?.messages?.value?.toString() || '0'}
+                  </div>
+                </div>
+                <MessageSquare className="h-8 w-8 text-white/60" />
+              </div>
+            </motion.div>
+          </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Bouton d'accès rapide mini-site */}
       <div className="max-w-7xl mx-auto px-4 mt-4 flex justify-end">
-        <Link to="/minisite-creation">
+        <Link to={ROUTES.MINISITE_CREATION}>
           <Button variant="default" size="lg">
             🎨 Créer / Modifier mon mini-site exposant
           </Button>
@@ -359,43 +616,132 @@ export default function ExhibitorDashboard() {
       <div className="max-w-7xl mx-auto px-4 py-8 -mt-6">
         {/* Messages d'erreur */}
         {(error || dashboardError) && (
-          <ErrorMessage 
-            message={error || dashboardError || 'Une erreur est survenue'} 
+          <ErrorMessage
+            message={error || dashboardError || 'Une erreur est survenue'}
             onDismiss={() => setError(null)}
           />
         )}
 
-        {/* Statistiques avec cartes améliorées */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <div 
-              key={index} 
+        {/* Quota Summary Card */}
+        <div className="mb-8">
+          <QuotaSummaryCard
+            title={t('dashboard.exhibitor_quotas')}
+            level={getExhibitorLevelByArea(user?.profile?.standArea || 9)}
+            type="exhibitor"
+            quotas={[
+              {
+                label: 'Rendez-vous B2B',
+                current: confirmedAppointments.length,
+                limit: getExhibitorQuota(getExhibitorLevelByArea(user?.profile?.standArea || 9), 'appointments'),
+                icon: <Calendar className="h-4 w-4 text-gray-400" />
+              },
+              {
+                label: 'Membres équipe',
+                current: dashboardStats?.teamMembers?.value || 0,
+                limit: getExhibitorQuota(getExhibitorLevelByArea(user?.profile?.standArea || 9), 'teamMembers'),
+                icon: <Users className="h-4 w-4 text-gray-400" />
+              },
+              {
+                label: 'Sessions démo',
+                current: dashboardStats?.demoSessions?.value || 0,
+                limit: getExhibitorQuota(getExhibitorLevelByArea(user?.profile?.standArea || 9), 'demoSessions'),
+                icon: <Award className="h-4 w-4 text-gray-400" />
+              },
+              {
+                label: 'Scans badges/jour',
+                current: dashboardStats?.badgeScansToday?.value || 0,
+                limit: getExhibitorQuota(getExhibitorLevelByArea(user?.profile?.standArea || 9), 'leadScans'),
+                icon: <Scan className="h-4 w-4 text-gray-400" />
+              },
+              {
+                label: 'Fichiers média',
+                current: dashboardStats?.mediaUploads?.value || 0,
+                limit: getExhibitorQuota(getExhibitorLevelByArea(user?.profile?.standArea || 9), 'mediaUploads'),
+                icon: <FileText className="h-4 w-4 text-gray-400" />
+              }
+            ]}
+            upgradeLink={undefined} // Pas d'upgrade pour les exposants (surface fixée)
+          />
+        </div>
+
+        {/* Statistiques avec cartes améliorées et animations */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+        >
+          {[
+            {
+              title: 'Vues Mini-Site',
+              value: dashboardStats?.miniSiteViews?.value?.toLocaleString?.() || '0',
+              icon: Eye,
+              change: dashboardStats?.miniSiteViews?.growth || '--',
+              changeType: dashboardStats?.miniSiteViews?.growthType || 'neutral',
+              type: 'miniSiteViews' as const,
+              gradient: 'from-green-500 to-green-600',
+              bgColor: 'bg-green-100'
+            },
+            {
+              title: 'Demandes de RDV',
+              value: dashboardStats?.appointments?.value?.toString() || '0',
+              icon: Calendar,
+              change: dashboardStats?.appointments?.growth || '--',
+              changeType: dashboardStats?.appointments?.growthType || 'neutral',
+              type: 'appointments' as const,
+              gradient: 'from-blue-500 to-blue-600',
+              bgColor: 'bg-blue-100'
+            },
+            {
+              title: 'Téléchargements',
+              value: dashboardStats?.catalogDownloads?.value?.toString() || '0',
+              icon: Download,
+              change: dashboardStats?.catalogDownloads?.growth || '--',
+              changeType: dashboardStats?.catalogDownloads?.growthType || 'neutral',
+              type: 'downloads' as const,
+              gradient: 'from-purple-500 to-purple-600',
+              bgColor: 'bg-purple-100'
+            },
+            {
+              title: 'Messages',
+              value: dashboardStats?.messages?.value?.toString() || '0',
+              icon: MessageSquare,
+              change: dashboardStats?.messages?.growth || '--',
+              changeType: dashboardStats?.messages?.growthType || 'neutral',
+              type: 'messages' as const,
+              gradient: 'from-orange-500 to-orange-600',
+              bgColor: 'bg-orange-100'
+            }
+          ].map((stat, index) => (
+            <motion.div
+              key={stat.title}
+              variants={itemVariants}
               className="cursor-pointer"
               onClick={() => handleStatClick(stat.type)}
             >
-              <Card className="siports-glass-card hover:shadow-siports-lg transition-all duration-300">
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-3xl">{stat.icon}</div>
-                    <div className={`text-sm font-medium px-2 py-1 rounded-full ${
-                      stat.changeType === 'positive' 
-                        ? 'bg-green-100 text-green-800' 
-                        : stat.changeType === 'negative'
-                        ? 'bg-red-100 text-red-800'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      {stat.change}
-                    </div>
+              <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-transparent hover:border-current group">
+                <div className="flex items-center justify-between mb-3">
+                  <div className={`p-3 bg-gradient-to-br ${stat.gradient} rounded-lg shadow-md group-hover:scale-110 transition-transform duration-300`}>
+                    <stat.icon className="h-6 w-6 text-white" />
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-600 mb-1">{stat.title}</p>
-                    <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+                  <div className={`text-sm font-medium px-3 py-1 rounded-full ${
+                    stat.changeType === 'positive'
+                      ? 'bg-green-100 text-green-800'
+                      : stat.changeType === 'negative'
+                      ? 'bg-red-100 text-red-800'
+                      : 'bg-gray-100 text-gray-800'
+                  }`}>
+                    {stat.change}
                   </div>
                 </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600 mb-1">{stat.title}</p>
+                  <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+                </div>
               </Card>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Section Système de Double Calendrier */}
         <div className="mb-12">
@@ -433,6 +779,50 @@ export default function ExhibitorDashboard() {
           </div>
         </div>
 
+        {/* Section Graphiques Analytics */}
+        <div className="mb-12 space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-3xl font-bold text-gray-900">
+              <TrendingUp className="inline-block mr-3 text-siports-primary" />
+              Performance & Analytics
+            </h2>
+            <Badge variant="info" size="lg">
+              Données en temps réel
+            </Badge>
+          </div>
+
+          {/* Row 1: Engagement visiteurs */}
+          <LineChartCard
+            title={t('dashboard.visitor_engagement_7days')}
+            data={visitorEngagementData}
+            dataKeys={[
+              { key: 'visits', color: '#3b82f6', name: 'Visites' },
+              { key: 'interactions', color: '#10b981', name: 'Interactions' }
+            ]}
+            height={300}
+            showArea={true}
+          />
+
+          {/* Row 2: Statut RDV et Activités - Hauteurs équilibrées */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <PieChartCard
+              title="Statut des Rendez-vous"
+              data={appointmentStatusData}
+              colors={['#10b981', '#f59e0b', '#3b82f6']}
+              height={340}
+              showPercentage={true}
+            />
+
+            <BarChartCard
+              title="Répartition des Activités"
+              data={activityBreakdownData}
+              dataKey="value"
+              colors={['#3b82f6', '#10b981', '#f59e0b', '#ef4444']}
+              height={400}
+            />
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Actions Rapides */}
           <div className="lg:col-span-2">
@@ -443,9 +833,9 @@ export default function ExhibitorDashboard() {
                   Actions Rapides
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {quickActions.map((action, index) => (
-                    <motion.div 
-                      key={index} 
+                  {quickActions.map((action) => (
+                    <motion.div
+                      key={action.title}
                       className="group"
                       whileHover={{ scale: 1.02 }}
                       transition={{ duration: 0.2 }}
@@ -506,8 +896,22 @@ export default function ExhibitorDashboard() {
                           <div className="text-xs text-gray-600">{app.message || 'Aucun message'}</div>
                         </div>
                         <div className="flex gap-2">
-                          <Button size="sm" variant="default" onClick={() => handleAccept(app.id)}>Accepter</Button>
-                          <Button size="sm" variant="destructive" onClick={() => handleReject(app.id)}>Refuser</Button>
+                          <Button
+                            size="sm"
+                            variant="default"
+                            onClick={() => handleAccept(app.id)}
+                            disabled={processingAppointment === app.id}
+                          >
+                            {processingAppointment === app.id ? 'Confirmation...' : 'Accepter'}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleReject(app.id)}
+                            disabled={processingAppointment === app.id}
+                          >
+                            {processingAppointment === app.id ? 'Refus...' : 'Refuser'}
+                          </Button>
                         </div>
                       </div>
                     ))}
@@ -532,17 +936,25 @@ export default function ExhibitorDashboard() {
               </div>
             </Card>
 
-            {/* Activité Récente */}
-            <Card className="siports-glass-card mt-8">
+            {/* Activité Récente avec animations */}
+            <Card className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 mt-8">
               <div className="p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                  <span className="mr-2">📈</span>
+                  <div className="p-2 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg mr-3">
+                    <TrendingUp className="h-5 w-5 text-white" />
+                  </div>
                   Activité Récente
                 </h3>
-                <div className="space-y-4">
-                  {dashboard?.recentActivity?.slice(0, 5).map((activity) => (
-                    <div key={activity.id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                      <div className="flex-shrink-0 w-8 h-8 bg-siports-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
+                <div className="space-y-3">
+                  {dashboard?.recentActivity?.slice(0, 5).map((activity, index) => (
+                    <motion.div
+                      key={activity.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="flex items-start space-x-3 p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-green-600 to-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
                         {activity.type === 'profile_view' && '👁️'}
                         {activity.type === 'message' && '💬'}
                         {activity.type === 'appointment' && '📅'}
@@ -550,21 +962,21 @@ export default function ExhibitorDashboard() {
                         {activity.type === 'download' && '📥'}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-gray-900">{activity.description}</p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-sm text-gray-900 font-medium">{activity.description}</p>
+                        <p className="text-xs text-gray-500 mt-1">
                           {new Date(activity.timestamp).toLocaleString('fr-FR')}
                         </p>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                   {(!dashboard?.recentActivity || dashboard.recentActivity.length === 0) && (
                     <div className="text-center text-gray-500 py-4">Aucune activité récente</div>
                   )}
                 </div>
                 <div className="mt-4 pt-4 border-t border-gray-200">
-                  <Button 
-                    variant="ghost" 
-                    className="w-full text-siports-primary"
+                  <Button
+                    variant="ghost"
+                    className="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white hover:from-green-700 hover:to-blue-700"
                     onClick={handleViewAllActivities}
                   >
                     Voir toute l'activité
@@ -602,32 +1014,43 @@ export default function ExhibitorDashboard() {
         </div>
       </div>
 
-      {/* Modal QR Code amélioré */}
+      {/* Modal QR Code amélioré avec animations */}
       {showQRModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md text-center relative overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+        >
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md text-center relative overflow-hidden"
+          >
             <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent"></div>
             <div className="mt-4">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">QR Code Stand Exposant</h2>
               <p className="text-gray-600 mb-6">Scannez ce code pour accéder rapidement à votre stand</p>
               
               <div className="bg-gray-50 p-4 rounded-xl inline-block mb-6">
-                <QRCode
-                  value={`SIPORTS2026-EXHIBITOR-${user?.id}`}
-                  size={200}
-                  level="H"
-                  includeMargin={true}
-                />
+                  <QRCode
+                    value={user?.id ? `SIPORTS2026-EXHIBITOR-${user.id}` : 'INVALID-USER'}
+                    size={200}
+                    level="H"
+                    includeMargin={true}
+                    ref={qrCodeRef}
+                  />
               </div>
               
               <div className="space-y-2 text-sm text-gray-700 bg-gray-50 p-4 rounded-lg">
                 <div className="flex justify-between">
                   <span className="font-medium">Entreprise :</span>
-                  <span>{user?.profile.company}</span>
+                  <span>{user?.profile?.company || 'N/A'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Contact :</span>
-                  <span>{user?.profile.firstName} {user?.profile.lastName}</span>
+                  <span>{getDisplayName(user)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Email :</span>
@@ -661,14 +1084,24 @@ export default function ExhibitorDashboard() {
                 </Button>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
 
-      {/* Modal générique amélioré */}
+      {/* Modal générique amélioré avec animations */}
       {modal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-2xl relative overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+        >
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-2xl relative overflow-hidden"
+          >
             <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent"></div>
             <div className="mt-4">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">{modal.title}</h2>
@@ -677,8 +1110,17 @@ export default function ExhibitorDashboard() {
                 <Button variant="default" onClick={() => setModal(null)}>Fermer</Button>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
+      )}
+
+      {/* Mini-Site Setup Modal (first login after activation) */}
+      {user?.id && (
+        <MiniSiteSetupModal
+          isOpen={showMiniSiteSetup}
+          onClose={() => setShowMiniSiteSetup(false)}
+          userId={user.id}
+        />
       )}
     </div>
   );
