@@ -128,6 +128,64 @@ interface AnalyticsData {
   messages: number;
 }
 
+interface Recommendation {
+  id: string;
+  item_type: string;
+  similarity_score: number;
+}
+
+interface ErrorInfo {
+  message: string;
+  details: string | null;
+}
+
+interface MiniSiteFieldData {
+  theme?: string;
+  custom_colors?: Record<string, string>;
+  sections?: MiniSiteSection[];
+  published?: boolean;
+  views?: number;
+  last_updated?: string;
+}
+
+interface EventDB {
+  id: string;
+  title: string;
+  description?: string;
+  start_time: string;
+  end_time: string;
+  location?: string;
+  type?: string;
+  capacity?: number;
+  created_at: string;
+}
+
+interface ChatConversationDB {
+  id: string;
+  participant1_id: string;
+  participant2_id: string;
+  last_message_at?: string;
+  created_at: string;
+  messages?: ChatMessageDB[];
+}
+
+interface ChatMessageDB {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  text: string;
+  created_at: string;
+  read: boolean;
+}
+
+interface UserSignupData {
+  type: 'visitor' | 'partner' | 'exhibitor' | 'admin' | 'security';
+  name?: string;
+  email?: string;
+  profile?: UserProfile;
+  [key: string]: unknown;
+}
+
 interface EventRegistration {
   id: string;
   eventId: string;
@@ -419,9 +477,10 @@ export class SupabaseService {
     } catch (error) {
       // Log détaillé pour faciliter le debug (message, details, hint si disponibles)
       try {
+        const errorInfo = error as ErrorInfo & { hint?: string };
         console.error('Erreur lors de la récupération des partenaires:', {
-          message: (error as any)?.message || String(error),
-          details: (error as any)?.details || (error as any)?.hint || null,
+          message: errorInfo?.message || String(error),
+          details: errorInfo?.details || errorInfo?.hint || null,
           raw: JSON.stringify(error)
         });
       } catch (e) {
@@ -525,7 +584,7 @@ export class SupabaseService {
   /**
    * Génère des données enrichies pour la page partenaire
    */
-  private static getEnrichedPartnerData(partnerId: string, partnerName: string, sector?: string): any {
+  private static getEnrichedPartnerData(partnerId: string, partnerName: string, sector?: string): Record<string, unknown> {
     return {
       longDescription: `${partnerName} est un acteur majeur du secteur ${sector || 'maritime'} avec plus de 15 ans d'expérience dans l'accompagnement des transformations digitales et durables. Notre engagement envers l'innovation et l'excellence nous a permis de développer des solutions de pointe pour les ports et terminaux à travers le monde. En partenariat avec SIPORTS 2026, nous contribuons activement à façonner l'avenir du secteur portuaire africain.`,
       mission: "Transformer le secteur portuaire africain par l'innovation technologique et le développement durable, tout en créant de la valeur pour nos partenaires et les communautés locales.",
@@ -626,7 +685,7 @@ export class SupabaseService {
   /**
    * Génère des projets fictifs pour les partenaires (Quick Fix pour UI)
    */
-  private static getMockProjects(partnerId: string, partnerName: string): any[] {
+  private static getMockProjects(partnerId: string, partnerName: string): PartnerProject[] {
     return [
       {
         id: `proj-${partnerId}-1`,
@@ -685,7 +744,7 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      return (data || []).map((rec: any) => ({
+      return (data || []).map((rec: Recommendation) => ({
         itemId: rec.item_id,
         itemType: rec.item_type,
         similarityScore: rec.similarity_score,
@@ -697,8 +756,8 @@ export class SupabaseService {
   }
 
   // ==================== TRANSFORMATION METHODS ====================
-  private static transformUserDBToUser(userDB: any): User {
-    if (!userDB) return null as any;
+  private static transformUserDBToUser(userDB: UserDB | null): User | null {
+    if (!userDB) return null;
     return {
       id: userDB.id,
       email: userDB.email,
@@ -727,8 +786,8 @@ export class SupabaseService {
     }));
 
     // mini_site est retourné comme un array par Supabase, prenons le premier élément
-    const miniSiteArray = exhibitorDB.mini_site as any;
-    const miniSiteData = Array.isArray(miniSiteArray) && miniSiteArray.length > 0 ? miniSiteArray[0] : miniSiteArray;
+    const miniSiteArray = exhibitorDB.mini_site as unknown;
+    const miniSiteData = Array.isArray(miniSiteArray) && miniSiteArray.length > 0 ? (miniSiteArray[0] as MiniSiteFieldData) : (miniSiteArray as MiniSiteFieldData);
 
     const miniSite = miniSiteData ? {
       theme: miniSiteData.theme || 'default',
@@ -756,7 +815,7 @@ export class SupabaseService {
     };
   }
 
-  private static transformEventDBToEvent(eventDB: any): Event {
+  private static transformEventDBToEvent(eventDB: EventDB): Event {
     // Valider les dates avant de les convertir
     const startTime = eventDB.event_date || eventDB.start_time || eventDB.start_date; // Fallback pour compatibilité
     const endTime = eventDB.end_time || eventDB.end_date;
@@ -851,7 +910,7 @@ export class SupabaseService {
   }
 
   // ==================== AUTHENTICATION ====================
-  static async signUp(email: string, password: string, userData: any, recaptchaToken?: string): Promise<User | null> {
+  static async signUp(email: string, password: string, userData: UserSignupData, recaptchaToken?: string): Promise<User | null> {
     if (!this.checkSupabaseConnection()) return null;
 
     const safeSupabase = supabase!;
@@ -903,7 +962,7 @@ export class SupabaseService {
 
 
       // 2. Créer le profil utilisateur
-      const userPayload: any = {
+      const userPayload: UserDB = {
         id: authData.user.id,
         email,
         name: userData.name,
@@ -988,7 +1047,7 @@ export class SupabaseService {
   }
 
   // ==================== REAL IMPLEMENTATIONS ====================
-  static async createMiniSite(exhibitorId: string, miniSiteData: any): Promise<any> {
+  static async createMiniSite(exhibitorId: string, miniSiteData: MiniSiteData): Promise<MiniSiteDB | null> {
     if (!this.checkSupabaseConnection()) return null;
 
     const safeSupabase = supabase!;
@@ -1035,14 +1094,17 @@ export class SupabaseService {
         // Section Produits
         if (miniSiteData.products && miniSiteData.products.length > 0) {
           const productsList = Array.isArray(miniSiteData.products)
-            ? miniSiteData.products.map((p: any, idx: number) => ({
-                id: String(idx + 1),
-                name: typeof p === 'string' ? p : p.name || 'Produit',
-                description: typeof p === 'object' ? p.description || '' : '',
-                image: typeof p === 'object' ? p.image || '' : '',
-                features: [],
-                price: ''
-              }))
+            ? miniSiteData.products.map((p: unknown, idx: number) => {
+                const product = p as Record<string, unknown>;
+                return {
+                  id: String(idx + 1),
+                  name: typeof p === 'string' ? p : (product.name as string) || 'Produit',
+                  description: typeof p === 'object' ? (product.description as string) || '' : '',
+                  image: typeof p === 'object' ? (product.image as string) || '' : '',
+                  features: [],
+                  price: ''
+                };
+              })
             : [];
 
           sections.push({
@@ -1118,7 +1180,7 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      const updateData: any = {};
+      const updateData: Record<string, unknown> = {};
 
       if (eventData.title !== undefined) updateData.title = eventData.title;
       if (eventData.description !== undefined) updateData.description = eventData.description;
@@ -1216,7 +1278,7 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      return (data || []).map((event: any) => this.transformEventDBToEvent(event));
+      return (data || []).map((event: EventDB) => this.transformEventDBToEvent(event));
     } catch (error) {
       // Ignorer les erreurs réseau silencieusement
       if (error instanceof Error && !error.message.includes('Failed to fetch')) {
@@ -1403,12 +1465,12 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      return (data || []).map((conv: any) => {
+      return (data || []).map((conv: ChatConversationDB) => {
         const lastMessage = conv.messages?.[0];
 
         // ✅ Compter les messages non lus pour cet utilisateur
-        const unreadCount = (conv.messages || []).filter((msg: any) =>
-          msg.receiver_id === userId && msg.read_at === null
+        const unreadCount = (conv.messages || []).filter((msg: ChatMessageDB) =>
+          (msg as any).receiver_id === userId && (msg as any).read_at === null
         ).length;
 
         return {
@@ -1630,7 +1692,7 @@ export class SupabaseService {
 
       if (error) throw error;
       
-      return (data || []).map((p: any) => ({
+      return (data || []).map((p: ProductDB) => ({
         id: p.id,
         exhibitorId: p.exhibitor_id,
         name: p.name,
