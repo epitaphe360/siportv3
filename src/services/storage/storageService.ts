@@ -1,6 +1,14 @@
 import { supabase } from '../../lib/supabase';
 import { v4 as uuidv4 } from 'uuid';
 
+interface FileMetadata {
+  publicUrl?: string;
+  path?: string;
+  name?: string;
+  size?: number;
+  metadata?: Record<string, unknown>;
+}
+
 /**
  * Service pour gérer le stockage des fichiers avec Supabase Storage
  */
@@ -187,7 +195,7 @@ export class StorageService {
    * @param filePath Le chemin du fichier dans le bucket
    * @returns Les métadonnées du fichier
    */
-  static async getFileMetadata(bucket: string, filePath: string): Promise<any> {
+  static async getFileMetadata(bucket: string, filePath: string): Promise<FileMetadata> {
     if (!supabase) {
       throw new Error('Supabase non configuré');
     }

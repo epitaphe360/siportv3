@@ -26,6 +26,11 @@ export interface TwoFactorAuth {
   locked_until?: string;
 }
 
+interface TwoFactorAuthUpdate {
+  failed_attempts: number;
+  locked_until?: string;
+}
+
 class TwoFactorAuthService {
   /**
    * Générer un secret TOTP
@@ -477,7 +482,7 @@ class TwoFactorAuthService {
       const config = await this.get2FAConfig(userId);
       const failedAttempts = (config?.failed_attempts || 0) + 1;
 
-      const updates: any = {
+      const updates: TwoFactorAuthUpdate = {
         failed_attempts: failedAttempts,
       };
 
