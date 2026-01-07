@@ -10,8 +10,8 @@
  * - Background message handling
  */
 
-import { initializeApp } from 'firebase/app';
-import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+import { initializeApp, FirebaseApp } from 'firebase/app';
+import { getMessaging, getToken, onMessage, Messaging } from 'firebase/messaging';
 import { supabase } from '../lib/supabase';
 
 // Firebase config from environment variables
@@ -24,9 +24,29 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
+// Type definitions for Firebase messages
+interface FCMMessage {
+  notification?: {
+    title?: string;
+    body?: string;
+    icon?: string;
+  };
+  data?: Record<string, string>;
+}
+
+interface NotificationData {
+  title: string;
+  body: string;
+  icon?: string;
+  badge?: string;
+  tag?: string;
+  timestamp: number;
+  data?: Record<string, unknown>;
+}
+
 class PushNotificationService {
-  private app: any = null;
-  private messaging: any = null;
+  private app: FirebaseApp | null = null;
+  private messaging: Messaging | null = null;
   private isSupported = false;
 
   constructor() {
@@ -117,11 +137,11 @@ class PushNotificationService {
   /**
    * Handle foreground messages (when app is open)
    */
-  private handleForegroundMessage(payload: any) {
+  private handleForegroundMessage(payload: FCMMessage) {
     const { notification, data } = payload;
 
     // Create notification object
-    const notificationData = {
+      const notificationData: NotificationData = {
       title: notification?.title || 'SIPORT 2026',
       body: notification?.body || '',
       icon: notification?.icon || '/logo.png',
@@ -154,7 +174,7 @@ class PushNotificationService {
   /**
    * Store notification in database
    */
-  private async storeNotification(notification: any) {
+  private async storeNotification(notification: NotificationData) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -282,8 +302,8 @@ class PushNotificationService {
   /**
    * Subscribe to notification updates
    */
-  onNotificationReceived(callback: (notification: any) => void) {
-    window.addEventListener('siport:push-notification', (event: any) => {
+  onNotificationReceived(callback: (notification: NotificationData) => void) {
+    window.addEventListener('siport:push-notification', (event: CustomEvent<NotificationData>) => {
       callback(event.detail);
     });
   }
