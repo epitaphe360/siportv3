@@ -35,8 +35,10 @@ export default function PaymentInstructionsPage() {
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    loadData();
-  }, [requestId]);
+    if (requestId || user?.id) {
+      loadData();
+    }
+  }, [requestId, user?.id]);
 
   async function loadData() {
     try {
@@ -80,8 +82,9 @@ export default function PaymentInstructionsPage() {
 
       toast.success('Justificatif enregistré ! Votre paiement sera validé sous 24-48h.');
       loadData();
-    } catch (error: any) {
-      toast.error(`Erreur: ${error.message}`);
+    } catch (error: unknown) {
+      const errorInfo = error as Record<string, unknown>;
+      toast.error(`Erreur: ${(errorInfo.message as string) || String(error)}`);
     } finally {
       setUploading(false);
     }

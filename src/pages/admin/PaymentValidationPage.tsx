@@ -208,9 +208,10 @@ export default function PaymentValidationPage() {
       }
 
       setRequests(filteredData);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorInfo = err as Record<string, unknown>;
       console.error('Erreur chargement demandes:', err);
-      setError(err.message || 'Erreur lors du chargement des demandes');
+      setError((errorInfo.message as string) || 'Erreur lors du chargement des demandes');
     } finally {
       setLoading(false);
     }
@@ -257,8 +258,9 @@ export default function PaymentValidationPage() {
 
       toast.success('Paiement approuvé avec succès !');
       loadRequests();
-    } catch (err: any) {
-      toast.error(`Erreur: ${err.message}`);
+    } catch (err: unknown) {
+      const errorInfo = err as Record<string, unknown>;
+      toast.error(`Erreur: ${(errorInfo.message as string) || String(err)}`);
     } finally {
       setProcessing(null);
     }
@@ -297,8 +299,9 @@ export default function PaymentValidationPage() {
 
       toast.success('Demande rejetée.');
       loadRequests();
-    } catch (err: any) {
-      toast.error(`Erreur: ${err.message}`);
+    } catch (err: unknown) {
+      const errorInfo = err as Record<string, unknown>;
+      toast.error(`Erreur: ${(errorInfo.message as string) || String(err)}`);
     } finally {
       setProcessing(null);
     }
