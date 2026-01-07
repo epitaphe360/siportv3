@@ -2,6 +2,24 @@
 import { supabase } from '../lib/supabase';
 import { User } from '../types';
 
+interface OAuthError extends Error {
+  message: string;
+}
+
+interface OAuthUserMetadata {
+  full_name?: string;
+  email?: string;
+  picture?: string;
+  [key: string]: unknown;
+}
+
+interface OAuthUser {
+  id: string;
+  email: string;
+  user_metadata?: OAuthUserMetadata;
+  email_confirmed_at?: string;
+}
+
 /**
  * Unified OAuth Service using Supabase
  * Handles both Google and LinkedIn OAuth authentication
@@ -32,15 +50,15 @@ export class OAuthService {
 
       // The OAuth flow will redirect the user
       // The actual user data will be retrieved after OAuth callback
-    } catch (error: any) {
-      console.error('❌ Google authentication error:', error);
+    } catch (error: unknown) {
+      const oauthError = error as OAuthError;
 
-      if (error.message?.includes('popup')) {
+      if (oauthError.message?.includes('popup')) {
         throw new Error('Popup bloquée par le navigateur. Veuillez autoriser les popups pour ce site.');
-      } else if (error.message?.includes('network')) {
+      } else if (oauthError.message?.includes('network')) {
         throw new Error('Erreur réseau. Vérifiez votre connexion internet.');
       } else {
-        throw new Error(error.message || 'Erreur lors de la connexion avec Google. Veuillez réessayer.');
+        throw new Error(oauthError.message || 'Erreur lors de la connexion avec Google. Veuillez réessayer.');
       }
     }
   }
@@ -66,15 +84,15 @@ export class OAuthService {
 
       // The OAuth flow will redirect the user
       // The actual user data will be retrieved after OAuth callback
-    } catch (error: any) {
-      console.error('❌ LinkedIn authentication error:', error);
+    } catch (error: unknown) {
+      const oauthError = error as OAuthError;
 
-      if (error.message?.includes('popup')) {
+      if (oauthError.message?.includes('popup')) {
         throw new Error('Popup bloquée par le navigateur. Veuillez autoriser les popups pour ce site.');
-      } else if (error.message?.includes('network')) {
+      } else if (oauthError.message?.includes('network')) {
         throw new Error('Erreur réseau. Vérifiez votre connexion internet.');
       } else {
-        throw new Error(error.message || 'Erreur lors de la connexion avec LinkedIn. Veuillez réessayer.');
+        throw new Error(oauthError.message || 'Erreur lors de la connexion avec LinkedIn. Veuillez réessayer.');
       }
     }
   }
@@ -170,7 +188,7 @@ export class OAuthService {
   /**
    * Create user profile from OAuth data
    */
-  private static async createUserFromOAuth(oauthUser: any): Promise<User> {
+  private static async createUserFromOAuth(oauthUser: OAuthUser): Promise<User> {
     try {
 
       const displayName = oauthUser.user_metadata?.full_name || oauthUser.email || '';
