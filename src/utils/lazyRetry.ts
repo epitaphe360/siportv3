@@ -5,7 +5,10 @@ import { lazy, ComponentType } from 'react';
  * This happens when a new version of the app is deployed and the browser
  * tries to load an old chunk that no longer exists on the server.
  */
-export const lazyRetry = (componentImport: () => Promise<{ default: ComponentType<any> }>) =>
+type AsyncComponent = Promise<{ default: ComponentType<any> }>;
+type ComponentImporter = () => AsyncComponent;
+
+export const lazyRetry = (componentImport: ComponentImporter) =>
   lazy(async () => {
     try {
       return await componentImport();
@@ -56,7 +59,7 @@ export const lazyRetry = (componentImport: () => Promise<{ default: ComponentTyp
         
         // Return a promise that never resolves to keep Suspense active
         // and prevent ErrorBoundary from showing the error while reloading
-        return new Promise<{ default: ComponentType<any> }>(() => {});
+        return new Promise<AsyncComponent>(() => {});
       }
       
       throw error;
