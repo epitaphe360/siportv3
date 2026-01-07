@@ -150,7 +150,7 @@ class ExportService {
    * Helper: Get nested value from object
    */
   private getNestedValue(obj: Record<string, unknown>, path: string): unknown {
-    return path.split('.').reduce((current: any, key) => current?.[key], obj);
+    return path.split('.').reduce((current: unknown, key) => {\n      if (current && typeof current === 'object') {\n        return (current as Record<string, unknown>)[key];\n      }\n      return undefined;\n    }, obj);
   }
 
   /**

@@ -438,7 +438,7 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     try {
       const connectionsData = await SupabaseService.getUserConnections(user.id);
       // Extract the IDs of connected users (the other party, not the current user)
-      const connectionIds = connectionsData.map((conn: any) => {
+      const connectionIds = connectionsData.map((conn: Record<string, unknown>) => {
         // Return the ID of the other user (not the current user)
         return conn.requester_id === user.id ? conn.addressee_id : conn.requester_id;
       }).filter(Boolean);

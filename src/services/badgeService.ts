@@ -2,6 +2,21 @@ import { supabase } from '../lib/supabase';
 import { UserBadge } from '../types';
 import { getDisplayName } from '@/utils/userHelpers';
 
+// Type definitions for database records
+interface BadgeDBRecord {
+  id: string;
+  user_id: string;
+  badge_code: string;
+  user_type: string;
+  user_level?: string;
+  full_name: string;
+  company_name?: string;
+  sector?: string;
+  created_at: string;
+  qr_code_url?: string;
+  [key: string]: unknown;
+}
+
 /**
  * Service de gestion des badges utilisateurs avec QR code
  * Supporte tous les types d'utilisateurs: visiteurs, exposants, partenaires
@@ -239,7 +254,7 @@ export async function renewBadge(badgeId: string, daysToAdd: number = 3): Promis
 /**
  * Transforme les données de la base de données en objet UserBadge
  */
-function transformBadgeFromDB(data: any): UserBadge {
+function transformBadgeFromDB(data: BadgeDBRecord): UserBadge {
   return {
     id: data.id,
     userId: data.user_id,
