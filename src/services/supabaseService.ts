@@ -510,26 +510,29 @@ export class SupabaseService {
       if (!data) return null;
 
       // Transformer les projets de la DB vers le format UI
-      const dbProjects = (data.projects || []).map((p: any) => ({
+      const dbProjects = (data.projects || []).map((p: Record<string, unknown>) => ({
         id: p.id,
         name: p.name,
         description: p.description,
         status: p.status,
-        startDate: new Date(p.start_date),
-        endDate: p.end_date ? new Date(p.end_date) : undefined,
+        startDate: p.start_date ? new Date(p.start_date as string) : new Date(),
+        endDate: p.end_date ? new Date(p.end_date as string) : undefined,
         budget: p.budget,
         impact: p.impact,
         image: p.image_url,
-        technologies: p.technologies || [],
-        team: p.team || [],
-        kpis: p.kpis || { progress: 0, satisfaction: 0, roi: 0 },
-        timeline: (p.timeline || []).map((t: any) => ({
-          ...t,
-          date: new Date(t.date)
-        })),
-        partners: p.project_partners || [],
-        documents: p.documents || [],
-        gallery: p.gallery || []
+        technologies: (p.technologies as string[]) || [],
+        team: (p.team as unknown[]) || [],
+        kpis: (p.kpis as Record<string, unknown>) || { progress: 0, satisfaction: 0, roi: 0 },
+        timeline: ((p.timeline as unknown[]) || []).map((t: unknown) => {
+          const timelineItem = t as Record<string, unknown>;
+          return {
+            ...timelineItem,
+            date: timelineItem.date ? new Date(timelineItem.date as string) : new Date()
+          };
+        }),
+        partners: (p.project_partners as unknown[]) || [],
+        documents: (p.documents as unknown[]) || [],
+        gallery: (p.gallery as unknown[]) || []
       }));
 
       // Utiliser les données de la base de données, avec fallback sur les données générées
@@ -1509,7 +1512,7 @@ export class SupabaseService {
         
       if (error) throw error;
       
-      return (data || []).map((msg: any) => ({
+      return (data || []).map((msg: Record<string, unknown>) => ({
         id: msg.id,
         senderId: msg.sender_id,
         receiverId: msg.receiver_id,
@@ -1923,7 +1926,7 @@ export class SupabaseService {
 	    }
 	  }
 
-	  static async createExhibitorProfile(userId: string, userData: any): Promise<void> {
+	  static async createExhibitorProfile(userId: string, userData: Record<string, unknown>): Promise<void> {
     if (!this.checkSupabaseConnection()) return;
 
     const safeSupabase = supabase!;
@@ -1950,7 +1953,7 @@ export class SupabaseService {
     }
   }
 
-  static async createPartnerProfile(userId: string, userData: any): Promise<void> {
+  static async createPartnerProfile(userId: string, userData: Record<string, unknown>): Promise<void> {
     if (!this.checkSupabaseConnection()) return;
 
     const safeSupabase = supabase!;
@@ -1997,7 +2000,7 @@ export class SupabaseService {
 	    }
 	  }
 	
-	  static async sendRegistrationEmail(userData: any): Promise<void> {
+	  static async sendRegistrationEmail(userData: Record<string, unknown>): Promise<void> {
     if (!this.checkSupabaseConnection()) return;
 
     const safeSupabase = supabase!;
@@ -2161,7 +2164,7 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      return (data || []).map((rec: any) => this.transformUserDBToUser(rec.recommended_user));
+      return (data || []).map((rec: Record<string, unknown>) => this.transformUserDBToUser(rec.recommended_user));
     } catch (error) {
       console.error('Erreur lors de la récupération des recommandations:', error);
       return [];
@@ -2284,7 +2287,7 @@ export class SupabaseService {
 
       if (error) throw error;
 
-      const connectedUserIds = (connections || []).map((conn: any) => 
+      const connectedUserIds = (connections || []).map((conn: Record<string, unknown>) => 
         conn.requester_id === userId ? conn.addressee_id : conn.requester_id
       );
 
