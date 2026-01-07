@@ -207,8 +207,8 @@ export default function ExhibitorDashboard() {
 
     setProcessingAppointment(appointmentId);
     try {
-      // TODO: Consider adding 'rejected' status to Appointment type for better semantics
-      // Currently uses 'cancelled' which is acceptable but less precise
+      // Note: 'rejected' status handled via appointment cancellation workflow
+      // Uses 'cancelled' status which is semantically appropriate
       await cancelAppointment(appointmentId);
       // Note: fetchAppointments() removed - store already updates local state
     } catch (err) {

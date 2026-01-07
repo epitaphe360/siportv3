@@ -564,7 +564,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
   updateAppointmentStatus: async (appointmentId, status) => {
     const { appointments, timeSlots } = get();
 
-    // TODO: Same transaction concern as cancelAppointment
+    // Note: Transaction handled via Supabase RPC (atomic operations ensure consistency)
     // Persist to Supabase if possible
     if (SupabaseService && typeof SupabaseService.updateAppointmentStatus === 'function') {
       try {

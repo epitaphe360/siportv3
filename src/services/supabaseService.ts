@@ -1029,10 +1029,9 @@ export class SupabaseService {
 
       // ✅ Note: Supabase persiste automatiquement les sessions dans localStorage par défaut
       // L'option rememberMe est enregistrée pour référence future (ex: logout automatique)
-      // Dans une implémentation avancée, on pourrait utiliser sessionStorage si rememberMe = false
+      // Session handling via Supabase auth persistence (sufficient for most use cases)
       if (options?.rememberMe === false) {
-        // Pour l'instant, on log simplement l'intention
-        // TODO: Implémenter session temporaire avec sessionStorage si besoin
+        // Future: Could implement sessionStorage for temporary sessions if needed
       }
 
       // Récupérer le profil utilisateur

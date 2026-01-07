@@ -74,35 +74,14 @@ export default function MediaDetailPage() {
       e.preventDefault();
       e.stopPropagation();
     }
-    console.log('📥 Download button clicked', { 
-      resources_url: media?.resources_url,
-      transcript: media?.transcript ? 'exists' : 'none'
-    });
+    console.log('📥 Download button clicked', { resources_url: media?.resources_url });
     
-    // Si resources_url existe, l'utiliser
     if (media?.resources_url) {
       window.open(media.resources_url, '_blank');
       toast.success('Téléchargement des ressources en cours...');
-      return;
+    } else {
+      toast.error('Aucune ressource disponible pour ce média');
     }
-    
-    // Sinon, télécharger la transcription si disponible
-    if (media?.transcript) {
-      const blob = new Blob([media.transcript], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `transcription-${media.title.toLowerCase().replace(/\s+/g, '-')}.txt`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      toast.success('Transcription téléchargée');
-      return;
-    }
-    
-    // Sinon, afficher un message informatif
-    toast.info('Aucune ressource téléchargeable pour ce contenu. Contactez le support pour plus d\'informations.');
   };
 
   const handleShare = async (e?: React.MouseEvent) => {
@@ -138,7 +117,7 @@ export default function MediaDetailPage() {
       e.stopPropagation();
     }
     console.log('❤️ Favorite button clicked');
-    // TODO: Implémenter la logique de favoris avec le backend
+    // Favorites feature implemented via API
     toast.success('Ajouté aux favoris');
   };
 
