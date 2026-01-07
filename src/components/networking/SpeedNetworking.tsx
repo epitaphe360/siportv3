@@ -11,10 +11,22 @@ interface SpeedNetworkingProps {
   sessionId: string;
 }
 
+interface SpeedNetworkingSession {
+  id: string;
+  duration: number;
+  participants: string[];
+  [key: string]: unknown;
+}
+
+interface SpeedNetworkingMatch {
+  startTime: string;
+  [key: string]: unknown;
+}
+
 export const SpeedNetworking: React.FC<SpeedNetworkingProps> = ({ sessionId }) => {
   const { user } = useAuth();
-  const [session, setSession] = useState<any>(null);
-  const [currentMatch, setCurrentMatch] = useState<any>(null);
+  const [session, setSession] = useState<SpeedNetworkingSession | null>(null);
+  const [currentMatch, setCurrentMatch] = useState<SpeedNetworkingMatch | null>(null);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [loading, setLoading] = useState(true);
   const [isParticipant, setIsParticipant] = useState(false);
@@ -22,6 +34,12 @@ export const SpeedNetworking: React.FC<SpeedNetworkingProps> = ({ sessionId }) =
   useEffect(() => {
     if (sessionId) {
       loadSession();
+    }
+  }, [sessionId]);
+
+  // Check for current match changes every 5 seconds  
+  useEffect(() => {
+    if (sessionId) {
       const interval = setInterval(checkCurrentMatch, 5000);
       return () => clearInterval(interval);
     }
@@ -83,8 +101,9 @@ export const SpeedNetworking: React.FC<SpeedNetworkingProps> = ({ sessionId }) =
       await SpeedNetworkingService.registerParticipant(sessionId, user.id);
       toast.success('Inscription confirmée !');
       loadSession();
-    } catch (error: any) {
-      toast.error(error.message || 'Erreur lors de l\'inscription');
+    } catch (error: unknown) {
+      const errorInfo = error as Record<string, unknown>;
+      toast.error((errorInfo.message as string) || 'Erreur lors de l\'inscription');
     }
   };
 
