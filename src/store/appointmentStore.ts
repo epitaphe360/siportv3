@@ -7,6 +7,43 @@ import PushNotificationService from '../services/pushNotificationService';
 import { supabase as supabaseClient, isSupabaseReady } from '../lib/supabase';
 import { generateDemoTimeSlots } from '../config/demoTimeSlots';
 
+// Type definitions for database records
+interface AppointmentDBRecord {
+  id: string;
+  exhibitor_id: string;
+  visitor_id: string;
+  time_slot_id: string;
+  status: string;
+  message?: string;
+  notes?: string;
+  rating?: number;
+  created_at: string;
+  meeting_type?: string;
+  meeting_link?: string;
+  exhibitor?: Record<string, unknown>;
+  visitor?: Record<string, unknown>;
+}
+
+interface TimeSlotDBRecord {
+  id: string;
+  exhibitor_id: string;
+  slot_date?: string;
+  start_time: string;
+  end_time: string;
+  duration: number;
+  type?: string;
+  max_bookings?: number;
+  current_bookings?: number;
+  location?: string;
+  exhibitor?: Record<string, unknown>;
+}
+
+interface AuthUser {
+  id: string;
+  visitor_level?: string;
+  profile?: Record<string, unknown>;
+}
+
 // Helper pour vérifier si Supabase est configuré
 const getSupabaseClient = () => {
   if (!isSupabaseReady()) {
@@ -203,7 +240,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
         if (error) throw error;
 
         // Transformer les données pour correspondre à l'interface Appointment
-        const transformedAppointments = (data || []).map((apt: any) => ({
+        const transformedAppointments = (data || []).map((apt: AppointmentDBRecord) => ({
           id: apt.id,
           exhibitorId: apt.exhibitor_id,
           visitorId: apt.visitor_id,
@@ -281,7 +318,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
         if (error) throw error;
 
         // Transformer les données pour correspondre à l'interface TimeSlot
-        const transformedSlots = (data || []).map((slot: any) => ({
+        const transformedSlots = (data || []).map((slot: TimeSlotDBRecord) => ({
           id: slot.id,
           exhibitorId: slot.exhibitor_id,
           date: slot.slot_date ? new Date(slot.slot_date) : new Date(),
@@ -328,7 +365,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
     try {
       // Récupérer l'utilisateur connecté via import dynamique
-      let resolvedUser: any = null;
+      let resolvedUser: AuthUser | null = null;
       try {
         const mod = await import('../store/authStore');
         resolvedUser = mod?.default?.getState ? mod.default.getState().user : null;
@@ -436,7 +473,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     if (!appointment) return;
 
     // Get authenticated user via import dynamique
-    let resolvedUser: any = null;
+    let resolvedUser: AuthUser | null = null;
     try {
       const mod = await import('../store/authStore');
       resolvedUser = mod?.default?.getState ? mod.default.getState().user : null;
@@ -491,7 +528,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     // Persist to Supabase if possible
     if (SupabaseService && typeof SupabaseService.updateAppointmentStatus === 'function') {
       try {
-        await SupabaseService.updateAppointmentStatus(appointmentId, status as any);
+        await SupabaseService.updateAppointmentStatus(appointmentId, status as Appointment['status']);
 
         // Si le statut passe à 'confirmed', envoyer des notifications
         const appointment = appointments.find(a => a.id === appointmentId);
@@ -602,7 +639,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       throw new Error('Le nombre maximum de réservations doit être supérieur à 0');
     }
 
-    const slotExhibitorId = (slot as any).exhibitorId;
+    const slotExhibitorId = slot.exhibitorId as string;
     if (!slotExhibitorId || slotExhibitorId === 'unknown') {
       throw new Error('L\'identifiant de l\'exposant est requis pour créer un créneau');
     }
@@ -613,7 +650,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     }
 
     // Validate date is not in the past (allow today)
-    const slotDate = (slot as any).date;
+    const slotDate = slot.date as Date | undefined;
     if (slotDate) {
       const dateObj = slotDate instanceof Date ? slotDate : new Date(slotDate);
       const today = new Date();
