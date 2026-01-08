@@ -317,6 +317,22 @@ export default function MiniSitePreview({ exhibitorId: propExhibitorId }: MiniSi
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 via-white to-orange-50 p-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-md w-full"
+        >
+          <Card className="p-8 text-center shadow-xl">
+            <div className="w-20 h-20 rounded-full bg-red-100 mx-auto flex items-center justify-center mb-6">
+              <AlertCircle className="h-10 w-10 text-red-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">
+              Oops! Une erreur s'est produite
+            </h2>
+            <p className="text-gray-600 mb-8">
+              {error || "Impossible de charger le mini-site. Veuillez réessayer plus tard."}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button onClick={() => window.location.reload()} className="rounded-xl">
+                Réessayer
               </Button>
               <Button variant="outline" onClick={() => navigate(ROUTES.HOME)} className="rounded-xl">
                 Retour à l'accueil
