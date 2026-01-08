@@ -49,38 +49,9 @@ export default function AdminDashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Intentionally fetch only on mount
 
-  // Données de démonstration pour les graphiques
-  const userGrowthData = [
-    { name: 'Jan', users: 120, exhibitors: 15, visitors: 85 },
-    { name: 'Fév', users: 180, exhibitors: 25, visitors: 135 },
-    { name: 'Mar', users: 250, exhibitors: 35, visitors: 190 },
-    { name: 'Avr', users: 340, exhibitors: 48, visitors: 260 },
-    { name: 'Mai', users: 420, exhibitors: 62, visitors: 325 },
-    { name: 'Juin', users: 510, exhibitors: 78, visitors: 395 },
-  ];
-
-  // Utiliser les vraies données depuis adminMetrics au lieu de valeurs hardcodées
-  const activityData = [
-    { name: 'Connexions', value: adminMetrics.totalConnections || 0 },
-    { name: 'RDV Créés', value: adminMetrics.totalAppointments || 0 },
-    { name: 'Messages', value: adminMetrics.totalMessages || 0 },
-    { name: 'Documents', value: adminMetrics.totalDownloads || 0 },
-  ];
-
-  // Données de trafic hebdomadaire - Actuellement hardcodées car nécessite une table d'analytics
-  // TODO: Créer une table 'analytics_daily' pour stocker les visites et pageviews par jour
-  const trafficData = [
-    { name: 'Lun', visits: 0, pageViews: 0 },
-    { name: 'Mar', visits: 0, pageViews: 0 },
-    { name: 'Mer', visits: 0, pageViews: 0 },
-    { name: 'Jeu', visits: 0, pageViews: 0 },
-    { name: 'Ven', visits: 0, pageViews: 0 },
-    { name: 'Sam', visits: 0, pageViews: 0 },
-    { name: 'Dim', visits: 0, pageViews: 0 },
-  ];
-
   // Métriques administrateur récupérées depuis Supabase
   // Display loading state if metrics not yet fetched
+  // IMPORTANT: adminMetrics must be declared BEFORE activityData which uses it
   const adminMetrics = metrics || {
     totalUsers: 0,
     activeUsers: 0,
@@ -96,6 +67,35 @@ export default function AdminDashboard() {
     activeContracts: 0,
     contentModerations: 0
   };
+
+  // Données de démonstration pour les graphiques
+  const userGrowthData = [
+    { name: 'Jan', users: 120, exhibitors: 15, visitors: 85 },
+    { name: 'Fév', users: 180, exhibitors: 25, visitors: 135 },
+    { name: 'Mar', users: 250, exhibitors: 35, visitors: 190 },
+    { name: 'Avr', users: 340, exhibitors: 48, visitors: 260 },
+    { name: 'Mai', users: 420, exhibitors: 62, visitors: 325 },
+    { name: 'Juin', users: 510, exhibitors: 78, visitors: 395 },
+  ];
+
+  // Utiliser les vraies données depuis adminMetrics
+  const activityData = [
+    { name: 'Connexions', value: adminMetrics.totalConnections || 0 },
+    { name: 'RDV Créés', value: adminMetrics.totalAppointments || 0 },
+    { name: 'Messages', value: adminMetrics.totalMessages || 0 },
+    { name: 'Documents', value: adminMetrics.totalDownloads || 0 },
+  ];
+
+  // Données de trafic hebdomadaire
+  const trafficData = [
+    { name: 'Lun', visits: 0, pageViews: 0 },
+    { name: 'Mar', visits: 0, pageViews: 0 },
+    { name: 'Mer', visits: 0, pageViews: 0 },
+    { name: 'Jeu', visits: 0, pageViews: 0 },
+    { name: 'Ven', visits: 0, pageViews: 0 },
+    { name: 'Sam', visits: 0, pageViews: 0 },
+    { name: 'Dim', visits: 0, pageViews: 0 },
+  ];
 
   // userTypeDistribution doit être déclaré APRÈS adminMetrics
   const userTypeDistribution = [
