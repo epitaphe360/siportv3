@@ -62,6 +62,48 @@ Configure environment variables in Railway dashboard:
 - Do NOT add backend secrets like `JWT_SECRET`, `STRIPE_SECRET_KEY` to the frontend service
 - These belong in your backend API service only
 
+## Docker Linter Warnings (False Positives)
+
+You may see warnings like:
+```
+SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data
+(ARG "VITE_RECAPTCHA_SITE_KEY")
+```
+
+**These warnings are FALSE POSITIVES**. Here's why:
+
+### Understanding the Linter Behavior
+
+Docker's built-in linter flags any variable with keywords like `KEY`, `SECRET`, `TOKEN`, `PASSWORD` as potentially sensitive. However, it doesn't understand the context that these are **intentionally public** client-side configuration values.
+
+### Safe to Ignore These Specific Warnings
+
+The following warnings are **safe to ignore** because these values are public by design:
+
+1. **VITE_RECAPTCHA_SITE_KEY** - This is the PUBLIC site key, not the secret key
+   - The secret key (never used) would be `RECAPTCHA_SECRET_KEY`
+   - Site keys are meant to be embedded in client-side HTML/JavaScript
+
+2. **VITE_FIREBASE_API_KEY** - Firebase client API key (public)
+   - Designed to be included in client apps
+   - Protected by Firebase security rules, not by secrecy
+
+3. **VITE_SUPABASE_ANON_KEY** - Supabase anonymous/public key
+   - Specifically designed for client-side use
+   - Row Level Security (RLS) provides the actual protection
+
+4. **VITE_STRIPE_PUBLISHABLE_KEY** - Stripe public key
+   - Explicitly designed to be published
+   - Cannot perform sensitive operations
+
+### Real Secrets (Never in Dockerfile)
+
+The linter would correctly flag these (which we **don't** include):
+- `STRIPE_SECRET_KEY` - Backend only, can charge cards
+- `RECAPTCHA_SECRET_KEY` - Backend only, validates tokens
+- `JWT_SECRET` - Backend only, signs authentication tokens
+- `SUPABASE_SERVICE_ROLE_KEY` - Backend only, bypasses RLS
+
 ## Important Notes
 
 ### Why VITE_* Variables Aren't "Secrets"
