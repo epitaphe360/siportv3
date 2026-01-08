@@ -581,7 +581,7 @@ export default function MiniSitePreview({ exhibitorId: propExhibitorId }: MiniSi
               </div>
             )}
           </motion.div>
-        </section>
+        </div>
       </section>
 
       {/* Footer */}
