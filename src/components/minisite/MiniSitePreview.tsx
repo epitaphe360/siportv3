@@ -71,15 +71,23 @@ interface ExhibitorData {
   };
 }
 
-}: { 
-  src?: string; 
-  alt: string; 
-  className?: string; 
+// Image component with fallback for error handling
+const ImageWithFallback = ({
+  src,
+  alt,
+  className,
+  fallbackClassName,
+  fallbackIcon
+}: {
+  src?: string;
+  alt: string;
+  className?: string;
   fallbackClassName?: string;
   fallbackIcon?: React.ComponentType<{ className?: string }>;
 }) => {
   const [error, setError] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
+  const FallbackIcon = fallbackIcon || AlertCircle;
 
   if (!src || error) {
     return (
