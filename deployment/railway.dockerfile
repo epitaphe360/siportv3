@@ -58,7 +58,8 @@ COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/server.js ./
 
 # Installer uniquement les dépendances de production pour le serveur
-RUN npm ci --only=production
+# Use npm install as fallback if npm ci fails due to lock file sync issues
+RUN npm ci --omit=dev || npm install --omit=dev
 
 # Exposer le port
 EXPOSE 5000
