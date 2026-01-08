@@ -42,7 +42,8 @@ if (typeof firebase !== 'undefined') {
 /**
  * Handle background messages
  */
-messaging.onBackgroundMessage((payload) => {
+if (messaging) {
+  messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw] Received background message:', payload);
 
   const { notification, data } = payload;
@@ -64,7 +65,8 @@ messaging.onBackgroundMessage((payload) => {
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
-});
+  });
+}
 
 /**
  * Handle notification clicks
