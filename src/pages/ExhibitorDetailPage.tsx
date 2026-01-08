@@ -383,18 +383,20 @@ export default function ExhibitorDetailPage() {
             )}
 
             {/* Marchés */}
-            <Card>
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Marchés Ciblés
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {exhibitor.markets.map((market) => (
-                    <Badge key={market} variant="info" size="sm">
-                      <Globe className="h-3 w-3 mr-1" />
-                      {market}
-                    </Badge>
-                  ))}
+            {exhibitor.markets?.length > 0 && (
+              <Card>
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Marchés Ciblés
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {exhibitor.markets.map((market) => (
+                      <Badge key={market} variant="info" size="sm">
+                        <Globe className="h-3 w-3 mr-1" />
+                        {market}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
               </Card>
             )}
@@ -491,16 +493,7 @@ export default function ExhibitorDetailPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-4">
-                    <div className="flex items-center space-x
-        {activeTab === CONFIG.tabIds.minisite && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <MiniSitePreview exhibitorId={exhibitor.id} />
-          </motion.div>
-        )}
--3">
+                    <div className="flex items-center space-x-3">
                       <Building2 className="h-5 w-5 text-gray-400" />
                       <div>
                         <p className="font-medium text-gray-900">Secteur d'activité</p>
@@ -626,6 +619,15 @@ export default function ExhibitorDetailPage() {
                 </div>
               </div>
             </Card>
+          </motion.div>
+        )}
+
+        {activeTab === CONFIG.tabIds.minisite && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <MiniSitePreview exhibitorId={exhibitor.id} />
           </motion.div>
         )}
       </div>
