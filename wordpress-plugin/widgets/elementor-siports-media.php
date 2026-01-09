@@ -8,6 +8,11 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
+// Vérifier si Elementor est disponible
+if (!class_exists('\Elementor\Widget_Base')) {
+    return;
+}
+
 class Elementor_SIPORTS_Media_Widget extends \Elementor\Widget_Base {
 
     /**

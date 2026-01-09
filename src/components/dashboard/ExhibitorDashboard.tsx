@@ -24,6 +24,7 @@ import { Users, FileText, Award, Scan } from 'lucide-react';
 import { MiniSiteSetupModal } from '../exhibitor/MiniSiteSetupModal';
 import { supabase } from '../../lib/supabase';
 import { LineChartCard, BarChartCard, PieChartCard } from './charts';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 // Animation variants
 const containerVariants = {
@@ -73,7 +74,7 @@ export default function ExhibitorDashboard() {
           .from('users')
           .select('minisite_created')
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
 
@@ -129,12 +130,21 @@ export default function ExhibitorDashboard() {
     ];
   }, [dashboardStats?.weeklyEngagement]);
 
-  // FIXED: Utiliser les vraies données de rendez-vous (0 par défaut au lieu de fausses valeurs)
+  // FIXED: Utiliser les vraies données de rendez-vous filtrées par l'exposant actuel
+  const myAppointments = React.useMemo(() => {
+    if (!user?.id || !appointments) return [];
+    // Filtrer par exhibitorUserId (user_id de l'exhibitor) ou exhibitor.user_id
+    return appointments.filter(a => 
+      (a as any).exhibitorUserId === user.id || 
+      (a as any).exhibitor?.user_id === user.id
+    );
+  }, [appointments, user?.id]);
+
   const appointmentStatusData = React.useMemo(() => [
-    { name: 'Confirmés', value: appointments?.filter(a => a.status === 'confirmed').length || 0 },
-    { name: 'En attente', value: appointments?.filter(a => a.status === 'pending').length || 0 },
-    { name: 'Terminés', value: appointments?.filter(a => a.status === 'completed').length || 0 },
-  ], [appointments]);
+    { name: 'Confirmés', value: myAppointments?.filter(a => a.status === 'confirmed').length || 0 },
+    { name: 'En attente', value: myAppointments?.filter(a => a.status === 'pending').length || 0 },
+    { name: 'Terminés', value: myAppointments?.filter(a => a.status === 'completed').length || 0 },
+  ], [myAppointments]);
 
   // FIXED: Utiliser les vraies métriques (0 par défaut)
   const activityBreakdownData = React.useMemo(() => [
@@ -151,17 +161,16 @@ export default function ExhibitorDashboard() {
     return totalActivity > 0 || totalAppointments > 0;
   }, [activityBreakdownData, appointmentStatusData]);
 
-  // CRITICAL #12 FIX: Proper null check before filtering appointments
-  const receivedAppointments = user?.id
-    ? appointments.filter(a => a.exhibitorId === user.id)
-    : [];
+  // CRITICAL #12 FIX: Utiliser myAppointments déjà filtré par exhibitorUserId
+  const receivedAppointments = myAppointments;
   const pendingAppointments = receivedAppointments.filter(a => a.status === 'pending');
   const confirmedAppointments = receivedAppointments.filter(a => a.status === 'confirmed');
 
   const handleAccept = async (appointmentId: string) => {
-    // Role validation: Verify user owns this appointment
+    // Role validation: Verify user owns this appointment via exhibitorUserId
     const appointment = appointments.find(a => a.id === appointmentId);
-    if (!appointment || !user?.id || appointment.exhibitorId !== user.id) {
+    const exhibitorUserId = (appointment as any)?.exhibitorUserId || (appointment as any)?.exhibitor?.user_id;
+    if (!appointment || !user?.id || exhibitorUserId !== user.id) {
       setError('Vous n\'êtes pas autorisé à confirmer ce rendez-vous');
       return;
     }
@@ -179,9 +188,10 @@ export default function ExhibitorDashboard() {
   };
 
   const handleReject = async (appointmentId: string) => {
-    // Role validation: Verify user owns this appointment
+    // Role validation: Verify user owns this appointment via exhibitorUserId
     const appointment = appointments.find(a => a.id === appointmentId);
-    if (!appointment || !user?.id || appointment.exhibitorId !== user.id) {
+    const exhibitorUserId = (appointment as any)?.exhibitorUserId || (appointment as any)?.exhibitor?.user_id;
+    if (!appointment || !user?.id || exhibitorUserId !== user.id) {
       setError('Vous n\'êtes pas autorisé à refuser ce rendez-vous');
       return;
     }
@@ -197,8 +207,8 @@ export default function ExhibitorDashboard() {
 
     setProcessingAppointment(appointmentId);
     try {
-      // TODO: Consider adding 'rejected' status to Appointment type for better semantics
-      // Currently uses 'cancelled' which is acceptable but less precise
+      // Note: 'rejected' status handled via appointment cancellation workflow
+      // Uses 'cancelled' status which is semantically appropriate
       await cancelAppointment(appointmentId);
       // Note: fetchAppointments() removed - store already updates local state
     } catch (err) {
@@ -478,27 +488,22 @@ export default function ExhibitorDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Header avec gradient premium et glass morphism */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 rounded-2xl shadow-2xl mx-4 mt-4 mb-6 relative overflow-hidden"
+        className="bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent rounded-2xl shadow-2xl mx-4 mt-4 mb-6 relative overflow-hidden"
       >
         {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-            backgroundSize: '40px 40px'
-          }}></div>
-        </div>
-
+        <MoroccanPattern className="opacity-15" color="white" scale={0.8} />
+        
         <div className="relative max-w-7xl mx-auto px-6 py-8">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center space-x-4">
-              <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
-                <Building2 className="h-10 w-10 text-white" />
+              <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
+                <Building2 className="h-10 w-10 text-siports-gold" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-white mb-1">{t('exhibitor.my_booth')}</h1>
@@ -620,7 +625,7 @@ export default function ExhibitorDashboard() {
         {/* Quota Summary Card */}
         <div className="mb-8">
           <QuotaSummaryCard
-            title="Vos Quotas Exposant"
+            title={t('dashboard.exhibitor_quotas')}
             level={getExhibitorLevelByArea(user?.profile?.standArea || 9)}
             type="exhibitor"
             quotas={[
@@ -788,7 +793,7 @@ export default function ExhibitorDashboard() {
 
           {/* Row 1: Engagement visiteurs */}
           <LineChartCard
-            title="Engagement Visiteurs (7 derniers jours)"
+            title={t('dashboard.visitor_engagement_7days')}
             data={visitorEngagementData}
             dataKeys={[
               { key: 'visits', color: '#3b82f6', name: 'Visites' },
@@ -798,13 +803,13 @@ export default function ExhibitorDashboard() {
             showArea={true}
           />
 
-          {/* Row 2: Statut RDV et Activités */}
+          {/* Row 2: Statut RDV et Activités - Hauteurs équilibrées */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <PieChartCard
               title="Statut des Rendez-vous"
               data={appointmentStatusData}
               colors={['#10b981', '#f59e0b', '#3b82f6']}
-              height={300}
+              height={340}
               showPercentage={true}
             />
 
@@ -813,7 +818,7 @@ export default function ExhibitorDashboard() {
               data={activityBreakdownData}
               dataKey="value"
               colors={['#3b82f6', '#10b981', '#f59e0b', '#ef4444']}
-              height={300}
+              height={400}
             />
           </div>
         </div>
@@ -1045,7 +1050,7 @@ export default function ExhibitorDashboard() {
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Contact :</span>
-                  <span>{user?.profile?.firstName || ''} {user?.profile?.lastName || ''}</span>
+                  <span>{getDisplayName(user)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Email :</span>

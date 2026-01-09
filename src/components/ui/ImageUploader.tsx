@@ -149,7 +149,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             <button aria-label="Close"
               onClick={handleClearImage}
               className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
-              title="Supprimer l'image"
+              title={t('minisite.delete_image')}
             >
               <X size={16} />
             </button>

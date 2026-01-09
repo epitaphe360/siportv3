@@ -363,6 +363,30 @@ export class MediaService {
   }
 
   /**
+   * Récupérer des statistiques globales pour l'interface admin
+   */
+  static async getGlobalMediaStats(): Promise<{ total: number; pending: number; approved: number; rejected: number; totalViews: number }> {
+    try {
+      const { data, error } = await supabase
+        .from('media_contents')
+        .select('id, status, views_count, likes_count, shares_count');
+
+      if (error) throw error;
+      const rows = data || [];
+      const total = rows.length;
+      const pending = rows.filter((m: any) => m.status === 'pending').length;
+      const approved = rows.filter((m: any) => m.status === 'published').length;
+      const rejected = rows.filter((m: any) => m.status === 'rejected').length;
+      const totalViews = rows.reduce((s: number, m: any) => s + (m.views_count || 0), 0);
+
+      return { total, pending, approved, rejected, totalViews };
+    } catch (error) {
+      console.error('❌ Erreur getGlobalMediaStats:', error);
+      return { total: 0, pending: 0, approved: 0, rejected: 0, totalViews: 0 };
+    }
+  }
+
+  /**
    * Récupérer les événements live à venir
    */
   static async getUpcomingLiveEvents(): Promise<LiveEvent[]> {

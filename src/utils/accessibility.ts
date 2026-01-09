@@ -253,6 +253,7 @@ export function hasValidContrast(
     return largeText ? ratio >= 3 : ratio >= 4.5;
   }
 }
+}
 
 /**
  * Common ARIA roles

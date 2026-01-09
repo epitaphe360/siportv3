@@ -5,6 +5,10 @@ import { supabase } from '../../lib/supabase';
 import useAuthStore from '../../store/authStore';
 import { BANK_TRANSFER_INFO, generatePaymentReference } from '../../config/bankTransferConfig';
 import { toast } from 'sonner';
+import { Card } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { CheckCircle, AlertTriangle, XCircle, Copy, Building2, CreditCard, FileText, HelpCircle, Clock, Upload } from 'lucide-react';
 
 interface PaymentRequest {
   id: string;
@@ -31,19 +35,20 @@ export default function PaymentInstructionsPage() {
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    loadData();
-  }, [requestId]);
+    if (requestId || user?.id) {
+      loadData();
+    }
+  }, [requestId, user?.id]);
 
   async function loadData() {
     try {
-      // Charger la demande de paiement
       if (requestId) {
         const { data: request } = await supabase
           .from('payment_requests')
           .select('*')
           .eq('id', requestId)
           .eq('user_id', user?.id)
-          .single();
+          .maybeSingle();
 
         if (request) setPaymentRequest(request);
       }
@@ -77,19 +82,37 @@ export default function PaymentInstructionsPage() {
 
       toast.success('Justificatif enregistré ! Votre paiement sera validé sous 24-48h.');
       loadData();
-    } catch (error: any) {
-      toast.error(`Erreur: ${error.message}`);
+    } catch (error: unknown) {
+      const errorInfo = error as Record<string, unknown>;
+      toast.error(`Erreur: ${(errorInfo.message as string) || String(error)}`);
     } finally {
       setUploading(false);
     }
   }
 
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success('Copié dans le presse-papier');
+  };
+
   if (loading) {
-    return <div style={{ padding: 32, textAlign: 'center' }}>Chargement...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
   }
 
   if (!user || !requestId) {
-    return <div style={{ padding: 32, textAlign: 'center' }}>Erreur : utilisateur ou demande non trouvé</div>;
+    return (
+      <div className="max-w-4xl mx-auto p-8 text-center">
+        <Card className="p-8">
+          <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-bold mb-2">Erreur</h2>
+          <p className="text-gray-600">Utilisateur ou demande de paiement introuvable.</p>
+        </Card>
+      </div>
+    );
   }
 
   const referenceCode = generatePaymentReference(user.id, requestId);
@@ -97,153 +120,200 @@ export default function PaymentInstructionsPage() {
   const amount = paymentRequest?.requested_level === 'premium' ? bankInfo.amounts.premium.amount : 0;
 
   return (
-    <div style={{ maxWidth: 800, margin: 'auto', padding: 32 }}>
-      <h1> Instructions de Paiement</h1>
-      <p style={{ fontSize: 18, color: '#666' }}>
-        Pass Premium VIP - {amount.toFixed(2)}€
-      </p>
+    <div className="max-w-4xl mx-auto p-4 md:p-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">Instructions de Paiement</h1>
+        <p className="text-xl text-gray-600">
+          Pass Premium VIP - <span className="font-bold text-blue-600">{amount.toFixed(2)}€</span>
+        </p>
+      </div>
 
       {paymentRequest?.status === 'pending' && (
-        <div style={{ background: '#fff3cd', padding: 16, borderRadius: 8, marginBottom: 24 }}>
-          â³ <strong>Demande en attente de validation</strong>
+        <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-lg mb-6 flex items-start gap-3">
+          <Clock className="w-5 h-5 mt-0.5 flex-shrink-0" />
+          <div>
+            <strong className="block font-semibold">Demande en attente de validation</strong>
+            <p className="text-sm mt-1">Votre demande a bien été reçue. Veuillez procéder au virement pour finaliser votre inscription.</p>
+          </div>
         </div>
       )}
 
       {paymentRequest?.status === 'approved' && (
-        <div style={{ background: '#d4edda', padding: 16, borderRadius: 8, marginBottom: 24 }}>
-          ✅ <strong>Paiement approuvé ! Vous avez maintenant accès au Pass Premium VIP.</strong>
+        <div className="bg-green-50 border border-green-200 text-green-800 p-4 rounded-lg mb-6 flex items-start gap-3">
+          <CheckCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
+          <div>
+            <strong className="block font-semibold">Paiement approuvé !</strong>
+            <p className="text-sm mt-1">Vous avez maintenant accès au Pass Premium VIP.</p>
+          </div>
         </div>
       )}
 
       {paymentRequest?.status === 'rejected' && (
-        <div style={{ background: '#f8d7da', padding: 16, borderRadius: 8, marginBottom: 24 }}>
-          âŒ <strong>Paiement refusé</strong>
-          {paymentRequest && (
-            <p style={{ marginTop: 8, fontSize: 14 }}>
-              Raison: {(paymentRequest as any).validation_notes || 'Non spécifiée'}
-            </p>
+        <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg mb-6 flex items-start gap-3">
+          <XCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
+          <div>
+            <strong className="block font-semibold">Paiement refusé</strong>
+            {paymentRequest && (paymentRequest as any).validation_notes && (
+              <p className="text-sm mt-1">
+                Raison: {(paymentRequest as any).validation_notes}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="grid md:grid-cols-2 gap-6 mb-8">
+        {/* Bank Info */}
+        <Card className="p-6">
+          <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-blue-600" />
+            Informations Bancaires
+          </h2>
+          
+          <div className="space-y-4">
+            <div className="p-3 bg-gray-50 rounded-lg">
+              <div className="text-xs text-gray-500 mb-1">Banque</div>
+              <div className="font-medium">{bankInfo.bankName}</div>
+            </div>
+            
+            <div className="p-3 bg-gray-50 rounded-lg">
+              <div className="text-xs text-gray-500 mb-1">Titulaire du compte</div>
+              <div className="font-medium">{bankInfo.accountHolder}</div>
+            </div>
+            
+            <div className="p-3 bg-gray-50 rounded-lg relative group cursor-pointer" onClick={() => copyToClipboard(bankInfo.iban)}>
+              <div className="text-xs text-gray-500 mb-1">IBAN</div>
+              <div className="font-mono font-medium break-all">{bankInfo.iban}</div>
+              <Copy className="w-4 h-4 text-gray-400 absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+            
+            <div className="p-3 bg-gray-50 rounded-lg relative group cursor-pointer" onClick={() => copyToClipboard(bankInfo.bic)}>
+              <div className="text-xs text-gray-500 mb-1">BIC/SWIFT</div>
+              <div className="font-mono font-medium">{bankInfo.bic}</div>
+              <Copy className="w-4 h-4 text-gray-400 absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+
+            <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg">
+              <div className="text-xs text-blue-600 mb-1 font-bold uppercase tracking-wider">Référence obligatoire</div>
+              <div className="flex items-center justify-between">
+                <code className="text-lg font-bold text-blue-900">{referenceCode}</code>
+                <Button variant="ghost" size="sm" onClick={() => copyToClipboard(referenceCode)} className="h-8 w-8 p-0">
+                  <Copy className="w-4 h-4" />
+                </Button>
+              </div>
+              <p className="text-xs text-blue-600 mt-2">
+                À indiquer impérativement dans le libellé du virement
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Instructions */}
+        <div className="space-y-6">
+          <Card className="p-6 bg-blue-50 border-blue-100">
+            <h3 className="text-lg font-bold text-blue-900 mb-4 flex items-center gap-2">
+              <FileText className="w-5 h-5" />
+              Instructions
+            </h3>
+            <ol className="space-y-3 text-blue-800 text-sm">
+              <li className="flex gap-2">
+                <span className="font-bold bg-blue-200 text-blue-800 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">1</span>
+                <span>Effectuez un virement de <strong>{amount.toFixed(2)} EUR</strong> sur le compte indiqué.</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="font-bold bg-blue-200 text-blue-800 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">2</span>
+                <span>Indiquez la référence <strong>{referenceCode}</strong> dans le libellé.</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="font-bold bg-blue-200 text-blue-800 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">3</span>
+                <span>Conservez votre preuve de virement.</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="font-bold bg-blue-200 text-blue-800 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">4</span>
+                <span>Renseignez la référence ci-dessous pour validation.</span>
+              </li>
+            </ol>
+          </Card>
+
+          {paymentRequest?.status === 'pending' && !paymentRequest.transfer_reference && (
+            <Card className="p-6 border-2 border-blue-100 shadow-lg">
+              <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <Upload className="w-5 h-5 text-blue-600" />
+                Soumettre votre justificatif
+              </h3>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Référence du virement <span className="text-red-500">*</span>
+                  </label>
+                  <Input
+                    type="text"
+                    value={reference}
+                    onChange={(e) => setReference(e.target.value)}
+                    placeholder={referenceCode}
+                    className="w-full"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Numéro de transaction ou référence bancaire
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    URL du justificatif (optionnel)
+                  </label>
+                  <Input
+                    type="text"
+                    value={proofUrl}
+                    onChange={(e) => setProofUrl(e.target.value)}
+                    placeholder="https://..."
+                    className="w-full"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Lien vers votre justificatif (Google Drive, Dropbox, etc.)
+                  </p>
+                </div>
+
+                <Button
+                  onClick={handleSubmitProof}
+                  disabled={uploading || !reference}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  {uploading ? 'Envoi en cours...' : 'Soumettre le justificatif'}
+                </Button>
+              </div>
+            </Card>
+          )}
+
+          {paymentRequest?.transfer_reference && (
+            <Card className="p-6 bg-green-50 border-green-100">
+              <div className="flex items-start gap-3">
+                <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0" />
+                <div>
+                  <h3 className="font-bold text-green-900">Justificatif soumis</h3>
+                  <p className="text-sm text-green-800 mt-1">
+                    Soumis le {new Date(paymentRequest.transfer_date || '').toLocaleDateString('fr-FR')}
+                  </p>
+                  <div className="mt-2 p-2 bg-white/50 rounded border border-green-200 text-sm font-mono text-green-900">
+                    Ref: {paymentRequest.transfer_reference}
+                  </div>
+                  <p className="text-xs text-green-700 mt-2">
+                    Votre demande est en cours de traitement. Vous serez notifié dès validation.
+                  </p>
+                </div>
+              </div>
+            </Card>
           )}
         </div>
-      )}
-
-      <div style={{ background: '#f8f9fa', padding: 24, borderRadius: 8, marginBottom: 24 }}>
-        <h2> Informations Bancaires</h2>
-        <div style={{ marginBottom: 12 }}>
-          <strong>Banque :</strong> {bankInfo.bankName}
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <strong>Titulaire du compte :</strong> {bankInfo.accountHolder}
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <strong>IBAN :</strong> <code style={{ background: '#fff', padding: '4px 8px', borderRadius: 4 }}>{bankInfo.iban}</code>
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <strong>BIC/SWIFT :</strong> <code style={{ background: '#fff', padding: '4px 8px', borderRadius: 4 }}>{bankInfo.bic}</code>
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <strong>Montant :</strong> <span style={{ fontSize: 20, fontWeight: 'bold', color: '#28a745' }}>{amount.toFixed(2)} EUR</span>
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <strong>Référence obligatoire :</strong> <code style={{ background: '#fff', padding: '4px 8px', borderRadius: 4, fontSize: 16, fontWeight: 'bold' }}>{referenceCode}</code>
-        </div>
       </div>
 
-      <div style={{ background: '#e7f3ff', padding: 24, borderRadius: 8, marginBottom: 24 }}>
-        <h3> Instructions</h3>
-        <ol>
-          <li>Effectuez un virement de <strong>{amount.toFixed(2)} EUR</strong> sur le compte ci-dessus</li>
-          <li><strong>IMPORTANT :</strong> Indiquez la référence <code>{referenceCode}</code> dans le libellé du virement</li>
-          <li>Conservez votre preuve de virement (capture d'écran ou PDF de confirmation)</li>
-          <li>Renseignez ci-dessous la référence de votre virement et téléchargez le justificatif (optionnel)</li>
-          <li>Notre équipe validera votre paiement sous <strong>24-48 heures ouvrées</strong></li>
-          <li>Vous recevrez une notification dès la validation</li>
-        </ol>
-      </div>
-
-      {paymentRequest?.status === 'pending' && !paymentRequest.transfer_reference && (
-        <div style={{ background: '#fff', padding: 24, borderRadius: 8, border: '1px solid #ddd' }}>
-          <h3> Soumettre votre justificatif</h3>
-
-          <div style={{ marginBottom: 16 }}>
-            <label style={{ display: 'block', marginBottom: 8, fontWeight: 'bold' }}>
-              Référence du virement <span style={{ color: 'red' }}>*</span>
-            </label>
-            <input
-              type="text"
-              value={reference}
-              onChange={(e) => setReference(e.target.value)}
-              placeholder={referenceCode}
-              style={{
-                width: '100%',
-                padding: '12px',
-                borderRadius: 4,
-                border: '1px solid #ccc',
-                fontSize: 16
-              }}
-            />
-            <small style={{ color: '#666' }}>
-              Indiquez la référence de votre virement (numéro de transaction ou référence bancaire)
-            </small>
-          </div>
-
-          <div style={{ marginBottom: 16 }}>
-            <label style={{ display: 'block', marginBottom: 8, fontWeight: 'bold' }}>
-              URL du justificatif (optionnel)
-            </label>
-            <input
-              type="text"
-              value={proofUrl}
-              onChange={(e) => setProofUrl(e.target.value)}
-              placeholder="https://... (lien vers votre justificatif)"
-              style={{
-                width: '100%',
-                padding: '12px',
-                borderRadius: 4,
-                border: '1px solid #ccc',
-                fontSize: 16
-              }}
-            />
-            <small style={{ color: '#666' }}>
-              Vous pouvez héberger votre justificatif sur Google Drive, Dropbox, etc. et coller le lien ici
-            </small>
-          </div>
-
-          <button
-            onClick={handleSubmitProof}
-            disabled={uploading || !reference}
-            style={{
-              background: '#007bff',
-              color: '#fff',
-              padding: '12px 24px',
-              borderRadius: 4,
-              border: 'none',
-              fontSize: 16,
-              fontWeight: 'bold',
-              cursor: uploading || !reference ? 'not-allowed' : 'pointer',
-              opacity: uploading || !reference ? 0.6 : 1
-            }}
-          >
-            {uploading ? 'Envoi...' : 'Soumettre le justificatif'}
-          </button>
-        </div>
-      )}
-
-      {paymentRequest?.transfer_reference && (
-        <div style={{ background: '#d1ecf1', padding: 16, borderRadius: 8 }}>
-          ✅ Justificatif soumis le {new Date(paymentRequest.transfer_date || '').toLocaleDateString('fr-FR')}
-          <div style={{ marginTop: 8 }}>
-            <strong>Référence :</strong> {paymentRequest.transfer_reference}
-          </div>
-          <div style={{ marginTop: 8, fontSize: 14, color: '#666' }}>
-            Votre demande est en cours de traitement. Vous serez notifié dès validation.
-          </div>
-        </div>
-      )}
-
-      <div style={{ marginTop: 32, padding: 16, background: '#f8f9fa', borderRadius: 8 }}>
-        <p style={{ margin: 0, fontSize: 14, color: '#666' }}>
-          <strong> Besoin d'aide ?</strong> Contactez-nous à <a href={`mailto:${bankInfo.supportEmail}`}>{bankInfo.supportEmail}</a>
-        </p>
+      <div className="mt-8 p-4 bg-gray-50 rounded-lg flex items-center justify-center gap-2 text-sm text-gray-600">
+        <HelpCircle className="w-4 h-4" />
+        <span>Besoin d'aide ? Contactez-nous à</span>
+        <a href={`mailto:${bankInfo.supportEmail}`} className="text-blue-600 hover:underline font-medium">
+          {bankInfo.supportEmail}
+        </a>
       </div>
     </div>
   );

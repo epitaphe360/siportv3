@@ -5,6 +5,7 @@ import { Button } from '../ui/Button';
 import { motion } from 'framer-motion';
 import { useTranslation } from '../../hooks/useTranslation';
 import { ROUTES } from '../../lib/routes';
+import { MoroccanPattern, MoroccanArch } from '../ui/MoroccanDecor';
 
 export const HeroSection: React.FC = () => {
   const [timeLeft, setTimeLeft] = React.useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -47,15 +48,29 @@ export const HeroSection: React.FC = () => {
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-white overflow-hidden">
-      {/* Background Pattern */}
+    <section className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 text-white overflow-hidden min-h-[90vh] flex items-center">
+      {/* Moroccan Zellige Pattern Background */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+          backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,215,0,0.1) 35px, rgba(255,215,0,0.1) 70px),
+                           repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(0,128,0,0.1) 35px, rgba(0,128,0,0.1) 70px)`
         }} />
       </div>
+      
+      {/* Decorative Moroccan Arches */}
+      <div className="absolute top-0 left-0 w-full h-24 opacity-20">
+        <svg viewBox="0 0 1200 100" className="w-full h-full" preserveAspectRatio="none">
+          <path d="M0,0 Q150,80 300,0 Q450,80 600,0 Q750,80 900,0 Q1050,80 1200,0 L1200,100 L0,100 Z" fill="currentColor" className="text-siports-gold" />
+        </svg>
+      </div>
+      
+      {/* Background Pattern */}
+      <MoroccanPattern className="opacity-10" color="white" scale={1.5} />
+      
+      {/* Decorative Arch at bottom */}
+      <MoroccanArch className="text-white" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
           <motion.div
@@ -92,39 +107,51 @@ export const HeroSection: React.FC = () => {
                 </p>
                 
                 <div className="grid grid-cols-4 gap-4">
-                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-4 shadow-2xl text-center">
-                    <div className="text-3xl font-bold text-white mb-1">
-                      {formatNumber(timeLeft.days)}
-                    </div>
-                    <div className="text-blue-100 text-xs font-medium uppercase tracking-wide">
-                      {getTimeUnit(timeLeft.days, 'time.day', 'time.days')}
-                    </div>
-                  </div>
-
-                  <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-4 shadow-2xl text-center">
-                    <div className="text-3xl font-bold text-white mb-1">
-                      {formatNumber(timeLeft.hours)}
-                    </div>
-                    <div className="text-purple-100 text-xs font-medium uppercase tracking-wide">
-                      {getTimeUnit(timeLeft.hours, 'time.hour', 'time.hours')}
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-siports-gold to-amber-600 rounded-2xl transform rotate-2 group-hover:rotate-3 transition-transform"></div>
+                    <div className="relative bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-4 shadow-2xl text-center border-2 border-siports-gold">
+                      <div className="text-3xl font-bold text-siports-gold mb-1">
+                        {formatNumber(timeLeft.days)}
+                      </div>
+                      <div className="text-amber-200 text-xs font-medium uppercase tracking-wide">
+                        {getTimeUnit(timeLeft.days, 'time.day', 'time.days')}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-4 shadow-2xl text-center">
-                    <div className="text-3xl font-bold text-white mb-1">
-                      {formatNumber(timeLeft.minutes)}
-                    </div>
-                    <div className="text-green-100 text-xs font-medium uppercase tracking-wide">
-                      {getTimeUnit(timeLeft.minutes, 'time.minute', 'time.minutes')}
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl transform rotate-2 group-hover:rotate-3 transition-transform"></div>
+                    <div className="relative bg-white rounded-2xl p-4 shadow-2xl text-center border-2 border-green-600">
+                      <div className="text-3xl font-bold text-green-700 mb-1">
+                        {formatNumber(timeLeft.hours)}
+                      </div>
+                      <div className="text-green-600 text-xs font-medium uppercase tracking-wide">
+                        {getTimeUnit(timeLeft.hours, 'time.hour', 'time.hours')}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-4 shadow-2xl text-center">
-                    <div className="text-3xl font-bold text-white mb-1">
-                      {formatNumber(timeLeft.seconds)}
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-siports-gold to-amber-600 rounded-2xl transform -rotate-2 group-hover:-rotate-3 transition-transform"></div>
+                    <div className="relative bg-white rounded-2xl p-4 shadow-2xl text-center border-2 border-siports-gold">
+                      <div className="text-3xl font-bold text-amber-700 mb-1">
+                        {formatNumber(timeLeft.minutes)}
+                      </div>
+                      <div className="text-amber-600 text-xs font-medium uppercase tracking-wide">
+                        {getTimeUnit(timeLeft.minutes, 'time.minute', 'time.minutes')}
+                      </div>
                     </div>
-                    <div className="text-orange-100 text-xs font-medium uppercase tracking-wide">
-                      {getTimeUnit(timeLeft.seconds, 'time.second', 'time.seconds')}
+                  </div>
+
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-600 to-green-700 rounded-2xl transform -rotate-2 group-hover:-rotate-3 transition-transform"></div>
+                    <div className="relative bg-gradient-to-br from-green-600 to-green-700 rounded-2xl p-4 shadow-2xl text-center">
+                      <div className="text-3xl font-bold text-white mb-1">
+                        {formatNumber(timeLeft.seconds)}
+                      </div>
+                      <div className="text-green-100 text-xs font-medium uppercase tracking-wide">
+                        {getTimeUnit(timeLeft.seconds, 'time.second', 'time.seconds')}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -142,31 +169,31 @@ export const HeroSection: React.FC = () => {
 
             {/* Event Info */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-              <div className="flex items-center space-x-3">
-                <div className="bg-blue-600 p-2 rounded-lg">
-                  <MapPin className="h-5 w-5" />
+              <div className="flex items-center space-x-3 bg-white/5 p-3 rounded-lg border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-colors">
+                <div className="bg-siports-gold/20 p-2 rounded-lg">
+                  <MapPin className="h-5 w-5 text-siports-gold" />
                 </div>
                 <div>
-                  <p className="font-semibold">{t('hero.stats.location')}</p>
-                  <p className="text-blue-200 text-sm">Morocco</p>
+                  <p className="font-semibold text-white">{t('hero.stats.location')}</p>
+                  <p className="text-blue-100 text-sm">Morocco</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3">
-                <div className="bg-blue-600 p-2 rounded-lg">
-                  <Users className="h-5 w-5" />
+              <div className="flex items-center space-x-3 bg-white/5 p-3 rounded-lg border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-colors">
+                <div className="bg-siports-gold/20 p-2 rounded-lg">
+                  <Users className="h-5 w-5 text-siports-gold" />
                 </div>
                 <div>
-                  <p className="font-semibold">6 000+</p>
-                  <p className="text-blue-200 text-sm">{t('hero.stats.participants')}</p>
+                  <p className="font-semibold text-white">Networking</p>
+                  <p className="text-blue-100 text-sm">B2B & B2G</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3">
-                <div className="bg-blue-600 p-2 rounded-lg">
-                  <Building2 className="h-5 w-5" />
+              <div className="flex items-center space-x-3 bg-white/5 p-3 rounded-lg border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-colors">
+                <div className="bg-siports-gold/20 p-2 rounded-lg">
+                  <Building2 className="h-5 w-5 text-siports-gold" />
                 </div>
                 <div>
-                  <p className="font-semibold">300+</p>
-                  <p className="text-blue-200 text-sm">{t('hero.stats.exhibitors')}</p>
+                  <p className="font-semibold text-white">Format</p>
+                  <p className="text-blue-100 text-sm">Hybride</p>
                 </div>
               </div>
             </div>
@@ -174,13 +201,13 @@ export const HeroSection: React.FC = () => {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to={ROUTES.REGISTER_EXHIBITOR}>
-                <Button size="lg" className="bg-white text-blue-900 hover:bg-blue-50 w-full sm:w-auto">
+                <Button size="lg" className="bg-siports-gold text-white hover:bg-siports-gold/90 border-none w-full sm:w-auto shadow-lg shadow-siports-gold/20">
                   {t('hero.cta.exhibitor')}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <Link to={ROUTES.EXHIBITORS}>
-                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-blue-900 w-full sm:w-auto">
+                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-siports-primary w-full sm:w-auto">
                   {t('hero.cta.discover')}
                 </Button>
               </Link>
@@ -192,47 +219,55 @@ export const HeroSection: React.FC = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative"
+            className="relative hidden lg:block"
           >
-            <div className="relative">
-              <img
-                src="https://images.pexels.com/photos/906982/pexels-photo-906982.jpeg?auto=compress&cs=tinysrgb&w=800"
-                alt="Port maritime moderne avec grues portuaires et navires cargo"
-                className="rounded-2xl shadow-2xl"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent rounded-2xl" />
+            <div className="relative z-10">
+              <div className="absolute -inset-4 bg-siports-gold/20 rounded-t-[10rem] rounded-b-2xl blur-xl" />
+              <div className="relative rounded-t-[10rem] rounded-b-2xl overflow-hidden border-4 border-white/20 shadow-2xl">
+                <img
+                  src="https://images.pexels.com/photos/906982/pexels-photo-906982.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  alt="Port maritime moderne"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-siports-primary/60 to-transparent" />
+              </div>
               
+              {/* Decorative Elements */}
+              <div className="absolute -top-12 -right-12 text-siports-gold/20 animate-spin-slow">
+                <MoroccanPattern className="w-48 h-48" />
+              </div>
+
               {/* Floating Stats */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
-                className="absolute -bottom-8 -left-8 bg-white text-siports-dark p-6 rounded-2xl shadow-2xl border border-siports-gray-200"
+                className="absolute bottom-8 -left-12 bg-white p-4 rounded-xl shadow-xl border-l-4 border-siports-gold"
               >
                 <div className="flex items-center space-x-4">
-                  <div className="bg-siports-primary/10 p-3 rounded-xl">
+                  <div className="bg-siports-primary/5 p-3 rounded-lg">
                     <Users className="h-6 w-6 text-siports-primary" />
                   </div>
                   <div>
-                    <p className="text-3xl font-bold text-siports-primary">40</p>
-                    <p className="text-sm text-siports-gray-600 font-medium">Pays représentés</p>
+                    <p className="text-lg font-bold text-siports-primary">Innovation</p>
+                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">Smart Port</p>
                   </div>
                 </div>
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
-                className="absolute -top-8 -right-8 bg-white text-siports-dark p-6 rounded-2xl shadow-2xl border border-siports-gray-200"
+                className="absolute top-24 -right-8 bg-white p-4 rounded-xl shadow-xl border-l-4 border-siports-gold"
               >
                 <div className="flex items-center space-x-4">
-                  <div className="bg-siports-primary/10 p-3 rounded-xl">
+                  <div className="bg-siports-primary/5 p-3 rounded-lg">
                     <Calendar className="h-6 w-6 text-siports-primary" />
                   </div>
                   <div>
-                    <p className="text-3xl font-bold text-siports-primary">30+</p>
-                    <p className="text-sm text-siports-gray-600 font-medium">Conférences</p>
+                    <p className="text-lg font-bold text-siports-primary">Conférences</p>
+                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">High Level</p>
                   </div>
                 </div>
               </motion.div>

@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Calendar, User, Tag as TagIcon } from 'lucide-react';
-import { sanitizeArticleContent } from '@/utils/sanitizeHtml';
+import DOMPurify from 'dompurify';
 
 interface ShortcodeProps {
   content: string;
@@ -176,7 +176,7 @@ function ArticleDisplay({ article }: { article: ArticleData }) {
         {/* Contenu - Sanitized to prevent XSS attacks */}
         <div
           className="prose prose-lg max-w-none mb-6"
-          dangerouslySetInnerHTML={{ __html: sanitizeArticleContent(article.content) }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content) }}
         />
 
         {/* Tags */}

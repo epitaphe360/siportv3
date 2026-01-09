@@ -114,6 +114,80 @@ const ImageWithFallback = ({
   );
 };
 
+interface FeatureCardProps {
+  feature: string;
+  index: number;
+  theme: any;
+}
+
+const FeatureCard = ({ feature, index, theme }: FeatureCardProps) => {
+  const featureIcons = [Sparkles, Star, Award, CheckCircle2];
+  const FeatureIcon = featureIcons[index % featureIcons.length];
+  const [isExpanded, setIsExpanded] = React.useState(false);
+
+  // Descriptions génériques basées sur les domaines courants
+  const getFeatureDescription = (title: string) => {
+    const lowerTitle = title.toLowerCase();
+    if (lowerTitle.includes('transformation') || lowerTitle.includes('digital')) {
+      return "Accompagnement complet dans la digitalisation de vos processus et infrastructures pour optimiser votre compétitivité.";
+    }
+    if (lowerTitle.includes('cyber') || lowerTitle.includes('sécurité')) {
+      return "Protection avancée de vos systèmes et données contre les menaces cybernétiques avec des solutions de pointe.";
+    }
+    if (lowerTitle.includes('big data') || lowerTitle.includes('analytics')) {
+      return "Exploitation intelligente de vos données massives pour des décisions stratégiques éclairées et prédictives.";
+    }
+    if (lowerTitle.includes('intelligence') || lowerTitle.includes('ia') || lowerTitle.includes('ai')) {
+      return "Intégration d'algorithmes d'apprentissage automatique pour automatiser et optimiser vos opérations.";
+    }
+    if (lowerTitle.includes('cloud')) {
+      return "Infrastructure cloud évolutive et sécurisée pour une flexibilité maximale et une réduction des coûts.";
+    }
+    if (lowerTitle.includes('blockchain')) {
+      return "Technologie blockchain pour une traçabilité transparente et des transactions sécurisées et décentralisées.";
+    }
+    return "Solution complète et personnalisée adaptée à vos besoins spécifiques et enjeux métiers.";
+  };
+
+  return (
+    <motion.div
+      key={feature}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1, duration: 0.5 }}
+      whileHover={{ y: -12, scale: 1.03 }}
+      viewport={{ once: true }}
+    >
+      <Card 
+        className="p-8 h-full bg-white/80 backdrop-blur-sm border-2 border-transparent hover:border-blue-200 shadow-xl hover:shadow-2xl transition-all duration-300 group relative overflow-hidden cursor-pointer"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        {/* Gradient overlay on hover */}
+        <div 
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          style={{ background: `linear-gradient(135deg, ${theme.primaryColor}05, ${theme.accentColor}05)` }}
+        />
+        
+        <div className="relative z-10">
+          <div 
+            className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 shadow-lg"
+            style={{ 
+              background: `linear-gradient(135deg, ${theme.primaryColor}, ${theme.accentColor})`,
+            }}
+          >
+            <FeatureIcon className="h-8 w-8 text-white" />
+          </div>
+          <h3 className="font-bold text-gray-900 text-xl mb-2 group-hover:text-blue-600 transition-colors">{feature}</h3>
+          {isExpanded && (
+            <p className="text-sm text-gray-600 mt-3 leading-relaxed">{getFeatureDescription(feature)}</p>
+          )}
+          <div className="h-1 w-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mt-4 transform origin-left transition-all duration-300 group-hover:w-full"></div>
+        </div>
+      </Card>
+    </motion.div>
+  );
+};
+
 export default function MiniSitePreview() {
   const { exhibitorId } = useParams<{ exhibitorId: string }>();
   const navigate = useNavigate();
@@ -518,10 +592,16 @@ export default function MiniSitePreview() {
       )}
 
       {/* About Section - Modern Design */}
-      <section id="about" className="py-24 bg-white relative overflow-hidden">
+      <section id="about" className="py-24 bg-gradient-to-br from-slate-50 via-white to-blue-50/30 relative overflow-hidden">
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 w-96 h-96 opacity-5" style={{ background: `radial-gradient(circle, ${theme.primaryColor} 0%, transparent 70%)` }} />
         <div className="absolute bottom-0 left-0 w-96 h-96 opacity-5" style={{ background: `radial-gradient(circle, ${theme.secondaryColor} 0%, transparent 70%)` }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-4xl opacity-[0.03]">
+          <div className="w-full h-full" style={{ 
+            backgroundImage: `radial-gradient(circle, ${theme.accentColor} 1px, transparent 1px)`,
+            backgroundSize: '30px 30px'
+          }} />
+        </div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div
@@ -532,65 +612,100 @@ export default function MiniSitePreview() {
           >
             {/* Section Header */}
             <motion.div variants={itemVariants} className="text-center mb-16">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-sm font-medium mb-4">
-                <Building2 className="h-4 w-4" />
+              <motion.div 
+                initial={{ scale: 0.8, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 border border-blue-200/50 text-blue-700 text-sm font-semibold mb-6 shadow-sm"
+              >
+                <Sparkles className="h-4 w-4" />
                 À propos de nous
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ color: theme.primaryColor }}>
+              </motion.div>
+              <h2 className="text-4xl md:text-6xl font-black mb-6 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent leading-tight">
                 {aboutSection?.content?.title || 'Notre Histoire'}
               </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                {aboutSection?.content?.description || aboutSection?.content?.text || exhibitorData.description || 'Nous sommes fiers de participer à SIPORTS 2026 et de présenter nos solutions innovantes.'}
-              </p>
+              <div className="max-w-4xl mx-auto">
+                <p className="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium mb-8">
+                  {aboutSection?.content?.description || aboutSection?.content?.text || exhibitorData.description || 'Nous sommes fiers de participer à SIPORTS 2026 et de présenter nos solutions innovantes.'}
+                </p>
+                
+                {/* Certification Badges */}
+                <motion.div 
+                  variants={itemVariants}
+                  className="flex flex-wrap items-center justify-center gap-4 mb-8"
+                >
+                  <Badge className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-lg hover:shadow-xl transition-shadow">
+                    <Award className="h-4 w-4 mr-2" />
+                    ISO 9001
+                  </Badge>
+                  <Badge className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-600 text-white border-0 shadow-lg hover:shadow-xl transition-shadow">
+                    <Award className="h-4 w-4 mr-2" />
+                    ISO 27001
+                  </Badge>
+                  <Badge className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white border-0 shadow-lg hover:shadow-xl transition-shadow">
+                    <Star className="h-4 w-4 mr-2" />
+                    Certifié depuis 2008
+                  </Badge>
+                </motion.div>
+              </div>
             </motion.div>
 
-            {/* Features Grid - Modern Cards */}
+            {/* Features Grid - Modern Cards with Icons */}
             {((aboutSection?.content?.features || aboutSection?.content?.values) && (aboutSection.content.features?.length > 0 || aboutSection.content.values?.length > 0)) ? (
-              <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-                  {(aboutSection.content.features || aboutSection.content.values).map((feature: string) => (
-                    <motion.div
-                      key={feature}
-                      whileHover={{ y: -8, scale: 1.02 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      <Card className="p-6 h-full bg-gradient-to-br from-white to-gray-50 border-0 shadow-lg hover:shadow-xl transition-all group">
-                        <div 
-                          className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110"
-                          style={{ backgroundColor: `${theme.accentColor}15` }}
-                        >
-                          <CheckCircle2 className="h-7 w-7" style={{ color: theme.accentColor }} />
-                        </div>
-                        <h3 className="font-bold text-gray-900 text-lg">{feature}</h3>
-                      </Card>
-                    </motion.div>
+              <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+                  {(aboutSection.content.features || aboutSection.content.values).map((feature: string, index: number) => (
+                    <FeatureCard key={feature} feature={feature} index={index} theme={theme} />
                   ))}
                 </motion.div>
               ) : !hasConfiguredSections && (
-                <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-                  {['Qualité Premium', 'Service Client 24/7', 'Innovation Continue', 'Expertise Reconnue'].map((feature: string) => (
-                    <motion.div
-                      key={feature}
-                      whileHover={{ y: -8, scale: 1.02 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      <Card className="p-6 h-full bg-gradient-to-br from-white to-gray-50 border-0 shadow-lg hover:shadow-xl transition-all group">
-                        <div 
-                          className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110"
-                          style={{ backgroundColor: `${theme.accentColor}15` }}
-                        >
-                          <CheckCircle2 className="h-7 w-7" style={{ color: theme.accentColor }} />
-                        </div>
-                        <h3 className="font-bold text-gray-900 text-lg">{feature}</h3>
-                      </Card>
-                    </motion.div>
-                  ))}
+                <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+                  {[
+                    { title: 'Intelligence Artificielle Maritime', icon: Sparkles },
+                    { title: 'Plateforme IoT intégrée', icon: Star },
+                    { title: 'Support technique 24/7', icon: Users },
+                    { title: 'Déploiement international', icon: Globe }
+                  ].map((feature, index) => {
+                    const FeatureIcon = feature.icon;
+                    
+                    return (
+                      <motion.div
+                        key={feature.title}
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1, duration: 0.5 }}
+                        whileHover={{ y: -12, scale: 1.03 }}
+                        viewport={{ once: true }}
+                      >
+                        <Card className="p-8 h-full bg-white/80 backdrop-blur-sm border-2 border-transparent hover:border-blue-200 shadow-xl hover:shadow-2xl transition-all duration-300 group relative overflow-hidden">
+                          {/* Gradient overlay on hover */}
+                          <div 
+                            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                            style={{ background: `linear-gradient(135deg, ${theme.primaryColor}05, ${theme.accentColor}05)` }}
+                          />
+                          
+                          <div className="relative z-10">
+                            <div 
+                              className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 shadow-lg"
+                              style={{ 
+                                background: `linear-gradient(135deg, ${theme.primaryColor}, ${theme.accentColor})`,
+                              }}
+                            >
+                              <FeatureIcon className="h-8 w-8 text-white" />
+                            </div>
+                            <h3 className="font-bold text-gray-900 text-xl mb-2 group-hover:text-blue-600 transition-colors">{feature.title}</h3>
+                            <div className="h-1 w-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mt-4 transform origin-left transition-all duration-300 group-hover:w-full"></div>
+                          </div>
+                        </Card>
+                      </motion.div>
+                    );
+                  })}
                 </motion.div>
               )}
 
               {/* About Image - If provided */}
               {(aboutSection?.content?.image || (aboutSection?.content?.images && aboutSection.content.images.length > 0)) && (
                 <motion.div variants={itemVariants} className="mb-16">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className={`grid grid-cols-1 gap-6 ${(aboutSection?.content?.images && aboutSection.content.images.length > 0) ? 'md:grid-cols-2' : 'md:grid-cols-1 max-w-3xl mx-auto'}`}>
                     {aboutSection?.content?.image && (
                       <div className="rounded-2xl overflow-hidden shadow-xl">
                         <img 
@@ -648,107 +763,156 @@ export default function MiniSitePreview() {
 
       {/* Products Section - Premium Grid */}
       {products.length > 0 && (
-        <section id="products" className="py-24 bg-gradient-to-b from-gray-50 to-white relative">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="products" className="py-24 bg-gradient-to-br from-slate-50 via-white to-blue-50/30 relative overflow-hidden">
+          {/* Decorative Background Elements */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-20 right-10 w-96 h-96 bg-gradient-to-br from-blue-200/20 to-purple-200/20 rounded-full blur-3xl" />
+            <div className="absolute bottom-20 left-10 w-80 h-80 bg-gradient-to-br from-indigo-200/20 to-pink-200/20 rounded-full blur-3xl" />
+          </div>
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <motion.div
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
             >
-              {/* Section Header */}
+              {/* Section Header - Enhanced */}
               <motion.div variants={itemVariants} className="text-center mb-16">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-50 text-green-600 text-sm font-medium mb-4">
-                  <Star className="h-4 w-4" />
-                  Nos Solutions
-                </div>
-                <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ color: theme.primaryColor }}>
+                <Badge className="px-6 py-3 rounded-full bg-gradient-to-r from-emerald-500/10 via-green-500/10 to-teal-500/10 border-2 border-emerald-200/50 mb-6">
+                  <Sparkles className="h-5 w-5 mr-2 text-emerald-600" />
+                  <span className="text-emerald-700 font-bold text-base">Nos Solutions Premium</span>
+                </Badge>
+                <h2 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
                   Produits & Services
                 </h2>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                  Découvrez notre gamme complète de solutions innovantes pour répondre à vos besoins
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                  Découvrez notre gamme complète de solutions innovantes pour transformer votre activité portuaire
                 </p>
               </motion.div>
 
-              {/* Products Grid */}
+              {/* Products Grid - Enhanced Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {products.map((product, index) => (
                   <motion.div
                     key={product.id}
                     variants={itemVariants}
-                    whileHover={{ y: -10 }}
-                    transition={{ type: "spring", stiffness: 300 }}
+                    whileHover={{ y: -12, scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
                   >
-                    <Card className="overflow-hidden h-full flex flex-col bg-white border-0 shadow-lg hover:shadow-2xl transition-all group">
-                      {/* Product Image */}
+                    <Card className="overflow-hidden h-full flex flex-col bg-white border-4 border-gray-100 shadow-xl hover:shadow-2xl hover:border-blue-200 transition-all duration-300 group relative">
+                      {/* Animated border effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-pink-500/20 transition-all duration-500 pointer-events-none rounded-lg" />
+                      
+                      {/* Product Image with enhanced overlay */}
                       <div className="relative overflow-hidden">
                         {(product.image || product.images?.[0]) ? (
                           <img
                             src={product.image || product.images?.[0]}
                             alt={product.name}
-                            className="w-full h-56 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                            className="w-full h-64 object-cover transform group-hover:scale-110 group-hover:rotate-2 transition-all duration-700"
                           />
                         ) : (
                           <div 
-                            className="w-full h-56 flex items-center justify-center"
-                            style={{ background: `linear-gradient(135deg, ${theme.primaryColor}20, ${theme.secondaryColor}20)` }}
+                            className="w-full h-64 flex items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100"
                           >
-                            <Building2 className="h-16 w-16" style={{ color: theme.primaryColor }} />
+                            <div className="bg-gradient-to-br from-blue-500 to-indigo-600 w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg">
+                              <Building2 className="h-10 w-10 text-white" />
+                            </div>
                           </div>
                         )}
-                        {/* Overlay gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                         
-                        {/* Category Badge */}
-                        {product.category && (
-                          <div className="absolute top-4 right-4">
-                            <Badge 
-                              className="px-3 py-1 text-xs font-semibold shadow-lg"
-                              style={{ backgroundColor: theme.accentColor, color: 'white' }}
-                            >
+                        {/* Dark overlay on hover */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                        
+                        {/* Top Badges - Stock & Category */}
+                        <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-2">
+                          {/* Stock Badge */}
+                          {product.inStock !== false && (
+                            <Badge className="px-3 py-1.5 text-xs font-bold shadow-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0">
+                              <CheckCircle2 className="h-3 w-3 mr-1" />
+                              En stock
+                            </Badge>
+                          )}
+                          {product.inStock === false && (
+                            <Badge className="px-3 py-1.5 text-xs font-bold shadow-xl bg-gradient-to-r from-orange-500 to-red-500 text-white border-0">
+                              ⏳ Sur commande
+                            </Badge>
+                          )}
+                          
+                          {/* Category Badge */}
+                          {product.category && (
+                            <Badge className="px-3 py-1.5 text-xs font-bold shadow-xl bg-gradient-to-r from-blue-500 to-cyan-600 text-white border-0">
                               {product.category}
                             </Badge>
+                          )}
+                        </div>
+
+                        {/* View Count (if available) */}
+                        {product.views && (
+                          <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-2">
+                            <Eye className="h-3 w-3 text-white" />
+                            <span className="text-xs font-bold text-white">{product.views} vues</span>
                           </div>
                         )}
                       </div>
 
-                      {/* Product Content */}
-                      <div className="p-6 flex-1 flex flex-col">
-                        <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
+                      {/* Product Content - Enhanced */}
+                      <div className="p-7 flex-1 flex flex-col relative z-10">
+                        {/* Title with gradient on hover */}
+                        <h3 className="text-2xl font-black text-gray-900 mb-4 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
                           {product.name}
                         </h3>
-                        <p className="text-gray-600 mb-4 flex-1 line-clamp-3">
+                        
+                        {/* Description */}
+                        <p className="text-gray-600 mb-5 flex-1 line-clamp-3 leading-relaxed">
                           {product.description}
                         </p>
 
-                        {/* Features */}
+                        {/* Features with enhanced icons */}
                         {product.features && product.features.length > 0 && (
-                          <ul className="space-y-2 mb-4">
-                            {product.features.slice(0, 3).map((feature: string) => (
-                              <li key={feature} className="flex items-center text-sm text-gray-600">
-                                <CheckCircle2 className="h-4 w-4 mr-2 flex-shrink-0" style={{ color: theme.accentColor }} />
-                                <span className="line-clamp-1">{feature}</span>
-                              </li>
+                          <div className="mb-6 space-y-3">
+                            {product.features.slice(0, 3).map((feature: string, idx: number) => (
+                              <motion.div 
+                                key={feature}
+                                initial={{ opacity: 0, x: -20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                transition={{ delay: idx * 0.1 }}
+                                className="flex items-center gap-3 text-sm text-gray-700 bg-gray-50 p-2.5 rounded-xl group-hover:bg-blue-50 transition-colors"
+                              >
+                                <div className="bg-gradient-to-br from-blue-500 to-indigo-600 w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
+                                  <CheckCircle2 className="h-3.5 w-3.5 text-white" />
+                                </div>
+                                <span className="font-medium line-clamp-1">{feature}</span>
+                              </motion.div>
                             ))}
-                          </ul>
+                          </div>
                         )}
 
-                        {/* Price & CTA */}
-                        <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
-                          {product.price ? (
-                            <div className="text-2xl font-bold" style={{ color: theme.primaryColor }}>
-                              {product.price}
-                            </div>
-                          ) : (
-                            <span className="text-sm text-gray-500">Sur devis</span>
-                          )}
+                        {/* Price & CTA - Enhanced */}
+                        <div className="flex items-center justify-between mt-auto pt-5 border-t-2 border-gray-100 group-hover:border-blue-200 transition-colors">
+                          <div className="flex-1">
+                            {product.price ? (
+                              <div className="flex flex-col">
+                                <span className="text-xs text-gray-500 font-medium mb-1">À partir de</span>
+                                <div className="text-3xl font-black bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                                  {product.price}
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="flex flex-col">
+                                <span className="text-xs text-gray-500 font-medium mb-1">Tarif</span>
+                                <span className="text-lg font-bold text-gray-700">Sur devis</span>
+                              </div>
+                            )}
+                          </div>
                           <Button
                             size="sm"
-                            variant="outline"
-                            className="rounded-xl"
+                            className="rounded-xl px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
                             onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
                           >
-                            En savoir plus
+                            <span className="mr-2">En savoir +</span>
+                            <ExternalLink className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
@@ -756,6 +920,33 @@ export default function MiniSitePreview() {
                   </motion.div>
                 ))}
               </div>
+
+              {/* Call to Action after products */}
+              <motion.div 
+                variants={itemVariants}
+                className="mt-16 text-center"
+              >
+                <Card className="p-8 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-2 border-blue-200 shadow-xl">
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="text-left flex-1">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                        💬 Besoin d'une solution personnalisée ?
+                      </h3>
+                      <p className="text-gray-600">
+                        Notre équipe d'experts est à votre disposition pour vous accompagner dans votre projet
+                      </p>
+                    </div>
+                    <Button
+                      size="lg"
+                      className="rounded-xl px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold shadow-xl hover:shadow-2xl transition-all hover:scale-105"
+                      onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
+                    >
+                      <MessageCircle className="h-5 w-5 mr-2" />
+                      Contactez-nous
+                    </Button>
+                  </div>
+                </Card>
+              </motion.div>
             </motion.div>
           </div>
         </section>

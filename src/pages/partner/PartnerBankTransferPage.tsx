@@ -75,7 +75,7 @@ export default function PartnerBankTransferPage() {
         .select('*')
         .eq('id', requestId)
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
 
@@ -233,12 +233,12 @@ export default function PartnerBankTransferPage() {
       <div className="min-h-screen flex items-center justify-center">
         <Card className="p-8 max-w-md">
           <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-center mb-2">Erreur</h2>
+          <h2 className="text-xl font-bold text-center mb-2">Accès non autorisé</h2>
           <p className="text-gray-600 text-center mb-4">
-            Utilisateur ou demande non trouvé
+            Vous devez d'abord soumettre une demande de partenariat avant d'accéder à cette page.
           </p>
           <Button onClick={() => navigate('/partner/upgrade')} className="w-full">
-            Retour
+            Faire une demande de partenariat
           </Button>
         </Card>
       </div>
@@ -406,7 +406,7 @@ export default function PartnerBankTransferPage() {
                 </Button>
               </div>
               <p className="text-xs text-red-600 mt-2 font-semibold">
-                âš ï¸ Cette référence DOIT figurer dans le libellé de votre virement
+                ⚠️ Cette référence DOIT figurer dans le libellé de votre virement
               </p>
             </div>
           </div>

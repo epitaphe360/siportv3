@@ -8,17 +8,13 @@ import { SupabaseService } from '../services/supabaseService';
  */
 export async function initializeAuth() {
   try {
-    console.log("[AUTH] Initialisation de l'authentification...");
-    
     // CRITICAL: Verifier et nettoyer le localStorage si donnees invalides
     const storedAuth = localStorage.getItem('siport-auth-storage');
     if (storedAuth) {
       try {
         const parsed = JSON.parse(storedAuth);
         // Si le store contient un admin mais pas de session Supabase active, suspect
-        if (parsed.state?.user?.type === 'admin') {
-          console.warn('[AUTH] Detection admin en localStorage, verification Supabase...');
-        }
+        // Verification silencieuse
       } catch (e) {
         console.error('[AUTH] localStorage corrompu, nettoyage...');
         localStorage.removeItem('siport-auth-storage');
@@ -69,6 +65,7 @@ export async function initializeAuth() {
       console.warn('[AUTH] Session sans email, impossible de récupérer le profil');
       return;
     }
+    
     const userProfile = await SupabaseService.getUserByEmail(session.user.email);
 
     if (userProfile) {
@@ -86,7 +83,6 @@ export async function initializeAuth() {
           useAuthStore.getState().logout();
           return;
         }
-        console.warn('[AUTH] Admin authentifie:', dbUser.email);
       }
       
       // Restore auth state in store
@@ -96,8 +92,6 @@ export async function initializeAuth() {
         isAuthenticated: true,
         isLoading: false
       });
-
-      console.log('[AUTH] Session restauree:', userProfile.email, '- Type:', userProfile.type);
     } else {
       console.warn('[AUTH] Profil utilisateur introuvable, deconnexion...');
       useAuthStore.getState().logout();

@@ -142,7 +142,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
             variant="ghost"
             size="sm"
             onClick={() => skip(-10)}
-            title="Reculer de 10s"
+            title={t('ui.backward_10s')}
           >
             <SkipBack className="h-4 w-4" />
           </Button>
@@ -160,7 +160,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
             variant="ghost"
             size="sm"
             onClick={() => skip(10)}
-            title="Avancer de 10s"
+            title={t('ui.forward_10s')}
           >
             <SkipForward className="h-4 w-4" />
           </Button>

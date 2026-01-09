@@ -1,6 +1,40 @@
 import { create } from 'zustand';
 import { supabase, isSupabaseReady } from '../lib/supabase';
 
+// Type definitions for database records
+interface UserDBRecord {
+  id: string;
+  name?: string;
+  email?: string;
+  type?: string;
+  profile?: Record<string, unknown>;
+  visitor_level?: string;
+  status?: string;
+}
+
+interface FavoriteDBRecord {
+  entity_id: string;
+}
+
+interface ConnectionDBRecord {
+  id: string;
+  requester_id: string;
+  addressee_id: string;
+  status: string;
+  created_at: string;
+  last_interaction?: string;
+  connected_user?: UserDBRecord;
+}
+
+interface NotificationDBRecord {
+  id: string;
+  type: string;
+  title: string;
+  message?: string;
+  created_at: string;
+  read: boolean;
+}
+
 interface VisitorProfile {
   id: string;
   firstName: string;
@@ -203,7 +237,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
             .from('users')
             .select('*')
             .eq('id', user.id)
-            .single();
+            .maybeSingle();
 
           if (profileError) throw profileError;
 
@@ -217,9 +251,9 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
           if (favError) console.warn('Erreur lors de la récupération des favoris:', favError);
 
           // Récupérer les détails des exposants favoris
-          let favoriteExhibitors: any[] = [];
+          let favoriteExhibitors: UserDBRecord[] = [];
           if (favorites && favorites.length > 0) {
-            const exhibitorIds = favorites.map((f: any) => f.entity_id);
+            const exhibitorIds = favorites.map((f: FavoriteDBRecord) => f.entity_id);
             const { data: exhibitorsData } = await supabaseClient
               .from('users')
               .select('id, name, profile')
@@ -237,9 +271,9 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
           if (connError) console.warn('Erreur lors de la récupération des connexions:', connError);
 
           // Récupérer les détails des utilisateurs connectés
-          let connections: any[] = [];
+          let connections: ConnectionDBRecord[] = [];
           if (connectionsData && connectionsData.length > 0) {
-            const connectedUserIds = connectionsData.map((c: any) =>
+            const connectedUserIds = connectionsData.map((c: ConnectionDBRecord) =>
               c.requester_id === user.id ? c.addressee_id : c.requester_id
             );
             const { data: usersData } = await supabaseClient
@@ -247,12 +281,12 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
               .select('id, name, type, profile')
               .in('id', connectedUserIds);
 
-            const usersMap = (usersData || []).reduce((acc: any, u: any) => {
+            const usersMap = (usersData || []).reduce((acc: Record<string, UserDBRecord>, u: UserDBRecord) => {
               acc[u.id] = u;
               return acc;
             }, {});
 
-            connections = connectionsData.map((c: any) => {
+            connections = connectionsData.map((c: ConnectionDBRecord) => {
               const connectedUserId = c.requester_id === user.id ? c.addressee_id : c.requester_id;
               return { ...c, connected_user: usersMap[connectedUserId] || null };
             });
@@ -272,7 +306,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
           const { data: salonConfig, error: salonError } = await supabaseClient
             .from('salon_config')
             .select('*')
-            .single();
+            .maybeSingle();
 
           if (salonError) console.warn('Erreur lors de la récupération des infos salon:', salonError);
 
@@ -305,7 +339,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
                 inApp: true
               }
             } : null,
-            favoriteExhibitors: favoriteExhibitors.map((exhibitor: any) => ({
+            favoriteExhibitors: favoriteExhibitors.map((exhibitor: UserDBRecord) => ({
               id: exhibitor.id,
               name: exhibitor.name || 'Exposant',
               sector: exhibitor.profile?.sectors?.[0] || 'Non spécifié',
@@ -315,7 +349,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
               standNumber: exhibitor.profile?.standNumber || 'À déterminer',
               website: exhibitor.profile?.website
             })),
-            connections: (connections || []).map((conn: any) => ({
+            connections: (connections || []).map((conn: ConnectionDBRecord) => ({
               id: conn.id,
               name: conn.connected_user?.name || 'Utilisateur',
               company: conn.connected_user?.profile?.company || '',
@@ -325,7 +359,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
               connectedAt: new Date(conn.created_at),
               lastInteraction: conn.last_interaction ? new Date(conn.last_interaction) : undefined
             })),
-            notifications: (notifications || []).map((notif: any) => ({
+            notifications: (notifications || []).map((notif: NotificationDBRecord) => ({
               id: notif.id,
               type: notif.type,
               title: notif.title,
@@ -423,7 +457,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
           .from('users')
           .select('*')
           .eq('id', exhibitorId)
-          .single();
+          .maybeSingle();
 
         if (exhibitor) {
           const newFavorite: FavoriteExhibitor = {
@@ -583,7 +617,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
         .from('notifications')
         .update({ read: true })
         .eq('id', notificationId)
-        .then(({ error }: any) => {
+        .then(({ error }: { error: unknown }) => {
           if (error) console.error('Erreur lors de la mise à jour de la notification:', error);
         });
     }

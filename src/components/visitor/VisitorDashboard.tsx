@@ -31,6 +31,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 import { LevelBadge, QuotaSummaryCard } from '../common/QuotaWidget';
 import { motion } from 'framer-motion';
 import { useVisitorStore } from '../../store/visitorStore';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 // OPTIMIZATION: Memoized VisitorDashboard to prevent unnecessary re-renders
 export default memo(function VisitorDashboard() {
@@ -191,10 +192,23 @@ export default memo(function VisitorDashboard() {
 
   const getUpcomingEvents = () => {
     const now = new Date();
+    // Retourner tous les événements auxquels l'utilisateur est inscrit (futurs en premier, puis passés)
     return events
-      .filter(event => registeredEvents.includes(event.id) && event.date > now)
-      .sort((a, b) => a.date.getTime() - b.date.getTime())
-      .slice(0, 3);
+      .filter(event => registeredEvents.includes(event.id))
+      .sort((a, b) => {
+        const aIsFuture = a.date > now;
+        const bIsFuture = b.date > now;
+        // Futurs en premier
+        if (aIsFuture && !bIsFuture) return -1;
+        if (!aIsFuture && bIsFuture) return 1;
+        // Dans chaque groupe, trier par date
+        return a.date.getTime() - b.date.getTime();
+      })
+      .slice(0, 5);
+  };
+
+  const isEventPast = (eventDate: Date) => {
+    return eventDate < new Date();
   };
 
   // Fonction helper pour afficher le nom de l'exposant
@@ -230,15 +244,15 @@ export default memo(function VisitorDashboard() {
 
   if (!isAuthenticated || !user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="text-center"
         >
-          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md">
-            <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-              <Users className="h-10 w-10 text-white" />
+          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md border border-gray-100">
+            <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-siports-primary to-siports-secondary rounded-full flex items-center justify-center">
+              <Users className="h-10 w-10 text-siports-gold" />
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-2">
               Accès non autorisé
@@ -247,7 +261,7 @@ export default memo(function VisitorDashboard() {
               Veuillez vous connecter pour accéder à votre espace visiteur
             </p>
             <Link to={ROUTES.LOGIN}>
-              <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+              <Button className="w-full bg-gradient-to-r from-siports-primary to-siports-secondary hover:from-siports-secondary hover:to-siports-primary text-white">
                 <Activity className="h-4 w-4 mr-2" />
                 Se connecter
               </Button>
@@ -261,7 +275,7 @@ export default memo(function VisitorDashboard() {
   // Note: VisitorLevelGuard removed - FREE visitors CAN access dashboard
   // They just have limited features (0 B2B appointments quota)
   return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header Premium avec Glass Morphism */}
           <motion.div
@@ -270,19 +284,14 @@ export default memo(function VisitorDashboard() {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl shadow-2xl p-8 mb-6 relative overflow-hidden">
+            <div className="bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent rounded-2xl shadow-2xl p-8 mb-6 relative overflow-hidden">
               {/* Background Pattern */}
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute inset-0" style={{
-                  backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-                  backgroundSize: '40px 40px'
-                }}></div>
-              </div>
+              <MoroccanPattern className="opacity-15" color="white" scale={0.8} />
 
               <div className="relative flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center space-x-4">
-                  <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
-                    <Sparkles className="h-10 w-10 text-white" />
+                  <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
+                    <Sparkles className="h-10 w-10 text-siports-gold" />
                   </div>
                   <div>
                     <h1 className="text-3xl font-bold text-white mb-1">
@@ -355,7 +364,7 @@ export default memo(function VisitorDashboard() {
             className="mb-8"
           >
             <QuotaSummaryCard
-              title="Vos Quotas"
+              title={t('dashboard.your_quotas')}
               level={userLevel}
               type="visitor"
               quotas={[
@@ -524,72 +533,76 @@ export default memo(function VisitorDashboard() {
           </motion.div>
 
           {/* 📊 SECTION ANALYTICS VISITEUR - Graphiques Professionnels */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mb-8"
-          >
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-                  <Activity className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Votre Activité</h2>
-                  <p className="text-sm text-gray-600">Suivez votre parcours au salon en temps réel</p>
-                </div>
-              </div>
-              <Badge className="bg-blue-100 text-blue-700 border-blue-300">
-                En direct
-              </Badge>
-            </div>
-
-            {/* Graphique ligne: Activité des visites (7 jours) */}
-            <div className="mb-6">
-              <LineChartCard
-                title="Activité de Visite (7 derniers jours)"
-                data={visitActivityData}
-                dataKeys={[
-                  { key: 'visites', color: '#3b82f6', name: 'Visites' },
-                  { key: 'interactions', color: '#8b5cf6', name: 'Interactions' }
-                ]}
-                height={300}
-              />
-            </div>
-
-            {/* Grille: Graphique circulaire + Barres */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <PieChartCard
-                title="Statut des Rendez-vous"
-                data={appointmentStatusData}
-                height={300}
-              />
-              <BarChartCard
-                title="Centres d'Intérêt"
-                data={interestAreasData}
-                dataKey="value"
-                color="#3b82f6"
-                height={300}
-              />
-            </div>
-          </motion.div>
-
-          {/* Communication Cards */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8"
-          >
-            <motion.div variants={itemVariants}>
-              <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 h-full">
-                <div className="flex items-start space-x-3 mb-4">
-                  <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
-                    <MessageCircle className="h-5 w-5 text-white" />
+          {/* Visiteurs FREE ne voient pas cette section */}
+          {userLevel !== 'free' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mb-8"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+                    <Activity className="h-6 w-6 text-white" />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900">Messagerie</h3>
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">Votre Activité</h2>
+                    <p className="text-sm text-gray-600">Suivez votre parcours au salon en temps réel</p>
+                  </div>
+                </div>
+                <Badge className="bg-blue-100 text-blue-700 border-blue-300">
+                  En direct
+                </Badge>
+              </div>
+
+              {/* Graphique ligne: Activité des visites (7 jours) */}
+              <div className="mb-6">
+                <LineChartCard
+                  title={t('dashboard.visit_activity_7days')}
+                  data={visitActivityData}
+                  dataKeys={[
+                    { key: 'visites', color: '#3b82f6', name: 'Visites' },
+                    { key: 'interactions', color: '#8b5cf6', name: 'Interactions' }
+                  ]}
+                  height={300}
+                />
+              </div>
+
+              {/* Grille: Graphique circulaire + Barres */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <PieChartCard
+                  title={t('dashboard.appointment_status')}
+                  data={appointmentStatusData}
+                  height={300}
+                />
+                <BarChartCard
+                  title={t('dashboard.interest_areas')}
+                  data={interestAreasData}
+                  dataKey="value"
+                  color="#3b82f6"
+                  height={300}
+                />
+              </div>
+            </motion.div>
+          )}
+
+          {/* Communication Cards - Hidden for FREE visitors */}
+          {userLevel !== 'free' && (
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8"
+            >
+              <motion.div variants={itemVariants}>
+                <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 h-full">
+                  <div className="flex items-start space-x-3 mb-4">
+                    <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+                      <MessageCircle className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900">Messagerie</h3>
                     <p className="text-gray-600 text-sm mt-1">
                       Communiquez directement avec les exposants et partenaires
                     </p>
@@ -602,30 +615,31 @@ export default memo(function VisitorDashboard() {
                   </Button>
                 </Link>
               </Card>
-            </motion.div>
+              </motion.div>
 
-            <motion.div variants={itemVariants}>
-              <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 h-full">
-                <div className="flex items-start space-x-3 mb-4">
-                  <div className="p-2 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg">
-                    <Building2 className="h-5 w-5 text-white" />
+              <motion.div variants={itemVariants}>
+                <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 h-full">
+                  <div className="flex items-start space-x-3 mb-4">
+                    <div className="p-2 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg">
+                      <Building2 className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900">Découvrir les exposants</h3>
+                      <p className="text-gray-600 text-sm mt-1">
+                        Explorez les stands et trouvez les solutions qui vous intéressent
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900">Découvrir les exposants</h3>
-                    <p className="text-gray-600 text-sm mt-1">
-                      Explorez les stands et trouvez les solutions qui vous intéressent
-                    </p>
-                  </div>
-                </div>
-                <Link to={ROUTES.EXHIBITORS}>
-                  <Button variant="outline" className="w-full border-2 hover:bg-gray-50">
-                    <Building2 className="h-4 w-4 mr-2" />
-                    Voir les exposants
-                  </Button>
-                </Link>
-              </Card>
+                  <Link to={ROUTES.EXHIBITORS}>
+                    <Button variant="outline" className="w-full border-2 hover:bg-gray-50">
+                      <Building2 className="h-4 w-4 mr-2" />
+                      Voir les exposants
+                    </Button>
+                  </Link>
+                </Card>
+              </motion.div>
             </motion.div>
-          </motion.div>
+          )}
 
           {/* Event Management avec animations */}
           <motion.div
@@ -653,32 +667,50 @@ export default memo(function VisitorDashboard() {
                   Gérez vos inscriptions aux événements et conférences
                 </p>
                 <div className="space-y-3 mb-4">
-                  {getUpcomingEvents().map((event, index) => (
-                    <motion.div
-                      key={event.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg hover:shadow-md transition-shadow"
-                    >
-                      <div className="flex-1">
-                        <p className="font-medium text-gray-900 text-sm">{event.title}</p>
-                        <p className="text-xs text-gray-600">{formatDate(event.date)} à {event.startTime}</p>
-                      </div>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleUnregisterFromEvent(event.id)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  {getUpcomingEvents().map((event, index) => {
+                    const isPast = isEventPast(event.date);
+                    return (
+                      <motion.div
+                        key={event.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className={`flex items-center justify-between p-3 rounded-lg hover:shadow-md transition-shadow ${
+                          isPast 
+                            ? 'bg-gradient-to-r from-gray-100 to-gray-200 opacity-75' 
+                            : 'bg-gradient-to-r from-purple-50 to-indigo-50'
+                        }`}
                       >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </motion.div>
-                  ))}
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <p className={`font-medium text-sm ${isPast ? 'text-gray-500' : 'text-gray-900'}`}>
+                              {event.title}
+                            </p>
+                            {isPast && (
+                              <Badge variant="secondary" className="text-xs">Passé</Badge>
+                            )}
+                          </div>
+                          <p className={`text-xs ${isPast ? 'text-gray-400' : 'text-gray-600'}`}>
+                            {formatDate(event.date)} à {event.startTime}
+                          </p>
+                        </div>
+                        {!isPast && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleUnregisterFromEvent(event.id)}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </motion.div>
+                    );
+                  })}
                   {getUpcomingEvents().length === 0 && (
                     <div className="text-center py-4">
                       <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-                      <p className="text-sm text-gray-500">Aucun événement à venir</p>
+                      <p className="text-sm text-gray-500">Aucun événement inscrit</p>
                     </div>
                   )}
                 </div>
@@ -707,19 +739,20 @@ export default memo(function VisitorDashboard() {
             </motion.div>
           </motion.div>
 
-          {/* Appointment Management avec animations */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center space-x-2 mb-6">
-                <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
-                  <Calendar className="h-5 w-5 text-white" />
+          {/* Appointment Management avec animations - Hidden for FREE visitors */}
+          {userLevel !== 'free' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center space-x-2 mb-6">
+                  <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+                    <Calendar className="h-5 w-5 text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">Mes rendez-vous</h3>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Mes rendez-vous</h3>
-              </div>
               {isAppointmentsLoading ? (
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
@@ -834,8 +867,9 @@ export default memo(function VisitorDashboard() {
                   )}
                 </>
               )}
-            </Card>
-          </motion.div>
+              </Card>
+            </motion.div>
+          )}
 
           {/* Modal for requesting another slot */}
           {showAvailabilityModal && (

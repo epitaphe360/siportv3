@@ -28,11 +28,11 @@ const LinkedInAuthService = {
       // The actual user data will be retrieved after OAuth callback
       throw new Error('OAUTH_REDIRECT');
 
-    } catch (error: any) {
+    } catch (error: Error | unknown) {
       console.error('LinkedIn authentication error:', error);
 
       // If it's the expected redirect, re-throw it
-      if (error.message === 'OAUTH_REDIRECT') {
+      if (error instanceof Error && error.message === 'OAUTH_REDIRECT') {
         throw error;
       }
 

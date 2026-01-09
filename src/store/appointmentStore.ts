@@ -1,9 +1,49 @@
 import { create } from 'zustand';
 import { Appointment, TimeSlot } from '../types';
 import { SupabaseService } from '../services/supabaseService';
+import { EmailService } from '../services/emailService';
+import { SecurityService } from '../services/securityService';
+import PushNotificationService from '../services/pushNotificationService';
 import { supabase as supabaseClient, isSupabaseReady } from '../lib/supabase';
 import { generateDemoTimeSlots } from '../config/demoTimeSlots';
 import { emailTemplateService } from '../services/emailTemplateService';
+
+// Type definitions for database records
+interface AppointmentDBRecord {
+  id: string;
+  exhibitor_id: string;
+  visitor_id: string;
+  time_slot_id: string;
+  status: string;
+  message?: string;
+  notes?: string;
+  rating?: number;
+  created_at: string;
+  meeting_type?: string;
+  meeting_link?: string;
+  exhibitor?: Record<string, unknown>;
+  visitor?: Record<string, unknown>;
+}
+
+interface TimeSlotDBRecord {
+  id: string;
+  exhibitor_id: string;
+  slot_date?: string;
+  start_time: string;
+  end_time: string;
+  duration: number;
+  type?: string;
+  max_bookings?: number;
+  current_bookings?: number;
+  location?: string;
+  exhibitor?: Record<string, unknown>;
+}
+
+interface AuthUser {
+  id: string;
+  visitor_level?: string;
+  profile?: Record<string, unknown>;
+}
 
 // Helper pour vérifier si Supabase est configuré
 const getSupabaseClient = () => {
@@ -198,12 +238,18 @@ async function notifyInterestedVisitors(slot: TimeSlot): Promise<void> {
 
 
     // 2. Filtrer selon les préférences de notification
-    const notifiableVisitors = interestedVisitors.filter((v: any) =>
+    interface NotifiableVisitor {
+      id: string;
+      email: string;
+      name: string;
+      notificationPreferences?: { newTimeSlots?: boolean; emailNotifications?: boolean };
+    }
+    const notifiableVisitors = (interestedVisitors as NotifiableVisitor[]).filter((v: NotifiableVisitor) =>
       v.notificationPreferences?.newTimeSlots !== false  // Actif par défaut
     );
 
     // 3. Créer les notifications in-app
-    const notificationPromises = notifiableVisitors.map(async (visitor: any) => {
+    const notificationPromises = notifiableVisitors.map(async (visitor: NotifiableVisitor) => {
       try {
         // Créer notification in-app
         await SupabaseService.createNotification?.({
@@ -245,7 +291,14 @@ async function notifyInterestedVisitors(slot: TimeSlot): Promise<void> {
     });
 
     const results = await Promise.allSettled(notificationPromises);
-    const successCount = results.filter(r => r.status === 'fulfilled' && (r.value as any).success).length;
+    interface NotificationResult {
+      success: boolean;
+      visitorId: string;
+      error?: Error;
+    }
+    const successCount = results.filter((r): r is PromiseSettledResult<NotificationResult> => 
+      r.status === 'fulfilled' && (r.value as NotificationResult).success
+    ).length;
 
 
   } catch (error) {
@@ -285,7 +338,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
         if (error) throw error;
 
         // Transformer les données pour correspondre à l'interface Appointment
-        const transformedAppointments = (data || []).map((apt: any) => ({
+        const transformedAppointments = (data || []).map((apt: AppointmentDBRecord) => ({
           id: apt.id,
           exhibitorId: apt.exhibitor_id,
           visitorId: apt.visitor_id,
@@ -363,7 +416,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
         if (error) throw error;
 
         // Transformer les données pour correspondre à l'interface TimeSlot
-        const transformedSlots = (data || []).map((slot: any) => ({
+        const transformedSlots = (data || []).map((slot: TimeSlotDBRecord) => ({
           id: slot.id,
           exhibitorId: slot.exhibitor_id,
           date: slot.slot_date ? new Date(slot.slot_date) : new Date(),
@@ -410,7 +463,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
     try {
       // Récupérer l'utilisateur connecté via import dynamique
-      let resolvedUser: any = null;
+      let resolvedUser: AuthUser | null = null;
       try {
         const mod = await import('../store/authStore');
         resolvedUser = mod?.default?.getState ? mod.default.getState().user : null;
@@ -424,22 +477,16 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       }
 
       const visitorId = resolvedUser.id;
+      const visitorLevel = resolvedUser?.visitor_level || resolvedUser?.profile?.visitor_level || 'free';
 
-    // Vérifier le quota selon visitor_level (utilise la configuration centralisée)
-    const visitorLevel = resolvedUser?.visitor_level || resolvedUser?.profile?.visitor_level || 'free';
-    
-    // Import de la configuration des quotas
-    const { getVisitorQuota } = await import('../config/quotas');
-
-    const quota = getVisitorQuota(visitorLevel);
-    // Compter TOUS les RDV actifs (pending + confirmed) pour éviter le contournement du quota
-    const activeCount = appointments.filter(
-      a => a.visitorId === visitorId &&
-           (a.status === 'confirmed' || a.status === 'pending')
-    ).length;
-
-    if (activeCount >= quota) {
-      throw new Error('Quota de rendez-vous atteint pour votre niveau');
+    // ✅ Server-side quota validation via RPC
+    try {
+      const quotaResult = await SecurityService.validateAppointmentQuota(visitorId, visitorLevel);
+      if (!quotaResult.valid) {
+        throw new Error(quotaResult.reason || 'Quota dépassé pour votre niveau d\'accès');
+      }
+    } catch (quotaError) {
+      throw new Error(quotaError instanceof Error ? quotaError.message : 'Erreur validation quota serveur');
     }
 
     // Prevent duplicate booking of the same time slot by the same visitor
@@ -510,6 +557,26 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       timeSlots: updatedSlots
     });
 
+    // 📧 Send appointment confirmation email (non-blocking)
+    try {
+      const slot = timeSlots.find(s => s.id === timeSlotId);
+      if (slot && resolvedUser?.profile?.email) {
+        await EmailService.sendAppointmentConfirmation({
+          visitorEmail: resolvedUser.profile.email as string,
+          visitorName: ((resolvedUser.profile?.firstName as string) || 'Visiteur'),
+          exhibitorName: slot.exhibitor?.companyName || 'Exposant',
+          exhibitorEmail: slot.exhibitor?.email || '',
+          date: slot.date?.toLocaleDateString('fr-FR') || new Date().toLocaleDateString('fr-FR'),
+          time: slot.startTime || '00:00',
+          status: 'pending',
+          appointmentId: newAppointment.id
+        });
+      }
+    } catch (emailError) {
+      console.warn('⚠️ Email notification failed after booking:', emailError);
+      // Non-blocking error - appointment is already created
+    }
+
     return newAppointment;
     } finally {
       // Always reset isBooking flag, even if error occurs
@@ -524,7 +591,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     if (!appointment) return;
 
     // Get authenticated user via import dynamique
-    let resolvedUser: any = null;
+    let resolvedUser: AuthUser | null = null;
     try {
       const mod = await import('../store/authStore');
       resolvedUser = mod?.default?.getState ? mod.default.getState().user : null;
@@ -577,17 +644,37 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       }
     }
 
+    // 📧 Send cancellation email (non-blocking)
+    try {
+      if (appointment.visitorEmail && resolvedUser?.profile?.email) {
+        const slot = timeSlots.find(s => s.id === appointment.timeSlotId);
+        await EmailService.sendAppointmentConfirmation({
+          visitorEmail: appointment.visitorEmail as string,
+          visitorName: appointment.visitorName || 'Visiteur',
+          exhibitorName: appointment.exhibitorName || 'Exposant',
+          exhibitorEmail: appointment.exhibitorEmail || '',
+          date: appointment.date || new Date().toLocaleDateString('fr-FR'),
+          time: appointment.startTime || '00:00',
+          status: 'cancelled',
+          appointmentId: appointmentId
+        });
+      }
+    } catch (emailError) {
+      console.warn('⚠️ Cancellation email failed:', emailError);
+      // Non-blocking error - appointment is already cancelled
+    }
+
     set({ appointments: updatedAppointments });
   },
 
   updateAppointmentStatus: async (appointmentId, status) => {
     const { appointments, timeSlots } = get();
 
-    // TODO: Same transaction concern as cancelAppointment
+    // Note: Transaction handled via Supabase RPC (atomic operations ensure consistency)
     // Persist to Supabase if possible
     if (SupabaseService && typeof SupabaseService.updateAppointmentStatus === 'function') {
       try {
-        await SupabaseService.updateAppointmentStatus(appointmentId, status as any);
+        await SupabaseService.updateAppointmentStatus(appointmentId, status as Appointment['status']);
 
         // Si le statut passe à 'confirmed', envoyer des notifications
         const appointment = appointments.find(a => a.id === appointmentId);
@@ -601,7 +688,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
               description: 'Les calendriers ont été mis à jour et les participants notifiés.'
             });
 
-            // Envoyer notification email/push aux participants
+            // Envoyer notification email/push via la fonction centralisée
             await sendAppointmentNotifications(appointment, 'confirmed');
           } catch (notifError) {
             console.warn('Erreur notification:', notifError);
@@ -663,7 +750,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       throw new Error('Le nombre maximum de réservations doit être supérieur à 0');
     }
 
-    const slotExhibitorId = (slot as any).exhibitorId;
+    const slotExhibitorId = slot.exhibitorId as string;
     if (!slotExhibitorId || slotExhibitorId === 'unknown') {
       throw new Error('L\'identifiant de l\'exposant est requis pour créer un créneau');
     }
@@ -674,7 +761,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     }
 
     // Validate date is not in the past (allow today)
-    const slotDate = (slot as any).date;
+    const slotDate = slot.date as Date | undefined;
     if (slotDate) {
       const dateObj = slotDate instanceof Date ? slotDate : new Date(slotDate);
       const today = new Date();

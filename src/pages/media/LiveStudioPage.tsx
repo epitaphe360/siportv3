@@ -126,3 +126,5 @@ export const LiveStudioPage: React.FC = () => {
 
 
 
+
+export default LiveStudioPage;

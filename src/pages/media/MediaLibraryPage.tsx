@@ -180,3 +180,5 @@ export const MediaLibraryPage: React.FC = () => {
 
 
 
+
+export default MediaLibraryPage;

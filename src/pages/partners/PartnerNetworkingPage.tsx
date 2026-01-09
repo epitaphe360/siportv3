@@ -402,5 +402,4 @@ export const PartnerNetworkingPage: React.FC = () => {
   );
 };
 
-
-
+export default PartnerNetworkingPage;

@@ -21,12 +21,14 @@ import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 
 export const PartnerMediaPage: React.FC = () => {
+  // TODO: Connecter aux vraies données depuis une table 'media_mentions' dans la BDD
+  // Pour l'instant, utilise des données de démonstration statiques
   const mediaData = {
     overview: {
-      totalMentions: 12,
-      socialImpressions: 45000,
-      engagementRate: 98,
-      mediaValue: 25000
+      totalMentions: 0, // À compter depuis la table media_mentions
+      socialImpressions: 0, // À calculer depuis les analytics sociaux
+      engagementRate: 0, // À calculer depuis les métriques d'engagement
+      mediaValue: 0 // À estimer selon un algorithme de valorisation
     },
     television: [
       {
@@ -417,5 +419,4 @@ export const PartnerMediaPage: React.FC = () => {
   );
 };
 
-
-
+export default PartnerMediaPage;

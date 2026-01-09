@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
-import { Button } from '../ui/button';
+import { Button } from '../ui/Button';
 import { SectionEditor } from './SectionEditor';
 import { ImageLibrary } from './ImageLibrary';
 import { SEOEditor } from './SEOEditor';
@@ -58,7 +58,7 @@ export const SiteBuilder: React.FC<SiteBuilderProps> = ({ siteId, templateId, on
         .from('mini_sites')
         .select('*')
         .eq('id', id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       if (data) {
@@ -77,7 +77,7 @@ export const SiteBuilder: React.FC<SiteBuilderProps> = ({ siteId, templateId, on
         .from('site_templates')
         .select('*')
         .eq('id', id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       if (data) {

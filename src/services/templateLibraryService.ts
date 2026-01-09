@@ -267,7 +267,7 @@ class TemplateLibraryService {
         type: 'contact',
         content: {
           title: 'Contactez-nous',
-          email: 'contact@example.com',
+          email: 'contact@siport.com',
           phone: '+212 5XX XXX XXX',
           address: '',
           formFields: ['name', 'email', 'company', 'message']

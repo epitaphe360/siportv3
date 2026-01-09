@@ -126,6 +126,7 @@ export const ROUTES = {
 
   // Media Routes - Nouvelles fonctionnalités
   MEDIA_LIBRARY: '/media',
+  MEDIA_DETAIL: '/media/:id',
   WEBINARS: '/media/webinars',
   WEBINAR_DETAIL: '/media/webinar/:id',
   PODCASTS: '/media/podcasts',
@@ -145,6 +146,7 @@ export const ROUTES = {
   ADMIN_MEDIA_EDIT: '/admin/media/edit/:id',
   ADMIN_LIVE_EVENTS: '/admin/live-events',
   ADMIN_LIVE_EVENT_CREATE: '/admin/live-events/create',
+  ADMIN_PARTNER_MEDIA_APPROVAL: '/admin/partner-media/approval',
 
   // Partner Media Management
   PARTNER_MEDIA_UPLOAD: '/partner/media/upload',

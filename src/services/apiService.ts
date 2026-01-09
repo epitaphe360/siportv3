@@ -101,7 +101,7 @@ export const apiService = {
       .from(tableName)
       .select(columns)
       .eq('id', id)
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error(`API Service error fetching ${tableName}/${id}:`, error);

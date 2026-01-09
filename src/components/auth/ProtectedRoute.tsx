@@ -49,22 +49,13 @@ export default function ProtectedRoute({
 
   // Show nothing while checking (prevents flash of login page)
   if (!isReady || isLoading) {
-    console.log('[ProtectedRoute] Still loading, waiting...', { isReady, isLoading });
     return null; // Or a loading spinner
   }
 
   // Check authentication
   if (!isAuthenticated || !user) {
-    console.log('[ProtectedRoute] Not authenticated, redirecting to:', redirectTo, { isAuthenticated, hasUser: !!user });
     return <Navigate to={redirectTo} replace />;
   }
-
-  console.log('[ProtectedRoute] User authenticated:', { 
-    email: user.email, 
-    status: user.status, 
-    type: user.type,
-    allowPendingPayment 
-  });
 
   // CRITICAL: Check user status (prevents pending/suspended users from accessing)
   // Exception: Allow pending_payment users to access payment pages
@@ -72,12 +63,6 @@ export default function ProtectedRoute({
     // Allow pending_payment users if explicitly permitted OR if they are trying to reach any page
     // (because they might be navigating to payment)
     if (user.status === 'pending_payment') {
-      if (allowPendingPayment) {
-        console.log('[ProtectedRoute] Allowing pending_payment user to access (explicit)');
-      } else {
-        // Still allow but log it - they may be on their way to payment
-        console.log('[ProtectedRoute] Allowing pending_payment user (implicit - may redirect to payment)');
-      }
       // Continue to role check below
     } else if (user.status === 'pending') {
       return <Navigate to={ROUTES.PENDING_ACCOUNT} replace />;

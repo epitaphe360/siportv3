@@ -264,7 +264,7 @@ export default function MiniSiteGalleryManager({
                 size="sm"
                 onClick={() => handleDeleteImage(selectedImageIndex)}
                 className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                title="Supprimer l'image"
+                  title={t('minisite.delete_image')}
               >
                 <Trash2 className="h-4 w-4" />
               </Button>

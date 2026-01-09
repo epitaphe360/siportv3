@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Plus, Trash2, ExternalLink } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from '../ui/Button';
 import type { SEOConfig } from '../../types/site-builder';
 
 interface SEOEditorProps {

@@ -24,6 +24,7 @@ import { CONFIG } from '../lib/config';
 import { LevelBadge } from '../components/common/QuotaWidget';
 import { getExhibitorLevelByArea } from '../config/exhibitorQuotas';
 import { useTranslation } from '../hooks/useTranslation';
+import { MoroccanPattern } from '../components/ui/MoroccanDecor';
 
 export default function ExhibitorsPage() {
   const navigate = useNavigate();
@@ -86,14 +87,15 @@ export default function ExhibitorsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent relative overflow-hidden shadow-lg">
+        <MoroccanPattern className="opacity-10" color="white" scale={0.5} />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div className="mb-6 lg:mb-0">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl font-bold text-white mb-2">
                 {t('pages.exhibitors.title')}
               </h1>
-              <p className="text-lg text-gray-600">
+              <p className="text-lg text-blue-100">
                 {t('pages.exhibitors.description')} {filteredExhibitors.length}
               </p>
             </div>

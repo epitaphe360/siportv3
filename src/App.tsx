@@ -32,7 +32,7 @@ const MetricsPage = lazyRetry(() => import('./components/metrics/MetricsPage'));
 const DetailedProfilePage = lazyRetry(() => import('./components/profile/DetailedProfilePage'));
 const ProfileMatchingPage = lazyRetry(() => import('./pages/ProfileMatchingPage'));
 const VisitorDashboard = lazyRetry(() => import('./components/visitor/VisitorDashboard'));
-const TestFlowPage = lazyRetry(() => import('./pages/dev/TestFlowPage'));
+
 const VisitorProfileSettings = lazyRetry(() => import('./components/visitor/VisitorProfileSettings'));
 const AdminDashboard = lazyRetry(() => import('./components/dashboard/AdminDashboard'));
 const ExhibitorDashboard = lazyRetry(() => import('./components/dashboard/ExhibitorDashboard'));
@@ -105,19 +105,22 @@ const PartnerProfileEditPage = lazyRetry(() => import('./pages/partners/PartnerP
 const PartnerSatisfactionPage = lazyRetry(() => import('./pages/partners/PartnerSatisfactionPage'));
 const PartnerSupportPageComponent = lazyRetry(() => import('./pages/partners/PartnerSupportPage'));
 
+// Admin media approval
+const PartnerMediaApprovalPage = lazyRetry(() => import('./pages/admin/PartnerMediaApprovalPage'));
+
 // Error pages
 const UnauthorizedPage = lazyRetry(() => import('./pages/UnauthorizedPage'));
 const ForbiddenPage = lazyRetry(() => import('./pages/ForbiddenPage'));
 
 // Media pages
-const WebinarsPage = lazyRetry(() => import('./pages/media/WebinarsPage').then(m => ({ default: m.WebinarsPage })));
-const PodcastsPage = lazyRetry(() => import('./pages/media/PodcastsPage').then(m => ({ default: m.PodcastsPage })));
-const CapsulesPage = lazyRetry(() => import('./pages/media/CapsulesPage').then(m => ({ default: m.CapsulesPage })));
-const LiveStudioPage = lazyRetry(() => import('./pages/media/LiveStudioPage').then(m => ({ default: m.LiveStudioPage })));
-const BestMomentsPage = lazyRetry(() => import('./pages/media/BestMomentsPage').then(m => ({ default: m.BestMomentsPage })));
-const TestimonialsPage = lazyRetry(() => import('./pages/media/TestimonialsPage').then(m => ({ default: m.TestimonialsPage })));
-const MediaLibraryPage = lazyRetry(() => import('./pages/media/MediaLibraryPage').then(m => ({ default: m.MediaLibraryPage })));
-const MediaDetailPage = lazyRetry(() => import('./pages/media/MediaDetailPage').then(m => ({ default: m.MediaDetailPage })));
+const WebinarsPage = lazyRetry(() => import('./pages/media/WebinarsPage'));
+const PodcastsPage = lazyRetry(() => import('./pages/media/PodcastsPage'));
+const CapsulesPage = lazyRetry(() => import('./pages/media/CapsulesPage'));
+const LiveStudioPage = lazyRetry(() => import('./pages/media/LiveStudioPage'));
+const BestMomentsPage = lazyRetry(() => import('./pages/media/BestMomentsPage'));
+const TestimonialsPage = lazyRetry(() => import('./pages/media/TestimonialsPage'));
+const MediaLibraryPage = lazyRetry(() => import('./pages/media/MediaLibraryPage'));
+const MediaDetailPage = lazyRetry(() => import('./pages/media/MediaDetailPage'));
 
 // Admin Media pages
 const MediaManagementPage = lazyRetry(() => import('./pages/admin/media/MediaManagementPage'));
@@ -126,6 +129,7 @@ const CreateMediaPage = lazyRetry(() => import('./pages/admin/media/CreateMediaP
 // Partner Media pages
 const PartnerMediaUploadPage = lazyRetry(() => import('./pages/partners/PartnerMediaUploadPage'));
 const PartnerMediaAnalyticsPage = lazyRetry(() => import('./pages/partners/PartnerMediaAnalyticsPage'));
+const PartnerMediaLibraryPage = lazyRetry(() => import('./pages/partners/PartnerMediaLibraryPage'));
 
 import { ChatBot } from './components/chatbot/ChatBot';
 import { ChatBotToggle } from './components/chatbot/ChatBotToggle';
@@ -135,6 +139,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import { initializeAuth } from './lib/initAuth';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import DevSubscriptionSwitcher from './components/dev/DevSubscriptionSwitcher';
+import { usePushNotifications } from './hooks/usePushNotifications';
 
 // Import cleanup functions for dev debugging (not used in production)
 if (import.meta.env.DEV) {
@@ -150,6 +155,9 @@ if (import.meta.env.DEV) {
 const App = () => {
   const [isChatBotOpen, setIsChatBotOpen] = React.useState(false);
   const { currentLanguage, getCurrentLanguage } = useLanguageStore();
+
+  // Initialize push notifications on app startup
+  usePushNotifications();
 
   // Initialize auth from Supabase session on app start
   React.useEffect(() => {
@@ -173,7 +181,14 @@ const App = () => {
         <SkipToContent />
         <Header />
         <main id="main-content" className="flex-1">
-          <Suspense fallback={<div className="flex justify-center items-center h-full"><div>Chargement...</div></div>}>
+          <Suspense fallback={
+            <div className="flex items-center justify-center min-h-screen bg-gray-50">
+              <div className="flex flex-col items-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+                <p className="text-gray-600">Chargement...</p>
+              </div>
+            </div>
+          }>
             <Routes>
             <Route path={ROUTES.HOME} element={<HomePage />} />
             <Route path={ROUTES.EXHIBITORS} element={<ExhibitorsPage />} />
@@ -227,8 +242,7 @@ const App = () => {
             <Route path={ROUTES.UNAUTHORIZED} element={<UnauthorizedPage />} />
             <Route path={ROUTES.FORBIDDEN} element={<ForbiddenPage />} />
 
-            {/* SECURED: Dev route now requires admin role */}
-            <Route path={ROUTES.DEV_TEST_FLOW} element={<ProtectedRoute requiredRole="admin"><TestFlowPage /></ProtectedRoute>} />
+
             <Route path={ROUTES.VISITOR_SETTINGS} element={<ProtectedRoute requiredRole="visitor"><VisitorProfileSettings /></ProtectedRoute>} />
             {/* BUG FIX: Route VISITOR_SUBSCRIPTION dupliquée - supprimée car déjà définie ligne 180 comme route publique */}
             <Route path={ROUTES.VISITOR_UPGRADE} element={<ProtectedRoute requiredRole="visitor"><VisitorUpgradePage /></ProtectedRoute>} />
@@ -304,10 +318,12 @@ const App = () => {
             {/* Partner Media routes - protected */}
             <Route path={ROUTES.PARTNER_MEDIA_UPLOAD} element={<ProtectedRoute requiredRole="partner"><PartnerMediaUploadPage /></ProtectedRoute>} />
             <Route path={ROUTES.PARTNER_MEDIA_ANALYTICS} element={<ProtectedRoute requiredRole="partner"><PartnerMediaAnalyticsPage /></ProtectedRoute>} />
+            <Route path={ROUTES.PARTNER_MEDIA_LIBRARY} element={<ProtectedRoute requiredRole="partner"><PartnerMediaLibraryPage /></ProtectedRoute>} />
 
             {/* Admin Media routes - protected */}
             <Route path={ROUTES.ADMIN_MEDIA_MANAGE} element={<ProtectedRoute requiredRole="admin"><MediaManagementPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_MEDIA_CREATE} element={<ProtectedRoute requiredRole="admin"><CreateMediaPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_PARTNER_MEDIA_APPROVAL} element={<ProtectedRoute requiredRole="admin"><PartnerMediaApprovalPage /></ProtectedRoute>} />
 
             {/* 404 catch-all route - must be last */}
             <Route path="*" element={<div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">

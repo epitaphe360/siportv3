@@ -37,6 +37,7 @@ import { getPartnerQuota, getPartnerTierConfig } from '../../config/partnerTiers
 import PartnerProfileCreationModal from '../partner/PartnerProfileCreationModal';
 import { supabase } from '../../lib/supabase';
 import type { PartnerTier } from '../../config/partnerTiers';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 export default function PartnerDashboard() {
   // ✅ CORRECTION: Tous les hooks DOIVENT être appelés avant tout return conditionnel
@@ -98,7 +99,7 @@ export default function PartnerDashboard() {
           .from('partner_profiles')
           .select('id')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
         if (error && error.code !== 'PGRST116') {
           console.error('Erreur vérification profil:', error);
@@ -174,27 +175,27 @@ export default function PartnerDashboard() {
 
   // Données pour les graphiques partenaire
   const brandExposureData = [
-    { name: 'Lun', impressions: dashboardStats?.profileViews?.value ? Math.floor(dashboardStats.profileViews.value * 0.12) : 28, interactions: dashboardStats?.connections?.value ? Math.floor(dashboardStats.connections.value * 0.15) : 12 },
-    { name: 'Mar', impressions: dashboardStats?.profileViews?.value ? Math.floor(dashboardStats.profileViews.value * 0.14) : 35, interactions: dashboardStats?.connections?.value ? Math.floor(dashboardStats.connections.value * 0.18) : 15 },
-    { name: 'Mer', impressions: dashboardStats?.profileViews?.value ? Math.floor(dashboardStats.profileViews.value * 0.16) : 42, interactions: dashboardStats?.connections?.value ? Math.floor(dashboardStats.connections.value * 0.22) : 19 },
-    { name: 'Jeu', impressions: dashboardStats?.profileViews?.value ? Math.floor(dashboardStats.profileViews.value * 0.13) : 31, interactions: dashboardStats?.connections?.value ? Math.floor(dashboardStats.connections.value * 0.16) : 14 },
-    { name: 'Ven', impressions: dashboardStats?.profileViews?.value ? Math.floor(dashboardStats.profileViews.value * 0.18) : 48, interactions: dashboardStats?.connections?.value ? Math.floor(dashboardStats.connections.value * 0.25) : 22 },
-    { name: 'Sam', impressions: dashboardStats?.profileViews?.value ? Math.floor(dashboardStats.profileViews.value * 0.15) : 38, interactions: dashboardStats?.connections?.value ? Math.floor(dashboardStats.connections.value * 0.19) : 16 },
-    { name: 'Dim', impressions: dashboardStats?.profileViews?.value ? Math.floor(dashboardStats.profileViews.value * 0.12) : 29, interactions: dashboardStats?.connections?.value ? Math.floor(dashboardStats.connections.value * 0.14) : 11 }
+    { name: 'Lun', impressions: dashboardStats?.profileViews?.value ? Math.floor(dashboardStats.profileViews.value * 0.12) : 0, interactions: dashboardStats?.connections?.value ? Math.floor(dashboardStats.connections.value * 0.15) : 0 },
+    { name: 'Mar', impressions: dashboardStats?.profileViews?.value ? Math.floor(dashboardStats.profileViews.value * 0.14) : 0, interactions: dashboardStats?.connections?.value ? Math.floor(dashboardStats.connections.value * 0.18) : 0 },
+    { name: 'Mer', impressions: dashboardStats?.profileViews?.value ? Math.floor(dashboardStats.profileViews.value * 0.16) : 0, interactions: dashboardStats?.connections?.value ? Math.floor(dashboardStats.connections.value * 0.22) : 0 },
+    { name: 'Jeu', impressions: dashboardStats?.profileViews?.value ? Math.floor(dashboardStats.profileViews.value * 0.13) : 0, interactions: dashboardStats?.connections?.value ? Math.floor(dashboardStats.connections.value * 0.16) : 0 },
+    { name: 'Ven', impressions: dashboardStats?.profileViews?.value ? Math.floor(dashboardStats.profileViews.value * 0.18) : 0, interactions: dashboardStats?.connections?.value ? Math.floor(dashboardStats.connections.value * 0.25) : 0 },
+    { name: 'Sam', impressions: dashboardStats?.profileViews?.value ? Math.floor(dashboardStats.profileViews.value * 0.15) : 0, interactions: dashboardStats?.connections?.value ? Math.floor(dashboardStats.connections.value * 0.19) : 0 },
+    { name: 'Dim', impressions: dashboardStats?.profileViews?.value ? Math.floor(dashboardStats.profileViews.value * 0.12) : 0, interactions: dashboardStats?.connections?.value ? Math.floor(dashboardStats.connections.value * 0.14) : 0 }
   ];
 
   const engagementChannelsData = [
-    { name: 'Profil', value: dashboardStats?.profileViews?.value || 245, color: '#8b5cf6' },
-    { name: 'Messages', value: dashboardStats?.messages?.value || 89, color: '#06b6d4' },
-    { name: 'RDV', value: dashboardStats?.appointments?.value || 42, color: '#f97316' },
-    { name: 'Téléchargements', value: dashboardStats?.documentDownloads?.value || 58, color: '#10b981' }
+    { name: 'Profil', value: dashboardStats?.profileViews?.value || 0, color: '#8b5cf6' },
+    { name: 'Messages', value: dashboardStats?.messages?.value || 0, color: '#06b6d4' },
+    { name: 'RDV', value: dashboardStats?.appointments?.value || 0, color: '#f97316' },
+    { name: 'Téléchargements', value: dashboardStats?.documentDownloads?.value || 0, color: '#10b981' }
   ];
 
   const roiMetricsData = [
-    { name: 'Connexions', value: dashboardStats?.connections?.value || 156 },
-    { name: 'Leads Qualifiés', value: dashboardStats?.leadExports?.value || 87 },
-    { name: 'RDV Confirmés', value: confirmedAppointments.length || 24 },
-    { name: 'Messages', value: dashboardStats?.messages?.value || 89 }
+    { name: 'Connexions', value: dashboardStats?.connections?.value || 0 },
+    { name: 'Leads Qualifiés', value: dashboardStats?.leadExports?.value || 0 },
+    { name: 'RDV Confirmés', value: confirmedAppointments.length || 0 },
+    { name: 'Messages', value: dashboardStats?.messages?.value || 0 }
   ];
 
   // Filter appointments where partner is involved (as partner, not as exhibitor)
@@ -348,25 +349,20 @@ export default function PartnerDashboard() {
           transition={{ duration: 0.6 }}
           className="mb-8"
         >
-          <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-2xl shadow-2xl p-8 mb-6 relative overflow-hidden">
+          <div className="bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent rounded-2xl shadow-2xl p-8 mb-6 relative overflow-hidden">
             {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0" style={{
-                backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-                backgroundSize: '40px 40px'
-              }}></div>
-            </div>
+            <MoroccanPattern className="opacity-15" color="white" scale={0.8} />
 
             <div className="relative flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center space-x-4">
-                <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
-                  <Crown className="h-10 w-10 text-white" />
+                <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
+                  <Crown className="h-10 w-10 text-siports-gold" />
                 </div>
                 <div>
                   <h1 className="text-3xl font-bold text-white mb-1">
                     {t('partner.my_profile')}
                   </h1>
-                  <p className="text-pink-100">
+                  <p className="text-blue-100">
                     {t('dashboard.welcome')} {user?.profile?.firstName || 'Partenaire'}, tier {partnerTier.toUpperCase()} ✨
                   </p>
                 </div>
@@ -641,7 +637,7 @@ export default function PartnerDashboard() {
           {/* Graphique ligne: Exposition de marque (7 jours) */}
           <div className="mb-6">
             <LineChartCard
-              title="Exposition de Marque (7 derniers jours)"
+              title={t('dashboard.brand_exposure_7days')}
               data={brandExposureData}
               dataKeys={[
                 { key: 'impressions', color: '#8b5cf6', name: 'Impressions' },
@@ -654,7 +650,7 @@ export default function PartnerDashboard() {
           {/* Grille: Graphique circulaire + Barres */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <PieChartCard
-              title="Canaux d'Engagement"
+              title={t('dashboard.engagement_channels')}
               data={engagementChannelsData}
               height={300}
             />

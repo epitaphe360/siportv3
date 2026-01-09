@@ -387,7 +387,7 @@ export default function ExhibitorDetailPage() {
                   Marchés Ciblés
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {exhibitor.markets.map((market) => (
+                  {exhibitor.markets?.map((market) => (
                     <Badge key={market} variant="info" size="sm">
                       <Globe className="h-3 w-3 mr-1" />
                       {market}

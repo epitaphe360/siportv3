@@ -118,6 +118,27 @@ export const VideoStreamPlayer: React.FC<VideoStreamPlayerProps> = ({
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
+  // Détecter si c'est une URL YouTube
+  const isYouTube = src?.includes('youtube.com') || src?.includes('youtu.be');
+  
+  // Convertir l'URL YouTube en format embed si nécessaire
+  const getYouTubeEmbedUrl = (url: string) => {
+    if (!url) return '';
+    
+    // Si c'est déjà une URL embed, la retourner
+    if (url.includes('/embed/')) return url;
+    
+    // Extraire l'ID de la vidéo
+    let videoId = '';
+    if (url.includes('youtube.com/watch?v=')) {
+      videoId = url.split('v=')[1]?.split('&')[0];
+    } else if (url.includes('youtu.be/')) {
+      videoId = url.split('youtu.be/')[1]?.split('?')[0];
+    }
+    
+    return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=${autoPlay ? 1 : 0}` : url;
+  };
+
   return (
     <div 
       ref={containerRef}
@@ -125,15 +146,25 @@ export const VideoStreamPlayer: React.FC<VideoStreamPlayerProps> = ({
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      {/* Video Element */}
-      <video
-        ref={videoRef}
-        src={src}
-        poster={poster}
-        autoPlay={autoPlay}
-        className="w-full h-full"
-        onClick={togglePlay}
-      />
+      {/* YouTube iFrame ou Video Element */}
+      {isYouTube ? (
+        <iframe
+          src={getYouTubeEmbedUrl(src)}
+          className="w-full aspect-video"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          title={title || 'Video'}
+        />
+      ) : (
+        <video
+          ref={videoRef}
+          src={src}
+          poster={poster}
+          autoPlay={autoPlay}
+          className="w-full h-full"
+          onClick={togglePlay}
+        />
+      )}
 
       {/* Live Badge */}
       {isLive && (
@@ -152,7 +183,7 @@ export const VideoStreamPlayer: React.FC<VideoStreamPlayerProps> = ({
       )}
 
       {/* Play/Pause Overlay */}
-      {!isPlaying && (
+      {!isPlaying && !isYouTube && (
         <div className="absolute inset-0 flex items-center justify-center">
           <Button
             variant="default"
@@ -166,7 +197,7 @@ export const VideoStreamPlayer: React.FC<VideoStreamPlayerProps> = ({
       )}
 
       {/* Controls */}
-      {controls && (
+      {controls && !isYouTube && (
         <div 
           className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 transition-opacity duration-300 ${
             showControls ? 'opacity-100' : 'opacity-0'

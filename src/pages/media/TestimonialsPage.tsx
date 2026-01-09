@@ -111,3 +111,5 @@ export const TestimonialsPage: React.FC = () => {
 
 
 
+
+export default TestimonialsPage;

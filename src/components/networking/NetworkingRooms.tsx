@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Search, LogIn, LogOut, MessageCircle, Shield } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Badge } from '../ui/badge';
+import { Button } from '../ui/Button';
+import { Badge } from '../ui/Badge';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
 import type { NetworkingRoom } from '../../types/site-builder';
@@ -35,7 +35,10 @@ export const NetworkingRooms: React.FC<NetworkingRoomsProps> = ({ eventId }) => 
 
   useEffect(() => {
     loadRooms();
-    subscribeToRoomUpdates();
+    const unsubscribe = subscribeToRoomUpdates();
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, [eventId]);
 
   useEffect(() => {
@@ -206,7 +209,7 @@ export const NetworkingRooms: React.FC<NetworkingRoomsProps> = ({ eventId }) => 
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Rechercher une salle..."
+              placeholder={t('networking.search_room')}
               className="w-full pl-10 pr-4 py-2 border rounded-lg"
             />
           </div>

@@ -8,6 +8,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Vérifier si Elementor est disponible
+if (!class_exists('\Elementor\Widget_Base')) {
+    return;
+}
+
 class Elementor_SIPORTS_Article_Widget extends \Elementor\Widget_Base {
     
     /**
@@ -48,7 +53,7 @@ class Elementor_SIPORTS_Article_Widget extends \Elementor\Widget_Base {
     /**
      * Enregistrer les contrôles du widget
      */
-    protected function _register_controls() {
+    protected function register_controls() {
         
         // Section Contenu
         $this->start_controls_section(

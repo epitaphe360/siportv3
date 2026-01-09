@@ -47,7 +47,7 @@ export const LiveStudioDetailPage: React.FC = () => {
         .select('*')
         .eq('id', id)
         .eq('type', 'live_studio')
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       setLiveStudio(data);
@@ -382,3 +382,4 @@ export const LiveStudioDetailPage: React.FC = () => {
     </div>
   );
 };
+export default LiveStudioDetailPage;

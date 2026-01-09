@@ -2,6 +2,16 @@ import { create } from 'zustand';
 import { Dashboard, DashboardStats, Activity } from '../types';
 import { supabase } from '../lib/supabase';
 
+// Type definitions for database records
+interface ActivityDBRecord {
+  id: string;
+  type: string;
+  description: string;
+  created_at: string;
+  actor_id: string;
+  actor?: Record<string, unknown>;
+}
+
 interface DashboardState {
   dashboard: Dashboard | null;
   isLoading: boolean;
@@ -32,11 +42,14 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
         .from('users')
         .select('*')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
       if (profileError) throw profileError;
 
-      // Calculer les statistiques
+      // Calculer les statistiques RÉELLES depuis les tables (pas depuis profile.stats)
+      // Les profile.stats sont des données de démo, on les ignore
+      const isExhibitorOrPartner = userProfile?.role === 'exhibitor' || userProfile?.role === 'partner';
+      
       const stats: DashboardStats = {
         profileViews: 0,
         connections: 0,
@@ -46,16 +59,20 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
         miniSiteViews: 0
       };
 
+      // TOUJOURS compter depuis les vraies tables pour avoir les données exactes
       // Compter les vues de profil (seulement pour exhibitors/partners)
-      const isExhibitorOrPartner = userProfile?.role === 'exhibitor' || userProfile?.role === 'partner';
       if (isExhibitorOrPartner) {
-        const { count: profileViewsCount, error } = await supabase
-          .from('profile_views')
-          .select('*', { count: 'exact', head: true })
-          .eq('viewed_user_id', user.id);
-        
-        if (!error) {
-          stats.profileViews = profileViewsCount || 0;
+        try {
+          const { count: profileViewsCount, error } = await supabase
+            .from('profile_views')
+            .select('*', { count: 'exact', head: true })
+            .eq('viewed_user_id', user.id);
+          
+          if (!error) {
+            stats.profileViews = profileViewsCount || 0;
+          }
+        } catch (err) {
+          console.log('Table profile_views non disponible');
         }
       }
 
@@ -73,15 +90,31 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
         console.log('Erreur lors du chargement des connexions');
       }
 
-      // Compter les rendez-vous
-      const { count: appointmentsCount } = await supabase
-        .from('appointments')
-        .select('*', { count: 'exact', head: true })
-        .or(`exhibitor_id.eq.${user.id},visitor_id.eq.${user.id}`);
-      
-      stats.appointments = appointmentsCount || 0;
+      // Compter les rendez-vous POUR CET UTILISATEUR UNIQUEMENT
+      try {
+        // Pour exhibitors/partners: compter les RDV qu'ils reçoivent
+        // Pour visitors: compter les RDV qu'ils ont demandés
+        
+        const query = supabase
+          .from('appointments')
+          .select('*', { count: 'exact', head: true });
+        
+        if (isExhibitorOrPartner) {
+          // Pour les exposants: seulement les RDV où ils sont l'exhibitor
+          query.eq('exhibitor_id', user.id);
+          } else {
+            // Pour les visiteurs: seulement les RDV où ils sont le visitor
+            query.eq('visitor_id', user.id);
+          }
+          
+          const { count: appointmentsCount } = await query;
+          
+          stats.appointments = appointmentsCount || 0;
+      } catch (err) {
+        console.log('Erreur lors du chargement des rendez-vous');
+      }
 
-      // Compter les messages non lus
+      // Compter les messages non lus POUR CET UTILISATEUR
       try {
         const { data: conversations, error } = await supabase
           .from('conversations')
@@ -108,25 +141,33 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
 
       // Compter les téléchargements de catalogue (seulement pour exhibitors/partners)
       if (isExhibitorOrPartner) {
+        try {
         const { count: downloadsCount, error } = await supabase
           .from('downloads')
           .select('*', { count: 'exact', head: true })
           .eq('user_id', user.id);
-        
-        if (!error) {
-          stats.catalogDownloads = downloadsCount || 0;
+          
+          if (!error) {
+            stats.catalogDownloads = downloadsCount || 0;
+          }
+        } catch (err) {
+          console.log('Table downloads non disponible');
         }
       }
 
       // Compter les vues du mini-site (seulement pour exhibitors)
       if (userProfile?.role === 'exhibitor') {
-        const { count: miniSiteViewsCount, error } = await supabase
-          .from('minisite_views')
-          .select('*', { count: 'exact', head: true })
-          .eq('exhibitor_id', user.id);
-        
-        if (!error) {
-          stats.miniSiteViews = miniSiteViewsCount || 0;
+        try {
+          const { count: miniSiteViewsCount, error } = await supabase
+            .from('minisite_views')
+            .select('*', { count: 'exact', head: true })
+            .eq('exhibitor_id', user.id);
+          
+          if (!error) {
+            stats.miniSiteViews = miniSiteViewsCount || 0;
+          }
+        } catch (err) {
+          console.log('Table minisite_views non disponible');
         }
       }
 
@@ -165,7 +206,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       }
 
       // Transformer les activités
-      const recentActivity: Activity[] = activitiesWithActors.map((activity: any) => ({
+      const recentActivity: Activity[] = activitiesWithActors.map((activity: ActivityDBRecord) => ({
         id: activity.id,
         type: activity.type,
         description: activity.description,

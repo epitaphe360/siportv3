@@ -13,6 +13,32 @@ const QR_ROTATION_INTERVAL_MS = 30 * 1000; // 30 secondes
 const JWT_SECRET = import.meta.env.VITE_JWT_SECRET || 'siport-2026-super-secret-key-change-me';
 
 /**
+ * Interface pour un utilisateur depuis la base de données
+ */
+interface User {
+  id: string;
+  email: string;
+  name?: string;
+  type: 'visitor' | 'partner' | 'exhibitor' | 'admin' | 'security';
+  partner_tier?: string;
+  visitor_level?: string;
+  photo?: string;
+  company?: string;
+}
+
+/**
+ * Interface pour les logs d'accès
+ */
+interface AccessLog {
+  id: string;
+  userId: string;
+  timestamp: string;
+  zone: string;
+  action: string;
+  metadata?: Record<string, unknown>;
+}
+
+/**
  * Types d'accès par niveau d'utilisateur
  */
 export const ACCESS_LEVELS = {
@@ -129,7 +155,7 @@ function generateNonce(): string {
 /**
  * Simple JWT encoder (pour le browser, utiliser une lib comme jose en prod)
  */
-async function encodeJWT(payload: any, secret: string): Promise<string> {
+async function encodeJWT(payload: QRCodePayload, secret: string): Promise<string> {
   const header = { alg: 'HS256', typ: 'JWT' };
 
   const base64Header = btoa(JSON.stringify(header));
@@ -160,7 +186,7 @@ async function encodeJWT(payload: any, secret: string): Promise<string> {
 /**
  * Simple JWT decoder
  */
-async function decodeJWT(token: string, secret: string): Promise<any> {
+async function decodeJWT(token: string, secret: string): Promise<QRCodePayload> {
   const [headerB64, payloadB64, signatureB64] = token.split('.');
 
   // Vérifier la signature
@@ -196,7 +222,7 @@ async function decodeJWT(token: string, secret: string): Promise<any> {
 /**
  * Déterminer le niveau d'accès basé sur le type d'utilisateur
  */
-function getUserAccessLevel(user: any): keyof typeof ACCESS_LEVELS {
+function getUserAccessLevel(user: User): keyof typeof ACCESS_LEVELS {
   if (user.type === 'admin') return 'admin';
   if (user.type === 'security') return 'security';
   if (user.type === 'exhibitor') return 'exhibitor';
@@ -493,7 +519,7 @@ export async function getAccessStats(options?: {
  * Stream en temps réel des accès (pour dashboard admin)
  */
 export function subscribeToAccessLogs(
-  callback: (log: any) => void,
+  callback: (log: AccessLog) => void,
   options?: { zone?: string }
 ) {
   let query = supabase

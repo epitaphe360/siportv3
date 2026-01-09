@@ -11,6 +11,7 @@ import useAuthStore from '../../store/authStore';
 import { motion } from 'framer-motion';
 import { useTranslation } from '../../hooks/useTranslation';
 import { translateSector } from '../../utils/sectorTranslations';
+import { MoroccanPattern } from '../ui/MoroccanDecor';
 
 export const FeaturedExhibitors: React.FC = () => {
   const navigate = useNavigate();
@@ -86,8 +87,20 @@ export const FeaturedExhibitors: React.FC = () => {
   }
 
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 bg-gradient-to-b from-white via-green-50/20 to-white relative overflow-hidden">
+      {/* Moroccan Zellige Background Pattern */}
+      <div className="absolute inset-0 opacity-[0.04]">
+        <div className="absolute w-full h-full" style={{
+          backgroundImage: `radial-gradient(circle, transparent 20%, #D4AF37 21%, #D4AF37 22%, transparent 23%),
+                           radial-gradient(circle, transparent 20%, #C1272D 21%, #C1272D 22%, transparent 23%),
+                           radial-gradient(circle, transparent 20%, #006233 21%, #006233 22%, transparent 23%)`,
+          backgroundSize: '80px 80px',
+          backgroundPosition: '0 0, 40px 40px, 20px 60px'
+        }} />
+      </div>
+      <MoroccanPattern className="opacity-[0.03] text-siports-primary" scale={2} />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -95,7 +108,7 @@ export const FeaturedExhibitors: React.FC = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-siports-primary mb-4">
               {t('home.featured_exhibitors_title')}
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -210,7 +223,7 @@ export const FeaturedExhibitors: React.FC = () => {
                           
                           toast.success(`💬 Contact : ${contactData.company} — ${contactData.contact}`);
                         }}
-                        title="Contacter directement"
+                        title={t('ui.contact_directly')}
                       >
                         <MessageCircle className="h-4 w-4" />
                       </Button>

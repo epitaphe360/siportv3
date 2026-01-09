@@ -405,5 +405,4 @@ export const PartnerLeadsPage: React.FC = () => {
   );
 };
 
-
-
+export default PartnerLeadsPage;

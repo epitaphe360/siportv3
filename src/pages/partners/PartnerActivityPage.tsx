@@ -306,3 +306,4 @@ export const PartnerActivityPage: React.FC = () => {
     </div>
   );
 };
+export default PartnerActivityPage;

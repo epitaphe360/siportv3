@@ -288,7 +288,7 @@ export const useNewsStore = create<NewsState>((set, get) => ({
           views: 0
         }])
         .select()
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('❌ Erreur insertion article:', error);
