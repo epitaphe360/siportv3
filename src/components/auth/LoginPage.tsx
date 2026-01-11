@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useMemo } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Mail,
   Lock,
@@ -27,6 +27,13 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const { login, loginWithGoogle, isLoading, isGoogleLoading } = useAuthStore();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // ✅ CRITICAL FIX: Récupérer l'URL de redirection depuis les paramètres d'URL
+  const redirectUrl = useMemo(() => {
+    const param = searchParams.get('redirect');
+    return param ? decodeURIComponent(param) : null;
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,6 +74,14 @@ export default function LoginPage() {
         return;
       }
 
+      // ✅ CRITICAL FIX: Si URL de redirection fournie, l'utiliser en priorité
+      if (redirectUrl) {
+        console.log('🔄 Redirection post-connexion vers:', redirectUrl);
+        navigate(redirectUrl, { replace: true });
+        return;
+      }
+
+      // Sinon, redirection par défaut selon le type d'utilisateur
       if (user?.type === 'admin') {
         navigate(ROUTES.ADMIN_DASHBOARD);
       } else if (user?.type === 'partner') {

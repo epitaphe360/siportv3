@@ -45,14 +45,18 @@ export default function ExhibitorsPage() {
     fetchExhibitors();
   }, [fetchExhibitors]);
 
-  // Fonction pour gérer le clic sur le bouton RDV
+  // ✅ CRITICAL FIX: S'assurer que isAuthenticated est toujours à jour
+  // Utilisez le store directement plutôt que useState pour éviter les délais de mise à jour
   const handleAppointmentClick = (exhibitorId: string) => {
-    if (!isAuthenticated) {
+    // Récupérer l'état actuel du store directement
+    const currentAuthState = useAuthStore.getState();
+    
+    if (!currentAuthState.isAuthenticated || !currentAuthState.user) {
       // Rediriger vers la page de connexion avec redirection vers les RDV
-  navigate(`${ROUTES.LOGIN}?redirect=${encodeURIComponent(`${ROUTES.APPOINTMENTS}?exhibitor=${exhibitorId}`)}`);
+      navigate(`${ROUTES.LOGIN}?redirect=${encodeURIComponent(`${ROUTES.APPOINTMENTS}?exhibitor=${exhibitorId}`)}`);
     } else {
-      // Rediriger directement vers la page des RDV
-  navigate(`${ROUTES.APPOINTMENTS}?exhibitor=${exhibitorId}`);
+      // Rediriger directement vers la page des RDV avec l'ID de l'exposant
+      navigate(`${ROUTES.APPOINTMENTS}?exhibitor=${exhibitorId}`);
     }
   };
 
