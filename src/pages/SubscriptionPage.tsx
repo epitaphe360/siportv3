@@ -119,8 +119,8 @@ const subscriptionTiers: SubscriptionTier[] = [
   {
     id: 'exhibitor-18m',
     name: 'Exposant 18m² (Standard)',
-    price: 2500,
-    currency: 'EUR',
+    price: 0,
+    currency: 'Sur devis',
     icon: <Star className="w-8 h-8" />,
     description: 'Mini-site + 15 rendez-vous',
     type: 'exhibitor',
@@ -149,8 +149,8 @@ const subscriptionTiers: SubscriptionTier[] = [
   {
     id: 'exhibitor-36m',
     name: 'Exposant 36m² (Premium)',
-    price: 5000,
-    currency: 'EUR',
+    price: 0,
+    currency: 'Sur devis',
     icon: <Award className="w-8 h-8" />,
     description: 'Mise en avant + 30 rendez-vous',
     type: 'exhibitor',
@@ -181,8 +181,8 @@ const subscriptionTiers: SubscriptionTier[] = [
   {
     id: 'exhibitor-54m',
     name: 'Exposant 54m²+ (Elite)',
-    price: 7500,
-    currency: 'EUR',
+    price: 0,
+    currency: 'Sur devis',
     icon: <Crown className="w-8 h-8" />,
     description: 'Visibilité© maximale + créneaux illimités',
     type: 'exhibitor',
@@ -458,8 +458,10 @@ export default function SubscriptionPage() {
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">{tier.name}</h3>
                 <p className="text-sm text-gray-600 mb-4">{tier.description}</p>
                 <div className="flex items-baseline gap-2">
-                  {tier.price >= 2500 ? (
+                  {tier.currency === 'Sur devis' ? (
                     <span className="text-4xl font-bold text-siports-primary">Sur devis</span>
+                  ) : tier.price === 0 ? (
+                    <span className="text-4xl font-bold text-green-600">Gratuit</span>
                   ) : (
                     <>
                       <span className="text-4xl font-bold text-gray-900">{tier.price.toLocaleString()}</span>

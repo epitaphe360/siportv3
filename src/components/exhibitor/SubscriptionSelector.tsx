@@ -106,8 +106,8 @@ export const SubscriptionSelector: React.FC<SubscriptionSelectorProps> = ({
 
                     <div className="space-y-1">
                       <div className="flex items-baseline justify-center gap-1">
-                        <span className="text-3xl font-bold text-gray-900" data-testid={`subscription-price-${level.id}`}>
-                          ${(config.estimatedPrice / 1000).toFixed(0)}k
+                        <span className="text-3xl font-bold text-siports-primary" data-testid={`subscription-price-${level.id}`}>
+                          Sur devis
                         </span>
                       </div>
                       <p className="text-sm text-gray-500" data-testid={`subscription-area-${level.id}`}>
