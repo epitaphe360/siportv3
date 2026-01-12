@@ -18,6 +18,7 @@ import { LanguageSelector } from '../ui/LanguageSelector';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { useTranslation } from '../../hooks/useTranslation';
 import { MoroccanPattern } from '../ui/MoroccanDecor';
+import { isAuthInitialized } from '../../lib/initAuth';
 
 // OPTIMIZATION: Memoized Header component to prevent unnecessary re-renders
 export const Header: React.FC = memo(() => {
@@ -25,8 +26,11 @@ export const Header: React.FC = memo(() => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isInfoMenuOpen, setIsInfoMenuOpen] = useState(false);
   const [isMediaMenuOpen, setIsMediaMenuOpen] = useState(false);
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isAuthenticated, isLoading, logout } = useAuthStore();
   const { t } = useTranslation();
+
+  // ✅ CRITICAL: Ne pas afficher "Se connecter" pendant l'initialisation
+  const authReady = isAuthInitialized() && !isLoading;
 
   // OPTIMIZATION: Memoized callbacks to prevent re-creating functions on every render
   const toggleMenu = useCallback(() => setIsMenuOpen(prev => !prev), []);
@@ -425,6 +429,14 @@ export const Header: React.FC = memo(() => {
                   )}
                 </div>
               </>
+            ) : !authReady ? (
+              // ✅ CRITICAL: Afficher un loader pendant l'initialisation de l'authentification
+              <div className="flex items-center space-x-3">
+                <div className="animate-pulse flex items-center space-x-2">
+                  <div className="h-8 w-24 bg-gray-200 rounded"></div>
+                  <div className="h-8 w-28 bg-gray-200 rounded"></div>
+                </div>
+              </div>
             ) : (
               <div className="flex items-center space-x-3">
                 <Link to={ROUTES.LOGIN}>

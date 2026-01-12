@@ -96,7 +96,7 @@ const useAuthStore = create<AuthState>()(
   user: null,
   token: null,
   isAuthenticated: false,
-  isLoading: false,
+  isLoading: true, // ✅ CRITICAL: Commence à true pour initialiser l'auth
   isGoogleLoading: false,
   isLinkedInLoading: false,
   
@@ -518,12 +518,10 @@ const useAuthStore = create<AuthState>()(
           // On ne déconnecte pas immédiatement car initAuth le fera si invalide
         }
 
-        // Nettoyer les états de loading qui auraient pu être persistés par erreur
-        if (state) {
-          state.isLoading = false;
-          state.isGoogleLoading = false;
-          state.isLinkedInLoading = false;
-        }
+        // ✅ CRITICAL FIX: Ne PAS mettre isLoading à false ici!
+        // Laisser initAuth.ts gérer la fin du chargement
+        // Cela garantit que le Header affichera un loader pendant l'initialisation
+        // au lieu d'afficher "Se connecter" prématurément
       }
     }
   )

@@ -2,19 +2,31 @@ import { supabase } from '../lib/supabase';
 import useAuthStore from '../store/authStore';
 import { SupabaseService } from '../services/supabaseService';
 
+// ✅ CRITICAL: Flag pour indiquer si initializeAuth s'est complété
+let authInitialized = false;
+
+/**
+ * Retourne true si initializeAuth s'est complété
+ */
+export function isAuthInitialized(): boolean {
+  return authInitialized;
+}
+
 /**
  * Initialize auth state from Supabase session
  * Call this at app startup to restore user session
  */
 export async function initializeAuth() {
   try {
+    // ✅ CRITICAL: Set isLoading pendant l'initialisation
+    useAuthStore.setState({ isLoading: true });
+
     // CRITICAL: Verifier et nettoyer le localStorage si donnees invalides
     const storedAuth = localStorage.getItem('siport-auth-storage');
     if (storedAuth) {
       try {
-        const parsed = JSON.parse(storedAuth);
-        // Si le store contient un admin mais pas de session Supabase active, suspect
-        // Verification silencieuse
+        // Vérifie que le JSON est valide
+        JSON.parse(storedAuth);
       } catch (e) {
         console.error('[AUTH] localStorage corrompu, nettoyage...');
         localStorage.removeItem('siport-auth-storage');
@@ -23,6 +35,8 @@ export async function initializeAuth() {
     
     if (!supabase) {
       console.warn('[AUTH] Supabase non configure');
+      authInitialized = true;
+      useAuthStore.setState({ isLoading: false });
       return;
     }
 
@@ -36,6 +50,8 @@ export async function initializeAuth() {
         console.warn('[AUTH] Erreur session Supabase, nettoyage du store...');
         useAuthStore.getState().logout();
       }
+      authInitialized = true;
+      useAuthStore.setState({ isLoading: false });
       return;
     }
 
@@ -57,12 +73,16 @@ export async function initializeAuth() {
         console.log('[AUTH] Utilisateur récemment créé, pas de déconnexion');
       }
       console.log('[AUTH] Aucune session active');
+      authInitialized = true;
+      useAuthStore.setState({ isLoading: false });
       return;
     }
 
     // Get full user profile from database
     if (!session.user.email) {
       console.warn('[AUTH] Session sans email, impossible de récupérer le profil');
+      authInitialized = true;
+      useAuthStore.setState({ isLoading: false });
       return;
     }
     
@@ -72,20 +92,23 @@ export async function initializeAuth() {
       // CRITICAL: Verification supplementaire pour les admins
       if (userProfile.type === 'admin') {
         // Verifier que utilisateur est reellement admin dans la DB
-        const { data: dbUser } = await supabase
+        const { data: dbUser, error: dbError } = await supabase
           .from('users')
           .select('type, email')
           .eq('id', userProfile.id)
           .single();
           
-        if (!dbUser || dbUser.type !== 'admin') {
+        if (dbError || !dbUser || (dbUser as any).type !== 'admin') {
           console.error('[AUTH] Tentative de connexion admin non autorisee!');
           useAuthStore.getState().logout();
+          authInitialized = true;
+          useAuthStore.setState({ isLoading: false });
           return;
         }
       }
       
       // Restore auth state in store
+      console.log('✅ [AUTH] Utilisateur restauré:', userProfile.name);
       useAuthStore.setState({
         user: userProfile,
         token: userProfile.id,
@@ -96,9 +119,13 @@ export async function initializeAuth() {
       console.warn('[AUTH] Profil utilisateur introuvable, deconnexion...');
       useAuthStore.getState().logout();
     }
+    
+    authInitialized = true;
   } catch (error) {
     console.error('[AUTH] Erreur initialisation auth:', error);
     // En cas erreur fatale, nettoyer le store
     useAuthStore.getState().logout();
+    authInitialized = true;
+    useAuthStore.setState({ isLoading: false });
   }
 }
