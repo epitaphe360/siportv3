@@ -91,7 +91,7 @@ const subscriptionTiers: SubscriptionTier[] = [
     id: 'exhibitor-9m',
     name: 'Exposant 9m² (Base)',
     price: 0,
-    currency: 'stand',
+    currency: 'Sur devis',
     icon: <Star className="w-8 h-8" />,
     description: 'Profil & présence de base',
     type: 'exhibitor',
