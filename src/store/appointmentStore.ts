@@ -425,20 +425,29 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
       const visitorId = resolvedUser.id;
 
-    // Vérifier le quota selon visitor_level (utilise la configuration centralisée)
+    // Vérifier le quota selon visitor_level OU type d'utilisateur (utilise la configuration centralisée)
+    // ✅ IMPORTANT: Les exposants/partenaires utilisent leur TYPE, les visiteurs utilisent leur NIVEAU
+    const userType = resolvedUser?.type; // 'exhibitor', 'partner', 'visitor', etc.
     const visitorLevel = resolvedUser?.visitor_level || resolvedUser?.profile?.visitor_level || 'free';
-    
+
     // Import de la configuration des quotas
     const { getVisitorQuota } = await import('../config/quotas');
 
-    const quota = getVisitorQuota(visitorLevel);
+    // ✅ Utiliser le type pour exposants/partenaires, le niveau pour visiteurs
+    const quotaKey = (userType === 'exhibitor' || userType === 'partner' || userType === 'admin' || userType === 'security')
+      ? userType
+      : visitorLevel;
+
+    const quota = getVisitorQuota(quotaKey);
+
     // Compter TOUS les RDV actifs (pending + confirmed) pour éviter le contournement du quota
     const activeCount = appointments.filter(
       a => a.visitorId === visitorId &&
            (a.status === 'confirmed' || a.status === 'pending')
     ).length;
 
-    if (activeCount >= quota) {
+    // ✅ Ne vérifier le quota que si ce n'est pas illimité (999999)
+    if (quota !== 999999 && activeCount >= quota) {
       throw new Error('Quota de rendez-vous atteint pour votre niveau');
     }
 

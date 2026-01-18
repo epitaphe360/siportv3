@@ -7,7 +7,7 @@ import { useTranslation } from '../hooks/useTranslation';
 import {
   Users, Brain, MessageCircle, Calendar, User as UserIcon, Plus, Zap, Search,
   Heart, CheckCircle, Clock, Eye, BarChart3, TrendingUp, Handshake, Star, Briefcase, Mic, Building2, UserPlus, MapPin,
-  Target, Sparkles, Shield, Globe, ArrowRight, Info
+  Target, Sparkles, Shield, Globe, ArrowRight, Info, X
 } from 'lucide-react';
 import {
   ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
@@ -197,9 +197,17 @@ export default function NetworkingPage() {
       return;
     }
     
-    // Quotas B2B selon visitor_level - utilise le système centralisé
-    const level = user?.visitor_level || 'free';
-    const quota = getVisitorQuota(level); // Depuis quotas.ts
+    // Quotas B2B selon visitor_level OU type d'utilisateur - utilise le système centralisé
+    // ✅ Les exposants/partenaires utilisent leur TYPE, les visiteurs utilisent leur NIVEAU
+    const userType = user?.type; // 'exhibitor', 'partner', 'visitor', etc.
+    const visitorLevel = user?.visitor_level || 'free';
+
+    // ✅ Utiliser le type pour exposants/partenaires, le niveau pour visiteurs
+    const quotaKey = (userType === 'exhibitor' || userType === 'partner' || userType === 'admin' || userType === 'security')
+      ? userType
+      : visitorLevel;
+
+    const quota = getVisitorQuota(quotaKey); // Depuis quotas.ts
 
     // Récupérer les VRAIS rendez-vous depuis appointmentStore
     const appointmentStore = useAppointmentStore.getState();
@@ -207,7 +215,7 @@ export default function NetworkingPage() {
       (a: any) => a.visitorId === user?.id && a.status === 'confirmed'
     );
 
-    // Vérifier le quota (999999 = illimité pour premium)
+    // ✅ Vérifier le quota uniquement si ce n'est pas illimité (999999)
     if (quota !== 999999 && userAppointments.length >= quota) {
       if (quota === 0) {
         toast.error(
@@ -410,38 +418,38 @@ export default function NetworkingPage() {
 
   return (
     <div className="bg-slate-50 min-h-screen">
-      {/* Hero Section Simplifiée */}
-      <div className="relative min-h-[40vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-900/90 via-indigo-900/80 to-slate-900/90">
-        <div className="relative z-20 max-w-7xl mx-auto px-4 py-12 text-center">
+      {/* Hero Section Simplifiée - RESPONSIVE AMÉLIORÉ */}
+      <div className="relative min-h-[30vh] sm:min-h-[40vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-900/90 via-indigo-900/80 to-slate-900/90">
+        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-flex items-center space-x-2 bg-blue-500/10 backdrop-blur-md border border-blue-500/20 rounded-full px-4 py-2 mb-6">
-              <Sparkles className="h-4 w-4 text-blue-400" />
-              <span className="text-blue-200 text-sm font-medium tracking-wide uppercase">Propulsé par l'IA SIPORTS</span>
+            <div className="inline-flex items-center space-x-1.5 sm:space-x-2 bg-blue-500/10 backdrop-blur-md border border-blue-500/20 rounded-full px-3 py-1.5 sm:px-4 sm:py-2 mb-4 sm:mb-6">
+              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-blue-400" />
+              <span className="text-blue-200 text-xs sm:text-sm font-medium tracking-wide uppercase">Propulsé par l'IA SIPORTS</span>
             </div>
 
-            <h1 className="text-5xl md:text-6xl font-black text-white mb-6 tracking-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-4 sm:mb-6 tracking-tight px-2">
               Réseautage <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-400">Intelligent</span>
             </h1>
 
-            <p className="text-xl text-blue-100/80 max-w-2xl mx-auto mb-8">
+            <p className="text-base sm:text-lg md:text-xl text-blue-100/80 max-w-2xl mx-auto mb-6 sm:mb-8 px-4">
               Connectez-vous avec les leaders de l'industrie portuaire mondiale
             </p>
           </motion.div>
         </div>
-        
+
         {/* Transition douce vers le contenu */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-slate-50 to-transparent z-30"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-12 sm:h-16 bg-gradient-to-t from-slate-50 to-transparent z-30"></div>
       </div>
 
-      {/* Navigation Sticky avec Glassmorphism */}
+      {/* Navigation Sticky avec Glassmorphism - RESPONSIVE AMÉLIORÉ */}
       <div className="sticky top-0 z-50 bg-white/70 backdrop-blur-2xl border-b border-slate-200/50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center py-4">
-            <nav className="flex items-center space-x-1 sm:space-x-2 bg-slate-100/50 p-1.5 rounded-2xl border border-slate-200/50">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+          <div className="flex items-center justify-center py-2 sm:py-4">
+            <nav className="flex items-center space-x-0.5 sm:space-x-1 md:space-x-2 bg-slate-100/50 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl border border-slate-200/50 overflow-x-auto max-w-full">
               {[
                 { id: 'recommendations', label: 'IA Match', icon: Brain, color: 'blue' },
                 { id: 'search', label: 'Recherche', icon: Search, color: 'emerald' },
@@ -452,21 +460,21 @@ export default function NetworkingPage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as keyof typeof CONFIG.tabIds)}
-                  className={`relative flex items-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+                  className={`relative flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 whitespace-nowrap ${
                     activeTab === tab.id
                       ? 'bg-white text-slate-900 shadow-md'
                       : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'
                   }`}
                 >
-                  <tab.icon className={`h-4 w-4 ${
-                    activeTab === tab.id 
+                  <tab.icon className={`h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 ${
+                    activeTab === tab.id
                       ? tab.color === 'blue' ? 'text-blue-600' :
                         tab.color === 'emerald' ? 'text-emerald-600' :
                         tab.color === 'indigo' ? 'text-indigo-600' :
                         tab.color === 'rose' ? 'text-rose-600' : 'text-amber-600'
                       : ''
                   }`} />
-                  <span className="hidden md:inline">{tab.label}</span>
+                  <span className="hidden sm:inline">{tab.label}</span>
                   {activeTab === tab.id && (
                     <motion.div
                       layoutId="activeTabIndicator"
@@ -1534,75 +1542,135 @@ export default function NetworkingPage() {
       </div>
 
       {showAppointmentModal && selectedExhibitorForRDV && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
-            <h3 className="text-lg font-semibold mb-4">
-              Prendre RDV avec {selectedExhibitorForRDV.profile.firstName} {selectedExhibitorForRDV.profile.lastName}
-            </h3>
-            
-            {/* Sélection du créneau horaire */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Choisir un créneau horaire
-              </label>
-              <select
-                value={selectedTimeSlot}
-                onChange={(e) => setSelectedTimeSlot(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Sélectionner un créneau</option>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[95vh] overflow-y-auto">
+            {/* Header */}
+            <div className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white p-6 rounded-t-2xl sticky top-0 z-10">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-2xl font-bold mb-1">
+                    Prendre RDV avec {selectedExhibitorForRDV.profile.firstName} {selectedExhibitorForRDV.profile.lastName}
+                  </h3>
+                  <p className="text-blue-100 text-sm">
+                    {selectedExhibitorForRDV.profile.company || selectedExhibitorForRDV.profile.position}
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowAppointmentModal(false);
+                    setSelectedTimeSlot('');
+                    setAppointmentMessage('');
+                  }}
+                  className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {/* Sélection du créneau horaire - Vue Calendrier améliorée */}
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-3 flex items-center">
+                  <Calendar className="h-5 w-5 mr-2 text-blue-600" />
+                  Choisir un créneau horaire
+                </label>
+
                 {Array.isArray(timeSlots) && timeSlots.length > 0 ? (
-                  timeSlots.map((slot) => {
-                    const dateObj = slot.date ? new Date(slot.date as any) : null;
-                    const dateLabel = dateObj ? dateObj.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : String(slot.date || '');
-                    const locationPart = slot.location ? ` • ${slot.location}` : '';
-                    const availability = slot.available === false ? ' (Complet)' : '';
-                    return (
-                      <option key={slot.id} value={slot.id}>
-                        {`${dateLabel} - ${slot.startTime}${locationPart}${availability}`}
-                      </option>
-                    );
-                  })
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 max-h-80 sm:max-h-96 overflow-y-auto p-1 sm:p-2">
+                    {timeSlots
+                      .filter(slot => slot.available !== false)
+                      .map((slot) => {
+                        const dateObj = slot.date ? new Date(slot.date as any) : null;
+                        const dateLabel = dateObj ? dateObj.toLocaleDateString('fr-FR', {
+                          weekday: 'long',
+                          day: '2-digit',
+                          month: 'long',
+                          year: 'numeric'
+                        }) : String(slot.date || '');
+                        const isSelected = selectedTimeSlot === slot.id;
+
+                        return (
+                          <button
+                            key={slot.id}
+                            onClick={() => setSelectedTimeSlot(slot.id)}
+                            className={`p-3 sm:p-4 border-2 rounded-lg sm:rounded-xl text-left transition-all ${
+                              isSelected
+                                ? 'border-blue-600 bg-blue-50 shadow-lg'
+                                : 'border-gray-200 hover:border-blue-300 hover:shadow-md'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between mb-1 sm:mb-2">
+                              <div className="font-bold text-gray-900 capitalize text-xs sm:text-sm leading-tight pr-2">
+                                {dateLabel}
+                              </div>
+                              {isSelected && (
+                                <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 flex-shrink-0" />
+                              )}
+                            </div>
+                            <div className="flex items-center text-blue-600 font-semibold mb-1 text-sm sm:text-base">
+                              <Clock className="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" />
+                              <span className="truncate">{slot.startTime} - {slot.endTime}</span>
+                            </div>
+                            {slot.location && (
+                              <div className="text-xs text-gray-600 flex items-center mt-1 truncate">
+                                <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
+                                <span className="truncate">{slot.location}</span>
+                              </div>
+                            )}
+                            <div className="text-xs text-gray-500 mt-1 sm:mt-2">
+                              {slot.currentBookings || 0}/{slot.maxBookings} réservé(s)
+                            </div>
+                          </button>
+                        );
+                      })}
+                  </div>
                 ) : (
-                  // graceful fallback when no slots available
-                  <option value="" disabled>Aucun créneau disponible</option>
+                  <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
+                    <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                    <p className="text-gray-600 font-medium">Aucun créneau disponible pour le moment</p>
+                    <p className="text-sm text-gray-500 mt-1">Veuillez réessayer plus tard ou contacter l'exposant</p>
+                  </div>
                 )}
-              </select>
-            </div>
-            
-            {/* Champ message */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Message (optionnel)
-              </label>
-              <textarea
-                value={appointmentMessage}
-                onChange={(e) => setAppointmentMessage(e.target.value)}
-                placeholder="Décrivez brièvement l'objet de votre rendez-vous..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                rows={3}
-              />
-            </div>
-            
-            <div className="flex space-x-3">
-              <Button 
-                onClick={handleConfirmAppointment}
-                className="flex-1"
-                disabled={!selectedTimeSlot}
-              >
-                <Calendar className="h-4 w-4 mr-2" />
-                Envoyer la Demande
-              </Button>
-              <Button 
-                variant="outline"
-                onClick={() => {
-                  setShowAppointmentModal(false);
-                  setSelectedTimeSlot('');
-                  setAppointmentMessage('');
-                }}
-              >
-                Annuler
-              </Button>
+              </div>
+
+              {/* Champ message */}
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
+                  <MessageCircle className="h-5 w-5 mr-2 text-blue-600" />
+                  Message (optionnel)
+                </label>
+                <textarea
+                  value={appointmentMessage}
+                  onChange={(e) => setAppointmentMessage(e.target.value)}
+                  placeholder="Décrivez brièvement l'objet de votre rendez-vous, vos attentes ou questions..."
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                  rows={4}
+                />
+              </div>
+
+              {/* Actions */}
+              <div className="flex space-x-3 pt-4 border-t">
+                <Button
+                  onClick={handleConfirmAppointment}
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 text-lg font-semibold rounded-xl"
+                  disabled={!selectedTimeSlot}
+                >
+                  <Calendar className="h-5 w-5 mr-2" />
+                  Envoyer la Demande
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowAppointmentModal(false);
+                    setSelectedTimeSlot('');
+                    setAppointmentMessage('');
+                  }}
+                  className="px-8 py-3 text-lg rounded-xl"
+                >
+                  Annuler
+                </Button>
+              </div>
             </div>
           </div>
         </div>
