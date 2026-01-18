@@ -6,6 +6,8 @@ import OAuthService from '../services/oauthService';
 import { User, UserProfile } from '../types';
 import { resetAllStores } from './resetStores';
 import { secureStorage } from '../lib/secureStorage';
+import { loginRateLimiter, passwordResetRateLimiter } from '../utils/rateLimiter';
+import logger from '../utils/logger';
 
 /**
  * Interface pour les données d'inscription
@@ -108,11 +110,22 @@ const useAuthStore = create<AuthState>()(
         throw new Error('Email et mot de passe requis');
       }
 
+      // 🔐 SÉCURITÉ: Vérifier le rate limiting
+      const rateLimitCheck = await loginRateLimiter.isAllowed(email);
+      if (!rateLimitCheck.allowed) {
+        const retryMinutes = Math.ceil((rateLimitCheck.retryAfter || 0) / 60);
+        logger.warn('Rate limit atteint pour:', email);
+        throw new Error(
+          `Trop de tentatives de connexion. Veuillez réessayer dans ${retryMinutes} minute(s).`
+        );
+      }
 
       // ✅ Passer l'option rememberMe à signIn
       const user = await SupabaseService.signIn(email, password, options);
 
       if (!user) {
+        // 🔐 Enregistrer l'échec de connexion
+        loginRateLimiter.recordFailure(email);
         throw new Error('Email ou mot de passe incorrect');
       }
 
@@ -122,6 +135,9 @@ const useAuthStore = create<AuthState>()(
         throw new Error('Votre compte est en attente de validation');
       }
 
+      // 🔐 Connexion réussie - reset le rate limiter
+      loginRateLimiter.recordSuccess(email);
+      logger.success('Connexion réussie', { userId: user.id, type: user.type });
 
       set({
         user,
@@ -132,7 +148,7 @@ const useAuthStore = create<AuthState>()(
 
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Erreur de connexion';
-      console.error('❌ Erreur de connexion:', error);
+      logger.error('Erreur de connexion', error);
       set({ isLoading: false });
       throw new Error(errorMessage);
     }
