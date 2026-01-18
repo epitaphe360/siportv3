@@ -115,9 +115,21 @@ export const MiniSiteSetupModal: React.FC<MiniSiteSetupModalProps> = ({
 
   // Handle skip (remind later)
   const handleSkip = async () => {
-    // Don't mark as created so the popup shows again next time
-    toast.success('Vous pourrez créer votre mini-site plus tard depuis votre tableau de bord');
-    onClose();
+    try {
+      // ✅ CORRECTION: Marquer minisite_created = true pour ne plus afficher la popup
+      // L'utilisateur pourra toujours créer son mini-site depuis le dashboard
+      await supabase
+        .from('users')
+        .update({ minisite_created: true })
+        .eq('id', userId);
+
+      toast.success('Vous pourrez créer votre mini-site plus tard depuis votre tableau de bord');
+      onClose();
+    } catch (error) {
+      console.error('Error marking minisite as skipped:', error);
+      // Fermer quand même la popup même si l'update échoue
+      onClose();
+    }
   };
 
   if (!isOpen) return null;

@@ -1,17 +1,14 @@
-﻿import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Search, Filter, Grid2x2 as Grid, List, MapPin, Users, ExternalLink, Star, EggFried as Verified, Award, Building2, Crown, Handshake } from 'lucide-react';
-import { Card } from '../components/ui/Card';
-import { Badge } from '../components/ui/Badge';
+﻿import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Search, Filter, Grid2x2 as Grid, List } from 'lucide-react';
 import { Button } from '../components/ui/Button';
-import LogoWithFallback from '../components/ui/LogoWithFallback';
 import { motion } from 'framer-motion';
 import { CONFIG } from '../lib/config';
 import { SupabaseService } from '../services/supabaseService';
-import { LevelBadge } from '../components/common/QuotaWidget';
 import type { PartnerTier } from '../config/partnerTiers';
 import { useTranslation } from '../hooks/useTranslation';
 import { COUNTRIES } from '../data/countries';
+import PartnerCard from '../components/partner/PartnerCard';
 
 interface Partner {
   id: string;
@@ -34,10 +31,11 @@ interface Partner {
 
 export default function PartnersPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [partners, setPartners] = useState<Partner[]>([]);
   const [filteredPartners, setFilteredPartners] = useState<Partner[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedTier, setSelectedTier] = useState<string>(''); // Nouveau: filtre par tier
+  const [selectedTier, setSelectedTier] = useState<string>('');
   const [selectedCountry, setSelectedCountry] = useState('');
   const [viewMode, setViewMode] = useState<keyof typeof CONFIG.viewModes>(CONFIG.viewModes.grid);
   const [showFilters, setShowFilters] = useState(false);
@@ -104,19 +102,46 @@ export default function PartnersPage() {
     setFilteredPartners(filtered);
   }, [partners, searchTerm, selectedTier, selectedCountry]);
 
-  const partnerTiers = [
+  // ⚡ OPTIMISÉ: Mémoriser les tiers pour éviter recréation
+  const partnerTiers = useMemo(() => [
     { value: '', label: t('pages.partners.filter_tier') },
     { value: 'museum', label: t('pages.partners.tier_museum') + ' ($20k)' },
     { value: 'silver', label: t('pages.partners.tier_silver') + ' ($48k)' },
     { value: 'gold', label: t('pages.partners.tier_gold') + ' ($68k)' },
     { value: 'platinium', label: t('pages.partners.tier_platinium') + ' ($98k)' }
-  ];
+  ], [t]);
 
-  // Utiliser la liste complète des pays depuis data/countries.ts
-  // Combinée avec les pays des partenaires existants
-  const partnerCountries = [...new Set(partners.map(p => p.country).filter(Boolean))];
-  const allCountryNames = COUNTRIES.map(c => c.name);
-  const countries = [...new Set([...allCountryNames, ...partnerCountries])].sort();
+  // ⚡ OPTIMISÉ: Mémoriser les pays
+  const countries = useMemo(() => {
+    const partnerCountries = [...new Set(partners.map(p => p.country).filter(Boolean))];
+    const allCountryNames = COUNTRIES.map(c => c.name);
+    return [...new Set([...allCountryNames, ...partnerCountries])].sort();
+  }, [partners]);
+
+  // ⚡ OPTIMISÉ: useCallback pour les handlers
+  const handleViewDetails = useCallback((partnerId: string) => {
+    navigate(`/partners/${partnerId}`);
+  }, [navigate]);
+
+  const getCategoryLabel = useCallback((category: string) => {
+    const labels: Record<string, string> = {
+      'industry': t('pages.partners.category_industry'),
+      'service': t('pages.partners.category_service'),
+      'technology': t('pages.partners.category_technology'),
+      'education': t('pages.partners.category_education')
+    };
+    return labels[category] || category;
+  }, [t]);
+
+  const getCategoryColor = useCallback((category: string): 'default' | 'success' | 'warning' | 'error' | 'info' => {
+    const colors: Record<string, 'default' | 'success' | 'warning' | 'error' | 'info'> = {
+      'industry': 'error',
+      'service': 'info',
+      'technology': 'success',
+      'education': 'warning'
+    };
+    return colors[category] || 'default';
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -308,174 +333,23 @@ export default function PartnersPage() {
             </Button>
           </div>
         ) : (
-          <div className={viewMode === CONFIG.viewModes.grid 
+          {/* ⚡ OPTIMISÉ: Utilisation du composant PartnerCard mémorisé */}
+          <div className={viewMode === CONFIG.viewModes.grid
             ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
             : 'space-y-6'
           }>
-            {filteredPartners.map((partner, index) => {
-              return (
-                <motion.div
-                  key={partner.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                >
-                  <Card hover className={viewMode === CONFIG.viewModes.list ? 'flex items-center p-6' : 'h-full'}>
-                    {viewMode === CONFIG.viewModes.grid ? (
-                      <div className="flex flex-col h-full">
-                        {/* Header */}
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex items-center space-x-3">
-                            <LogoWithFallback
-                              src={partner.logo}
-                              alt={partner.name}
-                              className="h-12 w-12 rounded-lg object-cover"
-                            />
-                            <div>
-                              <h3 className="font-semibold text-gray-900 text-lg">
-                                {partner.name}
-                              </h3>
-                              <p className="text-sm text-gray-500">{partner.sector}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            {partner.featured && (
-                              <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                            )}
-                            {partner.verified && (
-                              <Verified className="h-4 w-4 text-blue-500" />
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Partner Tier Badge */}
-                        <div className="mb-4">
-                          <LevelBadge
-                            level={partner.partner_tier}
-                            type="partner"
-                            size="md"
-                          />
-                        </div>
-
-                        {/* Description */}
-                        <p className="text-gray-600 text-sm mb-6 flex-grow line-clamp-3">
-                          {partner.description}
-                        </p>
-
-                        {/* Contributions */}
-                        <div className="mb-6">
-                          <h4 className="text-sm font-medium text-gray-900 mb-2">
-                            Contributions :
-                          </h4>
-                          <div className="flex flex-wrap gap-1">
-                            {partner.contributions.slice(0, 3).map((contribution) => (
-                              <Badge key={contribution} variant="info" size="sm">
-                                {contribution}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Stats */}
-                        <div className="flex items-center justify-between text-sm text-gray-500 mb-6">
-                          <div className="flex items-center space-x-1">
-                            <MapPin className="h-4 w-4" />
-                            <span>{partner.country}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <Users className="h-4 w-4" />
-                            <span>{partner.employees}</span>
-                          </div>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex space-x-3">
-                          <Link to={`/partners/${partner.id}`}>
-                            <Button variant="outline" size="sm" className="flex-1">
-                              En savoir plus
-                            </Button>
-                          </Link>
-                          {partner.website && (
-                            <a aria-label="Open in new tab"
-                              href={partner.website}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-                            >
-                              <ExternalLink className="h-4 w-4" />
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex items-center space-x-6 w-full">
-                        <LogoWithFallback
-                          src={partner.logo}
-                          alt={partner.name}
-                          className="h-16 w-16 rounded-lg object-cover flex-shrink-0"
-                        />
-                        
-                        <div className="flex-grow">
-                          <div className="flex items-start justify-between mb-2">
-                            <div>
-                              <h3 className="font-semibold text-gray-900 text-lg">
-                                {partner.name}
-                              </h3>
-                              <p className="text-sm text-gray-500">{partner.sector}</p>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <LevelBadge
-                                level={partner.partner_tier}
-                                type="partner"
-                                size="sm"
-                              />
-                              {partner.verified && (
-                                <Verified className="h-4 w-4 text-blue-500" />
-                              )}
-                            </div>
-                          </div>
-                          
-                          <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                            {partner.description}
-                          </p>
-                          
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-4 text-sm text-gray-500">
-                              <div className="flex items-center space-x-1">
-                                <MapPin className="h-4 w-4" />
-                                <span>{partner.country}</span>
-                              </div>
-                              <div className="flex items-center space-x-1">
-                                <Users className="h-4 w-4" />
-                                <span>{partner.employees}</span>
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-center space-x-3">
-                              <Link to={`/partners/${partner.id}`}>
-                                <Button variant="outline" size="sm">
-                                  En savoir plus
-                                </Button>
-                              </Link>
-                              {partner.website && (
-                                <a aria-label="Open in new tab"
-                                  href={partner.website}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-                                >
-                                  <ExternalLink className="h-4 w-4" />
-                                </a>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </Card>
-                </motion.div>
-              );
-            })}
+            {filteredPartners.map((partner, index) => (
+              <PartnerCard
+                key={partner.id}
+                partner={partner}
+                viewMode={viewMode}
+                index={index}
+                onViewDetails={handleViewDetails}
+                getCategoryLabel={getCategoryLabel}
+                getCategoryColor={getCategoryColor}
+                t={t}
+              />
+            ))}
           </div>
         )}
       </div>

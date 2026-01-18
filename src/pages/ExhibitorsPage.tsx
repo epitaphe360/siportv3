@@ -1,30 +1,19 @@
-﻿import { useEffect, useState } from 'react';
+﻿import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Search,
   Filter,
   Grid,
-  List,
-  MapPin,
-  Users,
-  ExternalLink,
-  Star,
-  Verified,
-  Calendar
+  List
 } from 'lucide-react';
-import { Card } from '../components/ui/Card';
-import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
-import LogoWithFallback from '../components/ui/LogoWithFallback';
 import { useExhibitorStore } from '../store/exhibitorStore';
 import useAuthStore from '../store/authStore';
-import { motion } from 'framer-motion';
 import { ROUTES } from '../lib/routes';
 import { CONFIG } from '../lib/config';
-import { LevelBadge } from '../components/common/QuotaWidget';
-import { getExhibitorLevelByArea } from '../config/exhibitorQuotas';
 import { useTranslation } from '../hooks/useTranslation';
 import { MoroccanPattern } from '../components/ui/MoroccanDecor';
+import ExhibitorCard from '../components/exhibitor/ExhibitorCard';
 
 export default function ExhibitorsPage() {
   const navigate = useNavigate();
@@ -45,30 +34,17 @@ export default function ExhibitorsPage() {
     fetchExhibitors();
   }, [fetchExhibitors]);
 
-  // ✅ CRITICAL FIX: S'assurer que isAuthenticated est toujours à jour
-  // Utilisez le store directement plutôt que useState pour éviter les délais de mise à jour
-  const handleAppointmentClick = (exhibitorId: string) => {
-    // Récupérer l'état actuel du store directement
-    const currentAuthState = useAuthStore.getState();
-    
-    if (!currentAuthState.isAuthenticated || !currentAuthState.user) {
-      // Rediriger vers la page de connexion avec redirection vers les RDV
-      navigate(`${ROUTES.LOGIN}?redirect=${encodeURIComponent(`${ROUTES.APPOINTMENTS}?exhibitor=${exhibitorId}`)}`);
-    } else {
-      // Rediriger directement vers la page des RDV avec l'ID de l'exposant
-      navigate(`${ROUTES.APPOINTMENTS}?exhibitor=${exhibitorId}`);
-    }
-  };
-
-  const categories = [
+  // ⚡ OPTIMISÉ: Mémoriser les catégories pour éviter la recréation à chaque render
+  const categories = useMemo(() => [
     { value: '', label: t('pages.exhibitors.all_categories') },
     { value: 'institutional', label: t('pages.exhibitors.category_institutional') },
     { value: 'port-industry', label: t('pages.exhibitors.category_port_industry') },
     { value: 'port-operations', label: t('pages.exhibitors.category_operations') },
     { value: 'academic', label: t('pages.exhibitors.category_academic') }
-  ];
+  ], [t]);
 
-  const getCategoryLabel = (category: string) => {
+  // ⚡ OPTIMISÉ: useCallback pour éviter de recréer ces fonctions à chaque render
+  const getCategoryLabel = useCallback((category: string) => {
     const labels = {
       'institutional': t('pages.exhibitors.category_institutional'),
       'port-industry': t('pages.exhibitors.category_port_industry'),
@@ -76,9 +52,9 @@ export default function ExhibitorsPage() {
       'academic': t('pages.exhibitors.category_academic')
     };
     return labels[category as keyof typeof labels] || category;
-  };
+  }, [t]);
 
-  const getCategoryColor = (category: string): 'default' | 'success' | 'warning' | 'error' | 'info' => {
+  const getCategoryColor = useCallback((category: string): 'default' | 'success' | 'warning' | 'error' | 'info' => {
     const colors: Record<string, 'default' | 'success' | 'warning' | 'error' | 'info'> = {
       'institutional': 'success',
       'port-industry': 'error',
@@ -86,7 +62,25 @@ export default function ExhibitorsPage() {
       'academic': 'warning'
     };
     return colors[category] || 'default';
-  };
+  }, []);
+
+  // ⚡ OPTIMISÉ: useCallback pour les handlers
+  const handleViewDetails = useCallback((exhibitorId: string) => {
+    navigate(`${ROUTES.EXHIBITORS}/${exhibitorId}`);
+  }, [navigate]);
+
+  const handleScheduleAppointment = useCallback((exhibitorId: string) => {
+    // Récupérer l'état actuel du store directement
+    const currentAuthState = useAuthStore.getState();
+
+    if (!currentAuthState.isAuthenticated || !currentAuthState.user) {
+      // Rediriger vers la page de connexion avec redirection vers les RDV
+      navigate(`${ROUTES.LOGIN}?redirect=${encodeURIComponent(`${ROUTES.APPOINTMENTS}?exhibitor=${exhibitorId}`)}`);
+    } else {
+      // Rediriger directement vers la page des RDV avec l'ID de l'exposant
+      navigate(`${ROUTES.APPOINTMENTS}?exhibitor=${exhibitorId}`);
+    }
+  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -235,181 +229,23 @@ export default function ExhibitorsPage() {
             </Button>
           </div>
         ) : (
-          <div data-testid="exhibitors-list" className={viewMode === CONFIG.viewModes.grid 
+          {/* ⚡ OPTIMISÉ: Utilisation du composant ExhibitorCard mémorisé */}
+          <div data-testid="exhibitors-list" className={viewMode === CONFIG.viewModes.grid
             ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
             : 'space-y-6'
           }>
             {filteredExhibitors.map((exhibitor, index) => (
-              <motion.div
+              <ExhibitorCard
                 key={exhibitor.id}
-                data-testid="exhibitor-card"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-              >
-                <Card hover className={viewMode === CONFIG.viewModes.list ? 'flex items-center p-6' : 'h-full'}>
-                  {viewMode === CONFIG.viewModes.grid ? (
-                    <div className="flex flex-col h-full">
-                      {/* Header */}
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center space-x-3">
-                          <LogoWithFallback
-                            src={exhibitor.logo}
-                            alt={exhibitor.companyName}
-                            className="h-12 w-12 rounded-lg object-cover"
-                          />
-                          <div>
-                            <h3 className="font-semibold text-gray-900 text-lg">
-                              {exhibitor.companyName}
-                            </h3>
-                            <p className="text-sm text-gray-500">{exhibitor.sector}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          {exhibitor.featured && (
-                            <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                          )}
-                          {exhibitor.verified && (
-                            <Verified className="h-4 w-4 text-blue-500" />
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Category & Level Badges */}
-                      <div className="mb-4 flex items-center space-x-2">
-                        <Badge
-                          variant={getCategoryColor(exhibitor.category)}
-                          size="sm"
-                        >
-                          {getCategoryLabel(exhibitor.category)}
-                        </Badge>
-                        {exhibitor.standArea && (
-                          <LevelBadge
-                            level={getExhibitorLevelByArea(exhibitor.standArea)}
-                            type="exhibitor"
-                            size="sm"
-                          />
-                        )}
-                      </div>
-
-                      {/* Description */}
-                      <p className="text-gray-600 text-sm mb-6 flex-grow line-clamp-3">
-                        {exhibitor.description}
-                      </p>
-
-                      {/* Stats */}
-                      <div className="flex items-center justify-between text-sm text-gray-500 mb-6">
-                        <div className="flex items-center space-x-1">
-                          <Users className="h-4 w-4" />
-                          <span>{exhibitor.miniSite?.views || 0} vues</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <MapPin className="h-4 w-4" />
-                          <span>{exhibitor.products.length} produits</span>
-                        </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="flex space-x-3">
-                        <Link to={`/minisite/${exhibitor.id}`} className="flex-1">
-                          <Button variant="outline" size="sm" className="w-full">
-                            {t('pages.exhibitors.view_profile')}
-                          </Button>
-                        </Link>
-                        <Button 
-                          variant="default"
-                          size="sm" 
-                          className="ml-2"
-                          onClick={() => handleAppointmentClick(exhibitor.id)}
-                        >
-                          <Calendar className="h-4 w-4 mr-1" />
-                          {t('home.book_appointment')}
-                        </Button>
-                        {exhibitor.website && (
-                          <a aria-label="Open in new tab"
-                            href={exhibitor.website}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-                          >
-                            <ExternalLink className="h-4 w-4" />
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center space-x-6 w-full">
-                      <LogoWithFallback
-                        src={exhibitor.logo}
-                        alt={exhibitor.companyName}
-                        className="h-16 w-16 rounded-lg object-cover flex-shrink-0"
-                      />
-                      
-                      <div className="flex-grow">
-                        <div className="flex items-start justify-between mb-2">
-                          <div>
-                            <h3 className="font-semibold text-gray-900 text-lg">
-                              {exhibitor.companyName}
-                            </h3>
-                            <p className="text-sm text-gray-500">{exhibitor.sector}</p>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <Badge
-                              variant={getCategoryColor(exhibitor.category)}
-                              size="sm"
-                            >
-                              {getCategoryLabel(exhibitor.category)}
-                            </Badge>
-                            {exhibitor.standArea && (
-                              <LevelBadge
-                                level={getExhibitorLevelByArea(exhibitor.standArea)}
-                                type="exhibitor"
-                                size="sm"
-                              />
-                            )}
-                            {exhibitor.verified && (
-                              <Verified className="h-4 w-4 text-blue-500" />
-                            )}
-                          </div>
-                        </div>
-                        
-                        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                          {exhibitor.description}
-                        </p>
-                        
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4 text-sm text-gray-500">
-                            <div className="flex items-center space-x-1">
-                              <Users className="h-4 w-4" />
-                              <span>{exhibitor.miniSite?.views || 0} vues</span>
-                            </div>
-                            <div className="flex items-center space-x-1">
-                              <MapPin className="h-4 w-4" />
-                              <span>{exhibitor.products.length} produits</span>
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center space-x-3">
-                            <Link to={`/minisite/${exhibitor.id}`}>
-                              <Button variant="outline" size="sm">
-                                {t('pages.exhibitors.view_profile')}
-                              </Button>
-                            </Link>
-                            <Button 
-                              variant="default"
-                              size="sm"
-                              onClick={() => handleAppointmentClick(exhibitor.id)}
-                            >
-                              <Calendar className="h-4 w-4 mr-1" />
-                              {t('home.book_appointment')}
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </Card>
-              </motion.div>
+                exhibitor={exhibitor}
+                viewMode={viewMode}
+                index={index}
+                onViewDetails={handleViewDetails}
+                onScheduleAppointment={handleScheduleAppointment}
+                getCategoryLabel={getCategoryLabel}
+                getCategoryColor={getCategoryColor}
+                t={t}
+              />
             ))}
           </div>
         )}

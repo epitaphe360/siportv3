@@ -4,6 +4,10 @@ import { SupabaseService } from '../services/supabaseService';
 import { supabase as supabaseClient, isSupabaseReady } from '../lib/supabase';
 import { generateDemoTimeSlots } from '../config/demoTimeSlots';
 import { emailTemplateService } from '../services/emailTemplateService';
+import logger from '../utils/logger';
+
+// 🔒 Protection contre les race conditions: Promise singleton pour booking
+let bookingPromise: Promise<void> | null = null;
 
 // Helper pour vérifier si Supabase est configuré
 const getSupabaseClient = () => {
@@ -399,14 +403,17 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
   },
 
   bookAppointment: async (timeSlotId, message) => {
-    const { appointments, timeSlots, isBooking } = get();
-
-    // Prevent concurrent booking requests (UI-level protection)
-    if (isBooking) {
+    // 🔒 PROTECTION ATOMIQUE contre les race conditions
+    // Utilisation d'une Promise singleton pour garantir qu'un seul booking est en cours
+    if (bookingPromise) {
+      logger.warn('Tentative de booking concurrent détectée et bloquée');
       throw new Error('Une réservation est déjà en cours. Veuillez patienter.');
     }
 
-    set({ isBooking: true });
+    // Créer la Promise singleton
+    bookingPromise = (async () => {
+      const { appointments, timeSlots } = get();
+      set({ isBooking: true });
 
     try {
       // Récupérer l'utilisateur connecté via import dynamique
@@ -425,27 +432,38 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
       const visitorId = resolvedUser.id;
 
-    // Vérifier le quota selon visitor_level (utilise la configuration centralisée)
-    const visitorLevel = resolvedUser?.visitor_level || resolvedUser?.profile?.visitor_level || 'free';
-    
-    // Import de la configuration des quotas
-    const { getVisitorQuota } = await import('../config/quotas');
+      // 🔐 SÉCURITÉ: Vérification de quota côté serveur (protection contre bypass côté client)
+      // La vérification sera faite dans la fonction RPC book_appointment_atomic
+      // On garde juste une vérification légère côté client pour UX (feedback rapide)
+      const { supabase } = await import('../lib/supabase');
 
-    const quota = getVisitorQuota(visitorLevel);
-    // Compter TOUS les RDV actifs (pending + confirmed) pour éviter le contournement du quota
-    const activeCount = appointments.filter(
-      a => a.visitorId === visitorId &&
-           (a.status === 'confirmed' || a.status === 'pending')
-    ).length;
+      // Vérification rapide côté client (pour UX seulement, pas de sécurité)
+      const { data: quotaData, error: quotaError } = await supabase.rpc('check_b2b_quota_available', {
+        p_user_id: visitorId
+      });
 
-    if (activeCount >= quota) {
-      throw new Error('Quota de rendez-vous atteint pour votre niveau');
-    }
+      if (quotaError) {
+        throw new Error('Erreur lors de la vérification du quota');
+      }
 
-    // Prevent duplicate booking of the same time slot by the same visitor
-    if (appointments.some(a => a.visitorId === visitorId && a.timeSlotId === timeSlotId)) {
-      throw new Error('Vous avez déjà réservé ce créneau');
-    }
+      if (!quotaData?.available) {
+        const quotaInfo = quotaData as any;
+        if (quotaInfo.quota === 0) {
+          throw new Error(
+            'Accès restreint : votre Pass Gratuit ne permet pas de prendre de rendez-vous B2B. ' +
+            'Passez au Pass Premium VIP pour débloquer les RDV B2B !'
+          );
+        } else if (quotaInfo.quota !== 999999) {
+          throw new Error(
+            `Quota atteint : vous avez déjà ${quotaInfo.used}/${quotaInfo.quota} RDV B2B confirmés.`
+          );
+        }
+      }
+
+      // Prevent duplicate booking of the same time slot by the same visitor (UX seulement)
+      if (appointments.some(a => a.visitorId === visitorId && a.timeSlotId === timeSlotId)) {
+        throw new Error('Vous avez déjà réservé ce créneau');
+      }
 
     // CRITICAL: Validate time slot ownership
     const slot = timeSlots.find(s => s.id === timeSlotId);
@@ -512,9 +530,14 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
     return newAppointment;
     } finally {
-      // Always reset isBooking flag, even if error occurs
+      // 🔒 CRITICAL: Reset isBooking ET bookingPromise pour permettre les prochains bookings
       set({ isBooking: false });
+      bookingPromise = null;
     }
+    })();
+
+    // Retourner la Promise pour que l'appelant puisse attendre
+    return bookingPromise;
   },
 
   cancelAppointment: async (appointmentId) => {
