@@ -486,7 +486,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
     // ATOMIC BOOKING: Use RPC function with row-level locking
     // This prevents ALL race conditions and overbooking
-    const { supabase } = await import('../lib/supabase');
+    // Note: supabase already imported at line 438
 
     const { data, error } = await supabase.rpc('book_appointment_atomic', {
       p_time_slot_id: timeSlotId,
