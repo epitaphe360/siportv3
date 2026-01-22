@@ -229,7 +229,7 @@ export default function ExhibitorsPage() {
             </Button>
           </div>
         ) : (
-          {/* ⚡ OPTIMISÉ: Utilisation du composant ExhibitorCard mémorisé */}
+          // ⚡ OPTIMISÉ: Utilisation du composant ExhibitorCard mémorisé
           <div data-testid="exhibitors-list" className={viewMode === CONFIG.viewModes.grid
             ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
             : 'space-y-6'
