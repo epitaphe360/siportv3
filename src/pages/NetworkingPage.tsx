@@ -28,6 +28,7 @@ import { SupabaseService } from '@/services/supabaseService';
 import { getVisitorQuota } from '@/config/quotas';
 import { LevelBadge } from '@/components/common/QuotaWidget';
 import { getDisplayName, getUserInitials } from '@/utils/userHelpers';
+import { isDateInSalonRange } from '@/config/salonInfo';
 
 export default function NetworkingPage() {
   const navigate = useNavigate();
@@ -1579,7 +1580,13 @@ export default function NetworkingPage() {
                 {Array.isArray(timeSlots) && timeSlots.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 max-h-80 sm:max-h-96 overflow-y-auto p-1 sm:p-2">
                     {timeSlots
-                      .filter(slot => slot.available !== false)
+                      .filter(slot => {
+                        // ✅ FIX: Filtrer pour n'afficher que les 3 jours du salon (1-3 Avril 2026)
+                        if (slot.available === false) return false;
+                        if (!slot.date) return false;
+                        const slotDate = new Date(slot.date as any);
+                        return isDateInSalonRange(slotDate);
+                      })
                       .map((slot) => {
                         const dateObj = slot.date ? new Date(slot.date as any) : null;
                         const dateLabel = dateObj ? dateObj.toLocaleDateString('fr-FR', {
