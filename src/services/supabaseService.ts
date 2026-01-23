@@ -1666,31 +1666,15 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      // D'abord essayer avec l'ID comme exhibitor.id
-      let { data, error } = await safeSupabase
+      // ⚡ FIX N+1: Utiliser JOIN pour récupérer en une seule query
+      // Au lieu de 2-3 queries, on fait 1 query avec relation exhibitor
+      const { data, error } = await safeSupabase
         .from('products')
-        .select('*')
-        .eq('exhibitor_id', exhibitorId);
-
-      // Si pas de produits trouvés, peut-être que c'est un user_id
-      // Chercher l'exhibitor pour obtenir son ID
-      if ((!data || data.length === 0) && !error) {
-        const { data: exhibitor } = await safeSupabase
-          .from('exhibitors')
-          .select('id')
-          .eq('user_id', exhibitorId)
-          .maybeSingle();
-
-        if (exhibitor?.id) {
-          const result = await safeSupabase
-            .from('products')
-            .select('*')
-            .eq('exhibitor_id', exhibitor.id);
-
-          data = result.data;
-          error = result.error;
-        }
-      }
+        .select(`
+          *,
+          exhibitor:exhibitors!inner(id, user_id)
+        `)
+        .or(`exhibitor_id.eq.${exhibitorId},exhibitor.user_id.eq.${exhibitorId}`);
 
       if (error) throw error;
       
@@ -1716,36 +1700,57 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      // Déterminer le user_id pour chercher le mini-site
-      let userId = exhibitorId;
+      // ⚡ FIX N+1: Utiliser RPC pour incrémentation atomique (3 queries → 1 RPC)
+      const { data, error } = await safeSupabase.rpc('increment_minisite_views', {
+        p_exhibitor_id: exhibitorId
+      });
 
-      // Si l'ID passé est l'exhibitor.id, récupérer le user_id
-      const { data: exhibitor } = await safeSupabase
-        .from('exhibitors')
-        .select('user_id')
-        .eq('id', exhibitorId)
-        .single();
-
-      if (exhibitor?.user_id) {
-        userId = exhibitor.user_id;
+      if (error) {
+        throw error;
       }
 
-      // Récupérer le nombre de vues actuel (utilise view_count, pas views)
-      const { data: currentData } = await safeSupabase
-        .from('mini_sites')
-        .select('view_count')
-        .eq('exhibitor_id', userId)
-        .maybeSingle();
+      if (data && !data.success) {
+        console.warn('Incrémentation vues mini-site échouée:', data.error);
+      }
+    } catch (error: any) {
+      // Fallback si la fonction RPC n'existe pas encore (migration non appliquée)
+      if (error?.message?.includes('function increment_minisite_views') ||
+          error?.code === '42883' || // function does not exist
+          error?.code === 'PGRST202') { // function not found
 
-      if (currentData) {
-        // Incrémenter les vues
-        await safeSupabase
+        console.warn('⚠️ RPC increment_minisite_views non disponible, utilisation fallback');
+
+        // Méthode traditionnelle (2 queries)
+        let userId = exhibitorId;
+
+        const { data: exhibitor } = await safeSupabase
+          .from('exhibitors')
+          .select('user_id')
+          .eq('id', exhibitorId)
+          .maybeSingle();
+
+        if (exhibitor?.user_id) {
+          userId = exhibitor.user_id;
+        }
+
+        const { data: miniSite } = await safeSupabase
           .from('mini_sites')
-          .update({ view_count: (currentData.view_count || 0) + 1 })
-          .eq('exhibitor_id', userId);
+          .select('id, view_count')
+          .eq('exhibitor_id', userId)
+          .maybeSingle();
+
+        if (miniSite) {
+          await safeSupabase
+            .from('mini_sites')
+            .update({
+              view_count: (miniSite.view_count || 0) + 1,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', miniSite.id);
+        }
+      } else {
+        console.error('Erreur incrémentation vues:', error);
       }
-    } catch (error) {
-      console.error('Erreur incrémentation vues:', error);
     }
   }
 
@@ -1754,24 +1759,12 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      // D'abord essayer de trouver par exhibitor.id
-      let { data, error } = await safeSupabase
+      // ⚡ FIX N+1: Utiliser OR pour chercher par id OU user_id en une seule query
+      const { data, error } = await safeSupabase
         .from('exhibitors')
         .select('id, company_name, logo_url, description, website, contact_info')
-        .eq('id', exhibitorId)
-        .single();
-
-      // Si pas trouvé, essayer par user_id (au cas où c'est un user_id qui est passé)
-      if (error || !data) {
-        const result = await safeSupabase
-          .from('exhibitors')
-          .select('id, company_name, logo_url, description, website, contact_info')
-          .eq('user_id', exhibitorId)
-          .maybeSingle();
-
-        data = result.data;
-        error = result.error;
-      }
+        .or(`id.eq.${exhibitorId},user_id.eq.${exhibitorId}`)
+        .maybeSingle();
 
       if (error) throw error;
 

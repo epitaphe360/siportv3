@@ -209,37 +209,47 @@ async function notifyInterestedVisitors(slot: TimeSlot): Promise<void> {
     // 3. Créer les notifications in-app
     const notificationPromises = notifiableVisitors.map(async (visitor: any) => {
       try {
+        // ⚡ FIX: Paralléliser notification in-app et email au lieu de séquentiel
+        const promises: Promise<any>[] = [];
+
         // Créer notification in-app
-        await SupabaseService.createNotification?.({
-          userId: visitor.id,
-          type: 'new_timeslot',
-          title: 'Nouveau créneau disponible',
-          message: `Un nouveau créneau est disponible le ${new Date(slot.date).toLocaleDateString('fr-FR')} à ${slot.startTime}`,
-          data: {
-            slotId: slot.id,
-            exhibitorId: slot.exhibitorId,
-            date: slot.date,
-            startTime: slot.startTime,
-            type: slot.type
-          }
-        });
+        promises.push(
+          SupabaseService.createNotification?.({
+            userId: visitor.id,
+            type: 'new_timeslot',
+            title: 'Nouveau créneau disponible',
+            message: `Un nouveau créneau est disponible le ${new Date(slot.date).toLocaleDateString('fr-FR')} à ${slot.startTime}`,
+            data: {
+              slotId: slot.id,
+              exhibitorId: slot.exhibitorId,
+              date: slot.date,
+              startTime: slot.startTime,
+              type: slot.type
+            }
+          })
+        );
 
         // 4. Envoyer email si préférence activée
         if (visitor.notificationPreferences?.emailNotifications) {
-          await SupabaseService.sendNotificationEmail?.({
-            to: visitor.email,
-            template: 'new-timeslot-notification',
-            data: {
-              visitorName: visitor.name,
-              slotDate: new Date(slot.date).toLocaleDateString('fr-FR'),
-              slotTime: slot.startTime,
-              slotType: slot.type === 'virtual' ? 'Virtuel' :
-                        slot.type === 'hybrid' ? 'Hybride' : 'Présentiel',
-              exhibitorName: slot.exhibitor?.companyName || 'l\'exposant',
-              bookingUrl: `${window.location.origin}/appointments?exhibitor=${slot.exhibitorId}`
-            }
-          });
+          promises.push(
+            SupabaseService.sendNotificationEmail?.({
+              to: visitor.email,
+              template: 'new-timeslot-notification',
+              data: {
+                visitorName: visitor.name,
+                slotDate: new Date(slot.date).toLocaleDateString('fr-FR'),
+                slotTime: slot.startTime,
+                slotType: slot.type === 'virtual' ? 'Virtuel' :
+                          slot.type === 'hybrid' ? 'Hybride' : 'Présentiel',
+                exhibitorName: slot.exhibitor?.companyName || 'l\'exposant',
+                bookingUrl: `${window.location.origin}/appointments?exhibitor=${slot.exhibitorId}`
+              }
+            })
+          );
         }
+
+        // Attendre les deux en parallèle
+        await Promise.all(promises);
 
         return { success: true, visitorId: visitor.id };
       } catch (error) {

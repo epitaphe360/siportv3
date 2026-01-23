@@ -43,17 +43,25 @@ const loadChatData = async (userId: string) => {
     // Charger les conversations depuis Supabase
     const conversations = await SupabaseService.getConversations(userId);
 
-    // Charger les messages pour chaque conversation
-    const messages: Record<string, ChatMessage[]> = {};
-    for (const conversation of conversations) {
+    // ⚡ FIX N+1: Charger les messages pour toutes les conversations en parallèle
+    const messagePromises = conversations.map(async (conversation) => {
       try {
         const convMessages = await SupabaseService.getMessages(conversation.id);
-        messages[conversation.id] = convMessages || [];
+        return { conversationId: conversation.id, messages: convMessages || [] };
       } catch (err) {
         console.warn(`Failed to load messages for conversation ${conversation.id}:`, err);
-        messages[conversation.id] = [];
+        return { conversationId: conversation.id, messages: [] };
       }
-    }
+    });
+
+    const messageResults = await Promise.allSettled(messagePromises);
+    const messages: Record<string, ChatMessage[]> = {};
+
+    messageResults.forEach((result) => {
+      if (result.status === 'fulfilled') {
+        messages[result.value.conversationId] = result.value.messages;
+      }
+    });
 
     return {
       conversations,

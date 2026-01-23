@@ -35,28 +35,26 @@ const UserRecommendations: React.FC = () => {
       try {
         setLoading(true);
         const data = await SupabaseService.getRecommendationsForUser(user.id, 6);
-        
+
+        // ⚡ FIX N+1: Fetch exhibitors ONCE instead of once per recommendation
+        const exhibitors = await SupabaseService.getExhibitors();
+
         // Enrichir les recommandations avec les détails des exposants/produits
-        const enrichedRecommendations = await Promise.all(
-          data.map(async (rec) => {
-            if (rec.itemType === 'exhibitor') {
-              const exhibitors = await SupabaseService.getExhibitors();
-              const exhibitor = exhibitors.find(e => e.id === rec.itemId);
-              return { ...rec, exhibitor };
-            } else if (rec.itemType === 'product') {
-              // Récupérer le produit (nécessiterait une méthode getProductById)
-              // Pour l'instant, on peut récupérer tous les exposants et chercher le produit
-              const exhibitors = await SupabaseService.getExhibitors();
-              let foundProduct: Product | undefined;
-              for (const exhibitor of exhibitors) {
-                foundProduct = exhibitor.products.find(p => p.id === rec.itemId);
-                if (foundProduct) break;
-              }
-              return { ...rec, product: foundProduct };
+        const enrichedRecommendations = data.map((rec) => {
+          if (rec.itemType === 'exhibitor') {
+            const exhibitor = exhibitors.find(e => e.id === rec.itemId);
+            return { ...rec, exhibitor };
+          } else if (rec.itemType === 'product') {
+            // Chercher le produit dans tous les exposants
+            let foundProduct: Product | undefined;
+            for (const exhibitor of exhibitors) {
+              foundProduct = exhibitor.products.find(p => p.id === rec.itemId);
+              if (foundProduct) break;
             }
-            return rec;
-          })
-        );
+            return { ...rec, product: foundProduct };
+          }
+          return rec;
+        });
 
         setRecommendations(enrichedRecommendations.filter(r => r.exhibitor || r.product));
       } catch (err) {
