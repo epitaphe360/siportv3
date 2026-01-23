@@ -35,6 +35,8 @@ import { ErrorMessage, LoadingMessage } from '../common/ErrorMessage';
 import { LevelBadge, QuotaSummaryCard } from '../common/QuotaWidget';
 import { getPartnerQuota, getPartnerTierConfig } from '../../config/partnerTiers';
 import PartnerProfileCreationModal from '../partner/PartnerProfileCreationModal';
+import PartnerProfileScrapper from '../partner/PartnerProfileScrapper';
+import PartnerProfileEditor from '../partner/PartnerProfileEditor';
 import { supabase } from '../../lib/supabase';
 import type { PartnerTier } from '../../config/partnerTiers';
 import { MoroccanPattern } from '../ui/MoroccanDecor';
@@ -56,6 +58,8 @@ export default function PartnerDashboard() {
   const [showSatisfactionModal, setShowSatisfactionModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
+  const [showScrapperModal, setShowScrapperModal] = useState(false);
+  const [showEditorModal, setShowEditorModal] = useState(false);
 
 
   useEffect(() => {
@@ -542,8 +546,24 @@ export default function PartnerDashboard() {
               </div>
 
               <div className="space-y-3">
+                <Button
+                  onClick={() => setShowScrapperModal(true)}
+                  className="w-full justify-start bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-md hover:shadow-lg transition-all"
+                >
+                  <Sparkles className="h-4 w-4 mr-3" />
+                  🤖 Auto-Fill with AI
+                </Button>
+
+                <Button
+                  onClick={() => setShowEditorModal(true)}
+                  className="w-full justify-start bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-md hover:shadow-lg transition-all"
+                >
+                  <Edit className="h-4 w-4 mr-3" />
+                  ✏️ Edit Profile Manually
+                </Button>
+
                 <Link to={ROUTES.PARTNER_PROFILE_EDIT} className="block">
-                  <Button className="w-full justify-start bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-md hover:shadow-lg transition-all">
+                  <Button className="w-full justify-start border-2 hover:bg-gray-50" variant="outline">
                     <Globe className="h-4 w-4 mr-3" />
                     {t('admin.edit_profile')}
                   </Button>
@@ -820,6 +840,88 @@ export default function PartnerDashboard() {
             setShowProfileModal(false);
           }}
         />
+      )}
+
+      {/* Modal AI Scrapper */}
+      {showScrapperModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+          >
+            <div className="sticky top-0 bg-white border-b border-gray-200 p-6 rounded-t-2xl flex items-center justify-between z-10">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg">
+                  <Sparkles className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Auto-Fill Profile with AI</h2>
+                  <p className="text-sm text-gray-600">Automatically extract information from your website</p>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => setShowScrapperModal(false)}
+                className="rounded-full"
+              >
+                ✕
+              </Button>
+            </div>
+            <div className="p-6">
+              <PartnerProfileScrapper
+                partnerId={user?.id || ''}
+                onSuccess={() => {
+                  setShowScrapperModal(false);
+                  setHasProfile(true);
+                  fetchDashboard();
+                }}
+              />
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Modal Profile Editor */}
+      {showEditorModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+          >
+            <div className="sticky top-0 bg-white border-b border-gray-200 p-6 rounded-t-2xl flex items-center justify-between z-10">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+                  <Edit className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Edit Profile Manually</h2>
+                  <p className="text-sm text-gray-600">Update your company information</p>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => setShowEditorModal(false)}
+                className="rounded-full"
+              >
+                ✕
+              </Button>
+            </div>
+            <div className="p-6">
+              <PartnerProfileEditor
+                partnerId={user?.id || ''}
+                onSuccess={() => {
+                  setShowEditorModal(false);
+                  setHasProfile(true);
+                  fetchDashboard();
+                }}
+              />
+            </div>
+          </motion.div>
+        </div>
       )}
       </div>
     </div>

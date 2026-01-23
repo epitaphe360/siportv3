@@ -15,7 +15,9 @@ import {
   Tag,
   Filter,
   FileText,
-  Copy
+  Copy,
+  Edit,
+  Sparkles
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -23,6 +25,7 @@ import { Badge } from '../components/ui/Badge';
 import { toast } from 'sonner';
 import { supabase } from '../lib/supabase';
 import useAuthStore from '../store/authStore';
+import ArticleEditor from '../components/marketing/ArticleEditor';
 
 interface MediaItem {
   id: string;
@@ -72,6 +75,8 @@ export default function MarketingDashboard() {
   const [filterStatus, setFilterStatus] = useState<MediaStatus>('all');
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [selectedType, setSelectedType] = useState<'webinar' | 'capsule_inside' | 'podcast'>('podcast');
+  const [showArticleEditor, setShowArticleEditor] = useState(false);
+  const [selectedArticle, setSelectedArticle] = useState<ArticleItem | null>(null);
 
   // Stats
   const stats = {
@@ -379,6 +384,22 @@ export default function MarketingDashboard() {
           renderMediaTab()
         ) : (
           renderArticlesTab()
+        )}
+
+        {/* Article Editor Modal */}
+        {showArticleEditor && (
+          <ArticleEditor
+            article={selectedArticle}
+            onSave={() => {
+              loadArticles();
+              setShowArticleEditor(false);
+              setSelectedArticle(null);
+            }}
+            onClose={() => {
+              setShowArticleEditor(false);
+              setSelectedArticle(null);
+            }}
+          />
         )}
       </div>
     </div>
@@ -710,6 +731,24 @@ export default function MarketingDashboard() {
 
     return (
       <>
+        {/* Create Article Button */}
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Articles Management</h2>
+            <p className="text-sm text-gray-600 mt-1">Create and manage articles for siportevent.com</p>
+          </div>
+          <Button
+            onClick={() => {
+              setSelectedArticle(null);
+              setShowArticleEditor(true);
+            }}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Create New Article
+          </Button>
+        </div>
+
         {/* Stats Articles */}
         <div className="grid grid-cols-3 gap-4 mb-6">
           <Card className="p-4">
@@ -814,6 +853,18 @@ export default function MarketingDashboard() {
 
                     {/* Actions */}
                     <div className="flex items-center space-x-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedArticle(article);
+                          setShowArticleEditor(true);
+                        }}
+                        className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50"
+                      >
+                        <Edit className="h-4 w-4 mr-1" />
+                        Edit
+                      </Button>
                       <Button
                         size="sm"
                         variant={article.published ? 'outline' : 'default'}

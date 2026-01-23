@@ -22,6 +22,7 @@ import { LevelBadge, QuotaSummaryCard } from '../common/QuotaWidget';
 import { getExhibitorLevelByArea, getExhibitorQuota } from '../../config/exhibitorQuotas';
 import { Users, FileText, Award, Scan } from 'lucide-react';
 import { MiniSiteSetupModal } from '../exhibitor/MiniSiteSetupModal';
+import ExhibitorMiniSiteScrapper from '../exhibitor/ExhibitorMiniSiteScrapper';
 import { supabase } from '../../lib/supabase';
 import { LineChartCard, BarChartCard, PieChartCard } from './charts';
 import { MoroccanPattern } from '../ui/MoroccanDecor';
@@ -55,6 +56,7 @@ export default function ExhibitorDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [processingAppointment, setProcessingAppointment] = useState<string | null>(null);
   const [showMiniSiteSetup, setShowMiniSiteSetup] = useState(false);
+  const [showMiniSiteScrapper, setShowMiniSiteScrapper] = useState(false);
 
   const { user } = useAuthStore();
   const { dashboard, fetchDashboard, error: dashboardError } = useDashboardStore();
@@ -458,11 +460,18 @@ export default function ExhibitorDashboard() {
 
   const quickActions = [
     {
+      title: 'Créer Mini-Site avec IA',
+      description: 'Générez automatiquement votre mini-site depuis votre site web',
+      icon: '✨',
+      action: () => setShowMiniSiteScrapper(true),
+      variant: 'default' as const
+    },
+    {
       title: 'Réseautage IA',
       description: 'Découvrez des connexions pertinentes avec l\'IA',
       icon: '🤖',
       link: ROUTES.NETWORKING,
-      variant: 'default' as const
+      variant: 'outline' as const
     },
     {
       title: 'Modifier mon Mini-Site',
@@ -1121,6 +1130,47 @@ export default function ExhibitorDashboard() {
           onClose={() => setShowMiniSiteSetup(false)}
           userId={user.id}
         />
+      )}
+
+      {/* AI Mini-Site Scrapper Modal */}
+      {showMiniSiteScrapper && user?.id && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+          >
+            <div className="sticky top-0 bg-white border-b border-gray-200 p-6 rounded-t-2xl flex items-center justify-between z-10">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+                  <Sparkles className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Create Mini-Site with AI</h2>
+                  <p className="text-sm text-gray-600">Automatically generate your mini-site from your website</p>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => setShowMiniSiteScrapper(false)}
+                className="rounded-full"
+              >
+                ✕
+              </Button>
+            </div>
+            <div className="p-6">
+              <ExhibitorMiniSiteScrapper
+                exhibitorId={user.id}
+                userId={user.id}
+                onSuccess={() => {
+                  setShowMiniSiteScrapper(false);
+                  fetchDashboard();
+                }}
+              />
+            </div>
+          </motion.div>
+        </div>
       )}
     </div>
   );
