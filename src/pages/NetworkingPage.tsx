@@ -28,6 +28,7 @@ import { SupabaseService } from '@/services/supabaseService';
 import { getVisitorQuota } from '@/config/quotas';
 import { LevelBadge } from '@/components/common/QuotaWidget';
 import { getDisplayName, getUserInitials } from '@/utils/userHelpers';
+import { isDateInSalonRange } from '@/config/salonInfo';
 
 export default function NetworkingPage() {
   const navigate = useNavigate();
@@ -777,26 +778,15 @@ export default function NetworkingPage() {
                           {/* Actions */}
                           <div className="p-6 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between gap-3">
                             <div className="flex-1">
-                              {isConnected ? (
-                                <Button size="sm" variant="outline" disabled className="w-full bg-emerald-50 border-emerald-200 text-emerald-700 rounded-xl h-11">
-                                  <CheckCircle className="h-4 w-4 mr-2" />
-                                  Connecté
-                                </Button>
-                              ) : isPending ? (
-                                <Button size="sm" variant="outline" disabled className="w-full bg-amber-50 border-amber-200 text-amber-700 rounded-xl h-11">
-                                  <Clock className="h-4 w-4 mr-2" />
-                                  En attente
-                                </Button>
-                              ) : (
-                                <Button
-                                  size="sm"
-                                  onClick={() => handleConnect(profile.id, getDisplayName(profile))}
-                                  className="w-full bg-slate-900 hover:bg-slate-800 text-white shadow-lg rounded-xl h-11 font-bold"
-                                >
-                                  <UserPlus className="h-4 w-4 mr-2" />
-                                  Connecter
-                                </Button>
-                              )}
+                              {/* ✅ FIX: Remplacer "Connecter" par "Calendrier de disponibilité" */}
+                              <Button
+                                size="sm"
+                                onClick={() => handleBookAppointment(profile)}
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg rounded-xl h-11 font-bold"
+                              >
+                                <Calendar className="h-4 w-4 mr-2" />
+                                Calendrier
+                              </Button>
                             </div>
                             
                             <div className="flex items-center space-x-2">
@@ -976,8 +966,8 @@ export default function NetworkingPage() {
                           </div>
 
                           <div className="flex items-center justify-between gap-3">
-                            <Button 
-                              size="sm" 
+                            <Button
+                              size="sm"
                               variant="outline"
                               onClick={() => handleViewProfile(getDisplayName(profile), profile.profile?.company || profile.profile?.companyName || '', profile)}
                               className="flex-1 rounded-xl border-slate-200 h-10 font-bold"
@@ -985,24 +975,15 @@ export default function NetworkingPage() {
                               <Eye className="h-4 w-4 mr-2" />
                               Profil
                             </Button>
-                            {isConnected ? (
-                              <Button size="sm" variant="outline" disabled className="flex-1 bg-emerald-50 border-emerald-100 text-emerald-600 rounded-xl h-10">
-                                <CheckCircle className="h-4 w-4" />
-                              </Button>
-                            ) : isPending ? (
-                              <Button size="sm" variant="outline" disabled className="flex-1 bg-amber-50 border-amber-100 text-amber-600 rounded-xl h-10">
-                                <Clock className="h-4 w-4" />
-                              </Button>
-                            ) : (
-                              <Button
-                                size="sm"
-                                onClick={() => handleConnect(profile.id, getDisplayName(profile))}
-                                className="flex-1 bg-slate-900 text-white rounded-xl h-10 font-bold"
-                              >
-                                <UserPlus className="h-4 w-4 mr-2" />
-                                Connecter
-                              </Button>
-                            )}
+                            {/* ✅ FIX: Remplacer "Connecter" par "Calendrier" pour afficher la disponibilité */}
+                            <Button
+                              size="sm"
+                              onClick={() => handleBookAppointment(profile)}
+                              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-10 font-bold"
+                            >
+                              <Calendar className="h-4 w-4 mr-2" />
+                              Calendrier
+                            </Button>
                           </div>
                         </Card>
                       </motion.div>
@@ -1579,7 +1560,13 @@ export default function NetworkingPage() {
                 {Array.isArray(timeSlots) && timeSlots.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 max-h-80 sm:max-h-96 overflow-y-auto p-1 sm:p-2">
                     {timeSlots
-                      .filter(slot => slot.available !== false)
+                      .filter(slot => {
+                        // ✅ FIX: Filtrer pour n'afficher que les 3 jours du salon (1-3 Avril 2026)
+                        if (slot.available === false) return false;
+                        if (!slot.date) return false;
+                        const slotDate = new Date(slot.date as any);
+                        return isDateInSalonRange(slotDate);
+                      })
                       .map((slot) => {
                         const dateObj = slot.date ? new Date(slot.date as any) : null;
                         const dateLabel = dateObj ? dateObj.toLocaleDateString('fr-FR', {
