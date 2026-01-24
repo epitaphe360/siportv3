@@ -127,7 +127,9 @@ Si les statistiques affichent toujours 0 :
 
 1. Vérifiez la console browser (F12) pour les erreurs
 2. Vérifiez que l'utilisateur connecté est bien un `type: 'exhibitor'`
-3. Relancez le script : `node scripts/add-exhibitor-activity-stats.mjs`
+3. Relancez les scripts :
+   - `node scripts/add-exhibitor-activity-stats.mjs` (régenère `users.profile.stats`)
+   - `node scripts/backfill_minisite_views.mjs` (peuple `minisite_views` à partir de `mini_sites.view_count`)
 4. Rechargez la page avec cache vidé (Ctrl+Shift+R)
 
 ---

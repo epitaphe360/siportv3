@@ -40,7 +40,10 @@ export default function AppointmentCalendar() {
 
   const [searchParams] = useSearchParams();
   const location = useLocation();
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const now = new Date();
+    return isDateInSalonRange(now) ? now : new Date(getMinSlotDate() + 'T00:00:00');
+  });
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showCreateSlotModal, setShowCreateSlotModal] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
@@ -581,22 +584,24 @@ export default function AppointmentCalendar() {
                   
                   {/* Quick date navigation */}
                   <div className="grid grid-cols-3 gap-2">
-                    {[-1, 0, 1].map(offset => {
-                      const date = new Date();
-                      date.setDate(date.getDate() + offset);
+                    {['2026-04-01', '2026-04-02', '2026-04-03'].map((dateStr, index) => {
+                      const date = new Date(dateStr + 'T00:00:00');
                       const isSelected = date.toDateString() === selectedDate.toDateString();
                       
                       return (
                         <button
-                          key={offset}
+                          key={dateStr}
                           onClick={() => setSelectedDate(date)}
-                          className={`p-2 text-sm rounded-lg transition-colors ${
+                          className={`p-2 text-sm rounded-lg transition-colors flex flex-col items-center ${
                             isSelected 
-                              ? 'bg-blue-100 text-blue-700 font-medium' 
-                              : 'hover:bg-gray-100'
+                              ? 'bg-blue-600 text-white font-medium shadow-sm' 
+                              : 'bg-white hover:bg-blue-50 text-gray-700 border border-gray-200'
                           }`}
                         >
-                          {offset === -1 ? 'Hier' : offset === 0 ? 'Aujourd\'hui' : 'Demain'}
+                          <span className="text-xs uppercase font-semibold">Jour {index + 1}</span>
+                          <span className={`${isSelected ? 'text-blue-100' : 'text-gray-500'} text-[10px]`}>
+                             {index + 1} Avr
+                          </span>
                         </button>
                       );
                     })}

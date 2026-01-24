@@ -14,7 +14,7 @@ interface AvailabilityCalendarProps {
 
 export default function AvailabilityCalendar({ user, showBooking = false, onBookSlot }: AvailabilityCalendarProps) {
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date('2026-04-01T00:00:00'));
   const [isLoading, setIsLoading] = useState(false);
 
   // Mock data - in real app, this would come from API based on user ID
@@ -22,7 +22,7 @@ export default function AvailabilityCalendar({ user, showBooking = false, onBook
     const mockTimeSlots: TimeSlot[] = [
       {
         id: '1',
-        date: new Date('2025-09-15'),
+        date: new Date('2026-04-01T00:00:00'),
         startTime: '09:00',
         endTime: '10:00',
         duration: 60,
@@ -34,7 +34,7 @@ export default function AvailabilityCalendar({ user, showBooking = false, onBook
       },
       {
         id: '2',
-        date: new Date('2025-09-15'),
+        date: new Date('2026-04-01T00:00:00'),
         startTime: '14:00',
         endTime: '15:00',
         duration: 60,
@@ -46,7 +46,7 @@ export default function AvailabilityCalendar({ user, showBooking = false, onBook
       },
       {
         id: '3',
-        date: new Date('2025-09-16'),
+        date: new Date('2026-04-02T00:00:00'),
         startTime: '10:00',
         endTime: '11:00',
         duration: 60,
@@ -58,7 +58,7 @@ export default function AvailabilityCalendar({ user, showBooking = false, onBook
       },
       {
         id: '4',
-        date: new Date('2025-09-16'),
+        date: new Date('2026-04-03T00:00:00'),
         startTime: '15:00',
         endTime: '16:00',
         duration: 60,

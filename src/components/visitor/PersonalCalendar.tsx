@@ -14,8 +14,9 @@ interface PersonalCalendarProps {
 export default memo(function PersonalCalendar({ compact = false }: PersonalCalendarProps) {
   const { isAuthenticated } = useAuthStore();
   const { events, registeredEvents, fetchEvents } = useEventStore();
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  // SIPORTS 2026 dates focus
+  const [currentDate, setCurrentDate] = useState(new Date('2026-04-01T00:00:00'));
+  const [selectedDate, setSelectedDate] = useState(new Date('2026-04-01T00:00:00'));
 
   useEffect(() => {
     if (isAuthenticated) {

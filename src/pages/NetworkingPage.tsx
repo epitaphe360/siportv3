@@ -1557,68 +1557,74 @@ export default function NetworkingPage() {
                   Choisir un créneau horaire
                 </label>
 
-                {Array.isArray(timeSlots) && timeSlots.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 max-h-80 sm:max-h-96 overflow-y-auto p-1 sm:p-2">
-                    {timeSlots
-                      .filter(slot => {
-                        // ✅ FIX: Filtrer pour n'afficher que les 3 jours du salon (1-3 Avril 2026)
-                        if (slot.available === false) return false;
-                        if (!slot.date) return false;
-                        const slotDate = new Date(slot.date as any);
-                        return isDateInSalonRange(slotDate);
-                      })
-                      .map((slot) => {
-                        const dateObj = slot.date ? new Date(slot.date as any) : null;
-                        const dateLabel = dateObj ? dateObj.toLocaleDateString('fr-FR', {
-                          weekday: 'long',
-                          day: '2-digit',
-                          month: 'long',
-                          year: 'numeric'
-                        }) : String(slot.date || '');
-                        const isSelected = selectedTimeSlot === slot.id;
+                {(() => {
+                  const filteredSlots = Array.isArray(timeSlots) ? timeSlots.filter(slot => {
+                    // ✅ FIX: Filtrer pour n'afficher que les 3 jours du salon (1-3 Avril 2026)
+                    if (slot.available === false) return false;
+                    if (!slot.date) return false;
+                    const slotDate = new Date(slot.date as any);
+                    return isDateInSalonRange(slotDate);
+                  }) : [];
 
-                        return (
-                          <button
-                            key={slot.id}
-                            onClick={() => setSelectedTimeSlot(slot.id)}
-                            className={`p-3 sm:p-4 border-2 rounded-lg sm:rounded-xl text-left transition-all ${
-                              isSelected
-                                ? 'border-blue-600 bg-blue-50 shadow-lg'
-                                : 'border-gray-200 hover:border-blue-300 hover:shadow-md'
-                            }`}
-                          >
-                            <div className="flex items-start justify-between mb-1 sm:mb-2">
-                              <div className="font-bold text-gray-900 capitalize text-xs sm:text-sm leading-tight pr-2">
-                                {dateLabel}
+                  if (filteredSlots.length > 0) {
+                    return (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 max-h-80 sm:max-h-96 overflow-y-auto p-1 sm:p-2">
+                        {filteredSlots.map((slot) => {
+                          const dateObj = slot.date ? new Date(slot.date as any) : null;
+                          const dateLabel = dateObj ? dateObj.toLocaleDateString('fr-FR', {
+                            weekday: 'long',
+                            day: '2-digit',
+                            month: 'long',
+                            year: 'numeric'
+                          }) : String(slot.date || '');
+                          const isSelected = selectedTimeSlot === slot.id;
+
+                          return (
+                            <button
+                              key={slot.id}
+                              onClick={() => setSelectedTimeSlot(slot.id)}
+                              className={`p-3 sm:p-4 border-2 rounded-lg sm:rounded-xl text-left transition-all ${
+                                isSelected
+                                  ? 'border-blue-600 bg-blue-50 shadow-lg'
+                                  : 'border-gray-200 hover:border-blue-300 hover:shadow-md'
+                              }`}
+                            >
+                              <div className="flex items-start justify-between mb-1 sm:mb-2">
+                                <div className="font-bold text-gray-900 capitalize text-xs sm:text-sm leading-tight pr-2">
+                                  {dateLabel}
+                                </div>
+                                {isSelected && (
+                                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 flex-shrink-0" />
+                                )}
                               </div>
-                              {isSelected && (
-                                <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 flex-shrink-0" />
+                              <div className="flex items-center text-blue-600 font-semibold mb-1 text-sm sm:text-base">
+                                <Clock className="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" />
+                                <span className="truncate">{slot.startTime} - {slot.endTime}</span>
+                              </div>
+                              {slot.location && (
+                                <div className="text-xs text-gray-600 flex items-center mt-1 truncate">
+                                  <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
+                                  <span className="truncate">{slot.location}</span>
+                                </div>
                               )}
-                            </div>
-                            <div className="flex items-center text-blue-600 font-semibold mb-1 text-sm sm:text-base">
-                              <Clock className="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" />
-                              <span className="truncate">{slot.startTime} - {slot.endTime}</span>
-                            </div>
-                            {slot.location && (
-                              <div className="text-xs text-gray-600 flex items-center mt-1 truncate">
-                                <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
-                                <span className="truncate">{slot.location}</span>
+                              <div className="text-xs text-gray-500 mt-1 sm:mt-2">
+                                {slot.currentBookings || 0}/{slot.maxBookings} réservé(s)
                               </div>
-                            )}
-                            <div className="text-xs text-gray-500 mt-1 sm:mt-2">
-                              {slot.currentBookings || 0}/{slot.maxBookings} réservé(s)
-                            </div>
-                          </button>
-                        );
-                      })}
-                  </div>
-                ) : (
-                  <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
-                    <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                    <p className="text-gray-600 font-medium">Aucun créneau disponible pour le moment</p>
-                    <p className="text-sm text-gray-500 mt-1">Veuillez réessayer plus tard ou contacter l'exposant</p>
-                  </div>
-                )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
+                      <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                      <p className="text-gray-600 font-medium">Aucun créneau disponible pour le moment</p>
+                      <p className="text-sm text-gray-500 mt-1">Veuillez réessayer plus tard ou contacter l'exposant</p>
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* Champ message */}

@@ -25,7 +25,7 @@ export default function PersonalAppointmentsCalendar({ userType }: PersonalAppoi
     isLoading
   } = useAppointmentStore();
 
-  const [selectedWeek, setSelectedWeek] = useState(new Date());
+  const [selectedWeek, setSelectedWeek] = useState(new Date('2026-04-01T00:00:00'));
   const [filter, setFilter] = useState<'all' | 'pending' | 'confirmed' | 'cancelled'>('all');
 
   useEffect(() => {
@@ -114,16 +114,11 @@ export default function PersonalAppointmentsCalendar({ userType }: PersonalAppoi
   };
 
   const getWeekDays = (date: Date) => {
-    const week = [];
-    const startOfWeek = new Date(date);
-    startOfWeek.setDate(date.getDate() - date.getDay() + 1); // Lundi
-
-    for (let i = 0; i < 7; i++) {
-      const day = new Date(startOfWeek);
-      day.setDate(startOfWeek.getDate() + i);
-      week.push(day);
-    }
-    return week;
+    return [
+      new Date('2026-04-01T00:00:00'),
+      new Date('2026-04-02T00:00:00'),
+      new Date('2026-04-03T00:00:00')
+    ];
   };
 
   const weekDays = getWeekDays(selectedWeek);
@@ -217,55 +212,27 @@ export default function PersonalAppointmentsCalendar({ userType }: PersonalAppoi
           </div>
         </div>
 
-        {/* Navigation semaine avec style premium */}
+        {/* Titre du planning spécifique à l'événement */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="flex items-center justify-between mb-8 bg-gradient-to-r from-indigo-50 to-purple-50 p-5 rounded-2xl border border-indigo-100"
+          className="flex items-center justify-center mb-8 bg-gradient-to-r from-indigo-50 to-purple-50 p-5 rounded-2xl border border-indigo-100"
         >
-          <Button
-            variant="ghost"
-            onClick={() => {
-              const newWeek = new Date(selectedWeek);
-              newWeek.setDate(selectedWeek.getDate() - 7);
-              setSelectedWeek(newWeek);
-            }}
-            className="flex items-center gap-2 hover:bg-white hover:shadow-md px-4 py-2 rounded-xl transition-all"
-            data-testid="button-previous-week"
-          >
-            <ChevronLeft className="w-5 h-5" />
-            <span className="hidden sm:inline">Semaine précédente</span>
-          </Button>
-          
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-indigo-100 rounded-xl">
               <Calendar className="w-6 h-6 text-indigo-600" />
             </div>
             <div className="text-center">
               <h4 className="text-xl font-bold text-gray-900" data-testid="text-current-week">
-                Semaine du {weekDays[0].toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}
+                Planning de l'Événement (1-3 Avril 2026)
               </h4>
-              <p className="text-sm text-gray-500">{weekDays[0].getFullYear()}</p>
+              <p className="text-sm text-gray-500">Salon International des Ports et de la Logistique</p>
             </div>
           </div>
-          
-          <Button
-            variant="ghost"
-            onClick={() => {
-              const newWeek = new Date(selectedWeek);
-              newWeek.setDate(selectedWeek.getDate() + 7);
-              setSelectedWeek(newWeek);
-            }}
-            className="flex items-center gap-2 hover:bg-white hover:shadow-md px-4 py-2 rounded-xl transition-all"
-            data-testid="button-next-week"
-          >
-            <span className="hidden sm:inline">Semaine suivante</span>
-            <ChevronRight className="w-5 h-5" />
-          </Button>
         </motion.div>
 
-        {/* Grille hebdomadaire améliorée */}
-        <div className="grid grid-cols-7 gap-3 mb-8">
+        {/* Grille hebdomadaire améliorée - Adaptée pour 3 jours */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {weekDays.map((day, index) => {
             const dayAppointments = weekAppointments.filter(appointment => {
               const slot = timeSlots.find(s => s.id === appointment.timeSlotId);

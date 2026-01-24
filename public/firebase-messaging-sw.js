@@ -11,10 +11,11 @@
 
 // Try to load Firebase with error handling
 try {
-  importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js');
-  importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js');
+  // Use compat versions for older global firebase syntax
+  importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js');
+  importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js');
 } catch (error) {
-  console.error('Failed to load Firebase scripts:', error);
+  console.error('[firebase-messaging-sw] Failed to load Firebase scripts:', error);
 }
 
 // Initialize Firebase in service worker (graceful)

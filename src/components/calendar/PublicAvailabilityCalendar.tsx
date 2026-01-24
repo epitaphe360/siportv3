@@ -23,7 +23,7 @@ export default function PublicAvailabilityCalendar({
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [selectedWeek, setSelectedWeek] = useState(new Date());
+  const [selectedWeek, setSelectedWeek] = useState(new Date('2026-04-01T00:00:00'));
   const [viewMode, setViewMode] = useState<'week' | 'list'>('week');
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
   const [newSlot, setNewSlot] = useState({
@@ -218,7 +218,11 @@ export default function PublicAvailabilityCalendar({
     return week;
   };
 
-  const weekDays = getWeekDays(selectedWeek);
+  const weekDays = [
+    new Date('2026-04-01T00:00:00'),
+    new Date('2026-04-02T00:00:00'),
+    new Date('2026-04-03T00:00:00')
+  ];
   const weekSlots = timeSlots.filter(slot => {
     const slotDate = parseLocalDate(slot.date);
     return weekDays.some(day =>
@@ -293,51 +297,27 @@ export default function PublicAvailabilityCalendar({
       </Card>
 
       {/* Navigation & Vue */}
+      {/* Navigation - LIMITÉ AUX JOURS DE L'ÉVÉNEMENT */}
       <Card className="p-6">
         <div className="flex items-center justify-between mb-6">
-          {/* Navigation semaine */}
           <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              onClick={() => {
-                const newWeek = new Date(selectedWeek);
-                newWeek.setDate(selectedWeek.getDate() - 7);
-                setSelectedWeek(newWeek);
-              }}
-              className="hover:bg-blue-50 text-blue-600"
-              data-testid="button-previous-week"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </Button>
-
-            <div className="text-center">
-              <div className="text-sm text-gray-500 mb-1">Semaine du</div>
-              <h3 className="text-xl font-bold text-gray-900" data-testid="text-current-week">
-                {weekDays[0].toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
-              </h3>
+            <div className="p-3 bg-blue-100 rounded-xl font-bold text-blue-600">
+               1-3 AVR
             </div>
-
-            <Button
-              variant="ghost"
-              onClick={() => {
-                const newWeek = new Date(selectedWeek);
-                newWeek.setDate(selectedWeek.getDate() + 7);
-                setSelectedWeek(newWeek);
-              }}
-              className="hover:bg-blue-50 text-blue-600"
-              data-testid="button-next-week"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </Button>
-
-            <Button
-              variant="ghost"
-              onClick={() => setSelectedWeek(new Date())}
-              className="ml-4 text-blue-600 hover:bg-blue-50"
-            >
-              Aujourd'hui
-            </Button>
+            <div>
+              <h3 className="text-xl font-bold text-gray-900">
+                Planning SIPORTS 2026
+              </h3>
+              <p className="text-sm text-gray-500">
+                Disponibilités pour les 3 jours de l'événement
+              </p>
+            </div>
           </div>
+
+          <Badge variant="info" className="px-4 py-2 text-sm bg-blue-50 text-blue-700 border-blue-200">
+            Événement limité
+          </Badge>
+        </div>
 
           {/* Toggle Vue */}
           <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
