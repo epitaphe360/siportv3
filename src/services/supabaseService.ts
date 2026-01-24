@@ -2615,8 +2615,8 @@ export class SupabaseService {
         .from('appointments')
         .select(`
           *,
-          exhibitor:exhibitor_id(id, user_id, company_name, logo_url),
-          visitor:visitor_id(id, name, email)
+          exhibitor:exhibitors!exhibitor_id(id, user_id, company_name, logo_url),
+          visitor:users!visitor_id(id, name, email)
         `)
         .order('created_at', { ascending: false });
 
