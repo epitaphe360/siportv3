@@ -331,16 +331,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={async () => {
-                      setEmail('visitor-free@test.siport.com');
-                      setPassword('Test123456!');
-                      setError('');
-                      try {
-                        await login('visitor-free@test.siport.com', 'Test123456!', { rememberMe: true });
-                      } catch (err: any) {
-                        setError(err.message || 'Erreur de connexion');
-                      }
-                    }}
+                    onClick={() => handleDemoLogin('visitor-free@test.siport.com', 'Test123456!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 border-0"
                   >
                     ✅ Connexion
@@ -359,15 +350,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={async () => {
-                      setEmail('visitor-vip@test.siport.com');
-                      setPassword('Test123456!');
-                      setError('');
-                      try {
-                        await login('visitor-vip@test.siport.com', 'Test123456!', { rememberMe: true });
-                      } catch (err: any) {
-                        setError(err.message || 'Erreur de connexion');
-                      }
+                    onClick={() => handleDemoLogin('visitor-vip@test.siport.com', 'Test123456!')}
                     }}
                     className="w-full text-xs h-8 bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 border-0"
                   >
