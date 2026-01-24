@@ -407,16 +407,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={async () => {
-                      setEmail('exhibitor-36m@test.siport.com');
-                      setPassword('Test123456!');
-                      setError('');
-                      try {
-                        await login('exhibitor-36m@test.siport.com', 'Test123456!', { rememberMe: true });
-                      } catch (err: any) {
-                        setError(err.message || 'Erreur de connexion');
-                      }
-                    }}
+                    onClick={() => handleDemoLogin('exhibitor-36m@test.siport.com', 'Test123456!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-purple-700 to-purple-800 text-white hover:from-purple-800 hover:to-purple-900 border-0"
                   >
                     ✅ Connexion
@@ -435,16 +426,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={async () => {
-                      setEmail('exhibitor-54m@test.siport.com');
-                      setPassword('Test123456!');
-                      setError('');
-                      try {
-                        await login('exhibitor-54m@test.siport.com', 'Test123456!', { rememberMe: true });
-                      } catch (err: any) {
-                        setError(err.message || 'Erreur de connexion');
-                      }
-                    }}
+                    onClick={() => handleDemoLogin('exhibitor-54m@test.siport.com', 'Test123456!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-purple-800 to-purple-900 text-white hover:from-purple-900 hover:to-purple-950 border-0"
                   >
                     ✅ Connexion
@@ -463,11 +445,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={async () => {
-                      setEmail('demo.partner@siports.com');
-                      setPassword('Test123456!');
-                      setError('');
-                      try {
+                    onClick={() => handleDemoLogin('demo.partner@siports.com', 'Test123456!')}
                         await login('demo.partner@siports.com', 'Test123456!', { rememberMe: true });
                       } catch (err: any) {
                         setError(err.message || 'Erreur de connexion');
