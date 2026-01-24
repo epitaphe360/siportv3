@@ -135,104 +135,104 @@ export default function PersonalAppointmentsCalendar({ userType }: PersonalAppoi
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6" data-testid="personal-appointments-calendar">
-      {/* Hero Header */}
+    <div className="min-h-screen bg-[#f8fafc] p-4 md:p-8" data-testid="personal-appointments-calendar">
+      {/* Hero Header Premium */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 p-8 mb-8 shadow-xl"
+        className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#334155] p-8 md:p-12 mb-10 shadow-2xl border border-white/10"
       >
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl"></div>
+        {/* Motif Marocain Subtil */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px]"></div>
+        <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-indigo-500/10 rounded-full blur-[80px]"></div>
         
-        <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="flex items-center space-x-5">
-            <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl">
-              <CalendarDays className="w-10 h-10 text-white" />
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-10">
+          <div className="flex items-center space-x-8">
+            <div className="p-5 bg-white/10 backdrop-blur-xl rounded-[1.5rem] border border-white/20 shadow-2xl transform hover:rotate-3 transition-transform duration-500">
+              <CalendarDays className="w-12 h-12 text-blue-400" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white mb-1 flex items-center gap-2">
+              <div className="flex items-center gap-3 mb-2">
+                <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30 text-[10px] uppercase tracking-[0.2em] font-black px-3 py-1">
+                  Espace B2B
+                </Badge>
+                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full">
+                  <Sparkles className="w-3 h-3 text-amber-400" />
+                  <span className="text-[10px] font-bold text-amber-200 uppercase tracking-wider">Session 2026</span>
+                </div>
+              </div>
+              <h1 className="text-4xl md:text-5xl font-black text-white mb-2 tracking-tight">
                 Mes Rendez-vous B2B
-                <Sparkles className="w-6 h-6 text-yellow-300" />
               </h1>
-              <p className="text-white/80 text-lg">
+              <p className="text-blue-100/60 text-lg font-medium max-w-xl italic">
                 {userType === 'visitor' 
-                  ? '🎯 Vos rendez-vous programmés avec les exposants'
-                  : '📩 Les rendez-vous que vous avez reçus'}
+                  ? '🎯 Gérez vos rencontres stratégiques avec les leaders de l\'industrie portuaire'
+                  : '📩 Optimisez votre réseau et validez vos opportunités d\'affaires'}
               </p>
             </div>
           </div>
 
-          {/* Stats rapides dans le header */}
-          <div className="flex gap-4">
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl px-5 py-3 text-center">
-              <div className="text-3xl font-bold text-white">{getFilteredAppointments().length}</div>
-              <div className="text-white/70 text-sm">Total</div>
-            </div>
-            <div className="bg-green-400/30 backdrop-blur-sm rounded-xl px-5 py-3 text-center">
-              <div className="text-3xl font-bold text-white">{getFilteredAppointments().filter(apt => apt.status === 'confirmed').length}</div>
-              <div className="text-white/70 text-sm">Confirmés</div>
-            </div>
-            <div className="bg-yellow-400/30 backdrop-blur-sm rounded-xl px-5 py-3 text-center">
-              <div className="text-3xl font-bold text-white">{getFilteredAppointments().filter(apt => apt.status === 'pending').length}</div>
-              <div className="text-white/70 text-sm">En attente</div>
-            </div>
+          {/* Stats Premium */}
+          <div className="grid grid-cols-3 gap-6">
+            {[
+              { label: 'Total', value: getFilteredAppointments().length, color: 'blue' },
+              { label: 'Confirmés', value: getFilteredAppointments().filter(apt => apt.status === 'confirmed').length, color: 'emerald' },
+              { label: 'En attente', value: getFilteredAppointments().filter(apt => apt.status === 'pending').length, color: 'amber' }
+            ].map((stat, i) => (
+              <div key={i} className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 text-center min-w-[120px] hover:bg-white/10 transition-colors">
+                <div className="text-4xl font-black text-white mb-1">{stat.value}</div>
+                <div className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </motion.div>
 
-      <Card className="p-6 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-        {/* Filtres avec design moderne */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-gray-500">Filtrer par :</span>
-            <div className="flex items-center p-1 bg-gray-100 rounded-xl">
-              {(['all', 'pending', 'confirmed', 'cancelled'] as const).map((status) => (
-                <button
-                  key={status}
-                  onClick={() => setFilter(status)}
-                  className={`px-5 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 ${
-                    filter === status 
-                      ? status === 'confirmed' ? 'bg-green-500 text-white shadow-lg shadow-green-200' 
-                      : status === 'pending' ? 'bg-yellow-500 text-white shadow-lg shadow-yellow-200'
-                      : status === 'cancelled' ? 'bg-red-500 text-white shadow-lg shadow-red-200'
-                      : 'bg-indigo-600 text-white shadow-lg shadow-indigo-200'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/50'
-                  }`}
-                  data-testid={`filter-${status}`}
-                >
-                  {status === 'all' && '📋 Tous'}
-                  {status === 'pending' && '⏳ En attente'}
-                  {status === 'confirmed' && '✅ Confirmés'}
-                  {status === 'cancelled' && '❌ Annulés'}
-                </button>
-              ))}
+      <div className="space-y-8">
+        {/* Barre de contrôle stylisée */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 bg-white p-6 rounded-[2rem] shadow-xl shadow-blue-900/5 border border-gray-100">
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3 px-6 py-3 bg-gray-50 rounded-2xl border border-gray-100">
+              <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Filtrage</span>
+              <div className="h-4 w-[2px] bg-gray-200"></div>
+              <div className="flex items-center gap-1 p-1">
+                {[
+                  { id: 'all', label: 'Tous', icon: '📋' },
+                  { id: 'pending', label: 'En attente', icon: '⏳' },
+                  { id: 'confirmed', label: 'Confirmés', icon: '✅' },
+                  { id: 'cancelled', label: 'Annulés', icon: '❌' }
+                ].map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => setFilter(s.id as any)}
+                    className={`px-4 py-2 text-xs font-black rounded-xl transition-all duration-300 flex items-center gap-2 ${
+                      filter === s.id 
+                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' 
+                        : 'text-gray-500 hover:bg-gray-100'
+                    }`}
+                  >
+                    <span>{s.icon}</span>
+                    <span className="uppercase tracking-tight">{s.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
+          </div>
+
+          <div className="flex items-center gap-4 bg-blue-50 border border-blue-100 px-6 py-3 rounded-2xl group">
+             <Calendar className="w-5 h-5 text-blue-600 group-hover:rotate-12 transition-transform" />
+             <div className="text-left">
+                <h4 className="text-sm font-black text-blue-900 uppercase tracking-tighter">
+                  Planning Événementiel
+                </h4>
+                <p className="text-[10px] font-bold text-blue-600/70">1-3 Avril 2026 • Port de Tanger Med</p>
+             </div>
           </div>
         </div>
 
-        {/* Titre du planning spécifique à l'événement */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex items-center justify-center mb-8 bg-gradient-to-r from-indigo-50 to-purple-50 p-5 rounded-2xl border border-indigo-100"
-        >
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-indigo-100 rounded-xl">
-              <Calendar className="w-6 h-6 text-indigo-600" />
-            </div>
-            <div className="text-center">
-              <h4 className="text-xl font-bold text-gray-900" data-testid="text-current-week">
-                Planning de l'Événement (1-3 Avril 2026)
-              </h4>
-              <p className="text-sm text-gray-500">Salon International des Ports et de la Logistique</p>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Grille hebdomadaire améliorée - Adaptée pour 3 jours */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* Grille Temporelle Premium */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {weekDays.map((day, index) => {
             const dayAppointments = weekAppointments.filter(appointment => {
               const slot = timeSlots.find(s => s.id === appointment.timeSlotId);
@@ -246,45 +246,47 @@ export default function PersonalAppointmentsCalendar({ userType }: PersonalAppoi
             return (
               <motion.div 
                 key={day.toISOString()} 
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className={`flex flex-col h-full min-h-[280px] rounded-2xl border-2 transition-all duration-300 overflow-hidden ${
+                transition={{ delay: index * 0.1 }}
+                className={`flex flex-col h-full min-h-[500px] rounded-[2.5rem] bg-white border-2 transition-all duration-500 overflow-hidden group ${
                   isToday 
-                    ? 'border-indigo-400 bg-gradient-to-b from-indigo-50 to-white shadow-lg shadow-indigo-100' 
-                    : hasAppointments
-                      ? 'border-green-200 bg-gradient-to-b from-green-50/50 to-white hover:shadow-md'
-                      : 'border-gray-100 bg-white hover:border-gray-200 hover:shadow-sm'
+                    ? 'border-blue-500 shadow-2xl shadow-blue-900/10' 
+                    : 'border-gray-50 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-900/5'
                 }`}
               >
-                {/* Header du jour */}
-                <div className={`text-center p-4 ${
-                  isToday 
-                    ? 'bg-gradient-to-r from-indigo-500 to-purple-500' 
-                    : hasAppointments 
-                      ? 'bg-gradient-to-r from-green-400 to-emerald-400'
-                      : 'bg-gray-50'
+                {/* Header du Jour Stylisé */}
+                <div className={`p-8 relative overflow-hidden ${
+                  isToday ? 'bg-blue-600' : hasAppointments ? 'bg-slate-900' : 'bg-gray-50'
                 }`}>
-                  <div className={`text-xs font-bold uppercase tracking-wider mb-1 ${
-                    isToday || hasAppointments ? 'text-white/80' : 'text-gray-500'
-                  }`}>
-                    {day.toLocaleDateString('fr-FR', { weekday: 'short' })}
+                  {/* Pattern marocain en background du header */}
+                  <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '16px 16px' }}></div>
+                  
+                  <div className="relative z-10 flex items-center justify-between text-center md:text-left">
+                    <div>
+                      <div className={`text-[10px] font-black uppercase tracking-[0.3em] mb-2 ${
+                        isToday || hasAppointments ? 'text-white/60' : 'text-gray-400'
+                      }`}>
+                        {day.toLocaleDateString('fr-FR', { weekday: 'long' })}
+                      </div>
+                      <div className={`text-5xl font-black flex items-baseline gap-2 ${
+                        isToday || hasAppointments ? 'text-white' : 'text-gray-900'
+                      }`}>
+                        {day.getDate()}
+                        <span className="text-base font-bold opacity-40 uppercase tracking-widest">AVR</span>
+                      </div>
+                    </div>
+                    {isToday && (
+                      <div className="bg-white/20 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20 shadow-xl">
+                        <span className="text-[10px] text-white font-black uppercase tracking-[0.2em]">Aujourd'hui</span>
+                      </div>
+                    )}
                   </div>
-                  <div className={`text-3xl font-bold ${
-                    isToday || hasAppointments ? 'text-white' : 'text-gray-700'
-                  }`}>
-                    {day.getDate()}
-                  </div>
-                  {isToday && (
-                    <span className="inline-block mt-1 px-2 py-0.5 bg-white/20 rounded-full text-xs text-white font-medium">
-                      Aujourd'hui
-                    </span>
-                  )}
                 </div>
 
                 {/* Liste des RDV */}
-                <div className="p-3 space-y-2 flex-1 overflow-y-auto">
-                  <AnimatePresence>
+                <div className="p-6 space-y-4 flex-1 bg-gradient-to-b from-transparent to-gray-50/30">
+                  <AnimatePresence mode="popLayout">
                     {dayAppointments.length > 0 ? dayAppointments.map((appointment, aptIndex) => {
                       const slot = timeSlots.find(s => s.id === appointment.timeSlotId);
                       const displayTime = slot ? slot.startTime : 'TBD';
@@ -292,62 +294,69 @@ export default function PersonalAppointmentsCalendar({ userType }: PersonalAppoi
                       return (
                         <motion.div
                           key={appointment.id}
-                          initial={{ opacity: 0, scale: 0.9 }}
+                          layout
+                          initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.9 }}
-                          transition={{ delay: aptIndex * 0.1 }}
-                          className={`p-3 rounded-xl border-2 shadow-sm bg-white group hover:shadow-lg transition-all cursor-pointer ${
-                            appointment.status === 'confirmed' ? 'border-green-300 hover:border-green-400' :
-                            appointment.status === 'pending' ? 'border-yellow-300 hover:border-yellow-400' :
-                            appointment.status === 'cancelled' ? 'border-red-300 hover:border-red-400' : 'border-gray-200'
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          className={`p-5 rounded-3xl border-2 bg-white group/card hover:shadow-xl transition-all duration-300 relative ${
+                            appointment.status === 'confirmed' ? 'border-emerald-100 hover:border-emerald-400' :
+                            appointment.status === 'pending' ? 'border-amber-100 hover:border-amber-400' :
+                            'border-red-100 hover:border-red-400'
                           }`}
-                          data-testid={`appointment-${appointment.id}`}
                         >
-                          {/* Badge de statut */}
-                          <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold mb-2 ${
-                            appointment.status === 'confirmed' ? 'bg-green-100 text-green-700' :
-                            appointment.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                            'bg-red-100 text-red-700'
-                          }`}>
-                            {getStatusIcon(appointment.status)}
-                            {appointment.status === 'confirmed' ? 'Confirmé' : 
-                             appointment.status === 'pending' ? 'En attente' : 'Annulé'}
-                          </div>
-
-                          <div className="flex items-center gap-2 text-gray-900 font-bold text-sm mb-1">
-                            <Clock className="w-4 h-4 text-indigo-500" />
-                            <span>{displayTime}</span>
-                          </div>
-                          
-                          <div className="text-xs text-gray-600 mb-2 flex items-center gap-1">
-                            <Users className="w-3 h-3" />
-                            {getAppointmentTitle()}
-                          </div>
-                          
-                          {appointment.meetingLink && (
-                            <div className="flex items-center gap-1 text-xs text-blue-600 bg-blue-50 p-2 rounded-lg">
-                              <Video className="w-3 h-3" />
-                              <span>Lien visio disponible</span>
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2.5 rounded-2xl transform group-hover/card:rotate-6 transition-transform ${
+                                appointment.status === 'confirmed' ? 'bg-emerald-50 text-emerald-600' :
+                                appointment.status === 'pending' ? 'bg-amber-50 text-amber-600' :
+                                'bg-red-50 text-red-600'
+                              }`}>
+                                <Clock className="w-5 h-5" />
+                              </div>
+                              <div>
+                                <div className="text-xl font-black text-gray-900 leading-none mb-1">{displayTime}</div>
+                                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Session B2B</div>
+                              </div>
                             </div>
-                          )}
+                            <div className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest border ${
+                              appointment.status === 'confirmed' ? 'bg-emerald-500 text-white border-emerald-500/20' :
+                              appointment.status === 'pending' ? 'bg-amber-500 text-white border-amber-500/20' :
+                              'bg-red-500 text-white border-red-500/20'
+                            }`}>
+                              {appointment.status}
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-3 py-4 border-y border-gray-50">
+                            <div className="flex items-center gap-3 text-sm font-bold text-gray-700">
+                              <div className="p-1.5 bg-gray-100 rounded-lg">
+                                 <User className="w-4 h-4 text-blue-500" />
+                              </div>
+                              <span>{getAppointmentTitle()}</span>
+                            </div>
+                            {appointment.meetingLink && (
+                              <div className="flex items-center gap-3 text-xs font-bold text-blue-600 bg-blue-50/50 p-3 rounded-2xl border border-blue-100/50">
+                                <Video className="w-4 h-4" />
+                                <span>Salon Virtuel Disponible</span>
+                              </div>
+                            )}
+                          </div>
 
-                          {/* Actions */}
-                          <div className="flex gap-2 mt-3 pt-2 border-t border-gray-100 opacity-0 group-hover:opacity-100 transition-all">
+                          {/* Actions Contextuelles */}
+                          <div className="flex gap-2 mt-4">
                             {userType !== 'visitor' && appointment.status === 'pending' && (
                               <>
                                 <button
                                   onClick={() => handleAccept(appointment.id)}
-                                  className="flex-1 p-2 text-xs font-semibold bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-                                  title="Accepter"
+                                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-900/10"
                                 >
-                                  ✓ Accepter
+                                  Accepter
                                 </button>
                                 <button
                                   onClick={() => handleReject(appointment.id)}
-                                  className="flex-1 p-2 text-xs font-semibold bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                                  title="Refuser"
+                                  className="flex-1 bg-white hover:bg-red-50 text-red-600 border border-red-100 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
                                 >
-                                  ✗ Refuser
+                                  Refuser
                                 </button>
                               </>
                             )}
@@ -355,21 +364,21 @@ export default function PersonalAppointmentsCalendar({ userType }: PersonalAppoi
                             {appointment.status === 'confirmed' && (
                               <button
                                 onClick={() => handleCancel(appointment.id)}
-                                className="w-full p-2 text-xs font-semibold bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
-                                title="Annuler"
+                                className="w-full bg-red-50 hover:bg-red-100 text-red-600 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
                               >
-                                Annuler ce RDV
+                                Annuler le créneau
                               </button>
                             )}
                           </div>
                         </motion.div>
                       );
                     }) : (
-                      <div className="h-full flex flex-col items-center justify-center text-gray-400 py-8">
-                        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center mb-2">
-                          <Calendar className="w-5 h-5 text-gray-300" />
+                      <div className="h-full flex flex-col items-center justify-center py-12 px-6 text-center">
+                        <div className="w-20 h-20 bg-gray-100 rounded-3xl flex items-center justify-center mb-6 border-2 border-dashed border-gray-200 group-hover:border-blue-200 transition-colors">
+                          <Calendar className="w-10 h-10 text-gray-300 group-hover:text-blue-200 transition-all pointer-events-none" />
                         </div>
-                        <span className="text-xs font-medium">Libre</span>
+                        <p className="text-gray-400 font-black text-xs uppercase tracking-[0.2em] mb-1">Disponible</p>
+                        <p className="text-gray-300 text-[10px] font-medium max-w-[150px]">Aucun rendez-vous sur ce créneau pour le moment</p>
                       </div>
                     )}
                   </AnimatePresence>
@@ -379,41 +388,41 @@ export default function PersonalAppointmentsCalendar({ userType }: PersonalAppoi
           })}
         </div>
 
-        {/* Message vide amélioré */}
+        {/* Empty State Premium */}
         {getFilteredAppointments().length === 0 && !isLoading && (
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center py-16 bg-gradient-to-br from-gray-50 to-indigo-50 rounded-2xl border-2 border-dashed border-indigo-200"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative overflow-hidden p-20 bg-white rounded-[3rem] border-2 border-dashed border-gray-200 text-center shadow-2xl shadow-blue-900/5 group"
           >
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent"></div>
+            
             <motion.div 
-              animate={{ 
-                scale: [1, 1.1, 1],
-                rotate: [0, 5, -5, 0]
-              }}
-              transition={{ 
-                duration: 2,
-                repeat: Infinity,
-                repeatType: "reverse"
-              }}
-              className="bg-gradient-to-br from-indigo-100 to-purple-100 p-6 rounded-full inline-block shadow-lg mb-6"
+              animate={{ y: [0, -15, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="relative z-10 w-32 h-32 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-2xl shadow-blue-600/20"
             >
-              <CalendarDays className="w-12 h-12 text-indigo-500" />
+              <CalendarDays className="w-16 h-16 text-white" />
             </motion.div>
-            <h4 className="text-2xl font-bold text-gray-900 mb-3">
+            
+            <h4 className="relative z-10 text-4xl font-black text-slate-900 mb-4 tracking-tight">
               {filter === 'all' 
-                ? '📅 Aucun rendez-vous programmé'
-                : `Aucun rendez-vous ${filter === 'pending' ? 'en attente' : filter === 'confirmed' ? 'confirmé' : 'annulé'}`
-              }
+                ? 'Planning Vierge'
+                : `Aucun RDV ${filter}`}
             </h4>
-            <p className="text-gray-500 max-w-md mx-auto text-lg">
+            
+            <p className="relative z-10 text-slate-500 text-lg font-medium max-w-xl mx-auto italic">
               {userType === 'visitor' 
-                ? '🔍 Parcourez la liste des exposants pour prendre vos premiers rendez-vous B2B.'
-                : '⏰ Les visiteurs pourront prendre rendez-vous avec vous via vos créneaux de disponibilité.'}
+                ? '🔍 Votre agenda B2B est prêt. Explorez le catalogue des exposants pour initier des connexions transformatrices pour SIPORT 2026.'
+                : '⏰ Patience. Votre visibilité est maximale. Les demandes de rendez-vous apparaîtront ici dès validation par les visiteurs.'}
             </p>
+
+            <div className="absolute top-10 right-10 opacity-5 group-hover:opacity-10 transition-opacity">
+               <Sparkles className="w-24 h-24 text-blue-600" />
+            </div>
           </motion.div>
         )}
-      </Card>
+      </div>
     </div>
   );
 }
