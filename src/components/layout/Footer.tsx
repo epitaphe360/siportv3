@@ -153,31 +153,4 @@ export const Footer: React.FC = memo(() => {
       </div>
     </footer>
   );
-                  +212 1 23 45 67 89
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="border-t border-white/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-white/60 text-sm">
-            {t('footer.copyright').replace('{year}', currentYear.toString())}
-          </p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link to={ROUTES.PRIVACY} className="text-white/60 hover:text-white text-sm transition-colors">
-              {t('footer.privacy')}
-            </Link>
-            <Link to={ROUTES.TERMS} className="text-white/60 hover:text-white text-sm transition-colors">
-              {t('footer.terms')}
-            </Link>
-            <Link to={ROUTES.COOKIES} className="text-white/60 hover:text-white text-sm transition-colors">
-              {t('footer.cookies')}
-            </Link>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
 });
