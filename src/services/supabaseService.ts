@@ -1751,7 +1751,6 @@ export class SupabaseService {
       } else {
         console.error('Erreur incrémentation vues:', error);
       }
-      }
     }
   }
 
