@@ -351,7 +351,6 @@ export default function LoginPage() {
                     variant="outline"
                     size="sm"
                     onClick={() => handleDemoLogin('visitor-vip@test.siport.com', 'Test123456!')}
-                    }}
                     className="w-full text-xs h-8 bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 border-0"
                   >
                     ✅ Connexion
@@ -370,16 +369,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={async () => {
-                      setEmail('exhibitor-9m@test.siport.com');
-                      setPassword('Test123456!');
-                      setError('');
-                      try {
-                        await login('exhibitor-9m@test.siport.com', 'Test123456!', { rememberMe: true });
-                      } catch (err: any) {
-                        setError(err.message || 'Erreur de connexion');
-                      }
-                    }}
+                    onClick={() => handleDemoLogin('exhibitor-9m@test.siport.com', 'Test123456!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 border-0"
                   >
                     ✅ Connexion
@@ -398,16 +388,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={async () => {
-                      setEmail('exhibitor-18m@test.siport.com');
-                      setPassword('Test123456!');
-                      setError('');
-                      try {
-                        await login('exhibitor-18m@test.siport.com', 'Test123456!', { rememberMe: true });
-                      } catch (err: any) {
-                        setError(err.message || 'Erreur de connexion');
-                      }
-                    }}
+                    onClick={() => handleDemoLogin('exhibitor-18m@test.siport.com', 'Test123456!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:from-purple-700 hover:to-purple-800 border-0"
                   >
                     ✅ Connexion
