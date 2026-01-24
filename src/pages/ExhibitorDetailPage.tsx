@@ -149,405 +149,251 @@ export default function ExhibitorDetailPage() {
   const CategoryIcon = getCategoryIcon(exhibitor.category);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Banner avec image de fond */}
-      <div className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 overflow-hidden">
-        {/* Image de fond avec overlay */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
-          style={{ 
-            backgroundImage: 'url(https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=2000&q=80)',
-            filter: 'blur(1px)'
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/95 via-blue-800/90 to-indigo-900/95" />
+    <div className="min-h-screen bg-[#f8fafc]">
+      {/* Hero Banner Ultra-Premium */}
+      <div className="relative min-h-[600px] flex items-center pt-20 pb-32 overflow-hidden">
+        {/* Background Sophistiqué */}
+        <div className="absolute inset-0 bg-slate-950">
+          <div 
+            className="absolute inset-0 opacity-40 mix-blend-overlay scale-110"
+            style={{ 
+              backgroundImage: 'url(https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=2000&q=80)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/20 via-slate-950/80 to-[#f8fafc]" />
+          
+          {/* Cercles de Lumière & Patterns */}
+          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[150px] -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[150px] translate-y-1/2 -translate-x-1/2" />
+          
+          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
+        </div>
         
-        {/* Éléments décoratifs */}
-        <div className="absolute top-0 right-0 -mr-40 -mt-40 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
-        <div className="absolute bottom-0 left-0 -ml-40 -mb-40 w-80 h-80 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="mb-6">
-            <Link to={ROUTES.EXHIBITORS}>
-              <Button variant="ghost" size="sm" className="text-white/90 hover:text-white hover:bg-white/10">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Retour aux exposants
-              </Button>
-            </Link>
-          </div>
-
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col lg:flex-row items-start lg:items-center space-y-6 lg:space-y-0 lg:space-x-8 pb-12"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="mb-12"
           >
-            {/* Logo avec effet de brillance */}
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000" />
-              <img
-                src={exhibitor.logo || 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=200'}
-                alt={exhibitor.companyName}
-                className="relative h-32 w-32 rounded-2xl object-cover border-4 border-white/20 shadow-2xl"
-              />
-            </div>
+            <Link to={ROUTES.EXHIBITORS} className="group inline-flex items-center space-x-3 text-white/50 hover:text-white transition-all">
+              <div className="p-2 rounded-full bg-white/5 border border-white/10 group-hover:bg-white/10">
+                <ArrowLeft className="h-5 w-5" />
+              </div>
+              <span className="font-bold text-sm uppercase tracking-widest">Retour au Catalogue</span>
+            </Link>
+          </motion.div>
+
+          <div className="flex flex-col lg:flex-row items-end gap-12">
+            {/* Logo avec traitement de luxe */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="relative shrink-0"
+            >
+              <div className="absolute -inset-4 bg-gradient-to-tr from-blue-500/20 to-indigo-500/20 rounded-[3rem] blur-2xl" />
+              <div className="relative h-56 w-56 rounded-[2.5rem] bg-white p-6 shadow-2xl border border-white/10 overflow-hidden flex items-center justify-center">
+                <img
+                  src={exhibitor.logo || 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=200'}
+                  alt={exhibitor.companyName}
+                  className="max-h-full max-w-full object-contain"
+                />
+              </div>
+              
+              {exhibitor.featured && (
+                <div className="absolute -top-4 -right-4 h-14 w-14 bg-gradient-to-tr from-yellow-400 to-amber-600 rounded-2xl shadow-xl flex items-center justify-center border-4 border-slate-900 rotate-12">
+                  <Crown className="h-7 w-7 text-white" />
+                </div>
+              )}
+            </motion.div>
 
             <div className="flex-1">
-              {/* Badge SIPORTS */}
-              <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-medium mb-4">
-                <Award className="h-4 w-4 mr-2 text-yellow-400" />
-                SIPORTS 2026 - Exposant Officiel
-              </div>
-
-              <div className="flex items-center space-x-3 mb-3">
-                <h1 className="text-4xl lg:text-5xl font-bold text-white">
-                  {exhibitor.companyName}
-                </h1>
-                {exhibitor.verified && (
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-blue-400 rounded-full blur-lg opacity-50" />
-                    <CheckCircle className="relative h-8 w-8 text-blue-400" />
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="space-y-6"
+              >
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="px-4 py-1.5 rounded-full bg-blue-600/20 border border-blue-500/20 text-blue-300 text-[10px] font-black uppercase tracking-[0.2em] flex items-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mr-2 animate-pulse" />
+                    SIPORTS 2026 OFFICIAL
                   </div>
-                )}
-                {exhibitor.featured && (
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-yellow-400 rounded-full blur-lg opacity-50" />
-                    <Star className="relative h-8 w-8 text-yellow-400 fill-current" />
+                  <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] flex items-center shadow-lg border-2 border-white/10 ${getCategoryColor(exhibitor.category).replace('bg-', 'bg-opacity-90 bg-')}`}>
+                    <CategoryIcon className="h-3 w-3 mr-2" />
+                    {getCategoryLabel(exhibitor.category)}
                   </div>
-                )}
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3 mb-6">
-                <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-white/90 ${getCategoryColor(exhibitor.category)}`}>
-                  <CategoryIcon className="h-4 w-4 mr-2" />
-                  {getCategoryLabel(exhibitor.category)}
                 </div>
-                <Badge variant="info" size="sm" className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
-                  {exhibitor.sector}
-                </Badge>
-                {exhibitor.contactInfo?.city && (
-                  <div className="flex items-center space-x-2 text-sm text-white/80 bg-white/10 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                    <MapPin className="h-4 w-4" />
-                    <span>{exhibitor.contactInfo.city}, {exhibitor.contactInfo.country}</span>
+
+                <div className="space-y-2">
+                  <h1 className="text-5xl lg:text-7xl font-black text-white tracking-tighter leading-none flex items-center gap-4">
+                    {exhibitor.companyName}
+                    {exhibitor.verified && (
+                      <CheckCircle className="h-10 w-10 text-blue-500 fill-blue-500/10" />
+                    )}
+                  </h1>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-6">
+                  {exhibitor.contactInfo?.city && (
+                    <div className="flex items-center space-x-3 text-white/60 font-bold">
+                      <div className="h-8 w-8 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
+                        <MapPin className="h-4 w-4 text-blue-400" />
+                      </div>
+                      <span className="text-lg">{exhibitor.contactInfo.city}, {exhibitor.contactInfo.country}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center space-x-3 text-white/60 font-bold">
+                    <div className="h-8 w-8 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
+                      <TrendingUp className="h-4 w-4 text-emerald-400" />
+                    </div>
+                    <span className="text-lg">{exhibitor.sector}</span>
                   </div>
-                )}
-              </div>
-
-              <p className="text-white/90 text-lg mb-8 max-w-3xl leading-relaxed">
-                {exhibitor.description}
-              </p>
-
-              <div className="flex flex-wrap items-center gap-4">
-                <Button 
-                  variant="default" 
-                  size="lg" 
-                  onClick={handleAppointmentClick}
-                  className="bg-white text-blue-900 hover:bg-blue-50 shadow-xl hover:shadow-2xl transform hover:-translate-y-0.5 transition-all duration-200"
-                >
-                  <Calendar className="h-5 w-5 mr-2" />
-                  Découvrir nos solutions
-                </Button>
-
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  onClick={handleContact}
-                  className="bg-white/10 text-white border-white/30 hover:bg-white/20 backdrop-blur-sm"
-                >
-                  <MessageCircle className="h-5 w-5 mr-2" />
-                  Nous contacter
-                </Button>
-
-                {exhibitor.website && (
-                  <a
-                    href={exhibitor.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center space-x-2 text-white/90 hover:text-white px-4 py-2.5 rounded-lg hover:bg-white/10 transition-colors"
-                  >
-                    <Globe className="h-5 w-5" />
-                    <span>Site officiel</span>
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
-                )}
-
-                <Button variant="ghost" size="lg" onClick={handleShare} className="text-white/90 hover:text-white hover:bg-white/10">
-                  <Share2 className="h-5 w-5 mr-2" />
-                  Partager
-                </Button>
-
-                <Button variant="ghost" size="lg" onClick={handleDownloadBrochure} className="text-white/90 hover:text-white hover:bg-white/10">
-                  <Download className="h-5 w-5 mr-2" />
-                  Brochure
-                </Button>
-              </div>
+                </div>
+              </motion.div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Navigation Tabs */}
-        <div className="mb-8">
-          <nav className="flex space-x-8">
-            {[
-              { id: 'overview', label: 'Vue d\'ensemble', icon: Eye },
-              { id: 'projects', label: 'Produits', icon: Package },
-              { id: 'impact', label: 'À propos', icon: Building2 },
-              { id: 'contact', label: 'Contact', icon: MessageCircle },
-              { id: 'minisite', label: 'Mini-site', icon: Globe }
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as keyof typeof CONFIG.tabIds)}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-                  activeTab === tab.id
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                }`}
-              >
-                <tab.icon className="h-5 w-5" />
-                <span>{tab.label}</span>
-              </button>
-            ))}
-          </nav>
-        </div>
+      {/* Main Content Deluxe Grid */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-30 pb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          
+          {/* Left Column: Essential Actions */}
+          <div className="lg:col-span-4 space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-white rounded-[2.5rem] p-8 shadow-2xl shadow-slate-200 border border-slate-100 sticky top-24"
+            >
+              <div className="space-y-4">
+                <button 
+                  onClick={handleAppointmentClick}
+                  className="w-full py-5 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-black uppercase tracking-widest text-xs transition-all duration-300 shadow-xl shadow-slate-200 flex items-center justify-center gap-3 group"
+                >
+                  <Calendar className="h-5 w-5 text-blue-400 group-hover:scale-110 transition-transform" />
+                  Planifier un RDV B2B
+                </button>
 
-        {/* Tab Content */}
-        {activeTab === CONFIG.tabIds.overview && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-8"
-          >
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <Card className="text-center p-6">
-                <div className="bg-blue-100 p-3 rounded-lg w-12 h-12 mx-auto mb-3">
-                  <Eye className="h-6 w-6 text-blue-600" />
-                </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">
-                  {exhibitor.miniSite?.views || 0}
-                </div>
-                <div className="text-sm text-gray-600">Vues du mini-site</div>
-              </Card>
-
-              <Card className="text-center p-6">
-                <div className="bg-green-100 p-3 rounded-lg w-12 h-12 mx-auto mb-3">
-                  <Package className="h-6 w-6 text-green-600" />
-                </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">
-                  {exhibitor.products.length}
-                </div>
-                <div className="text-sm text-gray-600">Produits</div>
-              </Card>
-
-              <Card className="text-center p-6">
-                <div className="bg-purple-100 p-3 rounded-lg w-12 h-12 mx-auto mb-3">
-                  <Award className="h-6 w-6 text-purple-600" />
-                </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">
-                  {exhibitor.certifications.length}
-                </div>
-                <div className="text-sm text-gray-600">Certifications</div>
-              </Card>
-
-              <Card className="text-center p-6">
-                <div className="bg-orange-100 p-3 rounded-lg w-12 h-12 mx-auto mb-3">
-                  <Globe className="h-6 w-6 text-orange-600" />
-                </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">
-                  {exhibitor.markets.length}
-                </div>
-                <div className="text-sm text-gray-600">Marchés</div>
-              </Card>
-            </div>
-
-            {/* Certifications */}
-            {exhibitor.certifications?.length > 0 && (
-              <Card>
-                <div className="p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                    Certifications & Accréditations
-                  </h3>
-                  <div className="flex flex-wrap gap-3">
-                    {exhibitor.certifications.map((cert) => (
-                      <div key={cert} className="flex items-center space-x-2 bg-green-50 px-4 py-2 rounded-lg">
-                        <Shield className="h-5 w-5 text-green-600" />
-                        <span className="font-medium text-green-800">{cert}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </Card>
-            )}
-
-            {/* Marchés */}
-            {exhibitor.markets?.length > 0 && (
-              <Card>
-                <div className="p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                    Marchés Ciblés
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {exhibitor.markets.map((market) => (
-                      <Badge key={market} variant="info" size="sm">
-                        <Globe className="h-3 w-3 mr-1" />
-                        {market}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </Card>
-            )}
-          </motion.div>
-        )}
-
-        {activeTab === CONFIG.tabIds.projects && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-6"
-          >
-            {exhibitor.products.length === 0 ? (
-              <Card className="text-center p-8">
-                <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Aucun produit disponible
-                </h3>
-                <p className="text-gray-600">
-                  Cet exposant n'a pas encore ajouté de produits à son catalogue.
-                </p>
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {exhibitor.products.map((product, index) => (
-                  <motion.div
-                    key={product.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
+                <div className="grid grid-cols-2 gap-4">
+                  <button 
+                    onClick={handleContact}
+                    className="py-4 bg-slate-50 hover:bg-blue-50 text-slate-900 rounded-2xl font-bold text-[11px] uppercase tracking-wider transition-all border border-slate-100 flex items-center justify-center gap-2"
                   >
-                    <Card hover className="h-full">
-                      {product.images?.length > 0 && (
-                        <img
-                          src={product.images[0]}
-                          alt={product.name}
-                          className="w-full h-48 object-cover rounded-t-lg"
-                        />
-                      )}
-                      <div className="p-6">
-                        <div className="flex items-center justify-between mb-3">
-                          <Badge variant="default" size="sm">
-                            {product.category}
-                          </Badge>
-                          {product.featured && (
-                            <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                          )}
-                        </div>
-
-                        <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                          {product.name}
-                        </h3>
-
-                        <p className="text-gray-600 mb-4 line-clamp-3">
-                          {product.description}
-                        </p>
-
-                        {product.specifications && (
-                          <div className="mb-4">
-                            <h4 className="font-medium text-gray-900 mb-2">Spécifications</h4>
-                            <p className="text-sm text-gray-600">{product.specifications}</p>
-                          </div>
-                        )}
-
-                        <div className="flex space-x-3">
-                          <Button variant="outline" size="sm" className="flex-1">
-                            <Eye className="h-4 w-4 mr-2" />
-                            Voir détails
-                          </Button>
-                          <Button variant="default" size="sm" onClick={handleDownloadBrochure}>
-                            <Download className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </Card>
-                  </motion.div>
-                ))}
+                    <Mail className="h-4 w-4 text-blue-600" />
+                    Contact
+                  </button>
+                  <button 
+                    onClick={handleShare}
+                    className="py-4 bg-slate-50 hover:bg-slate-100 text-slate-900 rounded-2xl font-bold text-[11px] uppercase tracking-wider transition-all border border-slate-100 flex items-center justify-center gap-2"
+                  >
+                    <Share2 className="h-4 w-4" />
+                    Partager
+                  </button>
+                </div>
+                
+                <button 
+                  onClick={handleDownloadBrochure}
+                  className="w-full py-4 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-3"
+                >
+                  <Download className="h-4 w-4" />
+                  Brochure PDF (Digital)
+                </button>
               </div>
-            )}
-          </motion.div>
-        )}
 
-        {activeTab === CONFIG.tabIds.impact && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-6"
-          >
-            <Card>
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  À propos de {exhibitor.companyName}
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-3">
-                      <Building2 className="h-5 w-5 text-gray-400" />
-                      <div>
-                        <p className="font-medium text-gray-900">Secteur d'activité</p>
-                        <p className="text-gray-600">{exhibitor.sector}</p>
-                      </div>
+              {/* Quick Connect & Presence */}
+              <div className="mt-10 pt-8 border-t border-slate-100 space-y-6">
+                <div>
+                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Emplacement Salon</h4>
+                  <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                    <div className="h-12 w-12 rounded-xl bg-white shadow-sm flex items-center justify-center">
+                      <Shield className="h-6 w-6 text-blue-600" />
                     </div>
-
-                    {exhibitor.establishedYear && (
-                      <div className="flex items-center space-x-3">
-                        <Calendar className="h-5 w-5 text-gray-400" />
-                        <div>
-                          <p className="font-medium text-gray-900">Année de création</p>
-                          <p className="text-gray-600">{exhibitor.establishedYear}</p>
-                        </div>
-                      </div>
-                    )}
-
-                    {exhibitor.employeeCount && (
-                      <div className="flex items-center space-x-3">
-                        <Users className="h-5 w-5 text-gray-400" />
-                        <div>
-                          <p className="font-medium text-gray-900">Effectif</p>
-                          <p className="text-gray-600">{exhibitor.employeeCount} employés</p>
-                        </div>
-                      </div>
-                    )}
+                    <div>
+                      <div className="text-xs font-black text-slate-900 uppercase">Stand {exhibitor.boothNumber || 'Zone A-42'}</div>
+                      <div className="text-[10px] font-bold text-slate-500">Pavillon Principal</div>
+                    </div>
                   </div>
+                </div>
 
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-3">
-                      <MapPin className="h-5 w-5 text-gray-400" />
-                      <div>
-                        <p className="font-medium text-gray-900">Adresse</p>
-                        <p className="text-gray-600">
-                          {exhibitor.contactInfo?.address}<br />
-                          {exhibitor.contactInfo?.city}, {exhibitor.contactInfo?.country}
-                        </p>
+                <div className="flex flex-col gap-3">
+                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Contact Direct</h4>
+                  <div className="space-y-3">
+                    {exhibitor.contactInfo?.email && (
+                      <div className="flex items-center gap-3 text-sm font-bold text-slate-600">
+                        <Mail className="h-4 w-4 text-slate-300" />
+                        {exhibitor.contactInfo.email}
                       </div>
-                    </div>
-
-                    {exhibitor.revenue && (
-                      <div className="flex items-center space-x-3">
-                        <TrendingUp className="h-5 w-5 text-gray-400" />
-                        <div>
-                          <p className="font-medium text-gray-900">Chiffre d'affaires</p>
-                          <p className="text-gray-600">{exhibitor.revenue}</p>
-                        </div>
+                    )}
+                    {exhibitor.contactInfo?.phone && (
+                      <div className="flex items-center gap-3 text-sm font-bold text-slate-600">
+                        <Phone className="h-4 w-4 text-slate-300" />
+                        {exhibitor.contactInfo.phone}
                       </div>
+                    )}
+                    {exhibitor.website && (
+                      <a href={exhibitor.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm font-bold text-blue-600 hover:underline">
+                        <Globe className="h-4 w-4 text-blue-300" />
+                        Visiter le site web
+                      </a>
                     )}
                   </div>
                 </div>
               </div>
-            </Card>
-          </motion.div>
+            </motion.div>
+          </div>
+
+          {/* Right Column: Dynamic Tabs & Details */}
+          <div className="lg:col-span-8">
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+              className="space-y-8"
+            >
+              {/* Mini-Site Deluxe Container */}
+              <div className="bg-white rounded-[3rem] p-1 shadow-2xl shadow-slate-200 border border-slate-100 overflow-hidden">
+                <div className="p-8 pb-0">
+                   <div className="bg-slate-50 p-2 rounded-2xl flex items-center gap-2 mb-8 overflow-x-auto scrollbar-hide">
+                      {[
+                        { id: 'overview', label: 'Vue d\'ensemble' },
+                        { id: 'projects', label: 'Produits' },
+                        { id: 'impact', label: 'À propos' },
+                        { id: 'contact', label: 'Contact' },
+                        { id: 'minisite', label: 'Mini-site' }
+                      ].map((tab) => (
+                        <button
+                          key={tab.id}
+                          onClick={() => setActiveTab(tab.id as any)}
+                          className={`flex-1 py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all min-w-[120px] ${
+                            activeTab === tab.id 
+                              ? 'bg-white text-slate-900 shadow-md' 
+                              : 'text-slate-400 hover:text-slate-600'
+                          }`}
+                        >
+                          {tab.label}
+                        </button>
+                      ))}
+                   </div>
+                </div>
+
+                <div className="min-h-[600px] p-8">
+                  <MiniSitePreview 
+                    exhibitor={exhibitor} 
+                    activeTab={activeTab as any} 
+                  />
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
         )}
 
         {activeTab === 'contact' && (

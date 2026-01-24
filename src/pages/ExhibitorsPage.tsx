@@ -83,81 +83,102 @@ export default function ExhibitorsPage() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-siports-primary via-siports-secondary to-siports-accent relative overflow-hidden shadow-lg">
-        <MoroccanPattern className="opacity-10" color="white" scale={0.5} />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-            <div className="mb-6 lg:mb-0">
-              <h1 className="text-3xl font-bold text-white mb-2">
-                {t('pages.exhibitors.title')}
-              </h1>
-              <p className="text-lg text-blue-100">
-                {t('pages.exhibitors.description')} {filteredExhibitors.length}
-              </p>
+    <div className="min-h-screen bg-[#f8fafc]">
+      {/* Header Premium Immersif */}
+      <div className="relative bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] pt-16 pb-24 px-4 overflow-hidden">
+        {/* Pattern Zellige Subtil */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+        
+        {/* Cercles Lumineux */}
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px]"></div>
+        
+        <div className="max-w-7xl mx-auto relative z-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="inline-flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 mb-8"
+          >
+             <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
+             <span className="text-[10px] font-black text-blue-200 uppercase tracking-[0.2em]">SIPORT 2026 • Catalogue Exposants</span>
+          </motion.div>
+
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight"
+          >
+            {t('pages.exhibitors.title')}
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-blue-100/60 text-xl font-medium max-w-2xl mx-auto italic mb-12"
+          >
+            {t('pages.exhibitors.description')} • <span className="text-white font-black">{filteredExhibitors.length} leaders</span> de l'industrie portuaire à découvrir.
+          </motion.p>
+          
+          {/* Barre de Recherche Premium */}
+          <div className="max-w-4xl mx-auto bg-white/5 backdrop-blur-2xl p-2 rounded-3xl border border-white/10 shadow-2xl flex flex-col md:flex-row items-center gap-2">
+            <div className="relative flex-1 w-full">
+              <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-blue-400" />
+              <input
+                type="text"
+                data-testid="search-input"
+                placeholder={t('pages.exhibitors.search')}
+                value={filters.search}
+                onChange={(e) => setFilters({ search: e.target.value })}
+                className="w-full pl-14 pr-6 py-4 bg-transparent text-white placeholder-blue-200/40 text-lg font-bold border-none focus:ring-0 focus:outline-none"
+              />
             </div>
             
-            {/* Search and View Controls */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="relative flex-1 sm:w-80">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  data-testid="search-input"
-                  placeholder={t('pages.exhibitors.search')}
-                  value={filters.search}
-                  onChange={(e) => setFilters({ search: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
+            <div className="flex w-full md:w-auto p-1 gap-2">
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className={`flex-1 md:flex-none px-6 py-4 rounded-2xl flex items-center justify-center space-x-3 transition-all duration-300 font-black uppercase tracking-widest text-[10px] ${
+                  showFilters ? 'bg-white text-slate-900 shadow-xl' : 'bg-white/5 text-white hover:bg-white/10'
+                }`}
+              >
+                <Filter className="h-4 w-4" />
+                <span>Filtres</span>
+              </button>
               
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="flex items-center"
+              <div className="flex bg-white/5 p-1 rounded-2xl border border-white/5">
+                <button
+                  onClick={() => setViewMode(CONFIG.viewModes.grid)}
+                  className={`p-3 rounded-xl transition-all ${viewMode === CONFIG.viewModes.grid ? 'bg-blue-600 text-white shadow-lg' : 'text-white/40 hover:text-white'}`}
                 >
-                  <Filter className="h-4 w-4 mr-2" />
-                  {t('pages.exhibitors.filter_category')}
-                </Button>
-                
-                <div className="flex border border-gray-300 rounded-lg">
-                  <button
-                    onClick={() => setViewMode(CONFIG.viewModes.grid)}
-                    className={`p-2 ${viewMode === CONFIG.viewModes.grid ? 'bg-blue-50 text-blue-600' : 'text-gray-400'}`}
-                  >
-                    <Grid className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode(CONFIG.viewModes.list)}
-                    className={`p-2 ${viewMode === CONFIG.viewModes.list ? 'bg-blue-50 text-blue-600' : 'text-gray-400'}`}
-                  >
-                    <List className="h-4 w-4" />
-                  </button>
-                </div>
+                  <Grid className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => setViewMode(CONFIG.viewModes.list)}
+                  className={`p-3 rounded-xl transition-all ${viewMode === CONFIG.viewModes.list ? 'bg-blue-600 text-white shadow-lg' : 'text-white/40 hover:text-white'}`}
+                >
+                  <List className="h-5 w-5" />
+                </button>
               </div>
             </div>
           </div>
 
-          {/* Filters */}
-          {showFilters && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="mt-6 p-4 bg-gray-50 rounded-lg"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Filters Expanded */}
+          <AnimatePresence>
+            {showFilters && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="max-w-4xl mx-auto mt-6 p-8 bg-white/95 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl border border-gray-100 grid grid-cols-1 md:grid-cols-3 gap-6 text-left"
+              >
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-2">
                     {t('pages.exhibitors.filter_category')}
                   </label>
                   <select
                     value={filters.category}
                     onChange={(e) => setFilters({ category: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-5 py-3 bg-gray-50 border-2 border-transparent focus:border-blue-500 rounded-2xl text-slate-900 font-bold appearance-none transition-all cursor-pointer"
                   >
                     {categories.map((category) => (
                       <option key={category.value} value={category.value}>
@@ -168,71 +189,81 @@ export default function ExhibitorsPage() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-2">
                     {t('profile.sector')}
                   </label>
                   <input
                     type="text"
-                    placeholder="Ex: Port Management"
+                    placeholder="Ex: Logistique"
                     value={filters.sector}
                     onChange={(e) => setFilters({ sector: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-5 py-3 bg-gray-50 border-2 border-transparent focus:border-blue-500 rounded-2xl text-slate-900 font-bold transition-all"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-2">
                     {t('profile.location')}
                   </label>
                   <input
                     type="text"
-                    placeholder="Ex: Morocco"
+                    placeholder="Ex: Casablanca"
                     value={filters.country}
                     onChange={(e) => setFilters({ country: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-5 py-3 bg-gray-50 border-2 border-transparent focus:border-blue-500 rounded-2xl text-slate-900 font-bold transition-all"
                   />
                 </div>
-              </div>
-            </motion.div>
-          )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Content Area */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 pb-24 relative z-20">
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={`skeleton-${i}`} className="animate-pulse">
-                <div className="bg-white rounded-lg p-6 h-80">
-                  <div className="h-4 bg-gray-200 rounded mb-4"></div>
-                  <div className="h-20 bg-gray-200 rounded mb-4"></div>
-                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+              <div key={`skeleton-${i}`} className="bg-white rounded-[2.5rem] p-8 h-[450px] animate-pulse">
+                <div className="h-40 bg-gray-100 rounded-3xl mb-8"></div>
+                <div className="h-6 bg-gray-100 rounded-full w-3/4 mb-4"></div>
+                <div className="h-4 bg-gray-100 rounded-full w-1/2 mb-8"></div>
+                <div className="space-y-4">
+                  <div className="h-4 bg-gray-50 rounded-full"></div>
+                  <div className="h-4 bg-gray-50 rounded-full"></div>
                 </div>
               </div>
             ))}
           </div>
         ) : filteredExhibitors.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="bg-gray-100 rounded-full p-6 w-24 h-24 mx-auto mb-4">
-              <Search className="h-12 w-12 text-gray-400" />
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-[3rem] p-24 text-center border-2 border-dashed border-gray-100 shadow-2xl shadow-blue-900/5 overflow-hidden relative"
+          >
+            <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+            <div className="relative z-10">
+              <div className="w-24 h-24 bg-blue-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
+                <Search className="h-10 w-10 text-blue-400" />
+              </div>
+              <h3 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">
+                {t('pages.exhibitors.no_results')}
+              </h3>
+              <p className="text-slate-500 max-w-sm mx-auto font-medium italic mb-10">
+                Aucun exposant ne correspond à vos critères actuels. Essayez d'élargir votre recherche.
+              </p>
+              <button 
+                onClick={() => setFilters({ search: '', category: '', sector: '', country: '' })}
+                className="px-8 py-3 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-blue-600 transition-colors shadow-xl"
+              >
+                Réinitialiser la recherche
+              </button>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              {t('pages.exhibitors.no_results')}
-            </h3>
-            <p className="text-gray-600 mb-4">
-              {t('messages.confirm_action')}
-            </p>
-            <Button variant="default" onClick={() => setFilters({ search: '', category: '', sector: '', country: '' })}>
-              {t('actions.cancel')}
-            </Button>
-          </div>
+          </motion.div>
         ) : (
-          // ⚡ OPTIMISÉ: Utilisation du composant ExhibitorCard mémorisé
           <div data-testid="exhibitors-list" className={viewMode === CONFIG.viewModes.grid
-            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-            : 'space-y-6'
+            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10'
+            : 'space-y-8 md:space-y-10'
           }>
             {filteredExhibitors.map((exhibitor, index) => (
               <ExhibitorCard
@@ -251,6 +282,7 @@ export default function ExhibitorsPage() {
         )}
       </div>
     </div>
+  );
   );
 };
 

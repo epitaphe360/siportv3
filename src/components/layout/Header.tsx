@@ -71,131 +71,82 @@ export const Header: React.FC = memo(() => {
     { name: 'Bibliothèque Média', href: ROUTES.MEDIA_LIBRARY, description: 'Tous les contenus médias', icon: Play },
   ];
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50 border-t-4 border-t-siports-gold relative">
-      {/* Subtle Pattern Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.03]">
-        <MoroccanPattern className="w-full h-full text-siports-primary" scale={0.5} />
-      </div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link to={ROUTES.HOME} className="flex items-center space-x-2">
-            <div className="h-12 w-auto">
-              <img
-                src="/salon-logo01.png"
-                alt="SIPORTS Logo"
-                className="h-full w-full object-contain"
-                onError={(e) => {
-                  const t = e.currentTarget as HTMLImageElement;
-                  // fallback to a tiny transparent svg to avoid broken image icon
-                  t.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1" height="1"%3E%3C/svg%3E';
-                }}
-              />
+    <header className="fixed top-0 left-0 right-0 z-[100] transition-all duration-500 bg-white/80 backdrop-blur-2xl border-b border-slate-200/50 shadow-sm">
+      {/* Pattern Zellige Subtil en fond */}
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #0f172a 1px, transparent 0)', backgroundSize: '16px 16px' }}></div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 font-sans">
+        <div className="flex justify-between items-center h-20">
+          
+          {/* Logo Premium */}
+          <Link to={ROUTES.HOME} className="flex items-center space-x-4 group">
+            <div className="relative">
+              <div className="absolute -inset-2 bg-blue-500/10 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative h-12 w-auto flex items-center">
+                <img
+                  src="/salon-logo01.png"
+                  alt="SIPORTS Logo"
+                  className="h-full w-auto object-contain brightness-100"
+                />
+              </div>
             </div>
-            <div className="hidden sm:flex flex-col">
-              <span className="text-xs font-bold text-siports-primary leading-none">v3.0</span>
-              <span className="text-[10px] text-gray-400 font-medium">LIVE</span>
+            <div className="flex flex-col border-l border-slate-200 pl-4 py-1">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none mb-1">SIPORTS 2026</span>
+              <div className="flex items-center gap-2">
+                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+                 <span className="text-[11px] text-slate-900 font-black uppercase tracking-widest">Live Experience</span>
+              </div>
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
+          {/* Desktop Navigation Luxe */}
+          <nav className="hidden xl:flex items-center space-x-1">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className="text-siports-gray-700 hover:text-siports-primary px-4 py-2 text-sm font-medium transition-colors relative group"
+                className="relative px-5 py-2.5 text-xs font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 transition-all group"
               >
                 {item.name}
-                <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-siports-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+                <span className="absolute bottom-0 left-5 right-5 h-[2px] bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
               </Link>
             ))}
             
-            {/* Media Menu Dropdown */}
+            {/* Divider Vertical Minimaliste */}
+            <div className="w-[1px] h-6 bg-slate-200 mx-4" />
+
+            {/* Media Dropdown Premium */}
             <div className="relative">
               <button
-                onClick={toggleMediaMenu}
-                className="text-siports-gray-700 hover:text-siports-primary px-4 py-2 text-sm font-medium transition-colors flex items-center space-x-1 relative group"
+                onMouseEnter={() => setIsMediaMenuOpen(true)}
+                onMouseLeave={() => setIsMediaMenuOpen(false)}
+                className="px-5 py-2.5 text-xs font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 transition-all flex items-center gap-2 group"
               >
-                <Video className="w-4 h-4" />
+                <Video className="w-4 h-4 text-blue-500" />
                 <span>Média</span>
-                <svg className={`w-4 h-4 transition-transform ${isMediaMenuOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-                <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-siports-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+                <span className="absolute bottom-0 left-5 right-5 h-[2px] bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
               </button>
-
-              {isMediaMenuOpen && (
-                <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-2xl shadow-siports-lg border border-siports-gray-200 py-3 z-50">
-                  {mediaMenuItems.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <Link
-                        key={item.name}
-                        to={item.href}
-                        onClick={closeMediaMenu}
-                        className="flex items-start px-6 py-3 text-sm text-siports-gray-700 hover:bg-siports-gray-50 hover:text-siports-primary transition-colors border-l-4 border-transparent hover:border-siports-primary"
-                      >
-                        <Icon className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <div className="font-semibold">{item.name}</div>
-                          <div className="text-xs text-siports-gray-500 mt-1">{item.description}</div>
-                        </div>
-                      </Link>
-                    );
-                  })}
-                </div>
-              )}
             </div>
 
-            {/* Info Menu Dropdown */}
+            {/* Info Dropdown Premium */}
             <div className="relative">
               <button
-                onClick={toggleInfoMenu}
-                className="text-siports-gray-700 hover:text-siports-primary px-4 py-2 text-sm font-medium transition-colors flex items-center space-x-1 relative group"
+                onMouseEnter={() => setIsInfoMenuOpen(true)}
+                onMouseLeave={() => setIsInfoMenuOpen(false)}
+                className="px-5 py-2.5 text-xs font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 transition-all flex items-center gap-2 group"
               >
-                <span>{t('nav.information')}</span>
-                <svg className={`w-4 h-4 transition-transform ${isInfoMenuOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-                <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-siports-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+                <span>Information</span>
+                <span className="absolute bottom-0 left-5 right-5 h-[2px] bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
               </button>
-
-              {isInfoMenuOpen && (
-                <div className="absolute top-full left-0 mt-2 w-72 bg-white rounded-2xl shadow-siports-lg border border-siports-gray-200 py-3 z-50">
-                  {infoMenuItems.map((item) => (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      onClick={closeInfoMenu}
-                      className="block px-6 py-3 text-sm text-siports-gray-700 hover:bg-siports-gray-50 hover:text-siports-primary transition-colors border-l-4 border-transparent hover:border-siports-primary"
-                    >
-                      <div className="font-semibold">{item.name}</div>
-                      <div className="text-xs text-siports-gray-500 mt-1">{item.description}</div>
-                    </Link>
-                  ))}
-                </div>
-              )}
             </div>
-            
-            {/* Métriques uniquement pour les admins */}
-            {user?.type === 'admin' && (
-              <Link
-                to={ROUTES.METRICS}
-                className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors"
-              >
-                Métriques
-              </Link>
-            )}
           </nav>
 
-          {/* Right side */}
-          <div className="flex items-center space-x-4">
-            {/* Language Selector */}
-            <LanguageSelector />
-
-            {/* Theme Toggle */}
-            <ThemeToggle />
+          {/* Actions & Profile Luxe */}
+          <div className="flex items-center space-x-6">
+            <div className="hidden lg:flex items-center gap-4">
+               <LanguageSelector />
+               <ThemeToggle />
+            </div>
 
             {isAuthenticated ? (
               <>

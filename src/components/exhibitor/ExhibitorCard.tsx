@@ -142,91 +142,108 @@ const ExhibitorCard: React.FC<ExhibitorCardProps> = memo(({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
+      className="group h-full"
     >
-      <Card hover className="h-full">
-        <div className="flex flex-col h-full">
-          {/* Header */}
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <LogoWithFallback
-                src={exhibitor.logo}
-                alt={exhibitor.companyName}
-                className="h-12 w-12 rounded-lg object-cover"
-              />
-              <div className="min-w-0">
-                <h3 className="font-semibold text-gray-900 text-lg truncate">
-                  {exhibitor.companyName}
-                </h3>
-                {exhibitor.sector && (
-                  <p className="text-sm text-gray-500 truncate">{exhibitor.sector}</p>
-                )}
+      <div className="h-full bg-white rounded-[2rem] border border-gray-100 shadow-xl hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-500 overflow-hidden flex flex-col relative">
+        {/* En-tête avec Motif Zellige */}
+        <div className="relative h-32 bg-gradient-to-br from-slate-900 to-blue-900 overflow-hidden">
+          <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '16px 16px' }}></div>
+          
+          <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-blue-500/20 rounded-full blur-2xl"></div>
+          
+          <div className="absolute top-4 right-4 flex items-center space-x-2 z-10">
+            {exhibitor.featured && (
+              <div className="p-1.5 bg-amber-500 rounded-lg shadow-lg shadow-amber-900/20">
+                <Star className="h-4 w-4 text-white fill-current" />
               </div>
-            </div>
-            <div className="flex items-center space-x-1 flex-shrink-0">
-              {exhibitor.featured && (
-                <Star className="h-4 w-4 text-yellow-500 fill-current" />
-              )}
-              {exhibitor.verified && (
-                <Verified className="h-4 w-4 text-blue-500" />
-              )}
-            </div>
+            )}
+            {exhibitor.verified && (
+              <div className="p-1.5 bg-blue-500 rounded-lg shadow-lg shadow-blue-900/20">
+                <Verified className="h-4 w-4 text-white" />
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Logo overlapping header */}
+        <div className="px-6 -mt-10 relative z-10 mb-4">
+          <div className="inline-block p-2 bg-white rounded-3xl shadow-2xl border-4 border-white transform group-hover:scale-110 transition-transform duration-500">
+            <LogoWithFallback
+              src={exhibitor.logo}
+              alt={exhibitor.companyName}
+              className="h-16 w-16 md:h-20 md:w-20 rounded-2xl object-cover"
+            />
+          </div>
+        </div>
+
+        <div className="p-6 pt-0 flex flex-col flex-grow">
+          {/* Company Info */}
+          <div className="mb-4">
+            <h3 className="font-black text-slate-900 text-xl md:text-2xl tracking-tight mb-1 group-hover:text-blue-600 transition-colors">
+              {exhibitor.companyName}
+            </h3>
+            {exhibitor.sector && (
+              <div className="flex items-center space-x-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{exhibitor.sector}</p>
+              </div>
+            )}
           </div>
 
-          {/* Category & Level Badges */}
-          <div className="mb-4 flex items-center space-x-2">
-            <Badge
-              variant={getCategoryColor(exhibitor.category)}
-              size="sm"
-            >
+          {/* Badges Level & Category */}
+          <div className="mb-6 flex flex-wrap gap-2">
+            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+              exhibitor.category === 'institutional' ? 'border-purple-100 bg-purple-50 text-purple-600' :
+              exhibitor.category === 'port-industry' ? 'border-blue-100 bg-blue-50 text-blue-600' :
+              exhibitor.category === 'port-operations' ? 'border-emerald-100 bg-emerald-50 text-emerald-600' :
+              'border-amber-100 bg-amber-50 text-amber-600'
+            }`}>
               {getCategoryLabel(exhibitor.category)}
-            </Badge>
+            </span>
             {exhibitor.standArea && (
-              <LevelBadge
-                level={getExhibitorLevelByArea(exhibitor.standArea)}
-                type="exhibitor"
-                size="sm"
-              />
+              <div className="opacity-80 scale-90 origin-left">
+                <LevelBadge
+                  level={getExhibitorLevelByArea(exhibitor.standArea)}
+                  type="exhibitor"
+                  size="sm"
+                />
+              </div>
             )}
           </div>
 
           {/* Description */}
           {exhibitor.description && (
-            <p className="text-gray-600 text-sm mb-6 flex-grow line-clamp-3">
-              {exhibitor.description}
+            <p className="text-slate-600 text-sm mb-6 flex-grow line-clamp-3 font-medium leading-relaxed italic">
+              "{exhibitor.description}"
             </p>
           )}
 
-          {/* Location */}
-          {exhibitor.country && (
-            <div className="flex items-center text-sm text-gray-500 mb-6">
-              <MapPin className="h-4 w-4 mr-2" />
-              {exhibitor.country}
+          {/* Location & Footer */}
+          <div className="flex items-center justify-between mt-auto pt-6 border-t border-slate-50">
+            <div className="flex items-center text-xs font-black text-slate-400 uppercase tracking-widest">
+              <MapPin className="h-4 w-4 mr-2 text-blue-500" />
+              {exhibitor.country || 'International'}
             </div>
-          )}
-
-          {/* Actions */}
-          <div className="flex flex-col space-y-2 mt-auto">
-            <Button
-              variant="default"
-              size="sm"
-              onClick={handleViewDetails}
-              className="w-full"
-            >
-              <ExternalLink className="h-4 w-4 mr-2" />
-              {t('actions.view_details')}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleScheduleAppointment}
-              className="w-full"
-            >
-              <Calendar className="h-4 w-4 mr-2" />
-              {t('actions.schedule_meeting')}
-            </Button>
+            
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={handleViewDetails}
+                className="p-2.5 bg-slate-50 text-slate-900 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                title={t('actions.view_details')}
+              >
+                <ExternalLink className="h-4 w-4" />
+              </button>
+              <button
+                onClick={handleScheduleAppointment}
+                className="p-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 hover:scale-110 transition-all shadow-lg shadow-blue-900/20"
+                title={t('actions.schedule_meeting')}
+              >
+                <Calendar className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         </div>
-      </Card>
+      </div>
     </motion.div>
   );
 }, (prevProps, nextProps) => {
