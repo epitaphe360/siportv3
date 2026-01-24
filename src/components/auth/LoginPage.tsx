@@ -565,10 +565,7 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => {
-                        setEmail('exhibitor-54m@test.siport.com');
-                        setPassword('Test123456!');
-                      }}
+                      onClick={() => handleDemoLogin('exhibitor-54m@test.siport.com', 'Test123456!')}
                       className="text-[10px] h-8 bg-white hover:bg-purple-50 border-purple-200"
                     >
                       🌐 Global Ship.
