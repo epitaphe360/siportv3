@@ -346,9 +346,9 @@ class SiportsBackendTester:
                 'Content-Type': 'application/json'
             }
             
-            # Test des profils partenaires
+            # Test des profils partenaires - Correction du nom de table
             response = requests.get(
-                f"{self.supabase_url}/rest/v1/partner_profiles?select=*,user:users!user_id(*)",
+                f"{self.supabase_url}/rest/v1/partners?select=*",
                 headers=headers,
                 timeout=10
             )
