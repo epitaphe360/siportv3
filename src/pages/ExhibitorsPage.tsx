@@ -283,6 +283,5 @@ export default function ExhibitorsPage() {
       </div>
     </div>
   );
-  );
 };
 
