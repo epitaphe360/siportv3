@@ -35,7 +35,7 @@ export default function DevSubscriptionSwitcher() {
     setIsUpdating(true);
     try {
       const { error } = await supabase
-        .from('profiles')
+        .from('users')
         .update({
           role,
           visitor_level: role === 'visitor' ? level : null,
