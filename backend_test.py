@@ -185,9 +185,9 @@ class SiportsBackendTester:
                 'Content-Type': 'application/json'
             }
             
-            # Vérifier les créneaux disponibles
+            # Vérifier les créneaux disponibles - Correction du nom de colonne
             response = requests.get(
-                f"{self.supabase_url}/rest/v1/time_slots?select=*&date=gte.2026-04-01&date=lte.2026-04-03",
+                f"{self.supabase_url}/rest/v1/time_slots?select=*&slot_date=gte.2026-04-01&slot_date=lte.2026-04-03",
                 headers=headers,
                 timeout=10
             )
