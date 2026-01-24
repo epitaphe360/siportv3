@@ -209,10 +209,10 @@ class SiportsBackendTester:
             self.log_test("Créneaux Calendrier", False, "", str(e))
             all_success = False
         
-        # Test des rendez-vous existants
+        # Test des rendez-vous existants - Correction des relations
         try:
             response = requests.get(
-                f"{self.supabase_url}/rest/v1/appointments?select=*,visitor:users!visitor_id(*),exhibitor:users!exhibitor_id(*)",
+                f"{self.supabase_url}/rest/v1/appointments?select=*",
                 headers=headers,
                 timeout=10
             )
