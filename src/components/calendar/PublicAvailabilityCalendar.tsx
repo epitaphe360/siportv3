@@ -342,7 +342,6 @@ export default function PublicAvailabilityCalendar({
               <List className="w-5 h-5" />
             </button>
           </div>
-        </div>
 
         {/* Vue Hebdomadaire */}
         {viewMode === 'week' && (
