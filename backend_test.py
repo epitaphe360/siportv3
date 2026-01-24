@@ -309,9 +309,9 @@ class SiportsBackendTester:
                 'Content-Type': 'application/json'
             }
             
-            # Test des mini-sites existants
+            # Test des mini-sites existants - Correction des relations
             response = requests.get(
-                f"{self.supabase_url}/rest/v1/mini_sites?select=*,exhibitor:users!user_id(*)",
+                f"{self.supabase_url}/rest/v1/mini_sites?select=*",
                 headers=headers,
                 timeout=10
             )
