@@ -298,54 +298,68 @@ export default function PublicAvailabilityCalendar({
 
       {/* Navigation & Vue */}
       {/* Navigation - LIMITÉ AUX JOURS DE L'ÉVÉNEMENT */}
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-4">
-            <div className="p-3 bg-blue-100 rounded-xl font-bold text-blue-600">
-               1-3 AVR
+      <Card className="p-0 overflow-hidden border-none shadow-2xl bg-white">
+        <div className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 p-8 text-white relative">
+          {/* Motif Marocain Subtil */}
+          <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+          
+          <div className="relative z-10 flex items-center justify-between">
+            <div className="flex items-center space-x-6">
+              <div className="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-inner">
+                <div className="text-center">
+                  <span className="block text-2xl font-black text-blue-400 leading-none">01-03</span>
+                  <span className="block text-xs font-bold uppercase tracking-widest text-white/60 mt-1">AVRIL</span>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-2xl font-black tracking-tight text-white mb-1">
+                  Planning SIPORTS 2026
+                </h3>
+                <div className="flex items-center space-x-2 text-blue-200/80">
+                  <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
+                  <p className="text-sm font-medium">Disponibilités pour les 3 jours de l'événement</p>
+                </div>
+              </div>
             </div>
-            <div>
-              <h3 className="text-xl font-bold text-gray-900">
-                Planning SIPORTS 2026
-              </h3>
-              <p className="text-sm text-gray-500">
-                Disponibilités pour les 3 jours de l'événement
-              </p>
+
+            <div className="flex flex-col items-end space-y-3">
+              <Badge variant="info" className="px-4 py-1.5 text-xs font-bold bg-blue-500/20 text-blue-300 border-blue-500/30 backdrop-blur-sm uppercase tracking-wider">
+                Événement Exclusif
+              </Badge>
+              
+              {/* Toggle Vue */}
+              <div className="flex items-center space-x-1 bg-white/5 backdrop-blur-md rounded-xl p-1 border border-white/10">
+                <button
+                  onClick={() => setViewMode('week')}
+                  className={`px-4 py-2 rounded-lg transition-all duration-300 flex items-center space-x-2 ${
+                    viewMode === 'week'
+                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40 font-bold'
+                      : 'text-white/60 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <Grid3x3 className="w-4 h-4" />
+                  <span className="text-xs uppercase tracking-tight">Grille</span>
+                </button>
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`px-4 py-2 rounded-lg transition-all duration-300 flex items-center space-x-2 ${
+                    viewMode === 'list'
+                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40 font-bold'
+                      : 'text-white/60 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <List className="w-4 h-4" />
+                  <span className="text-xs uppercase tracking-tight">Liste</span>
+                </button>
+              </div>
             </div>
           </div>
-
-          <Badge variant="info" className="px-4 py-2 text-sm bg-blue-50 text-blue-700 border-blue-200">
-            Événement limité
-          </Badge>
         </div>
 
-          {/* Toggle Vue */}
-          <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
-            <button
-              onClick={() => setViewMode('week')}
-              className={`px-4 py-2 rounded-md transition-all duration-200 ${
-                viewMode === 'week'
-                  ? 'bg-white shadow text-blue-600 font-medium'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <Grid3x3 className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => setViewMode('list')}
-              className={`px-4 py-2 rounded-md transition-all duration-200 ${
-                viewMode === 'list'
-                  ? 'bg-white shadow text-blue-600 font-medium'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <List className="w-5 h-5" />
-            </button>
-          </div>
-
+        <div className="p-6">
         {/* Vue Hebdomadaire */}
         {viewMode === 'week' && (
-          <div className="grid grid-cols-7 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {weekDays.map((day) => {
               const daySlots = weekSlots.filter(slot =>
                 parseLocalDate(slot.date).toDateString() === day.toDateString()
@@ -358,81 +372,89 @@ export default function PublicAvailabilityCalendar({
                   key={day.toISOString()}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`rounded-xl border-2 transition-all duration-200 ${
+                  className={`group rounded-2xl border-2 transition-all duration-300 flex flex-col overflow-hidden ${
                     isToday
-                      ? 'border-blue-500 bg-blue-50 shadow-lg'
-                      : isPast
-                      ? 'border-gray-200 bg-gray-50 opacity-60'
-                      : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-md'
+                      ? 'border-blue-500 bg-blue-50/30'
+                      : 'border-gray-100 bg-white hover:border-blue-200 hover:shadow-xl'
                   }`}
                 >
                   {/* En-tête jour */}
-                  <div className={`p-4 border-b-2 ${
-                    isToday ? 'border-blue-500 bg-gradient-to-br from-blue-500 to-blue-600' : 'border-gray-200'
+                  <div className={`p-5 relative ${
+                    isToday ? 'bg-blue-600' : 'bg-gray-50'
                   }`}>
-                    <div className={`text-xs font-semibold uppercase tracking-wider mb-1 ${
-                      isToday ? 'text-blue-100' : 'text-gray-500'
-                    }`}>
-                      {day.toLocaleDateString('fr-FR', { weekday: 'short' })}
-                    </div>
-                    <div className={`text-2xl font-bold ${
-                      isToday ? 'text-white' : 'text-gray-900'
-                    }`}>
-                      {day.getDate()}
+                    <div className="flex items-center justify-between relative z-10">
+                      <div>
+                        <div className={`text-xs font-black uppercase tracking-widest mb-1 ${
+                          isToday ? 'text-blue-200' : 'text-gray-400'
+                        }`}>
+                          {day.toLocaleDateString('fr-FR', { weekday: 'long' })}
+                        </div>
+                        <div className={`text-3xl font-black ${
+                          isToday ? 'text-white' : 'text-gray-900'
+                        }`}>
+                          {day.getDate()} <span className="text-sm font-bold opacity-60">Avril</span>
+                        </div>
+                      </div>
+                      <div className={`p-2.5 rounded-xl ${isToday ? 'bg-white/20' : 'bg-white shadow-sm'}`}>
+                        <Calendar className={`w-6 h-6 ${isToday ? 'text-white' : 'text-blue-600'}`} />
+                      </div>
                     </div>
                   </div>
 
                   {/* Créneaux du jour */}
-                  <div className="p-3 space-y-2 min-h-[200px]">
-                    <AnimatePresence>
+                  <div className="p-4 space-y-3 flex-1 min-h-[300px] bg-gradient-to-b from-transparent to-gray-50/50">
+                    <AnimatePresence mode="popLayout">
                       {daySlots.map((slot) => (
                         <motion.div
                           key={slot.id}
-                          initial={{ opacity: 0, scale: 0.8 }}
+                          layout
+                          initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          className={`p-3 rounded-lg bg-gradient-to-br ${getTypeColor(slot.type)} text-white shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer`}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          className={`p-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer border-l-4 border-white overflow-hidden relative group/slot ${
+                            slot.type === 'virtual' ? 'bg-blue-600 text-white' : 
+                            slot.type === 'in-person' ? 'bg-emerald-600 text-white' : 
+                            'bg-amber-500 text-white'
+                          }`}
                           onClick={() => {
                             setSelectedSlot(slot);
                             setShowAddModal(true);
                           }}
-                          data-testid={`slot-${slot.id}`}
                         >
-                          <div className="flex items-center justify-between mb-2">
+                          {/* Overlay effet glass */}
+                          <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-bl-full transform translate-x-4 -translate-y-4 transition-transform group-hover/slot:translate-x-2 group-hover/slot:-translate-y-2"></div>
+
+                          <div className="flex items-center justify-between mb-3 relative z-10">
                             <div className="flex items-center space-x-2">
-                              {getTypeIcon(slot.type)}
-                              <span className="font-bold text-sm">
+                              <div className="p-1.5 bg-white/20 rounded-lg">
+                                {getTypeIcon(slot.type)}
+                              </div>
+                              <span className="font-black text-base">
                                 {slot.startTime}
                               </span>
                             </div>
-                            <Badge
-                              variant="default"
-                              className="bg-white/20 text-white border-0"
-                              size="sm"
-                            >
-                              {slot.maxBookings - slot.currentBookings}/{slot.maxBookings}
-                            </Badge>
+                            <div className="px-2 py-1 bg-white/20 rounded-md text-[10px] font-black uppercase tracking-tighter">
+                              {slot.maxBookings - slot.currentBookings} Libres
+                            </div>
                           </div>
 
-                          <div className="text-xs opacity-90 truncate">
-                            {slot.location || 'Lieu non spécifié'}
+                          <div className="flex items-center space-x-2 text-xs font-medium text-white/90 mb-3 ml-1">
+                            <MapPin className="w-3 h-3" />
+                            <span className="truncate">{slot.location || 'Lieu SIPORT'}</span>
                           </div>
 
                           {isEditable && (
-                            <div className="flex items-center space-x-1 mt-2 pt-2 border-t border-white/20">
-                              <Button
-                                variant="ghost"
-                                size="sm"
+                            <div className="flex items-center space-x-2 mt-3 pt-3 border-t border-white/10">
+                              <button
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   handleDeleteSlot(slot.id);
                                 }}
-                                className="flex-1 text-white hover:bg-white/20 text-xs py-1"
-                                data-testid={`button-delete-${slot.id}`}
+                                className="flex items-center justify-center space-x-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg py-1.5 px-3 text-[10px] font-bold transition-colors w-full uppercase tracking-widest"
                               >
-                                <Trash2 className="w-3 h-3 mr-1" />
-                                Supprimer
-                              </Button>
+                                <Trash2 className="w-3 h-3" />
+                                <span>Retirer</span>
+                              </button>
                             </div>
                           )}
                         </motion.div>
@@ -440,11 +462,25 @@ export default function PublicAvailabilityCalendar({
                     </AnimatePresence>
 
                     {daySlots.length === 0 && (
-                      <div className="flex items-center justify-center h-full text-gray-400 text-sm py-8">
-                        <div className="text-center">
-                          <Clock className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                          <div>Aucun créneau</div>
+                      <div className="flex flex-col items-center justify-center h-full py-12 px-6 text-center">
+                        <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mb-4 border-2 border-dashed border-gray-200 group-hover:border-blue-200 transition-colors">
+                          <Clock className="w-8 h-8 text-gray-300 group-hover:text-blue-300 transition-all group-hover:scale-110" />
                         </div>
+                        <p className="text-gray-500 font-bold text-sm mb-1 uppercase tracking-tight">Aucun créneau</p>
+                        <p className="text-gray-400 text-xs mb-6">Planifiez vos disponibilités pour ce jour</p>
+                        
+                        {isEditable && (
+                          <button
+                            onClick={() => {
+                              setNewSlot({ ...newSlot, date: formatDateForInput(day) });
+                              setShowAddModal(true);
+                            }}
+                            className="flex items-center space-x-2 bg-white border-2 border-gray-200 hover:border-blue-500 hover:text-blue-600 text-gray-500 px-4 py-2 rounded-xl text-xs font-black transition-all shadow-sm hover:shadow-md uppercase tracking-wider"
+                          >
+                            <Plus className="w-4 h-4" />
+                            <span>Ajouter</span>
+                          </button>
+                        )}
                       </div>
                     )}
                   </div>
@@ -456,16 +492,27 @@ export default function PublicAvailabilityCalendar({
 
         {/* Vue Liste */}
         {viewMode === 'list' && (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {weekSlots.length === 0 ? (
-              <div className="text-center py-16">
-                <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h4 className="text-lg font-medium text-gray-900 mb-2">
-                  Aucun créneau cette semaine
+              <div className="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+                <div className="w-20 h-20 bg-white rounded-full shadow-lg flex items-center justify-center mb-6">
+                  <Calendar className="w-10 h-10 text-blue-600" />
+                </div>
+                <h4 className="text-xl font-black text-gray-900 mb-2">
+                  Aucun créneau configuré
                 </h4>
-                <p className="text-gray-500">
-                  Ajoutez vos créneaux de disponibilité pour cette semaine
+                <p className="text-gray-500 mb-8 max-w-sm text-center">
+                  Vous n'avez pas encore défini de disponibilités pour les 3 jours du salon SIPORT.
                 </p>
+                {isEditable && (
+                  <Button
+                    onClick={() => setShowAddModal(true)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-blue-200"
+                  >
+                    <Plus className="w-5 h-5 mr-2" />
+                    Créer mon premier créneau
+                  </Button>
+                )}
               </div>
             ) : (
               weekSlots
@@ -477,74 +524,78 @@ export default function PublicAvailabilityCalendar({
                 .map((slot) => (
                   <motion.div
                     key={slot.id}
+                    layout
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="flex items-center justify-between p-4 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all duration-200"
+                    className="group flex items-center justify-between p-5 bg-white border-2 border-gray-100 rounded-2xl hover:border-blue-500 hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-300"
                   >
-                    <div className="flex items-center space-x-4 flex-1">
-                      <div className={`p-3 rounded-lg bg-gradient-to-br ${getTypeColor(slot.type)} text-white`}>
+                    <div className="flex items-center space-x-6 flex-1">
+                      <div className={`p-4 rounded-2xl shadow-lg transform group-hover:scale-110 transition-transform ${
+                        slot.type === 'virtual' ? 'bg-blue-600 text-white' : 
+                        slot.type === 'in-person' ? 'bg-emerald-600 text-white' : 
+                        'bg-amber-500 text-white shadow-amber-100'
+                      }`}>
                         {getTypeIcon(slot.type)}
                       </div>
 
                       <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-1">
-                          <span className="font-bold text-lg text-gray-900">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <span className="font-black text-xl text-gray-900 uppercase tracking-tight">
                             {parseLocalDate(slot.date).toLocaleDateString('fr-FR', {
                               weekday: 'long',
                               day: 'numeric',
                               month: 'long'
                             })}
                           </span>
-                          <Badge variant={getTypeBadgeColor(slot.type)}>
+                          <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                            slot.type === 'virtual' ? 'border-blue-200 text-blue-600 bg-blue-50' : 
+                            slot.type === 'in-person' ? 'border-emerald-200 text-emerald-600 bg-emerald-50' : 
+                            'border-amber-200 text-amber-600 bg-amber-50'
+                          }`}>
                             {slot.type === 'virtual' ? 'Virtuel' : slot.type === 'in-person' ? 'Présentiel' : 'Hybride'}
-                          </Badge>
+                          </span>
                         </div>
-                        <div className="flex items-center space-x-4 text-sm text-gray-600">
-                          <div className="flex items-center space-x-1">
-                            <Clock className="w-4 h-4" />
-                            <span>{slot.startTime} - {slot.endTime}</span>
+                        <div className="flex items-center space-x-6 text-sm text-gray-500 font-bold">
+                          <div className="flex items-center space-x-2">
+                            <Clock className="w-4 h-4 text-blue-500" />
+                            <span className="text-gray-900">{slot.startTime} - {slot.endTime}</span>
                           </div>
                           {slot.location && (
-                            <div className="flex items-center space-x-1">
-                              <MapPin className="w-4 h-4" />
-                              <span>{slot.location}</span>
+                            <div className="flex items-center space-x-2">
+                              <MapPin className="w-4 h-4 text-emerald-500" />
+                              <span className="text-gray-900">{slot.location}</span>
                             </div>
                           )}
                         </div>
                       </div>
 
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-gray-900">
+                      <div className="text-right pr-6 border-r-2 border-gray-50 mr-6">
+                        <div className="text-3xl font-black text-gray-900">
                           {slot.maxBookings - slot.currentBookings}
                         </div>
-                        <div className="text-xs text-gray-500">
-                          places restantes
+                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
+                          places disponibles
                         </div>
                       </div>
                     </div>
 
                     {isEditable && (
-                      <div className="flex items-center space-x-2 ml-4">
-                        <Button
-                          variant="ghost"
-                          size="sm"
+                      <div className="flex flex-col space-y-2">
+                        <button
                           onClick={() => {
                             setSelectedSlot(slot);
                             setShowAddModal(true);
                           }}
-                          className="text-blue-600 hover:bg-blue-50"
+                          className="p-2.5 bg-gray-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm"
                         >
                           <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
+                        </button>
+                        <button
                           onClick={() => handleDeleteSlot(slot.id)}
-                          className="text-red-600 hover:bg-red-50"
-                          data-testid={`button-delete-${slot.id}`}
+                          className="p-2.5 bg-gray-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm"
                         >
                           <Trash2 className="w-4 h-4" />
-                        </Button>
+                        </button>
                       </div>
                     )}
                   </motion.div>
@@ -552,7 +603,9 @@ export default function PublicAvailabilityCalendar({
             )}
           </div>
         )}
+        </div>
       </Card>
+
 
       {/* Message si aucun créneau */}
       {timeSlots.length === 0 && !isLoading && (
