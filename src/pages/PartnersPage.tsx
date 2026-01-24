@@ -2,6 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, Grid2x2 as Grid, List } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { Card } from '../components/ui/Card';
 import { motion } from 'framer-motion';
 import { CONFIG } from '../lib/config';
 import { SupabaseService } from '../services/supabaseService';
