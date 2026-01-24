@@ -446,11 +446,6 @@ export default function LoginPage() {
                     variant="outline"
                     size="sm"
                     onClick={() => handleDemoLogin('demo.partner@siports.com', 'Test123456!')}
-                        await login('demo.partner@siports.com', 'Test123456!', { rememberMe: true });
-                      } catch (err: any) {
-                        setError(err.message || 'Erreur de connexion');
-                      }
-                    }}
                     className="w-full text-xs h-8 bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 border-0"
                   >
                     ✅ Connexion
@@ -469,16 +464,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={async () => {
-                      setEmail('partner-silver@test.siport.com');
-                      setPassword('Test123456!');
-                      setError('');
-                      try {
-                        await login('partner-silver@test.siport.com', 'Test123456!', { rememberMe: true });
-                      } catch (err: any) {
-                        setError(err.message || 'Erreur de connexion');
-                      }
-                    }}
+                    onClick={() => handleDemoLogin('partner-silver@test.siport.com', 'Test123456!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-gray-400 to-gray-500 text-white hover:from-gray-500 hover:to-gray-600 border-0"
                   >
                     ✅ Connexion
@@ -497,16 +483,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={async () => {
-                      setEmail('partner-gold@test.siport.com');
-                      setPassword('Test123456!');
-                      setError('');
-                      try {
-                        await login('partner-gold@test.siport.com', 'Test123456!', { rememberMe: true });
-                      } catch (err: any) {
-                        setError(err.message || 'Erreur de connexion');
-                      }
-                    }}
+                    onClick={() => handleDemoLogin('partner-gold@test.siport.com', 'Test123456!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 border-0"
                   >
                     ✅ Connexion
@@ -525,16 +502,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={async () => {
-                      setEmail('partner-platinum@test.siport.com');
-                      setPassword('Test123456!');
-                      setError('');
-                      try {
-                        await login('partner-platinum@test.siport.com', 'Test123456!', { rememberMe: true });
-                      } catch (err: any) {
-                        setError(err.message || 'Erreur de connexion');
-                      }
-                    }}
+                    onClick={() => handleDemoLogin('partner-platinum@test.siport.com', 'Test123456!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 border-0"
                   >
                     ✅ Connexion
