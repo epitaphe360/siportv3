@@ -2690,8 +2690,8 @@ export class SupabaseService {
         .from('appointments')
         .select(`
           *,
-          exhibitor:exhibitor_id(id, company_name, logo_url),
-          visitor:visitor_id(id, name, email)
+          exhibitor:exhibitors!exhibitor_id(id, company_name, logo_url),
+          visitor:users!visitor_id(id, name, email)
         `)
         .eq('id', result.appointment_id)
         .single();
