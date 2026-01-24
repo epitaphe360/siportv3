@@ -2,141 +2,141 @@
   "total_tests": 19,
   "passed_tests": 12,
   "success_rate": 63.1578947368421,
-  "duration": 5.720305442810059,
+  "duration": 6.932616710662842,
   "test_results": [
     {
       "name": "Connexion Supabase",
       "success": true,
       "details": "Status: 200",
       "error": "",
-      "timestamp": "2026-01-24T13:30:44.310243"
+      "timestamp": "2026-01-24T14:08:47.161506"
     },
     {
       "name": "Auth Visitor Free",
       "success": true,
       "details": "Token obtenu: visitor-free@test.siport.com",
       "error": "",
-      "timestamp": "2026-01-24T13:30:44.590894"
+      "timestamp": "2026-01-24T14:08:47.911672"
     },
     {
       "name": "Auth Visitor Vip",
       "success": true,
       "details": "Token obtenu: visitor-vip@test.siport.com",
       "error": "",
-      "timestamp": "2026-01-24T13:30:45.095582"
+      "timestamp": "2026-01-24T14:08:48.403891"
     },
     {
       "name": "Auth Exhibitor",
       "success": true,
       "details": "Token obtenu: exhibitor-9m@test.siport.com",
       "error": "",
-      "timestamp": "2026-01-24T13:30:45.384911"
+      "timestamp": "2026-01-24T14:08:48.908208"
     },
     {
       "name": "Auth Partner Gold",
       "success": true,
       "details": "Token obtenu: partner-gold@test.siport.com",
       "error": "",
-      "timestamp": "2026-01-24T13:30:45.917150"
+      "timestamp": "2026-01-24T14:08:49.410458"
     },
     {
       "name": "Auth Admin",
       "success": true,
       "details": "Token obtenu: admin@siports.com",
       "error": "",
-      "timestamp": "2026-01-24T13:30:46.203488"
+      "timestamp": "2026-01-24T14:08:49.705253"
     },
     {
       "name": "Dashboard Data Visitor Free",
       "success": false,
       "details": "",
       "error": "Erreur 400: {\"code\":\"PGRST200\",\"details\":\"Searched for a foreign key relationship between 'users' and 'profiles' in the schema 'public', but no matches were found.\",\"hint\":\"Perhaps you meant 'visitor_profiles' instead of 'profiles'.\",\"message\":\"Could not find a relationship between 'users' and 'profiles' in the schema cache\"}",
-      "timestamp": "2026-01-24T13:30:46.627573"
+      "timestamp": "2026-01-24T14:08:50.048139"
     },
     {
       "name": "Dashboard Data Visitor Vip",
       "success": false,
       "details": "",
       "error": "Erreur 400: {\"code\":\"PGRST200\",\"details\":\"Searched for a foreign key relationship between 'users' and 'profiles' in the schema 'public', but no matches were found.\",\"hint\":\"Perhaps you meant 'visitor_profiles' instead of 'profiles'.\",\"message\":\"Could not find a relationship between 'users' and 'profiles' in the schema cache\"}",
-      "timestamp": "2026-01-24T13:30:46.825590"
+      "timestamp": "2026-01-24T14:08:50.239713"
     },
     {
       "name": "Dashboard Data Exhibitor",
       "success": false,
       "details": "",
       "error": "Erreur 400: {\"code\":\"PGRST200\",\"details\":\"Searched for a foreign key relationship between 'users' and 'profiles' in the schema 'public', but no matches were found.\",\"hint\":\"Perhaps you meant 'visitor_profiles' instead of 'profiles'.\",\"message\":\"Could not find a relationship between 'users' and 'profiles' in the schema cache\"}",
-      "timestamp": "2026-01-24T13:30:47.019370"
+      "timestamp": "2026-01-24T14:08:50.423677"
     },
     {
       "name": "Dashboard Data Partner Gold",
       "success": false,
       "details": "",
       "error": "Erreur 400: {\"code\":\"PGRST200\",\"details\":\"Searched for a foreign key relationship between 'users' and 'profiles' in the schema 'public', but no matches were found.\",\"hint\":\"Perhaps you meant 'visitor_profiles' instead of 'profiles'.\",\"message\":\"Could not find a relationship between 'users' and 'profiles' in the schema cache\"}",
-      "timestamp": "2026-01-24T13:30:47.206825"
+      "timestamp": "2026-01-24T14:08:50.607070"
     },
     {
       "name": "Dashboard Data Admin",
       "success": true,
       "details": "Données récupérées",
       "error": "",
-      "timestamp": "2026-01-24T13:30:47.482859"
+      "timestamp": "2026-01-24T14:08:50.890133"
     },
     {
       "name": "Créneaux Calendrier (1-3 avril 2026)",
       "success": false,
       "details": "",
       "error": "Erreur 400: {\"code\":\"42703\",\"details\":null,\"hint\":null,\"message\":\"column time_slots.date does not exist\"}",
-      "timestamp": "2026-01-24T13:30:47.694163"
+      "timestamp": "2026-01-24T14:08:51.379285"
     },
     {
       "name": "Rendez-vous Existants",
       "success": false,
       "details": "",
       "error": "Erreur 400: {\"code\":\"PGRST200\",\"details\":\"Searched for a foreign key relationship between 'appointments' and 'users' using the hint 'exhibitor_id' in the schema 'public', but no matches were found.\",\"hint\":null,\"message\":\"Could not find a relationship between 'appointments' and 'users' in the schema cache\"}",
-      "timestamp": "2026-01-24T13:30:47.880240"
+      "timestamp": "2026-01-24T14:08:51.583008"
     },
     {
       "name": "Recommandations IA Réseautage",
       "success": true,
       "details": "0 recommandations trouvées",
       "error": "",
-      "timestamp": "2026-01-24T13:30:48.109617"
+      "timestamp": "2026-01-24T14:08:52.044798"
     },
     {
       "name": "Connexions Réseau",
       "success": true,
       "details": "0 connexions trouvées",
       "error": "",
-      "timestamp": "2026-01-24T13:30:48.311762"
+      "timestamp": "2026-01-24T14:08:52.240674"
     },
     {
       "name": "Mini-Sites Exposants",
       "success": false,
       "details": "",
       "error": "Erreur 400: {\"code\":\"PGRST200\",\"details\":\"Searched for a foreign key relationship between 'mini_sites' and 'users' using the hint 'user_id' in the schema 'public', but no matches were found.\",\"hint\":null,\"message\":\"Could not find a relationship between 'mini_sites' and 'users' in the schema cache\"}",
-      "timestamp": "2026-01-24T13:30:48.515529"
+      "timestamp": "2026-01-24T14:08:52.434428"
     },
     {
       "name": "Profils Partenaires",
       "success": true,
       "details": "0 profils partenaires trouvés",
       "error": "",
-      "timestamp": "2026-01-24T13:30:49.314169"
+      "timestamp": "2026-01-24T14:08:52.635616"
     },
     {
       "name": "Stats Admin - Utilisateurs",
       "success": true,
       "details": "Statistiques récupérées",
       "error": "",
-      "timestamp": "2026-01-24T13:30:49.533903"
+      "timestamp": "2026-01-24T14:08:52.831834"
     },
     {
       "name": "Marketing Dashboard - Articles",
       "success": true,
       "details": "6 articles trouvés",
       "error": "",
-      "timestamp": "2026-01-24T13:30:49.742965"
+      "timestamp": "2026-01-24T14:08:53.026191"
     }
   ],
-  "timestamp": "2026-01-24T13:30:49.743821"
+  "timestamp": "2026-01-24T14:08:53.026808"
 }
