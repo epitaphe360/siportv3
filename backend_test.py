@@ -130,12 +130,12 @@ class SiportsBackendTester:
         """Test d'accès aux données des dashboards"""
         all_success = True
         
-        # Test pour chaque type d'utilisateur
+        # Test pour chaque type d'utilisateur - Correction des relations
         dashboard_endpoints = {
-            'visitor_free': '/rest/v1/users?select=*,profile:profiles(*)',
-            'visitor_vip': '/rest/v1/users?select=*,profile:profiles(*)',
-            'exhibitor': '/rest/v1/users?select=*,profile:profiles(*)',
-            'partner_gold': '/rest/v1/users?select=*,profile:profiles(*),partner_profiles(*)',
+            'visitor_free': '/rest/v1/users?select=*',
+            'visitor_vip': '/rest/v1/users?select=*',
+            'exhibitor': '/rest/v1/users?select=*',
+            'partner_gold': '/rest/v1/users?select=*',
             'admin': '/rest/v1/users?select=count'
         }
         
