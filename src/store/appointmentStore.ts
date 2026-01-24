@@ -31,15 +31,15 @@ async function sendAppointmentNotifications(
       return;
     }
 
-    // Récupérer les informations du visiteur et de l'exposant
+    // Récupérer les informations du visiteur et de l'exposant depuis la table users
     const { data: visitorProfile } = await supabase
-      .from('profiles')
+      .from('users')
       .select('email, first_name, last_name')
       .eq('id', appointment.visitorId)
       .single();
 
     const { data: exhibitorProfile } = await supabase
-      .from('profiles')
+      .from('users')
       .select('email, first_name, last_name, company_name')
       .eq('id', appointment.exhibitorId)
       .single();
