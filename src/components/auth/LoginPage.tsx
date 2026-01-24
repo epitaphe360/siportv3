@@ -521,16 +521,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={async () => {
-                      setEmail('admin@siports.com');
-                      setPassword('Test123456!');
-                      setError('');
-                      try {
-                        await login('admin@siports.com', 'Test123456!', { rememberMe: true });
-                      } catch (err: any) {
-                        setError(err.message || 'Erreur de connexion');
-                      }
-                    }}
+                    onClick={() => handleDemoLogin('admin@siports.com', 'Test123456!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 border-0"
                   >
                     ✅ Connexion Admin
@@ -547,10 +538,7 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => {
-                        setEmail('exhibitor-9m@test.siport.com');
-                        setPassword('Test123456!');
-                      }}
+                      onClick={() => handleDemoLogin('exhibitor-9m@test.siport.com', 'Test123456!')}
                       className="text-[10px] h-8 bg-white hover:bg-purple-50 border-purple-200"
                     >
                       🚢 TechMarine
@@ -559,10 +547,7 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => {
-                        setEmail('exhibitor-18m@test.siport.com');
-                        setPassword('Test123456!');
-                      }}
+                      onClick={() => handleDemoLogin('exhibitor-18m@test.siport.com', 'Test123456!')}
                       className="text-[10px] h-8 bg-white hover:bg-purple-50 border-purple-200"
                     >
                       🌊 OceanLogistics
@@ -571,10 +556,7 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => {
-                        setEmail('exhibitor-36m@test.siport.com');
-                        setPassword('Test123456!');
-                      }}
+                      onClick={() => handleDemoLogin('exhibitor-36m@test.siport.com', 'Test123456!')}
                       className="text-[10px] h-8 bg-white hover:bg-purple-50 border-purple-200"
                     >
                       ⚙️ PortTech
