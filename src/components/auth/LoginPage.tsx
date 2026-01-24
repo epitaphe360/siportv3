@@ -35,6 +35,54 @@ export default function LoginPage() {
     return param ? decodeURIComponent(param) : null;
   }, [searchParams]);
 
+  // ✅ Helper function pour rediriger vers le bon dashboard après connexion
+  const redirectToDashboard = (user: any) => {
+    if (redirectUrl) {
+      console.log('🔄 Redirection post-connexion vers:', redirectUrl);
+      navigate(redirectUrl, { replace: true });
+      return;
+    }
+
+    if (user?.type === 'admin') {
+      navigate(ROUTES.ADMIN_DASHBOARD);
+    } else if (user?.type === 'partner') {
+      navigate(ROUTES.PARTNER_DASHBOARD);
+    } else if (user?.type === 'exhibitor') {
+      navigate(ROUTES.EXHIBITOR_DASHBOARD);
+    } else if (user?.type === 'visitor') {
+      navigate(ROUTES.VISITOR_DASHBOARD);
+    } else {
+      navigate(ROUTES.DASHBOARD);
+    }
+  };
+
+  // ✅ Fonction pour connexion rapide avec les comptes démo
+  const handleDemoLogin = async (demoEmail: string, demoPassword: string) => {
+    setError('');
+    setEmail(demoEmail);
+    setPassword(demoPassword);
+    
+    try {
+      await login(demoEmail, demoPassword, { rememberMe: true });
+      const { user } = useAuthStore.getState();
+      
+      if (user) {
+        // 🔴 CRITICAL: Block VIP visitors who haven't paid
+        if (user.type === 'visitor' && (user.visitor_level === 'vip' || user.visitor_level === 'premium') && user.status === 'pending_payment') {
+          await supabase.auth.signOut();
+          setError('Paiement requis pour accéder au tableau de bord VIP.');
+          setTimeout(() => {
+            navigate(ROUTES.VISITOR_SUBSCRIPTION, { state: { userId: user.id, email: user.email, paymentRequired: true } });
+          }, 2000);
+          return;
+        }
+        redirectToDashboard(user);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Erreur de connexion');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -74,27 +122,7 @@ export default function LoginPage() {
         return;
       }
 
-      // ✅ CRITICAL FIX: Si URL de redirection fournie, l'utiliser en priorité
-      if (redirectUrl) {
-        console.log('🔄 Redirection post-connexion vers:', redirectUrl);
-        navigate(redirectUrl, { replace: true });
-        return;
-      }
-
-      // Sinon, redirection par défaut selon le type d'utilisateur
-      if (user?.type === 'admin') {
-        navigate(ROUTES.ADMIN_DASHBOARD);
-      } else if (user?.type === 'partner') {
-        navigate(ROUTES.PARTNER_DASHBOARD);
-      } else if (user?.type === 'exhibitor') {
-        navigate(ROUTES.EXHIBITOR_DASHBOARD);
-      } else if (user?.type === 'visitor') {
-        // All visitors go to dashboard (Free and VIP)
-        navigate(ROUTES.VISITOR_DASHBOARD);
-      } else {
-        // Par défaut pour les autres types ou si type non défini
-        navigate(ROUTES.DASHBOARD);
-      }
+      redirectToDashboard(user);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Email ou mot de passe incorrect';
       setError(errorMessage);
