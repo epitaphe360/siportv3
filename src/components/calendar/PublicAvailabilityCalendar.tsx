@@ -102,12 +102,32 @@ export default function PublicAvailabilityCalendar({
 
       const newSlotDate = normalizeDate(newSlot.date);
 
-      // Vérifier les créneaux qui se chevauchent
+      // 1. Vérifier si un créneau identique existe déjà (même date, même heure de début ET fin)
+      const duplicate = timeSlots.find(slot => {
+        const slotDate = normalizeDate(slot.date);
+        return slotDate === newSlotDate && 
+               slot.startTime === newSlot.startTime && 
+               slot.endTime === newSlot.endTime;
+      });
+
+      if (duplicate) {
+        toast.error(`⚠️ Un créneau identique existe déjà (${duplicate.startTime} - ${duplicate.endTime})`);
+        setIsLoading(false);
+        return;
+      }
+
+      // 2. Vérifier les créneaux qui se chevauchent
       const overlapping = timeSlots.find(slot => {
         const slotDate = normalizeDate(slot.date);
 
-        // Même date ET chevauchement horaire
-        return slotDate === newSlotDate && (
+        // Même date ET chevauchement horaire (mais pas identique)
+        if (slotDate !== newSlotDate) return false;
+        
+        // Ignorer si c'est exactement le même (déjà vérifié au-dessus)
+        if (slot.startTime === newSlot.startTime && slot.endTime === newSlot.endTime) return false;
+        
+        // Vérifier chevauchement
+        return (
           (newSlot.startTime >= slot.startTime && newSlot.startTime < slot.endTime) ||
           (newSlot.endTime > slot.startTime && newSlot.endTime <= slot.endTime) ||
           (newSlot.startTime <= slot.startTime && newSlot.endTime >= slot.endTime)
@@ -327,6 +347,18 @@ export default function PublicAvailabilityCalendar({
             </div>
 
             <div className="flex flex-col items-end space-y-3">
+              {/* Bouton Ajouter Créneau - Toujours visible si editable */}
+              {isEditable && (
+                <Button
+                  onClick={() => setShowAddModal(true)}
+                  className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white px-6 py-2.5 font-bold shadow-lg shadow-emerald-900/30 hover:shadow-xl transition-all duration-200 border border-white/20"
+                  data-testid="button-add-slot-header"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Nouveau Créneau
+                </Button>
+              )}
+              
               <Badge variant="info" className="px-4 py-1.5 text-xs font-bold bg-blue-500/20 text-blue-300 border-blue-500/30 backdrop-blur-sm uppercase tracking-wider">
                 Événement Exclusif
               </Badge>
