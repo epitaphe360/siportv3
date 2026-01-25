@@ -63,8 +63,11 @@ export default function PublicAvailabilityCalendar({
   };
 
   const handleAddTimeSlot = async () => {
+    console.log('🔵 handleAddTimeSlot appelé', { newSlot, isLoading });
+    
     if (!newSlot.date || !newSlot.startTime || !newSlot.endTime) {
       toast.error('Veuillez remplir tous les champs requis');
+      console.log('❌ Champs manquants:', { date: newSlot.date, startTime: newSlot.startTime, endTime: newSlot.endTime });
       return;
     }
 
@@ -83,6 +86,7 @@ export default function PublicAvailabilityCalendar({
       return;
     }
 
+    console.log('✅ Validation passée, création du créneau...');
     setIsLoading(true);
     try {
       const duration = calculateDuration(newSlot.startTime, newSlot.endTime);
