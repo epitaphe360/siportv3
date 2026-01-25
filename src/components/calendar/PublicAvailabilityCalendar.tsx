@@ -102,43 +102,9 @@ export default function PublicAvailabilityCalendar({
 
       const newSlotDate = normalizeDate(newSlot.date);
 
-      // 1. Vérifier si un créneau identique existe déjà (même date, même heure de début ET fin)
-      const duplicate = timeSlots.find(slot => {
-        const slotDate = normalizeDate(slot.date);
-        return slotDate === newSlotDate && 
-               slot.startTime === newSlot.startTime && 
-               slot.endTime === newSlot.endTime;
-      });
-
-      if (duplicate) {
-        toast.error(`⚠️ Un créneau identique existe déjà (${duplicate.startTime} - ${duplicate.endTime})`);
-        setIsLoading(false);
-        return;
-      }
-
-      // 2. Vérifier les créneaux qui se chevauchent
-      const overlapping = timeSlots.find(slot => {
-        const slotDate = normalizeDate(slot.date);
-
-        // Même date ET chevauchement horaire (mais pas identique)
-        if (slotDate !== newSlotDate) return false;
-        
-        // Ignorer si c'est exactement le même (déjà vérifié au-dessus)
-        if (slot.startTime === newSlot.startTime && slot.endTime === newSlot.endTime) return false;
-        
-        // Vérifier chevauchement
-        return (
-          (newSlot.startTime >= slot.startTime && newSlot.startTime < slot.endTime) ||
-          (newSlot.endTime > slot.startTime && newSlot.endTime <= slot.endTime) ||
-          (newSlot.startTime <= slot.startTime && newSlot.endTime >= slot.endTime)
-        );
-      });
-
-      if (overlapping) {
-        toast.error(`⚠️ Ce créneau chevauche un créneau existant (${overlapping.startTime} - ${overlapping.endTime})`);
-        setIsLoading(false);
-        return;
-      }
+      // Note: On permet les créneaux identiques (mêmes horaires) car plusieurs personnes
+      // peuvent recevoir simultanément au même stand
+      // Pas de validation de chevauchement ou duplication
 
       const newTimeSlot = await SupabaseService.createTimeSlot({
         userId,
