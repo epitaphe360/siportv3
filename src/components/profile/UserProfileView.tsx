@@ -7,6 +7,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/Avatar';
 import { User, PartnerProject } from '../../types';
 import AvailabilityCalendar from '../availability/AvailabilityCalendar';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../../lib/routes';
+import useAuthStore from '../../store/authStore';
 
 interface UserProfileViewProps {
   user: User;
@@ -24,6 +27,8 @@ export default function UserProfileView({
   onMessage
 }: UserProfileViewProps) {
   const [activeTab, setActiveTab] = useState<'profile' | 'availability'>('profile');
+  const navigate = useNavigate();
+  const { user: currentUser } = useAuthStore();
 
   const handleConnect = () => {
     onConnect?.(user.id);
@@ -31,8 +36,19 @@ export default function UserProfileView({
   };
 
   const handleMessage = () => {
-    onMessage?.(`${user?.profile?.firstName || ''} ${user?.profile?.lastName || ''}`);
-    toast.success(`Ouverture du chat avec ${user?.profile?.firstName || ''} ${user?.profile?.lastName || ''}`);
+    // Vérifier si l'utilisateur est connecté
+    if (!currentUser) {
+      toast.error('Veuillez vous connecter pour envoyer un message');
+      navigate(ROUTES.LOGIN);
+      return;
+    }
+
+    // Rediriger vers la messagerie avec le destinataire
+    navigate(`/messages?userId=${user.id}`);
+    
+    if (onMessage) {
+      onMessage(`${user?.profile?.firstName || ''} ${user?.profile?.lastName || ''}`);
+    }
   };
 
   const getUserTypeLabel = (type: string) => {
