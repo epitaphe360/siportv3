@@ -3478,6 +3478,9 @@ export class SupabaseService {
     entityId?: string,
     metadata?: any
   ): Promise<void> {
+    // Désactiver temporairement le logging des activités car la table peut ne pas exister
+    return;
+    
     if (!this.checkSupabaseConnection()) return;
     const safeSupabase = supabase!;
 
