@@ -3478,9 +3478,6 @@ export class SupabaseService {
     entityId?: string,
     metadata?: any
   ): Promise<void> {
-    // Désactiver temporairement le logging des activités car la table peut ne pas exister
-    return;
-    
     if (!this.checkSupabaseConnection()) return;
     const safeSupabase = supabase!;
 
@@ -3489,12 +3486,13 @@ export class SupabaseService {
         .from('activities')
         .insert([{
           user_id: userId,
-          actor_id: actorId,
-          type,
+          activity_type: type,
           description,
-          entity_type: entityType || null,
-          entity_id: entityId || null,
-          metadata: metadata || {}
+          related_user_id: actorId || null,
+          related_entity_type: entityType || null,
+          related_entity_id: entityId || null,
+          metadata: metadata || {},
+          is_public: true
         }]);
     } catch (error) {
       console.error('Erreur lors de la création du log d\'activité:', error);
