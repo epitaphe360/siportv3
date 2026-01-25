@@ -64,6 +64,18 @@ export default function ExhibitorDetailPage() {
     }
   };
 
+  // Fonction pour gérer le clic sur le bouton Message
+  const handleMessageClick = () => {
+    if (!isAuthenticated) {
+      toast.error('Veuillez vous connecter pour envoyer un message');
+      navigate(ROUTES.LOGIN);
+      return;
+    }
+    if (selectedExhibitor?.id) {
+      navigate(`/messages?userId=${selectedExhibitor.id}`);
+    }
+  };
+
   // Afficher loading pendant le chargement
   if (exhibitors.length === 0) {
     return (
@@ -956,10 +968,7 @@ export default function ExhibitorDetailPage() {
             variant="outline" 
             className="rounded-full w-12 h-12 shadow-lg bg-white"
             title={t('ui.contact_info')}
-            onClick={() => {
-              const email = exhibitor.contactInfo?.email || 'contact@portsolutions.com';
-              window.open(`mailto:${email}?subject=Demande de contact - ${exhibitor.companyName}`, '_blank');
-            }}
+            onClick={handleMessageClick}
           >
             <MessageCircle className="h-5 w-5" />
           </Button>

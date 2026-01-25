@@ -81,12 +81,11 @@ export const MatchmakingDashboard: React.FC = () => {
     if (!user) return;
 
     try {
-      // Redirect to chat with this user
-      const { default: useNavigate } = await import('react-router-dom');
-      window.location.href = `/chat?userId=${targetUserId}`;
+      // Redirect to messages with this user
+      window.location.href = `/messages?userId=${targetUserId}`;
     } catch (error) {
       const { toast } = await import('sonner');
-      toast.error('Erreur lors de l\'ouverture du chat');
+      toast.error('Erreur lors de l\'ouverture de la messagerie');
       console.error('Message error:', error);
     }
   };

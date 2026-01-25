@@ -370,7 +370,7 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
     }
   },
 
-  handleMessage: (userName: string, company: string) => {
+  handleMessage: (userName: string, company: string, userId?: string) => {
     const { user } = useAuthStore.getState();
     if (!user) {
       toast.error("Vous devez être connecté pour envoyer un message.");
@@ -391,7 +391,12 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
       },
     }));
 
-    toast.success(`💬 Message envoyé à ${userName} de ${company}.`);
+    // Redirect to messages page with userId if provided
+    if (userId) {
+      window.location.href = `/messages?userId=${userId}`;
+    } else {
+      toast.success(`💬 Message envoyé à ${userName} de ${company}.`);
+    }
     
     // Show remaining quota
     const remaining = get().getRemainingQuota();

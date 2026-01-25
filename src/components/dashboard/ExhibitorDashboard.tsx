@@ -12,7 +12,7 @@ import { QRCodeCanvas as QRCode } from 'qrcode.react';
 import { useAppointmentStore } from '../../store/appointmentStore';
 import PublicAvailabilityCalendar from '../calendar/PublicAvailabilityCalendar';
 import PersonalAppointmentsCalendar from '../calendar/PersonalAppointmentsCalendar';
-import { Calendar, Zap, Building2, Eye, MessageSquare, Download, TrendingUp, Sparkles } from 'lucide-react';
+import { Calendar, Zap, Building2, Eye, MessageSquare, Download, TrendingUp, Sparkles, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getVisitorDisplayName } from '../../utils/visitorHelpers';
 import { useDashboardStats } from '../../hooks/useDashboardStats';
@@ -891,46 +891,63 @@ export default function ExhibitorDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Actions Rapides */}
           <div className="lg:col-span-2">
-            <Card className="siports-glass-card">
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                  <Zap className="mr-3 text-siports-primary" />
-                  Actions Rapides
-                </h3>
+            <Card className="siports-glass-card overflow-hidden">
+              <div className="p-6 bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="p-2.5 bg-gradient-to-br from-siports-primary to-siports-secondary rounded-xl shadow-lg">
+                    <Zap className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">Actions Rapides</h3>
+                    <p className="text-xs text-gray-500">Accès direct à vos outils essentiels</p>
+                  </div>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {quickActions.map((action) => (
+                  {quickActions.map((action, index) => (
                     <motion.div
                       key={action.title}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      whileHover={{ scale: 1.03, y: -4 }}
+                      whileTap={{ scale: 0.98 }}
                       className="group"
-                      whileHover={{ scale: 1.02 }}
-                      transition={{ duration: 0.2 }}
                     >
                       {action.link ? (
-                        <Link to={action.link}>
-                          <Button variant={action.variant} className="w-full h-auto py-4 justify-start">
-                            <div className="flex items-start space-x-3">
-                              <span className="text-2xl">{action.icon}</span>
-                              <div className="text-left">
-                                <div className="font-semibold">{action.title}</div>
-                                <div className="text-xs opacity-75">{action.description}</div>
+                        <Link to={action.link} className="block">
+                          <div className="relative bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-xl p-4 shadow-md hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-siports-primary/20 overflow-hidden">
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-siports-primary/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-500"></div>
+                            <div className="relative flex items-start space-x-4">
+                              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500/10 to-purple-500/10 group-hover:from-siports-primary/20 group-hover:to-siports-secondary/20 rounded-lg flex items-center justify-center transition-all duration-300">
+                                <span className="text-3xl transform group-hover:scale-110 transition-transform duration-300">{action.icon}</span>
                               </div>
-                            </div>
-                          </Button>
-                        </Link>
-                      ) : (
-                        <Button 
-                          variant={action.variant} 
-                          className="w-full h-auto py-4 justify-start"
-                          onClick={action.action}
-                        >
-                          <div className="flex items-start space-x-3">
-                            <span className="text-2xl">{action.icon}</span>
-                            <div className="text-left">
-                              <div className="font-semibold">{action.title}</div>
-                              <div className="text-xs opacity-75">{action.description}</div>
+                              <div className="flex-1 min-w-0">
+                                <div className="font-bold text-gray-900 group-hover:text-siports-primary transition-colors duration-300 mb-1 leading-tight">{action.title}</div>
+                                <div className="text-xs text-gray-600 group-hover:text-gray-700 leading-snug break-words">{action.description}</div>
+                              </div>
+                              <ArrowRight className="flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-siports-primary group-hover:translate-x-1 transition-all duration-300 mt-1" />
                             </div>
                           </div>
-                        </Button>
+                        </Link>
+                      ) : (
+                        <button 
+                          onClick={action.action}
+                          className="w-full text-left"
+                        >
+                          <div className="relative bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-xl p-4 shadow-md hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-siports-primary/20 overflow-hidden">
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-siports-primary/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-500"></div>
+                            <div className="relative flex items-start space-x-4">
+                              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500/10 to-purple-500/10 group-hover:from-siports-primary/20 group-hover:to-siports-secondary/20 rounded-lg flex items-center justify-center transition-all duration-300">
+                                <span className="text-3xl transform group-hover:scale-110 transition-transform duration-300">{action.icon}</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="font-bold text-gray-900 group-hover:text-siports-primary transition-colors duration-300 mb-1 leading-tight">{action.title}</div>
+                                <div className="text-xs text-gray-600 group-hover:text-gray-700 leading-snug break-words">{action.description}</div>
+                              </div>
+                              <ArrowRight className="flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-siports-primary group-hover:translate-x-1 transition-all duration-300 mt-1" />
+                            </div>
+                          </div>
+                        </button>
                       )}
                     </motion.div>
                   ))}

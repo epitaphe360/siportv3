@@ -60,6 +60,15 @@ export default function ExhibitorDetailPage() {
     }
   };
 
+  // Fonction pour gérer le clic sur le bouton Message
+  const handleMessageClick = () => {
+    if (!isAuthenticated) {
+      navigate(`/login?redirect=/messages?userId=${exhibitor?.id}`);
+    } else {
+      navigate(`/messages?userId=${exhibitor?.id}`);
+    }
+  };
+
   const handleContact = () => {
     if (exhibitor?.contactInfo?.email) {
       window.open(`mailto:${exhibitor.contactInfo.email}`, '_blank');

@@ -1200,7 +1200,7 @@ export default function NetworkingPage() {
                         </div>
                         <div className="flex gap-2">
                           <button 
-                            onClick={() => handleMessage(displayName, company)}
+                            onClick={() => handleMessage(displayName, company, connectedUser.id)}
                             className="p-3 rounded-xl bg-slate-50 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-all"
                           >
                             <MessageCircle className="h-5 w-5" />
@@ -1678,7 +1678,7 @@ export default function NetworkingPage() {
               showBooking={true}
               onClose={() => setSelectedUserProfile(null)}
               onConnect={(userId) => handleConnect(userId, getDisplayName(selectedUserProfile))}
-              onMessage={(userName) => handleMessage(userName, selectedUserProfile.profile.company || '')}
+              onMessage={(userName) => handleMessage(userName, selectedUserProfile.profile.company || '', selectedUserProfile.id)}
             />
           </div>
         </div>
