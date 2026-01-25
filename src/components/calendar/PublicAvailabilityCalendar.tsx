@@ -467,6 +467,7 @@ export default function PublicAvailabilityCalendar({
                       ))}
                     </AnimatePresence>
 
+                    {/* Message si aucun créneau */}
                     {daySlots.length === 0 && (
                       <div className="flex flex-col items-center justify-center h-full py-12 px-6 text-center">
                         <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mb-4 border-2 border-dashed border-gray-200 group-hover:border-blue-200 transition-colors">
@@ -474,19 +475,22 @@ export default function PublicAvailabilityCalendar({
                         </div>
                         <p className="text-gray-500 font-bold text-sm mb-1 uppercase tracking-tight">Aucun créneau</p>
                         <p className="text-gray-400 text-xs mb-6">Planifiez vos disponibilités pour ce jour</p>
-                        
-                        {isEditable && (
-                          <button
-                            onClick={() => {
-                              setNewSlot({ ...newSlot, date: formatDateForInput(day) });
-                              setShowAddModal(true);
-                            }}
-                            className="flex items-center space-x-2 bg-white border-2 border-gray-200 hover:border-blue-500 hover:text-blue-600 text-gray-500 px-4 py-2 rounded-xl text-xs font-black transition-all shadow-sm hover:shadow-md uppercase tracking-wider"
-                          >
-                            <Plus className="w-4 h-4" />
-                            <span>Ajouter</span>
-                          </button>
-                        )}
+                      </div>
+                    )}
+
+                    {/* Bouton Ajouter - Toujours visible si éditable */}
+                    {isEditable && (
+                      <div className={`flex justify-center ${daySlots.length > 0 ? 'mt-4 pt-4 border-t border-gray-100' : ''}`}>
+                        <button
+                          onClick={() => {
+                            setNewSlot({ ...newSlot, date: formatDateForInput(day) });
+                            setShowAddModal(true);
+                          }}
+                          className="flex items-center space-x-2 bg-white border-2 border-gray-200 hover:border-blue-500 hover:text-blue-600 text-gray-500 px-4 py-2 rounded-xl text-xs font-black transition-all shadow-sm hover:shadow-md uppercase tracking-wider"
+                        >
+                          <Plus className="w-4 h-4" />
+                          <span>Ajouter</span>
+                        </button>
                       </div>
                     )}
                   </div>
