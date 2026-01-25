@@ -632,6 +632,18 @@ export default function PublicAvailabilityCalendar({
         </Card>
       )}
 
+      {/* Bouton flottant pour ajouter un créneau - Visible quand il y a déjà des créneaux */}
+      {isEditable && timeSlots.length > 0 && (
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="fixed bottom-8 right-8 z-40 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white p-4 rounded-full shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300 hover:scale-110 group"
+          data-testid="button-add-slot-floating"
+          title="Ajouter un nouveau créneau"
+        >
+          <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
+        </button>
+      )}
+
       {/* Modal Ajout/Édition */}
       <AnimatePresence>
         {showAddModal && (
