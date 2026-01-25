@@ -538,43 +538,63 @@ export default function PartnerDashboard() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <Card className="p-8 bg-white rounded-[2.5rem] shadow-xl border-2 border-indigo-50">
-                    <h3 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-4">
-                      <span className="p-3 bg-amber-100 rounded-2xl text-amber-600">
-                        <Calendar className="h-6 w-6" />
-                      </span>
-                      En attente ({pendingAppointments.length})
-                    </h3>
+                  <Card className="p-8 bg-white rounded-[2.5rem] shadow-xl border-2 border-indigo-50 overflow-hidden">
+                    <div className="flex items-center space-x-3 mb-6">
+                      <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl shadow-lg">
+                        <Calendar className="h-6 w-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-black text-slate-900">En attente</h3>
+                        <p className="text-sm text-slate-500">Demandes à traiter ({pendingAppointments.length})</p>
+                      </div>
+                    </div>
                     <div className="space-y-4">
                       {pendingAppointments.length === 0 ? (
-                        <p className="text-slate-400 text-center py-10 font-medium">Aucune demande en attente</p>
+                        <div className="text-center py-12">
+                          <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Calendar className="h-8 w-8 text-gray-400" />
+                          </div>
+                          <p className="text-slate-400 font-medium">Aucune demande en attente</p>
+                          <p className="text-xs text-slate-300 mt-1">Les nouvelles demandes apparaîtront ici</p>
+                        </div>
                       ) : (
-                        pendingAppointments.map((app) => (
-                          <div key={app.id} className="p-6 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between">
-                            <div>
-                              <p className="font-bold text-slate-900">{getVisitorDisplayName(app)}</p>
-                              <p className="text-sm text-slate-500">{app.message || "Pas de message"}</p>
+                        pendingAppointments.map((app, index) => (
+                          <motion.div 
+                            key={app.id} 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="group relative bg-gradient-to-br from-slate-50 to-white hover:from-amber-50 hover:to-orange-50 rounded-2xl border-2 border-slate-100 hover:border-amber-200 p-6 transition-all duration-300 hover:shadow-lg"
+                          >
+                            <div className="flex items-start space-x-4 mb-4">
+                              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                                {getVisitorDisplayName(app).charAt(0).toUpperCase()}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-bold text-slate-900 group-hover:text-amber-700 transition-colors mb-1">{getVisitorDisplayName(app)}</p>
+                                <p className="text-sm text-slate-500 break-words">{app.message || "Pas de message"}</p>
+                              </div>
                             </div>
                             <div className="flex gap-2">
                               <Button 
                                 size="sm" 
-                                className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl"
+                                className="flex-1 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white rounded-xl font-bold shadow-md hover:shadow-lg transition-all"
                                 onClick={() => handleAccept(app.id)}
                                 disabled={processingAppointment === app.id}
                               >
-                                {processingAppointment === app.id ? "..." : "Accepter"}
+                                {processingAppointment === app.id ? "⏳ ..." : "✓ Accepter"}
                               </Button>
                               <Button 
                                 size="sm" 
                                 variant="destructive" 
-                                className="rounded-xl"
+                                className="flex-1 rounded-xl font-bold shadow-md hover:shadow-lg transition-all"
                                 onClick={() => handleReject(app.id)}
                                 disabled={processingAppointment === app.id}
                               >
-                                {processingAppointment === app.id ? "..." : "Refuser"}
+                                {processingAppointment === app.id ? "⏳ ..." : "✕ Refuser"}
                               </Button>
                             </div>
-                          </div>
+                          </motion.div>
                         ))
                       )}
                     </div>
