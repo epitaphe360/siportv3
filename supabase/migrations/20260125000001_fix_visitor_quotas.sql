@@ -1,14 +1,30 @@
 -- Migration pour corriger les quotas visiteurs selon le cahier des charges
 -- FREE: 0 RDV | VIP/PREMIUM: 10 RDV
 
--- 1. Mettre à jour les quotas pour le niveau FREE (0 rendez-vous)
+-- 1. Vérifier et ajouter les colonnes manquantes si nécessaire
+DO $$ 
+BEGIN
+  -- Ajouter la colonne features si elle n'existe pas
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                 WHERE table_name='visitor_levels' AND column_name='features') THEN
+    ALTER TABLE visitor_levels ADD COLUMN features jsonb DEFAULT '{}';
+  END IF;
+  
+  -- Ajouter la colonne quotas si elle n'existe pas
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                 WHERE table_name='visitor_levels' AND column_name='quotas') THEN
+    ALTER TABLE visitor_levels ADD COLUMN quotas jsonb DEFAULT '{}';
+  END IF;
+END $$;
+
+-- 2. Mettre à jour les quotas pour le niveau FREE (0 rendez-vous)
 UPDATE visitor_levels
 SET 
   features = '{"appointments": 0, "connections": 10, "minisite_views": true, "chat": true}'::jsonb,
   quotas = '{"appointments": 0, "connections_per_day": 10, "favorites": 20}'::jsonb
 WHERE level = 'free';
 
--- 2. Mettre à jour les quotas pour le niveau VIP (10 rendez-vous)
+-- 3. Mettre à jour les quotas pour le niveau VIP (10 rendez-vous)
 UPDATE visitor_levels
 SET 
   name = 'Pass VIP Premium',
@@ -20,7 +36,7 @@ SET
   display_order = 2
 WHERE level = 'vip';
 
--- 3. Mettre à jour PREMIUM pour être un alias de VIP (10 rendez-vous)
+-- 4. Mettre à jour PREMIUM pour être un alias de VIP (10 rendez-vous)
 UPDATE visitor_levels
 SET 
   name = 'Pass VIP Premium (alias)',
@@ -32,7 +48,7 @@ SET
   display_order = 3
 WHERE level = 'premium';
 
--- 4. Vérification des valeurs (commentaire pour référence)
+-- 5. Vérification des valeurs (commentaire pour référence)
 -- SELECT level, name, (quotas->>'appointments')::int as rdv_quota 
 -- FROM visitor_levels 
 -- ORDER BY display_order;
