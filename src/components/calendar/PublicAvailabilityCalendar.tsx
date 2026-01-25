@@ -408,7 +408,7 @@ export default function PublicAvailabilityCalendar({
                   </div>
 
                   {/* Créneaux du jour */}
-                  <div className="p-4 space-y-3 flex-1 min-h-[300px] bg-gradient-to-b from-transparent to-gray-50/50">
+                  <div className="p-4 space-y-3 flex-1 min-h-[300px] bg-gradient-to-b from-transparent to-gray-50/50 pb-6">
                     <AnimatePresence mode="popLayout">
                       {daySlots.map((slot) => (
                         <motion.div
@@ -480,13 +480,13 @@ export default function PublicAvailabilityCalendar({
 
                     {/* Bouton Ajouter - Toujours visible si éditable */}
                     {isEditable && (
-                      <div className={`flex justify-center ${daySlots.length > 0 ? 'mt-4 pt-4 border-t border-gray-100' : ''}`}>
+                      <div className={`flex justify-center pb-2 ${daySlots.length > 0 ? 'mt-4 pt-4 border-t border-gray-100' : ''}`}>
                         <button
                           onClick={() => {
                             setNewSlot({ ...newSlot, date: formatDateForInput(day) });
                             setShowAddModal(true);
                           }}
-                          className="flex items-center space-x-2 bg-white border-2 border-gray-200 hover:border-blue-500 hover:text-blue-600 text-gray-500 px-4 py-2 rounded-xl text-xs font-black transition-all shadow-sm hover:shadow-md uppercase tracking-wider"
+                          className="flex items-center space-x-2 bg-white border-2 border-gray-200 hover:border-blue-500 hover:text-blue-600 text-gray-500 px-4 py-2.5 rounded-xl text-xs font-black transition-all shadow-sm hover:shadow-md uppercase tracking-wider"
                         >
                           <Plus className="w-4 h-4" />
                           <span>Ajouter</span>
