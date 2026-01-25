@@ -13,7 +13,7 @@ import { useAppointmentStore } from '../../store/appointmentStore';
 import PublicAvailabilityCalendar from '../calendar/PublicAvailabilityCalendar';
 import PersonalAppointmentsCalendar from '../calendar/PersonalAppointmentsCalendar';
 import { Calendar, Zap, Building2, Eye, MessageSquare, Download, TrendingUp, Sparkles } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { getVisitorDisplayName } from '../../utils/visitorHelpers';
 import { useDashboardStats } from '../../hooks/useDashboardStats';
 import { DEFAULT_SALON_CONFIG, formatSalonDates, formatSalonLocation, formatSalonHours } from '../../config/salonInfo';
