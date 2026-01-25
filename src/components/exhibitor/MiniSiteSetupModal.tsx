@@ -55,7 +55,20 @@ export const MiniSiteSetupModal: React.FC<MiniSiteSetupModalProps> = ({
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        // Check if it's a 404 (function not deployed)
+        if (error.message?.includes('404') || error.message?.includes('not found')) {
+          console.warn('⚠️ Edge function not deployed, redirecting to manual creation');
+          toast.info(
+            '💡 Création automatique non disponible. Utilisez la création manuelle.',
+            { duration: 4000 }
+          );
+          setMode('manual');
+          setIsLoading(false);
+          return;
+        }
+        throw error;
+      }
 
       // Mark minisite as created
       await supabase
