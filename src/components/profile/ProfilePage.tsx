@@ -33,6 +33,7 @@ import { MoroccanPattern } from '../ui/MoroccanDecor';
 export default function ProfilePage() {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const { user, updateProfile, isLoading } = useAuthStore();
+  const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     firstName: user?.profile.firstName || '',
