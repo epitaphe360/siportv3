@@ -328,7 +328,14 @@ export const useNetworkingStore = create<NetworkingState>((set, get) => ({
       }
     } catch (error: unknown) {
       console.error('Erreur lors de la connexion:', error);
-      toast.error(error instanceof Error ? error.message : String(error) || 'Erreur lors de l\'envoi de la demande de connexion.');
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      
+      // Message spécifique pour connexion déjà existante
+      if (errorMessage.includes('duplicate') || errorMessage.includes('déjà une demande')) {
+        toast.warning(errorMessage);
+      } else {
+        toast.error(errorMessage || 'Erreur lors de l\'envoi de la demande de connexion.');
+      }
     }
   },
 

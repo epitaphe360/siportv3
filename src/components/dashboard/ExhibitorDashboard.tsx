@@ -12,7 +12,7 @@ import { QRCodeCanvas as QRCode } from 'qrcode.react';
 import { useAppointmentStore } from '../../store/appointmentStore';
 import PublicAvailabilityCalendar from '../calendar/PublicAvailabilityCalendar';
 import PersonalAppointmentsCalendar from '../calendar/PersonalAppointmentsCalendar';
-import { Calendar, Zap, Building2, Eye, MessageSquare, Download, TrendingUp, Sparkles, ArrowRight } from 'lucide-react';
+import { Calendar, Zap, Building2, Eye, MessageSquare, Download, TrendingUp, Sparkles, ArrowRight, Clock, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getVisitorDisplayName } from '../../utils/visitorHelpers';
 import { useDashboardStats } from '../../hooks/useDashboardStats';
@@ -956,62 +956,116 @@ export default function ExhibitorDashboard() {
             </Card>
 
             {/* Rendez-vous reçus */}
-            <Card className="siports-glass-card mt-8">
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                  <Calendar className="h-5 w-5 mr-2 text-purple-600" />
-                  Rendez-vous reçus
-                </h3>
+            <Card className="siports-glass-card mt-8 overflow-hidden">
+              <div className="p-6 bg-gradient-to-br from-white via-purple-50/20 to-pink-50/20">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="p-2.5 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl shadow-lg">
+                    <Calendar className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">Rendez-vous reçus</h3>
+                    <p className="text-xs text-gray-500">Gérez vos demandes et confirmations</p>
+                  </div>
+                </div>
                 {isAppointmentsLoading ? (
-                  <div className="text-center py-6 text-gray-500">Chargement...</div>
+                  <div className="text-center py-12">
+                    <div className="inline-flex items-center space-x-3">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                      <span className="text-gray-600 font-medium">Chargement des rendez-vous...</span>
+                    </div>
+                  </div>
                 ) : (
                   <>
-                    {pendingAppointments.length === 0 && (
-                      <div className="text-center text-gray-500 py-4">Aucune demande en attente</div>
-                    )}
-                    {pendingAppointments.map((app: any) => (
-                      <div key={app.id} className="flex items-center justify-between border-b py-2 last:border-b-0">
-                        <div>
-                          <div className="font-medium text-gray-900">
-                            Demande de {getVisitorDisplayName(app)}
-                          </div>
-                          <div className="text-xs text-gray-600">{app.message || 'Aucun message'}</div>
+                    {pendingAppointments.length === 0 ? (
+                      <div className="text-center py-12 px-4">
+                        <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Calendar className="h-8 w-8 text-gray-400" />
                         </div>
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="default"
-                            onClick={() => handleAccept(app.id)}
-                            disabled={processingAppointment === app.id}
-                          >
-                            {processingAppointment === app.id ? 'Confirmation...' : 'Accepter'}
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => handleReject(app.id)}
-                            disabled={processingAppointment === app.id}
-                          >
-                            {processingAppointment === app.id ? 'Refus...' : 'Refuser'}
-                          </Button>
-                        </div>
+                        <p className="text-gray-500 font-medium">Aucune demande en attente</p>
+                        <p className="text-xs text-gray-400 mt-1">Les nouvelles demandes apparaîtront ici</p>
                       </div>
-                    ))}
-                    <h4 className="text-lg font-semibold text-gray-900 mt-6 mb-2">Rendez-vous confirmés</h4>
-                    {confirmedAppointments.length === 0 ? (
-                      <div className="text-center text-gray-500 py-2">Aucun rendez-vous confirmé</div>
                     ) : (
-                      confirmedAppointments.map((app: any) => (
-                        <div key={app.id} className="flex items-center justify-between border-b py-2 last:border-b-0">
-                          <div>
-                            <div className="font-medium text-gray-900">
-                              Avec {getVisitorDisplayName(app)}
+                      <div className="space-y-3 mb-6">
+                        {pendingAppointments.map((app: any, index: number) => (
+                          <motion.div
+                            key={app.id}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="group relative bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-xl p-4 shadow-md hover:shadow-xl transition-all duration-300 border-2 border-purple-100 hover:border-purple-300"
+                          >
+                            <div className="absolute top-2 right-2">
+                              <Badge variant="warning" className="text-xs font-bold animate-pulse">Nouveau</Badge>
                             </div>
-                            <div className="text-xs text-gray-600">{app.message || 'Aucun message'}</div>
-                          </div>
-                          <Badge variant="success">Confirmé</Badge>
+                            <div className="flex items-start space-x-4 mb-3">
+                              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                                {getVisitorDisplayName(app).charAt(0).toUpperCase()}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="font-bold text-gray-900 group-hover:text-purple-700 transition-colors mb-1">
+                                  Demande de {getVisitorDisplayName(app)}
+                                </div>
+                                <div className="text-sm text-gray-600 leading-relaxed break-words">{app.message || 'Aucun message'}</div>
+                              </div>
+                            </div>
+                            <div className="flex gap-2 mt-3">
+                              <Button
+                                size="sm"
+                                className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold shadow-md hover:shadow-lg transition-all"
+                                onClick={() => handleAccept(app.id)}
+                                disabled={processingAppointment === app.id}
+                              >
+                                {processingAppointment === app.id ? '⏳ Confirmation...' : '✓ Accepter'}
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                className="flex-1 font-bold shadow-md hover:shadow-lg transition-all"
+                                onClick={() => handleReject(app.id)}
+                                disabled={processingAppointment === app.id}
+                              >
+                                {processingAppointment === app.id ? '⏳ Refus...' : '✕ Refuser'}
+                              </Button>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {confirmedAppointments.length > 0 && (
+                      <>
+                        <div className="flex items-center space-x-2 mb-4 mt-8">
+                          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+                          <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wider">Rendez-vous confirmés</h4>
+                          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
                         </div>
-                      ))
+                        <div className="space-y-3">
+                          {confirmedAppointments.map((app: any, index: number) => (
+                            <motion.div
+                              key={app.id}
+                              initial={{ opacity: 0, x: -20 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: index * 0.1 }}
+                              className="group relative bg-white hover:bg-gradient-to-br hover:from-green-50 hover:to-emerald-50 rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300 border-2 border-green-100 hover:border-green-300"
+                            >
+                              <div className="flex items-start space-x-4">
+                                <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                                  {getVisitorDisplayName(app).charAt(0).toUpperCase()}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center justify-between mb-1">
+                                    <div className="font-bold text-gray-900 group-hover:text-green-700 transition-colors">
+                                      Avec {getVisitorDisplayName(app)}
+                                    </div>
+                                    <Badge variant="success" className="font-bold">✓ Confirmé</Badge>
+                                  </div>
+                                  <div className="text-sm text-gray-600 break-words">{app.message || 'Aucun message'}</div>
+                                </div>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </>
                     )}
                   </>
                 )}
@@ -1070,30 +1124,71 @@ export default function ExhibitorDashboard() {
         </div>
 
         {/* Section Informations Importantes */}
-        <div className="mt-8">
-          <Card className="siports-glass-card border-l-4 border-l-siports-gold">
-            <div className="p-6">
-              <div className="flex items-center space-x-3 mb-4">
-                <span className="text-2xl">📢</span>
-                <h3 className="text-xl font-bold text-gray-900">Informations Importantes</h3>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="mt-8"
+        >
+          <Card className="siports-glass-card border-l-4 border-l-siports-gold overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-siports-gold/5 to-transparent rounded-full blur-3xl"></div>
+            <div className="p-6 relative">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="p-2.5 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl shadow-lg">
+                  <Sparkles className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900">Informations Importantes</h3>
+                  <p className="text-xs text-gray-500">Détails essentiels du salon</p>
+                </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <h4 className="font-semibold text-blue-900 mb-2">📅 {DEFAULT_SALON_CONFIG.name}</h4>
-                  <p className="text-sm text-blue-700">{formatSalonDates(DEFAULT_SALON_CONFIG)} • {formatSalonLocation(DEFAULT_SALON_CONFIG)}</p>
-                </div>
-                <div className="bg-green-50 p-4 rounded-lg">
-                  <h4 className="font-semibold text-green-900 mb-2">⏰ Stand Ouverture</h4>
-                  <p className="text-sm text-green-700">{formatSalonHours(DEFAULT_SALON_CONFIG)}</p>
-                </div>
-                <div className="bg-purple-50 p-4 rounded-lg">
-                  <h4 className="font-semibold text-purple-900 mb-2">🎯 Objectif 2026</h4>
-                  <p className="text-sm text-purple-700">{DEFAULT_SALON_CONFIG.expectedVisitors.toLocaleString()} visiteurs attendus</p>
-                </div>
+                <motion.div 
+                  whileHover={{ scale: 1.03, y: -4 }}
+                  className="group relative bg-gradient-to-br from-blue-500 to-blue-600 p-5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
+                  <div className="relative">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <Calendar className="h-5 w-5 text-blue-100" />
+                      <h4 className="font-bold text-white text-sm uppercase tracking-wide">{DEFAULT_SALON_CONFIG.name}</h4>
+                    </div>
+                    <p className="text-sm text-blue-50 leading-relaxed">{formatSalonDates(DEFAULT_SALON_CONFIG)}</p>
+                    <p className="text-sm text-blue-100 font-medium mt-1">{formatSalonLocation(DEFAULT_SALON_CONFIG)}</p>
+                  </div>
+                </motion.div>
+                <motion.div 
+                  whileHover={{ scale: 1.03, y: -4 }}
+                  className="group relative bg-gradient-to-br from-green-500 to-emerald-600 p-5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
+                  <div className="relative">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <Clock className="h-5 w-5 text-green-100" />
+                      <h4 className="font-bold text-white text-sm uppercase tracking-wide">Stand Ouverture</h4>
+                    </div>
+                    <p className="text-sm text-green-50 leading-relaxed">{formatSalonHours(DEFAULT_SALON_CONFIG)}</p>
+                    <p className="text-xs text-green-100 mt-2">Tous les jours du salon</p>
+                  </div>
+                </motion.div>
+                <motion.div 
+                  whileHover={{ scale: 1.03, y: -4 }}
+                  className="group relative bg-gradient-to-br from-purple-500 to-pink-600 p-5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
+                  <div className="relative">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <Target className="h-5 w-5 text-purple-100" />
+                      <h4 className="font-bold text-white text-sm uppercase tracking-wide">Objectif 2026</h4>
+                    </div>
+                    <p className="text-2xl font-black text-white mb-1">{DEFAULT_SALON_CONFIG.expectedVisitors.toLocaleString()}</p>
+                    <p className="text-sm text-purple-100">visiteurs attendus</p>
+                  </div>
+                </motion.div>
               </div>
             </div>
           </Card>
-        </div>
+        </motion.div>
       </div>
 
       {/* Modal QR Code amélioré avec animations */}

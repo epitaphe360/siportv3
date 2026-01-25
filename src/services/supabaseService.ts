@@ -3118,7 +3118,13 @@ export class SupabaseService {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        // Handle duplicate connection (409 conflict)
+        if (error.code === '23505' || error.message?.includes('duplicate')) {
+          throw new Error('Vous avez déjà une demande de connexion en cours avec cet utilisateur.');
+        }
+        throw error;
+      }
 
       // Create notification for addressee
       // Note: createNotification prend (userId, message, type) - 3 params seulement

@@ -214,14 +214,12 @@ export const FeaturedExhibitors: React.FC = () => {
                         variant="outline" 
                         size="sm"
                         onClick={() => {
-                          const contactData = {
-                            company: exhibitor.companyName,
-                            sector: exhibitor.sector,
-                            products: exhibitor.products.length,
-                            contact: 'contact@' + exhibitor.companyName.toLowerCase().replace(/\s+/g, '') + '.com'
-                          };
-                          
-                          toast.success(`💬 Contact : ${contactData.company} — ${contactData.contact}`);
+                          if (!isAuthenticated) {
+                            toast.error('Veuillez vous connecter pour envoyer un message');
+                            navigate('/login');
+                            return;
+                          }
+                          navigate(`/messages?userId=${exhibitor.id}`);
                         }}
                         title={t('ui.contact_directly')}
                       >
