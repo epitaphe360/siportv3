@@ -1,9 +1,33 @@
 -- Migration pour corriger les quotas visiteurs selon le cahier des charges
 -- FREE: 0 RDV | VIP/PREMIUM: 10 RDV
 
--- 1. Vérifier et ajouter les colonnes manquantes si nécessaire
+-- 1. Vérifier et ajouter TOUTES les colonnes manquantes si nécessaire
 DO $$ 
 BEGIN
+  -- Ajouter la colonne name si elle n'existe pas
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                 WHERE table_name='visitor_levels' AND column_name='name') THEN
+    ALTER TABLE visitor_levels ADD COLUMN name text;
+  END IF;
+  
+  -- Ajouter la colonne description si elle n'existe pas
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                 WHERE table_name='visitor_levels' AND column_name='description') THEN
+    ALTER TABLE visitor_levels ADD COLUMN description text;
+  END IF;
+  
+  -- Ajouter la colonne price_monthly si elle n'existe pas
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                 WHERE table_name='visitor_levels' AND column_name='price_monthly') THEN
+    ALTER TABLE visitor_levels ADD COLUMN price_monthly numeric DEFAULT 0;
+  END IF;
+  
+  -- Ajouter la colonne price_annual si elle n'existe pas
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                 WHERE table_name='visitor_levels' AND column_name='price_annual') THEN
+    ALTER TABLE visitor_levels ADD COLUMN price_annual numeric DEFAULT 0;
+  END IF;
+  
   -- Ajouter la colonne features si elle n'existe pas
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                  WHERE table_name='visitor_levels' AND column_name='features') THEN
@@ -14,6 +38,12 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                  WHERE table_name='visitor_levels' AND column_name='quotas') THEN
     ALTER TABLE visitor_levels ADD COLUMN quotas jsonb DEFAULT '{}';
+  END IF;
+  
+  -- Ajouter la colonne display_order si elle n'existe pas
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                 WHERE table_name='visitor_levels' AND column_name='display_order') THEN
+    ALTER TABLE visitor_levels ADD COLUMN display_order integer DEFAULT 0;
   END IF;
 END $$;
 
