@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from '../hooks/useTranslation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Image,
   Video,
@@ -17,7 +17,11 @@ import {
   FileText,
   Copy,
   Edit,
-  Sparkles
+  Sparkles,
+  LayoutDashboard,
+  BarChart3,
+  Globe,
+  Newspaper
 } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -26,6 +30,7 @@ import { toast } from 'sonner';
 import { supabase } from '../lib/supabase';
 import useAuthStore from '../store/authStore';
 import ArticleEditor from '../components/marketing/ArticleEditor';
+import { MoroccanPattern } from '../components/ui/MoroccanDecor';
 
 interface MediaItem {
   id: string;
@@ -328,63 +333,87 @@ export default function MarketingDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            📊 Dashboard Marketing
-          </h1>
-          <p className="text-gray-600 mt-2">
-            Gérez vos médias et articles pour siportevent.com
-          </p>
+    <div className="min-h-screen bg-slate-50">
+      {/* Premium Hub Header */}
+      <div className="bg-slate-900 pt-16 pb-24 relative overflow-hidden">
+        <MoroccanPattern className="opacity-10" color="white" scale={1.2} />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 via-transparent to-indigo-900/40" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-blue-500/20 backdrop-blur-xl rounded-2xl border border-blue-400/30">
+                  <BarChart3 className="h-8 w-8 text-blue-300" />
+                </div>
+                <Badge className="bg-blue-500/20 text-blue-200 border-blue-400/30 backdrop-blur-md px-4 py-1.5 text-sm font-bold">
+                  MARKETING CONTROL CENTER
+                </Badge>
+              </div>
+              <h1 className="text-4xl md:text-6xl font-black text-white tracking-tight">
+                Content <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 italic">Strategy Hub</span>
+              </h1>
+              <p className="text-xl text-slate-300 max-w-2xl font-medium leading-relaxed">
+                Gérez l'expérience narrative de SIPORT 2026. Publiez des contenus impactants et analysez l'engagement.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-4">
+              <Button 
+                onClick={() => {
+                  setSelectedType('webinar');
+                  setShowUploadModal(true);
+                }}
+                className="bg-blue-600 hover:bg-blue-500 text-white border-none shadow-[0_0_20px_rgba(37,99,235,0.4)] px-8 py-6 rounded-2xl font-bold transition-all hover:scale-105"
+              >
+                <Plus className="h-5 w-5 mr-3" />
+                Nouveau Contenu
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 relative z-20 pb-20">
+        {/* Navigation Tabs */}
+        <div className="bg-white/70 backdrop-blur-2xl p-2 rounded-[2.5rem] shadow-2xl border border-white/50 mb-10 inline-flex flex-wrap gap-2">
+          {[
+            { id: 'media', label: 'Médiathèque', icon: Video, count: stats.total },
+            { id: 'articles', label: 'Articles & News', icon: Newspaper, count: articles.length }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`flex items-center gap-4 px-10 py-5 rounded-[2rem] font-bold transition-all duration-300 ${
+                activeTab === tab.id
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
+                  : 'text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              <tab.icon className={`h-6 w-6 ${activeTab === tab.id ? 'text-white' : 'text-slate-400'}`} />
+              <div className="text-left">
+                <div className="text-sm leading-none opacity-80 mb-1">Explorer</div>
+                <div className="text-lg leading-none">{tab.label}</div>
+              </div>
+              <Badge className={`ml-2 px-2 py-0.5 rounded-lg ${activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'}`}>
+                {tab.count}
+              </Badge>
+            </button>
+          ))}
         </div>
 
-        {/* Onglets */}
-        <div className="mb-6 border-b border-gray-200">
-          <nav className="-mb-px flex space-x-8">
-            <button
-              onClick={() => setActiveTab('media')}
-              className={`
-                py-4 px-1 border-b-2 font-medium text-sm
-                ${activeTab === 'media'
-                  ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }
-              `}
-            >
-              <div className="flex items-center space-x-2">
-                <Video className="h-5 w-5" />
-                <span>Médias</span>
-                <Badge variant="secondary">{stats.total}</Badge>
-              </div>
-            </button>
-            
-            <button
-              onClick={() => setActiveTab('articles')}
-              className={`
-                py-4 px-1 border-b-2 font-medium text-sm
-                ${activeTab === 'articles'
-                  ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }
-              `}
-            >
-              <div className="flex items-center space-x-2">
-                <Image className="h-5 w-5" />
-                <span>Articles</span>
-                <Badge variant="secondary">{articles.length}</Badge>
-              </div>
-            </button>
-          </nav>
-        </div>
-
-        {/* Contenu selon l'onglet actif */}
-        {activeTab === 'media' ? (
-          renderMediaTab()
-        ) : (
-          renderArticlesTab()
-        )}
+        {/* Content Area */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -30 }}
+            transition={{ duration: 0.4, ease: "circOut" }}
+          >
+            {activeTab === 'media' ? renderMediaTab() : renderArticlesTab()}
+          </motion.div>
+        </AnimatePresence>
 
         {/* Article Editor Modal */}
         {showArticleEditor && (
@@ -408,95 +437,43 @@ export default function MarketingDashboard() {
   // Render Media Tab
   function renderMediaTab() {
     return (
-      <>
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-          <Card className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold">{stats.total}</div>
-                <div className="text-sm text-gray-600">Total</div>
+      <div className="space-y-8">
+        {/* Stats Grid - Modern Style */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+          {[
+            { label: 'Total Médias', value: stats.total, icon: Video, color: 'text-blue-600', bg: 'bg-blue-50' },
+            { label: 'Webinaires', value: stats.webinars, icon: Globe, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+            { label: 'Podcasts', value: stats.podcasts, icon: Mic, color: 'text-orange-600', bg: 'bg-orange-50' },
+            { label: 'Capsules', value: stats.capsules, icon: Video, color: 'text-purple-600', bg: 'bg-purple-50' },
+            { label: 'En Ligne', value: stats.published, icon: Eye, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+            { label: 'Brouillons', value: stats.draft, icon: EyeOff, color: 'text-slate-600', bg: 'bg-slate-50' }
+          ].map((stat, i) => (
+            <Card key={i} className="p-6 border-none shadow-xl bg-white/50 backdrop-blur-sm rounded-3xl hover:-translate-y-1 transition-all">
+              <div className={`w-12 h-12 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center mb-4 shadow-inner`}>
+                <stat.icon className="h-6 w-6" />
               </div>
-              <div className="text-blue-500">
-                <Filter className="h-8 w-8" />
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold">{stats.webinars}</div>
-                <div className="text-sm text-gray-600">Webinaires</div>
-              </div>
-              <div className="text-blue-500">
-                <Video className="h-8 w-8" />
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold">{stats.podcasts}</div>
-                <div className="text-sm text-gray-600">Podcasts</div>
-              </div>
-              <div className="text-orange-500">
-                <Mic className="h-8 w-8" />
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold">{stats.capsules}</div>
-                <div className="text-sm text-gray-600">Capsules</div>
-              </div>
-              <div className="text-purple-500">
-                <Video className="h-8 w-8" />
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold">{stats.published}</div>
-                <div className="text-sm text-gray-600">Publiés</div>
-              </div>
-              <div className="text-green-500">
-                <Eye className="h-8 w-8" />
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold">{stats.draft}</div>
-                <div className="text-sm text-gray-600">Brouillons</div>
-              </div>
-              <div className="text-gray-500">
-                <EyeOff className="h-8 w-8" />
-              </div>
-            </div>
-          </Card>
+              <p className="text-4xl font-black text-slate-800 mb-1">{stat.value}</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-400">{stat.label}</p>
+            </Card>
+          ))}
         </div>
 
-        {/* Filters & Actions */}
-        <Card className="p-6 mb-6">
-          <div className="flex flex-wrap items-center gap-4">
-            {/* Type Filter */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">Type:</span>
-              <Button
-                variant={filterType === 'all' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilterType('all')}
-              >
-                Tous
-              </Button>
+        {/* Filters & Actions Control Card */}
+        <Card className="p-8 bg-white rounded-[2.5rem] shadow-2xl border-none relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-2 h-full bg-blue-600" />
+          <div className="flex flex-wrap items-center justify-between gap-6">
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Filtrer par:</span>
+                <div className="flex gap-2 bg-slate-100 p-1.5 rounded-2xl">
+                  <Button
+                    variant={filterType === 'all' ? 'default' : 'ghost'}
+                    size="sm"
+                    className={`rounded-xl px-4 ${filterType === 'all' ? 'bg-blue-600' : 'text-slate-600'}`}
+                    onClick={() => setFilterType('all')}
+                  >
+                    Tous
+                  </Button>
               <Button
                 variant={filterType === 'webinar' ? 'default' : 'outline'}
                 size="sm"

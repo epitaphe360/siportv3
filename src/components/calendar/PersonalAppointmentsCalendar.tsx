@@ -11,9 +11,10 @@ import { toast } from 'sonner';
 
 interface PersonalAppointmentsCalendarProps {
   userType: 'exhibitor' | 'partner' | 'visitor';
+  standalone?: boolean;
 }
 
-export default function PersonalAppointmentsCalendar({ userType }: PersonalAppointmentsCalendarProps) {
+export default function PersonalAppointmentsCalendar({ userType, standalone = true }: PersonalAppointmentsCalendarProps) {
   const { user } = useAuthStore();
   const {
     appointments,
@@ -135,59 +136,60 @@ export default function PersonalAppointmentsCalendar({ userType }: PersonalAppoi
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] p-4 md:p-8" data-testid="personal-appointments-calendar">
-      {/* Hero Header Premium */}
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#334155] p-8 md:p-12 mb-10 shadow-2xl border border-white/10"
-      >
-        {/* Motif Marocain Subtil */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px]"></div>
-        <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-indigo-500/10 rounded-full blur-[80px]"></div>
-        
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-10">
-          <div className="flex items-center space-x-8">
-            <div className="p-5 bg-white/10 backdrop-blur-xl rounded-[1.5rem] border border-white/20 shadow-2xl transform hover:rotate-3 transition-transform duration-500">
-              <CalendarDays className="w-12 h-12 text-blue-400" />
-            </div>
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30 text-[10px] uppercase tracking-[0.2em] font-black px-3 py-1">
-                  Espace B2B
-                </Badge>
-                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full">
-                  <Sparkles className="w-3 h-3 text-amber-400" />
-                  <span className="text-[10px] font-bold text-amber-200 uppercase tracking-wider">Session 2026</span>
+    <div className={`${standalone ? 'min-h-screen bg-[#f8fafc] p-4 md:p-8' : 'p-0 bg-transparent'}`} data-testid="personal-appointments-calendar">
+      {/* Hero Header Premium - Masqué si non standalone */}
+      {standalone && (
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#334155] p-8 md:p-12 mb-10 shadow-2xl border border-white/10"
+        >
+          {/* Motif Marocain Subtil */}
+          <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
+          <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px]"></div>
+          <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-indigo-500/10 rounded-full blur-[80px]"></div>
+          
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-10">
+            <div className="flex items-center space-x-8">
+              <div className="p-5 bg-white/10 backdrop-blur-xl rounded-[1.5rem] border border-white/20 shadow-2xl transform hover:rotate-3 transition-transform duration-500">
+                <CalendarDays className="w-12 h-12 text-blue-400" />
+              </div>
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30 text-[10px] uppercase tracking-[0.2em] font-black px-3 py-1">
+                    Espace B2B
+                  </Badge>
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full">
+                    <span className="text-[10px] font-bold text-amber-200 uppercase tracking-wider">Session 2026</span>
+                  </div>
                 </div>
+                <h1 className="text-4xl md:text-5xl font-black text-white mb-2 tracking-tight">
+                  Mes Rendez-vous B2B
+                </h1>
+                <p className="text-blue-100/60 text-lg font-medium max-w-xl italic">
+                  {userType === 'visitor' 
+                    ? '🎯 Gérez vos rencontres stratégiques avec les leaders de l\'industrie portuaire'
+                    : '📩 Optimisez votre réseau et validez vos opportunités d\'affaires'}
+                </p>
               </div>
-              <h1 className="text-4xl md:text-5xl font-black text-white mb-2 tracking-tight">
-                Mes Rendez-vous B2B
-              </h1>
-              <p className="text-blue-100/60 text-lg font-medium max-w-xl italic">
-                {userType === 'visitor' 
-                  ? '🎯 Gérez vos rencontres stratégiques avec les leaders de l\'industrie portuaire'
-                  : '📩 Optimisez votre réseau et validez vos opportunités d\'affaires'}
-              </p>
+            </div>
+
+            {/* Stats Premium */}
+            <div className="grid grid-cols-3 gap-6">
+              {[
+                { label: 'Total', value: getFilteredAppointments().length, color: 'blue' },
+                { label: 'Confirmés', value: getFilteredAppointments().filter(apt => apt.status === 'confirmed').length, color: 'emerald' },
+                { label: 'En attente', value: getFilteredAppointments().filter(apt => apt.status === 'pending').length, color: 'amber' }
+              ].map((stat, i) => (
+                <div key={i} className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 text-center min-w-[120px] hover:bg-white/10 transition-colors">
+                  <div className="text-4xl font-black text-white mb-1">{stat.value}</div>
+                  <div className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">{stat.label}</div>
+                </div>
+              ))}
             </div>
           </div>
-
-          {/* Stats Premium */}
-          <div className="grid grid-cols-3 gap-6">
-            {[
-              { label: 'Total', value: getFilteredAppointments().length, color: 'blue' },
-              { label: 'Confirmés', value: getFilteredAppointments().filter(apt => apt.status === 'confirmed').length, color: 'emerald' },
-              { label: 'En attente', value: getFilteredAppointments().filter(apt => apt.status === 'pending').length, color: 'amber' }
-            ].map((stat, i) => (
-              <div key={i} className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 text-center min-w-[120px] hover:bg-white/10 transition-colors">
-                <div className="text-4xl font-black text-white mb-1">{stat.value}</div>
-                <div className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      )}
 
       <div className="space-y-8">
         {/* Barre de contrôle stylisée */}

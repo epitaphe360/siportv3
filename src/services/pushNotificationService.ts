@@ -63,6 +63,12 @@ class PushNotificationService {
       return false;
     }
 
+    // Check if configuration is present
+    if (!firebaseConfig.apiKey || firebaseConfig.apiKey === '' || firebaseConfig.projectId === 'your_project_id') {
+      console.warn('⚠️ Firebase credentials missing. Push notifications disabled.');
+      return false;
+    }
+
     try {
       // Initialize Firebase app
       this.app = initializeApp(firebaseConfig);

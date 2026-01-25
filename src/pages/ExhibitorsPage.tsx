@@ -14,6 +14,7 @@ import { CONFIG } from '../lib/config';
 import { useTranslation } from '../hooks/useTranslation';
 import { MoroccanPattern } from '../components/ui/MoroccanDecor';
 import ExhibitorCard from '../components/exhibitor/ExhibitorCard';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ExhibitorsPage() {
   const navigate = useNavigate();

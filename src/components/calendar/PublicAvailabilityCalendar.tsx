@@ -14,11 +14,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface PublicAvailabilityCalendarProps {
   userId: string;
   isEditable?: boolean;
+  standalone?: boolean;
 }
 
 export default function PublicAvailabilityCalendar({
   userId,
-  isEditable = true
+  isEditable = true,
+  standalone = true
 }: PublicAvailabilityCalendarProps) {
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -239,62 +241,64 @@ export default function PublicAvailabilityCalendar({
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <Card className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white overflow-hidden">
-        <div className="p-8 relative">
-          {/* Motif décoratif */}
-          <div className="absolute top-0 right-0 w-64 h-64 opacity-10">
-            <Calendar className="w-full h-full" />
-          </div>
-
-          <div className="relative z-10">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="p-4 bg-white/20 backdrop-blur-lg rounded-2xl">
-                  <Calendar className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-3xl font-bold mb-2">
-                    Gestion des Disponibilités
-                  </h2>
-                  <p className="text-blue-100 text-lg">
-                    Créez et gérez vos créneaux de rendez-vous pour SIPORT 2026
-                  </p>
-                </div>
-              </div>
-
-              {isEditable && (
-                <Button
-                  onClick={() => setShowAddModal(true)}
-                  className="bg-white text-blue-600 hover:bg-blue-50 px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
-                  data-testid="button-add-availability"
-                >
-                  <Plus className="w-5 h-5 mr-2" />
-                  Nouveau Créneau
-                </Button>
-              )}
+      {/* Header - Masqué si non standalone */}
+      {standalone && (
+        <Card className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white overflow-hidden">
+          <div className="p-8 relative">
+            {/* Motif décoratif */}
+            <div className="absolute top-0 right-0 w-64 h-64 opacity-10">
+              <Calendar className="w-full h-full" />
             </div>
 
-            {/* Stats rapides */}
-            <div className="grid grid-cols-3 gap-4 mt-6">
-              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4">
-                <div className="text-blue-100 text-sm mb-1">Total créneaux</div>
-                <div className="text-3xl font-bold">{timeSlots.length}</div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="p-4 bg-white/20 backdrop-blur-lg rounded-2xl">
+                    <Calendar className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-3xl font-bold mb-2">
+                      Gestion des Disponibilités
+                    </h2>
+                    <p className="text-blue-100 text-lg">
+                      Créez et gérez vos créneaux de rendez-vous pour SIPORT 2026
+                    </p>
+                  </div>
+                </div>
+
+                {isEditable && (
+                  <Button
+                    onClick={() => setShowAddModal(true)}
+                    className="bg-white text-blue-600 hover:bg-blue-50 px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
+                    data-testid="button-add-availability"
+                  >
+                    <Plus className="w-5 h-5 mr-2" />
+                    Nouveau Créneau
+                  </Button>
+                )}
               </div>
-              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4">
-                <div className="text-blue-100 text-sm mb-1">Cette semaine</div>
-                <div className="text-3xl font-bold">{weekSlots.length}</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4">
-                <div className="text-blue-100 text-sm mb-1">Places disponibles</div>
-                <div className="text-3xl font-bold">
-                  {timeSlots.reduce((sum, slot) => sum + (slot.maxBookings - slot.currentBookings), 0)}
+
+              {/* Stats rapides */}
+              <div className="grid grid-cols-3 gap-4 mt-6">
+                <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4">
+                  <div className="text-blue-100 text-sm mb-1">Total créneaux</div>
+                  <div className="text-3xl font-bold">{timeSlots.length}</div>
+                </div>
+                <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4">
+                  <div className="text-blue-100 text-sm mb-1">Cette semaine</div>
+                  <div className="text-3xl font-bold">{weekSlots.length}</div>
+                </div>
+                <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4">
+                  <div className="text-blue-100 text-sm mb-1">Places disponibles</div>
+                  <div className="text-3xl font-bold">
+                    {timeSlots.reduce((sum, slot) => sum + (slot.maxBookings - slot.currentBookings), 0)}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </Card>
+        </Card>
+      )}
 
       {/* Navigation & Vue */}
       {/* Navigation - LIMITÉ AUX JOURS DE L'ÉVÉNEMENT */}

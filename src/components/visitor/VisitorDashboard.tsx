@@ -29,7 +29,7 @@ import { calculateRemainingQuota, getVisitorQuota } from '../../config/quotas';
 import { useTranslation } from '../../hooks/useTranslation';
 // VisitorLevelGuard removed - FREE visitors can now access dashboard with limited features
 import { LevelBadge, QuotaSummaryCard } from '../common/QuotaWidget';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useVisitorStore } from '../../store/visitorStore';
 import { MoroccanPattern } from '../ui/MoroccanDecor';
 
@@ -38,6 +38,7 @@ export default memo(function VisitorDashboard() {
   const { t } = useTranslation();
   // Auth first so it's available below
   const { user, isAuthenticated } = useAuthStore();
+  const [activeTab, setActiveTab] = useState<'schedule' | 'appointments'>('schedule');
 
   // Stores
   const {
@@ -641,263 +642,344 @@ export default memo(function VisitorDashboard() {
             </motion.div>
           )}
 
-          {/* Event Management avec animations */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8"
-          >
-            <motion.div variants={itemVariants}>
-              <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-2">
-                    <div className="p-2 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg">
-                      <Calendar className="h-5 w-5 text-white" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Mes Événements
-                    </h3>
+          {/* Hub de Planification & Networking - ORGANISATION PREMIUM */}
+          <div className="mb-20">
+            <div className="bg-slate-900 rounded-[3rem] p-8 md:p-12 shadow-2xl overflow-hidden relative border border-white/5">
+              {/* Pattern de fond premium */}
+              <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
+              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
+              
+              <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
+                <div className="max-w-2xl">
+                  <div className="inline-flex items-center space-x-2 px-4 py-2 bg-white/5 rounded-full border border-white/10 mb-6">
+                    <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></div>
+                    <span className="text-[10px] font-black text-indigo-200 uppercase tracking-[0.2em]">SIPORT • Visitor Experience</span>
                   </div>
-                  <Badge variant="info" className="font-bold">
-                    {registeredEvents.length}
-                  </Badge>
+                  <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
+                    Personnel <span className="text-indigo-400">Networking Hub</span>
+                  </h2>
+                  <p className="text-indigo-100/60 text-lg font-medium italic">
+                    Gérez votre agenda, vos inscriptions aux conférences et vos rendez-vous B2B en un seul lieu.
+                  </p>
                 </div>
-                <p className="text-gray-600 text-sm mb-4">
-                  Gérez vos inscriptions aux événements et conférences
-                </p>
-                <div className="space-y-3 mb-4">
-                  {getUpcomingEvents().map((event, index) => {
-                    const isPast = isEventPast(event.date);
-                    return (
-                      <motion.div
-                        key={event.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className={`flex items-center justify-between p-3 rounded-lg hover:shadow-md transition-shadow ${
-                          isPast 
-                            ? 'bg-gradient-to-r from-gray-100 to-gray-200 opacity-75' 
-                            : 'bg-gradient-to-r from-purple-50 to-indigo-50'
-                        }`}
-                      >
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <p className={`font-medium text-sm ${isPast ? 'text-gray-500' : 'text-gray-900'}`}>
-                              {event.title}
-                            </p>
-                            {isPast && (
-                              <Badge variant="secondary" className="text-xs">Passé</Badge>
-                            )}
-                          </div>
-                          <p className={`text-xs ${isPast ? 'text-gray-400' : 'text-gray-600'}`}>
-                            {formatDate(event.date)} à {event.startTime}
-                          </p>
-                        </div>
-                        {!isPast && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleUnregisterFromEvent(event.id)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
-                        )}
-                      </motion.div>
-                    );
-                  })}
-                  {getUpcomingEvents().length === 0 && (
-                    <div className="text-center py-4">
-                      <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-                      <p className="text-sm text-gray-500">Aucun événement inscrit</p>
-                    </div>
-                  )}
-                </div>
-                <Link to={ROUTES.EVENTS}>
-                  <Button variant="outline" className="w-full border-2 hover:bg-gray-50">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    Voir tous les événements
-                  </Button>
-                </Link>
-              </Card>
-            </motion.div>
 
-            <motion.div variants={itemVariants}>
-              <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
-                <div className="flex items-center space-x-2 mb-4">
-                  <div className="p-2 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg">
-                    <Calendar className="h-5 w-5 text-white" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900">Calendrier Personnel</h3>
+                {/* Sélecteur de Tab Premium */}
+                <div className="flex bg-white/5 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl">
+                  <button
+                    onClick={() => setActiveTab('schedule')}
+                    className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-3 ${
+                      activeTab === 'schedule' 
+                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' 
+                        : 'text-white/40 hover:text-white/70'
+                    }`}
+                  >
+                    <Calendar className="w-4 h-4" />
+                    <span>Mon Agenda</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('appointments')}
+                    className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-3 ${
+                      activeTab === 'appointments' 
+                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' 
+                        : 'text-white/40 hover:text-white/70'
+                    }`}
+                  >
+                    <Users className="w-4 h-4" />
+                    <span>Rendez-vous B2B</span>
+                  </button>
                 </div>
-                <p className="text-gray-600 text-sm mb-4">
-                  Consultez votre planning personnel avec tous vos événements
-                </p>
-                <PersonalCalendar compact={true} />
-              </Card>
-            </motion.div>
-          </motion.div>
+              </div>
 
-          {/* Appointment Management avec animations - Hidden for FREE visitors */}
-          {userLevel !== 'free' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-                <div className="flex items-center space-x-2 mb-6">
-                  <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
-                    <Calendar className="h-5 w-5 text-white" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 break-words">Mes rendez-vous</h3>
-                </div>
-              {isAppointmentsLoading ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
-                  <p className="text-gray-500 mt-4">Chargement...</p>
-                </div>
-              ) : (
-                <>
-                  {pendingAppointments.length === 0 && (
-                    <div className="text-center py-6">
-                      <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-3" />
-                      <p className="text-gray-500">Aucune demande en attente</p>
-                    </div>
-                  )}
-                  {pendingAppointments.map((app, index) => (
+              <div className="relative min-h-[500px]">
+                <AnimatePresence mode="wait">
+                  {activeTab === 'schedule' ? (
                     <motion.div
-                      key={app.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-center justify-between border-b py-4 last:border-b-0 hover:bg-gray-50 px-3 rounded-lg transition-colors"
+                      key="schedule-tab"
+                      initial={{ opacity: 0, scale: 0.98 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 1.02 }}
+                      transition={{ duration: 0.4 }}
+                      className="grid grid-cols-1 lg:grid-cols-2 gap-8"
                     >
-                      <div className="flex-1">
-                        <div className="font-medium text-gray-900 flex items-center">
-                          <Badge variant="warning" className="mr-2">Nouveau</Badge>
-                          Invitation de {getExhibitorName(app)}
+                      {/* Colonne 1: Liste des événements */}
+                      <Card className="bg-white/5 backdrop-blur-2xl rounded-3xl p-6 border border-white/10 text-white shadow-none">
+                        <div className="flex items-center justify-between mb-6">
+                          <div className="flex items-center space-x-3">
+                            <div className="p-2 bg-indigo-500/20 rounded-lg">
+                              <Calendar className="h-5 w-5 text-indigo-400" />
+                            </div>
+                            <h3 className="text-xl font-bold">Inscriptions</h3>
+                          </div>
+                          <Badge variant="info" className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 font-bold">
+                            {registeredEvents.length}
+                          </Badge>
                         </div>
-                        <div className="text-sm text-gray-600 mt-1">{app.message || 'Aucun message'}</div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
-                          onClick={() => handleAccept(app.id)}
-                        >
-                          Accepter
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => handleReject(app.id)}
-                        >
-                          Refuser
-                        </Button>
+                        
+                        <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                          {getUpcomingEvents().map((event, index) => {
+                            const isPast = isEventPast(event.date);
+                            return (
+                              <motion.div
+                                key={event.id}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: index * 0.1 }}
+                                className={`group relative flex items-center justify-between p-4 rounded-2xl transition-all duration-300 border border-white/5 hover:border-white/20 ${
+                                  isPast 
+                                    ? 'bg-white/5 grayscale opacity-60' 
+                                    : 'bg-white/10 hover:bg-white/15'
+                                }`}
+                              >
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <p className="font-bold text-base text-white">
+                                      {event.title}
+                                    </p>
+                                    {isPast && (
+                                      <span className="text-[10px] uppercase font-bold px-2 py-0.5 bg-white/10 rounded-full">Passé</span>
+                                    )}
+                                  </div>
+                                  <div className="flex items-center gap-4 text-sm text-indigo-200/60">
+                                    <div className="flex items-center gap-1.5">
+                                      <Clock className="w-3.5 h-3.5" />
+                                      <span>{event.startTime}</span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                      <MapPin className="w-3.5 h-3.5" />
+                                      <span>{event.location}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                                {!isPast && (
+                                  <button
+                                    onClick={() => handleUnregisterFromEvent(event.id)}
+                                    className="p-2 text-white/40 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition-all"
+                                    title="Se désinscrire"
+                                  >
+                                    <X className="h-5 w-5" />
+                                  </button>
+                                )}
+                              </motion.div>
+                            );
+                          })}
+                          {getUpcomingEvents().length === 0 && (
+                            <div className="text-center py-12 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                              <Calendar className="h-12 w-12 text-white/20 mx-auto mb-4" />
+                              <p className="text-white/40">Aucun événement inscrit</p>
+                              <Link to={ROUTES.EVENTS} className="mt-4 inline-block text-indigo-400 font-bold hover:text-indigo-300 transition-colors">
+                                Parcourir le programme →
+                              </Link>
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="mt-8">
+                          <Link to={ROUTES.EVENTS} className="block">
+                            <Button className="w-full bg-indigo-600 hover:bg-indigo-500 text-white border-none py-6 rounded-2xl shadow-lg shadow-indigo-600/20 font-bold text-sm uppercase tracking-widest transition-all">
+                              Voir le Programme Complet
+                            </Button>
+                          </Link>
+                        </div>
+                      </Card>
+
+                      {/* Colonne 2: Calendrier visuel */}
+                      <div className="bg-white rounded-3xl p-1 shadow-xl overflow-hidden">
+                         <PersonalCalendar compact={true} />
                       </div>
                     </motion.div>
-                  ))}
-
-                  {/* Show refused appointments */}
-                  {refusedAppointments.length > 0 && (
-                    <>
-                      <h4 className="text-lg font-semibold text-gray-900 mt-6 mb-3 flex items-center">
-                        <X className="h-5 w-5 mr-2 text-red-500" />
-                        Rendez-vous refusés
-                      </h4>
-                      {refusedAppointments.map((app, index) => (
-                        <motion.div
-                          key={app.id}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.1 }}
-                          className="flex items-center justify-between border-b py-4 last:border-b-0 hover:bg-gray-50 px-3 rounded-lg transition-colors"
-                        >
-                          <div className="flex-1">
-                            <div className="font-medium text-gray-900">
-                              Invitation de {getExhibitorName(app)}
-                            </div>
-                            <div className="text-sm text-gray-600 mt-1">{app.message || 'Aucun message'}</div>
-                          </div>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="border-2"
-                            onClick={() => handleRequestAnother(app.exhibitorId)}
-                          >
-                            Demander un autre créneau
-                          </Button>
-                        </motion.div>
-                      ))}
-                    </>
-                  )}
-
-                  <h4 className="text-lg font-semibold text-gray-900 mt-6 mb-3 flex items-center">
-                    <Award className="h-5 w-5 mr-2 text-green-500" />
-                    Rendez-vous confirmés
-                  </h4>
-                  {confirmedAppointments.length === 0 ? (
-                    <div className="text-center py-4">
-                      <Award className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-                      <p className="text-gray-500 text-sm">Aucun rendez-vous confirmé</p>
-                    </div>
                   ) : (
-                    confirmedAppointments.map((app, index) => (
-                      <motion.div
-                        key={app.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="flex items-center justify-between border-b py-4 last:border-b-0 hover:bg-green-50 px-3 rounded-lg transition-colors"
-                      >
-                        <div className="flex-1">
-                          <div className="font-medium text-gray-900">
-                            Avec {getExhibitorName(app)}
+                    <motion.div
+                      key="appointments-tab"
+                      initial={{ opacity: 0, scale: 0.98 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 1.02 }}
+                      transition={{ duration: 0.4 }}
+                      className="bg-white/5 backdrop-blur-2xl rounded-[2.5rem] p-8 border border-white/10 text-white"
+                    >
+                      <div className="flex items-center justify-between mb-8">
+                        <div className="flex items-center space-x-4">
+                          <div className="p-3 bg-indigo-500/20 rounded-2xl">
+                            <Users className="h-6 w-6 text-indigo-400" />
                           </div>
-                          <div className="text-sm text-gray-600 mt-1">{app.message || 'Aucun message'}</div>
+                          <div>
+                            <h3 className="text-2xl font-bold">Gestion des Rendez-vous B2B</h3>
+                            <p className="text-indigo-200/60 text-sm">Organisez vos rencontres avec les exposants</p>
+                          </div>
                         </div>
-                        <Badge variant="success" className="shadow-sm">
-                          <Award className="h-3 w-3 mr-1" />
-                          Confirmé
-                        </Badge>
-                      </motion.div>
-                    ))
+                        <div className="flex gap-2">
+                          <Badge variant="outline" className="border-indigo-500/30 text-indigo-300 font-bold">
+                            {confirmedAppointments.length} Confirmés
+                          </Badge>
+                          <Badge variant="outline" className="border-amber-500/30 text-amber-300 font-bold">
+                            {pendingAppointments.length} En attente
+                          </Badge>
+                        </div>
+                      </div>
+
+                      {userLevel === 'free' ? (
+                        <div className="text-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                          <Award className="h-16 w-16 text-indigo-400/40 mx-auto mb-6" />
+                          <h4 className="text-2xl font-bold text-white mb-2">Fonctionnalité Premium</h4>
+                          <p className="max-w-md mx-auto text-indigo-100/60 mb-8">
+                            La prise de rendez-vous B2B est réservée aux visiteurs de niveau PRO et VIP.
+                          </p>
+                          <Button className="bg-gradient-to-r from-siports-gold to-yellow-600 text-white font-black px-8 py-4 rounded-xl">
+                            Passer au niveau supérieur
+                          </Button>
+                        </div>
+                      ) : isAppointmentsLoading ? (
+                        <div className="text-center py-20">
+                          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-400 mx-auto mb-4"></div>
+                          <p className="text-indigo-200/40">Chargement de vos rendez-vous...</p>
+                        </div>
+                      ) : (
+                        <div className="space-y-6">
+                          {/* Invitations en attente */}
+                          {pendingAppointments.length > 0 && (
+                            <div className="space-y-4">
+                              <h4 className="text-sm font-black uppercase tracking-[0.2em] text-amber-400/80 mb-4 px-2">Nouvelles Invitations</h4>
+                              {pendingAppointments.map((app, index) => (
+                                <motion.div
+                                  key={app.id}
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: index * 0.1 }}
+                                  className="group bg-white/10 hover:bg-white/15 border border-white/5 hover:border-white/20 p-6 rounded-3xl transition-all duration-300"
+                                >
+                                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                    <div className="flex items-center gap-4">
+                                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xl font-bold shadow-lg">
+                                        {getExhibitorName(app).charAt(0)}
+                                      </div>
+                                      <div>
+                                        <div className="flex items-center gap-2 mb-1">
+                                          <span className="font-bold text-lg">{getExhibitorName(app)}</span>
+                                          <span className="px-2 py-0.5 bg-amber-500/20 text-amber-300 text-[10px] font-black uppercase rounded-full border border-amber-500/20">Action Requise</span>
+                                        </div>
+                                        <p className="text-indigo-100/60 text-sm italic">"{app.message || 'Aucun message'}"</p>
+                                      </div>
+                                    </div>
+                                    <div className="flex gap-3">
+                                      <Button
+                                        onClick={() => handleAccept(app.id)}
+                                        className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl px-6"
+                                      >
+                                        Accepter
+                                      </Button>
+                                      <Button
+                                        variant="destructive"
+                                        onClick={() => handleReject(app.id)}
+                                        className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-xl"
+                                      >
+                                        Refuser
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </motion.div>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Rendez-vous confirmés */}
+                          <div className="space-y-4">
+                            <h4 className="text-sm font-black uppercase tracking-[0.2em] text-indigo-400/80 mb-4 px-2">Agenda Confirmé</h4>
+                            {confirmedAppointments.length === 0 ? (
+                              <div className="text-center py-12 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                                <p className="text-white/20">Aucun rendez-vous confirmé</p>
+                              </div>
+                            ) : (
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {confirmedAppointments.map((app, index) => (
+                                  <motion.div
+                                    key={app.id}
+                                    className="bg-white/5 border border-white/5 p-4 rounded-2xl flex items-center justify-between group"
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-300 font-bold">
+                                        {getExhibitorName(app).charAt(0)}
+                                      </div>
+                                      <div>
+                                        <p className="font-bold text-sm text-white">{getExhibitorName(app)}</p>
+                                        <p className="text-xs text-indigo-200/40">RDV Confirmé</p>
+                                      </div>
+                                    </div>
+                                    <div className="p-2 bg-indigo-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                      <Award className="w-4 h-4 text-indigo-400" />
+                                    </div>
+                                  </motion.div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Refusés - Optionnel, plus discret */}
+                          {refusedAppointments.length > 0 && (
+                            <div className="mt-12 pt-8 border-t border-white/5">
+                              <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white/20 mb-4">Rendez-vous annulés</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {refusedAppointments.map(app => (
+                                  <div key={app.id} className="px-4 py-2 bg-white/5 rounded-xl border border-white/5 flex items-center gap-3">
+                                    <span className="text-xs text-white/40">{getExhibitorName(app)}</span>
+                                    <button onClick={() => handleRequestAnother(app.exhibitorId)} className="text-[10px] uppercase font-bold text-indigo-400 hover:text-indigo-300 transition-colors">Relancer</button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </motion.div>
                   )}
-                </>
-              )}
-              </Card>
-            </motion.div>
-          )}
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
 
           {/* Modal for requesting another slot */}
-          {showAvailabilityModal && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-            >
+          <AnimatePresence>
+            {showAvailabilityModal && (
               <motion.div
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-white rounded-2xl shadow-2xl p-6 max-w-lg w-full relative"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-[100] p-4"
               >
-                <button
-                  className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
-                  onClick={() => setShowAvailabilityModal(null)}
+                <motion.div
+                  initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                  animate={{ scale: 1, opacity: 1, y: 0 }}
+                  exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                  className="bg-white rounded-[2.5rem] shadow-2xl p-8 max-w-2xl w-full relative overflow-hidden text-gray-900"
                 >
-                  <X className="h-6 w-6" />
-                </button>
-                <h3 className="text-xl font-semibold mb-4 text-gray-900">
-                  Choisir un autre créneau disponible
-                </h3>
-                <PublicAvailability userId={showAvailabilityModal.exhibitorId} />
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                  
+                  <button
+                    className="absolute top-6 right-6 p-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-400 hover:text-gray-600 transition-all z-10"
+                    onClick={() => setShowAvailabilityModal(null)}
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-4 mb-8">
+                      <div className="p-3 bg-indigo-100 rounded-2xl">
+                        <Calendar className="h-6 w-6 text-indigo-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-black">
+                          Choisir un créneau B2B
+                        </h3>
+                        <p className="text-gray-500">Sélectionnez votre prochaine rencontre stratégique</p>
+                      </div>
+                    </div>
+
+                    <div className="max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                      <PublicAvailability userId={showAvailabilityModal.exhibitorId} />
+                    </div>
+                  </div>
+                </motion.div>
               </motion.div>
-            </motion.div>
-          )}
+            )}
+          </AnimatePresence>
         </div>
       </div>
   );

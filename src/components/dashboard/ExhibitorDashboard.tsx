@@ -51,6 +51,7 @@ export default function ExhibitorDashboard() {
   const qrCodeRef = useRef<HTMLCanvasElement>(null);
   const { t } = useTranslation();
   const [showQRModal, setShowQRModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<'availability' | 'appointments'>('availability');
   const [modal, setModal] = useState<{title: string, content: React.ReactNode} | null>(null);
   const [isDownloadingQR, setIsDownloadingQR] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -758,39 +759,88 @@ export default function ExhibitorDashboard() {
           ))}
         </motion.div>
 
-        {/* Section Système de Double Calendrier */}
-        <div className="mb-12">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              <Calendar className="inline-block mr-3 text-siports-primary" />
-              Gestion Calendaire Avancée
-            </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Votre système complet de gestion des rendez-vous : définissez vos disponibilités publiques et suivez tous vos rendez-vous personnels
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-            {/* Calendrier Public des Disponibilités */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <PublicAvailabilityCalendar 
-                userId={user?.id || ''} 
-                isEditable={true}
-              />
-            </motion.div>
+        {/* Section Système de Double Calendrier - ORGANISATION PREMIUM */}
+        <div className="mb-20">
+          <div className="bg-slate-900 rounded-[3rem] p-12 shadow-2xl overflow-hidden relative border border-white/5">
+            {/* Pattern de fond premium */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
+            
+            <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
+              <div className="max-w-2xl">
+                <div className="inline-flex items-center space-x-2 px-4 py-2 bg-white/5 rounded-full border border-white/10 mb-6">
+                  <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
+                  <span className="text-[10px] font-black text-blue-200 uppercase tracking-[0.2em]">SIPORT • Business Center</span>
+                </div>
+                <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
+                  Gestion Calendaire <span className="text-blue-400">Hub</span>
+                </h2>
+                <p className="text-blue-100/60 text-lg font-medium italic">
+                  Centralisez vos disponibilités et gérez vos rendez-vous stratégiques dans un espace dédié haut de gamme.
+                </p>
+              </div>
 
-            {/* Calendrier Personnel des Rendez-vous */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <PersonalAppointmentsCalendar userType="exhibitor" />
-            </motion.div>
+              {/* Sélecteur de Tab Premium */}
+              <div className="flex bg-white/5 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl">
+                <button
+                  onClick={() => setActiveTab('availability')}
+                  className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-3 ${
+                    activeTab === 'availability' 
+                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' 
+                      : 'text-white/40 hover:text-white/70'
+                  }`}
+                >
+                  <Calendar className="w-4 h-4" />
+                  <span>Mes Disponibilités</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab('appointments')}
+                  className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-3 ${
+                    activeTab === 'appointments' 
+                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' 
+                      : 'text-white/40 hover:text-white/70'
+                  }`}
+                >
+                  <Users className="w-4 h-4" />
+                  <span>Agenda Personnel</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="relative min-h-[600px]">
+              <AnimatePresence mode="wait">
+                {activeTab === 'availability' ? (
+                  <motion.div
+                    key="availability-tab"
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.02 }}
+                    transition={{ duration: 0.4 }}
+                    className="bg-white/5 backdrop-blur-2xl rounded-[2.5rem] p-1 border border-white/10"
+                  >
+                    <PublicAvailabilityCalendar 
+                      userId={user?.id || ''} 
+                      isEditable={true}
+                      standalone={false}
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="appointments-tab"
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.02 }}
+                    transition={{ duration: 0.4 }}
+                    className="bg-white/5 backdrop-blur-2xl rounded-[2.5rem] p-1 border border-white/10"
+                  >
+                    <PersonalAppointmentsCalendar 
+                      userType="exhibitor"
+                      standalone={false} 
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
 
