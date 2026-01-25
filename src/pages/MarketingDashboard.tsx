@@ -474,64 +474,77 @@ export default function MarketingDashboard() {
                   >
                     Tous
                   </Button>
-              <Button
-                variant={filterType === 'webinar' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilterType('webinar')}
-              >
-                <Video className="h-4 w-4 mr-1" />
-                Webinaires
-              </Button>
-              <Button
-                variant={filterType === 'podcast' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilterType('podcast')}
-              >
-                <Mic className="h-4 w-4 mr-1" />
-                Podcasts
-              </Button>
-              <Button
-                variant={filterType === 'capsule_inside' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilterType('capsule_inside')}
-              >
-                <Video className="h-4 w-4 mr-1" />
-                Capsules
-              </Button>
-            </div>
+                  <Button
+                    variant={filterType === 'webinar' ? 'default' : 'ghost'}
+                    size="sm"
+                    className={`rounded-xl px-4 ${filterType === 'webinar' ? 'bg-blue-600' : 'text-slate-600'}`}
+                    onClick={() => setFilterType('webinar')}
+                  >
+                    <Video className="h-4 w-4 mr-1" />
+                    Webinaires
+                  </Button>
+                  <Button
+                    variant={filterType === 'podcast' ? 'default' : 'ghost'}
+                    size="sm"
+                    className={`rounded-xl px-4 ${filterType === 'podcast' ? 'bg-blue-600' : 'text-slate-600'}`}
+                    onClick={() => setFilterType('podcast')}
+                  >
+                    <Mic className="h-4 w-4 mr-1" />
+                    Podcasts
+                  </Button>
+                  <Button
+                    variant={filterType === 'capsule_inside' ? 'default' : 'ghost'}
+                    size="sm"
+                    className={`rounded-xl px-4 ${filterType === 'capsule_inside' ? 'bg-blue-600' : 'text-slate-600'}`}
+                    onClick={() => setFilterType('capsule_inside')}
+                  >
+                    <Video className="h-4 w-4 mr-1" />
+                    Capsules
+                  </Button>
+                </div>
+              </div>
 
-            <div className="h-6 w-px bg-gray-300" />
+              <div className="h-6 w-px bg-slate-300" />
 
-            {/* Status Filter */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">Statut:</span>
-              <Button
-                variant={filterStatus === 'all' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilterStatus('all')}
-              >
-                Tous
-              </Button>
-              <Button
-                variant={filterStatus === 'published' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilterStatus('published')}
-              >
-                <Eye className="h-4 w-4 mr-1" />
-                Publiés
-              </Button>
-              <Button
-                variant={filterStatus === 'draft' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilterStatus('draft')}
-              >
-                <EyeOff className="h-4 w-4 mr-1" />
-                Brouillons
-              </Button>
+              {/* Status Filter */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Statut:</span>
+                <div className="flex gap-2 bg-slate-100 p-1.5 rounded-2xl">
+                  <Button
+                    variant={filterStatus === 'all' ? 'default' : 'ghost'}
+                    size="sm"
+                    className={`rounded-xl px-4 ${filterStatus === 'all' ? 'bg-blue-600' : 'text-slate-600'}`}
+                    onClick={() => setFilterStatus('all')}
+                  >
+                    Tous
+                  </Button>
+                  <Button
+                    variant={filterStatus === 'published' ? 'default' : 'ghost'}
+                    size="sm"
+                    className={`rounded-xl px-4 ${filterStatus === 'published' ? 'bg-blue-600' : 'text-slate-600'}`}
+                    onClick={() => setFilterStatus('published')}
+                  >
+                    <Eye className="h-4 w-4 mr-1" />
+                    Publiés
+                  </Button>
+                  <Button
+                    variant={filterStatus === 'draft' ? 'default' : 'ghost'}
+                    size="sm"
+                    className={`rounded-xl px-4 ${filterStatus === 'draft' ? 'bg-blue-600' : 'text-slate-600'}`}
+                    onClick={() => setFilterStatus('draft')}
+                  >
+                    <EyeOff className="h-4 w-4 mr-1" />
+                    Brouillons
+                  </Button>
+                </div>
+              </div>
             </div>
 
             <div className="ml-auto">
-              <Button onClick={() => setShowUploadModal(true)}>
+              <Button 
+                onClick={() => setShowUploadModal(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6"
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Ajouter un média
               </Button>
@@ -697,7 +710,7 @@ export default function MarketingDashboard() {
             onClose={() => setShowUploadModal(false)}
           />
         )}
-      </>
+      </div>
     );
   }
 
