@@ -1666,19 +1666,50 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      // ⚡ FIX N+1: Utiliser JOIN pour récupérer en une seule query
-      // Au lieu de 2-3 queries, on fait 1 query avec relation exhibitor
-      const { data, error } = await safeSupabase
+      // Essayer d'abord avec exhibitor_id direct
+      const { data: productsData, error: productsError } = await safeSupabase
         .from('products')
-        .select(`
-          *,
-          exhibitor:exhibitors!inner(id, user_id)
-        `)
-        .or(`exhibitor_id.eq.${exhibitorId},exhibitor.user_id.eq.${exhibitorId}`);
+        .select('*')
+        .eq('exhibitor_id', exhibitorId);
 
-      if (error) throw error;
+      if (productsError) throw productsError;
       
-      return (data || []).map((p: ProductDB) => ({
+      // Si on trouve des produits, les retourner
+      if (productsData && productsData.length > 0) {
+        return productsData.map((p: ProductDB) => ({
+          id: p.id,
+          exhibitorId: p.exhibitor_id,
+          name: p.name,
+          description: p.description,
+          category: p.category,
+          images: p.images || [],
+          specifications: p.specifications,
+          price: p.price,
+          featured: p.featured || false
+        }));
+      }
+
+      // Sinon, chercher l'exhibitor_id à partir du user_id
+      const { data: exhibitorData, error: exhibitorError } = await safeSupabase
+        .from('exhibitors')
+        .select('id')
+        .eq('user_id', exhibitorId)
+        .single();
+
+      if (exhibitorError || !exhibitorData) {
+        return [];
+      }
+
+      // Récupérer les produits avec l'exhibitor_id trouvé
+      const { data: productsByExhibitor, error: productsByExhibitorError } = await safeSupabase
+        .from('products')
+        .select('*')
+        .eq('exhibitor_id', exhibitorData.id);
+
+      if (productsByExhibitorError) throw productsByExhibitorError;
+      if (productsByExhibitorError) throw productsByExhibitorError;
+      
+      return (productsByExhibitor || []).map((p: ProductDB) => ({
         id: p.id,
         exhibitorId: p.exhibitor_id,
         name: p.name,
