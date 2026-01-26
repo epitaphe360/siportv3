@@ -1099,7 +1099,6 @@ export default function ExhibitorDashboard() {
                 )}
               </div>
             </Card>
-        </Card>
 
         {/* Activité Récente avec animations */}
         <Card className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 mb-8">
@@ -1216,7 +1215,6 @@ export default function ExhibitorDashboard() {
             </div>
           </Card>
         </motion.div>
-      </div>
 
       {/* Modal QR Code amélioré avec animations */}
       {showQRModal && (
