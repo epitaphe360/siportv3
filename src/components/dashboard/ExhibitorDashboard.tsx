@@ -1365,6 +1365,7 @@ export default function ExhibitorDashboard() {
           </motion.div>
         </div>
       )}
+      </div>
     </div>
   );
 }
