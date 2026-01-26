@@ -8,6 +8,7 @@ import { supabase } from '../../lib/supabase';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
+import { aiScrapperService } from '../../services/aiScrapperService';
 
 interface MiniSiteSetupModalProps {
   isOpen: boolean;
@@ -47,47 +48,92 @@ export const MiniSiteSetupModal: React.FC<MiniSiteSetupModalProps> = ({
     setIsLoading(true);
 
     try {
-      // Call edge function to scrape website
-      const { data, error } = await supabase.functions.invoke('scrape-and-create-minisite', {
-        body: {
-          userId,
-          websiteUrl
-        }
-      });
-
-      if (error) {
-        // Check if it's a 404 (function not deployed)
-        if (error.message?.includes('404') || error.message?.includes('not found')) {
-          console.warn('⚠️ Edge function not deployed, redirecting to manual creation');
-          toast.info(
-            '💡 Création automatique non disponible. Utilisez la création manuelle.',
-            { duration: 4000 }
-          );
-          setMode('manual');
-          setIsLoading(false);
-          return;
-        }
-        throw error;
+      // Check if API key is configured
+      if (!import.meta.env.VITE_OPENAI_API_KEY) {
+        toast.info(
+          '⚙️ Configuration requise : La clé API OpenAI doit être ajoutée dans le fichier .env',
+          { duration: 5000 }
+        );
+        console.warn('⚠️ VITE_OPENAI_API_KEY not configured');
+        setMode('manual');
+        setIsLoading(false);
+        return;
       }
 
-      // Mark minisite as created
+      // Use AI Scrapper Service directly
+      toast.loading('🔍 Analyse de votre site web en cours...', { id: 'scraping' });
+      
+      const scrapResult = await aiScrapperService.scrapExhibitorMiniSite(websiteUrl);
+
+      if (!scrapResult.success) {
+        throw new Error(scrapResult.error || 'Échec du scraping');
+      }
+
+      toast.dismiss('scraping');
+      toast.loading('💾 Création de votre mini-site...', { id: 'creating' });
+
+      // Get current user data
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (userError) throw userError;
+
+      // Update user with scraped data
+      const updateData: any = {
+        minisite_created: true,
+        company_name: scrapResult.data.companyName || userData.company_name,
+        description: scrapResult.data.description || userData.description,
+        website: websiteUrl
+      };
+
+      // Update logo if found
+      if (scrapResult.data.logo) {
+        updateData.logo_url = scrapResult.data.logo;
+      }
+
       await supabase
         .from('users')
-        .update({ minisite_created: true })
+        .update(updateData)
         .eq('id', userId);
 
-      toast.success('🎉 Mini-site créé automatiquement avec succès !');
+      // Create products if found
+      if (scrapResult.data.products && scrapResult.data.products.length > 0) {
+        const products = scrapResult.data.products.map((product: any) => ({
+          exhibitor_id: userId,
+          name: product.name,
+          description: product.description,
+          category: product.category || 'Autre',
+          image_url: product.image || null
+        }));
+
+        await supabase
+          .from('exhibitor_products')
+          .insert(products);
+      }
+
+      toast.dismiss('creating');
+      toast.success('🎉 Mini-site créé automatiquement avec succès !', { duration: 5000 });
       onClose();
 
       // Redirect to mini-site editor
       navigate(ROUTES.MINISITE_EDITOR);
     } catch (error: any) {
       console.error('Error creating auto mini-site:', error);
+      toast.dismiss('scraping');
+      toast.dismiss('creating');
       
-      // Handle CORS errors specifically
-      if (error?.message?.includes('CORS') || error?.message?.includes('Failed to send')) {
+      // Handle specific errors
+      if (error?.message?.includes('API key')) {
         toast.error(
-          '⚠️ Création automatique temporairement indisponible. Utilisez la création manuelle pour continuer.',
+          '⚙️ Configuration requise : Veuillez ajouter la clé API OpenAI.',
+          { duration: 6000 }
+        );
+      } else if (error?.message?.includes('CORS') || error?.message?.includes('Failed to fetch')) {
+        toast.error(
+          '⚠️ Impossible d\'accéder au site web. Vérifiez l\'URL ou utilisez la création manuelle.',
           { duration: 6000 }
         );
       } else {
