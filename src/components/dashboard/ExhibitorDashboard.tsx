@@ -891,17 +891,34 @@ export default function ExhibitorDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Actions Rapides */}
           <div className="lg:col-span-2">
-            <Card className="siports-glass-card overflow-hidden">
-              <div className="p-6 bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
-                <div className="flex items-center space-x-3 mb-6">
-                  <div className="p-2.5 bg-gradient-to-br from-siports-primary to-siports-secondary rounded-xl shadow-lg">
-                    <Zap className="h-6 w-6 text-white" />
+            <Card className="p-0 overflow-hidden border-none shadow-2xl bg-white">
+              <div className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 p-8 text-white relative">
+                {/* Motif Marocain Subtil */}
+                <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+                
+                <div className="relative z-10 flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-inner">
+                      <Zap className="h-8 w-8 text-blue-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-black tracking-tight text-white mb-1">
+                        Actions Rapides
+                      </h3>
+                      <div className="flex items-center space-x-2 text-blue-200/80">
+                        <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
+                        <p className="text-sm font-medium">Accès direct à vos outils essentiels</p>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900">Actions Rapides</h3>
-                    <p className="text-xs text-gray-500">Accès direct à vos outils essentiels</p>
+                  <div className="hidden md:flex items-center space-x-2 bg-white/5 backdrop-blur-md rounded-xl px-4 py-2 border border-white/10">
+                    <Sparkles className="w-4 h-4 text-yellow-400" />
+                    <span className="text-xs font-bold text-blue-200 uppercase tracking-wider">Premium</span>
                   </div>
                 </div>
+              </div>
+
+              <div className="p-6 bg-gradient-to-br from-slate-50 via-blue-50/50 to-purple-50/50">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {quickActions.map((action, index) => (
                     <motion.div
@@ -915,17 +932,18 @@ export default function ExhibitorDashboard() {
                     >
                       {action.link ? (
                         <Link to={action.link} className="block">
-                          <div className="relative bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-xl p-4 shadow-md hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-siports-primary/20 overflow-hidden">
-                            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-siports-primary/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-500"></div>
+                          <div className="relative bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 hover:border-blue-400/50 overflow-hidden">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
+                            <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-purple-500/5 to-transparent rounded-full -ml-12 -mb-12"></div>
                             <div className="relative flex items-start space-x-4">
-                              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500/10 to-purple-500/10 group-hover:from-siports-primary/20 group-hover:to-siports-secondary/20 rounded-lg flex items-center justify-center transition-all duration-300">
-                                <span className="text-3xl transform group-hover:scale-110 transition-transform duration-300">{action.icon}</span>
+                              <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-blue-500/20 to-purple-500/20 group-hover:from-blue-500/30 group-hover:to-purple-500/30 rounded-xl flex items-center justify-center transition-all duration-300 shadow-md">
+                                <span className="text-3xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">{action.icon}</span>
                               </div>
                               <div className="flex-1 min-w-0">
-                                <div className="font-bold text-gray-900 group-hover:text-siports-primary transition-colors duration-300 mb-1 leading-tight">{action.title}</div>
-                                <div className="text-xs text-gray-600 group-hover:text-gray-700 leading-snug break-words">{action.description}</div>
+                                <div className="font-black text-gray-900 group-hover:text-blue-600 transition-colors duration-300 mb-1.5 leading-tight text-base">{action.title}</div>
+                                <div className="text-xs text-gray-600 group-hover:text-gray-800 leading-relaxed break-words">{action.description}</div>
                               </div>
-                              <ArrowRight className="flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-siports-primary group-hover:translate-x-1 transition-all duration-300 mt-1" />
+                              <ArrowRight className="flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-2 transition-all duration-300 mt-1" />
                             </div>
                           </div>
                         </Link>
@@ -934,17 +952,18 @@ export default function ExhibitorDashboard() {
                           onClick={action.action}
                           className="w-full text-left"
                         >
-                          <div className="relative bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-xl p-4 shadow-md hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-siports-primary/20 overflow-hidden">
-                            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-siports-primary/5 to-transparent rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-500"></div>
+                          <div className="relative bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 hover:border-blue-400/50 overflow-hidden">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
+                            <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-purple-500/5 to-transparent rounded-full -ml-12 -mb-12"></div>
                             <div className="relative flex items-start space-x-4">
-                              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500/10 to-purple-500/10 group-hover:from-siports-primary/20 group-hover:to-siports-secondary/20 rounded-lg flex items-center justify-center transition-all duration-300">
-                                <span className="text-3xl transform group-hover:scale-110 transition-transform duration-300">{action.icon}</span>
+                              <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-blue-500/20 to-purple-500/20 group-hover:from-blue-500/30 group-hover:to-purple-500/30 rounded-xl flex items-center justify-center transition-all duration-300 shadow-md">
+                                <span className="text-3xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">{action.icon}</span>
                               </div>
                               <div className="flex-1 min-w-0">
-                                <div className="font-bold text-gray-900 group-hover:text-siports-primary transition-colors duration-300 mb-1 leading-tight">{action.title}</div>
-                                <div className="text-xs text-gray-600 group-hover:text-gray-700 leading-snug break-words">{action.description}</div>
+                                <div className="font-black text-gray-900 group-hover:text-blue-600 transition-colors duration-300 mb-1.5 leading-tight text-base">{action.title}</div>
+                                <div className="text-xs text-gray-600 group-hover:text-gray-800 leading-relaxed break-words">{action.description}</div>
                               </div>
-                              <ArrowRight className="flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-siports-primary group-hover:translate-x-1 transition-all duration-300 mt-1" />
+                              <ArrowRight className="flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-2 transition-all duration-300 mt-1" />
                             </div>
                           </div>
                         </button>
