@@ -57,7 +57,7 @@ export function BarChartCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      <Card className="p-6">
+      <Card className="p-6 h-full">
         <h3 className="text-lg font-semibold text-gray-900 mb-6">{title}</h3>
         <ResponsiveContainer width="100%" height={height}>
           <BarChart

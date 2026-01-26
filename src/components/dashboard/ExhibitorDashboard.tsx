@@ -15,6 +15,7 @@ import PersonalAppointmentsCalendar from '../calendar/PersonalAppointmentsCalend
 import { Calendar, Zap, Building2, Eye, MessageSquare, Download, TrendingUp, Sparkles, ArrowRight, Clock, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getVisitorDisplayName } from '../../utils/visitorHelpers';
+import { getDisplayName } from '../../utils/userHelpers';
 import { useDashboardStats } from '../../hooks/useDashboardStats';
 import { DEFAULT_SALON_CONFIG, formatSalonDates, formatSalonLocation, formatSalonHours } from '../../config/salonInfo';
 import { ErrorMessage } from '../common/ErrorMessage';

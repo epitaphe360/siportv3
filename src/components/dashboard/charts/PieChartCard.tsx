@@ -60,9 +60,9 @@ export function PieChartCard({
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.6 }}
     >
-      <Card className="p-6">
+      <Card className="p-6 h-full flex flex-col">
         <h3 className="text-lg font-semibold text-gray-900 mb-6">{title}</h3>
-        <ResponsiveContainer width="100%" height={height}>
+        <ResponsiveContainer width="100%" height={height - 100}>
           <PieChart>
             <Pie
               data={data}
