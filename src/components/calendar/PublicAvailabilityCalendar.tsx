@@ -408,7 +408,7 @@ export default function PublicAvailabilityCalendar({
                   </div>
 
                   {/* Créneaux du jour */}
-                  <div className="p-4 space-y-3 flex-1 min-h-[300px] bg-gradient-to-b from-transparent to-gray-50/50 pb-6">
+                  <div className="p-4 space-y-3 flex-1 min-h-[300px] bg-gradient-to-b from-transparent to-gray-50/50 pb-20">
                     <AnimatePresence mode="popLayout">
                       {daySlots.map((slot) => (
                         <motion.div
@@ -480,7 +480,7 @@ export default function PublicAvailabilityCalendar({
 
                     {/* Bouton Ajouter - Toujours visible si éditable */}
                     {isEditable && (
-                      <div className={`flex justify-center pb-2 ${daySlots.length > 0 ? 'mt-4 pt-4 border-t border-gray-100' : ''}`}>
+                      <div className={`flex justify-center pb-4 ${daySlots.length > 0 ? 'mt-4 pt-4 border-t border-gray-100' : ''}`}>
                         <button
                           onClick={() => {
                             setNewSlot({ ...newSlot, date: formatDateForInput(day) });
