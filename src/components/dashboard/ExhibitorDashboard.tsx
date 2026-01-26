@@ -171,6 +171,17 @@ export default function ExhibitorDashboard() {
   const pendingAppointments = receivedAppointments.filter(a => a.status === 'pending');
   const confirmedAppointments = receivedAppointments.filter(a => a.status === 'confirmed');
 
+  // Debug: Log pour vérifier la récupération des données
+  useEffect(() => {
+    console.log('📊 Dashboard Data Debug:', {
+      totalAppointments: appointments?.length || 0,
+      myAppointments: myAppointments.length,
+      pending: pendingAppointments.length,
+      confirmed: confirmedAppointments.length,
+      userId: user?.id
+    });
+  }, [appointments, myAppointments, pendingAppointments, confirmedAppointments, user?.id]);
+
   const handleAccept = async (appointmentId: string) => {
     // Role validation: Verify user owns this appointment via exhibitorUserId
     const appointment = appointments.find(a => a.id === appointmentId);
@@ -973,10 +984,8 @@ export default function ExhibitorDashboard() {
             </Card>
         </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Rendez-vous reçus */}
-          <div className="lg:col-span-2">
-            <Card className="siports-glass-card overflow-hidden">
+        {/* Rendez-vous reçus - Pleine largeur */}
+        <Card className="siports-glass-card overflow-hidden mb-8">
               <div className="p-6 bg-gradient-to-br from-white via-purple-50/20 to-pink-50/20">
                 <div className="flex items-center space-x-3 mb-6">
                   <div className="p-2.5 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl shadow-lg">
@@ -1140,8 +1149,7 @@ export default function ExhibitorDashboard() {
                 </div>
               </div>
             </Card>
-          </div>
-        </div>
+        </Card>
 
         {/* Section Informations Importantes */}
         <motion.div 
