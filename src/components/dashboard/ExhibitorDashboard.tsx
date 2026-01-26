@@ -874,7 +874,7 @@ export default function ExhibitorDashboard() {
               title="Statut des Rendez-vous"
               data={appointmentStatusData}
               colors={['#10b981', '#f59e0b', '#3b82f6']}
-              height={340}
+              height={400}
               showPercentage={true}
             />
 
