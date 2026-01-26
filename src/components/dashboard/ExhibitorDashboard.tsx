@@ -888,10 +888,8 @@ export default function ExhibitorDashboard() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Actions Rapides */}
-          <div className="lg:col-span-2">
-            <Card className="p-0 overflow-hidden border-none shadow-2xl bg-white">
+        {/* Actions Rapides - Pleine largeur */}
+        <Card className="p-0 overflow-hidden border-none shadow-2xl bg-white mb-8">
               <div className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 p-8 text-white relative">
                 {/* Motif Marocain Subtil */}
                 <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
@@ -919,7 +917,7 @@ export default function ExhibitorDashboard() {
               </div>
 
               <div className="p-6 bg-gradient-to-br from-slate-50 via-blue-50/50 to-purple-50/50">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {quickActions.map((action, index) => (
                     <motion.div
                       key={action.title}
@@ -973,9 +971,12 @@ export default function ExhibitorDashboard() {
                 </div>
               </div>
             </Card>
+        </Card>
 
-            {/* Rendez-vous reçus */}
-            <Card className="siports-glass-card mt-8 overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Rendez-vous reçus */}
+          <div className="lg:col-span-2">
+            <Card className="siports-glass-card overflow-hidden">
               <div className="p-6 bg-gradient-to-br from-white via-purple-50/20 to-pink-50/20">
                 <div className="flex items-center space-x-3 mb-6">
                   <div className="p-2.5 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl shadow-lg">
