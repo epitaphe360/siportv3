@@ -982,7 +982,6 @@ export default function ExhibitorDashboard() {
                 </div>
               </div>
             </Card>
-        </Card>
 
         {/* Rendez-vous reçus - Pleine largeur */}
         <Card className="siports-glass-card overflow-hidden mb-8">
@@ -1100,9 +1099,10 @@ export default function ExhibitorDashboard() {
                 )}
               </div>
             </Card>
+        </Card>
 
-            {/* Activité Récente avec animations */}
-            <Card className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 mt-8">
+        {/* Activité Récente avec animations */}
+        <Card className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 mb-8">
               <div className="p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
                   <div className="p-2 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg mr-3">
@@ -1149,7 +1149,6 @@ export default function ExhibitorDashboard() {
                 </div>
               </div>
             </Card>
-        </Card>
 
         {/* Section Informations Importantes */}
         <motion.div 
