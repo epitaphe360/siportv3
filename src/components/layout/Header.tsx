@@ -116,16 +116,38 @@ export const Header: React.FC = memo(() => {
             <div className="w-[1px] h-6 bg-slate-200 mx-4" />
 
             {/* Media Dropdown Premium */}
-            <div className="relative">
+            <div className="relative" onMouseEnter={() => setIsMediaMenuOpen(true)} onMouseLeave={() => setIsMediaMenuOpen(false)}>
               <button
-                onMouseEnter={() => setIsMediaMenuOpen(true)}
-                onMouseLeave={() => setIsMediaMenuOpen(false)}
                 className="px-5 py-2.5 text-xs font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 transition-all flex items-center gap-2 group"
               >
                 <Video className="w-4 h-4 text-blue-500" />
                 <span>Média</span>
                 <span className="absolute bottom-0 left-5 right-5 h-[2px] bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
               </button>
+              
+              {/* Dropdown Content */}
+              {isMediaMenuOpen && (
+                <div className="absolute left-0 mt-0 w-64 bg-white rounded-lg shadow-2xl border border-slate-200 py-2 z-50">
+                  {mediaMenuItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.name}
+                        to={item.href}
+                        className="flex items-start px-4 py-3 hover:bg-slate-50 transition-colors group"
+                        onMouseEnter={() => setIsMediaMenuOpen(true)}
+                        onMouseLeave={() => setIsMediaMenuOpen(false)}
+                      >
+                        <Icon className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0 text-slate-400 group-hover:text-blue-600" />
+                        <div>
+                          <div className="font-semibold text-slate-900">{item.name}</div>
+                          <div className="text-xs text-slate-500">{item.description}</div>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Info Dropdown Premium */}
