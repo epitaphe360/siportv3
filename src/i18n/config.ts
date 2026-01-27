@@ -416,22 +416,6 @@ const resources = {
         access_granted: 'Accès autorisé',
         upgrade_to_premium: 'Passer Privilège pour plus d\'avantages'
       },
-      forms: {
-        required: 'Requis',
-        optional: 'Optionnel',
-        submit: 'Soumettre',
-        cancel: 'Annuler',
-        save: 'Enregistrer',
-        reset: 'Réinitialiser',
-        validation: {
-          required_field: 'Ce champ est requis',
-          invalid_email: 'Email invalide',
-          invalid_phone: 'Numéro de téléphone invalide',
-          min_length: 'Minimum {{min}} caractères',
-          max_length: 'Maximum {{max}} caractères',
-          passwords_not_match: 'Les mots de passe ne correspondent pas'
-        }
-      },
       profile: {
         not_found: 'Profil introuvable',
         edit_profile: 'Modifier le profil',
