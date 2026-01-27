@@ -723,6 +723,26 @@ export default function AdminDashboard() {
 	                    </div>
 	                  </motion.div>
 	                </Link>
+
+	                <Link to={ROUTES.ADMIN_EVENTS} className="block">
+	                  <motion.div
+	                    whileHover={{ scale: 1.02 }}
+	                    whileTap={{ scale: 0.98 }}
+	                  >
+	                    <div className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
+	                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
+	                        <Calendar className="h-5 w-5" />
+	                      </div>
+	                      <div className="flex-1">
+	                        <div className="font-semibold">Gérer Événements</div>
+	                        <div className="text-xs text-purple-100">Voir, modifier et supprimer les événements</div>
+	                      </div>
+	                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+	                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+	                      </svg>
+	                    </div>
+	                  </motion.div>
+	                </Link>
 	
 	                <Link to={ROUTES.ADMIN_CREATE_NEWS} className="block">
                   <motion.div
@@ -736,6 +756,26 @@ export default function AdminDashboard() {
                       <div className="flex-1">
                         <div className="font-semibold">Créer Nouvel Article</div>
                         <div className="text-xs text-blue-100">Publier une actualité</div>
+                      </div>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </motion.div>
+                </Link>
+
+                <Link to={ROUTES.ADMIN_NEWS} className="block">
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
+                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
+                        <FileText className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold">Gérer Articles</div>
+                        <div className="text-xs text-emerald-100">Voir, modifier et supprimer les articles</div>
                       </div>
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

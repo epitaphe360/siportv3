@@ -43,6 +43,7 @@ export const ROUTES = {
   ADMIN_CREATE_EVENT: '/admin/create-event',
   ADMIN_EVENTS: '/admin/events',
   ADMIN_CREATE_NEWS: '/admin/create-news',
+  ADMIN_NEWS: '/admin/news',
   MINISITE_PREVIEW: '/minisite/:exhibitorId',
   ADMIN_ACTIVITY: '/admin/activity',
   ADMIN_VALIDATION: '/admin/validation',

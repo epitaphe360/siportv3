@@ -46,8 +46,8 @@ const ArticleDetailPage = lazyRetry(() => import('./pages/ArticleDetailPage'));
 const ExhibitorCreationSimulator = lazyRetry(() => import('./components/admin/ExhibitorCreationSimulator'));
 const PartnerCreationForm = lazyRetry(() => import('./components/admin/PartnerCreationForm'));
 const NewsArticleCreationForm = lazyRetry(() => import('./components/admin/NewsArticleCreationForm'));
-const EventCreationForm = lazyRetry(() => import('./components/admin/EventCreationForm'));
-const EventManagementPage = lazyRetry(() => import('./components/admin/EventManagementPage'));
+const EventCreationPage = lazyRetry(() => import('./pages/admin/EventCreationPage'));
+const EventManagementPage = lazyRetry(() => import('./pages/admin/EventManagementPage'));
 const UserManagementPage = lazyRetry(() => import('./pages/UserManagementPage'));
 const ExhibitorSignUpPage = lazyRetry(() => import('./pages/auth/ExhibitorSignUpPage'));
 const PartnerSignUpPage = lazyRetry(() => import('./pages/auth/PartnerSignUpPage'));
@@ -79,6 +79,7 @@ const PavillonsAdminPage = lazyRetry(() => import('./pages/admin/PavillonsPage')
 const CreatePavilionPage = lazyRetry(() => import('./pages/admin/CreatePavilionPage'));
 const AddDemoProgramPage = lazyRetry(() => import('./pages/admin/AddDemoProgramPage'));
 const ContentManagementPage = lazyRetry(() => import('./pages/admin/ContentManagementPage'));
+const NewsManagementPage = lazyRetry(() => import('./pages/admin/NewsManagementPage'));
 const CreateUserPage = lazyRetry(() => import('./pages/admin/CreateUserPage'));
 const AdminPartnersPage = lazyRetry(() => import('./pages/admin/PartnersPage'));
 const MarketingDashboard = lazyRetry(() => import('./pages/MarketingDashboard'));
@@ -272,7 +273,7 @@ const App = () => {
             <Route path={ROUTES.ADMIN_CREATE_EXHIBITOR} element={<ProtectedRoute requiredRole="admin"><ExhibitorCreationSimulator /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_CREATE_PARTNER} element={<ProtectedRoute requiredRole="admin"><PartnerCreationForm /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_CREATE_NEWS} element={<ProtectedRoute requiredRole="admin"><NewsArticleCreationForm /></ProtectedRoute>} />
-            <Route path={ROUTES.ADMIN_CREATE_EVENT} element={<ProtectedRoute requiredRole="admin"><EventCreationForm /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_CREATE_EVENT} element={<ProtectedRoute requiredRole="admin"><EventCreationPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_EVENTS} element={<ProtectedRoute requiredRole="admin"><EventManagementPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_ACTIVITY} element={<ProtectedRoute requiredRole="admin"><ActivityPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_VALIDATION} element={<ProtectedRoute requiredRole="admin"><ExhibitorValidation /></ProtectedRoute>} />
@@ -288,6 +289,7 @@ const App = () => {
             <Route path={ROUTES.ADMIN_CREATE_PAVILION} element={<ProtectedRoute requiredRole="admin"><CreatePavilionPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_PAVILION_ADD_DEMO} element={<ProtectedRoute requiredRole="admin"><AddDemoProgramPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_CONTENT} element={<ProtectedRoute requiredRole="admin"><ContentManagementPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_NEWS} element={<ProtectedRoute requiredRole="admin"><NewsManagementPage /></ProtectedRoute>} />
             <Route path={ROUTES.MARKETING_DASHBOARD} element={<ProtectedRoute requiredRole="admin"><MarketingDashboard /></ProtectedRoute>} />
 
             {/* New routes for footer links */}
