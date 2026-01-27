@@ -413,14 +413,15 @@ export default memo(function VisitorDashboard() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
           >
             {[
-              {
+              // Exclure RDV programmés pour les visiteurs free
+              ...(userLevel !== 'free' ? [{
                 icon: Calendar,
                 label: 'RDV programmés',
                 value: stats.appointmentsBooked,
                 subtitle: `Niveau: ${userLevel}`,
                 color: 'blue',
                 gradient: 'from-blue-500 to-blue-600'
-              },
+              }] : []),
               {
                 icon: Building2,
                 label: 'Exposants visités',
@@ -498,39 +499,42 @@ export default memo(function VisitorDashboard() {
               </Card>
             </motion.div>
 
-            <motion.div variants={itemVariants}>
-              <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 h-full">
-                <div className="flex items-start space-x-3 mb-4">
-                  <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg">
-                    <Calendar className="h-5 w-5 text-white" />
+            {/* Prendre un rendez-vous - Masqué pour les visiteurs free */}
+            {userLevel !== 'free' && (
+              <motion.div variants={itemVariants}>
+                <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 h-full">
+                  <div className="flex items-start space-x-3 mb-4">
+                    <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg">
+                      <Calendar className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900">Prendre un rendez-vous</h3>
+                      <p className="text-gray-600 text-sm mt-1">
+                        Planifiez des rencontres avec les exposants selon leurs disponibilités
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900">Prendre un rendez-vous</h3>
-                    <p className="text-gray-600 text-sm mt-1">
-                      Planifiez des rencontres avec les exposants selon leurs disponibilités
+                  <Link to={`${ROUTES.NETWORKING}?action=schedule`}>
+                    <Button variant="outline" className="w-full border-2 hover:bg-gray-50" disabled={remaining <= 0}>
+                      <Calendar className="h-4 w-4 mr-2" />
+                      Programmer un RDV
+                    </Button>
+                  </Link>
+                  <div className="mt-3 flex items-center justify-between text-sm">
+                    <span className="text-gray-600">RDV restants:</span>
+                    <Badge variant={remaining > 0 ? "success" : "error"}>
+                      <strong>{remaining}</strong>
+                    </Badge>
+                  </div>
+                  {remaining <= 0 && (
+                    <p className="text-sm text-red-600 mt-2 flex items-center">
+                      <TrendingUp className="h-4 w-4 mr-1" />
+                      Quota RDV atteint pour votre niveau ({userLevel}).
                     </p>
-                  </div>
-                </div>
-                <Link to={`${ROUTES.NETWORKING}?action=schedule`}>
-                  <Button variant="outline" className="w-full border-2 hover:bg-gray-50" disabled={remaining <= 0}>
-                    <Calendar className="h-4 w-4 mr-2" />
-                    Programmer un RDV
-                  </Button>
-                </Link>
-                <div className="mt-3 flex items-center justify-between text-sm">
-                  <span className="text-gray-600">RDV restants:</span>
-                  <Badge variant={remaining > 0 ? "success" : "error"}>
-                    <strong>{remaining}</strong>
-                  </Badge>
-                </div>
-                {remaining <= 0 && (
-                  <p className="text-sm text-red-600 mt-2 flex items-center">
-                    <TrendingUp className="h-4 w-4 mr-1" />
-                    Quota RDV atteint pour votre niveau ({userLevel}).
-                  </p>
-                )}
-              </Card>
-            </motion.div>
+                  )}
+                </Card>
+              </motion.div>
+            )}
           </motion.div>
 
           {/* 📊 SECTION ANALYTICS VISITEUR - Graphiques Professionnels */}
