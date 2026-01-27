@@ -161,12 +161,31 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
         return;
       }
 
+      // Combiner date et heures pour créer startDate et endDate
+      const startDateTime = new Date(`${formData.date}T${formData.startTime}:00`);
+      const endDateTime = new Date(`${formData.date}T${formData.endTime}:00`);
+
+      // Validation des dates
+      if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
+        toast.error('Les dates et heures sont invalides.');
+        setIsLoading(false);
+        return;
+      }
+
+      if (endDateTime <= startDateTime) {
+        toast.error('L\'heure de fin doit être après l\'heure de début.');
+        setIsLoading(false);
+        return;
+      }
+
       // Préparation des données pour l'API
       const eventData: Omit<Event, 'id' | 'registered'> = {
         title: formData.title,
         description: formData.description,
         type: formData.type as Event['type'],
-        date: new Date(formData.date),
+        startDate: startDateTime,
+        endDate: endDateTime,
+        date: startDateTime, // Pour compatibilité
         startTime: formData.startTime,
         endTime: formData.endTime,
         capacity: formData.capacity,
