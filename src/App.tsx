@@ -80,6 +80,8 @@ const CreatePavilionPage = lazyRetry(() => import('./pages/admin/CreatePavilionP
 const AddDemoProgramPage = lazyRetry(() => import('./pages/admin/AddDemoProgramPage'));
 const ContentManagementPage = lazyRetry(() => import('./pages/admin/ContentManagementPage'));
 const NewsManagementPage = lazyRetry(() => import('./pages/admin/NewsManagementPage'));
+const ExhibitorManagementPage = lazyRetry(() => import('./pages/admin/ExhibitorManagementPage'));
+const PartnerManagementPage = lazyRetry(() => import('./pages/admin/PartnerManagementPage'));
 const CreateUserPage = lazyRetry(() => import('./pages/admin/CreateUserPage'));
 const AdminPartnersPage = lazyRetry(() => import('./pages/admin/PartnersPage'));
 const MarketingDashboard = lazyRetry(() => import('./pages/MarketingDashboard'));
@@ -290,6 +292,8 @@ const App = () => {
             <Route path={ROUTES.ADMIN_PAVILION_ADD_DEMO} element={<ProtectedRoute requiredRole="admin"><AddDemoProgramPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_CONTENT} element={<ProtectedRoute requiredRole="admin"><ContentManagementPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_NEWS} element={<ProtectedRoute requiredRole="admin"><NewsManagementPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_EXHIBITORS} element={<ProtectedRoute requiredRole="admin"><ExhibitorManagementPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_PARTNERS_MANAGE} element={<ProtectedRoute requiredRole="admin"><PartnerManagementPage /></ProtectedRoute>} />
             <Route path={ROUTES.MARKETING_DASHBOARD} element={<ProtectedRoute requiredRole="admin"><MarketingDashboard /></ProtectedRoute>} />
 
             {/* New routes for footer links */}

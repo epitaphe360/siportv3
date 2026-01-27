@@ -669,7 +669,7 @@ export default function AdminDashboard() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <div className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center">
+                    <div className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
                       <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
                         <Building2 className="h-5 w-5" />
                       </div>
@@ -684,18 +684,58 @@ export default function AdminDashboard() {
                   </motion.div>
                 </Link>
 
+                <Link to={ROUTES.ADMIN_EXHIBITORS} className="block">
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
+                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
+                        <Building2 className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold">Gérer Exposants</div>
+                        <div className="text-xs text-teal-100">Voir, modifier et supprimer les exposants</div>
+                      </div>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </motion.div>
+                </Link>
+
                 <Link to={ROUTES.ADMIN_CREATE_PARTNER} className="block">
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <div className="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center">
+                    <div className="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
                       <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
                         <Award className="h-5 w-5" />
                       </div>
                       <div className="flex-1">
                         <div className="font-semibold">Créer Nouveau Partenaire</div>
                         <div className="text-xs text-purple-100">Ajouter un partenaire stratégique</div>
+                      </div>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </motion.div>
+                </Link>
+
+                <Link to={ROUTES.ADMIN_PARTNERS_MANAGE} className="block">
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
+                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
+                        <Award className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold">Gérer Partenaires</div>
+                        <div className="text-xs text-pink-100">Voir, modifier et supprimer les partenaires</div>
                       </div>
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
