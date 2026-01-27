@@ -2697,6 +2697,19 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
+      // Vérifier le niveau du visiteur - les visiteurs "free" ne peuvent pas prendre de rendez-vous
+      const { data: visitorData, error: visitorError } = await safeSupabase
+        .from('users')
+        .select('visitor_level')
+        .eq('id', appointmentData.visitorId)
+        .single();
+
+      if (visitorError) throw visitorError;
+
+      if (visitorData?.visitor_level === 'free') {
+        throw new Error('Les visiteurs de niveau Free n\'ont pas accès aux rendez-vous. Veuillez passer au niveau Premium ou VIP pour réserver des rendez-vous.');
+      }
+
       // Utiliser la fonction atomique pour éviter les race conditions
       const { data, error } = await safeSupabase
         .rpc('book_appointment_atomic', {
