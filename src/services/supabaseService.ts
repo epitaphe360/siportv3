@@ -1238,6 +1238,19 @@ export class SupabaseService {
   static async createEvent(eventData: Omit<Event, 'id' | 'registered'>): Promise<Event> {
     if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
 
+    // Validation des dates
+    if (!eventData.startDate || !eventData.endDate) {
+      throw new Error('Les dates de début et de fin sont obligatoires');
+    }
+
+    if (!(eventData.startDate instanceof Date) || isNaN(eventData.startDate.getTime())) {
+      throw new Error('La date de début est invalide');
+    }
+
+    if (!(eventData.endDate instanceof Date) || isNaN(eventData.endDate.getTime())) {
+      throw new Error('La date de fin est invalide');
+    }
+
     const safeSupabase = supabase!;
     try {
       const { data, error } = await safeSupabase
