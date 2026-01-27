@@ -64,15 +64,15 @@ export default function PartnerCreationForm({ partnerToEdit, editMode = false }:
     country: partnerToEdit?.country || '',
     website: partnerToEdit?.website || '',
     description: partnerToEdit?.description || '',
-    contactName: '',
-    email: '',
-    phone: '',
-    position: '',
+    contactName: partnerToEdit?.contact_person || '',
+    email: partnerToEdit?.contact_email || '',
+    phone: partnerToEdit?.contact_phone || '',
+    position: partnerToEdit?.contact_position || '',
     sponsorshipLevel: partnerToEdit?.partner_tier || '',
-    contractValue: '',
+    contractValue: partnerToEdit?.contract_value || '',
     contributions: partnerToEdit?.contributions || [],
-    establishedYear: new Date().getFullYear(),
-    employees: ''
+    establishedYear: partnerToEdit?.established_year || new Date().getFullYear(),
+    employees: partnerToEdit?.employees || ''
   });
 
   const steps = [
