@@ -131,6 +131,7 @@ const MediaDetailPage = lazyRetry(() => import('./pages/media/MediaDetailPage'))
 // Admin Media pages
 const MediaManagementPage = lazyRetry(() => import('./pages/admin/media/MediaManagementPage'));
 const CreateMediaPage = lazyRetry(() => import('./pages/admin/media/CreateMediaPage'));
+const EditMediaPage = lazyRetry(() => import('./pages/admin/media/EditMediaPage'));
 
 // Partner Media pages
 const PartnerMediaUploadPage = lazyRetry(() => import('./pages/partners/PartnerMediaUploadPage'));
@@ -333,6 +334,7 @@ const App = () => {
             {/* Admin Media routes - protected */}
             <Route path={ROUTES.ADMIN_MEDIA_MANAGE} element={<ProtectedRoute requiredRole="admin"><MediaManagementPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_MEDIA_CREATE} element={<ProtectedRoute requiredRole="admin"><CreateMediaPage /></ProtectedRoute>} />
+            <Route path="/admin/media/edit/:id" element={<ProtectedRoute requiredRole="admin"><EditMediaPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_PARTNER_MEDIA_APPROVAL} element={<ProtectedRoute requiredRole="admin"><PartnerMediaApprovalPage /></ProtectedRoute>} />
 
             {/* 404 catch-all route - must be last */}
