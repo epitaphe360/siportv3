@@ -108,11 +108,13 @@ const ImageWithFallback = ({
 
 interface MiniSitePreviewProps {
   exhibitorId?: string;
+  exhibitor?: any;
+  activeTab?: any;
 }
 
-export default function MiniSitePreview({ exhibitorId: propExhibitorId }: MiniSitePreviewProps) {
+export default function MiniSitePreview({ exhibitorId: propExhibitorId, exhibitor, activeTab }: MiniSitePreviewProps) {
   const { exhibitorId: urlExhibitorId } = useParams<{ exhibitorId: string }>();
-  const exhibitorId = propExhibitorId || urlExhibitorId;
+  const exhibitorId = propExhibitorId || exhibitor?.id || urlExhibitorId;
   const navigate = useNavigate();
   const { articles, fetchNews } = useNewsStore();
   
