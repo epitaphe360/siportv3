@@ -50,14 +50,19 @@ BEGIN
   END IF;
 END $$;
 
--- Ajouter un champ file_size à la table media_content si inexistant
+-- Ajouter un champ file_size à la table media_content si la table existe
 DO $$ 
 BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_name = 'media_content' AND column_name = 'file_size'
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables 
+    WHERE table_schema = 'public' AND table_name = 'media_content'
   ) THEN
-    ALTER TABLE media_content ADD COLUMN file_size BIGINT DEFAULT 0;
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.columns 
+      WHERE table_name = 'media_content' AND column_name = 'file_size'
+    ) THEN
+      ALTER TABLE media_content ADD COLUMN file_size BIGINT DEFAULT 0;
+    END IF;
   END IF;
 END $$;
 
