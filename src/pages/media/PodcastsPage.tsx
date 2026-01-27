@@ -2,7 +2,7 @@
 import { useTranslation } from '../../hooks/useTranslation';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mic, Play, Clock, Eye, ArrowLeft, Search, Filter } from 'lucide-react';
-import { mediaService } from '../../services/mediaService';
+import { MediaService } from '../../services/mediaService';
 import { MediaContent } from '../../types/media';
 import { MediaCard } from '../../components/media/MediaCard';
 import { Button } from '../../components/ui/Button';
@@ -27,7 +27,7 @@ export const PodcastsPage: React.FC = () => {
         type: 'podcast' as const,
         category: categoryFilter !== 'all' ? categoryFilter : undefined,
       };
-      const data = await mediaService.getMedia(filters);
+      const data = await MediaService.getMedia(filters);
       setPodcasts(data);
     } catch (error) {
       console.error('Erreur chargement podcasts:', error);

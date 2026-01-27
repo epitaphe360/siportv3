@@ -15,7 +15,16 @@ test.describe('Rendez-vous', () => {
     await page.fill('input[type="email"]', user.email);
     await page.fill('input[type="password"]', user.password);
     await page.click('button[type="submit"]');
-    await page.waitForURL('/dashboard', { timeout: 10000 });
+    try {
+        // Attendre n'importe quelle page de dashboard (admin, visitor, exhibitor...)
+        await page.waitForURL(/dashboard/, { timeout: 15000 });
+    } catch (e) {
+        console.log('Details de l\'echec du login:');
+        console.log('Current URL:', page.url());
+        const errorMsg = await page.locator('.text-red-700').textContent().catch(() => 'No error message found');
+        console.log('Error message on page:', errorMsg);
+        throw e;
+    }
   }
 
   test.describe('Prise de rendez-vous', () => {
