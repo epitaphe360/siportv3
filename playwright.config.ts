@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export default defineConfig({
-  testDir: 'e2e',
+  testDir: '.',
   testMatch: ['**/*.spec.ts'],
   timeout: 30000, // 30 secondes par test (plus rapide)
   workers: 1, // 1 worker pour éviter les conflits de screenshots
