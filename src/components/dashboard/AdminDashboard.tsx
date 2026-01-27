@@ -614,256 +614,80 @@ export default function AdminDashboard() {
                 </h3>
               </div>
 
-              <div className="space-y-3">
-                <Link to={ROUTES.ADMIN_CREATE_EXHIBITOR} className="block">
+              <div className="grid grid-cols-2 gap-4">
+                {/* Exposants */}
+                <div className="border-l-4 border-emerald-500 pl-3">
+                  <h4 className="text-xs font-semibold text-gray-700 mb-2">📦 Exposants</h4>
+                  <Link to={ROUTES.ADMIN_CREATE_EXHIBITOR} className="block mb-2">
+                    <div className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 p-2 rounded text-xs font-medium transition">➕ Créer</div>
+                  </Link>
+                  <Link to={ROUTES.ADMIN_EXHIBITORS} className="block">
+                    <div className="bg-teal-50 hover:bg-teal-100 text-teal-700 p-2 rounded text-xs font-medium transition">📋 Gérer</div>
+                  </Link>
+                </div>
+
+                {/* Partenaires */}
+                <div className="border-l-4 border-purple-500 pl-3">
+                  <h4 className="text-xs font-semibold text-gray-700 mb-2">🤝 Partenaires</h4>
+                  <Link to={ROUTES.ADMIN_CREATE_PARTNER} className="block mb-2">
+                    <div className="bg-purple-50 hover:bg-purple-100 text-purple-700 p-2 rounded text-xs font-medium transition">➕ Créer</div>
+                  </Link>
+                  <Link to={ROUTES.ADMIN_PARTNERS_MANAGE} className="block">
+                    <div className="bg-pink-50 hover:bg-pink-100 text-pink-700 p-2 rounded text-xs font-medium transition">📋 Gérer</div>
+                  </Link>
+                </div>
+
+                {/* Événements */}
+                <div className="border-l-4 border-orange-500 pl-3">
+                  <h4 className="text-xs font-semibold text-gray-700 mb-2">📅 Événements</h4>
+                  <Link to={ROUTES.ADMIN_CREATE_EVENT} className="block mb-2">
+                    <div className="bg-orange-50 hover:bg-orange-100 text-orange-700 p-2 rounded text-xs font-medium transition">➕ Créer</div>
+                  </Link>
+                  <Link to={ROUTES.ADMIN_EVENTS} className="block">
+                    <div className="bg-red-50 hover:bg-red-100 text-red-700 p-2 rounded text-xs font-medium transition">📋 Gérer</div>
+                  </Link>
+                </div>
+
+                {/* Contenu */}
+                <div className="border-l-4 border-blue-500 pl-3">
+                  <h4 className="text-xs font-semibold text-gray-700 mb-2">📝 Contenu</h4>
+                  <Link to={ROUTES.ADMIN_CREATE_NEWS} className="block mb-2">
+                    <div className="bg-blue-50 hover:bg-blue-100 text-blue-700 p-2 rounded text-xs font-medium transition">➕ Créer</div>
+                  </Link>
+                  <Link to={ROUTES.ADMIN_NEWS} className="block">
+                    <div className="bg-cyan-50 hover:bg-cyan-100 text-cyan-700 p-2 rounded text-xs font-medium transition">📋 Gérer</div>
+                  </Link>
+                </div>
+
+                {/* Médias */}
+                <div className="border-l-4 border-rose-500 pl-3">
+                  <h4 className="text-xs font-semibold text-gray-700 mb-2">🎥 Médias</h4>
+                  <Link to={ROUTES.ADMIN_MEDIA_MANAGE} className="block mb-2">
+                    <div className="bg-rose-50 hover:bg-rose-100 text-rose-700 p-2 rounded text-xs font-medium transition">📹 Gérer</div>
+                  </Link>
+                  <Link to={ROUTES.ADMIN_PARTNER_MEDIA_APPROVAL} className="block">
+                    <div className="bg-amber-50 hover:bg-amber-100 text-amber-700 p-2 rounded text-xs font-medium transition">✅ Valider</div>
+                  </Link>
+                </div>
+
+                {/* Synchronisation */}
+                <div className="border-l-4 border-indigo-500 pl-3">
+                  <h4 className="text-xs font-semibold text-gray-700 mb-2">🔄 Sync</h4>
                   <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleImportArticles}
+                    className="block"
                   >
-                    <div className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
-                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
-                        <Building2 className="h-5 w-5" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold">Créer Nouvel Exposant</div>
-                        <div className="text-xs text-emerald-100">Ajouter un exposant à la plateforme</div>
-                      </div>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
+                    <div className={`bg-indigo-50 hover:bg-indigo-100 text-indigo-700 p-2 rounded text-xs font-medium transition ${isImportingArticles ? 'opacity-70' : ''}`}>
+                      {isImportingArticles ? '⏳ Sync...' : '🔄 Sync Articles'}
                     </div>
                   </motion.div>
-                </Link>
+                </div>
+              </div>
 
-                <Link to={ROUTES.ADMIN_EXHIBITORS} className="block">
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
-                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
-                        <Building2 className="h-5 w-5" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold">Gérer Exposants</div>
-                        <div className="text-xs text-teal-100">Voir, modifier et supprimer les exposants</div>
-                      </div>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </motion.div>
-                </Link>
-
-                <Link to={ROUTES.ADMIN_CREATE_PARTNER} className="block">
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
-                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
-                        <Award className="h-5 w-5" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold">Créer Nouveau Partenaire</div>
-                        <div className="text-xs text-purple-100">Ajouter un partenaire stratégique</div>
-                      </div>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </motion.div>
-                </Link>
-
-                <Link to={ROUTES.ADMIN_PARTNERS_MANAGE} className="block">
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
-                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
-                        <Award className="h-5 w-5" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold">Gérer Partenaires</div>
-                        <div className="text-xs text-pink-100">Voir, modifier et supprimer les partenaires</div>
-                      </div>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </motion.div>
-                </Link>
-
-	                <Link to={ROUTES.ADMIN_CREATE_EVENT} className="block">
-	                  <motion.div
-	                    whileHover={{ scale: 1.02 }}
-	                    whileTap={{ scale: 0.98 }}
-	                  >
-	                    <div className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
-	                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
-	                        <Calendar className="h-5 w-5" />
-	                      </div>
-	                      <div className="flex-1">
-	                        <div className="font-semibold">Créer Nouvel Événement</div>
-	                        <div className="text-xs text-orange-100">Planifier une conférence ou un atelier</div>
-	                      </div>
-	                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-	                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-	                      </svg>
-	                    </div>
-	                  </motion.div>
-	                </Link>
-
-	                <Link to={ROUTES.ADMIN_EVENTS} className="block">
-	                  <motion.div
-	                    whileHover={{ scale: 1.02 }}
-	                    whileTap={{ scale: 0.98 }}
-	                  >
-	                    <div className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
-	                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
-	                        <Calendar className="h-5 w-5" />
-	                      </div>
-	                      <div className="flex-1">
-	                        <div className="font-semibold">Gérer Événements</div>
-	                        <div className="text-xs text-purple-100">Voir, modifier et supprimer les événements</div>
-	                      </div>
-	                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-	                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-	                      </svg>
-	                    </div>
-	                  </motion.div>
-	                </Link>
-	
-	                <Link to={ROUTES.ADMIN_CREATE_NEWS} className="block">
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
-                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
-                        <FileText className="h-5 w-5" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold">Créer Nouvel Article</div>
-                        <div className="text-xs text-blue-100">Publier une actualité</div>
-                      </div>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </motion.div>
-                </Link>
-
-                <Link to={ROUTES.ADMIN_NEWS} className="block">
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
-                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
-                        <FileText className="h-5 w-5" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold">Gérer Articles</div>
-                        <div className="text-xs text-emerald-100">Voir, modifier et supprimer les articles</div>
-                      </div>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </motion.div>
-                </Link>
-
-                <Link to={ROUTES.ADMIN_MEDIA_MANAGE} className="block">
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
-                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
-                        <Video className="h-5 w-5" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold">Gérer Contenus Médias</div>
-                        <div className="text-xs text-pink-100">Webinaires, Podcasts, Capsules, Talks...</div>
-                      </div>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </motion.div>
-                </Link>
-
-                <Link to={ROUTES.ADMIN_PARTNER_MEDIA_APPROVAL} className="block">
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center mb-3">
-                      <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
-                        <CheckCircle className="h-5 w-5" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold">Valider Médias Partenaires</div>
-                        <div className="text-xs text-orange-100">Approuver les contenus soumis</div>
-                      </div>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </motion.div>
-                </Link>
-
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleImportArticles}
-                >
-                  <div className={`bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white p-4 rounded-xl shadow-md transition-all cursor-pointer flex items-center ${isImportingArticles ? 'opacity-70 cursor-wait' : ''}`}>
-                    <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg mr-4">
-                      <Download className={`h-5 w-5 ${isImportingArticles ? 'animate-bounce' : ''}`} />
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-semibold">
-                        {isImportingArticles ? '⏳ Synchronisation en cours...' : '🔄 Synchroniser Articles'}
-                      </div>
-                      <div className="text-xs text-indigo-100">Importer depuis siportevent.com/actualite-portuaire</div>
-                    </div>
-                    {!isImportingArticles && (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    )}
-                  </div>
-                </motion.div>
-
-                {/* Info card for manual sync */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="mt-3"
-                >
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <div className="flex items-start gap-2">
-                      <div className="bg-blue-100 rounded-full p-1 mt-0.5">
-                        <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-xs font-medium text-blue-900 mb-1">Synchronisation manuelle</p>
-                        <p className="text-xs text-blue-700 mb-2">
-                          Si la synchronisation automatique échoue, utilisez le script :
-                        </p>
-                        <code className="block bg-blue-100 text-blue-900 px-2 py-1 rounded text-xs font-mono">
-                          node scripts/sync-siport-news.mjs
-                        </code>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
+              <div className="mt-4 pt-4 border-t border-gray-200 text-xs text-blue-600">
+                💡 Manuel: <code className="bg-gray-100 px-1 rounded">node scripts/sync-siport-news.mjs</code>
               </div>
             </div>
           </motion.div>
