@@ -1187,7 +1187,7 @@ export class SupabaseService {
       if (eventData.title !== undefined) updateData.title = eventData.title;
       if (eventData.description !== undefined) updateData.description = eventData.description;
       if (eventData.type !== undefined) updateData.event_type = eventData.type;
-      if (eventData.startDate !== undefined) updateData.start_time = eventData.startDate.toISOString();
+      if (eventData.startDate !== undefined) updateData.start_date = eventData.startDate.toISOString();
       if (eventData.endDate !== undefined) updateData.end_date = eventData.endDate.toISOString();
       if (eventData.location !== undefined) updateData.location = eventData.location;
       if (eventData.pavilionId !== undefined) updateData.pavilion_id = eventData.pavilionId;
