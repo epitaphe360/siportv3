@@ -23,8 +23,13 @@ export default function NewsManagementPage() {
     if (window.confirm(`Êtes-vous sûr de vouloir supprimer l'article "${title}" ?`)) {
       try {
         await deleteNewsArticle(id);
+        
+        // Supprimer immédiatement du state local
+        setArticles(articles.filter(a => a.id !== id));
+        
         toast.success('Article supprimé avec succès');
-        fetchNews();
+        // Ensuite faire un refresh complet
+        setTimeout(() => fetchNews(), 500);
       } catch (error) {
         toast.error('Erreur lors de la suppression');
         console.error('Erreur suppression:', error);

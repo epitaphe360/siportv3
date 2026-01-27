@@ -47,8 +47,12 @@ export default function ExhibitorManagementPage() {
         
         if (error) throw error;
         
+        // Supprimer immédiatement du state local
+        setExhibitors(exhibitors.filter(e => e.id !== id));
+        
         toast.success('Exposant supprimé avec succès');
-        fetchExhibitors();
+        // Ensuite faire un refresh complet
+        setTimeout(() => fetchExhibitors(), 500);
       } catch (error) {
         toast.error('Erreur lors de la suppression');
         console.error('Erreur suppression:', error);

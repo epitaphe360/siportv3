@@ -60,8 +60,12 @@ export default function PartnerManagementPage() {
         
         if (error) throw error;
         
+        // Supprimer immédiatement du state local
+        setPartners(partners.filter(p => p.id !== id));
+        
         toast.success('Partenaire supprimé avec succès');
-        fetchPartners();
+        // Ensuite faire un refresh complet
+        setTimeout(() => fetchPartners(), 500);
       } catch (error) {
         toast.error('Erreur lors de la suppression');
         console.error('Erreur suppression:', error);

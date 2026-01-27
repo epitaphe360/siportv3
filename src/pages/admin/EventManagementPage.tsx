@@ -42,8 +42,13 @@ export default function EventManagementPage() {
     if (window.confirm(`Êtes-vous sûr de vouloir supprimer l'événement "${title}" ?`)) {
       try {
         await SupabaseService.deleteEvent(id);
+        
+        // Supprimer immédiatement du state local
+        setEvents(events.filter(e => e.id !== id));
+        
         toast.success('Événement supprimé avec succès');
-        fetchEvents();
+        // Ensuite faire un refresh complet
+        setTimeout(() => fetchEvents(), 500);
       } catch (error) {
         toast.error('Erreur lors de la suppression');
         console.error('Erreur suppression:', error);
