@@ -21,6 +21,7 @@ const EventsPage = lazyRetry(() => import('./components/events/EventsPage'));
 const ChatInterface = lazyRetry(() => import('./components/chat/ChatInterface'));
 const AppointmentCalendar = lazyRetry(() => import('./components/appointments/AppointmentCalendar'));
 const MiniSitePreview = lazyRetry(() => import('./components/minisite/MiniSitePreviewSimple'));
+const MiniSiteDirectory = lazyRetry(() => import('./components/minisite/MiniSiteDirectory'));
 const MiniSiteListPage = lazyRetry(() => import('./pages/MiniSiteListPage'));
 const ExhibitorDetailPage = lazyRetry(() => import('./pages/ExhibitorDetailPage'));
 const ProfileEdit = lazyRetry(() => import('./pages/exhibitor/ProfileEdit'));
@@ -271,6 +272,7 @@ const App = () => {
             <Route path={ROUTES.MINISITE_CREATION} element={<ProtectedRoute requiredRole="exhibitor"><MiniSiteCreationPage /></ProtectedRoute>} />
             <Route path={ROUTES.MINISITE_EDITOR} element={<ProtectedRoute requiredRole="exhibitor"><MiniSiteEditor /></ProtectedRoute>} />
             <Route path={ROUTES.MINISITE} element={<MiniSiteListPage />} />
+            <Route path={ROUTES.MINISITE_DIRECTORY} element={<MiniSiteDirectory />} />
             <Route path={ROUTES.MINISITE_PREVIEW} element={<MiniSitePreview />} />
             <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
 

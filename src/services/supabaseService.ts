@@ -1798,6 +1798,59 @@ export class SupabaseService {
     }
   }
 
+  static async getPublishedMiniSites(): Promise<{ data: any[] | null; error: any }> {
+    if (!this.checkSupabaseConnection()) return { data: null, error: 'Supabase non connecté' };
+
+    const safeSupabase = supabase!;
+    try {
+      // Récupérer tous les mini-sites publiés avec les infos des exposants
+      const { data: minisites, error: minisitesError } = await safeSupabase
+        .from('mini_sites')
+        .select('id, exhibitor_id, theme, view_count, published')
+        .eq('published', true);
+
+      if (minisitesError) throw minisitesError;
+
+      if (!minisites || minisites.length === 0) {
+        return { data: [], error: null };
+      }
+
+      // Récupérer les infos des exposants pour chaque mini-site
+      const exhibitorIds = minisites.map(ms => ms.exhibitor_id);
+      const { data: exhibitors, error: exhibitorsError } = await safeSupabase
+        .from('exhibitors')
+        .select('id, user_id, company_name, logo_url, category, sector')
+        .or(exhibitorIds.map(id => `user_id.eq.${id},id.eq.${id}`).join(','));
+
+      if (exhibitorsError) {
+        console.warn('Erreur récupération exposants:', exhibitorsError);
+      }
+
+      // Combiner les données
+      const result = minisites.map(ms => {
+        const exhibitor = exhibitors?.find(
+          e => e.user_id === ms.exhibitor_id || e.id === ms.exhibitor_id
+        );
+
+        return {
+          id: ms.id,
+          exhibitor_id: ms.exhibitor_id,
+          company_name: exhibitor?.company_name || 'Exposant',
+          category: exhibitor?.category || 'Non spécifié',
+          sector: exhibitor?.sector || 'Non spécifié',
+          theme: ms.theme || 'modern',
+          views: ms.view_count || 0,
+          logo_url: exhibitor?.logo_url
+        };
+      });
+
+      return { data: result, error: null };
+    } catch (error) {
+      console.error('Erreur récupération mini-sites publiés:', error);
+      return { data: null, error };
+    }
+  }
+
   static async getExhibitorForMiniSite(exhibitorId: string): Promise<any | null> {
     if (!this.checkSupabaseConnection()) return null;
 

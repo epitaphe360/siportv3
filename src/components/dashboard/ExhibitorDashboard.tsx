@@ -486,13 +486,6 @@ export default function ExhibitorDashboard() {
       variant: 'default' as const
     },
     {
-      title: 'Tableau de Bord Marketing',
-      description: 'Gérez vos médias et contenus promotionnels',
-      icon: '📊',
-      link: ROUTES.MARKETING_DASHBOARD,
-      variant: 'outline' as const
-    },
-    {
       title: 'Réseautage IA',
       description: 'Découvrez des connexions pertinentes avec l\'IA',
       icon: '🤖',

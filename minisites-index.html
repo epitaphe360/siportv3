@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini-sites Disponibles - SIPORTS 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 1.2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: #e0e7ff;
+            color: #667eea;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .info-box {
+            background: rgba(255,255,255,0.95);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .info-box h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .info-box p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .info-box code {
+            background: #f3f4f6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #764ba2;
+            font-size: 0.875rem;
+        }
+
+        .urls {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .urls p {
+            margin: 0.5rem 0;
+            font-size: 0.875rem;
+        }
+
+        .urls code {
+            display: block;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.25rem;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Mini-sites des Exposants</h1>
+        <p class="subtitle">SIPORTS 2026 - Découvrez les présentations détaillées de nos exposants</p>
+
+        <div class="info-box">
+            <h3>ℹ️ Comment accéder aux mini-sites ?</h3>
+            <p>Les mini-sites sont accessibles via leur <strong>exhibitor_id</strong>. Vous pouvez utiliser les liens ci-dessous ou accéder directement à :</p>
+            <p><code>http://localhost:5173/minisites</code> - Pour voir le répertoire complet</p>
+            <p><code>http://localhost:5173/minisite/[EXHIBITOR_ID]</code> - Pour un mini-site spécifique</p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>TechMarine Solutions</h2>
+                <div class="card-meta">
+                    <span class="badge">Port Operations</span>
+                    <span class="badge">Maritime</span>
+                    <span class="badge">🎨 Modern</span>
+                </div>
+                <p>Leader mondial en solutions technologiques maritimes</p>
+                <div class="urls">
+                    <p><strong>Exhibitor ID:</strong></p>
+                    <code>8157eab4-6b7f-46fb-80f9-0e0dc30faeab</code>
+                </div>
+                <a href="http://localhost:5173/minisite/8157eab4-6b7f-46fb-80f9-0e0dc30faeab" class="btn" target="_blank">
+                    Voir le mini-site →
+                </a>
+            </div>
+
+            <div class="card">
+                <h2>OceanLogistics Pro</h2>
+                <div class="card-meta">
+                    <span class="badge">Port Industry</span>
+                    <span class="badge">Logistics</span>
+                    <span class="badge">🎨 Corporate</span>
+                </div>
+                <p>Leader marocain en solutions logistiques portuaires</p>
+                <div class="urls">
+                    <p><strong>Exhibitor ID:</strong></p>
+                    <code>7b52cb23-b734-42e8-b962-2ea002180bde</code>
+                </div>
+                <a href="http://localhost:5173/minisite/7b52cb23-b734-42e8-b962-2ea002180bde" class="btn" target="_blank">
+                    Voir le mini-site →
+                </a>
+            </div>
+
+            <div class="card">
+                <h2>PortTech Industries</h2>
+                <div class="card-meta">
+                    <span class="badge">Port Operations</span>
+                    <span class="badge">Equipment</span>
+                    <span class="badge">🎨 Industrial</span>
+                </div>
+                <p>Conception et fabrication d'équipements portuaires</p>
+                <div class="urls">
+                    <p><strong>Exhibitor ID:</strong></p>
+                    <code>4c544867-72f7-4dff-9342-eff08147fcc7</code>
+                </div>
+                <a href="http://localhost:5173/minisite/4c544867-72f7-4dff-9342-eff08147fcc7" class="btn" target="_blank">
+                    Voir le mini-site →
+                </a>
+            </div>
+
+            <div class="card">
+                <h2>Exposant #2</h2>
+                <div class="card-meta">
+                    <span class="badge">Institutional</span>
+                    <span class="badge">Logistique</span>
+                    <span class="badge">🎨 Modern</span>
+                </div>
+                <p>Mini-site en cours de configuration</p>
+                <div class="urls">
+                    <p><strong>Exhibitor ID:</strong></p>
+                    <code>4f085daf-d006-4018-81bf-b53bb0c9a8bf</code>
+                </div>
+                <a href="http://localhost:5173/minisite/4f085daf-d006-4018-81bf-b53bb0c9a8bf" class="btn" target="_blank">
+                    Voir le mini-site →
+                </a>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>🚀 Accès rapide au répertoire complet</h3>
+            <p>Pour voir tous les mini-sites disponibles dans une interface complète :</p>
+            <a href="http://localhost:5173/minisites" class="btn" target="_blank" style="margin-top: 0;">
+                Ouvrir le répertoire des mini-sites →
+            </a>
+        </div>
+    </div>
+</body>
+</html>

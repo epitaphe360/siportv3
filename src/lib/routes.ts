@@ -35,6 +35,7 @@ export const ROUTES = {
   APPOINTMENTS: '/appointments',
   CALENDAR: '/calendar',
   MINISITE: '/minisite',
+  MINISITE_DIRECTORY: '/minisites',
   MINISITE_CREATION: '/minisite-creation',
   RESET_PASSWORD: '/reset-password',
   MINISITE_EDITOR: '/minisite/editor',
