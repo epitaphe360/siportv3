@@ -315,10 +315,54 @@ export class MediaService {
   }
 
   /**
+   * Récupérer les statistiques globales de tous les médias
+   */
+  static async getGlobalMediaStats(): Promise<{
+    total: number;
+    pending: number;
+    approved: number;
+    rejected: number;
+    totalViews: number;
+  }> {
+    try {
+      const { data: mediaList, error } = await supabase
+        .from('media_contents')
+        .select('id, status, views_count');
+
+      if (error) throw error;
+
+      const stats = {
+        total: mediaList?.length || 0,
+        pending: mediaList?.filter(m => m.status === 'draft' || m.status === 'pending').length || 0,
+        approved: mediaList?.filter(m => m.status === 'published').length || 0,
+        rejected: mediaList?.filter(m => m.status === 'rejected').length || 0,
+        totalViews: mediaList?.reduce((sum, m) => sum + (m.views_count || 0), 0) || 0
+      };
+
+      return stats;
+    } catch (error) {
+      console.error('❌ Erreur getGlobalMediaStats:', error);
+      return {
+        total: 0,
+        pending: 0,
+        approved: 0,
+        rejected: 0,
+        totalViews: 0
+      };
+    }
+  }
+
+  /**
    * Récupérer les statistiques d'un média
    */
   static async getMediaStats(mediaId: string): Promise<MediaStats | null> {
     try {
+      // Valider que mediaId n'est pas undefined ou vide
+      if (!mediaId || mediaId === 'undefined') {
+        console.warn('⚠️ getMediaStats appelé avec mediaId invalide:', mediaId);
+        return null;
+      }
+
       const { data: interactions, error } = await supabase
         .from('media_interactions')
         .select('action, watch_time, completed')

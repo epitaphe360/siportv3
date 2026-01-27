@@ -39,10 +39,18 @@ export const MediaManagementPage: React.FC = () => {
 
   const loadStats = async () => {
     try {
-      const globalStats = await mediaService.getMediaStats();
+      const globalStats = await mediaService.getGlobalMediaStats();
       setStats(globalStats);
     } catch (error) {
       console.error('Erreur chargement stats:', error);
+      // Initialiser avec des valeurs par défaut en cas d'erreur
+      setStats({
+        total: 0,
+        pending: 0,
+        approved: 0,
+        rejected: 0,
+        totalViews: 0
+      });
     }
   };
 
