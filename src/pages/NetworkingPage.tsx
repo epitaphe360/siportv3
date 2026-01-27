@@ -34,6 +34,17 @@ export default function NetworkingPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { user, isAuthenticated } = useAuthStore();
+
+  // Bloquer l'accès pour les visiteurs de niveau "free"
+  React.useEffect(() => {
+    if (isAuthenticated && user?.type === 'visitor' && user?.visitor_level === 'free') {
+      toast.error('Le Réseautage Intelligent est réservé aux visiteurs Premium et VIP. Veuillez mettre à niveau votre compte.', {
+        duration: 6000
+      });
+      navigate(ROUTES.HOME);
+    }
+  }, [isAuthenticated, user?.type, user?.visitor_level, navigate]);
+
   const {
     recommendations,
     isLoading,
