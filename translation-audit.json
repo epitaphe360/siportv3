@@ -1,0 +1,2672 @@
+{
+  "timestamp": "2026-01-27T13:15:31.639Z",
+  "totalInstances": 494,
+  "filesWithIssues": 73,
+  "uniqueTerms": [
+    "Adresse",
+    "Ajouter",
+    "Confirmer",
+    "Contenu",
+    "Description",
+    "Entreprise",
+    "Ex:",
+    "Exemple",
+    "Exporter",
+    "Fonction",
+    "Message",
+    "Modifier",
+    "Mot de passe",
+    "Nom de",
+    "Pays",
+    "Poste",
+    "Prénom",
+    "Résumé",
+    "Secteur",
+    "Site",
+    "Sujet",
+    "Titre",
+    "Télécharger",
+    "Téléphone",
+    "Ville",
+    "Votre",
+    "contenu",
+    "description",
+    "entreprise",
+    "envoyer",
+    "ex:",
+    "exemple",
+    "expertise",
+    "fonction",
+    "intervenant",
+    "message",
+    "mot de passe",
+    "pays",
+    "poste",
+    "précédent",
+    "prénom",
+    "secteur",
+    "site",
+    "suivant",
+    "titre",
+    "téléphone",
+    "votre"
+  ],
+  "details": {
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\admin\\AddDemoProgramForm.tsx": [
+      {
+        "line": 126,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Démonstration IA Portuaire\""
+      },
+      {
+        "line": 126,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Démonstration IA Portuaire\""
+      },
+      {
+        "line": 207,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: 1h30\""
+      },
+      {
+        "line": 207,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: 1h30\""
+      },
+      {
+        "line": 241,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Salle principale pavillon\""
+      },
+      {
+        "line": 241,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Salle principale pavillon\""
+      },
+      {
+        "line": 263,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Dr. Marie Dubois\""
+      },
+      {
+        "line": 263,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Dr. Marie Dubois\""
+      },
+      {
+        "line": 277,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Port Tech Institute\""
+      },
+      {
+        "line": 277,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Port Tech Institute\""
+      },
+      {
+        "line": 314,
+        "text": "Ajouter",
+        "context": "placeholder=\"Ajouter un tag...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\admin\\CreatePavilionForm.tsx": [
+      {
+        "line": 238,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Pavillon Digitalisation\""
+      },
+      {
+        "line": 238,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Pavillon Digitalisation\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\admin\\EventCreationForm.tsx": [
+      {
+        "line": 261,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Conférence sur la Logistique 4.0\""
+      },
+      {
+        "line": 261,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Conférence sur la Logistique 4.0\""
+      },
+      {
+        "line": 267,
+        "text": "description",
+        "context": "<label htmlFor=\"description\" className=\"block text-sm font-medium text-gray-700 mb-1\">"
+      },
+      {
+        "line": 276,
+        "text": "contenu",
+        "context": "placeholder=\"Décrivez l'objectif, le public cible et le contenu de l'événement.\""
+      },
+      {
+        "line": 385,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Salle de Conférence A\""
+      },
+      {
+        "line": 385,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Salle de Conférence A\""
+      },
+      {
+        "line": 460,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: logistique, innovation, IA, portuaire\""
+      },
+      {
+        "line": 460,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: logistique, innovation, IA, portuaire\""
+      },
+      {
+        "line": 492,
+        "text": "Nom de",
+        "context": "placeholder=\"Nom de l'intervenant\""
+      },
+      {
+        "line": 492,
+        "text": "intervenant",
+        "context": "placeholder=\"Nom de l'intervenant\""
+      },
+      {
+        "line": 496,
+        "text": "Poste",
+        "context": "<label htmlFor={`speaker-title-${index}`} className=\"block text-xs font-medium text-gray-700 m"
+      },
+      {
+        "line": 496,
+        "text": "Titre",
+        "context": "<label htmlFor={`speaker-title-${index}`} className=\"block text-xs font-medium text-gray-700 m"
+      },
+      {
+        "line": 503,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: CEO, Directeur R&D\""
+      },
+      {
+        "line": 503,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: CEO, Directeur R&D\""
+      },
+      {
+        "line": 507,
+        "text": "Entreprise",
+        "context": "<label htmlFor={`speaker-company-${index}`} className=\"block text-xs font-medium text-gray-700"
+      },
+      {
+        "line": 514,
+        "text": "Nom de",
+        "context": "placeholder=\"Nom de l'entreprise\""
+      },
+      {
+        "line": 514,
+        "text": "entreprise",
+        "context": "placeholder=\"Nom de l'entreprise\""
+      },
+      {
+        "line": 518,
+        "text": "expertise",
+        "context": "<label htmlFor={`speaker-expertise-${index}`} className=\"block text-xs font-medium text-gray-7"
+      },
+      {
+        "line": 525,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: IA, Blockchain, Logistique\""
+      },
+      {
+        "line": 525,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: IA, Blockchain, Logistique\""
+      },
+      {
+        "line": 537,
+        "text": "intervenant",
+        "context": "placeholder=\"Courte biographie de l'intervenant\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\admin\\ExhibitorCreationSimulator.tsx": [
+      {
+        "line": 391,
+        "text": "Nom de",
+        "context": "placeholder=\"Nom de l'entreprise exposante\""
+      },
+      {
+        "line": 391,
+        "text": "entreprise",
+        "context": "placeholder=\"Nom de l'entreprise exposante\""
+      },
+      {
+        "line": 531,
+        "text": "entreprise",
+        "context": "placeholder=\"https://entreprise.com\""
+      },
+      {
+        "line": 546,
+        "text": "entreprise",
+        "context": "placeholder=\"Décrivez l'activité principale de l'entreprise, ses spécialités et son expertise...\""
+      },
+      {
+        "line": 546,
+        "text": "expertise",
+        "context": "placeholder=\"Décrivez l'activité principale de l'entreprise, ses spécialités et son expertise...\""
+      },
+      {
+        "line": 580,
+        "text": "Prénom",
+        "context": "placeholder=\"Prénom et nom du contact\""
+      },
+      {
+        "line": 609,
+        "text": "entreprise",
+        "context": "placeholder=\"contact@entreprise.com\""
+      },
+      {
+        "line": 792,
+        "text": "Description",
+        "context": "placeholder=\"Description du produit/service\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\admin\\NewsArticleCreationForm.tsx": [
+      {
+        "line": 180,
+        "text": "Titre",
+        "context": "placeholder=\"Titre accrocheur de votre article\""
+      },
+      {
+        "line": 180,
+        "text": "votre",
+        "context": "placeholder=\"Titre accrocheur de votre article\""
+      },
+      {
+        "line": 180,
+        "text": "votre",
+        "context": "placeholder=\"Titre accrocheur de votre article\""
+      },
+      {
+        "line": 194,
+        "text": "Résumé",
+        "context": "placeholder=\"Résumé de l'article qui apparaîtra dans la liste...\""
+      },
+      {
+        "line": 208,
+        "text": "contenu",
+        "context": "placeholder=\"Rédigez le contenu complet de votre article...\""
+      },
+      {
+        "line": 208,
+        "text": "votre",
+        "context": "placeholder=\"Rédigez le contenu complet de votre article...\""
+      },
+      {
+        "line": 208,
+        "text": "votre",
+        "context": "placeholder=\"Rédigez le contenu complet de votre article...\""
+      },
+      {
+        "line": 319,
+        "text": "Ajouter",
+        "context": "placeholder=\"Ajouter un tag\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\admin\\PartnerCreationForm.tsx": [
+      {
+        "line": 369,
+        "text": "Nom de",
+        "context": "placeholder=\"Nom de l'organisation partenaire\""
+      },
+      {
+        "line": 370,
+        "text": "Nom de",
+        "context": "aria-label=\"Nom de l'organisation partenaire\""
+      },
+      {
+        "line": 402,
+        "text": "Pays",
+        "context": "placeholder=\"Pays de l'organisation\""
+      },
+      {
+        "line": 403,
+        "text": "Pays",
+        "context": "aria-label=\"Pays de l'organisation\""
+      },
+      {
+        "line": 420,
+        "text": "Site",
+        "context": "aria-label=\"Site web de l'organisation\""
+      },
+      {
+        "line": 468,
+        "text": "expertise",
+        "context": "placeholder=\"Décrivez l'activité principale de l'organisation, son expertise et sa mission...\""
+      },
+      {
+        "line": 503,
+        "text": "Prénom",
+        "context": "placeholder=\"Prénom et nom du contact\""
+      },
+      {
+        "line": 516,
+        "text": "Poste",
+        "context": "aria-label=\"Poste/Fonction\""
+      },
+      {
+        "line": 516,
+        "text": "Fonction",
+        "context": "aria-label=\"Poste/Fonction\""
+      },
+      {
+        "line": 549,
+        "text": "Téléphone",
+        "context": "aria-label=\"Téléphone\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\appointments\\AppointmentCalendar.tsx": [
+      {
+        "line": 866,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez brièvement l'objet de votre rendez-vous...\""
+      },
+      {
+        "line": 866,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez brièvement l'objet de votre rendez-vous...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\auth\\LoginPage.tsx": [
+      {
+        "line": 245,
+        "text": "votre",
+        "context": "placeholder=\"votre@email.com\""
+      },
+      {
+        "line": 245,
+        "text": "votre",
+        "context": "placeholder=\"votre@email.com\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\auth\\RegisterPage.tsx": [
+      {
+        "line": 329,
+        "text": "votre",
+        "context": "toast.success(`Inscription réussie — votre compte ${label} sera activé par un administrateur. Vous recevrez un e"
+      },
+      {
+        "line": 329,
+        "text": "votre",
+        "context": "toast.success(`Inscription réussie — votre compte ${label} sera activé par un administrateur. Vous recevrez un e"
+      },
+      {
+        "line": 515,
+        "text": "Nom de",
+        "context": "placeholder=\"Nom de votre entreprise\""
+      },
+      {
+        "line": 515,
+        "text": "entreprise",
+        "context": "placeholder=\"Nom de votre entreprise\""
+      },
+      {
+        "line": 515,
+        "text": "votre",
+        "context": "placeholder=\"Nom de votre entreprise\""
+      },
+      {
+        "line": 515,
+        "text": "votre",
+        "context": "placeholder=\"Nom de votre entreprise\""
+      },
+      {
+        "line": 516,
+        "text": "Nom de",
+        "context": "aria-label=\"Nom de votre entreprise\" />"
+      },
+      {
+        "line": 516,
+        "text": "entreprise",
+        "context": "aria-label=\"Nom de votre entreprise\" />"
+      },
+      {
+        "line": 516,
+        "text": "votre",
+        "context": "aria-label=\"Nom de votre entreprise\" />"
+      },
+      {
+        "line": 516,
+        "text": "votre",
+        "context": "aria-label=\"Nom de votre entreprise\" />"
+      },
+      {
+        "line": 559,
+        "text": "secteur",
+        "context": "placeholder=\"Entrez votre secteur d'activité\""
+      },
+      {
+        "line": 559,
+        "text": "votre",
+        "context": "placeholder=\"Entrez votre secteur d'activité\""
+      },
+      {
+        "line": 559,
+        "text": "votre",
+        "context": "placeholder=\"Entrez votre secteur d'activité\""
+      },
+      {
+        "line": 602,
+        "text": "site",
+        "context": "placeholder=\"https://votre-site.com\""
+      },
+      {
+        "line": 602,
+        "text": "votre",
+        "context": "placeholder=\"https://votre-site.com\""
+      },
+      {
+        "line": 602,
+        "text": "votre",
+        "context": "placeholder=\"https://votre-site.com\""
+      },
+      {
+        "line": 603,
+        "text": "site",
+        "context": "aria-label=\"https://votre-site.com\" />"
+      },
+      {
+        "line": 603,
+        "text": "votre",
+        "context": "aria-label=\"https://votre-site.com\" />"
+      },
+      {
+        "line": 603,
+        "text": "votre",
+        "context": "aria-label=\"https://votre-site.com\" />"
+      },
+      {
+        "line": 639,
+        "text": "prénom",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 639,
+        "text": "Votre",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 639,
+        "text": "Votre",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 640,
+        "text": "prénom",
+        "context": "aria-label=\"Votre prénom\" />"
+      },
+      {
+        "line": 640,
+        "text": "Votre",
+        "context": "aria-label=\"Votre prénom\" />"
+      },
+      {
+        "line": 640,
+        "text": "Votre",
+        "context": "aria-label=\"Votre prénom\" />"
+      },
+      {
+        "line": 656,
+        "text": "Votre",
+        "context": "placeholder=\"Votre nom\""
+      },
+      {
+        "line": 656,
+        "text": "Votre",
+        "context": "placeholder=\"Votre nom\""
+      },
+      {
+        "line": 657,
+        "text": "Votre",
+        "context": "aria-label=\"Votre nom\" />"
+      },
+      {
+        "line": 657,
+        "text": "Votre",
+        "context": "aria-label=\"Votre nom\" />"
+      },
+      {
+        "line": 704,
+        "text": "fonction",
+        "context": "placeholder=\"Entrez votre fonction\""
+      },
+      {
+        "line": 704,
+        "text": "votre",
+        "context": "placeholder=\"Entrez votre fonction\""
+      },
+      {
+        "line": 704,
+        "text": "votre",
+        "context": "placeholder=\"Entrez votre fonction\""
+      },
+      {
+        "line": 723,
+        "text": "votre",
+        "context": "placeholder=\"votre@email.com\""
+      },
+      {
+        "line": 723,
+        "text": "votre",
+        "context": "placeholder=\"votre@email.com\""
+      },
+      {
+        "line": 724,
+        "text": "votre",
+        "context": "aria-label=\"votre@email.com\" />"
+      },
+      {
+        "line": 724,
+        "text": "votre",
+        "context": "aria-label=\"votre@email.com\" />"
+      },
+      {
+        "line": 755,
+        "text": "votre",
+        "context": "placeholder=\"https://linkedin.com/in/votre-profil\""
+      },
+      {
+        "line": 755,
+        "text": "votre",
+        "context": "placeholder=\"https://linkedin.com/in/votre-profil\""
+      },
+      {
+        "line": 756,
+        "text": "votre",
+        "context": "aria-label=\"https://linkedin.com/in/votre-profil\" />"
+      },
+      {
+        "line": 756,
+        "text": "votre",
+        "context": "aria-label=\"https://linkedin.com/in/votre-profil\" />"
+      },
+      {
+        "line": 794,
+        "text": "votre",
+        "context": "placeholder={watchedAccountType === 'visitor' ? 'Présentez-vous brièvement, vos intérêts professio"
+      },
+      {
+        "line": 794,
+        "text": "votre",
+        "context": "placeholder={watchedAccountType === 'visitor' ? 'Présentez-vous brièvement, vos intérêts professio"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\calendar\\PublicAvailabilityCalendar.tsx": [
+      {
+        "line": 801,
+        "text": "Sujet",
+        "context": "placeholder=\"Sujet du rendez-vous, agenda, préparation nécessaire...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\chat\\ChatInterface.tsx": [
+      {
+        "line": 286,
+        "text": "message",
+        "context": "placeholder=\"Tapez votre message...\""
+      },
+      {
+        "line": 286,
+        "text": "votre",
+        "context": "placeholder=\"Tapez votre message...\""
+      },
+      {
+        "line": 286,
+        "text": "votre",
+        "context": "placeholder=\"Tapez votre message...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\chat\\EnhancedChatInterface.tsx": [
+      {
+        "line": 560,
+        "text": "message",
+        "context": "placeholder=\"Tapez votre message...\""
+      },
+      {
+        "line": 560,
+        "text": "votre",
+        "context": "placeholder=\"Tapez votre message...\""
+      },
+      {
+        "line": 560,
+        "text": "votre",
+        "context": "placeholder=\"Tapez votre message...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\chatbot\\ChatBot.tsx": [
+      {
+        "line": 755,
+        "text": "votre",
+        "context": "placeholder=\"Tapez votre question...\""
+      },
+      {
+        "line": 755,
+        "text": "votre",
+        "context": "placeholder=\"Tapez votre question...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\common\\ErrorMessage.tsx": [
+      {
+        "line": 29,
+        "text": "message",
+        "context": "aria-label=\"Fermer le message d'erreur\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\dashboard\\PartnerDashboard.tsx": [
+      {
+        "line": 412,
+        "text": "Message",
+        "context": "{ label: 'Messages', value: dashboardStats?.messages.value || '0', icon: Zap, color: 'text-emerald-6"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\exhibitor\\detail\\ProductsSection.tsx": [
+      {
+        "line": 73,
+        "text": "Ajouter",
+        "context": "aria-label=\"Ajouter aux favoris\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\exhibitor\\ExhibitorDetailPage.tsx": [
+      {
+        "line": 738,
+        "text": "prénom",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 738,
+        "text": "Votre",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 738,
+        "text": "Votre",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 740,
+        "text": "prénom",
+        "context": "aria-label=\"Votre prénom\" />"
+      },
+      {
+        "line": 740,
+        "text": "Votre",
+        "context": "aria-label=\"Votre prénom\" />"
+      },
+      {
+        "line": 740,
+        "text": "Votre",
+        "context": "aria-label=\"Votre prénom\" />"
+      },
+      {
+        "line": 749,
+        "text": "Votre",
+        "context": "placeholder=\"Votre nom\""
+      },
+      {
+        "line": 749,
+        "text": "Votre",
+        "context": "placeholder=\"Votre nom\""
+      },
+      {
+        "line": 751,
+        "text": "Votre",
+        "context": "aria-label=\"Votre nom\" />"
+      },
+      {
+        "line": 751,
+        "text": "Votre",
+        "context": "aria-label=\"Votre nom\" />"
+      },
+      {
+        "line": 762,
+        "text": "entreprise",
+        "context": "placeholder=\"votre.email@entreprise.com\""
+      },
+      {
+        "line": 762,
+        "text": "votre",
+        "context": "placeholder=\"votre.email@entreprise.com\""
+      },
+      {
+        "line": 762,
+        "text": "votre",
+        "context": "placeholder=\"votre.email@entreprise.com\""
+      },
+      {
+        "line": 764,
+        "text": "entreprise",
+        "context": "aria-label=\"votre.email@entreprise.com\" />"
+      },
+      {
+        "line": 764,
+        "text": "votre",
+        "context": "aria-label=\"votre.email@entreprise.com\" />"
+      },
+      {
+        "line": 764,
+        "text": "votre",
+        "context": "aria-label=\"votre.email@entreprise.com\" />"
+      },
+      {
+        "line": 774,
+        "text": "Nom de",
+        "context": "placeholder=\"Nom de votre société\""
+      },
+      {
+        "line": 774,
+        "text": "votre",
+        "context": "placeholder=\"Nom de votre société\""
+      },
+      {
+        "line": 774,
+        "text": "votre",
+        "context": "placeholder=\"Nom de votre société\""
+      },
+      {
+        "line": 775,
+        "text": "Nom de",
+        "context": "aria-label=\"Nom de votre société\" />"
+      },
+      {
+        "line": 775,
+        "text": "votre",
+        "context": "aria-label=\"Nom de votre société\" />"
+      },
+      {
+        "line": 775,
+        "text": "votre",
+        "context": "aria-label=\"Nom de votre société\" />"
+      },
+      {
+        "line": 815,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez votre projet et vos besoins...\""
+      },
+      {
+        "line": 815,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez votre projet et vos besoins...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\exhibitor\\ExhibitorEditForm.tsx": [
+      {
+        "line": 300,
+        "text": "ex:",
+        "context": "placeholder=\"ex: Maritime, Transport, Énergie...\""
+      },
+      {
+        "line": 300,
+        "text": "ex:",
+        "context": "placeholder=\"ex: Maritime, Transport, Énergie...\""
+      },
+      {
+        "line": 302,
+        "text": "ex:",
+        "context": "aria-label=\"ex: Maritime, Transport, Énergie...\" />"
+      },
+      {
+        "line": 302,
+        "text": "ex:",
+        "context": "aria-label=\"ex: Maritime, Transport, Énergie...\" />"
+      },
+      {
+        "line": 319,
+        "text": "exemple",
+        "context": "placeholder=\"https://www.exemple.com\""
+      },
+      {
+        "line": 320,
+        "text": "exemple",
+        "context": "aria-label=\"https://www.exemple.com\" />"
+      },
+      {
+        "line": 347,
+        "text": "exemple",
+        "context": "placeholder=\"contact@exemple.com\""
+      },
+      {
+        "line": 348,
+        "text": "exemple",
+        "context": "aria-label=\"contact@exemple.com\" />"
+      },
+      {
+        "line": 380,
+        "text": "Exemple",
+        "context": "placeholder=\"123 Rue Exemple, 75000 Paris, France\""
+      },
+      {
+        "line": 381,
+        "text": "Exemple",
+        "context": "aria-label=\"123 Rue Exemple, 75000 Paris, France\" />"
+      },
+      {
+        "line": 447,
+        "text": "ex:",
+        "context": "placeholder=\"ex: 2010\""
+      },
+      {
+        "line": 447,
+        "text": "ex:",
+        "context": "placeholder=\"ex: 2010\""
+      },
+      {
+        "line": 450,
+        "text": "ex:",
+        "context": "aria-label=\"ex: 2010\" />"
+      },
+      {
+        "line": 450,
+        "text": "ex:",
+        "context": "aria-label=\"ex: 2010\" />"
+      },
+      {
+        "line": 467,
+        "text": "ex:",
+        "context": "placeholder=\"ex: 250\""
+      },
+      {
+        "line": 467,
+        "text": "ex:",
+        "context": "placeholder=\"ex: 250\""
+      },
+      {
+        "line": 469,
+        "text": "ex:",
+        "context": "aria-label=\"ex: 250\" />"
+      },
+      {
+        "line": 469,
+        "text": "ex:",
+        "context": "aria-label=\"ex: 250\" />"
+      },
+      {
+        "line": 486,
+        "text": "ex:",
+        "context": "placeholder=\"ex: 42\""
+      },
+      {
+        "line": 486,
+        "text": "ex:",
+        "context": "placeholder=\"ex: 42\""
+      },
+      {
+        "line": 489,
+        "text": "ex:",
+        "context": "aria-label=\"ex: 42\" />"
+      },
+      {
+        "line": 489,
+        "text": "ex:",
+        "context": "aria-label=\"ex: 42\" />"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\exhibitor\\ExhibitorMiniSiteScrapper.tsx": [
+      {
+        "line": 163,
+        "text": "entreprise",
+        "context": "placeholder=\"https://votre-entreprise.com\""
+      },
+      {
+        "line": 163,
+        "text": "votre",
+        "context": "placeholder=\"https://votre-entreprise.com\""
+      },
+      {
+        "line": 163,
+        "text": "votre",
+        "context": "placeholder=\"https://votre-entreprise.com\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\exhibitor\\MiniSiteSetupModal.tsx": [
+      {
+        "line": 359,
+        "text": "entreprise",
+        "context": "placeholder=\"https://www.votre-entreprise.com\""
+      },
+      {
+        "line": 359,
+        "text": "votre",
+        "context": "placeholder=\"https://www.votre-entreprise.com\""
+      },
+      {
+        "line": 359,
+        "text": "votre",
+        "context": "placeholder=\"https://www.votre-entreprise.com\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\exhibitor\\ProductEditForm.tsx": [
+      {
+        "line": 183,
+        "text": "ex:",
+        "context": "placeholder=\"ex: Logiciels, Équipements...\""
+      },
+      {
+        "line": 183,
+        "text": "ex:",
+        "context": "placeholder=\"ex: Logiciels, Équipements...\""
+      },
+      {
+        "line": 185,
+        "text": "ex:",
+        "context": "aria-label=\"ex: Logiciels, Équipements...\" />"
+      },
+      {
+        "line": 185,
+        "text": "ex:",
+        "context": "aria-label=\"ex: Logiciels, Équipements...\" />"
+      },
+      {
+        "line": 201,
+        "text": "ex:",
+        "context": "placeholder=\"ex: 1999.99\""
+      },
+      {
+        "line": 201,
+        "text": "ex:",
+        "context": "placeholder=\"ex: 1999.99\""
+      },
+      {
+        "line": 204,
+        "text": "ex:",
+        "context": "aria-label=\"ex: 1999.99\" />"
+      },
+      {
+        "line": 204,
+        "text": "ex:",
+        "context": "aria-label=\"ex: 1999.99\" />"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\minisite\\MiniSiteEditor.tsx": [
+      {
+        "line": 524,
+        "text": "Modifier",
+        "context": "aria-label=\"Modifier ce champ\""
+      },
+      {
+        "line": 857,
+        "text": "Titre",
+        "context": "placeholder=\"Titre principal\""
+      },
+      {
+        "line": 864,
+        "text": "titre",
+        "context": "placeholder=\"Sous-titre\""
+      },
+      {
+        "line": 886,
+        "text": "Titre",
+        "context": "placeholder=\"Titre de la section\""
+      },
+      {
+        "line": 893,
+        "text": "entreprise",
+        "context": "placeholder=\"Description de votre entreprise\""
+      },
+      {
+        "line": 893,
+        "text": "Description",
+        "context": "placeholder=\"Description de votre entreprise\""
+      },
+      {
+        "line": 893,
+        "text": "votre",
+        "context": "placeholder=\"Description de votre entreprise\""
+      },
+      {
+        "line": 893,
+        "text": "votre",
+        "context": "placeholder=\"Description de votre entreprise\""
+      },
+      {
+        "line": 945,
+        "text": "Titre",
+        "context": "placeholder=\"Titre de la section produits\""
+      },
+      {
+        "line": 1006,
+        "text": "Description",
+        "context": "placeholder=\"Description du produit\""
+      },
+      {
+        "line": 1059,
+        "text": "Titre",
+        "context": "placeholder=\"Titre de la section actualités\""
+      },
+      {
+        "line": 1138,
+        "text": "Titre",
+        "context": "placeholder=\"Titre de l'article\""
+      },
+      {
+        "line": 1151,
+        "text": "Contenu",
+        "context": "placeholder=\"Contenu de l'article\""
+      },
+      {
+        "line": 1221,
+        "text": "Titre",
+        "context": "placeholder=\"Titre de la section contact\""
+      },
+      {
+        "line": 1233,
+        "text": "Adresse",
+        "context": "placeholder=\"Adresse complète\""
+      },
+      {
+        "line": 1244,
+        "text": "téléphone",
+        "context": "placeholder=\"Numéro de téléphone\""
+      },
+      {
+        "line": 1255,
+        "text": "Adresse",
+        "context": "placeholder=\"Adresse email\""
+      },
+      {
+        "line": 1266,
+        "text": "Site",
+        "context": "placeholder=\"Site web\""
+      },
+      {
+        "line": 1307,
+        "text": "Téléphone",
+        "context": "aria-label=\"Activer le champ Téléphone\""
+      },
+      {
+        "line": 1325,
+        "text": "Entreprise",
+        "context": "aria-label=\"Activer le champ Entreprise\""
+      },
+      {
+        "line": 1360,
+        "text": "entreprise",
+        "context": "placeholder=\"email@entreprise.com\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\minisite\\MiniSiteHeroEditor.tsx": [
+      {
+        "line": 88,
+        "text": "ex:",
+        "context": "placeholder=\"ex: Solutions innovantes pour les ports\""
+      },
+      {
+        "line": 88,
+        "text": "ex:",
+        "context": "placeholder=\"ex: Solutions innovantes pour les ports\""
+      },
+      {
+        "line": 89,
+        "text": "ex:",
+        "context": "aria-label=\"ex: Solutions innovantes pour les ports\" />"
+      },
+      {
+        "line": 89,
+        "text": "ex:",
+        "context": "aria-label=\"ex: Solutions innovantes pour les ports\" />"
+      },
+      {
+        "line": 101,
+        "text": "ex:",
+        "context": "placeholder=\"ex: Leader dans l'optimisation des opérations portuaires\""
+      },
+      {
+        "line": 101,
+        "text": "ex:",
+        "context": "placeholder=\"ex: Leader dans l'optimisation des opérations portuaires\""
+      },
+      {
+        "line": 102,
+        "text": "ex:",
+        "context": "aria-label=\"ex: Leader dans l\" />"
+      },
+      {
+        "line": 102,
+        "text": "ex:",
+        "context": "aria-label=\"ex: Leader dans l\" />"
+      },
+      {
+        "line": 115,
+        "text": "entreprise",
+        "context": "placeholder=\"Décrivez brièvement votre entreprise et ses activités...\""
+      },
+      {
+        "line": 115,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez brièvement votre entreprise et ses activités...\""
+      },
+      {
+        "line": 115,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez brièvement votre entreprise et ses activités...\""
+      },
+      {
+        "line": 133,
+        "text": "ex:",
+        "context": "placeholder=\"ex: Découvrir nos solutions\""
+      },
+      {
+        "line": 133,
+        "text": "ex:",
+        "context": "placeholder=\"ex: Découvrir nos solutions\""
+      },
+      {
+        "line": 134,
+        "text": "ex:",
+        "context": "aria-label=\"ex: Découvrir nos solutions\" />"
+      },
+      {
+        "line": 134,
+        "text": "ex:",
+        "context": "aria-label=\"ex: Découvrir nos solutions\" />"
+      },
+      {
+        "line": 151,
+        "text": "ex:",
+        "context": "placeholder=\"ex: #produits ou URL externe\""
+      },
+      {
+        "line": 151,
+        "text": "ex:",
+        "context": "placeholder=\"ex: #produits ou URL externe\""
+      },
+      {
+        "line": 152,
+        "text": "ex:",
+        "context": "aria-label=\"ex: #produits ou URL externe\" />"
+      },
+      {
+        "line": 152,
+        "text": "ex:",
+        "context": "aria-label=\"ex: #produits ou URL externe\" />"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\minisite\\MiniSiteWizard.tsx": [
+      {
+        "line": 18,
+        "text": "Nom de",
+        "context": "{ label: 'Nom de la société', key: 'company', type: 'text', placeholder: 'Votre société' },"
+      },
+      {
+        "line": 18,
+        "text": "Votre",
+        "context": "{ label: 'Nom de la société', key: 'company', type: 'text', placeholder: 'Votre société' },"
+      },
+      {
+        "line": 18,
+        "text": "Votre",
+        "context": "{ label: 'Nom de la société', key: 'company', type: 'text', placeholder: 'Votre société' },"
+      },
+      {
+        "line": 20,
+        "text": "Description",
+        "context": "{ label: 'Description', key: 'description', type: 'textarea', placeholder: 'Décrivez votre activité...' },"
+      },
+      {
+        "line": 20,
+        "text": "votre",
+        "context": "{ label: 'Description', key: 'description', type: 'textarea', placeholder: 'Décrivez votre activité...' },"
+      },
+      {
+        "line": 20,
+        "text": "votre",
+        "context": "{ label: 'Description', key: 'description', type: 'textarea', placeholder: 'Décrivez votre activité...' },"
+      },
+      {
+        "line": 279,
+        "text": "site",
+        "context": "placeholder=\"https://votresite.com\""
+      },
+      {
+        "line": 279,
+        "text": "votre",
+        "context": "placeholder=\"https://votresite.com\""
+      },
+      {
+        "line": 279,
+        "text": "votre",
+        "context": "placeholder=\"https://votresite.com\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\networking\\InteractionHistory.tsx": [
+      {
+        "line": 19,
+        "text": "message",
+        "context": "{ id: 'message', label: 'Messages', icon: '💬' },"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\partner\\PartnerProfileCreationModal.tsx": [
+      {
+        "line": 191,
+        "text": "site",
+        "context": "placeholder=\"https://votre-site.com\""
+      },
+      {
+        "line": 191,
+        "text": "votre",
+        "context": "placeholder=\"https://votre-site.com\""
+      },
+      {
+        "line": 191,
+        "text": "votre",
+        "context": "placeholder=\"https://votre-site.com\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\partner\\PartnerProfileEditor.tsx": [
+      {
+        "line": 232,
+        "text": "entreprise",
+        "context": "placeholder=\"Décrivez votre entreprise, vos activités et votre expertise...\""
+      },
+      {
+        "line": 232,
+        "text": "expertise",
+        "context": "placeholder=\"Décrivez votre entreprise, vos activités et votre expertise...\""
+      },
+      {
+        "line": 232,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez votre entreprise, vos activités et votre expertise...\""
+      },
+      {
+        "line": 232,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez votre entreprise, vos activités et votre expertise...\""
+      },
+      {
+        "line": 283,
+        "text": "Ajouter",
+        "context": "placeholder=\"Ajouter un service...\""
+      },
+      {
+        "line": 335,
+        "text": "entreprise",
+        "context": "placeholder=\"contact@entreprise.com\""
+      },
+      {
+        "line": 380,
+        "text": "entreprise",
+        "context": "placeholder=\"https://www.entreprise.com\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\partner\\PartnerProfileScrapper.tsx": [
+      {
+        "line": 144,
+        "text": "entreprise",
+        "context": "placeholder=\"https://votre-entreprise.com\""
+      },
+      {
+        "line": 144,
+        "text": "votre",
+        "context": "placeholder=\"https://votre-entreprise.com\""
+      },
+      {
+        "line": 144,
+        "text": "votre",
+        "context": "placeholder=\"https://votre-entreprise.com\""
+      },
+      {
+        "line": 209,
+        "text": "Nom de",
+        "context": "<label className=\"block text-sm font-bold text-gray-700 mb-2\">Nom de l'entreprise</label>"
+      },
+      {
+        "line": 209,
+        "text": "entreprise",
+        "context": "<label className=\"block text-sm font-bold text-gray-700 mb-2\">Nom de l'entreprise</label>"
+      },
+      {
+        "line": 220,
+        "text": "Description",
+        "context": "<label className=\"block text-sm font-bold text-gray-700 mb-2\">Description</label>"
+      },
+      {
+        "line": 231,
+        "text": "Secteur",
+        "context": "<label className=\"block text-sm font-bold text-gray-700 mb-2\">Secteur d'activité</label>"
+      },
+      {
+        "line": 265,
+        "text": "Téléphone",
+        "context": "<label className=\"block text-sm font-bold text-gray-700 mb-2\">Téléphone</label>"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\site-builder\\ImageLibrary.tsx": [
+      {
+        "line": 165,
+        "text": "site",
+        "context": "placeholder={t('siteBuilder.search_image')}"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\site-builder\\MobilePreview.tsx": [
+      {
+        "line": 80,
+        "text": "Message",
+        "context": "placeholder=\"Message\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\site-builder\\SectionEditor.tsx": [
+      {
+        "line": 49,
+        "text": "Titre",
+        "context": "placeholder=\"Titre principal\""
+      },
+      {
+        "line": 56,
+        "text": "titre",
+        "context": "placeholder=\"Sous-titre\""
+      },
+      {
+        "line": 78,
+        "text": "Titre",
+        "context": "placeholder=\"Titre\""
+      },
+      {
+        "line": 84,
+        "text": "Description",
+        "context": "placeholder=\"Description...\""
+      },
+      {
+        "line": 98,
+        "text": "Titre",
+        "context": "placeholder=\"Titre\""
+      },
+      {
+        "line": 149,
+        "text": "Titre",
+        "context": "placeholder=\"Titre\""
+      },
+      {
+        "line": 164,
+        "text": "Téléphone",
+        "context": "placeholder=\"Téléphone\""
+      },
+      {
+        "line": 171,
+        "text": "Adresse",
+        "context": "placeholder=\"Adresse\""
+      },
+      {
+        "line": 185,
+        "text": "Titre",
+        "context": "placeholder=\"Titre\""
+      },
+      {
+        "line": 206,
+        "text": "Titre",
+        "context": "placeholder=\"Titre\""
+      },
+      {
+        "line": 247,
+        "text": "Titre",
+        "context": "placeholder=\"Titre\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\site-builder\\SEOEditor.tsx": [
+      {
+        "line": 68,
+        "text": "Entreprise",
+        "context": "placeholder=\"ex: Votre Entreprise - Solutions Innovantes\""
+      },
+      {
+        "line": 68,
+        "text": "Votre",
+        "context": "placeholder=\"ex: Votre Entreprise - Solutions Innovantes\""
+      },
+      {
+        "line": 68,
+        "text": "Votre",
+        "context": "placeholder=\"ex: Votre Entreprise - Solutions Innovantes\""
+      },
+      {
+        "line": 68,
+        "text": "ex:",
+        "context": "placeholder=\"ex: Votre Entreprise - Solutions Innovantes\""
+      },
+      {
+        "line": 68,
+        "text": "ex:",
+        "context": "placeholder=\"ex: Votre Entreprise - Solutions Innovantes\""
+      },
+      {
+        "line": 87,
+        "text": "Description",
+        "context": "placeholder=\"Description concise et attractive de votre page...\""
+      },
+      {
+        "line": 87,
+        "text": "votre",
+        "context": "placeholder=\"Description concise et attractive de votre page...\""
+      },
+      {
+        "line": 87,
+        "text": "votre",
+        "context": "placeholder=\"Description concise et attractive de votre page...\""
+      },
+      {
+        "line": 110,
+        "text": "votre",
+        "context": "placeholder=\"votre-page\""
+      },
+      {
+        "line": 110,
+        "text": "votre",
+        "context": "placeholder=\"votre-page\""
+      },
+      {
+        "line": 131,
+        "text": "Ajouter",
+        "context": "placeholder=\"Ajouter un mot-clé...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\site-builder\\SiteBuilder.tsx": [
+      {
+        "line": 255,
+        "text": "site",
+        "context": "placeholder={t('siteBuilder.siteName')}"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\site-builder\\SiteTemplateSelector.tsx": [
+      {
+        "line": 90,
+        "text": "site",
+        "context": "placeholder={t('siteBuilder.search_template')}"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\ui\\ImageUploader.tsx": [
+      {
+        "line": 21,
+        "text": "Télécharger",
+        "context": "label = 'Télécharger une image',"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\ui\\MultiImageUploader.tsx": [
+      {
+        "line": 22,
+        "text": "Télécharger",
+        "context": "label = 'Télécharger des images',"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\ui\\Pagination.tsx": [
+      {
+        "line": 108,
+        "text": "précédent",
+        "context": "aria-label=\"Page précédente\""
+      },
+      {
+        "line": 171,
+        "text": "suivant",
+        "context": "aria-label=\"Page suivante\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\ui\\PreviewModal.tsx": [
+      {
+        "line": 109,
+        "text": "Nom de",
+        "context": "<InfoRow icon={Building} label=\"Nom de l'organisation\" value={data.companyName} />"
+      },
+      {
+        "line": 110,
+        "text": "Secteur",
+        "context": "<InfoRow icon={FileText} label=\"Secteur d'activité\" value={data.sector} />"
+      },
+      {
+        "line": 111,
+        "text": "Pays",
+        "context": "<InfoRow icon={Globe} label=\"Pays\" value={data.country} />"
+      },
+      {
+        "line": 112,
+        "text": "Site",
+        "context": "<InfoRow icon={Globe} label=\"Site web\" value={data.website} />"
+      },
+      {
+        "line": 125,
+        "text": "Poste",
+        "context": "<InfoRow icon={FileText} label=\"Poste / Fonction\" value={data.position} />"
+      },
+      {
+        "line": 125,
+        "text": "Fonction",
+        "context": "<InfoRow icon={FileText} label=\"Poste / Fonction\" value={data.position} />"
+      },
+      {
+        "line": 127,
+        "text": "Téléphone",
+        "context": "<InfoRow icon={Phone} label=\"Téléphone\" value={data.phone} />"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\components\\visitor\\VisitorProfileSettings.tsx": [
+      {
+        "line": 310,
+        "text": "Entreprise",
+        "context": "aria-label=\"Entreprise\""
+      },
+      {
+        "line": 429,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Consultant indépendant\""
+      },
+      {
+        "line": 429,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Consultant indépendant\""
+      },
+      {
+        "line": 446,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Consulting maritime\""
+      },
+      {
+        "line": 446,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Consulting maritime\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\lib\\analytics.ts": [
+      {
+        "line": 104,
+        "text": "message",
+        "context": "label: messageType,"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\admin\\CreateUserPage.tsx": [
+      {
+        "line": 51,
+        "text": "site",
+        "context": "{ value: 'visitor', label: 'Visiteur', icon: UserIcon },"
+      },
+      {
+        "line": 182,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Jean Dupont\""
+      },
+      {
+        "line": 182,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Jean Dupont\""
+      },
+      {
+        "line": 199,
+        "text": "exemple",
+        "context": "placeholder=\"exemple@email.com\""
+      },
+      {
+        "line": 270,
+        "text": "Nom de",
+        "context": "placeholder=\"Nom de l'entreprise\""
+      },
+      {
+        "line": 270,
+        "text": "entreprise",
+        "context": "placeholder=\"Nom de l'entreprise\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\admin\\EventsPage.tsx": [
+      {
+        "line": 246,
+        "text": "titre",
+        "context": "placeholder=\"Rechercher par titre, description ou organisateur...\""
+      },
+      {
+        "line": 246,
+        "text": "description",
+        "context": "placeholder=\"Rechercher par titre, description ou organisateur...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\admin\\EventsPageOptimized.tsx": [
+      {
+        "line": 340,
+        "text": "titre",
+        "context": "placeholder=\"Rechercher par titre, description ou organisateur...\""
+      },
+      {
+        "line": 340,
+        "text": "description",
+        "context": "placeholder=\"Rechercher par titre, description ou organisateur...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\admin\\ExhibitorsPageOptimized.tsx": [
+      {
+        "line": 322,
+        "text": "description",
+        "context": "placeholder=\"Rechercher par nom, description ou contact...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\admin\\media\\CreateMediaPage.tsx": [
+      {
+        "line": 33,
+        "text": "Message",
+        "context": "{ value: 'testimonial', label: 'Témoignage', icon: MessageCircle, color: 'pink' }"
+      },
+      {
+        "line": 172,
+        "text": "description",
+        "context": "placeholder={t('admin_media.create_description_placeholder')}"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\admin\\media\\EditMediaPage.tsx": [
+      {
+        "line": 52,
+        "text": "Message",
+        "context": "{ value: 'testimonial', label: 'Témoignage', icon: MessageCircle, color: 'pink' }"
+      },
+      {
+        "line": 234,
+        "text": "Titre",
+        "context": "placeholder=\"Titre du média\""
+      },
+      {
+        "line": 249,
+        "text": "Description",
+        "context": "placeholder=\"Description du média\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\admin\\PavillonsPage.tsx": [
+      {
+        "line": 307,
+        "text": "description",
+        "context": "placeholder=\"Rechercher par nom ou description...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\admin\\PaymentValidationPage.tsx": [
+      {
+        "line": 121,
+        "text": "site",
+        "context": "visitor: { label: 'Visiteur', icon: User, color: 'text-blue-600', bgColor: 'bg-blue-50' },"
+      },
+      {
+        "line": 452,
+        "text": "site",
+        "context": "{ value: 'visitor', label: 'Visiteurs', icon: User },"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\admin\\UsersPageOptimized.tsx": [
+      {
+        "line": 333,
+        "text": "entreprise",
+        "context": "placeholder=\"Rechercher par nom, email ou entreprise...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\ArticleDetailPage.tsx": [
+      {
+        "line": 593,
+        "text": "votre",
+        "context": "placeholder=\"votre@email.com\""
+      },
+      {
+        "line": 593,
+        "text": "votre",
+        "context": "placeholder=\"votre@email.com\""
+      },
+      {
+        "line": 595,
+        "text": "votre",
+        "context": "aria-label=\"votre@email.com\" />"
+      },
+      {
+        "line": 595,
+        "text": "votre",
+        "context": "aria-label=\"votre@email.com\" />"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\auth\\ExhibitorSignUpPage.tsx": [
+      {
+        "line": 152,
+        "text": "Entreprise",
+        "context": "label: 'Informations Entreprise',"
+      },
+      {
+        "line": 363,
+        "text": "entreprise",
+        "context": "placeholder=\"Votre entreprise\""
+      },
+      {
+        "line": 363,
+        "text": "Votre",
+        "context": "placeholder=\"Votre entreprise\""
+      },
+      {
+        "line": 363,
+        "text": "Votre",
+        "context": "placeholder=\"Votre entreprise\""
+      },
+      {
+        "line": 374,
+        "text": "Secteur",
+        "context": "label=\"Secteurs d'activité\""
+      },
+      {
+        "line": 378,
+        "text": "secteur",
+        "context": "placeholder=\"Sélectionnez vos secteurs d'activité\""
+      },
+      {
+        "line": 392,
+        "text": "pays",
+        "context": "<SelectValue placeholder=\"Sélectionnez votre pays\" />"
+      },
+      {
+        "line": 392,
+        "text": "votre",
+        "context": "<SelectValue placeholder=\"Sélectionnez votre pays\" />"
+      },
+      {
+        "line": 392,
+        "text": "votre",
+        "context": "<SelectValue placeholder=\"Sélectionnez votre pays\" />"
+      },
+      {
+        "line": 430,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez votre organisation, vos activités et vos objectifs pour SIPORTS 2026.\""
+      },
+      {
+        "line": 430,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez votre organisation, vos activités et vos objectifs pour SIPORTS 2026.\""
+      },
+      {
+        "line": 451,
+        "text": "prénom",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 451,
+        "text": "Votre",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 451,
+        "text": "Votre",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 461,
+        "text": "Votre",
+        "context": "placeholder=\"Votre nom\""
+      },
+      {
+        "line": 461,
+        "text": "Votre",
+        "context": "placeholder=\"Votre nom\""
+      },
+      {
+        "line": 475,
+        "text": "poste",
+        "context": "placeholder=\"Votre poste\""
+      },
+      {
+        "line": 475,
+        "text": "Votre",
+        "context": "placeholder=\"Votre poste\""
+      },
+      {
+        "line": 475,
+        "text": "Votre",
+        "context": "placeholder=\"Votre poste\""
+      },
+      {
+        "line": 497,
+        "text": "entreprise",
+        "context": "placeholder=\"contact@votre-entreprise.com\""
+      },
+      {
+        "line": 497,
+        "text": "votre",
+        "context": "placeholder=\"contact@votre-entreprise.com\""
+      },
+      {
+        "line": 497,
+        "text": "votre",
+        "context": "placeholder=\"contact@votre-entreprise.com\""
+      },
+      {
+        "line": 558,
+        "text": "mot de passe",
+        "context": "placeholder=\"Créez un mot de passe sécurisé\""
+      },
+      {
+        "line": 574,
+        "text": "mot de passe",
+        "context": "placeholder=\"Confirmez votre mot de passe\""
+      },
+      {
+        "line": 574,
+        "text": "votre",
+        "context": "placeholder=\"Confirmez votre mot de passe\""
+      },
+      {
+        "line": 574,
+        "text": "votre",
+        "context": "placeholder=\"Confirmez votre mot de passe\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\auth\\PartnerSignUpPage.tsx": [
+      {
+        "line": 287,
+        "text": "Nom de",
+        "context": "<Input id=\"companyName\" {...register('companyName')} placeholder=\"Nom de votre organisation\" classNa"
+      },
+      {
+        "line": 287,
+        "text": "votre",
+        "context": "<Input id=\"companyName\" {...register('companyName')} placeholder=\"Nom de votre organisation\" classNa"
+      },
+      {
+        "line": 287,
+        "text": "votre",
+        "context": "<Input id=\"companyName\" {...register('companyName')} placeholder=\"Nom de votre organisation\" classNa"
+      },
+      {
+        "line": 294,
+        "text": "Secteur",
+        "context": "label=\"Secteurs d'activité\""
+      },
+      {
+        "line": 298,
+        "text": "secteur",
+        "context": "placeholder=\"Sélectionnez vos secteurs d'activité\""
+      },
+      {
+        "line": 309,
+        "text": "pays",
+        "context": "<SelectValue placeholder=\"Sélectionnez votre pays\" />"
+      },
+      {
+        "line": 309,
+        "text": "votre",
+        "context": "<SelectValue placeholder=\"Sélectionnez votre pays\" />"
+      },
+      {
+        "line": 309,
+        "text": "votre",
+        "context": "<SelectValue placeholder=\"Sélectionnez votre pays\" />"
+      },
+      {
+        "line": 326,
+        "text": "site",
+        "context": "<Input id=\"website\" {...register('website')} placeholder=\"https://votre-site.com\" className=\"pl-10\""
+      },
+      {
+        "line": 326,
+        "text": "votre",
+        "context": "<Input id=\"website\" {...register('website')} placeholder=\"https://votre-site.com\" className=\"pl-10\""
+      },
+      {
+        "line": 326,
+        "text": "votre",
+        "context": "<Input id=\"website\" {...register('website')} placeholder=\"https://votre-site.com\" className=\"pl-10\""
+      },
+      {
+        "line": 357,
+        "text": "prénom",
+        "context": "<Input id=\"firstName\" {...register('firstName')} placeholder=\"Votre prénom\" className=\"pl-10\" />"
+      },
+      {
+        "line": 357,
+        "text": "Votre",
+        "context": "<Input id=\"firstName\" {...register('firstName')} placeholder=\"Votre prénom\" className=\"pl-10\" />"
+      },
+      {
+        "line": 357,
+        "text": "Votre",
+        "context": "<Input id=\"firstName\" {...register('firstName')} placeholder=\"Votre prénom\" className=\"pl-10\" />"
+      },
+      {
+        "line": 363,
+        "text": "Votre",
+        "context": "<Input id=\"lastName\" {...register('lastName')} placeholder=\"Votre nom\" />"
+      },
+      {
+        "line": 363,
+        "text": "Votre",
+        "context": "<Input id=\"lastName\" {...register('lastName')} placeholder=\"Votre nom\" />"
+      },
+      {
+        "line": 371,
+        "text": "poste",
+        "context": "<Input id=\"position\" {...register('position')} placeholder=\"Votre poste\" className=\"pl-10\" />"
+      },
+      {
+        "line": 371,
+        "text": "Votre",
+        "context": "<Input id=\"position\" {...register('position')} placeholder=\"Votre poste\" className=\"pl-10\" />"
+      },
+      {
+        "line": 371,
+        "text": "Votre",
+        "context": "<Input id=\"position\" {...register('position')} placeholder=\"Votre poste\" className=\"pl-10\" />"
+      },
+      {
+        "line": 383,
+        "text": "votre",
+        "context": "placeholder=\"contact@votre-organisation.com\""
+      },
+      {
+        "line": 383,
+        "text": "votre",
+        "context": "placeholder=\"contact@votre-organisation.com\""
+      },
+      {
+        "line": 432,
+        "text": "mot de passe",
+        "context": "placeholder=\"Créez un mot de passe sécurisé\""
+      },
+      {
+        "line": 448,
+        "text": "mot de passe",
+        "context": "placeholder=\"Confirmez votre mot de passe\""
+      },
+      {
+        "line": 448,
+        "text": "votre",
+        "context": "placeholder=\"Confirmez votre mot de passe\""
+      },
+      {
+        "line": 448,
+        "text": "votre",
+        "context": "placeholder=\"Confirmez votre mot de passe\""
+      },
+      {
+        "line": 465,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez votre organisation, vos activités et pourquoi vous souhaitez devenir partenaire de"
+      },
+      {
+        "line": 465,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez votre organisation, vos activités et pourquoi vous souhaitez devenir partenaire de"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\ContactPage.tsx": [
+      {
+        "line": 131,
+        "text": "prénom",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 131,
+        "text": "Votre",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 131,
+        "text": "Votre",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 146,
+        "text": "Votre",
+        "context": "placeholder=\"Votre nom\""
+      },
+      {
+        "line": 146,
+        "text": "Votre",
+        "context": "placeholder=\"Votre nom\""
+      },
+      {
+        "line": 163,
+        "text": "votre",
+        "context": "placeholder=\"votre.email@exemple.com\""
+      },
+      {
+        "line": 163,
+        "text": "votre",
+        "context": "placeholder=\"votre.email@exemple.com\""
+      },
+      {
+        "line": 163,
+        "text": "exemple",
+        "context": "placeholder=\"votre.email@exemple.com\""
+      },
+      {
+        "line": 178,
+        "text": "Nom de",
+        "context": "placeholder=\"Nom de votre société\""
+      },
+      {
+        "line": 178,
+        "text": "votre",
+        "context": "placeholder=\"Nom de votre société\""
+      },
+      {
+        "line": 178,
+        "text": "votre",
+        "context": "placeholder=\"Nom de votre société\""
+      },
+      {
+        "line": 204,
+        "text": "message",
+        "context": "<label htmlFor=\"message\" className=\"block text-sm font-medium text-gray-700 mb-2\">"
+      },
+      {
+        "line": 216,
+        "text": "message",
+        "context": "placeholder=\"Votre message (minimum 10 caractères)...\""
+      },
+      {
+        "line": 216,
+        "text": "Votre",
+        "context": "placeholder=\"Votre message (minimum 10 caractères)...\""
+      },
+      {
+        "line": 216,
+        "text": "Votre",
+        "context": "placeholder=\"Votre message (minimum 10 caractères)...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\EnhancedNetworkingPage.tsx": [
+      {
+        "line": 272,
+        "text": "message",
+        "context": "{ id: 'messages', label: 'Messages', icon: MessageCircle, count: 3 },"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\exhibitor\\ProfileEdit.tsx": [
+      {
+        "line": 82,
+        "text": "Nom de",
+        "context": "<label className=\"block text-sm font-medium\">Nom de la société</label>"
+      },
+      {
+        "line": 86,
+        "text": "Description",
+        "context": "<label className=\"block text-sm font-medium\">Description</label>"
+      },
+      {
+        "line": 90,
+        "text": "Site",
+        "context": "<label className=\"block text-sm font-medium\">Site web</label>"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\ExhibitorDetailPage.tsx": [
+      {
+        "line": 375,
+        "text": "site",
+        "context": "{ id: 'minisite', label: 'Mini-site' }"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\ExhibitorsPage.tsx": [
+      {
+        "line": 198,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Logistique\""
+      },
+      {
+        "line": 198,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Logistique\""
+      },
+      {
+        "line": 211,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Casablanca\""
+      },
+      {
+        "line": 211,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Casablanca\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\ExhibitorsPageOptimized.tsx": [
+      {
+        "line": 157,
+        "text": "secteur",
+        "context": "placeholder=\"Rechercher par nom, secteur, description...\""
+      },
+      {
+        "line": 157,
+        "text": "description",
+        "context": "placeholder=\"Rechercher par nom, secteur, description...\""
+      },
+      {
+        "line": 233,
+        "text": "Exporter",
+        "context": "aria-label=\"Exporter\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\media\\CapsuleDetailPage.tsx": [
+      {
+        "line": 302,
+        "text": "votre",
+        "context": "placeholder=\"votre@email.com\""
+      },
+      {
+        "line": 302,
+        "text": "votre",
+        "context": "placeholder=\"votre@email.com\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\NetworkingPage.tsx": [
+      {
+        "line": 398,
+        "text": "expertise",
+        "context": "{ icon: Briefcase, label: \"Tables rondes sectorielles\", desc: \"Échanges d'expertise approfondis\" },"
+      },
+      {
+        "line": 400,
+        "text": "secteur",
+        "context": "{ icon: Mic, label: \"Sessions de pitch\", desc: \"Découvrez les innovations du secteur\" },"
+      },
+      {
+        "line": 557,
+        "text": "Message",
+        "context": "{ label: 'Messages', value: quotas.messages, max: quotas.messages + (store.dailyUsage?.messages"
+      },
+      {
+        "line": 1650,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez brièvement l'objet de votre rendez-vous, vos attentes ou questions...\""
+      },
+      {
+        "line": 1650,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez brièvement l'objet de votre rendez-vous, vos attentes ou questions...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\NewsPage.tsx": [
+      {
+        "line": 514,
+        "text": "votre",
+        "context": "placeholder=\"votre@email.com\""
+      },
+      {
+        "line": 514,
+        "text": "votre",
+        "context": "placeholder=\"votre@email.com\""
+      },
+      {
+        "line": 516,
+        "text": "votre",
+        "context": "aria-label=\"votre@email.com\" />"
+      },
+      {
+        "line": 516,
+        "text": "votre",
+        "context": "aria-label=\"votre@email.com\" />"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\PartnerDetailPage.tsx": [
+      {
+        "line": 434,
+        "text": "expertise",
+        "context": "{ id: 'expertise', label: 'Expertise', icon: Lightbulb },"
+      },
+      {
+        "line": 439,
+        "text": "Message",
+        "context": "{ id: 'contact', label: 'Contact', icon: MessageCircle }"
+      },
+      {
+        "line": 1797,
+        "text": "Votre",
+        "context": "placeholder=\"Votre nom complet\""
+      },
+      {
+        "line": 1797,
+        "text": "Votre",
+        "context": "placeholder=\"Votre nom complet\""
+      },
+      {
+        "line": 1798,
+        "text": "Votre",
+        "context": "aria-label=\"Votre nom complet\" />"
+      },
+      {
+        "line": 1798,
+        "text": "Votre",
+        "context": "aria-label=\"Votre nom complet\" />"
+      },
+      {
+        "line": 1807,
+        "text": "votre",
+        "context": "placeholder=\"votre@email.com\""
+      },
+      {
+        "line": 1807,
+        "text": "votre",
+        "context": "placeholder=\"votre@email.com\""
+      },
+      {
+        "line": 1808,
+        "text": "votre",
+        "context": "aria-label=\"votre@email.com\" />"
+      },
+      {
+        "line": 1808,
+        "text": "votre",
+        "context": "aria-label=\"votre@email.com\" />"
+      },
+      {
+        "line": 1817,
+        "text": "message",
+        "context": "placeholder=\"Objet de votre message\""
+      },
+      {
+        "line": 1817,
+        "text": "votre",
+        "context": "placeholder=\"Objet de votre message\""
+      },
+      {
+        "line": 1817,
+        "text": "votre",
+        "context": "placeholder=\"Objet de votre message\""
+      },
+      {
+        "line": 1818,
+        "text": "message",
+        "context": "aria-label=\"Objet de votre message\" />"
+      },
+      {
+        "line": 1818,
+        "text": "votre",
+        "context": "aria-label=\"Objet de votre message\" />"
+      },
+      {
+        "line": 1818,
+        "text": "votre",
+        "context": "aria-label=\"Objet de votre message\" />"
+      },
+      {
+        "line": 1828,
+        "text": "message",
+        "context": "placeholder=\"Votre message...\""
+      },
+      {
+        "line": 1828,
+        "text": "Votre",
+        "context": "placeholder=\"Votre message...\""
+      },
+      {
+        "line": 1828,
+        "text": "Votre",
+        "context": "placeholder=\"Votre message...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\partners\\PartnerMediaUploadPage.tsx": [
+      {
+        "line": 146,
+        "text": "Titre",
+        "context": "placeholder=\"Titre accrocheur de votre média\""
+      },
+      {
+        "line": 146,
+        "text": "votre",
+        "context": "placeholder=\"Titre accrocheur de votre média\""
+      },
+      {
+        "line": 146,
+        "text": "votre",
+        "context": "placeholder=\"Titre accrocheur de votre média\""
+      },
+      {
+        "line": 152,
+        "text": "description",
+        "context": "<label htmlFor=\"description\" className=\"block text-sm font-medium text-gray-700 mb-2\">"
+      },
+      {
+        "line": 162,
+        "text": "contenu",
+        "context": "placeholder=\"Décrivez le contenu de votre média...\""
+      },
+      {
+        "line": 162,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez le contenu de votre média...\""
+      },
+      {
+        "line": 162,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez le contenu de votre média...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\partners\\PartnerNetworkingPage.tsx": [
+      {
+        "line": 239,
+        "text": "entreprise",
+        "context": "placeholder=\"Rechercher par nom, entreprise ou secteur...\""
+      },
+      {
+        "line": 239,
+        "text": "secteur",
+        "context": "placeholder=\"Rechercher par nom, entreprise ou secteur...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\partners\\PartnerProfileEditPage.tsx": [
+      {
+        "line": 242,
+        "text": "Description",
+        "context": "<label className=\"block text-sm font-medium text-gray-700 mb-2\">Description</label>"
+      },
+      {
+        "line": 278,
+        "text": "exemple",
+        "context": "placeholder=\"https://www.exemple.com\" className=\"w-full px-3 py-2 border border-gray-300 rounded-l"
+      },
+      {
+        "line": 285,
+        "text": "exemple",
+        "context": "placeholder=\"contact@exemple.com\" className=\"w-full px-3 py-2 border border-gray-300 rounded-lg fo"
+      },
+      {
+        "line": 302,
+        "text": "Adresse",
+        "context": "<label className=\"block text-sm font-medium text-gray-700 mb-2\">Adresse complète</label>"
+      },
+      {
+        "line": 304,
+        "text": "Ville",
+        "context": "placeholder=\"123 Avenue Example, Ville, Pays\" className=\"w-full px-3 py-2 border border-gray-300 r"
+      },
+      {
+        "line": 304,
+        "text": "Pays",
+        "context": "placeholder=\"123 Avenue Example, Ville, Pays\" className=\"w-full px-3 py-2 border border-gray-300 r"
+      },
+      {
+        "line": 344,
+        "text": "Secteur",
+        "context": "<label className=\"block text-sm font-medium text-gray-700 mb-3\">Secteurs d'activité</label>"
+      },
+      {
+        "line": 381,
+        "text": "expertise",
+        "context": "placeholder=\"Décrivez votre expertise, vos domaines de compétence, votre savoir-faire...\""
+      },
+      {
+        "line": 381,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez votre expertise, vos domaines de compétence, votre savoir-faire...\""
+      },
+      {
+        "line": 381,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez votre expertise, vos domaines de compétence, votre savoir-faire...\""
+      },
+      {
+        "line": 401,
+        "text": "Titre",
+        "context": "placeholder=\"Titre du projet\" className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:"
+      },
+      {
+        "line": 403,
+        "text": "Description",
+        "context": "placeholder=\"Description\" rows={2} className=\"w-full px-3 py-2 border border-gray-300 rounded-lg f"
+      },
+      {
+        "line": 406,
+        "text": "ex:",
+        "context": "placeholder=\"Année (ex: 2023)\" className=\"w-full px-3 py-2 border border-gray-300 rounded-lg foc"
+      },
+      {
+        "line": 406,
+        "text": "ex:",
+        "context": "placeholder=\"Année (ex: 2023)\" className=\"w-full px-3 py-2 border border-gray-300 rounded-lg foc"
+      },
+      {
+        "line": 456,
+        "text": "Titre",
+        "context": "placeholder=\"Titre de l'actualité\" className=\"w-full px-3 py-2 border border-gray-300 rounded-lg\""
+      },
+      {
+        "line": 458,
+        "text": "Description",
+        "context": "placeholder=\"Description\" rows={2} className=\"w-full px-3 py-2 border border-gray-300 rounded-lg\""
+      },
+      {
+        "line": 496,
+        "text": "Pays",
+        "context": "<label className=\"block text-sm font-medium text-gray-700 mb-2\">Pays desservis</label>"
+      },
+      {
+        "line": 525,
+        "text": "Description",
+        "context": "placeholder=\"Description (optionnel)\" className=\"w-full px-3 py-2 border border-gray-300 rounded-l"
+      },
+      {
+        "line": 552,
+        "text": "Poste",
+        "context": "placeholder=\"Poste\" className=\"w-full px-3 py-2 border border-gray-300 rounded-lg\" />"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\PartnersPageOptimized.tsx": [
+      {
+        "line": 116,
+        "text": "Pays",
+        "context": "label: 'Pays',"
+      },
+      {
+        "line": 151,
+        "text": "pays",
+        "context": "placeholder=\"Rechercher par nom, secteur, pays...\""
+      },
+      {
+        "line": 151,
+        "text": "secteur",
+        "context": "placeholder=\"Rechercher par nom, secteur, pays...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\ProfileMatchingPage.tsx": [
+      {
+        "line": 577,
+        "text": "Nom de",
+        "context": "placeholder=\"Nom de votre entreprise\""
+      },
+      {
+        "line": 577,
+        "text": "entreprise",
+        "context": "placeholder=\"Nom de votre entreprise\""
+      },
+      {
+        "line": 577,
+        "text": "votre",
+        "context": "placeholder=\"Nom de votre entreprise\""
+      },
+      {
+        "line": 577,
+        "text": "votre",
+        "context": "placeholder=\"Nom de votre entreprise\""
+      },
+      {
+        "line": 631,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez votre activité, vos compétences ou ce que vous recherchez...\""
+      },
+      {
+        "line": 631,
+        "text": "votre",
+        "context": "placeholder=\"Décrivez votre activité, vos compétences ou ce que vous recherchez...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\ResetPasswordPage.tsx": [
+      {
+        "line": 83,
+        "text": "mot de passe",
+        "context": "<label className=\"block font-medium mb-2\">Nouveau mot de passe</label>"
+      },
+      {
+        "line": 84,
+        "text": "mot de passe",
+        "context": "<Input type=\"password\" name=\"password\" value={newPassword} onChange={e => setNewPassword(e.target.value)} plac"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\UserManagementPage.tsx": [
+      {
+        "line": 401,
+        "text": "entreprise",
+        "context": "placeholder=\"Rechercher par nom, email ou entreprise...\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\visitor\\VisitorFreeRegistration.tsx": [
+      {
+        "line": 210,
+        "text": "prénom",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 210,
+        "text": "Votre",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 210,
+        "text": "Votre",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 228,
+        "text": "Votre",
+        "context": "placeholder=\"Votre nom\""
+      },
+      {
+        "line": 228,
+        "text": "Votre",
+        "context": "placeholder=\"Votre nom\""
+      },
+      {
+        "line": 248,
+        "text": "votre",
+        "context": "placeholder=\"votre@email.com\""
+      },
+      {
+        "line": 248,
+        "text": "votre",
+        "context": "placeholder=\"votre@email.com\""
+      },
+      {
+        "line": 334,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Ingénieur\""
+      },
+      {
+        "line": 334,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Ingénieur\""
+      },
+      {
+        "line": 347,
+        "text": "Nom de",
+        "context": "placeholder=\"Nom de votre entreprise\""
+      },
+      {
+        "line": 347,
+        "text": "entreprise",
+        "context": "placeholder=\"Nom de votre entreprise\""
+      },
+      {
+        "line": 347,
+        "text": "votre",
+        "context": "placeholder=\"Nom de votre entreprise\""
+      },
+      {
+        "line": 347,
+        "text": "votre",
+        "context": "placeholder=\"Nom de votre entreprise\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\pages\\visitor\\VisitorVIPRegistration.tsx": [
+      {
+        "line": 410,
+        "text": "prénom",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 410,
+        "text": "Votre",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 410,
+        "text": "Votre",
+        "context": "placeholder=\"Votre prénom\""
+      },
+      {
+        "line": 428,
+        "text": "Votre",
+        "context": "placeholder=\"Votre nom\""
+      },
+      {
+        "line": 428,
+        "text": "Votre",
+        "context": "placeholder=\"Votre nom\""
+      },
+      {
+        "line": 448,
+        "text": "votre",
+        "context": "placeholder=\"votre@email.com\""
+      },
+      {
+        "line": 448,
+        "text": "votre",
+        "context": "placeholder=\"votre@email.com\""
+      },
+      {
+        "line": 486,
+        "text": "mot de passe",
+        "context": "placeholder=\"Confirmer le mot de passe\""
+      },
+      {
+        "line": 486,
+        "text": "Confirmer",
+        "context": "placeholder=\"Confirmer le mot de passe\""
+      },
+      {
+        "line": 569,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Directeur Commercial\""
+      },
+      {
+        "line": 569,
+        "text": "Ex:",
+        "context": "placeholder=\"Ex: Directeur Commercial\""
+      },
+      {
+        "line": 586,
+        "text": "Nom de",
+        "context": "placeholder=\"Nom de votre entreprise\""
+      },
+      {
+        "line": 586,
+        "text": "entreprise",
+        "context": "placeholder=\"Nom de votre entreprise\""
+      },
+      {
+        "line": 586,
+        "text": "votre",
+        "context": "placeholder=\"Nom de votre entreprise\""
+      },
+      {
+        "line": 586,
+        "text": "votre",
+        "context": "placeholder=\"Nom de votre entreprise\""
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\services\\supabaseService.ts": [
+      {
+        "line": 622,
+        "text": "Pays",
+        "context": "{ label: \"Pays d'intervention\", value: \"15\", icon: \"Globe\" },"
+      }
+    ],
+    "C:\\Users\\samye\\OneDrive\\Desktop\\siportversionfinal\\siportv3\\src\\utils\\errorMessages.ts": [
+      {
+        "line": 27,
+        "text": "Mot de passe",
+        "context": "label: 'Mot de passe oublié ?',"
+      },
+      {
+        "line": 37,
+        "text": "envoyer",
+        "context": "label: 'Renvoyer l\\'email',"
+      }
+    ]
+  }
+}

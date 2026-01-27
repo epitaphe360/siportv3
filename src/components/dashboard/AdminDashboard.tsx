@@ -68,17 +68,9 @@ export default function AdminDashboard() {
     contentModerations: 0
   };
 
-  // Données de démonstration pour les graphiques
-  const userGrowthData = [
-    { name: 'Jan', users: 120, exhibitors: 15, visitors: 85 },
-    { name: 'Fév', users: 180, exhibitors: 25, visitors: 135 },
-    { name: 'Mar', users: 250, exhibitors: 35, visitors: 190 },
-    { name: 'Avr', users: 340, exhibitors: 48, visitors: 260 },
-    { name: 'Mai', users: 420, exhibitors: 62, visitors: 325 },
-    { name: 'Juin', users: 510, exhibitors: 78, visitors: 395 },
-  ];
-
   // Utiliser les vraies données depuis adminMetrics
+  const userGrowthData = adminMetrics.userGrowthData || [];
+  
   const activityData = [
     { name: 'Connexions', value: adminMetrics.totalConnections || 0 },
     { name: 'RDV Créés', value: adminMetrics.totalAppointments || 0 },
@@ -86,66 +78,25 @@ export default function AdminDashboard() {
     { name: 'Documents', value: adminMetrics.totalDownloads || 0 },
   ];
 
-  // Données de trafic hebdomadaire (Simulation réaliste pour SIPORTS)
-  const trafficData = [
-    { name: 'Lun', visits: 120, pageViews: 450 },
-    { name: 'Mar', visits: 185, pageViews: 620 },
-    { name: 'Mer', visits: 240, pageViews: 810 },
-    { name: 'Jeu', visits: 310, pageViews: 950 },
-    { name: 'Ven', visits: 450, pageViews: 1240 },
-    { name: 'Sam', visits: 380, pageViews: 1100 },
-    { name: 'Dim', visits: 290, pageViews: 860 },
-  ];
+  // Utiliser les vraies données de trafic depuis les métriques
+  const trafficData = adminMetrics.trafficData || [];
 
-  // userTypeDistribution doit être déclaré APRÈS adminMetrics
+  // Distribution des types d'utilisateurs
   const userTypeDistribution = [
     { name: 'Visiteurs', value: adminMetrics.totalVisitors || 0, color: '#3b82f6' },
     { name: 'Exposants', value: adminMetrics.totalExhibitors || 0, color: '#10b981' },
     { name: 'Partenaires', value: adminMetrics.totalPartners || 0, color: '#f59e0b' },
   ];
 
-  // Si les données sont à zéro (nouvelle installation), on affiche une simulation pour le test
-  const displayUserDistribution = (adminMetrics.totalVisitors || 0) === 0 && (adminMetrics.totalExhibitors || 0) === 0 
-    ? [
-        { name: 'Visiteurs (Sim)', value: 425, color: '#3b82f6' },
-        { name: 'Exposants (Sim)', value: 78, color: '#10b981' },
-        { name: 'Partenaires (Sim)', value: 12, color: '#f59e0b' },
-      ]
-    : userTypeDistribution;
-
   const systemHealth = [
-    { name: 'API Performance', status: 'excellent', value: adminMetrics.avgResponseTime > 0 ? `${adminMetrics.avgResponseTime}ms` : '145ms', color: 'text-green-600' },
-    { name: 'Database', status: 'good', value: '99.2%', color: 'text-green-600' },
-    { name: 'Storage', status: 'warning', value: adminMetrics.dataStorage > 0 ? `${adminMetrics.dataStorage}%` : '78%', color: 'text-yellow-600' },
-    { name: 'CDN', status: 'excellent', value: '99.9%', color: 'text-green-600' }
+    { name: 'API Performance', status: 'excellent', value: adminMetrics.avgResponseTime > 0 ? `${adminMetrics.avgResponseTime}ms` : 'N/A', color: 'text-green-600' },
+    { name: 'Database', status: 'good', value: `${adminMetrics.systemUptime || 0}%`, color: 'text-green-600' },
+    { name: 'Storage', status: 'warning', value: adminMetrics.dataStorage > 0 ? `${adminMetrics.dataStorage} GB` : 'N/A', color: 'text-yellow-600' },
+    { name: 'Appels API', status: 'excellent', value: adminMetrics.apiCalls > 0 ? `${adminMetrics.apiCalls}` : 'N/A', color: 'text-green-600' }
   ];
 
-  const recentAdminActivity = [
-    {
-      id: '1',
-      type: 'account_validation',
-      description: 'Compte exposant "Port Solutions Inc." activé',
-      timestamp: new Date(Date.now() - 3600000),
-      severity: 'success',
-      adminUser: 'Admin System'
-    },
-    {
-      id: '2',
-      type: 'content_moderation',
-      description: 'Contenu signalé modéré - Mini-site "Maritime Tech"',
-      timestamp: new Date(Date.now() - 7200000),
-      severity: 'warning',
-      adminUser: 'Modérateur Content'
-    },
-    {
-      id: '3',
-      type: 'system_alert',
-      description: 'Pic de trafic détecté - 2000 utilisateurs simultanés',
-      timestamp: new Date(Date.now() - 10800000),
-      severity: 'info',
-      adminUser: 'System Monitor'
-    }
-  ];
+  // Utiliser les vraies données d'activité récente depuis les métriques
+  const recentAdminActivity = adminMetrics.recentActivity || [];
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('fr-FR', {
@@ -616,8 +567,8 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <PieChartCard
               title="Distribution des Utilisateurs"
-              data={displayUserDistribution}
-              colors={displayUserDistribution.map(d => d.color || '#cbd5e1')}
+              data={userTypeDistribution}
+              colors={userTypeDistribution.map(d => d.color || '#cbd5e1')}
               height={320}
               loading={isLoading}
               showPercentage={true}

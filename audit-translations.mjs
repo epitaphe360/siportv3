@@ -7,29 +7,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Patterns à chercher pour les textes dur-codés
-const patterns = [
-  // Labels de formulaires en français
-  /label[^>]*>([^<]+?(?:Nom|Prénom|Email|Adresse|Téléphone|Ville|Pays|Poste|Fonction|Entreprise|Secteur|Mot de passe|Sujet|Message|Résumé|Contenu|Expertise|Titre|Description|Site|Intervenant|Localisation|Plateforme|URL|Compagnie|Nom de l'intervenant|Titre de|Extraction|Répertoire|Accord|Oui|Non|Logo|Sélectionnez|Choisir|Détails|Contacter|Ajouter|Retirer|Modifier|Supprimer|Annuler|Soumettre|Envoyer|Charger|Télécharger|Importer|Exporter|Actualiser|Réinitialiser|Créer|Générer|Valider|Confirmer|Retour|Suivant|Précédent|Afficher|Masquer|Plus|Moins|Tous|Aucun|Oui|Non|Débuter|Démarrer|Activer|Désactiver|Approuver|Rejeter|Approuvé|Rejeté|En attente|Complété|En cours|Erreur|Succès|Avertissement|Information|Nouveau|Actif|Inactif|Supprimé|Archivé|Publié|Brouillon)(?:[\s*]|<|$)/gi,
-  // Placeholders en français
-  /placeholder=["']([^"']*(?:Nom|Prénom|Email|entreprise|Adresse|Téléphone|Ville|Pays|Poste|Fonction|exemple|ex:|Ex:|votre|Votre|la fiche|le texte|texte|Saisir|Entrez|Remplissez)[^"']*)["']/gi,
-  // Aria-label en français
-  /aria-label=["']([^"']*(?:Nom|Prénom|Email|Adresse|Téléphone|Ville|Pays|Poste|Fonction|Entreprise|Secteur|Mot de passe|Sujet|Message)[^"']*)["']/gi,
-];
-
-// Clés de traduction validées à ignorer (déjà dans i18n)
-const ignoredPatterns = [
-  'Requis',
-  'Optionnel',
-  'Soumettre',
-  'Annuler',
-  'Enregistrer',
-  'Rechercher',
-  'Loading',
-  'Error',
-  'Success',
-];
-
 let results = {
   files: {},
   totalIssues: 0,
@@ -48,26 +25,35 @@ function analyzeFile(filePath) {
         return;
       }
 
-      // Search for hardcoded French text
-      patterns.forEach(pattern => {
-        let match;
-        while ((match = pattern.exec(line)) !== null) {
-          const text = match[1] || match[0];
-          
-          // Check if text should be translated
-          if (shouldTranslate(text)) {
-            issues.push({
-              line: index + 1,
-              text: text.slice(0, 100),
-              type: pattern.source.includes('placeholder') ? 'placeholder' : 
-                    pattern.source.includes('aria-label') ? 'aria-label' : 'label',
-            });
-            
-            // Track missing keys
-            results.missingTranslationKeys.add(text.trim());
+      // Look for hardcoded French in labels, placeholders, aria-labels
+      if (line.includes('placeholder=') || line.includes('label') || line.includes('aria-label')) {
+        const frenchPatterns = [
+          /Nom de/gi, /Prénom/gi, /Adresse/gi, /Téléphone/gi, /Ville/gi, 
+          /Pays/gi, /Poste/gi, /Fonction/gi, /Entreprise/gi, /Secteur/gi,
+          /Mot de passe/gi, /Sujet/gi, /Message/gi, /Résumé/gi, /Contenu/gi,
+          /Expertise/gi, /Titre/gi, /Description/gi, /Site/gi, /Intervenant/gi,
+          /Localisation/gi, /Plateforme/gi, /votre/gi, /Votre/gi, 
+          /exemple/gi, /ex:/gi, /Ex:/gi, /inscrire/gi, /Inscrire/gi,
+          /Ajouter/gi, /Retirer/gi, /Modifier/gi, /Supprimer/gi,
+          /Envoyer/gi, /Télécharger/gi, /Importer/gi, /Exporter/gi,
+          /Actualiser/gi, /Réinitialiser/gi, /Créer/gi, /Générer/gi,
+          /Valider/gi, /Confirmer/gi, /Retour/gi, /Suivant/gi, /Précédent/gi
+        ];
+
+        frenchPatterns.forEach(pattern => {
+          if (pattern.test(line)) {
+            const match = line.match(pattern);
+            if (match) {
+              issues.push({
+                line: index + 1,
+                text: match[0],
+                context: line.slice(0, 120).trim(),
+              });
+              results.missingTranslationKeys.add(match[0].trim());
+            }
           }
-        }
-      });
+        });
+      }
     });
 
     if (issues.length > 0) {
@@ -79,20 +65,6 @@ function analyzeFile(filePath) {
   }
 }
 
-function shouldTranslate(text) {
-  const trimmed = text.trim();
-  
-  // Ignore empty strings
-  if (!trimmed || trimmed.length < 2) return false;
-  
-  // Ignore ignored patterns
-  if (ignoredPatterns.some(p => trimmed.includes(p))) return false;
-  
-  // Should be French text with certain patterns
-  return /[àâäçèéêëîïôöùûüœæ]/i.test(trimmed) || 
-         /^(Nom|Prénom|Email|Adresse|Téléphone|Ville|Pays|Poste|Fonction|Entreprise|Secteur|Mot de passe|Sujet|Message|Résumé|Contenu|Expertise|Titre|Description|Site|Entreprise|Intervenant|exemple|ex:|votre|Votre|la fiche)/.test(trimmed);
-}
-
 function walkDir(dir, callback) {
   const files = fs.readdirSync(dir);
   
@@ -101,7 +73,6 @@ function walkDir(dir, callback) {
     const stat = fs.statSync(filePath);
     
     if (stat.isDirectory()) {
-      // Skip node_modules and other dirs
       if (!['node_modules', '.git', 'dist', 'build', '.next', 'coverage'].includes(file)) {
         walkDir(filePath, callback);
       }
@@ -119,44 +90,32 @@ walkDir(srcDir, analyzeFile);
 
 // Generate report
 console.log('📊 Translation Audit Report\n');
-console.log(`Total issues found: ${results.totalIssues}\n`);
+console.log(`Total French text instances found: ${results.totalIssues}\n`);
 
 if (results.totalIssues > 0) {
-  console.log('📁 Files with issues:\n');
+  console.log('📁 Top 15 files with most hardcoded French text:\n');
   
   Object.entries(results.files)
     .sort((a, b) => b[1].length - a[1].length)
-    .slice(0, 20)
-    .forEach(([file, issues]) => {
-      const relPath = file.replace(__dirname, '.');
-      console.log(`\n${relPath} (${issues.length} issues)`);
-      issues.slice(0, 5).forEach(issue => {
-        console.log(`  Line ${issue.line}: [${issue.type}] "${issue.text}"`);
-      });
-      if (issues.length > 5) {
-        console.log(`  ... and ${issues.length - 5} more`);
-      }
+    .slice(0, 15)
+    .forEach(([file, issues], idx) => {
+      const relPath = file.replace(path.join(__dirname, 'src'), 'src');
+      console.log(`${idx + 1}. ${relPath} (${issues.length} instances)`);
     });
 }
 
-console.log('\n\n🔑 Missing Translation Keys (Sample):\n');
-Array.from(results.missingTranslationKeys)
-  .slice(0, 50)
-  .sort()
-  .forEach(key => {
-    console.log(`  - ${key}`);
-  });
-
-if (results.missingTranslationKeys.size > 50) {
-  console.log(`\n  ... and ${results.missingTranslationKeys.size - 50} more`);
-}
+console.log('\n\n🔑 Unique French Terms Found:\n');
+const uniqueTerms = Array.from(results.missingTranslationKeys).sort();
+uniqueTerms.forEach(term => {
+  console.log(`  - "${term}"`);
+});
 
 // Save detailed report
 const report = {
   timestamp: new Date().toISOString(),
-  totalIssues: results.totalIssues,
+  totalInstances: results.totalIssues,
   filesWithIssues: Object.keys(results.files).length,
-  missingKeys: Array.from(results.missingTranslationKeys).sort(),
+  uniqueTerms: uniqueTerms,
   details: results.files,
 };
 

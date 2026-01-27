@@ -19,6 +19,17 @@ export interface AdminMetrics {
   totalAppointments: number;
   totalMessages: number;
   totalDownloads: number;
+  // Nouvelles métriques
+  userGrowthData?: Array<{ name: string; users: number; exhibitors: number; visitors: number }>;
+  trafficData?: Array<{ name: string; visits: number; pageViews: number }>;
+  recentActivity?: Array<{
+    id: string;
+    type: string;
+    description: string;
+    timestamp: Date;
+    severity: string;
+    adminUser: string;
+  }>;
 }
 
 const defaultMetrics: AdminMetrics = {
@@ -105,18 +116,21 @@ export class AdminMetricsService {
         totalPartners: (results['partners'] ?? 0),
         totalVisitors: (results['visitors'] ?? 0),
         totalEvents: (results['events'] ?? 0),
-        systemUptime: 99.9,
-        dataStorage: 12.4,
-        apiCalls: 45800,
-        avgResponseTime: 145,
+        systemUptime: 99.9, // TODO: Calculer depuis les logs système
+        dataStorage: await this.calculateStorageUsage(),
+        apiCalls: await this.getApiCallsCount(),
+        avgResponseTime: await this.getAvgResponseTime(),
         pendingValidations: (results['pendingValidations'] ?? 0),
         activeContracts: (results['activeContracts'] ?? 0),
         contentModerations: (results['contentModerations'] ?? 0),
-        onlineExhibitors: 85,
+        onlineExhibitors: await this.getOnlineExhibitors(),
         totalConnections: (results['connections'] ?? 0),
         totalAppointments: (results['appointments'] ?? 0),
         totalMessages: (results['messages'] ?? 0),
-        totalDownloads: (results['downloads'] ?? 0)
+        totalDownloads: (results['downloads'] ?? 0),
+        userGrowthData: await this.getUserGrowthData(),
+        trafficData: await this.getTrafficData(),
+        recentActivity: await this.getRecentActivity()
       };
 
       return metrics;
@@ -159,6 +173,207 @@ export class AdminMetricsService {
     } catch (err) {
       console.error('AdminMetricsService.getContentModerations error', err);
       return defaultMetrics.contentModerations;
+    }
+  }
+
+  // Calculer l'utilisation du stockage
+  private static async calculateStorageUsage(): Promise<number> {
+    const client = (supabase as any);
+    if (!client) return 0;
+    try {
+      // Compter les fichiers uploadés (approximation)
+      const { data } = await client.from('media_content').select('file_size');
+      if (data && Array.isArray(data)) {
+        const totalBytes = data.reduce((sum: number, item: any) => sum + (item.file_size || 0), 0);
+        const totalGB = totalBytes / (1024 * 1024 * 1024);
+        return Math.round(totalGB * 10) / 10; // Arrondir à 1 décimale
+      }
+      return 0;
+    } catch (err) {
+      console.error('AdminMetricsService.calculateStorageUsage error', err);
+      return 0;
+    }
+  }
+
+  // Compter les appels API (depuis les logs si disponible)
+  private static async getApiCallsCount(): Promise<number> {
+    const client = (supabase as any);
+    if (!client) return 0;
+    try {
+      // Compter les requêtes des dernières 24h si table de logs existe
+      const { count } = await client
+        .from('api_logs')
+        .select('id', { count: 'exact', head: true })
+        .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+      return count || 0;
+    } catch (err) {
+      // Table n'existe peut-être pas, retourner une estimation
+      return 0;
+    }
+  }
+
+  // Temps de réponse moyen
+  private static async getAvgResponseTime(): Promise<number> {
+    const client = (supabase as any);
+    if (!client) return 0;
+    try {
+      const { data } = await client
+        .from('api_logs')
+        .select('response_time')
+        .gte('created_at', new Date(Date.now() - 60 * 60 * 1000).toISOString())
+        .limit(100);
+      
+      if (data && data.length > 0) {
+        const avg = data.reduce((sum: number, log: any) => sum + (log.response_time || 0), 0) / data.length;
+        return Math.round(avg);
+      }
+      return 0;
+    } catch (err) {
+      return 0;
+    }
+  }
+
+  // Exposants en ligne (actifs dans les dernières 15 minutes)
+  private static async getOnlineExhibitors(): Promise<number> {
+    const client = (supabase as any);
+    if (!client) return 0;
+    try {
+      const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+      const { count } = await client
+        .from('users')
+        .select('id', { count: 'exact', head: true })
+        .eq('type', 'exhibitor')
+        .gte('last_seen', fifteenMinutesAgo);
+      return count || 0;
+    } catch (err) {
+      console.error('AdminMetricsService.getOnlineExhibitors error', err);
+      return 0;
+    }
+  }
+
+  // Données de croissance utilisateurs (6 derniers mois)
+  static async getUserGrowthData(): Promise<Array<{ name: string; users: number; exhibitors: number; visitors: number }>> {
+    const client = (supabase as any);
+    if (!client) return [];
+    
+    try {
+      const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'];
+      const result = [];
+      
+      for (let i = 5; i >= 0; i--) {
+        const date = new Date();
+        date.setMonth(date.getMonth() - i);
+        const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+        const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        
+        const { count: users } = await client
+          .from('users')
+          .select('id', { count: 'exact', head: true })
+          .lte('created_at', endOfMonth.toISOString());
+        
+        const { count: exhibitors } = await client
+          .from('users')
+          .select('id', { count: 'exact', head: true })
+          .eq('type', 'exhibitor')
+          .lte('created_at', endOfMonth.toISOString());
+        
+        const { count: visitors } = await client
+          .from('users')
+          .select('id', { count: 'exact', head: true })
+          .eq('type', 'visitor')
+          .lte('created_at', endOfMonth.toISOString());
+        
+        result.push({
+          name: months[5 - i],
+          users: users || 0,
+          exhibitors: exhibitors || 0,
+          visitors: visitors || 0
+        });
+      }
+      
+      return result;
+    } catch (err) {
+      console.error('AdminMetricsService.getUserGrowthData error', err);
+      return [];
+    }
+  }
+
+  // Données de trafic hebdomadaire
+  static async getTrafficData(): Promise<Array<{ name: string; visits: number; pageViews: number }>> {
+    const client = (supabase as any);
+    if (!client) return [];
+    
+    try {
+      const days = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+      const result = [];
+      
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const startOfDay = new Date(date.setHours(0, 0, 0, 0));
+        const endOfDay = new Date(date.setHours(23, 59, 59, 999));
+        
+        const { count: visits } = await client
+          .from('page_views')
+          .select('id', { count: 'exact', head: true })
+          .gte('created_at', startOfDay.toISOString())
+          .lte('created_at', endOfDay.toISOString())
+          .eq('unique_view', true);
+        
+        const { count: pageViews } = await client
+          .from('page_views')
+          .select('id', { count: 'exact', head: true })
+          .gte('created_at', startOfDay.toISOString())
+          .lte('created_at', endOfDay.toISOString());
+        
+        result.push({
+          name: days[6 - i],
+          visits: visits || 0,
+          pageViews: pageViews || 0
+        });
+      }
+      
+      return result;
+    } catch (err) {
+      console.error('AdminMetricsService.getTrafficData error', err);
+      return [];
+    }
+  }
+
+  // Activité récente de l'admin
+  static async getRecentActivity(): Promise<Array<{
+    id: string;
+    type: string;
+    description: string;
+    timestamp: Date;
+    severity: string;
+    adminUser: string;
+  }>> {
+    const client = (supabase as any);
+    if (!client) return [];
+    
+    try {
+      const { data } = await client
+        .from('admin_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(10);
+      
+      if (data && Array.isArray(data)) {
+        return data.map((log: any) => ({
+          id: log.id,
+          type: log.action_type || 'system_alert',
+          description: log.description || 'Action système',
+          timestamp: new Date(log.created_at),
+          severity: log.severity || 'info',
+          adminUser: log.admin_user || 'System'
+        }));
+      }
+      
+      return [];
+    } catch (err) {
+      console.error('AdminMetricsService.getRecentActivity error', err);
+      return [];
     }
   }
 }
