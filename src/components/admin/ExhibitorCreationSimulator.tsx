@@ -69,14 +69,14 @@ export default function ExhibitorCreationSimulator({ exhibitorToEdit, editMode =
     country: exhibitorToEdit?.contactInfo?.country || '',
     website: exhibitorToEdit?.website || '',
     description: exhibitorToEdit?.description || '',
-    contactName: '',
-    email: '',
-    phone: '',
-    position: '',
-    packageType: 'base',
-    standSize: '9m²',
-    contractValue: '',
-    paymentStatus: 'pending',
+    contactName: exhibitorToEdit?.contactInfo?.name || '',
+    email: exhibitorToEdit?.contactInfo?.email || '',
+    phone: exhibitorToEdit?.contactInfo?.phone || '',
+    position: exhibitorToEdit?.contactInfo?.position || '',
+    packageType: exhibitorToEdit?.packageType || 'base',
+    standSize: exhibitorToEdit?.standSize || '9m²',
+    contractValue: exhibitorToEdit?.contractValue || '',
+    paymentStatus: exhibitorToEdit?.paymentStatus || 'pending',
     products: exhibitorToEdit?.products?.slice(0, 5).map((p: any) => ({
       name: p.name || '',
       category: p.category || '',
@@ -897,7 +897,9 @@ export default function ExhibitorCreationSimulator({ exhibitorToEdit, editMode =
                   onClick={handleNextStep}
                   disabled={
                     (currentStep === 1 && (!formData.companyName || !formData.sector || !formData.country || !formData.description)) ||
-                    (currentStep === 2 && (!formData.contactName || !formData.email || !formData.phone || !formData.position))
+                    (currentStep === 2 && (!formData.contactName || !formData.email || !formData.phone || !formData.position)) ||
+                    (currentStep === 3 && !formData.contractValue) ||
+                    (currentStep === 4 && formData.products.length === 0)
                   }
                 >
                   Suivant
