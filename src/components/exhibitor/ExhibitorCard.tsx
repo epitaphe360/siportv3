@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Star, Verified, MapPin, Users, ExternalLink, Calendar } from 'lucide-react';
+import { Star, Verified, MapPin, Users, ExternalLink, Calendar, Globe } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
@@ -7,6 +7,7 @@ import LogoWithFallback from '../ui/LogoWithFallback';
 import { LevelBadge } from '../common/QuotaWidget';
 import { getExhibitorLevelByArea } from '../../config/exhibitorQuotas';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 interface ExhibitorCardProps {
   exhibitor: {
@@ -114,6 +115,13 @@ const ExhibitorCard: React.FC<ExhibitorCardProps> = memo(({
           </div>
 
           <div className="flex items-center space-x-2 ml-4 flex-shrink-0">
+            <Link
+              to={`/minisite/${exhibitor.id}`}
+              className="inline-flex items-center px-4 py-2 border border-emerald-200 text-emerald-600 rounded-lg hover:bg-emerald-50 transition-colors text-sm font-medium"
+            >
+              <Globe className="h-4 w-4 mr-2" />
+              Mini-site
+            </Link>
             <Button
               variant="outline"
               size="sm"
@@ -226,6 +234,13 @@ const ExhibitorCard: React.FC<ExhibitorCardProps> = memo(({
             </div>
             
             <div className="flex items-center space-x-2">
+              <Link
+                to={`/minisite/${exhibitor.id}`}
+                className="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
+                title="Voir le mini-site"
+              >
+                <Globe className="h-4 w-4" />
+              </Link>
               <button
                 onClick={handleViewDetails}
                 className="p-2.5 bg-slate-50 text-slate-900 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm"

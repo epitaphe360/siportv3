@@ -8,7 +8,7 @@ import {
   Users, Building2, Handshake, Eye, EyeOff, Crown, 
   Store, Warehouse, Factory, Ship,
   Trophy, Medal, Award, Landmark,
-  LogIn, Copy, ArrowRight
+  LogIn, Copy, ArrowRight, BarChart3
 } from 'lucide-react';
 
 interface DemoAccount {
@@ -113,6 +113,17 @@ export const DemoAccountsPage: React.FC = () => {
         icon: Trophy,
         color: 'slate'
       }
+    ] as DemoAccount[],
+    
+    marketing: [
+      {
+        email: 'marketing@siports.com',
+        password: 'Test123456!',
+        name: 'Agence Marketing',
+        description: 'Accès au tableau de bord marketing',
+        icon: BarChart3,
+        color: 'pink'
+      }
     ] as DemoAccount[]
   };
 
@@ -132,6 +143,8 @@ export const DemoAccountsPage: React.FC = () => {
         navigate('/exhibitor/dashboard');
       } else if (email.includes('partner')) {
         navigate('/partner/dashboard');
+      } else if (email.includes('marketing')) {
+        navigate('/marketing/dashboard');
       }
     } catch (error: any) {
       toast.error(error.message || 'Erreur de connexion');
@@ -289,6 +302,22 @@ export const DemoAccountsPage: React.FC = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {demoAccounts.partners.map(renderAccountCard)}
+          </div>
+        </section>
+
+        {/* Marketing Section */}
+        <section className="mb-12">
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="p-3 bg-pink-100 rounded-lg">
+              <BarChart3 className="h-6 w-6 text-pink-600" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">📊 Marketing & Communication</h2>
+              <p className="text-gray-600">Gestion des médias et contenus promotionnels</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {demoAccounts.marketing.map(renderAccountCard)}
           </div>
         </section>
 
