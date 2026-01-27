@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SupabaseService } from '../../services/supabaseService';
-import { Card } from './ui/Card';
-import { Button } from './ui/Button';
+import { Card } from '../ui/Card';
+import { Button } from '../ui/Button';
 import { Building2, ExternalLink, Loader2, Eye } from 'lucide-react';
 
 interface MiniSitePreview {

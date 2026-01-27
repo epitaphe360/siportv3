@@ -1662,22 +1662,6 @@ const resources = {
         access_granted: 'Acceso Concedido',
         upgrade_to_premium: 'Actualizar a Privilegio para más beneficios'
       },
-      forms: {
-        required: 'Requerido',
-        optional: 'Opcional',
-        submit: 'Enviar',
-        cancel: 'Cancelar',
-        save: 'Guardar',
-        reset: 'Reiniciar',
-        validation: {
-          required_field: 'Este campo es requerido',
-          invalid_email: 'Correo electrónico inválido',
-          invalid_phone: 'Número de teléfono inválido',
-          min_length: 'Mínimo {{min}} caracteres',
-          max_length: 'Máximo {{max}} caracteres',
-          passwords_not_match: 'Las contraseñas no coinciden'
-        }
-      },
       profile: {
         not_found: 'Perfil no encontrado',
         edit_profile: 'Editar Perfil',
@@ -2292,22 +2276,6 @@ const resources = {
         valid_dates: 'صالح من 1 إلى 3 أبريل 2026',
         access_granted: 'تم منح الدخول',
         upgrade_to_premium: 'الترقية إلى بريميوم للمزيد من المزايا'
-      },
-      forms: {
-        required: 'مطلوب',
-        optional: 'اختياري',
-        submit: 'إرسال',
-        cancel: 'إلغاء',
-        save: 'حفظ',
-        reset: 'إعادة تعيين',
-        validation: {
-          required_field: 'هذا الحقل مطلوب',
-          invalid_email: 'البريد الإلكتروني غير صحيح',
-          invalid_phone: 'رقم الهاتف غير صحيح',
-          min_length: 'الحد الأدنى {{min}} أحرف',
-          max_length: 'الحد الأقصى {{max}} أحرف',
-          passwords_not_match: 'كلمات المرور غير متطابقة'
-        }
       },
       profile: {
         not_found: 'الملف الشخصي غير موجود',
