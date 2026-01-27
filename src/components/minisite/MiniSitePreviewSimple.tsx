@@ -268,6 +268,81 @@ export default function MiniSitePreviewSimple() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════ */}
+      {/* BARRE DE NAVIGATION STICKY */}
+      {/* ═══════════════════════════════════════════════════════════════════ */}
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo/Brand */}
+            <div className="flex-shrink-0">
+              <button
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              >
+                <SafeImage 
+                  src={exhibitorData?.logo_url}
+                  alt={exhibitorData?.company_name}
+                  className="h-8 w-8 rounded object-contain"
+                />
+                <span className="font-semibold text-gray-900 text-sm truncate">
+                  {exhibitorData?.company_name}
+                </span>
+              </button>
+            </div>
+
+            {/* Navigation Links */}
+            <div className="hidden md:flex items-center gap-8">
+              <button
+                onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
+                className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                📦 Produits
+              </button>
+              <button
+                onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+                className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                ℹ️ À propos
+              </button>
+              <button
+                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                💬 Contact
+              </button>
+              <button
+                onClick={() => navigate(ROUTES.EXHIBITORS)}
+                className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                🌐 Mini-site
+              </button>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  toast.success('Lien copié !');
+                }}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                title="Partager"
+              >
+                <Share2 className="h-5 w-5 text-gray-600" />
+              </button>
+              <button
+                onClick={() => navigate(ROUTES.EXHIBITORS)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors md:hidden"
+                title="Retour"
+              >
+                <ArrowLeft className="h-5 w-5 text-gray-600" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* ═══════════════════════════════════════════════════════════════════ */}
       {/* SECTION HERO */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
