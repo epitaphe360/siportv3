@@ -46,26 +46,31 @@ interface NewPartnerForm {
   employees: string;
 }
 
-export default function PartnerCreationForm() {
+interface PartnerCreationFormProps {
+  partnerToEdit?: any;
+  editMode?: boolean;
+}
+
+export default function PartnerCreationForm({ partnerToEdit, editMode = false }: PartnerCreationFormProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useAuthStore();
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState<NewPartnerForm>({
-    organizationName: '',
-    partnerType: 'silver',
-    sector: '',
-    country: '',
-    website: '',
-    description: '',
+    organizationName: partnerToEdit?.name || '',
+    partnerType: partnerToEdit?.partner_tier || 'silver',
+    sector: partnerToEdit?.sector || '',
+    country: partnerToEdit?.country || '',
+    website: partnerToEdit?.website || '',
+    description: partnerToEdit?.description || '',
     contactName: '',
     email: '',
     phone: '',
     position: '',
-    sponsorshipLevel: '',
+    sponsorshipLevel: partnerToEdit?.partner_tier || '',
     contractValue: '',
-    contributions: [],
+    contributions: partnerToEdit?.contributions || [],
     establishedYear: new Date().getFullYear(),
     employees: ''
   });
@@ -213,40 +218,45 @@ export default function PartnerCreationForm() {
         featured: false
       };
 
-      await SupabaseService.createPartner(partnerData);
+      if (editMode && partnerToEdit) {
+        // Mode édition - mise à jour uniquement
+        await SupabaseService.updatePartner(partnerToEdit.id, partnerData);
+        toast.success(`Partenaire modifié : ${formData.organizationName}`);
+        navigate(ROUTES.ADMIN_PARTNERS_MANAGE);
+      } else {
+        // Mode création
+        await SupabaseService.createPartner(partnerData);
+        toast.success(`Partenaire créé : ${formData.organizationName} (${formData.contactName})`);
 
-      toast.success(`Partenaire créé : ${formData.organizationName} (${formData.contactName})`);
-
-      // Reset form et redirection
-      setFormData({
-        organizationName: '',
-        partnerType: 'silver',
-        sector: '',
-        country: '',
-        website: '',
-        description: '',
-        contactName: '',
-        email: '',
-        phone: '',
-        position: '',
-        sponsorshipLevel: '',
-        contractValue: '',
-        contributions: [],
-        establishedYear: new Date().getFullYear(),
+        // Reset form et redirection
+        setFormData({
+          organizationName: '',
+          partnerType: 'silver',
+          sector: '',
+          country: '',
+          website: '',
+          description: '',
+          contactName: '',
+          email: '',
+          phone: '',
+          position: '',
+          sponsorshipLevel: '',
+          contractValue: '',
+          contributions: [],
+          establishedYear: new Date().getFullYear(),
         employees: ''
       });
       
       setCurrentStep(1);
-      setIsSubmitting(false);
+      navigate(ROUTES.PARTNERS);
+    }
       
-      // Rediriger vers la liste des partenaires
-  navigate(ROUTES.PARTNERS);
+    setIsSubmitting(false);
       
-    } catch (error) {
-      console.error('Erreur création partenaire:', error);
-      setIsSubmitting(false);
-  // Afficher erreur via toast et console
-  toast.error(`Erreur création partenaire : ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
+  } catch (error) {
+    console.error('Erreur partenaire:', error);
+    setIsSubmitting(false);
+    toast.error(`Erreur ${editMode ? 'modification' : 'création'} : ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
   console.error('Erreur création partenaire:', error);
     }
   };

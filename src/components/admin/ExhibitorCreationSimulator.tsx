@@ -53,17 +53,22 @@ interface NewExhibitorForm {
   }>;
 }
 
-export default function ExhibitorCreationSimulator() {
+interface ExhibitorCreationSimulatorProps {
+  exhibitorToEdit?: any;
+  editMode?: boolean;
+}
+
+export default function ExhibitorCreationSimulator({ exhibitorToEdit, editMode = false }: ExhibitorCreationSimulatorProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useAuthStore();
   const { fetchExhibitors } = useExhibitorStore();
   const [formData, setFormData] = useState<NewExhibitorForm>({
-    companyName: '',
-    sector: '',
-    country: '',
-    website: '',
-    description: '',
+    companyName: exhibitorToEdit?.companyName || '',
+    sector: exhibitorToEdit?.sector || '',
+    country: exhibitorToEdit?.contactInfo?.country || '',
+    website: exhibitorToEdit?.website || '',
+    description: exhibitorToEdit?.description || '',
     contactName: '',
     email: '',
     phone: '',
@@ -72,7 +77,11 @@ export default function ExhibitorCreationSimulator() {
     standSize: '9m²',
     contractValue: '',
     paymentStatus: 'pending',
-    products: []
+    products: exhibitorToEdit?.products?.slice(0, 5).map((p: any) => ({
+      name: p.name || '',
+      category: p.category || '',
+      description: p.description || ''
+    })) || []
   });
 
   const steps = [
@@ -145,6 +154,26 @@ export default function ExhibitorCreationSimulator() {
         throw new Error('Utilisateur non connecté');
       }
 
+      // Mode édition - mise à jour simplifiée
+      if (editMode && exhibitorToEdit) {
+        await SupabaseService.updateExhibitor(exhibitorToEdit.id, {
+          companyName: formData.companyName,
+          sector: formData.sector,
+          description: formData.description,
+          website: formData.website,
+          contactInfo: {
+            ...exhibitorToEdit.contactInfo,
+            country: formData.country
+          }
+        });
+        
+        toast.success(`Exposant modifié : ${formData.companyName}`);
+        setIsSubmitting(false);
+        window.location.href = ROUTES.ADMIN_EXHIBITORS;
+        return;
+      }
+
+      // Mode création - code existant
       // Création de l'exposant dans Supabase
       // 1. Créer d'abord l'utilisateur pour l'exposant
       const userData = {

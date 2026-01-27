@@ -2926,6 +2926,69 @@ export class SupabaseService {
     } as Partner;
   }
 
+  static async updatePartner(partnerId: string, partnerData: Partial<Partner>): Promise<void> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré.');
+    }
+
+    const safeSupabase = supabase!;
+    
+    const dbData: any = {};
+    if (partnerData.organizationName) dbData.company_name = partnerData.organizationName;
+    if (partnerData.partnerType) dbData.partner_type = partnerData.partnerType;
+    if (partnerData.sector) dbData.sector = partnerData.sector;
+    if (partnerData.description) dbData.description = partnerData.description;
+    if (partnerData.website) dbData.website = partnerData.website;
+    if (partnerData.logo) dbData.logo_url = partnerData.logo;
+    if (partnerData.verified !== undefined) dbData.verified = partnerData.verified;
+    if (partnerData.featured !== undefined) dbData.featured = partnerData.featured;
+    if (partnerData.sponsorshipLevel) dbData.partnership_level = partnerData.sponsorshipLevel;
+
+    const { error } = await (safeSupabase as any)
+      .from('partners')
+      .update(dbData)
+      .eq('id', partnerId);
+
+    if (error) {
+      console.error('Supabase updatePartner error:', error);
+      throw new Error(error.message || JSON.stringify(error));
+    }
+  }
+
+  static async deletePartner(partnerId: string): Promise<void> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré.');
+    }
+
+    const safeSupabase = supabase!;
+    const { error } = await (safeSupabase as any)
+      .from('partners')
+      .delete()
+      .eq('id', partnerId);
+
+    if (error) {
+      console.error('Supabase deletePartner error:', error);
+      throw new Error(error.message || JSON.stringify(error));
+    }
+  }
+
+  static async deleteExhibitor(exhibitorId: string): Promise<void> {
+    if (!this.checkSupabaseConnection()) {
+      throw new Error('Supabase non configuré.');
+    }
+
+    const safeSupabase = supabase!;
+    const { error } = await (safeSupabase as any)
+      .from('exhibitors')
+      .delete()
+      .eq('id', exhibitorId);
+
+    if (error) {
+      console.error('Supabase deleteExhibitor error:', error);
+      throw new Error(error.message || JSON.stringify(error));
+    }
+  }
+
   // ==================== PRODUCTS ====================
 
   static async createProduct(productData: Partial<Product> & { exhibitorId?: string }): Promise<Product> {

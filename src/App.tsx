@@ -81,7 +81,9 @@ const AddDemoProgramPage = lazyRetry(() => import('./pages/admin/AddDemoProgramP
 const ContentManagementPage = lazyRetry(() => import('./pages/admin/ContentManagementPage'));
 const NewsManagementPage = lazyRetry(() => import('./pages/admin/NewsManagementPage'));
 const ExhibitorManagementPage = lazyRetry(() => import('./pages/admin/ExhibitorManagementPage'));
+const ExhibitorCreationPage = lazyRetry(() => import('./pages/admin/ExhibitorCreationPage'));
 const PartnerManagementPage = lazyRetry(() => import('./pages/admin/PartnerManagementPage'));
+const PartnerCreationPage = lazyRetry(() => import('./pages/admin/PartnerCreationPage'));
 const CreateUserPage = lazyRetry(() => import('./pages/admin/CreateUserPage'));
 const AdminPartnersPage = lazyRetry(() => import('./pages/admin/PartnersPage'));
 const MarketingDashboard = lazyRetry(() => import('./pages/MarketingDashboard'));
@@ -272,8 +274,8 @@ const App = () => {
             <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
 
             {/* Admin routes - require admin role */}
-            <Route path={ROUTES.ADMIN_CREATE_EXHIBITOR} element={<ProtectedRoute requiredRole="admin"><ExhibitorCreationSimulator /></ProtectedRoute>} />
-            <Route path={ROUTES.ADMIN_CREATE_PARTNER} element={<ProtectedRoute requiredRole="admin"><PartnerCreationForm /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_CREATE_EXHIBITOR} element={<ProtectedRoute requiredRole="admin"><ExhibitorCreationPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_CREATE_PARTNER} element={<ProtectedRoute requiredRole="admin"><PartnerCreationPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_CREATE_NEWS} element={<ProtectedRoute requiredRole="admin"><NewsArticleCreationForm /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_CREATE_EVENT} element={<ProtectedRoute requiredRole="admin"><EventCreationPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_EVENTS} element={<ProtectedRoute requiredRole="admin"><EventManagementPage /></ProtectedRoute>} />
