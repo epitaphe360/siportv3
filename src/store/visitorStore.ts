@@ -233,13 +233,52 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
 
         if (user) {
           // Récupérer le profil complet depuis la table users
-          const { data: userProfile, error: profileError } = await supabaseClient
+          let { data: userProfile, error: profileError } = await supabaseClient
             .from('users')
             .select('*')
             .eq('id', user.id)
             .maybeSingle();
 
-          if (profileError) throw profileError;
+          if (profileError) {
+            console.error('Erreur lors de la récupération du profil:', profileError);
+            throw profileError;
+          }
+
+          // Si aucun profil n'existe, créer un profil par défaut
+          if (!userProfile) {
+            console.warn('Aucun profil trouvé pour l\'utilisateur, création d\'un profil par défaut');
+            const { data: newProfile, error: createError } = await supabaseClient
+              .from('users')
+              .insert([{
+                id: user.id,
+                email: user.email,
+                name: user.user_metadata?.name || user.email?.split('@')[0] || 'Visiteur',
+                type: 'visitor',
+                status: 'active',
+                visitor_level: 'free',
+                profile: {
+                  firstName: user.user_metadata?.firstName || '',
+                  lastName: user.user_metadata?.lastName || '',
+                  country: '',
+                  phone: '',
+                  sectorsOfInterest: [],
+                  visitObjectives: [],
+                  competencies: [],
+                  thematicInterests: [],
+                  preferredLanguage: 'fr'
+                }
+              }])
+              .select()
+              .single();
+
+            if (createError) {
+              console.error('Erreur lors de la création du profil par défaut:', createError);
+              throw createError;
+            }
+
+            // Utiliser le nouveau profil créé
+            userProfile = newProfile;
+          }
 
           // Récupérer les favoris depuis user_favorites (structure correcte)
           const { data: favorites, error: favError } = await supabaseClient
