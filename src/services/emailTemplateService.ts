@@ -382,19 +382,6 @@ L'équipe SIPORT 2026
        return false;
     }
   }
-
-      if (!data?.success) {
-        logger.error('Email sending failed', new Error(data?.error || 'Unknown error'), { to });
-        return false;
-      }
-
-      logger.info('Email sent successfully', { to, subject: template.subject });
-      return true;
-    } catch (error) {
-      logger.error('Failed to send email', error as Error, { to });
-      return false;
-    }
-  }
 }
 
 export const emailTemplateService = new EmailTemplateService();
