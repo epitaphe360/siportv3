@@ -239,8 +239,8 @@ export default function AdminDashboard() {
               {/* Background Pattern */}
               <MoroccanPattern className="opacity-15" color="white" scale={0.8} />
               
-              <div className="relative flex items-center justify-between">
-                <div className="flex items-center space-x-4">
+              <div className="relative flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
+                <div className="flex items-center space-x-4 w-full md:w-auto">
                   <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
                     <Shield className="h-10 w-10 text-siports-gold" />
                   </div>

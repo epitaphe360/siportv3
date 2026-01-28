@@ -105,8 +105,9 @@ export default function MarketingDashboard() {
       setLoading(true);
       const { data, error } = await supabase
         .from('media_contents')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('id, type, title, description, thumbnail_url, status, created_at, category, views_count')
+        .order('created_at', { ascending: false })
+        .range(0, 49);
 
       if (error) throw error;
       setMediaItems(data || []);
@@ -122,8 +123,9 @@ export default function MarketingDashboard() {
     try {
       const { data, error } = await supabase
         .from('news_articles')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('id, title, content, excerpt, author, category, tags, image_url, published_at, created_at, published')
+        .order('created_at', { ascending: false })
+        .range(0, 49);
 
       if (error) throw error;
       

@@ -54,9 +54,10 @@ export const LiveEventManager: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('media_contents')
-        .select('*')
+        .select('id, title, description, content_url:video_url, thumbnail_url, scheduled_date, is_live, viewers_count, host_name, guest_name, stream_key, rtmp_url, created_at')
         .eq('type', 'live_studio')
-        .order('scheduled_date', { ascending: false });
+        .order('scheduled_date', { ascending: false })
+        .range(0, 49);
 
       if (error) throw error;
       setLiveEvents(data || []);

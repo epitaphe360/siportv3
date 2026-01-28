@@ -90,7 +90,7 @@ class AnalyticsService {
       // Récupérer tous les événements de la période
       const { data: events, error } = await supabase
         .from('analytics')
-        .select('*')
+        .select('id, user_id, event_type, session_id, created_at')
         .gte('created_at', startDate)
         .lte('created_at', endDate);
 

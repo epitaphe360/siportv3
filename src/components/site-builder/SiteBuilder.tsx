@@ -56,7 +56,7 @@ export const SiteBuilder: React.FC<SiteBuilderProps> = ({ siteId, templateId, on
     try {
       const { data, error } = await supabase
         .from('mini_sites')
-        .select('*')
+        .select('id, title, slug, sections, seo, published, createdAt:created_at, updatedAt:updated_at, exhibitorId:exhibitor_id, templateId:template_id, created_at, updated_at, exhibitor_id, template_id')
         .eq('id', id)
         .maybeSingle();
 
@@ -75,7 +75,7 @@ export const SiteBuilder: React.FC<SiteBuilderProps> = ({ siteId, templateId, on
     try {
       const { data, error } = await supabase
         .from('site_templates')
-        .select('*')
+        .select('id, name, description, category, thumbnail, sections, premium, popularity')
         .eq('id', id)
         .maybeSingle();
 

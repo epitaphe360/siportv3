@@ -44,7 +44,7 @@ export const PodcastEpisodeDetailPage: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('media_contents')
-        .select('*')
+        .select('id, title, description, content_url:audio_url, thumbnail_url, duration, category, host_name, host_avatar, guest_name, published_date:published_at, views_count, episode_number, season_number, created_at')
         .eq('id', id)
         .eq('type', 'podcast')
         .maybeSingle();

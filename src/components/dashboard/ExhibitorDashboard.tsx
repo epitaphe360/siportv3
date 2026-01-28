@@ -515,8 +515,8 @@ export default function ExhibitorDashboard() {
         <MoroccanPattern className="opacity-15" color="white" scale={0.8} />
         
         <div className="relative max-w-7xl mx-auto px-6 py-8">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center space-x-4 w-full md:w-auto">
               <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
                 <Building2 className="h-10 w-10 text-siports-gold" />
               </div>

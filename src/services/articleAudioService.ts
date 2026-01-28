@@ -26,7 +26,7 @@ export class ArticleAudioService {
 
     const { data, error } = await supabase
       .from('articles_audio')
-      .select('*')
+      .select('id, article_id, audio_url, duration, language, voice_type, file_size, status, error_message, created_at, updated_at')
       .eq('article_id', articleId)
       .eq('language', language)
       .maybeSingle();

@@ -650,6 +650,18 @@ export default function ExhibitorCreationSimulator({ exhibitorToEdit, editMode =
                 {packages.map((pkg) => (
                   <div
                     key={pkg.type}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        setFormData({
+                          ...formData,
+                          packageType: pkg.type as 'base' | 'standard' | 'premium' | 'elite',
+                          standSize: pkg.standSize,
+                          contractValue: pkg.price
+                        });
+                      }
+                    }}
                     className={`p-6 border-2 rounded-lg cursor-pointer transition-all ${
                       formData.packageType === pkg.type
                         ? 'border-blue-500 bg-blue-50'

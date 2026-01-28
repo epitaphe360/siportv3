@@ -45,7 +45,7 @@ export default function PaymentInstructionsPage() {
       if (requestId) {
         const { data: request } = await supabase
           .from('payment_requests')
-          .select('*')
+          .select('id, requested_level, amount, currency, status, created_at, transfer_reference, transfer_date, validation_notes')
           .eq('id', requestId)
           .eq('user_id', user?.id)
           .maybeSingle();

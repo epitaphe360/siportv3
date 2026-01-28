@@ -146,8 +146,9 @@ export default function PaymentValidationPage() {
       // Récupérer d'abord les payment_requests
       let query = supabase
         .from('payment_requests')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('id, user_id, amount, currency, status, payment_method, reference, description, metadata, transfer_reference, transfer_date, transfer_proof_url, validated_by, validated_at, validation_notes, created_at, updated_at')
+        .order('created_at', { ascending: false })
+        .range(0, 49);
 
       // Filtrer par statut
       if (filter !== 'all') {

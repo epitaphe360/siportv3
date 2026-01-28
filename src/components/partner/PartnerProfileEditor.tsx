@@ -53,7 +53,7 @@ export default function PartnerProfileEditor({ partnerId, onSave }: PartnerProfi
       setIsLoading(true);
       const { data, error } = await supabase
         .from('partner_profiles')
-        .select('*')
+        .select('company_name, description, sector, logo_url, website, contact_info, services, founded_year, employee_count')
         .eq('user_id', partnerId)
         .single();
 

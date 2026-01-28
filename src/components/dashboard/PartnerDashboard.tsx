@@ -333,7 +333,7 @@ export default function PartnerDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-20 pb-20">
         {/* Navigation Tabs */}
-        <div className="bg-white/70 backdrop-blur-2xl p-2 rounded-[2.5rem] shadow-2xl border border-white/50 mb-10 inline-flex flex-wrap gap-2">
+        <div className="bg-white/70 backdrop-blur-2xl p-2 rounded-[2.5rem] shadow-2xl border border-white/50 mb-10 flex flex-col md:inline-flex md:flex-row flex-wrap gap-2 w-full md:w-auto">
           {[
             { id: 'overview', label: 'Vue d\'ensemble', icon: LayoutDashboard },
             { id: 'profile', label: 'Mon Stand & Profil', icon: Edit },
@@ -343,7 +343,7 @@ export default function PartnerDashboard() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-3 px-8 py-4 rounded-[2rem] font-bold transition-all duration-300 ${
+              className={`flex items-center justify-center md:justify-start gap-3 px-8 py-4 rounded-[2rem] font-bold transition-all duration-300 w-full md:w-auto ${
                 activeTab === tab.id
                   ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200'
                   : 'text-slate-600 hover:bg-slate-100'

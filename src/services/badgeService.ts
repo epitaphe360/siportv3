@@ -42,7 +42,7 @@ export async function getUserBadge(userId: string): Promise<UserBadge | null> {
 
     const { data, error } = await supabase
       .from('user_badges')
-      .select('*')
+      .select('id, user_id, badge_code, user_type, user_level, full_name, company_name, position, email, phone, avatar_url, stand_number, access_level, valid_from, valid_until, status, qr_data, scan_count, last_scanned_at, created_at, updated_at')
       .eq('user_id', userId)
       .maybeSingle();
 
@@ -109,9 +109,9 @@ export async function generateBadgeFromUser(userId: string): Promise<UserBadge> 
     const { data: user, error: userError } = await supabase
       .from('users')
       .select(`
-        *,
-        exhibitors:exhibitors!exhibitors_user_id_fkey(*),
-        partners:partners!partners_user_id_fkey(*)
+        id, type, visitor_level, name, email, profile,
+        exhibitors:exhibitors!exhibitors_user_id_fkey(companyName, standNumber),
+        partners:partners!partners_user_id_fkey(organizationName)
       `)
       .eq('id', userId)
       .single();
@@ -162,7 +162,7 @@ export async function verifyBadgeByCode(badgeCode: string): Promise<UserBadge | 
   try {
     const { data, error } = await supabase
       .from('user_badges')
-      .select('*')
+      .select('id, user_id, badge_code, user_type, user_level, full_name, company_name, position, email, phone, avatar_url, stand_number, access_level, valid_from, valid_until, status, qr_data, scan_count, last_scanned_at, created_at, updated_at')
       .eq('badge_code', badgeCode)
       .single();
 
@@ -239,7 +239,7 @@ export async function renewBadge(badgeId: string, daysToAdd: number = 3): Promis
         updated_at: new Date().toISOString(),
       })
       .eq('id', badgeId)
-      .select()
+      .select('id, user_id, badge_code, user_type, user_level, full_name, company_name, position, email, phone, avatar_url, stand_number, access_level, valid_from, valid_until, status, qr_data, scan_count, last_scanned_at, created_at, updated_at')
       .single();
 
     if (error) throw error;

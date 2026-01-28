@@ -85,7 +85,7 @@ class AuditService {
     try {
       let query = supabase
         .from('audit_logs')
-        .select('*');
+        .select('id, user_id, actor_id, action, entity_type, entity_id, old_values, new_values, changes, ip_address, user_agent, request_id, session_id, severity, metadata, created_at');
 
       if (filters?.user_id) {
         query = query.eq('user_id', filters.user_id);
@@ -149,7 +149,7 @@ class AuditService {
     try {
       const { data, error } = await supabase
         .from('audit_logs')
-        .select('*')
+        .select('id, user_id, actor_id, action, entity_type, entity_id, old_values, new_values, changes, ip_address, user_agent, request_id, session_id, severity, metadata, created_at')
         .eq('id', logId)
         .single();
 

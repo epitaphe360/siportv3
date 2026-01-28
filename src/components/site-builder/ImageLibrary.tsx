@@ -34,8 +34,9 @@ export const ImageLibrary: React.FC<ImageLibraryProps> = ({ onSelect, onClose })
     try {
       const { data, error } = await supabase
         .from('site_images')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('id, url, name, size, createdAt:created_at')
+        .order('created_at', { ascending: false })
+        .range(0, 49);
 
       if (error) throw error;
       setImages(data || []);

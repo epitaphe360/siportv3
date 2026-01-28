@@ -43,7 +43,7 @@ export const WebinarDetailPage: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('media_contents')
-        .select('*')
+        .select('id, title, description, video_url, thumbnail_url, duration, category, instructor_name, instructor_title, instructor_avatar, scheduled_date, attendees_count, views_count, created_at')
         .eq('id', id)
         .eq('type', 'webinar')
         .maybeSingle();

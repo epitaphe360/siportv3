@@ -42,7 +42,7 @@ export const CapsuleDetailPage: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('media_contents')
-        .select('*')
+        .select('id, title, description, content_url:video_url, thumbnail_url, duration, category, speaker_name, speaker_title, published_date:published_at, views_count, tags, created_at')
         .eq('id', id)
         .eq('type', 'capsule_inside')
         .maybeSingle();

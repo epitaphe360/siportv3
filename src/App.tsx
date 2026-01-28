@@ -144,6 +144,7 @@ const PartnerMediaLibraryPage = lazyRetry(() => import('./pages/partners/Partner
 
 import { ChatBot } from './components/chatbot/ChatBot';
 import { ChatBotToggle } from './components/chatbot/ChatBotToggle';
+import { WhatsAppFloatingWidget } from './components/whatsapp/WhatsAppFloatingWidget';
 import { useLanguageStore } from './store/languageStore';
 import { ROUTES } from './lib/routes';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -383,9 +384,9 @@ const App = () => {
             <Route path="*" element={<div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
               <h1 className="text-4xl font-bold text-gray-900 mb-4">404</h1>
               <p className="text-xl text-gray-600 mb-8">Page non trouvée</p>
-              <a href={ROUTES.HOME} className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+              <Link to={ROUTES.HOME} className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700" aria-label="Retour à l'accueil">
                 Retour à l'accueil
-              </a>
+              </Link>
             </div>} />
           </Routes>
         </Suspense>
@@ -405,6 +406,14 @@ const App = () => {
           hasUnreadMessages={false}
         />
       )}
+
+      {/* WhatsApp Floating Widget */}
+      <WhatsAppFloatingWidget 
+        position="bottom-right"
+        offsetBottom={100}
+        offsetSide={24}
+        defaultVisible={true}
+      />
 
       {/* Dev Tools - Subscription Switcher (Development Only) */}
       {import.meta.env.DEV && <DevSubscriptionSwitcher />}

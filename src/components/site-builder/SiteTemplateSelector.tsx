@@ -40,8 +40,9 @@ export const SiteTemplateSelector: React.FC<SiteTemplateSelectorProps> = ({ onSe
     try {
       const { data, error } = await supabase
         .from('site_templates')
-        .select('*')
-        .order('popularity', { ascending: false });
+        .select('id, name, description, category, thumbnail, sections, premium, popularity')
+        .order('popularity', { ascending: false })
+        .range(0, 49);
 
       if (error) throw error;
       setTemplates(data || []);

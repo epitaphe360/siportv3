@@ -289,7 +289,7 @@ export default memo(function VisitorDashboard() {
               {/* Background Pattern */}
               <MoroccanPattern className="opacity-15" color="white" scale={0.8} />
 
-              <div className="relative flex items-center justify-between flex-wrap gap-4">
+              <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex items-center space-x-4">
                   <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
                     <Sparkles className="h-10 w-10 text-siports-gold" />
@@ -303,12 +303,14 @@ export default memo(function VisitorDashboard() {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
                   <div className="hidden md:flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg">
                     <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                     <span className="text-white text-sm font-medium">Connecté</span>
                   </div>
-                  <LevelBadge level={userLevel} type="visitor" size="lg" />
+                  <div className="flex justify-end">
+                    <LevelBadge level={userLevel} type="visitor" size="lg" />
+                  </div>
                   {/* Hidden element for E2E testing - Badge VIP */}
                   {(userLevel === 'premium' || userLevel === 'vip') && (
                     <span className="sr-only" data-testid="vip-badge">VIP Premium Badge Active</span>
@@ -668,10 +670,10 @@ export default memo(function VisitorDashboard() {
                 </div>
 
                 {/* Sélecteur de Tab Premium */}
-                <div className="flex bg-white/5 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl">
+                <div className="flex flex-col md:flex-row bg-white/5 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl w-full md:w-auto">
                   <button
                     onClick={() => setActiveTab('schedule')}
-                    className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-3 ${
+                    className={`w-full md:w-auto justify-center px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-3 ${
                       activeTab === 'schedule' 
                         ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' 
                         : 'text-white/40 hover:text-white/70'
@@ -682,7 +684,7 @@ export default memo(function VisitorDashboard() {
                   </button>
                   <button
                     onClick={() => setActiveTab('appointments')}
-                    className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-3 ${
+                    className={`w-full md:w-auto justify-center px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-3 ${
                       activeTab === 'appointments' 
                         ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' 
                         : 'text-white/40 hover:text-white/70'

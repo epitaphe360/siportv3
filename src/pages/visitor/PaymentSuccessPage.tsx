@@ -29,7 +29,7 @@ export default function PaymentSuccessPage() {
     if (!user) return;
     const { data } = await supabase
       .from('users')
-      .select('*')
+      .select('status, visitor_level')
       .eq('id', user.id)
       .maybeSingle();
     
@@ -91,11 +91,11 @@ export default function PaymentSuccessPage() {
       try {
         const { data: payments } = await supabase
           .from('payment_requests')
-          .select('*')
+          .select('id')
           .eq('user_id', user.id)
           .eq('status', 'pending')
           .order('created_at', { ascending: false })
-          .limit(1);
+          .range(0, 0);
 
         if (payments && payments.length > 0) {
           await upgradeUserToVIP(user.id, payments[0].id);

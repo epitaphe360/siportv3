@@ -131,7 +131,7 @@ export class OAuthService {
       // Get user profile from database
       const { data: userProfile, error: profileError } = await supabase
         .from('users')
-        .select('*')
+        .select('id, email, name, type, status, profile, visitor_level, created_at, updated_at')
         .eq('id', session.user.id)
         .single();
 
@@ -239,7 +239,7 @@ export class OAuthService {
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }])
-        .select()
+        .select('id, created_at, updated_at')
         .single();
 
       if (insertError) {

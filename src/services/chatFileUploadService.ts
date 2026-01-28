@@ -130,7 +130,7 @@ class ChatFileUploadService {
           file_type: uploadedFile.type,
           thumbnail_url: uploadedFile.thumbnail_url,
         }])
-        .select()
+        .select('id, message_id, file_url, file_name, file_size, file_type, thumbnail_url, created_at')
         .single();
 
       if (error) throw error;
@@ -148,7 +148,7 @@ class ChatFileUploadService {
     try {
       const { data, error } = await supabase
         .from('message_attachments')
-        .select('*')
+        .select('id, message_id, file_url, file_name, file_size, file_type, thumbnail_url, created_at')
         .eq('message_id', messageId);
 
       if (error) throw error;

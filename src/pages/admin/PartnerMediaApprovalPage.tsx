@@ -57,8 +57,9 @@ export default function PartnerMediaApprovalPage() {
     try {
       const { data, error } = await supabase
         .from('pending_partner_media')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('id, title, description, type, category, thumbnail_url, video_url, duration, created_at, creator_name, creator_email, partner_company, created_by_id')
+        .order('created_at', { ascending: false })
+        .range(0, 49);
 
       if (error) throw error;
       setPendingMedia(data || []);

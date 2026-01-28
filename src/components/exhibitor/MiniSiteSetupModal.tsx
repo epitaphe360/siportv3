@@ -75,7 +75,7 @@ export const MiniSiteSetupModal: React.FC<MiniSiteSetupModalProps> = ({
       // Get current user data
       const { data: userData, error: userError } = await supabase
         .from('users')
-        .select('*')
+        .select('company_name, description')
         .eq('id', userId)
         .single();
 

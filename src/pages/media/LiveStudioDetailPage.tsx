@@ -44,7 +44,7 @@ export const LiveStudioDetailPage: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('media_contents')
-        .select('*')
+        .select('id, title, description, content_url:video_url, thumbnail_url, duration, category, host_name, guest_name, guest_title, scheduled_date, is_live, viewers_count, recording_url, created_at')
         .eq('id', id)
         .eq('type', 'live_studio')
         .maybeSingle();

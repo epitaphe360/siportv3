@@ -49,9 +49,10 @@ export const NetworkingRooms: React.FC<NetworkingRoomsProps> = ({ eventId }) => 
     try {
       const { data, error } = await supabase
         .from('networking_rooms')
-        .select('*')
+        .select('id, name, sector, description, capacity, participants, moderator, status, tags, event_id')
         .eq('event_id', eventId)
-        .order('sector', { ascending: true });
+        .order('sector', { ascending: true })
+        .range(0, 49);
 
       if (error) throw error;
       setRooms(data || []);

@@ -258,11 +258,12 @@ export class SupabaseService {
     try {
       // On récupère d'abord l'utilisateur - utiliser maybeSingle() au lieu de single()
       // pour éviter l'erreur "Cannot coerce" quand 0 ou plusieurs résultats
+      // Optimized: Select only necessary columns instead of *
       const { data: usersData, error: userError } = await safeSupabase
         .from('users')
-        .select('*')
+        .select('id, email, name, type, profile, status, created_at')
         .eq('email', email)
-        .limit(1);
+        .range(0, 0);
 
       if (userError) {
         console.error('❌ Erreur DB lors de la récupération utilisateur:', userError.message);
@@ -281,9 +282,10 @@ export class SupabaseService {
       if (userData.type === 'partner') {
         try {
           // On essaie de récupérer par user_id (nouvelle structure)
+          // Optimized: Select only necessary columns
           const { data: projectsData, error: projectsError } = await safeSupabase
             .from('partner_projects')
-            .select('*')
+            .select('id, user_id, partner_id, name, description, sectors, status, created_at')
             .eq('user_id', userData.id);
           
           if (!projectsError && projectsData) {
@@ -297,9 +299,10 @@ export class SupabaseService {
               .single();
             
             if (partnerData) {
+              // Optimized: Select only necessary columns
               const { data: fallbackProjects } = await safeSupabase
                 .from('partner_projects')
-                .select('*')
+                .select('id, user_id, partner_id, name, description, sectors, status, created_at')
                 .eq('partner_id', partnerData.id);
               
               if (fallbackProjects) {
@@ -2242,7 +2245,8 @@ export class SupabaseService {
     
     const safeSupabase = supabase!;
     try {
-      let query = safeSupabase.from('users').select('*');
+      // Optimized: Select only necessary columns instead of *
+      let query = safeSupabase.from('users').select('id, email, name, type, profile, status, created_at');
 
       // Par défaut, afficher uniquement les exposants, visiteurs et partenaires (pas les admins)
       // Si aucun userType et aucun secteur spécifiés, afficher tous les types professionnels

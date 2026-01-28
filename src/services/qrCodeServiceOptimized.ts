@@ -77,7 +77,7 @@ class QRCodeServiceOptimized {
       // Récupérer nonce du cache
       const { data, error } = await supabase
         .from(this.CACHE_TABLE)
-        .select('*')
+        .select('nonce, user_id, type, metadata, expires_at, used, created_at')
         .eq('nonce', nonce)
         .single();
 

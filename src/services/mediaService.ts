@@ -18,16 +18,19 @@ import type {
 } from '../types/media';
 
 export class MediaService {
-  
+  // Optimized columns for media queries
+  private static readonly MEDIA_COLUMNS = 'id, title, description, type, status, category, published_at, thumbnail_url, duration, sponsor_partner_id, tags, created_at, views_count, url, video_url, audio_url';
+
   /**
    * Récupérer tous les médias avec filtres
    */
   static async getMedia(filters?: MediaFilters): Promise<MediaContent[]> {
     try {
       // Step 1: Fetch media_contents without nested select
+      // Optimized: Select only necessary columns instead of *
       let query = supabase
         .from('media_contents')
-        .select('*');
+        .select(this.MEDIA_COLUMNS);
 
       // Filtres
       if (filters?.type) {
@@ -121,7 +124,7 @@ export class MediaService {
       // Step 1: Fetch media content
       const { data: mediaData, error } = await supabase
         .from('media_contents')
-        .select('*')
+        .select(this.MEDIA_COLUMNS)
         .eq('id', id)
         .single();
 
@@ -164,7 +167,7 @@ export class MediaService {
           status: mediaData.status || 'draft',
           published_at: mediaData.published_at || (mediaData.status === 'published' ? new Date().toISOString() : null)
         }])
-        .select('*')
+        .select(this.MEDIA_COLUMNS)
         .single();
 
       if (error) throw error;
@@ -205,7 +208,7 @@ export class MediaService {
         .from('media_contents')
         .update(updates)
         .eq('id', id)
-        .select('*')
+        .select(this.MEDIA_COLUMNS)
         .single();
 
       if (error) throw error;
@@ -549,7 +552,7 @@ export class MediaService {
     try {
       const { data, error } = await supabase
         .from('media_playlists')
-        .select('*')
+        .select('id, name, description, media_content_ids, created_at, updated_at, user_id')
         .eq('id', id)
         .single();
 
@@ -606,7 +609,7 @@ export class MediaService {
     try {
       let query = supabase
         .from('media_interactions')
-        .select('*')
+        .select('id, user_id, media_content_id, interaction_type, duration, created_at')
         .eq('user_id', userId);
 
       if (mediaId) {

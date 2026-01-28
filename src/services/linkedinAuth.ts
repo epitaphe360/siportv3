@@ -53,7 +53,7 @@ const LinkedInAuthService = {
       // Get user profile from database
       const { data: userProfile, error: profileError } = await supabase
         .from('users')
-        .select('*')
+        .select('id, email, name, type, status, profile, visitor_level, created_at, updated_at')
         .eq('id', session.user.id)
         .single();
 

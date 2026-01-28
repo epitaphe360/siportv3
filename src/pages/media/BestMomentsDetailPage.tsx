@@ -43,7 +43,7 @@ export const BestMomentsDetailPage: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('media_contents')
-        .select('*')
+        .select('id, title, description, content_url:video_url, thumbnail_url, duration, category, event_name, event_date, highlight_type, views_count, likes_count, created_at')
         .eq('id', id)
         .eq('type', 'best_moments')
         .maybeSingle();

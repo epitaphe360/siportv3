@@ -51,10 +51,11 @@ export default function PartnerMediaLibraryPage() {
     try {
       let query = supabase
         .from('media_contents')
-        .select('*')
+        .select('id, title, description, type, category, thumbnail_url, video_url, duration, status, created_at, approved_at, rejection_reason')
         .eq('created_by_id', user.id)
         .eq('created_by_type', 'partner')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .range(0, 49);
 
       const { data, error } = await query;
 

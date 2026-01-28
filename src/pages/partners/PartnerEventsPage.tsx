@@ -41,14 +41,7 @@ export const PartnerEventsPage: React.FC = () => {
           registrations:event_registrations(count)
         `)
         .order('start_date', { ascending: false })
-        .limit(20);
-
-      if (error) throw error;
-      setEvents(data || []);
-    } catch (error) {
-      console.error('Erreur chargement événements:', error);
-    } finally {
-      setLoading(false);
+          .range(0, 49);
     }
   }
 

@@ -152,7 +152,7 @@ export async function checkPaymentStatus(userId: string): Promise<{
   try {
     const { data, error } = await supabase
       .from('payment_requests')
-      .select('*')
+      .select('id, payment_method, approved_at, status, created_at')
       .eq('user_id', userId)
       .eq('status', 'approved')
       .order('created_at', { ascending: false })
@@ -214,7 +214,7 @@ export async function createPaymentRecord(params: {
         transaction_id: params.transactionId,
         status: params.status,
       })
-      .select('*');  // NOT .single() - use .select('*') instead
+      .select('id, user_id, requested_level, amount, currency, payment_method, transaction_id, status, proof_url, admin_notes, approved_at, rejected_at, created_at');
 
     // ✅ Handle RLS errors specifically
     if (error) {
@@ -305,7 +305,7 @@ export async function getPaymentHistory(userId: string) {
   try {
     const { data, error } = await supabase
       .from('payment_requests')
-      .select('*')
+      .select('id, user_id, requested_level, amount, currency, payment_method, transaction_id, status, proof_url, admin_notes, approved_at, rejected_at, created_at')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
 

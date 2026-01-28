@@ -306,7 +306,7 @@ export async function getTransactionHistory(
   try {
     const { data, error } = await supabase
       .from('user_activity_log')
-      .select('*')
+      .select('id, user_id, action, entity_type, entity_id, metadata, ip_address, user_agent, created_at')
       .eq('user_id', userId)
       .order('created_at', { ascending: false })
       .limit(limit);

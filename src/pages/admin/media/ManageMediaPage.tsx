@@ -45,8 +45,9 @@ export const ManageMediaPage: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('media_contents')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('id, type, title, description, thumbnail_url, category, views_count, status, is_published, created_at, published_date:published_at')
+        .order('created_at', { ascending: false })
+        .range(0, 49);
 
       if (error) throw error;
       setMedia(data || []);

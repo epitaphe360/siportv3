@@ -106,9 +106,10 @@ export function ShortcodeRenderer({ content }: ShortcodeProps) {
     try {
       const { data, error } = await supabase
         .from('news_articles')
-        .select('*')
+        .select('id, title, content, excerpt, author, category, tags, image_url, published_at, created_at, published')
         .in('id', ids)
-        .eq('published', true); // Seulement les articles publiés
+        .eq('published', true) // Seulement les articles publiés
+        .range(0, 49);
 
       if (error) throw error;
       return data || [];

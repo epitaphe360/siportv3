@@ -67,7 +67,7 @@ export const SpeedNetworking: React.FC<SpeedNetworkingProps> = ({ sessionId }) =
     try {
       const { data, error } = await supabase
         .from('speed_networking_sessions')
-        .select('*')
+        .select('id, event_id, eventId:event_id, name, description, start_time, startTime:start_time, duration, max_participants, maxParticipants:max_participants, participants, status, matches')
         .eq('id', sessionId)
         .maybeSingle();
 

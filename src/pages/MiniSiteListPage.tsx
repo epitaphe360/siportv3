@@ -46,7 +46,8 @@ export default function MiniSiteListPage() {
           )
         `)
         .eq('published', true)
-        .order('views', { ascending: false });
+        .order('views', { ascending: false })
+        .range(0, 49);
 
       if (error) throw error;
 

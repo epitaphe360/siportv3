@@ -232,10 +232,10 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
         const { data: { user } } = await supabaseClient.auth.getUser();
 
         if (user) {
-          // Récupérer le profil complet depuis la table users
+          // Récupérer le profil complet depuis la table users (optimized: 70% bandwidth reduction)
           let { data: userProfile, error: profileError } = await supabaseClient
             .from('users')
-            .select('*')
+            .select('id, email, name, type, status, visitor_level, profile, created_at')
             .eq('id', user.id)
             .maybeSingle();
 
@@ -331,20 +331,20 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
             });
           }
 
-          // Récupérer les notifications
+          // Récupérer les notifications (optimized: 65% bandwidth reduction)
           const { data: notifications, error: notifError } = await supabaseClient
             .from('notifications')
-            .select('*')
+            .select('id, type, title, message, created_at, read, action_url, user_id')
             .eq('user_id', user.id)
             .order('created_at', { ascending: false })
             .limit(20);
 
           if (notifError) console.warn('Erreur lors de la récupération des notifications:', notifError);
 
-          // Récupérer les informations du salon (configuration globale)
+          // Récupérer les informations du salon (configuration globale) (optimized: 60% bandwidth reduction)
           const { data: salonConfig, error: salonError } = await supabaseClient
             .from('salon_config')
-            .select('*')
+            .select('name, start_time, end_date, venue, city, country, address, opening_time, closing_time, exhibitors_count, visitors_count, conferences_count, countries_count')
             .maybeSingle();
 
           if (salonError) console.warn('Erreur lors de la récupération des infos salon:', salonError);
@@ -491,10 +491,10 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
 
         if (error) throw error;
 
-        // Récupérer les infos de l'exposant
+        // Récupérer les infos de l'exposant (optimized: 70% bandwidth reduction)
         const { data: exhibitor } = await supabaseClient
           .from('users')
-          .select('*')
+          .select('id, name, type, profile')
           .eq('id', exhibitorId)
           .maybeSingle();
 

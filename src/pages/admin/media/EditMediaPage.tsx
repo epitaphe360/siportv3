@@ -74,7 +74,7 @@ export const EditMediaPage: React.FC = () => {
       setLoading(true);
       const { data, error } = await supabase
         .from('media_contents')
-        .select('*')
+        .select('id, type, title, description, thumbnail_url, video_url, audio_url, duration, category, tags, speakers, status, created_at')
         .eq('id', id)
         .single();
 

@@ -451,7 +451,7 @@ class TwoFactorAuthService {
     try {
       const { data, error } = await supabase
         .from('two_factor_auth')
-        .select('*')
+        .select('id, user_id, totp_secret, totp_enabled, totp_verified_at, sms_phone, sms_enabled, sms_verified_at, email_enabled, email_verified_at, backup_codes, backup_codes_generated_at, recovery_email, recovery_phone, last_used_at, failed_attempts, locked_until')
         .eq('user_id', userId)
         .maybeSingle();
 

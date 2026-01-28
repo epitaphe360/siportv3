@@ -17,7 +17,7 @@ class TemplateLibraryService {
     try {
       let query = supabase
         .from('site_templates')
-        .select('*')
+        .select('id, name, description, category, thumbnail, sections, premium, popularity')
         .order('popularity', { ascending: false });
 
       if (filters?.category && filters.category !== 'all') {
@@ -45,7 +45,7 @@ class TemplateLibraryService {
     try {
       const { data, error } = await supabase
         .from('site_templates')
-        .select('*')
+        .select('id, name, description, category, thumbnail, sections, premium, popularity')
         .eq('id', id)
         .single();
 

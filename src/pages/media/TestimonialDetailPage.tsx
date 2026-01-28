@@ -44,7 +44,7 @@ export const TestimonialDetailPage: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('media_contents')
-        .select('*')
+        .select('id, title, description, content_url:video_url, thumbnail_url, category, speaker_name, speaker_title, speaker_company, speaker_avatar, quote_text, published_date:published_at, rating, is_video, created_at')
         .eq('id', id)
         .eq('type', 'testimonial')
         .maybeSingle();

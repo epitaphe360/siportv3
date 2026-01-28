@@ -65,7 +65,7 @@ class NotificationService {
           ...notification,
           is_read: false,
         }])
-        .select()
+        .select('id, user_id, title, message, type, category, is_read, action_url, metadata, created_at, expires_at')
         .single();
 
       if (error) throw error;
@@ -100,7 +100,7 @@ class NotificationService {
     try {
       let query = supabase
         .from('notifications')
-        .select('*')
+        .select('id, user_id, title, message, type, category, is_read, action_url, metadata, created_at, expires_at')
         .eq('user_id', userId);
 
       if (options?.unreadOnly) {
@@ -246,7 +246,7 @@ class NotificationService {
     try {
       const { data, error } = await supabase
         .from('notification_preferences')
-        .select('*')
+        .select('id, user_id, email_notifications_enabled, email_digest_frequency, push_notifications_enabled, sms_notifications_enabled, notify_appointments, notify_messages, notify_events, notify_networking, notify_promotions, notify_system, quiet_hours_enabled, quiet_hours_start, quiet_hours_end, quiet_hours_timezone')
         .eq('user_id', userId)
         .maybeSingle();
 
@@ -286,7 +286,7 @@ class NotificationService {
           quiet_hours_enabled: false,
           quiet_hours_timezone: 'UTC',
         }])
-        .select()
+        .select('id, user_id, email_notifications_enabled, email_digest_frequency, push_notifications_enabled, sms_notifications_enabled, notify_appointments, notify_messages, notify_events, notify_networking, notify_promotions, notify_system, quiet_hours_enabled, quiet_hours_start, quiet_hours_end, quiet_hours_timezone')
         .single();
 
       if (error) throw error;

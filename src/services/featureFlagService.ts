@@ -111,7 +111,7 @@ class FeatureFlagService {
     try {
       const { data, error } = await supabase
         .from('feature_flags')
-        .select('*')
+        .select('id, key, name, description, is_enabled, rollout_percentage, enabled_for_users, enabled_for_roles, metadata, created_at, updated_at')
         .eq('key', flagKey)
         .single();
 
@@ -130,7 +130,7 @@ class FeatureFlagService {
     try {
       const { data, error } = await supabase
         .from('feature_flags')
-        .select('*')
+        .select('id, key, name, description, is_enabled, rollout_percentage, enabled_for_users, enabled_for_roles, metadata, created_at, updated_at')
         .order('name');
 
       if (error) throw error;
@@ -165,7 +165,7 @@ class FeatureFlagService {
           enabled_for_roles: flag.enabled_for_roles || [],
           metadata: flag.metadata || {},
         }])
-        .select()
+        .select('id, key, name, description, is_enabled, rollout_percentage, enabled_for_users, enabled_for_roles, metadata, created_at, updated_at')
         .single();
 
       if (error) throw error;
@@ -192,7 +192,7 @@ class FeatureFlagService {
         .from('feature_flags')
         .update(updates)
         .eq('key', flagKey)
-        .select()
+        .select('id, key, name, description, is_enabled, rollout_percentage, enabled_for_users, enabled_for_roles, metadata, created_at, updated_at')
         .single();
 
       if (error) throw error;

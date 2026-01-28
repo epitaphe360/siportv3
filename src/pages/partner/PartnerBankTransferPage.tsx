@@ -72,7 +72,7 @@ export default function PartnerBankTransferPage() {
     try {
       const { data, error } = await supabase
         .from('payment_requests')
-        .select('*')
+        .select('id, user_id, requested_level, amount, currency, status, payment_method, transfer_reference, transfer_date, transfer_proof_url')
         .eq('id', requestId)
         .eq('user_id', user.id)
         .maybeSingle();

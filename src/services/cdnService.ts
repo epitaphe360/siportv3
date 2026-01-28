@@ -41,7 +41,7 @@ class CDNService {
     try {
       const { data, error } = await supabase
         .from('cdn_config')
-        .select('*')
+        .select('provider, cdn_url, auto_optimize, webp_conversion, lazy_loading, responsive_images, image_presets, is_active')
         .eq('is_active', true)
         .single();
 

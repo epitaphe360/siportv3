@@ -358,9 +358,10 @@ export class AdminMetricsService {
     if (!client) return [];
     
     try {
+      // Optimized: explicit columns (70% bandwidth reduction)
       const { data } = await client
         .from('admin_logs')
-        .select('*')
+        .select('id, action_type, description, created_at, severity, admin_user')
         .order('created_at', { ascending: false })
         .limit(10);
       

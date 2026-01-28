@@ -114,10 +114,11 @@ export default function AddDemoProgramPage() {
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="prog-title" className="block text-sm font-medium text-gray-700 mb-2">
                     Titre du Programme *
                   </label>
                   <input
+                    id="prog-title"
                     type="text"
                     required
                     value={programData.title}
@@ -128,10 +129,11 @@ export default function AddDemoProgramPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="prog-desc" className="block text-sm font-medium text-gray-700 mb-2">
                     Description *
                   </label>
                   <textarea
+                    id="prog-desc"
                     required
                     rows={3}
                     value={programData.description}
@@ -142,10 +144,11 @@ export default function AddDemoProgramPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="prog-type" className="block text-sm font-medium text-gray-700 mb-2">
                     Type de Programme *
                   </label>
                   <select
+                    id="prog-type"
                     required
                     value={programData.type}
                     onChange={(e) => handleChange('type', e.target.value)}
@@ -167,11 +170,12 @@ export default function AddDemoProgramPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="prog-date" className="block text-sm font-medium text-gray-700 mb-2">
                     <Calendar className="h-4 w-4 inline mr-1" />
                     Date *
                   </label>
                   <input
+                    id="prog-date"
                     type="date"
                     required
                     value={programData.date}
@@ -181,11 +185,12 @@ export default function AddDemoProgramPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="prog-time" className="block text-sm font-medium text-gray-700 mb-2">
                     <Clock className="h-4 w-4 inline mr-1" />
                     Heure *
                   </label>
                   <input
+                    id="prog-time"
                     type="time"
                     required
                     value={programData.time}
@@ -195,10 +200,11 @@ export default function AddDemoProgramPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="prog-duration" className="block text-sm font-medium text-gray-700 mb-2">
                     Durée *
                   </label>
                   <input
+                    id="prog-duration"
                     type="text"
                     required
                     value={programData.duration}
@@ -209,11 +215,12 @@ export default function AddDemoProgramPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="prog-capacity" className="block text-sm font-medium text-gray-700 mb-2">
                     <Users className="h-4 w-4 inline mr-1" />
                     Capacité *
                   </label>
                   <input
+                    id="prog-capacity"
                     type="number"
                     required
                     min="1"
@@ -228,11 +235,12 @@ export default function AddDemoProgramPage() {
               </div>
 
               <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="prog-location" className="block text-sm font-medium text-gray-700 mb-2">
                   <MapPin className="h-4 w-4 inline mr-1" />
                   Lieu *
                 </label>
                 <input
+                  id="prog-location"
                   type="text"
                   required
                   value={programData.location}
@@ -251,10 +259,11 @@ export default function AddDemoProgramPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="prog-speaker" className="block text-sm font-medium text-gray-700 mb-2">
                     Nom de l'Intervenant *
                   </label>
                   <input
+                    id="prog-speaker"
                     type="text"
                     required
                     value={programData.speaker}
@@ -265,10 +274,11 @@ export default function AddDemoProgramPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="prog-company" className="block text-sm font-medium text-gray-700 mb-2">
                     Entreprise *
                   </label>
                   <input
+                    id="prog-company"
                     type="text"
                     required
                     value={programData.company}
@@ -291,7 +301,7 @@ export default function AddDemoProgramPage() {
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="prog-tags-input" className="block text-sm font-medium text-gray-700 mb-2">
                     Tags associés
                   </label>
                   <div className="flex flex-wrap gap-2 mb-3">
@@ -302,6 +312,7 @@ export default function AddDemoProgramPage() {
                           type="button"
                           onClick={() => removeTag(index)}
                           className="ml-1 text-gray-500 hover:text-gray-700"
+                          aria-label={`Supprimer le tag ${tag}`}
                         >
                           ×
                         </button>
@@ -310,6 +321,7 @@ export default function AddDemoProgramPage() {
                   </div>
                   <div className="flex space-x-2">
                     <input
+                      id="prog-tags-input"
                       type="text"
                       placeholder="Ajouter un tag..."
                       onKeyPress={(e) => {
