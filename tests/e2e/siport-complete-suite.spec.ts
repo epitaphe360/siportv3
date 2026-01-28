@@ -18,7 +18,7 @@
 
 import { test, expect, Page } from '@playwright/test';
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:9323';
+const BASE_URL = process.env.BASE_URL || 'http://localhost:9324';
 
 // Comptes de test
 const TEST_ACCOUNTS = {
@@ -148,7 +148,7 @@ test.describe('📊 Dashboards', () => {
   });
 
   test('DASH-04: Statistiques affichées', async ({ page }) => {
-    const stats = page.locator('text=/\\d+/).or(page.locator('[class*="stat"]'));
+    const stats = page.locator('text=/\\d+/').or(page.locator('[class*="stat"]'));
     const count = await stats.count();
     expect(count).toBeGreaterThan(0);
   });
