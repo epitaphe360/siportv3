@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { Calendar, Clock, MapPin, Users, Video, Plus, Trash2, Loader2 } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
@@ -39,6 +42,58 @@ const initialSpeaker: Speaker = {
   expertise: [],
 };
 
+// Zod validation schema
+const eventCreationSchema = z.object({
+  title: z.string()
+    .min(3, 'Le titre doit contenir au moins 3 caractères')
+    .max(200, 'Le titre ne doit pas dépasser 200 caractères'),
+  description: z.string()
+    .min(10, 'La description doit contenir au moins 10 caractères')
+    .max(2000, 'La description ne doit pas dépasser 2000 caractères'),
+  type: z.enum(['conference', 'webinar', 'roundtable', 'networking', 'workshop'], {
+    errorMap: () => ({ message: 'Veuillez sélectionner un type d\'événement' })
+  }),
+  date: z.string()
+    .min(1, 'La date est requise')
+    .refine((date) => {
+      const eventDate = new Date(date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return eventDate >= today;
+    }, 'La date doit être aujourd\'hui ou dans le futur'),
+  startTime: z.string()
+    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Format d\'heure invalide (HH:MM)'),
+  endTime: z.string()
+    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Format d\'heure invalide (HH:MM)'),
+  location: z.string()
+    .min(2, 'Le lieu doit contenir au moins 2 caractères')
+    .max(200, 'Le lieu ne doit pas dépasser 200 caractères')
+    .optional()
+    .or(z.literal('')),
+  capacity: z.number()
+    .min(1, 'La capacité doit être d\'au moins 1 personne')
+    .max(10000, 'La capacité ne peut pas dépasser 10 000 personnes'),
+  category: z.string()
+    .min(1, 'Veuillez sélectionner une catégorie'),
+  virtual: z.boolean(),
+  featured: z.boolean(),
+  meetingLink: z.string()
+    .url('Lien de réunion invalide')
+    .optional()
+    .or(z.literal('')),
+  tags: z.string(),
+}).refine((data) => {
+  if (data.startTime && data.endTime) {
+    return data.endTime > data.startTime;
+  }
+  return true;
+}, {
+  message: 'L\'heure de fin doit être après l\'heure de début',
+  path: ['endTime']
+});
+
+type EventFormData = z.infer<typeof eventCreationSchema>;
+
 interface EventCreationFormProps {
   eventToEdit?: Event;
   onSuccess?: () => void;
@@ -48,38 +103,56 @@ interface EventCreationFormProps {
 export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: EventCreationFormProps) {
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<EventFormState>(eventToEdit ? {
-    title: eventToEdit.title,
-    description: eventToEdit.description,
-    type: eventToEdit.type,
-    date: eventToEdit.date.toISOString().split('T')[0],
-    startTime: eventToEdit.startTime,
-    endTime: eventToEdit.endTime,
-    capacity: eventToEdit.capacity,
-    category: eventToEdit.category,
-    virtual: eventToEdit.virtual,
-    featured: eventToEdit.featured,
-    location: eventToEdit.location || '',
-    meetingLink: eventToEdit.meetingLink || '',
-    tags: eventToEdit.tags.join(', '),
-    speakers: eventToEdit.speakers.length > 0 ? eventToEdit.speakers : [initialSpeaker],
-  } : {
-    title: '',
-    description: '',
-    type: '',
-    date: '',
-    startTime: '',
-    endTime: '',
-    capacity: 50,
-    category: '',
-    virtual: false,
-    featured: false,
-    location: '',
-    meetingLink: '',
-    tags: '',
-    speakers: [initialSpeaker],
+
+  // React Hook Form with Zod validation
+  const {
+    register,
+    handleSubmit: handleFormSubmit,
+    formState: { errors },
+    watch,
+    setValue
+  } = useForm<EventFormData>({
+    resolver: zodResolver(eventCreationSchema),
+    defaultValues: eventToEdit ? {
+      title: eventToEdit.title,
+      description: eventToEdit.description,
+      type: eventToEdit.type,
+      date: eventToEdit.date.toISOString().split('T')[0],
+      startTime: eventToEdit.startTime,
+      endTime: eventToEdit.endTime,
+      capacity: eventToEdit.capacity,
+      category: eventToEdit.category,
+      virtual: eventToEdit.virtual,
+      featured: eventToEdit.featured,
+      location: eventToEdit.location || '',
+      meetingLink: eventToEdit.meetingLink || '',
+      tags: eventToEdit.tags.join(', '),
+    } : {
+      title: '',
+      description: '',
+      type: '' as any,
+      date: '',
+      startTime: '',
+      endTime: '',
+      capacity: 50,
+      category: '',
+      virtual: false,
+      featured: false,
+      location: '',
+      meetingLink: '',
+      tags: '',
+    }
   });
+
+  // Speakers are managed separately (not part of validation schema)
+  const [speakers, setSpeakers] = useState<Speaker[]>(
+    eventToEdit?.speakers.length ? eventToEdit.speakers : [initialSpeaker]
+  );
   const [isLoading, setIsLoading] = useState(false);
+
+  // Watch form values for conditional rendering
+  const isVirtual = watch('virtual');
+  const selectedType = watch('type');
 
   if (user?.type !== 'admin') {
     return (
@@ -96,24 +169,9 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
     );
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'number' ? (parseInt(value, 10) || 0) : value,
-    }));
-  };
-
-  const handleSelectChange = (name: keyof EventFormState, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   const handleSpeakerChange = (index: number, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    const newSpeakers = [...formData.speakers];
+    const newSpeakers = [...speakers];
 
     // Gérer les champs simples
     if (name === 'name' || name === 'title' || name === 'company' || name === 'bio' || name === 'linkedin' || name === 'avatar') {
@@ -129,73 +187,43 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
       };
     }
 
-    setFormData(prev => ({
-      ...prev,
-      speakers: newSpeakers,
-    }));
+    setSpeakers(newSpeakers);
   };
 
   const addSpeaker = () => {
-    setFormData(prev => ({
-      ...prev,
-      speakers: [...prev.speakers, { ...initialSpeaker, id: `temp-${Date.now()}` }],
-    }));
+    setSpeakers([...speakers, { ...initialSpeaker, id: `temp-${Date.now()}` }]);
   };
 
   const removeSpeaker = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      speakers: prev.speakers.filter((_, i) => i !== index),
-    }));
+    setSpeakers(speakers.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (data: EventFormData) => {
     setIsLoading(true);
 
     try {
-      // Validation simple
-      if (!formData.title || !formData.description || !formData.type || !formData.date || !formData.startTime || !formData.endTime) {
-        toast.error('Veuillez remplir tous les champs obligatoires.');
-        setIsLoading(false);
-        return;
-      }
-
       // Combiner date et heures pour créer startDate et endDate
-      const startDateTime = new Date(`${formData.date}T${formData.startTime}:00`);
-      const endDateTime = new Date(`${formData.date}T${formData.endTime}:00`);
-
-      // Validation des dates
-      if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
-        toast.error('Les dates et heures sont invalides.');
-        setIsLoading(false);
-        return;
-      }
-
-      if (endDateTime <= startDateTime) {
-        toast.error('L\'heure de fin doit être après l\'heure de début.');
-        setIsLoading(false);
-        return;
-      }
+      const startDateTime = new Date(`${data.date}T${data.startTime}:00`);
+      const endDateTime = new Date(`${data.date}T${data.endTime}:00`);
 
       // Préparation des données pour l'API
       const eventData: Omit<Event, 'id' | 'registered'> = {
-        title: formData.title,
-        description: formData.description,
-        type: formData.type as Event['type'],
+        title: data.title,
+        description: data.description,
+        type: data.type as Event['type'],
         startDate: startDateTime,
         endDate: endDateTime,
         date: startDateTime, // Pour compatibilité
-        startTime: formData.startTime,
-        endTime: formData.endTime,
-        capacity: formData.capacity,
-        category: formData.category,
-        virtual: formData.virtual,
-        featured: formData.featured,
-        location: formData.location,
-        meetingLink: formData.meetingLink,
-        tags: formData.tags.split(',').map(t => t.trim()).filter(t => t.length > 0),
-        speakers: formData.speakers.filter(s => s.name.length > 0).map(s => ({
+        startTime: data.startTime,
+        endTime: data.endTime,
+        capacity: data.capacity,
+        category: data.category,
+        virtual: data.virtual,
+        featured: data.featured,
+        location: data.location || '',
+        meetingLink: data.meetingLink || '',
+        tags: data.tags.split(',').map(t => t.trim()).filter(t => t.length > 0),
+        speakers: speakers.filter(s => s.name.length > 0).map(s => ({
           ...s,
           id: s.id.startsWith('temp-') ? crypto.randomUUID() : s.id, // Générer un ID pour les nouveaux speakers
         })),
@@ -204,12 +232,12 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
       if (eventToEdit) {
         // Modification
         await SupabaseService.updateEvent(eventToEdit.id, eventData);
-        toast.success(`L'événement "${formData.title}" a été mis à jour.`);
+        toast.success(`L'événement "${data.title}" a été mis à jour.`);
         onSuccess && onSuccess();
       } else {
         // Création
         await SupabaseService.createEvent(eventData);
-        toast.success(`L'événement "${formData.title}" a été créé et publié.`);
+        toast.success(`L'événement "${data.title}" a été créé et publié.`);
         navigate(ROUTES.ADMIN_DASHBOARD);
       }
 
@@ -245,7 +273,7 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
         </h1>
 
         <Card className="p-6 shadow-lg">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleFormSubmit(handleSubmit)}>
             <div className="space-y-6">
               {/* Titre et Description */}
               <div>
@@ -254,13 +282,14 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
                 </label>
                 <Input
                   id="title"
-                  name="title"
                   type="text"
-                  value={formData.title}
-                  onChange={handleChange}
+                  {...register('title')}
                   placeholder="Ex: Conférence sur la Logistique 4.0"
-                  required
+                  className={errors.title ? 'border-red-500' : ''}
                 />
+                {errors.title && (
+                  <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+                )}
               </div>
 
               <div>
@@ -269,13 +298,14 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
                 </label>
                 <Textarea
                   id="description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
+                  {...register('description')}
                   rows={4}
                   placeholder="Décrivez l'objectif, le public cible et le contenu de l'événement."
-                  required
+                  className={errors.description ? 'border-red-500' : ''}
                 />
+                {errors.description && (
+                  <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+                )}
               </div>
 
               {/* Type et Catégorie */}
@@ -286,11 +316,10 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
                   </label>
                   <Select
                     name="type"
-                    value={formData.type}
-                    onValueChange={(value) => handleSelectChange('type', value)}
-                    required
+                    value={selectedType}
+                    onValueChange={(value) => setValue('type', value as any, { shouldValidate: true })}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className={errors.type ? 'border-red-500' : ''}>
                       <SelectValue placeholder="Sélectionner un type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -301,6 +330,9 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
                       ))}
                     </SelectContent>
                   </Select>
+                  {errors.type && (
+                    <p className="text-red-500 text-sm mt-1">{errors.type.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -309,11 +341,10 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
                   </label>
                   <Select
                     name="category"
-                    value={formData.category}
-                    onValueChange={(value) => handleSelectChange('category', value)}
-                    required
+                    value={watch('category')}
+                    onValueChange={(value) => setValue('category', value, { shouldValidate: true })}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className={errors.category ? 'border-red-500' : ''}>
                       <SelectValue placeholder="Sélectionner une catégorie" />
                     </SelectTrigger>
                     <SelectContent>
@@ -324,6 +355,9 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
                       ))}
                     </SelectContent>
                   </Select>
+                  {errors.category && (
+                    <p className="text-red-500 text-sm mt-1">{errors.category.message}</p>
+                  )}
                 </div>
               </div>
 
@@ -335,12 +369,13 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
                   </label>
                   <Input
                     id="date"
-                    name="date"
                     type="date"
-                    value={formData.date}
-                    onChange={handleChange}
-                    required
+                    {...register('date')}
+                    className={errors.date ? 'border-red-500' : ''}
                   />
+                  {errors.date && (
+                    <p className="text-red-500 text-sm mt-1">{errors.date.message}</p>
+                  )}
                 </div>
                 <div>
                   <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-1">
@@ -348,12 +383,13 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
                   </label>
                   <Input
                     id="startTime"
-                    name="startTime"
                     type="time"
-                    value={formData.startTime}
-                    onChange={handleChange}
-                    required
+                    {...register('startTime')}
+                    className={errors.startTime ? 'border-red-500' : ''}
                   />
+                  {errors.startTime && (
+                    <p className="text-red-500 text-sm mt-1">{errors.startTime.message}</p>
+                  )}
                 </div>
                 <div>
                   <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-1">
@@ -361,12 +397,13 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
                   </label>
                   <Input
                     id="endTime"
-                    name="endTime"
                     type="time"
-                    value={formData.endTime}
-                    onChange={handleChange}
-                    required
+                    {...register('endTime')}
+                    className={errors.endTime ? 'border-red-500' : ''}
                   />
+                  {errors.endTime && (
+                    <p className="text-red-500 text-sm mt-1">{errors.endTime.message}</p>
+                  )}
                 </div>
               </div>
 
@@ -378,12 +415,14 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
                   </label>
                   <Input
                     id="location"
-                    name="location"
                     type="text"
-                    value={formData.location}
-                    onChange={handleChange}
+                    {...register('location')}
                     placeholder="Ex: Salle de Conférence A"
+                    className={errors.location ? 'border-red-500' : ''}
                   />
+                  {errors.location && (
+                    <p className="text-red-500 text-sm mt-1">{errors.location.message}</p>
+                  )}
                 </div>
                 <div>
                   <label htmlFor="capacity" className="block text-sm font-medium text-gray-700 mb-1">
@@ -391,12 +430,14 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
                   </label>
                   <Input
                     id="capacity"
-                    name="capacity"
                     type="number"
-                    value={formData.capacity}
-                    onChange={handleChange}
+                    {...register('capacity', { valueAsNumber: true })}
                     min={1}
+                    className={errors.capacity ? 'border-red-500' : ''}
                   />
+                  {errors.capacity && (
+                    <p className="text-red-500 text-sm mt-1">{errors.capacity.message}</p>
+                  )}
                 </div>
               </div>
 
@@ -405,10 +446,8 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
                 <div className="flex items-center">
                   <input
                     id="virtual"
-                    name="virtual"
                     type="checkbox"
-                    checked={formData.virtual}
-                    onChange={(e) => setFormData(prev => ({ ...prev, virtual: e.target.checked }))}
+                    {...register('virtual')}
                     className="h-4 w-4 text-blue-600 border-gray-300 rounded"
                   />
                   <label htmlFor="virtual" className="ml-2 block text-sm text-gray-900">
@@ -418,10 +457,8 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
                 <div className="flex items-center">
                   <input
                     id="featured"
-                    name="featured"
                     type="checkbox"
-                    checked={formData.featured}
-                    onChange={(e) => setFormData(prev => ({ ...prev, featured: e.target.checked }))}
+                    {...register('featured')}
                     className="h-4 w-4 text-blue-600 border-gray-300 rounded"
                   />
                   <label htmlFor="featured" className="ml-2 block text-sm text-gray-900">
@@ -430,19 +467,21 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
                 </div>
               </div>
 
-              {formData.virtual && (
+              {isVirtual && (
                 <div>
                   <label htmlFor="meetingLink" className="block text-sm font-medium text-gray-700 mb-1">
                     Lien de la Réunion (Zoom, Teams, etc.)
                   </label>
                   <Input
                     id="meetingLink"
-                    name="meetingLink"
                     type="url"
-                    value={formData.meetingLink}
-                    onChange={handleChange}
+                    {...register('meetingLink')}
                     placeholder="https://zoom.us/j/..."
+                    className={errors.meetingLink ? 'border-red-500' : ''}
                   />
+                  {errors.meetingLink && (
+                    <p className="text-red-500 text-sm mt-1">{errors.meetingLink.message}</p>
+                  )}
                 </div>
               )}
 
@@ -453,13 +492,15 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
                 </label>
                 <Input
                   id="tags"
-                  name="tags"
                   type="text"
-                  value={formData.tags}
-                  onChange={handleChange}
+                  {...register('tags')}
                   placeholder="Ex: logistique, innovation, IA, portuaire"
+                  className={errors.tags ? 'border-red-500' : ''}
                 />
                 <p className="mt-1 text-xs text-gray-500">Séparer les mots-clés par des virgules.</p>
+                {errors.tags && (
+                  <p className="text-red-500 text-sm mt-1">{errors.tags.message}</p>
+                )}
               </div>
 
               {/* Intervenants (Speakers) */}
@@ -472,7 +513,7 @@ export default function EventCreationForm({ eventToEdit, onSuccess, onCancel }: 
                 </h3>
 
                 <div className="space-y-4">
-                  {formData.speakers.map((speaker, index) => (
+                  {speakers.map((speaker, index) => (
                     <Card key={speaker.id || index} className="p-4 border border-gray-100 bg-white">
                       <div className="flex justify-between items-start mb-3">
                         <h4 className="font-medium text-gray-800">Intervenant #{index + 1}</h4>

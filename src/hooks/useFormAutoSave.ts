@@ -4,17 +4,27 @@ interface UseFormAutoSaveOptions<T> {
   key: string;
   data: T;
   delay?: number; // délai en ms avant sauvegarde
+  excludeFields?: string[]; // SECURITY: Fields to exclude from auto-save (e.g., passwords)
 }
 
-export function useFormAutoSave<T>({ key, data, delay = 1000 }: UseFormAutoSaveOptions<T>) {
+export function useFormAutoSave<T>({ key, data, delay = 1000, excludeFields = [] }: UseFormAutoSaveOptions<T>) {
   const saveToLocalStorage = useCallback(() => {
     try {
-      const serializedData = JSON.stringify(data);
+      // SECURITY: Filter out sensitive fields before saving
+      const dataToSave = { ...data } as any;
+
+      excludeFields.forEach(field => {
+        if (field in dataToSave) {
+          delete dataToSave[field];
+        }
+      });
+
+      const serializedData = JSON.stringify(dataToSave);
       localStorage.setItem(key, serializedData);
     } catch (error) {
       console.error('❌ Erreur lors de la sauvegarde:', error);
     }
-  }, [key, data]);
+  }, [key, data, excludeFields]);
 
   const loadFromLocalStorage = useCallback((): T | null => {
     try {

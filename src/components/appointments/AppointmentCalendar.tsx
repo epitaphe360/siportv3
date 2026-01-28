@@ -430,7 +430,8 @@ export default function AppointmentCalendar() {
                         key={appointment.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="p-4 border rounded-lg hover:shadow-md transition-shadow"
+                        className="p-4 border rounded-lg hover:shadow-md transition-shadow appointment-card"
+                        data-testid="appointment-item"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-4">
@@ -646,6 +647,7 @@ export default function AppointmentCalendar() {
                         <motion.div
                           key={slot.id}
                           whileHover={{ scale: 1.02 }}
+                          data-testid="timeslot"
                           className={`p-4 border rounded-lg transition-colors ${
                             isBooked 
                               ? 'border-gray-200 bg-gray-50' 

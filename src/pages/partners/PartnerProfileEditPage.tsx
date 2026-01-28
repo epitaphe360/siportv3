@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import { toast } from 'sonner';
@@ -9,7 +12,54 @@ import {
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 
+// Zod validation schema for basic partner profile fields
+const partnerProfileSchema = z.object({
+  companyName: z.string()
+    .min(2, 'Le nom de l\'entreprise est requis (min 2 caractères)')
+    .max(200, 'Maximum 200 caractères'),
+  description: z.string()
+    .max(2000, 'Maximum 2000 caractères')
+    .optional()
+    .or(z.literal('')),
+  website: z.string()
+    .url('URL invalide')
+    .optional()
+    .or(z.literal('')),
+  email: z.string()
+    .email('Email invalide')
+    .optional()
+    .or(z.literal('')),
+  phone: z.string()
+    .regex(/^\+?[1-9]\d{1,14}$/, 'Format de téléphone invalide')
+    .optional()
+    .or(z.literal('')),
+  country: z.string()
+    .optional()
+    .or(z.literal(''))
+});
+
+type PartnerProfileFormData = z.infer<typeof partnerProfileSchema>;
+
 export const PartnerProfileEditPage: React.FC = () => {
+  // React Hook Form for validated fields
+  const {
+    register,
+    handleSubmit: handleFormSubmit,
+    formState: { errors },
+    watch,
+    setValue
+  } = useForm<PartnerProfileFormData>({
+    resolver: zodResolver(partnerProfileSchema),
+    defaultValues: {
+      companyName: '',
+      description: '',
+      website: '',
+      email: '',
+      phone: '',
+      country: ''
+    }
+  });
+
   const [formData, setFormData] = useState({
     // Base (requis)
     companyName: '',
@@ -121,13 +171,20 @@ export const PartnerProfileEditPage: React.FC = () => {
     return Math.round((fields.filter(Boolean).length / fields.length) * 100);
   };
 
-  const handleSave = async () => {
-    if (!formData.companyName.trim()) {
-      toast.error('Le nom de l\'entreprise est obligatoire');
-      return;
-    }
-    
+  const handleSave = async (data: PartnerProfileFormData) => {
     setIsSaving(true);
+    // Merge validated data with the rest of formData
+    const completeFormData = {
+      ...formData,
+      companyName: data.companyName,
+      description: data.description || '',
+      website: data.website || '',
+      email: data.email || '',
+      phone: data.phone || '',
+      country: data.country || ''
+    };
+
+    // TODO: Save to backend
     await new Promise(resolve => setTimeout(resolve, 2000));
     setIsSaving(false);
     toast.success('Profil mis à jour avec succès !');
@@ -200,7 +257,7 @@ export const PartnerProfileEditPage: React.FC = () => {
         <div className="space-y-4">
           {/* 1. Informations de base */}
           <Card>
-            <SectionHeader title={t('partner_edit.basic_info')} section="basic" icon={Building2} optional={false} />
+            <SectionHeader title="Informations de base" section="basic" icon={Building2} optional={false} />
             {expandedSections.basic && (
               <div className="p-6 border-t">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -234,7 +291,7 @@ export const PartnerProfileEditPage: React.FC = () => {
                       value={formData.sponsorLevel || "Aucun niveau défini"} 
                       disabled
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
-                      title={t('partner_edit.admin_only')}
+                      title="Défini par l'administrateur"
                     />
                   </div>
 
@@ -266,7 +323,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 2. Contact */}
           <Card>
-            <SectionHeader title={t('partner_edit.contact_info')} section="contact" icon={Mail} />
+            <SectionHeader title="Informations de contact" section="contact" icon={Mail} />
             {expandedSections.contact && (
               <div className="p-6 border-t">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -336,7 +393,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 4. Catégories */}
           <Card>
-            <SectionHeader title={t('partner_edit.sectors_services')} section="categories" icon={Award} />
+            <SectionHeader title="Secteurs et services" section="categories" icon={Award} />
             {expandedSections.categories && (
               <div className="p-6 border-t">
                 <div className="space-y-6">
@@ -374,7 +431,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 5. Expertise */}
           <Card>
-            <SectionHeader title={t('partner_edit.expertise')} section="expertise" icon={TrendingUp} />
+            <SectionHeader title="Expertise" section="expertise" icon={TrendingUp} />
             {expandedSections.expertise && (
               <div className="p-6 border-t">
                 <textarea value={formData.expertise} onChange={(e) => handleInputChange('expertise', e.target.value)} rows={6}
@@ -386,7 +443,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 6. Projets */}
           <Card>
-            <SectionHeader title={t('partner_edit.projects')} section="projects" icon={FileText} />
+            <SectionHeader title="Projets" section="projects" icon={FileText} />
             {expandedSections.projects && (
               <div className="p-6 border-t space-y-4">
                 {formData.projects.map((proj, i) => (
@@ -418,7 +475,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 7. Galerie */}
           <Card>
-            <SectionHeader title={t('partner_edit.gallery')} section="gallery" icon={ImageIcon} />
+            <SectionHeader title="Galerie" section="gallery" icon={ImageIcon} />
             {expandedSections.gallery && (
               <div className="p-6 border-t">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
@@ -441,7 +498,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 8. Actualités */}
           <Card>
-            <SectionHeader title={t('partner_edit.news')} section="news" icon={Calendar} />
+            <SectionHeader title="Actualités" section="news" icon={Calendar} />
             {expandedSections.news && (
               <div className="p-6 border-t space-y-4">
                 {formData.news.map((item, i) => (
@@ -473,7 +530,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 9. Métriques */}
           <Card>
-            <SectionHeader title={t('partner_edit.metrics')} section="metrics" icon={TrendingUp} />
+            <SectionHeader title="Métriques" section="metrics" icon={TrendingUp} />
             {expandedSections.metrics && (
               <div className="p-6 border-t">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -504,7 +561,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 10. Timeline */}
           <Card>
-            <SectionHeader title={t('partner_edit.timeline')} section="timeline" icon={Calendar} />
+            <SectionHeader title="Chronologie" section="timeline" icon={Calendar} />
             {expandedSections.timeline && (
               <div className="p-6 border-t space-y-4">
                 {formData.timeline.map((item, i) => (
@@ -534,7 +591,7 @@ export const PartnerProfileEditPage: React.FC = () => {
 
           {/* 11. Équipe */}
           <Card>
-            <SectionHeader title={t('partner_edit.team')} section="team" icon={Users} />
+            <SectionHeader title="Équipe" section="team" icon={Users} />
             {expandedSections.team && (
               <div className="p-6 border-t space-y-4">
                 {formData.team.map((member, i) => (

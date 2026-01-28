@@ -39,28 +39,15 @@ const mockChatBot: ChatBot = {
 // Chat conversations and messages will be loaded from Supabase
 const loadChatData = async (userId: string) => {
   try {
-
-    // Charger les conversations depuis Supabase
+    // FIX N+1: Charger les conversations avec leurs messages en une seule requête
     const conversations = await SupabaseService.getConversations(userId);
 
-    // ⚡ FIX N+1: Charger les messages pour toutes les conversations en parallèle
-    const messagePromises = conversations.map(async (conversation) => {
-      try {
-        const convMessages = await SupabaseService.getMessages(conversation.id);
-        return { conversationId: conversation.id, messages: convMessages || [] };
-      } catch (err) {
-        console.warn(`Failed to load messages for conversation ${conversation.id}:`, err);
-        return { conversationId: conversation.id, messages: [] };
-      }
-    });
-
-    const messageResults = await Promise.allSettled(messagePromises);
+    // ⚡ PERFORMANCE: Messages déjà inclus dans les conversations (pas de requêtes supplémentaires)
     const messages: Record<string, ChatMessage[]> = {};
 
-    messageResults.forEach((result) => {
-      if (result.status === 'fulfilled') {
-        messages[result.value.conversationId] = result.value.messages;
-      }
+    conversations.forEach((conversation) => {
+      // Messages already included in conversation object from getConversations
+      messages[conversation.id] = conversation.messages || [];
     });
 
     return {

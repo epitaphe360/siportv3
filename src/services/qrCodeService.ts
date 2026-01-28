@@ -9,8 +9,42 @@ import { supabase } from '../lib/supabase';
 const QR_CODE_VALIDITY_MS = 60 * 1000; // 60 secondes
 const QR_ROTATION_INTERVAL_MS = 30 * 1000; // 30 secondes
 
-// Clé secrète pour signer les JWT (devrait être en variable d'environnement)
-const JWT_SECRET = import.meta.env.VITE_JWT_SECRET || 'siport-2026-super-secret-key-change-me';
+/**
+ * SECURITY: JWT Secret for QR Code signing
+ * CRITICAL: Must be set in environment variables (.env)
+ * Never use default value in production!
+ */
+const getJWTSecret = (): string => {
+  const secret = import.meta.env.VITE_JWT_SECRET;
+
+  if (!secret) {
+    console.error(
+      '⚠️ SECURITY WARNING: VITE_JWT_SECRET not configured! ' +
+      'QR Codes will use a temporary session-only secret. ' +
+      'Please configure VITE_JWT_SECRET in your .env file for production.'
+    );
+
+    // Generate a random secret for this session only
+    // This is NOT persistent and will break QR validation across server restarts
+    const randomSecret = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+
+    return randomSecret;
+  }
+
+  // Validate secret length
+  if (secret.length < 32) {
+    console.warn(
+      '⚠️ SECURITY WARNING: JWT_SECRET is too short! ' +
+      'Minimum recommended length is 32 characters for HS256.'
+    );
+  }
+
+  return secret;
+};
+
+const JWT_SECRET = getJWTSecret();
 
 /**
  * Interface pour un utilisateur depuis la base de données

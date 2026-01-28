@@ -4,6 +4,9 @@ import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
 import { useTranslation } from '../hooks/useTranslation';
 import { supabase, isSupabaseReady } from '../lib/supabase';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 function parseHashTokens(hash: string) {
   // hash like #access_token=...&refresh_token=...
@@ -15,13 +18,37 @@ function parseHashTokens(hash: string) {
   };
 }
 
+// Validation schema
+const resetPasswordSchema = z.object({
+  password: z.string()
+    .min(12, 'Le mot de passe doit contenir au moins 12 caractères')
+    .max(128, 'Le mot de passe ne doit pas dépasser 128 caractères')
+    .regex(/[A-Z]/, 'Doit contenir au moins une majuscule')
+    .regex(/[a-z]/, 'Doit contenir au moins une minuscule')
+    .regex(/[0-9]/, 'Doit contenir au moins un chiffre')
+    .regex(/[!@#$%^&*]/, 'Doit contenir au moins un caractère spécial'),
+  confirmPassword: z.string().min(1, 'Veuillez confirmer votre mot de passe')
+}).refine((data) => data.password === data.confirmPassword, {
+  message: 'Les mots de passe ne correspondent pas',
+  path: ['confirmPassword']
+});
+
+type ResetPasswordForm = z.infer<typeof resetPasswordSchema>;
+
 export default function ResetPasswordPage() {
   const { t } = useTranslation();
-  const [newPassword, setNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [hasTokens, setHasTokens] = useState(false);
+
+  const {
+    register,
+    handleSubmit: handleFormSubmit,
+    formState: { errors }
+  } = useForm<ResetPasswordForm>({
+    resolver: zodResolver(resetPasswordSchema)
+  });
 
   useEffect(() => {
     // Try to parse tokens from URL fragment
@@ -45,8 +72,7 @@ export default function ResetPasswordPage() {
     }
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (data: ResetPasswordForm) => {
     setLoading(true);
     setError(null);
     setMessage(null);
@@ -58,7 +84,7 @@ export default function ResetPasswordPage() {
       }
 
       // Update user password (requires an authenticated session set via tokens)
-  const { error: updErr } = await (supabase as any).auth.updateUser({ password: newPassword });
+  const { error: updErr } = await (supabase as any).auth.updateUser({ password: data.password });
   if (updErr) {
         setError(updErr.message || 'Erreur lors de la réinitialisation du mot de passe.');
       } else {
@@ -78,10 +104,30 @@ export default function ResetPasswordPage() {
       {!hasTokens && (
         <div className="mb-4 text-gray-700">Le lien de réinitialisation semble incomplet ou expiré. Assurez-vous d'utiliser le lien envoyé par email.</div>
       )}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleFormSubmit(handleSubmit)}>
         <div className="mb-4">
           <label className="block font-medium mb-2">Nouveau mot de passe</label>
-          <Input type="password" name="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="Nouveau mot de passe" required minLength={8} />
+          <Input
+            type="password"
+            {...register('password')}
+            placeholder="Nouveau mot de passe (min. 12 caractères)"
+            className={errors.password ? 'border-red-500' : ''}
+          />
+          {errors.password && (
+            <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+          )}
+        </div>
+        <div className="mb-4">
+          <label className="block font-medium mb-2">Confirmer le mot de passe</label>
+          <Input
+            type="password"
+            {...register('confirmPassword')}
+            placeholder="Confirmer le mot de passe"
+            className={errors.confirmPassword ? 'border-red-500' : ''}
+          />
+          {errors.confirmPassword && (
+            <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
+          )}
         </div>
         {error && <div className="text-red-500 mb-2">{error}</div>}
         {message && <div className="text-green-600 mb-2">{message}</div>}

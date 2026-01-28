@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import {
@@ -15,6 +18,21 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { motion } from 'framer-motion';
 import { apiService } from '../../services/apiService';
+
+// Zod validation schema
+const pavilionSchema = z.object({
+  name: z.string()
+    .min(2, 'Le nom du pavillon doit contenir au moins 2 caractères')
+    .max(100, 'Le nom ne doit pas dépasser 100 caractères'),
+  theme: z.string()
+    .min(1, 'Le thème est requis'),
+  description: z.string()
+    .max(500, 'La description ne doit pas dépasser 500 caractères')
+    .optional()
+    .or(z.literal(''))
+});
+
+type PavilionFormData = z.infer<typeof pavilionSchema>;
 
 interface DemoProgram {
   id: string;
@@ -44,10 +62,22 @@ export default function CreatePavilionForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
 
+  // React Hook Form with Zod validation for main fields
+  const {
+    register,
+    handleSubmit: handleFormSubmit,
+    formState: { errors: formErrors },
+    watch
+  } = useForm<PavilionFormData>({
+    resolver: zodResolver(pavilionSchema),
+    defaultValues: {
+      name: '',
+      theme: '',
+      description: ''
+    }
+  });
+
   const [pavilionData, setPavilionData] = useState({
-    name: '',
-    theme: '',
-    description: '',
     objectives: [''],
     features: [''],
     targetAudience: [''],
@@ -70,12 +100,7 @@ export default function CreatePavilionForm() {
     { value: 'roundtable', label: 'Table ronde' }
   ];
 
-  const handlePavilionChange = (field: string, value: any) => {
-    setPavilionData(prev => ({ ...prev, [field]: value }));
-    if (errors[field as keyof FormErrors]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
-    }
-  };
+  // Removed handlePavilionChange - now using react-hook-form register
 
   const handleArrayChange = (field: 'objectives' | 'features' | 'targetAudience', index: number, value: string) => {
     setPavilionData(prev => ({
@@ -138,12 +163,7 @@ export default function CreatePavilionForm() {
     ));
   };
 
-  const validateForm = () => {
-    const newErrors: FormErrors = {};
-    if (!pavilionData.name.trim()) newErrors.name = 'Le nom du pavillon est requis.';
-    if (!pavilionData.theme) newErrors.theme = 'Le thème est requis.';
-    if (!pavilionData.description.trim()) newErrors.description = 'La description est requise.';
-
+  const validateDemoPrograms = () => {
     const demoProgramErrors: { [key: number]: { title?: string } } = {};
     demoPrograms.forEach((program, index) => {
       if (!program.title.trim()) {
@@ -153,27 +173,29 @@ export default function CreatePavilionForm() {
     });
 
     if (Object.keys(demoProgramErrors).length > 0) {
-      newErrors.demoPrograms = demoProgramErrors;
+      setErrors({ demoPrograms: demoProgramErrors });
+      return false;
     }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return true;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+  const handleSubmit = async (data: PavilionFormData) => {
+    // Validate demo programs separately
+    if (!validateDemoPrograms()) return;
 
     setIsLoading(true);
     setErrors({});
 
     try {
       const finalPavilionData = {
-        ...pavilionData,
+        name: data.name,
+        theme: data.theme,
+        description: data.description || '',
         objectives: pavilionData.objectives.filter(o => o.trim() !== ''),
         features: pavilionData.features.filter(f => f.trim() !== ''),
         target_audience: pavilionData.targetAudience.filter(t => t.trim() !== ''), // Match DB schema
         demo_programs: demoPrograms, // Match DB schema
+        status: 'active'
       };
 
       await apiService.create('pavilions', finalPavilionData);
@@ -208,7 +230,7 @@ export default function CreatePavilionForm() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleFormSubmit(handleSubmit)} className="space-y-8">
           {errors.general && (
             <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg flex items-center">
               <AlertCircle className="h-5 w-5 mr-3" />
@@ -231,13 +253,11 @@ export default function CreatePavilionForm() {
                   </label>
                   <input
                     type="text"
-                    required
-                    value={pavilionData.name}
-                    onChange={(e) => handlePavilionChange('name', e.target.value)}
-                    className={`w-full px-3 py-2 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 ${errors.name ? 'focus:ring-red-500' : 'focus:ring-blue-500'}`}
+                    {...register('name')}
+                    className={`w-full px-3 py-2 border ${formErrors.name ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 ${formErrors.name ? 'focus:ring-red-500' : 'focus:ring-blue-500'}`}
                     placeholder="Ex: Pavillon Digitalisation"
                   />
-                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                  {formErrors.name && <p className="text-red-500 text-xs mt-1">{formErrors.name.message}</p>}
                 </div>
 
                 <div>
@@ -245,33 +265,29 @@ export default function CreatePavilionForm() {
                     Thème *
                   </label>
                   <select
-                    required
-                    value={pavilionData.theme}
-                    onChange={(e) => handlePavilionChange('theme', e.target.value)}
-                    className={`w-full px-3 py-2 border ${errors.theme ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 ${errors.theme ? 'focus:ring-red-500' : 'focus:ring-blue-500'}`}
+                    {...register('theme')}
+                    className={`w-full px-3 py-2 border ${formErrors.theme ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 ${formErrors.theme ? 'focus:ring-red-500' : 'focus:ring-blue-500'}`}
                   >
                     <option value="">Sélectionner un thème</option>
                     {themes.map(theme => (
                       <option key={theme.value} value={theme.value}>{theme.label}</option>
                     ))}
                   </select>
-                  {errors.theme && <p className="text-red-500 text-xs mt-1">{errors.theme}</p>}
+                  {formErrors.theme && <p className="text-red-500 text-xs mt-1">{formErrors.theme.message}</p>}
                 </div>
               </div>
 
               <div className="mt-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description *
+                  Description
                 </label>
                 <textarea
-                  required
                   rows={3}
-                  value={pavilionData.description}
-                  onChange={(e) => handlePavilionChange('description', e.target.value)}
-                  className={`w-full px-3 py-2 border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 ${errors.description ? 'focus:ring-red-500' : 'focus:ring-blue-500'}`}
+                  {...register('description')}
+                  className={`w-full px-3 py-2 border ${formErrors.description ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 ${formErrors.description ? 'focus:ring-red-500' : 'focus:ring-blue-500'}`}
                   placeholder="Décrivez le pavillon et ses objectifs principaux..."
                 />
-                {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
+                {formErrors.description && <p className="text-red-500 text-xs mt-1">{formErrors.description.message}</p>}
               </div>
             </div>
           </Card>

@@ -99,10 +99,12 @@ export default function ExhibitorSignUpPage() {
   const watchedFields = watch();
   
   // Auto-save functionality
-  const { loadFromLocalStorage, clearLocalStorage } = useFormAutoSave<ExhibitorSignUpFormValues>({ 
+  // SECURITY: Exclude password fields from localStorage
+  const { loadFromLocalStorage, clearLocalStorage } = useFormAutoSave<ExhibitorSignUpFormValues>({
     key: 'exhibitor-signup-draft',
     data: watchedFields,
-    delay: 2000
+    delay: 2000,
+    excludeFields: ['password', 'confirmPassword'] // Never save passwords
   });
   
   // Email validation

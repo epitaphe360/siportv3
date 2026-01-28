@@ -11,6 +11,9 @@ import { SkipToContent } from './components/common/SkipToContent';
 const HomePage = lazyRetry(() => import('./pages/HomePage'));
 const ExhibitorsPage = lazyRetry(() => import('./pages/ExhibitorsPage'));
 const NetworkingPage = lazyRetry(() => import('./pages/NetworkingPage'));
+const InteractionHistoryPage = lazyRetry(() => import('./pages/networking/InteractionHistoryPage'));
+const NetworkingRoomsPage = lazyRetry(() => import('./pages/networking/NetworkingRoomsPage'));
+const SpeedNetworkingPage = lazyRetry(() => import('./pages/networking/SpeedNetworkingPage'));
 const LoginPage = lazyRetry(() => import('./components/auth/LoginPage'));
 const DemoAccountsPage = lazyRetry(() => import('./pages/DemoAccountsPage'));
 const RegisterPage = lazyRetry(() => import('./components/auth/RegisterPage'));
@@ -148,6 +151,7 @@ import { initializeAuth } from './lib/initAuth';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import DevSubscriptionSwitcher from './components/dev/DevSubscriptionSwitcher';
 import { usePushNotifications } from './hooks/usePushNotifications';
+import { useAuthStore } from './store/authStore';
 
 // Import cleanup functions for dev debugging (not used in production)
 if (import.meta.env.DEV) {
@@ -173,6 +177,39 @@ const App = () => {
     initializeAuth().catch(err => {
       console.error('Erreur initialisation auth:', err);
     });
+  }, []);
+
+  // SECURITY: Session timeout - track user activity
+  React.useEffect(() => {
+    const { checkSessionTimeout, updateActivity, isAuthenticated } = useAuthStore.getState();
+
+    // Check timeout on mount
+    if (isAuthenticated) {
+      checkSessionTimeout();
+      updateActivity(); // Initialize activity tracking
+    }
+
+    // Track user activity events
+    const activityEvents = ['mousedown', 'keydown', 'scroll', 'touchstart', 'click'];
+
+    const handleActivity = () => {
+      const state = useAuthStore.getState();
+      if (state.isAuthenticated) {
+        state.updateActivity();
+      }
+    };
+
+    // Add event listeners
+    activityEvents.forEach(event => {
+      window.addEventListener(event, handleActivity, { passive: true });
+    });
+
+    // Cleanup on unmount
+    return () => {
+      activityEvents.forEach(event => {
+        window.removeEventListener(event, handleActivity);
+      });
+    };
   }, []);
 
   // BUGFIX: Removed getCurrentLanguage from deps to prevent unnecessary re-renders
@@ -206,6 +243,9 @@ const App = () => {
             <Route path={ROUTES.PAVILIONS} element={<PavillonsPage />} />
             <Route path={ROUTES.METRICS} element={<MetricsPage />} />
             <Route path={ROUTES.NETWORKING} element={<NetworkingPage />} />
+            <Route path={ROUTES.INTERACTION_HISTORY} element={<ProtectedRoute><InteractionHistoryPage /></ProtectedRoute>} />
+            <Route path={ROUTES.NETWORKING_ROOMS} element={<ProtectedRoute><NetworkingRoomsPage /></ProtectedRoute>} />
+            <Route path={ROUTES.SPEED_NETWORKING} element={<ProtectedRoute><SpeedNetworkingPage /></ProtectedRoute>} />
             <Route path={ROUTES.EVENTS} element={<EventsPage />} />
             <Route path={ROUTES.LOGIN} element={<LoginPage />} />
             <Route path={ROUTES.DEMO_ACCOUNTS} element={<DemoAccountsPage />} />

@@ -171,11 +171,16 @@ interface ChatConversationDB {
 
 interface ChatMessageDB {
   id: string;
-  conversation_id: string;
-  sender_id: string;
-  text: string;
+  conversation_id?: string;
+  sender_id?: string;
+  sender?: { id: string; name?: string };
+  receiver_id?: string;
+  text?: string;
+  content?: string;
+  message_type?: string;
   created_at: string;
-  read: boolean;
+  read?: boolean;
+  read_at?: string | null;
 }
 
 interface UserSignupData {
@@ -412,8 +417,9 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      const { data: exhibitorsData, error: exhibitorsError } = await safeSupabase
-        .from('exhibitors')
+      // Use exhibitor_profiles as the source of truth
+      const { data: profiles, error: profilesError } = await safeSupabase
+        .from('exhibitor_profiles')
         .select(`
           id,
           user_id,
@@ -423,17 +429,71 @@ export class SupabaseService {
           description,
           logo_url,
           website,
-          verified,
-          featured,
-          contact_info
+          email,
+          phone,
+          stand_number
         `);
 
-      if (exhibitorsError) throw exhibitorsError;
+      if (profilesError) {
+          // If exhibitor_profiles invalid, fallback to old exhibitors table logic if needed, 
+          // but for now let's assume profiles is the way foward.
+          // Or check if error is "relation does not exist" -> then fallback.
+          console.warn('Erreur exhibitor_profiles, essai fallback exhibitors:', profilesError.message);
+          throw profilesError; 
+      }
+      
+      return (profiles || []).map((p: any) => ({
+        id: p.id,
+        userId: p.user_id,
+        companyName: p.company_name || 'Sans nom',
+        category: (p.category as any) || 'startup',
+        sector: p.sector || 'General',
+        description: p.description || '',
+        logo: p.logo_url,
+        website: p.website,
+        verified: false, 
+        featured: false,
+        contactInfo: {
+            email: p.email || '',
+            phone: p.phone || '',
+            address: '',
+            city: '',
+            country: 'France' // Default
+        },
+        products: [], // Profiles don't have products directly joined yet in this query
+        availability: [],
+        miniSite: null,
+        certifications: [],
+        markets: [],
+        standNumber: p.stand_number
+      }));
 
-      return (exhibitorsData || []).map(this.transformExhibitorDBToExhibitor);
     } catch (error) {
-      console.error('Erreur lors de la récupération des exposants:', error);
-      return [];
+       // Fallback to original implementation if table not found (for safety)
+       try {
+          const { data: exhibitorsData, error: exhibitorsError } = await safeSupabase
+            .from('exhibitors')
+            .select(`
+              id,
+              user_id,
+              company_name,
+              category,
+              sector,
+              description,
+              logo_url,
+              website,
+              verified,
+              featured,
+              contact_info
+            `);
+    
+          if (exhibitorsError) throw exhibitorsError;
+    
+          return (exhibitorsData || []).map(this.transformExhibitorDBToExhibitor);
+       } catch (e) {
+          console.error('Erreur lors de la récupération des exposants (toutes tables):', e);
+          return [];
+       }
     }
   }
 
@@ -1488,19 +1548,31 @@ export class SupabaseService {
           msg.sender_id !== userId && !msg.read
         ).length;
 
+        // FIX N+1: Transform and include all messages in the conversation
+        const messages = (conv.messages || []).map((msg: ChatMessageDB) => ({
+          id: msg.id,
+          senderId: msg.sender?.id || msg.sender_id || '',
+          receiverId: msg.receiver_id || '',
+          content: msg.content || msg.text || '',
+          type: (msg.message_type || 'text') as 'text' | 'file' | 'system',
+          timestamp: new Date(msg.created_at),
+          read: msg.read_at !== null
+        }));
+
         return {
           id: conv.id,
           participants: conv.participants,
           lastMessage: lastMessage ? {
             id: lastMessage.id,
-            senderId: lastMessage.sender?.id || '',
+            senderId: lastMessage.sender?.id || lastMessage.sender_id || '',
             receiverId: conv.participants.find((id: string) => id !== lastMessage.sender?.id) || '',
-            content: lastMessage.content,
-            type: lastMessage.message_type,
+            content: lastMessage.content || lastMessage.text || '',
+            type: (lastMessage.message_type || 'text') as 'text' | 'file' | 'system',
             timestamp: new Date(lastMessage.created_at),
             read: lastMessage.read_at !== null
-          } : null,
+          } : undefined,
           unreadCount, // ✅ Maintenant implémenté !
+          messages, // FIX N+1: Return messages to avoid separate queries
           createdAt: new Date(conv.created_at),
           updatedAt: new Date(conv.updated_at)
         };
@@ -2708,24 +2780,57 @@ export class SupabaseService {
     if (!this.checkSupabaseConnection()) return [];
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await safeSupabase
+      // 1. Fetch appointments raw
+      const { data: appointmentsRaw, error } = await safeSupabase
         .from('appointments')
-        .select(`
-          *,
-          exhibitor:exhibitors!exhibitor_id(id, user_id, company_name, logo_url),
-          visitor:users!visitor_id(id, name, email)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+         console.warn("Error fetching appointments raw:", error.message);
+         throw error;
+      }
       
-      // Transformer pour ajouter exhibitorUserId pour le filtrage dans le dashboard
-      return (data || []).map(apt => ({
-        ...apt,
-        exhibitorUserId: apt.exhibitor?.user_id || null
-      }));
+      if (!appointmentsRaw || appointmentsRaw.length === 0) return [];
+
+      const visitorIds = [...new Set(appointmentsRaw.map(a => a.visitor_id))];
+      const exhibitorIds = [...new Set(appointmentsRaw.map(a => a.exhibitor_id))];
+
+      // 2. Fetch related data in parallel
+      const [visitorsResponse, profilesResponse] = await Promise.all([
+         safeSupabase.from('users').select('id, name, email').in('id', visitorIds),
+         safeSupabase.from('exhibitor_profiles').select('id, user_id, company_name, logo_url').in('user_id', exhibitorIds)
+      ]);
+
+      const visitorsMap = new Map(visitorsResponse.data?.map(v => [v.id, v]) || []);
+      const profilesMap = new Map(profilesResponse.data?.map(p => [p.user_id, p]) || []);
+
+      // 3. Merge data
+      return appointmentsRaw.map(apt => {
+          const visitor = visitorsMap.get(apt.visitor_id);
+          const profile = profilesMap.get(apt.exhibitor_id); // exhibitor_id is user_id of exhibitor
+
+          return {
+            ...apt,
+            visitor: visitor ? { 
+                id: visitor.id, 
+                name: visitor.name, 
+                email: visitor.email 
+            } : undefined,
+            exhibitor: profile ? {
+                id: profile.user_id, 
+                companyName: profile.company_name,
+                logo: profile.logo_url,
+            } : {
+                // Creates a fallback if profile is missing but we have the ID (maybe fetch 'users' for name?)
+                id: apt.exhibitor_id,
+                companyName: 'Exposant',
+            },
+            exhibitorUserId: apt.exhibitor_id
+          };
+      });
+
     } catch (error) {
-      // Ignorer les erreurs réseau silencieusement
       if (error instanceof Error && !error.message.includes('Failed to fetch')) {
         console.error('Erreur lors de la récupération des rendez-vous:', error);
       }
@@ -2840,7 +2945,17 @@ export class SupabaseService {
 
   // ==================== USERS ====================
 
-  static async getUsers(): Promise<User[]> {
+  /**
+   * Get users with optional filtering and pagination
+   * OPTIMIZATION: Prevents over-fetching by adding filters and limits
+   */
+  static async getUsers(options?: {
+    sector?: string;
+    type?: User['type'];
+    limit?: number;
+    offset?: number;
+    status?: string;
+  }): Promise<User[]> {
     if (!this.checkSupabaseConnection()) {
       console.warn('⚠️ Supabase non configuré');
       return [];
@@ -2848,10 +2963,32 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      const { data, error } = await safeSupabase
+      // OPTIMIZATION: Select only needed fields instead of '*'
+      let query = safeSupabase
         .from('users')
-        .select('*')
+        .select('id, email, name, type, profile, status, created_at, visitor_level, partner_tier')
         .order('created_at', { ascending: false });
+
+      // Apply filters
+      if (options?.type) {
+        query = query.eq('type', options.type);
+      }
+
+      if (options?.status) {
+        query = query.eq('status', options.status);
+      }
+
+      if (options?.sector) {
+        // Filter by sector if user profile contains it
+        query = query.contains('profile->sectors', [options.sector]);
+      }
+
+      // Apply pagination
+      const limit = options?.limit || 50; // Default 50 items
+      const offset = options?.offset || 0;
+      query = query.range(offset, offset + limit - 1);
+
+      const { data, error } = await query;
 
       if (error) {
         console.warn('Erreur lors de la récupération des utilisateurs:', error.message);

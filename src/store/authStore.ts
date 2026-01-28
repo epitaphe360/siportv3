@@ -58,6 +58,10 @@ interface AuthState {
   logout: () => Promise<void>;
   setUser: (user: User) => void;
   updateProfile: (profileData: Partial<UserProfile>) => Promise<void>;
+
+  // SECURITY: Session timeout management
+  checkSessionTimeout: () => boolean;
+  updateActivity: () => void;
 }
 
 // Helper: profile minimal par défaut pour satisfaire l'interface UserProfile
@@ -91,6 +95,9 @@ const minimalUserProfile = (overrides: Partial<User['profile']> = {}): User['pro
 
 // Production authentication only via Supabase
 
+// SECURITY: Session timeout configuration
+const SESSION_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes of inactivity
+let sessionTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
 const useAuthStore = create<AuthState>()(
   persist(
@@ -498,9 +505,47 @@ const useAuthStore = create<AuthState>()(
       if (errorMsg.includes('RLS') || errorMsg.includes('PGRST116')) {
         console.error('🔒 PROBLÈME RLS DÉTECTÉ - Vérifiez les politiques de sécurité en base de données');
       }
-      
+
       throw error instanceof Error ? error : new Error('Erreur lors de la mise à jour du profil');
     }
+  },
+
+  // SECURITY: Check if session has timed out due to inactivity
+  checkSessionTimeout: () => {
+    const lastActivity = localStorage.getItem('lastActivity');
+    if (lastActivity) {
+      const elapsed = Date.now() - parseInt(lastActivity, 10);
+      if (elapsed > SESSION_TIMEOUT_MS) {
+        console.log('[Auth] Session timeout - logging out due to inactivity');
+        get().logout();
+        return false;
+      }
+    }
+    return true;
+  },
+
+  // SECURITY: Update last activity timestamp and reset timeout timer
+  updateActivity: () => {
+    const state = get();
+
+    // Only track activity if user is authenticated
+    if (!state.isAuthenticated) {
+      return;
+    }
+
+    // Update last activity timestamp
+    localStorage.setItem('lastActivity', Date.now().toString());
+
+    // Clear existing timeout
+    if (sessionTimeoutId) {
+      clearTimeout(sessionTimeoutId);
+    }
+
+    // Set new timeout
+    sessionTimeoutId = setTimeout(() => {
+      console.log('[Auth] Session expired due to inactivity');
+      get().logout();
+    }, SESSION_TIMEOUT_MS);
   }
 }),
     {

@@ -254,6 +254,7 @@ export interface ChatConversation {
   unreadCount: number;
   createdAt: Date;
   updatedAt: Date;
+  messages?: ChatMessage[]; // FIX N+1: Include messages to avoid separate queries
 }
 
 export interface NetworkingRecommendation {

@@ -43,7 +43,7 @@ test.describe('Rendez-vous', () => {
       await page.waitForTimeout(1000);
 
       // Cliquer sur "Prendre rendez-vous"
-      const appointmentButton = page.locator('button:has-text(/rendez-vous|appointment|réserver/i)').first();
+      const appointmentButton = page.locator('button').filter({ hasText: /rendez-vous|appointment|réserver/i }).first();
 
       if (await appointmentButton.isVisible()) {
         await appointmentButton.click();
@@ -74,11 +74,22 @@ test.describe('Rendez-vous', () => {
       await page.goto('/appointments');
 
       await expect(page.locator('h1, h2')).toContainText(/rendez-vous|appointments/i);
+      
+      // Wait for loading to finish (checking for content appearance instead of assuming 0 pulse elements globally)
+      // because some components (footer, badges) might have permanent pulse effects
+      const item = page.locator('[data-testid="appointment-item"]');
+      const card = page.locator('.appointment-card');
+      const msg = page.locator('text=/aucun rendez-vous|no appointments|Aucun rendez-vous/i');
+      const appointmentOrMessage = item.or(card).or(msg).first();
+      await expect(appointmentOrMessage).toBeVisible({ timeout: 15000 });
 
       // Vérifier qu'il y a au moins un rendez-vous affiché (ou message "Aucun rendez-vous")
       const hasAppointments = await page.locator('[data-testid="appointment-item"], .appointment-card').first().isVisible().catch(() => false);
-      const noAppointmentsMessage = await page.locator('text=/aucun rendez-vous|no appointments/i').isVisible().catch(() => false);
+      const noAppointmentsMessage = await page.locator('text=/aucun rendez-vous|no appointments|Aucun rendez-vous/i').isVisible().catch(() => false);
 
+      if (!hasAppointments && !noAppointmentsMessage) {
+          console.log('DEBUG: Page content', await page.content());
+      }
       expect(hasAppointments || noAppointmentsMessage).toBeTruthy();
     });
 
@@ -123,7 +134,8 @@ test.describe('Rendez-vous', () => {
       await page.goto('/appointments');
 
       // Aller sur la gestion du calendrier
-      const calendarLink = page.locator('a:has-text(/calendrier|calendar|disponibilités/i)').first();
+      // Utiliser filter pour le regex
+      const calendarLink = page.locator('a').filter({ hasText: /calendrier|calendar|disponibilités/i }).first();
 
       if (await calendarLink.isVisible()) {
         await calendarLink.click();
@@ -137,7 +149,8 @@ test.describe('Rendez-vous', () => {
       await login(page, 'exhibitor');
       await page.goto('/appointments');
 
-      const availabilityButton = page.locator('button:has-text(/disponibilités|availability|créneaux/i)').first();
+      // Utiliser filter pour le regex
+      const availabilityButton = page.locator('button').filter({ hasText: /disponibilités|availability|créneaux/i }).first();
 
       if (await availabilityButton.isVisible()) {
         await availabilityButton.click();

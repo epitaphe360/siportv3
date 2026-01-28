@@ -22,10 +22,13 @@ const vipVisitorSchema = z.object({
   firstName: z.string().min(2, 'Prénom requis'),
   lastName: z.string().min(2, 'Nom requis'),
   email: z.string().email('Email invalide'),
-  password: z.string().min(8, 'Minimum 8 caractères').regex(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-    'Doit contenir majuscule, minuscule et chiffre'
-  ),
+  password: z.string()
+    .min(12, 'Le mot de passe doit contenir au moins 12 caractères')
+    .max(128, 'Le mot de passe ne doit pas dépasser 128 caractères')
+    .regex(/[A-Z]/, 'Doit contenir une majuscule')
+    .regex(/[a-z]/, 'Doit contenir une minuscule')
+    .regex(/[0-9]/, 'Doit contenir un chiffre')
+    .regex(/[!@#$%^&*]/, 'Doit contenir un caractère spécial'),
   confirmPassword: z.string(),
   phone: z.string().min(8, 'Téléphone requis'),
   country: z.string().min(2, 'Pays requis'),

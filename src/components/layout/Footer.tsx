@@ -142,8 +142,9 @@ export const Footer: React.FC = memo(() => {
             © {currentYear} SIPORTS GLOBAL SYMPOSIUM. ALL RIGHTS RESERVED.
           </div>
           <div className="flex items-center gap-8">
-             <Link to="#" className="text-slate-500 hover:text-white text-[10px] font-black uppercase tracking-widest transition-colors">Confidentialité</Link>
-             <Link to="#" className="text-slate-500 hover:text-white text-[10px] font-black uppercase tracking-widest transition-colors">Mentions Légales</Link>
+             <Link to={ROUTES.PRIVACY} className="text-slate-500 hover:text-white text-[10px] font-black uppercase tracking-widest transition-colors">Confidentialité</Link>
+             <Link to={ROUTES.TERMS} className="text-slate-500 hover:text-white text-[10px] font-black uppercase tracking-widest transition-colors">Mentions Légales</Link>
+             <Link to={ROUTES.COOKIES} className="text-slate-500 hover:text-white text-[10px] font-black uppercase tracking-widest transition-colors">Cookies</Link>
              <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/10">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
                 <span className="text-[9px] font-black text-emerald-500 uppercase">System Active</span>

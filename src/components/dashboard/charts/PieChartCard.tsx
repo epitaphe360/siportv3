@@ -46,6 +46,31 @@ export function PieChartCard({
     );
   }
 
+  // Empty state: No data available
+  if (!data || data.length === 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6 }}
+      >
+        <Card className="p-6 h-full flex flex-col">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">{title}</h3>
+          <div className="flex flex-col items-center justify-center flex-1" style={{ minHeight: height }}>
+            <div className="text-gray-400 text-center">
+              <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+              </svg>
+              <p className="text-sm font-medium text-gray-500">Aucune donnée disponible</p>
+              <p className="text-xs text-gray-400 mt-1">Les données apparaîtront ici une fois disponibles</p>
+            </div>
+          </div>
+        </Card>
+      </motion.div>
+    );
+  }
+
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
   const renderLabel = (entry: any) => {

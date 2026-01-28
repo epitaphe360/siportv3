@@ -6,50 +6,50 @@
  * pour des raisons de sécurité. Ne jamais hardcoder les mots de passe en production.
  */
 
-const TEST_PASSWORD = process.env.TEST_PASSWORD || 'TestPassword123!';
+const TEST_PASSWORD = process.env.TEST_PASSWORD || 'Test@123456';
 
 export const TEST_USERS = {
   admin: {
-    email: 'admin.siports@siports.com',
+    email: 'admin-test@test.siport.com',
     password: TEST_PASSWORD,
     firstName: 'Admin',
-    lastName: 'SIPORTS',
+    lastName: 'Test',
     type: 'admin'
   },
 
   visitor: {
-    email: 'visiteur@siports.com',
+    email: 'visitor-free@test.siport.com',
     password: TEST_PASSWORD,
     firstName: 'Jean',
-    lastName: 'Visiteur',
+    lastName: 'Dupont',
     type: 'visitor',
-    company: 'Test Company',
-    position: 'Directeur Général / CEO',
+    company: 'Tech Solutions Inc',
+    position: 'Directeur Technique',
     phone: '+33612345678',
     country: 'FR'
   },
 
   exhibitor: {
-    email: 'exposant@siports.com',
+    email: 'exhibitor-9m@test.siport.com',
     password: TEST_PASSWORD,
-    firstName: 'Marie',
-    lastName: 'Exposant',
+    firstName: 'Thomas',
+    lastName: 'Dubois',
     type: 'exhibitor',
-    company: 'Expo Test SA',
-    position: 'Responsable Commercial',
-    phone: '+33698765432',
+    company: 'StartUp Port Innovations',
+    position: 'CEO',
+    phone: '+33678901234',
     country: 'FR'
   },
 
   partner: {
-    email: 'partenaire@siports.com',
+    email: 'partner-museum@test.siport.com',
     password: TEST_PASSWORD,
     firstName: 'Pierre',
-    lastName: 'Partenaire',
+    lastName: 'Leclerc',
     type: 'partner',
-    company: 'Partner Corp',
-    position: 'Directeur des Partenariats',
-    phone: '+33687654321',
+    company: 'Maritime Museum Foundation',
+    position: 'Director',
+    phone: '+33145678901',
     country: 'FR'
   },
 

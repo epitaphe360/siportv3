@@ -144,7 +144,7 @@ export default function VisitorFreeRegistration() {
 
       setTimeout(() => {
         navigate(`${ROUTES.SIGNUP_CONFIRMATION}?email=${encodeURIComponent(data.email)}&type=visitor&level=free`);
-      }, 3000);
+      }, 6000);
 
     } catch (error: any) {
       console.error('Erreur inscription:', error);

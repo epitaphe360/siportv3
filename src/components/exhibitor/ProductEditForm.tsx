@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { 
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import {
   Save,
   ArrowLeft,
   Tag,
@@ -13,6 +16,30 @@ import { SupabaseService } from '../../services/supabaseService';
 import { Product } from '../../types';
 import MultiImageUploader from '../ui/MultiImageUploader';
 
+// Zod validation schema
+const productEditSchema = z.object({
+  name: z.string()
+    .min(2, 'Le nom du produit doit contenir au moins 2 caractères')
+    .max(200, 'Le nom ne doit pas dépasser 200 caractères'),
+  description: z.string()
+    .max(1000, 'La description ne doit pas dépasser 1000 caractères')
+    .optional()
+    .or(z.literal('')),
+  category: z.string()
+    .min(1, 'La catégorie est requise')
+    .max(100, 'La catégorie ne doit pas dépasser 100 caractères'),
+  price: z.number()
+    .min(0, 'Le prix doit être positif')
+    .optional(),
+  specifications: z.string()
+    .max(1000, 'Les spécifications ne doivent pas dépasser 1000 caractères')
+    .optional()
+    .or(z.literal('')),
+  featured: z.boolean().optional()
+});
+
+type ProductFormData = z.infer<typeof productEditSchema>;
+
 interface ProductEditFormProps {
   productId?: string;
   exhibitorId: string;
@@ -21,69 +48,71 @@ interface ProductEditFormProps {
   onCancel: () => void;
 }
 
-export default function ProductEditForm({ 
-  productId, 
-  exhibitorId, 
-  product, 
-  onSave, 
-  onCancel 
+export default function ProductEditForm({
+  productId,
+  exhibitorId,
+  product,
+  onSave,
+  onCancel
 }: ProductEditFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    category: '',
-    images: [] as string[],
-    specifications: '',
-    price: '',
-    featured: false
+  const [images, setImages] = useState<string[]>([]);
+
+  // React Hook Form with Zod validation
+  const {
+    register,
+    handleSubmit: handleFormSubmit,
+    formState: { errors },
+    reset,
+    watch
+  } = useForm<ProductFormData>({
+    resolver: zodResolver(productEditSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+      category: '',
+      specifications: '',
+      price: undefined,
+      featured: false
+    }
   });
+
+  // Watch form values for preview
+  const formValues = watch();
 
   // Remplir le formulaire avec les données du produit existant
   useEffect(() => {
     if (product) {
-      setFormData({
+      reset({
         name: product.name || '',
         description: product.description || '',
         category: product.category || '',
-        images: product.images || [],
         specifications: product.specifications || '',
-        price: product.price ? product.price.toString() : '',
+        price: product.price || undefined,
         featured: product.featured || false
       });
+      setImages(product.images || []);
     }
-  }, [product]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target as HTMLInputElement;
-    
-    if (type === 'checkbox') {
-      const checked = (e.target as HTMLInputElement).checked;
-      setFormData(prev => ({ ...prev, [name]: checked }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
-    }
-  };
+  }, [product, reset]);
 
   const handleImagesUploaded = (urls: string[]) => {
-    setFormData(prev => ({ ...prev, images: urls }));
+    setImages(urls);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (data: ProductFormData) => {
     setIsLoading(true);
 
     try {
       // Préparer les données pour l'envoi
       const productData = {
         exhibitorId,
-        name: formData.name,
-        description: formData.description,
-        category: formData.category,
-        images: formData.images,
-        specifications: formData.specifications,
-        price: formData.price ? parseFloat(formData.price) : undefined,
-        featured: formData.featured
+        name: data.name,
+        description: data.description || '',
+        category: data.category,
+        images: images,
+        specifications: data.specifications || '',
+        price: data.price,
+        featured: data.featured || false
       };
 
       if (productId) {
@@ -119,8 +148,8 @@ export default function ProductEditForm({
             <ArrowLeft className="h-4 w-4 mr-2" />
             Annuler
           </Button>
-          <Button 
-            onClick={handleSubmit} 
+          <Button
+            onClick={handleFormSubmit(handleSubmit)}
             disabled={isLoading}
           >
             {isLoading ? (
@@ -147,27 +176,30 @@ export default function ProductEditForm({
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Nom du produit *
                   </label>
-                  <input type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                   aria-label="Name" />
+                  <input
+                    type="text"
+                    {...register('name')}
+                    className={`w-full px-3 py-2 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    placeholder="Nom du produit"
+                  />
+                  {errors.name && (
+                    <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+                  )}
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Description *
+                    Description
                   </label>
                   <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
+                    {...register('description')}
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
+                    className={`w-full px-3 py-2 border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    placeholder="Description du produit"
                   />
+                  {errors.description && (
+                    <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+                  )}
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -175,16 +207,17 @@ export default function ProductEditForm({
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Catégorie *
                     </label>
-                    <input type="text"
-                      name="category"
-                      value={formData.category}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    <input
+                      type="text"
+                      {...register('category')}
+                      className={`w-full px-3 py-2 border ${errors.category ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
                       placeholder="ex: Logiciels, Équipements..."
-                      required
-                     aria-label="ex: Logiciels, Équipements..." />
+                    />
+                    {errors.category && (
+                      <p className="text-red-500 text-sm mt-1">{errors.category.message}</p>
+                    )}
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Prix (€)
@@ -193,16 +226,18 @@ export default function ProductEditForm({
                       <div className="bg-gray-100 px-3 py-2 rounded-l-lg border border-gray-300 border-r-0">
                         <DollarSign className="h-5 w-5 text-gray-500" />
                       </div>
-                      <input type="number"
-                        name="price"
-                        value={formData.price}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      <input
+                        type="number"
+                        {...register('price', { valueAsNumber: true })}
+                        className={`w-full px-3 py-2 border ${errors.price ? 'border-red-500' : 'border-gray-300'} rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
                         placeholder="ex: 1999.99"
                         min="0"
                         step="0.01"
-                       aria-label="ex: 1999.99" />
+                      />
                     </div>
+                    {errors.price && (
+                      <p className="text-red-500 text-sm mt-1">{errors.price.message}</p>
+                    )}
                   </div>
                 </div>
                 
@@ -211,22 +246,21 @@ export default function ProductEditForm({
                     Spécifications techniques
                   </label>
                   <textarea
-                    name="specifications"
-                    value={formData.specifications}
-                    onChange={handleInputChange}
+                    {...register('specifications')}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full px-3 py-2 border ${errors.specifications ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     placeholder="Dimensions, matériaux, caractéristiques techniques..."
                   />
+                  {errors.specifications && (
+                    <p className="text-red-500 text-sm mt-1">{errors.specifications.message}</p>
+                  )}
                 </div>
-                
+
                 <div className="flex items-center">
                   <input
                     type="checkbox"
-                    name="featured"
                     id="featured"
-                    checked={formData.featured}
-                    onChange={handleInputChange}
+                    {...register('featured')}
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <label htmlFor="featured" className="ml-2 block text-sm text-gray-700">
@@ -246,7 +280,7 @@ export default function ProductEditForm({
               
               <MultiImageUploader
                 onImagesUploaded={handleImagesUploaded}
-                currentImages={formData.images}
+                currentImages={images}
                 bucketName="products"
                 folderName={exhibitorId}
                 label="Images du produit"
@@ -267,10 +301,10 @@ export default function ProductEditForm({
               </h3>
               
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                {formData.images?.length > 0 ? (
-                  <img 
-                    src={formData.images[0]}
-                    alt={formData.name} 
+                {images?.length > 0 ? (
+                  <img
+                    src={images[0]}
+                    alt={formValues.name || 'Produit'}
                     className="w-full h-48 object-cover"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
@@ -282,30 +316,30 @@ export default function ProductEditForm({
                     <Tag className="h-12 w-12 text-gray-400" />
                   </div>
                 )}
-                
+
                 <div className="p-4">
                   <div className="flex items-center justify-between mb-2">
                     <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
-                      {formData.category || 'Catégorie'}
+                      {formValues.category || 'Catégorie'}
                     </span>
-                    {formData.featured && (
+                    {formValues.featured && (
                       <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">
                         Vedette
                       </span>
                     )}
                   </div>
-                  
+
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    {formData.name || 'Nom du produit'}
+                    {formValues.name || 'Nom du produit'}
                   </h3>
-                  
+
                   <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                    {formData.description || 'Description du produit...'}
+                    {formValues.description || 'Description du produit...'}
                   </p>
-                  
-                  {formData.price && (
+
+                  {formValues.price && (
                     <p className="text-lg font-bold text-blue-600">
-                      {parseFloat(formData.price).toLocaleString('fr-FR', {
+                      {formValues.price.toLocaleString('fr-FR', {
                         style: 'currency',
                         currency: 'EUR'
                       })}

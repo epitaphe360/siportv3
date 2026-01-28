@@ -26,9 +26,10 @@ import { motion } from 'framer-motion';
 import { Building, Mail, Lock, User, Phone, Globe, Briefcase, MapPin, Languages, AlertCircle, Save } from 'lucide-react';
 import { sendPartnerPaymentInstructions } from '../../services/partnerSignupEmailService';
 
-// Validation renforcée du mot de passe
+// Validation renforcée du mot de passe (standardisée à 12 caractères minimum)
 const passwordSchema = z.string()
-  .min(8, "Le mot de passe doit contenir au moins 8 caractères")
+  .min(12, "Le mot de passe doit contenir au moins 12 caractères")
+  .max(128, "Le mot de passe ne doit pas dépasser 128 caractères")
   .regex(/[A-Z]/, "Le mot de passe doit contenir au moins une majuscule")
   .regex(/[a-z]/, "Le mot de passe doit contenir au moins une minuscule")
   .regex(/[0-9]/, "Le mot de passe doit contenir au moins un chiffre")
@@ -94,11 +95,12 @@ export default function PartnerSignUpPage() {
   // Validation email en temps réel
   const { suggestion: emailSuggestion } = useEmailValidation(watchedFields.email || '');
 
-  // Sauvegarde automatique
+  // SECURITY: Exclude password fields from localStorage
   const { loadFromLocalStorage, clearLocalStorage } = useFormAutoSave({
     key: 'partner-signup-draft',
     data: watchedFields,
     delay: 2000,
+    excludeFields: ['password', 'confirmPassword'] // Never save passwords
   });
 
   // Charger le brouillon au montage

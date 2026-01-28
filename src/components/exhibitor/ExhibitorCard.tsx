@@ -65,7 +65,7 @@ const ExhibitorCard: React.FC<ExhibitorCardProps> = memo(({
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: index * 0.05 }}
       >
-        <Card hover className="flex items-center p-6">
+        <Card hover className="flex items-center p-6 exhibitor-card" data-testid="exhibitor-card">
           <div className="flex items-center space-x-4 flex-grow">
             <LogoWithFallback
               src={exhibitor.logo}
@@ -150,7 +150,8 @@ const ExhibitorCard: React.FC<ExhibitorCardProps> = memo(({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="group h-full"
+      className="group h-full exhibitor-card"
+      data-testid="exhibitor-card"
     >
       <div className="h-full bg-white rounded-[2rem] border border-gray-100 shadow-xl hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-500 overflow-hidden flex flex-col relative">
         {/* En-tête avec Motif Zellige */}

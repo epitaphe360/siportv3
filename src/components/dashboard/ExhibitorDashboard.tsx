@@ -115,25 +115,12 @@ export default function ExhibitorDashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Intentionally fetch only on mount
 
-  // FIXED: Données réelles pour les graphiques (plus de valeurs hardcodées)
-  // Les données d'engagement seront remplies depuis les vraies métriques quand disponibles
+  // FIXED: Real data only - no more hardcoded simulated values
+  // Display empty state when no data is available instead of fake data
   const visitorEngagementData = React.useMemo(() => {
-    // Retourner des données réelles si disponibles
     const realData = dashboardStats?.weeklyEngagement || [];
-    const hasActivity = realData.some(d => d.visits > 0 || d.interactions > 0);
-    
-    if (hasActivity) return realData;
-
-    // Simulation SIPORTS 2026 pour le test (si pas de données)
-    return [
-      { name: 'Lun', visits: 12, interactions: 4 },
-      { name: 'Mar', visits: 18, interactions: 7 },
-      { name: 'Mer', visits: 25, interactions: 12 },
-      { name: 'Jeu', visits: 15, interactions: 6 },
-      { name: 'Ven', visits: 32, interactions: 15 },
-      { name: 'Sam', visits: 10, interactions: 5 },
-      { name: 'Dim', visits: 5, interactions: 2 },
-    ];
+    // Return real data only, never simulate fake metrics
+    return realData;
   }, [dashboardStats?.weeklyEngagement]);
 
   // FIXED: Utiliser les vraies données de rendez-vous filtrées par l'exposant actuel
@@ -147,17 +134,17 @@ export default function ExhibitorDashboard() {
   }, [appointments, user?.id]);
 
   const appointmentStatusData = React.useMemo(() => [
-    { name: 'Confirmés', value: myAppointments?.filter(a => a.status === 'confirmed').length || 5, color: '#10b981' },
-    { name: 'En attente', value: myAppointments?.filter(a => a.status === 'pending').length || 2, color: '#f59e0b' },
+    { name: 'Confirmés', value: myAppointments?.filter(a => a.status === 'confirmed').length || 0, color: '#10b981' },
+    { name: 'En attente', value: myAppointments?.filter(a => a.status === 'pending').length || 0, color: '#f59e0b' },
     { name: 'Terminés', value: myAppointments?.filter(a => a.status === 'completed').length || 0, color: '#3b82f6' },
   ], [myAppointments]);
 
-  // FIXED: Utiliser les vraies métriques (Simulation si 0 pour test)
+  // FIXED: Real metrics only - no fallback to fake data
   const activityBreakdownData = React.useMemo(() => [
-    { name: 'Vues Mini-Site', value: dashboardStats?.miniSiteViews?.value || 142 },
-    { name: 'Téléchargements', value: dashboardStats?.catalogDownloads?.value || 28 },
-    { name: 'Messages', value: dashboardStats?.messages?.value || 14 },
-    { name: 'Connexions', value: dashboardStats?.connections?.value || 45 },
+    { name: 'Vues Mini-Site', value: dashboardStats?.miniSiteViews?.value || 0 },
+    { name: 'Téléchargements', value: dashboardStats?.catalogDownloads?.value || 0 },
+    { name: 'Messages', value: dashboardStats?.messages?.value || 0 },
+    { name: 'Connexions', value: dashboardStats?.connections?.value || 0 },
   ], [dashboardStats]);
 
   // Indicateur si aucune donnée réelle n'est disponible

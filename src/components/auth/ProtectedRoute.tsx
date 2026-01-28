@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import useAuthStore from '../../store/authStore';
 import { ROUTES } from '../../lib/routes';
 import type { User } from '../../types';
+import { RoleVerificationService } from '../../services/roleVerificationService';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -30,6 +31,8 @@ export default function ProtectedRoute({
 }: ProtectedRouteProps) {
   const { isAuthenticated, user, isLoading } = useAuthStore();
   const [isReady, setIsReady] = useState(false);
+  const [roleVerified, setRoleVerified] = useState<boolean | null>(null);
+  const [verificationError, setVerificationError] = useState<string | null>(null);
 
   // Wait a tick for the store to be fully synchronized
   // This prevents race conditions during navigation
@@ -40,12 +43,55 @@ export default function ProtectedRoute({
     return () => clearTimeout(timer);
   }, []);
 
-  // Also re-check when auth state changes
+  // SECURITY: Verify role with backend when auth state changes
   useEffect(() => {
-    if (isAuthenticated && user) {
-      setIsReady(true);
-    }
-  }, [isAuthenticated, user]);
+    let isMounted = true;
+
+    const verifyRole = async () => {
+      if (!isAuthenticated || !user) {
+        setIsReady(true);
+        setRoleVerified(null);
+        return;
+      }
+
+      try {
+        // Backend verification to prevent localStorage tampering
+        const expectedRole = requiredRole
+          ? (Array.isArray(requiredRole) ? requiredRole[0] : requiredRole)
+          : undefined;
+
+        const verification = await RoleVerificationService.verifyUserRole(
+          user.id,
+          expectedRole
+        );
+
+        if (!isMounted) return;
+
+        if (!verification.isValid) {
+          console.warn('[ProtectedRoute] Role verification failed:', verification.error);
+          setVerificationError(verification.error || 'Role verification failed');
+          setRoleVerified(false);
+        } else {
+          setRoleVerified(true);
+          setVerificationError(null);
+        }
+
+        setIsReady(true);
+      } catch (error) {
+        if (!isMounted) return;
+        console.error('[ProtectedRoute] Role verification error:', error);
+        setVerificationError('Failed to verify permissions');
+        setRoleVerified(false);
+        setIsReady(true);
+      }
+    };
+
+    verifyRole();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isAuthenticated, user, requiredRole]);
 
   // Show nothing while checking (prevents flash of login page)
   if (!isReady || isLoading) {
@@ -75,7 +121,17 @@ export default function ProtectedRoute({
     }
   }
 
-  // Check role authorization if required
+  // SECURITY: Check backend role verification result
+  if (roleVerified === false) {
+    console.warn('[ProtectedRoute] Access denied: Role verification failed');
+    return <Navigate
+      to={ROUTES.FORBIDDEN}
+      replace
+      state={{ error: verificationError || 'Accès non autorisé' }}
+    />;
+  }
+
+  // Check role authorization if required (client-side quick check)
   if (requiredRole) {
     const allowedRoles = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
 
