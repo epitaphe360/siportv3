@@ -1931,11 +1931,11 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      // ⚡ FIX N+1: Utiliser OR pour chercher par id OU user_id en une seule query
+      // Chercher par exhibitor_id dans la table exhibitors
       const { data, error } = await safeSupabase
         .from('exhibitors')
         .select('id, company_name, logo_url, description, website, contact_info')
-        .or(`id.eq.${exhibitorId},user_id.eq.${exhibitorId}`)
+        .eq('id', exhibitorId)
         .maybeSingle();
 
       if (error) throw error;

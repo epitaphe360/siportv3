@@ -215,8 +215,13 @@ export default function MiniSitePreviewSimple() {
   const heroSection = miniSiteData.sections?.find(s => s.type === 'hero');
   const aboutSection = miniSiteData.sections?.find(s => s.type === 'about');
   
-  // Features/Values
-  const features = aboutSection?.content?.features || aboutSection?.content?.values || [];
+  // Features/Values - S'assurer que c'est un array de strings
+  let features = aboutSection?.content?.features || aboutSection?.content?.values || [];
+  if (features.length > 0 && typeof features[0] === 'object') {
+    // Si les features sont des objets, extraire les noms
+    features = features.map((f: any) => f.name || f.title || f.label || '');
+  }
+  features = features.filter((f: any) => typeof f === 'string' && f.trim() !== '');
   
   // Contact info
   const contactInfo = exhibitorData.contact_info || {};
