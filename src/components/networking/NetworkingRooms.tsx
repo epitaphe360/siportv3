@@ -3,7 +3,7 @@ import { Users, Search, LogIn, LogOut, MessageCircle, Shield } from 'lucide-reac
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { supabase } from '../../lib/supabase';
-import { useAuth } from '../../hooks/useAuth';
+import useAuthStore from '../../store/authStore';
 import type { NetworkingRoom } from '../../types/site-builder';
 import toast from 'react-hot-toast';
 
@@ -12,7 +12,7 @@ interface NetworkingRoomsProps {
 }
 
 export const NetworkingRooms: React.FC<NetworkingRoomsProps> = ({ eventId }) => {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const [rooms, setRooms] = useState<NetworkingRoom[]>([]);
   const [filteredRooms, setFilteredRooms] = useState<NetworkingRoom[]>([]);
   const [searchQuery, setSearchQuery] = useState('');

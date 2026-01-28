@@ -33,6 +33,7 @@ export const PartnerEventsPage: React.FC = () => {
 
   async function loadEvents() {
     try {
+      setLoading(true);
       // Charger les événements depuis Supabase
       const { data, error } = await supabase
         .from('events')
@@ -41,7 +42,14 @@ export const PartnerEventsPage: React.FC = () => {
           registrations:event_registrations(count)
         `)
         .order('start_date', { ascending: false })
-          .range(0, 49);
+        .range(0, 49);
+
+      if (error) throw error;
+      if (data) setEvents(data as unknown as Event[]); // Cast might be needed depending on type definitions, but for now assuming it fits
+    } catch (error) {
+      console.error('Error loading events:', error);
+    } finally {
+      setLoading(false);
     }
   }
 

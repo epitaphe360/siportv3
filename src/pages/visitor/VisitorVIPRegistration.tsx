@@ -440,14 +440,14 @@ export default function VisitorVIPRegistration() {
               </div>
 
               {/* Email */}
-              <div>htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                   Email *
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <input
-                    id="email"className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <input
+                    id="email"
                     type="email"
                     {...register('email')}
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -502,14 +502,14 @@ export default function VisitorVIPRegistration() {
 
               {/* Phone and Country */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
                     Téléphone *
                   </label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <input
-                      id="phone" className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input
+                      id="phone"
                       type="tel"
                       {...register('phone')}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -520,15 +520,14 @@ export default function VisitorVIPRegistration() {
                     <p className="text-red-600 text-sm mt-1">{errors.phone.message}</p>
                   )}
                 </div>
-htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
+                <div>
+                  <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
                     Pays *
                   </label>
                   <div className="relative">
                     <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
                     <select
-                      id="country"sName="relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
-                    <select
+                      id="country"
                       {...register('country')}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 appearance-none bg-white"
                     >

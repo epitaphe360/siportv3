@@ -280,14 +280,14 @@ export default function VisitorFreeRegistration() {
                   )}
                 </div>
 
-                <div>htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
+                <div>
+                  <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
                     Pays *
                   </label>
                   <div className="relative">
                     <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
                     <select
-                      id="country" className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
-                    <select
+                      id="country"
                       {...register('country')}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none bg-white"
                     >
@@ -307,10 +307,11 @@ export default function VisitorFreeRegistration() {
 
               {/* Secteur */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="sector" className="block text-sm font-medium text-gray-700 mb-2">
                   Secteur d'activité *
                 </label>
                 <select
+                  id="sector"
                   {...register('sector')}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
@@ -327,12 +328,13 @@ export default function VisitorFreeRegistration() {
               {/* Champs optionnels */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-2">
                     Fonction (optionnel)
                   </label>
                   <div className="relative">
                     <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <input
+                      id="position"
                       type="text"
                       {...register('position')}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -342,10 +344,11 @@ export default function VisitorFreeRegistration() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="company-field" className="block text-sm font-medium text-gray-700 mb-2">
                     Entreprise (optionnel)
                   </label>
                   <input
+                    id="company-field"
                     type="text"
                     {...register('company')}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"

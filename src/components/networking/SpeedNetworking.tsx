@@ -4,7 +4,7 @@ import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { SpeedNetworkingService } from '../../services/speedNetworking';
 import { supabase } from '../../lib/supabase';
-import { useAuth } from '../../hooks/useAuth';
+import useAuthStore from '../../store/authStore';
 import toast from 'react-hot-toast';
 
 interface SpeedNetworkingProps {
@@ -24,7 +24,7 @@ interface SpeedNetworkingMatch {
 }
 
 export const SpeedNetworking: React.FC<SpeedNetworkingProps> = ({ sessionId }) => {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const [session, setSession] = useState<SpeedNetworkingSession | null>(null);
   const [currentMatch, setCurrentMatch] = useState<SpeedNetworkingMatch | null>(null);
   const [timeRemaining, setTimeRemaining] = useState(0);

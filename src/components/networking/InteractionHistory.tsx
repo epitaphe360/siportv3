@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Eye, Heart, MessageCircle, Video, Calendar, Filter } from 'lucide-react';
 import { Badge } from '../ui/Badge';
 import { MatchmakingService } from '../../services/matchmaking';
-import { useAuth } from '../../hooks/useAuth';
+import useAuthStore from '../../store/authStore';
 import type { NetworkingInteraction } from '../../types/site-builder';
 
 export const InteractionHistory: React.FC = () => {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const [interactions, setInteractions] = useState<NetworkingInteraction[]>([]);
   const [filteredInteractions, setFilteredInteractions] = useState<NetworkingInteraction[]>([]);
   const [filterType, setFilterType] = useState<string>('all');
