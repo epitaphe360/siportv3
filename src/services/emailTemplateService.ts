@@ -344,7 +344,7 @@ L'équipe SIPORT 2026
   }
 
   /**
-   * Send email via Supabase Edge Function + SendGrid
+   * Send email via Node.js Backend API
    */
   async sendEmail(
     to: string,
@@ -352,26 +352,36 @@ L'équipe SIPORT 2026
     options?: { from?: string; replyTo?: string }
   ): Promise<boolean> {
     try {
-      logger.info('Sending email', { to, subject: template.subject });
+      logger.info('Sending email via API', { to, subject: template.subject });
 
-      // Call Supabase Edge Function to send email
-      const { data, error } = await supabase.functions.invoke('send-template-email', {
-        body: {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      
+      const response = await fetch(`${API_URL}/api/send-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           to,
-          from: options?.from,
-          replyTo: options?.replyTo,
           subject: template.subject,
           html: template.html,
           text: template.text,
-        },
+          replyTo: options?.replyTo,
+        }),
       });
 
-      if (error) {
-        logger.error('Edge function error', error as Error, { to });
-        // Log for debugging but don't expose internal errors to UI
-        console.error('Email sending failed:', error);
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        logger.error('API Email error', new Error('API failed'), { err });
         return false;
       }
+
+      return true;
+    } catch (error) {
+       logger.error('Email exception', error as Error);
+       return false;
+    }
+  }
 
       if (!data?.success) {
         logger.error('Email sending failed', new Error(data?.error || 'Unknown error'), { to });

@@ -1,0 +1,540 @@
+{
+  "miniSiteTemplate": {
+    "title": "Template Mini-Site Complet",
+    "description": "Données minimum et recommandées pour créer un mini-site professionnel",
+    "version": "1.0",
+    "lastUpdated": "2026-01-28",
+    
+    "sections": [
+      {
+        "id": 1,
+        "name": "FONDATIONS",
+        "description": "Informations de base",
+        "priority": "HIGH",
+        "timeEstimate": "5 min",
+        "fields": [
+          {
+            "key": "name",
+            "label": "Nom de la société",
+            "type": "text",
+            "required": true,
+            "example": "Techlogi Solutions",
+            "validation": {
+              "minLength": 3,
+              "maxLength": 100
+            }
+          },
+          {
+            "key": "tagline",
+            "label": "Slogan/Tagline",
+            "type": "text",
+            "required": false,
+            "example": "Leaders en innovation portuaire",
+            "validation": {
+              "minLength": 5,
+              "maxLength": 100
+            }
+          },
+          {
+            "key": "logo",
+            "label": "Logo de l'entreprise",
+            "type": "file",
+            "required": true,
+            "formats": ["PNG", "JPG"],
+            "maxSize": "500KB",
+            "dimensions": "400x200px idéal",
+            "tip": "Utilisez un PNG avec fond transparent si possible"
+          },
+          {
+            "key": "email",
+            "label": "Email de contact principal",
+            "type": "email",
+            "required": true,
+            "example": "contact@entreprise.ma",
+            "tip": "Cet email recevra les demandes de contact"
+          },
+          {
+            "key": "phone",
+            "label": "Téléphone",
+            "type": "tel",
+            "required": true,
+            "example": "+212 6 12 34 56 78",
+            "tip": "Format international recommandé"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "PRÉSENTATION (Hero Section)",
+        "description": "Première impression, bannière principale",
+        "priority": "HIGH",
+        "timeEstimate": "10 min",
+        "fields": [
+          {
+            "key": "heroTitle",
+            "label": "Titre principal",
+            "type": "text",
+            "required": true,
+            "example": "Bienvenue chez Techlogi Solutions",
+            "maxLength": 60
+          },
+          {
+            "key": "heroSubtitle",
+            "label": "Sous-titre",
+            "type": "text",
+            "required": true,
+            "example": "Experts en automatisation des ports",
+            "maxLength": 100
+          },
+          {
+            "key": "heroImage",
+            "label": "Image de bannière",
+            "type": "file",
+            "required": true,
+            "formats": ["JPG", "WebP"],
+            "dimensions": "1920x600px",
+            "maxSize": "2MB",
+            "tip": "Photo professionnelle haute résolution"
+          },
+          {
+            "key": "heroCTA",
+            "label": "Texte du bouton CTA",
+            "type": "text",
+            "required": false,
+            "example": "Découvrez nos solutions",
+            "default": "En savoir plus"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "À PROPOS (About Section)",
+        "description": "Votre histoire et crédibilité",
+        "priority": "HIGH",
+        "timeEstimate": "15 min",
+        "fields": [
+          {
+            "key": "description",
+            "label": "Description détaillée",
+            "type": "textarea",
+            "required": true,
+            "minLength": 50,
+            "maxLength": 5000,
+            "tip": "Parlez de votre histoire, vos valeurs, vos points forts",
+            "example": "Depuis 2015, Techlogi Solutions accompagne les ports marins..."
+          },
+          {
+            "key": "aboutImage",
+            "label": "Photo de l'entreprise/équipe",
+            "type": "file",
+            "required": false,
+            "formats": ["JPG", "PNG"],
+            "dimensions": "800x600px",
+            "maxSize": "1MB"
+          },
+          {
+            "key": "stats",
+            "label": "Statistiques clés",
+            "type": "array",
+            "required": false,
+            "items": {
+              "label": "Étiquette (ex: Années d'expérience)",
+              "value": "Valeur (ex: 25)"
+            },
+            "tip": "3-5 statistiques pour renforcer la crédibilité"
+          },
+          {
+            "key": "highlights",
+            "label": "Points clés",
+            "type": "array",
+            "required": false,
+            "count": "3-5",
+            "example": ["Leader du marché", "Certifié ISO 9001", "500+ clients satisfaits"]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "PRODUITS/SERVICES",
+        "description": "Votre offre commerciale",
+        "priority": "HIGH",
+        "timeEstimate": "20 min",
+        "minItems": 1,
+        "maxItems": 20,
+        "fields": [
+          {
+            "key": "product.name",
+            "label": "Nom du produit/service",
+            "type": "text",
+            "required": true,
+            "example": "TechPort AI Platform",
+            "maxLength": 100
+          },
+          {
+            "key": "product.description",
+            "label": "Description courte",
+            "type": "textarea",
+            "required": true,
+            "minLength": 10,
+            "maxLength": 500,
+            "example": "Solution IA pour optimiser votre port en temps réel"
+          },
+          {
+            "key": "product.category",
+            "label": "Catégorie",
+            "type": "select",
+            "required": true,
+            "options": ["Logistique", "Technologie", "Consulting", "Équipement", "Services", "Autre"]
+          },
+          {
+            "key": "product.image",
+            "label": "Image du produit",
+            "type": "file",
+            "required": true,
+            "formats": ["JPG", "PNG"],
+            "dimensions": "800x600px",
+            "maxSize": "1MB"
+          },
+          {
+            "key": "product.features",
+            "label": "Caractéristiques principales",
+            "type": "array",
+            "required": true,
+            "count": "3-5",
+            "example": ["Real-time monitoring", "ROI +40%", "Support 24/7"]
+          },
+          {
+            "key": "product.price",
+            "label": "Prix (optionnel)",
+            "type": "number",
+            "required": false,
+            "example": "2500"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "GALERIE PHOTOS",
+        "description": "Vos meilleures images",
+        "priority": "MEDIUM",
+        "timeEstimate": "10 min",
+        "minItems": 0,
+        "recommendedItems": 6,
+        "fields": [
+          {
+            "key": "gallery.images",
+            "label": "Photos",
+            "type": "file-array",
+            "formats": ["JPG", "PNG"],
+            "dimensions": "1200x800px",
+            "maxSize": "1.5MB par image",
+            "tip": "Téléchargez 6-12 photos de qualité professionnelle"
+          },
+          {
+            "key": "gallery.captions",
+            "label": "Légende pour chaque photo",
+            "type": "text-array",
+            "example": "Installation à Port of Rotterdam",
+            "maxLength": 100
+          },
+          {
+            "key": "gallery.categories",
+            "label": "Catégories",
+            "type": "select-array",
+            "options": ["Installations", "Équipes", "Événements", "Produits", "Bureau", "Autre"]
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "name": "ÉQUIPE",
+        "description": "Vos collaborateurs clés",
+        "priority": "MEDIUM",
+        "timeEstimate": "15 min",
+        "minItems": 0,
+        "recommendedItems": 3,
+        "fields": [
+          {
+            "key": "member.name",
+            "label": "Nom complet",
+            "type": "text",
+            "required": true,
+            "example": "Ahmed Bennani"
+          },
+          {
+            "key": "member.role",
+            "label": "Titre/Rôle",
+            "type": "text",
+            "required": true,
+            "example": "Directeur Général"
+          },
+          {
+            "key": "member.bio",
+            "label": "Biographie courte",
+            "type": "textarea",
+            "required": true,
+            "minLength": 20,
+            "maxLength": 500,
+            "example": "10 ans d'expérience en...",
+            "tip": "50-100 mots"
+          },
+          {
+            "key": "member.photo",
+            "label": "Photo portrait",
+            "type": "file",
+            "required": true,
+            "formats": ["JPG", "PNG"],
+            "dimensions": "400x500px",
+            "maxSize": "500KB"
+          },
+          {
+            "key": "member.specialties",
+            "label": "Domaines de compétence",
+            "type": "array",
+            "count": "2-3",
+            "example": ["Logistique", "Innovation", "Management"]
+          },
+          {
+            "key": "member.contacts",
+            "label": "Contacts",
+            "type": "object",
+            "fields": [
+              {
+                "key": "email",
+                "label": "Email",
+                "type": "email",
+                "required": false
+              },
+              {
+                "key": "linkedin",
+                "label": "Profil LinkedIn",
+                "type": "url",
+                "required": false
+              },
+              {
+                "key": "phone",
+                "label": "Téléphone",
+                "type": "tel",
+                "required": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "CERTIFICATIONS",
+        "description": "Vos crédibilités et accréditations",
+        "priority": "LOW",
+        "timeEstimate": "10 min",
+        "minItems": 0,
+        "fields": [
+          {
+            "key": "certification.name",
+            "label": "Nom de la certification",
+            "type": "text",
+            "required": true,
+            "example": "ISO 9001:2015"
+          },
+          {
+            "key": "certification.issuer",
+            "label": "Organisme émetteur",
+            "type": "text",
+            "required": true,
+            "example": "Bureau Veritas"
+          },
+          {
+            "key": "certification.year",
+            "label": "Année d'obtention",
+            "type": "number",
+            "required": true,
+            "example": 2020
+          },
+          {
+            "key": "certification.logo",
+            "label": "Logo de la certification",
+            "type": "file",
+            "formats": ["PNG"],
+            "dimensions": "300x300px",
+            "maxSize": "300KB"
+          },
+          {
+            "key": "certification.description",
+            "label": "Description",
+            "type": "textarea",
+            "maxLength": 200,
+            "example": "Certification de qualité..."
+          },
+          {
+            "key": "certification.validUntil",
+            "label": "Valide jusqu'au",
+            "type": "date",
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "ACTUALITÉS",
+        "description": "Articles et news",
+        "priority": "LOW",
+        "timeEstimate": "15 min",
+        "minItems": 0,
+        "fields": [
+          {
+            "key": "article.title",
+            "label": "Titre",
+            "type": "text",
+            "required": true,
+            "example": "Lancement de notre nouvelle plateforme"
+          },
+          {
+            "key": "article.excerpt",
+            "label": "Résumé (1-2 phrases)",
+            "type": "text",
+            "required": true,
+            "maxLength": 200
+          },
+          {
+            "key": "article.content",
+            "label": "Contenu complet",
+            "type": "richtext",
+            "required": true,
+            "minLength": 100,
+            "maxLength": 5000
+          },
+          {
+            "key": "article.image",
+            "label": "Image de couverture",
+            "type": "file",
+            "formats": ["JPG", "PNG"],
+            "dimensions": "800x600px",
+            "maxSize": "1MB"
+          },
+          {
+            "key": "article.date",
+            "label": "Date de publication",
+            "type": "date",
+            "required": true
+          },
+          {
+            "key": "article.category",
+            "label": "Catégorie",
+            "type": "select",
+            "options": ["Événement", "Innovation", "Partenariat", "Nouveau client", "Autre"]
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "PERSONNALISATION",
+        "description": "Thème et couleurs",
+        "priority": "MEDIUM",
+        "timeEstimate": "5 min",
+        "fields": [
+          {
+            "key": "theme",
+            "label": "Thème",
+            "type": "select",
+            "required": true,
+            "options": ["modern", "classic", "dark", "vibrant"],
+            "default": "modern"
+          },
+          {
+            "key": "primaryColor",
+            "label": "Couleur principale",
+            "type": "color",
+            "default": "#3B82F6",
+            "example": "Bleu"
+          },
+          {
+            "key": "secondaryColor",
+            "label": "Couleur secondaire",
+            "type": "color",
+            "default": "#1F2937",
+            "example": "Gris foncé"
+          },
+          {
+            "key": "accentColor",
+            "label": "Couleur d'accent",
+            "type": "color",
+            "default": "#10B981",
+            "example": "Vert"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "name": "RÉSEAUX SOCIAUX",
+        "description": "Vos présences en ligne",
+        "priority": "MEDIUM",
+        "timeEstimate": "5 min",
+        "fields": [
+          {
+            "key": "social.linkedin",
+            "label": "LinkedIn",
+            "type": "url",
+            "example": "https://linkedin.com/company/..."
+          },
+          {
+            "key": "social.facebook",
+            "label": "Facebook",
+            "type": "url"
+          },
+          {
+            "key": "social.instagram",
+            "label": "Instagram",
+            "type": "url"
+          },
+          {
+            "key": "social.twitter",
+            "label": "Twitter/X",
+            "type": "url"
+          },
+          {
+            "key": "social.youtube",
+            "label": "YouTube",
+            "type": "url"
+          },
+          {
+            "key": "social.whatsapp",
+            "label": "WhatsApp",
+            "type": "tel",
+            "example": "+212 6 12 34 56 78"
+          },
+          {
+            "key": "website",
+            "label": "Site web",
+            "type": "url",
+            "example": "https://exemple.ma"
+          }
+        ]
+      }
+    ],
+
+    "completionEstimates": {
+      "minimal": {
+        "time": "20-30 min",
+        "sections": ["FONDATIONS", "PRODUITS/SERVICES", "À PROPOS"]
+      },
+      "standard": {
+        "time": "1-2 hours",
+        "sections": ["FONDATIONS", "PRÉSENTATION", "À PROPOS", "PRODUITS/SERVICES", "GALERIE", "RÉSEAUX SOCIAUX", "PERSONNALISATION"]
+      },
+      "complete": {
+        "time": "2-4 hours",
+        "sections": ["Toutes les sections"]
+      }
+    },
+
+    "tips": [
+      "Commencez par les sections FONDATIONS et PRODUITS",
+      "Utilisez des images de haute qualité (au moins 1MB)",
+      "Écrivez des descriptions claires et engageantes",
+      "Incluez au moins 3 produits/services",
+      "Testez sur mobile avant de publier",
+      "Mettez à jour régulièrement vos actualités",
+      "Vérifiez tous les liens et contacts"
+    ]
+  }
+}

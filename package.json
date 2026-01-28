@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "start:server": "node server.js",
     "check-env": "node scripts/check-env.cjs",
     "check-env:legacy": "node scripts/check-env.js",
     "build": "vite build && node scripts/inject-build-version.js",
