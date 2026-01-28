@@ -2186,6 +2186,37 @@ export class SupabaseService {
   /**
    * Créer un message de contact
    */
+  static async sendContactEmail(contactData: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    company?: string;
+    subject: string;
+    message: string;
+  }): Promise<void> {
+    try {
+      console.log('📧 Sending contact email via Backend API...');
+      const API_URL = process.env.VITE_API_URL || 'http://localhost:3000';
+      const response = await fetch(`${API_URL}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactData),
+      });
+      
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        console.error('❌ Failed to send contact email:', err);
+        // We log but don't crash, as the message is saved in DB
+      } else {
+        console.log('✅ Contact email sent successfully');
+      }
+    } catch (error) {
+      console.error('❌ Email send failed:', error);
+    }
+  }
+
   static async createContactMessage(messageData: {
     firstName: string;
     lastName: string;

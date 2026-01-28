@@ -37,45 +37,49 @@ export class EmailService {
   private static readonly FROM_EMAIL = process.env.VITE_EMAIL_FROM_ADDRESS || 'noreply@siportevent.com';
   private static readonly SUPPORT_EMAIL = 'support@siportevent.com';
   private static readonly APP_URL = process.env.VITE_APP_URL || 'https://siportevent.com';
+  // Use VITE_API_URL if defined, otherwise default to localhost:5000 (prod) or 3000 (dev)
+  // For safety in this environment, defaulting to localhost:3000 as per server.js default
+  private static readonly API_BASE_URL = process.env.VITE_API_URL || 'http://localhost:3000';
 
   /**
-   * Send email via Supabase Edge Function (Resend)
-   * This is the primary method - all other methods use this
+   * Send email via Node.js Backend API (using SMTP)
+   * Replaces Supabase Edge Function to use local SMTP credentials
    */
   private static async sendViaSupabase(options: SendEmailOptions): Promise<boolean> {
-    if (!supabase) {
-      console.error('❌ Supabase not initialized');
-      return false;
-    }
-
     try {
-      const { data, error } = await supabase.functions.invoke('send-email-notification', {
-        body: {
+      console.log('📧 Sending email via Backend API...', options.to);
+      
+      const response = await fetch(`${this.API_BASE_URL}/api/send-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           to: options.to,
           subject: options.subject,
           html: options.html,
-          text: options.text || options.html,
-          replyTo: options.replyTo || this.SUPPORT_EMAIL,
-        },
+          text: options.text,
+          replyTo: options.replyTo
+        }),
       });
 
-      if (error) {
-        console.error('❌ Email send error:', error);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('❌ Failed to send email via API:', errorData);
+        // Fallback or just return false
         return false;
       }
 
-      console.log('✅ Email sent successfully:', {
-        to: options.to,
-        subject: options.subject,
-        messageId: data?.id,
-      });
-
+      const result = await response.json();
+      console.log('✅ Email sent successfully via API:', result);
       return true;
-    } catch (err) {
-      console.error('❌ Email service error:', err);
+
+    } catch (error) {
+      console.error('❌ Error sending email via API:', error);
       return false;
     }
   }
+
 
   /**
    * Send welcome email to new user

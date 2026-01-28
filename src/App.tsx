@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { lazyRetry } from './utils/lazyRetry';
 const MiniSiteCreationPage = lazyRetry(() => import('./pages/MiniSiteCreationPage'));
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router-dom';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { SkipToContent } from './components/common/SkipToContent';
