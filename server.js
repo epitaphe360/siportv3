@@ -2,6 +2,7 @@
  * Production server with CORS support for Railway deployment
  * Includes email sending via SMTP (nodemailer)
  */
+import 'dotenv/config';
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
