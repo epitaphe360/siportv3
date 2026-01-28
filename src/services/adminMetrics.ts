@@ -187,7 +187,7 @@ export class AdminMetricsService {
     if (!client) return 0;
     try {
       // Compter les fichiers uploadés (approximation)
-      const { data } = await client.from('media_content').select('file_size');
+      const { data } = await client.from('media_contents').select('file_size');
       if (data && Array.isArray(data)) {
         const totalBytes = data.reduce((sum: number, item: any) => sum + (item.file_size || 0), 0);
         const totalGB = totalBytes / (1024 * 1024 * 1024);

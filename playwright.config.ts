@@ -11,14 +11,14 @@ export default defineConfig({
   workers: 1, // 1 worker pour éviter les conflits de screenshots
   retries: 0, // Pas de retry pour aller plus vite
   fullyParallel: false, // Pas de parallélisation
-  maxFailures: 100, // Continuer plus longtemps pour voir tous les bugs
+  maxFailures: 1, // S'arrêter dès la première erreur pour corriger
   reporter: [
     ['list'],
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
     ['json', { outputFile: 'test-results.json' }]
   ],
   use: {
-    baseURL: 'http://localhost:9323',
+    baseURL: 'http://localhost:9324',
     headless: true,
     viewport: { width: 1280, height: 800 },
     actionTimeout: 10000,
@@ -29,10 +29,12 @@ export default defineConfig({
     video: 'off',
   },
   webServer: {
-    command: 'npm run dev',
-    port: 9323,
+    command: 'npm run dev -- --port 9324',
+    port: 9324,
     reuseExistingServer: true,
     timeout: 120000,
+    stdout: 'pipe',
+    stderr: 'pipe',
   },
   projects: [
     { name: 'chromium', use: { browserName: 'chromium' } }

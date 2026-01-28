@@ -98,7 +98,7 @@ export const NetworkingSection: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
               {features.map((feature, index) => (
                 <motion.div
-                  key={feature.titleKey}
+                  key={`feature-${index}`}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
@@ -174,7 +174,7 @@ export const NetworkingSection: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 {stats.map((stat, index) => (
                   <motion.div
-                    key={stat.label}
+                    key={`stat-${index}`}
                     initial={{ opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.6, delay: 0.4 + index * 0.1 }}
@@ -185,7 +185,7 @@ export const NetworkingSection: React.FC = () => {
                       {stat.number}
                     </div>
                     <div className="text-sm text-gray-600">
-                      {stat.label}
+                      {t(stat.labelKey)}
                     </div>
                   </motion.div>
                 ))}
