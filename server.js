@@ -53,6 +53,9 @@ const smtpConfig = {
     user: process.env.SMTP_USER || 'contact@siportevent.com',
     pass: process.env.SMTP_PASS,
   },
+  tls: {
+    rejectUnauthorized: false
+  }
 };
 
 // Create reusable transporter (only if SMTP_PASS is configured)
