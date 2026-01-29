@@ -156,18 +156,47 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       }
 
       // Compter les vues du mini-site (seulement pour exhibitors)
-      if (userProfile?.role === 'exhibitor') {
+      if (userProfile?.role === 'exhibitor' || userProfile?.type === 'exhibitor') {
         try {
-          const { count: miniSiteViewsCount, error } = await supabase
-            .from('minisite_views')
-            .select('*', { count: 'exact', head: true })
-            .eq('exhibitor_id', user.id);
-          
-          if (!error) {
-            stats.miniSiteViews = miniSiteViewsCount || 0;
+          // D'abord trouver l'ID de l'exposant associé à cet utilisateur
+          const { data: exhibitor } = await supabase
+            .from('exhibitors')
+            .select('id')
+            .eq('user_id', user.id)
+            .maybeSingle();
+
+          if (exhibitor) {
+            const { count: miniSiteViewsCount, error } = await supabase
+              .from('minisite_views')
+              .select('*', { count: 'exact', head: true })
+              .eq('exhibitor_id', exhibitor.id);
+            
+            if (!error) {
+              stats.miniSiteViews = miniSiteViewsCount || 0;
+            }
           }
         } catch (err) {
           console.log('Table minisite_views non disponible');
+        }
+      }
+
+      // Compter les vues pour les partenaires
+      if (userProfile?.role === 'partner' || userProfile?.type === 'partner') {
+        try {
+          // D'abord trouver l'ID du partenaire associé à cet utilisateur
+          const { data: partner } = await supabase
+            .from('partners')
+            .select('id, views')
+            .eq('user_id', user.id)
+            .maybeSingle();
+
+          if (partner) {
+            // Pour les partenaires, on utilise soit une table de vues, soit la colonne views
+            // Si la colonne views existe, on l'utilise
+            stats.miniSiteViews = partner.views || 0;
+          }
+        } catch (err) {
+          console.log('Erreur chargement vues partenaire');
         }
       }
 

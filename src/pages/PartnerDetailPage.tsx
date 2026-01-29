@@ -162,6 +162,10 @@ export default function PartnerDetailPage() {
         const data = await SupabaseService.getPartnerById(id);
         if (data) {
           setPartner(data);
+          // Incrémenter les vues
+          SupabaseService.incrementPartnerViews(id).catch(err => 
+            console.error("Erreur incrémentation vues partenaire:", err)
+          );
         } else {
           setError("Partenaire non trouvé");
         }

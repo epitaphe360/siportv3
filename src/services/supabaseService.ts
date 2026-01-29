@@ -48,6 +48,7 @@ interface PartnerUI {
   verified: boolean;
   featured: boolean;
   contributions: string[];
+  views?: number;
   projects?: PartnerProject[];
   enrichedData?: Record<string, unknown>;
 }
@@ -436,7 +437,9 @@ export class SupabaseService {
           website,
           verified,
           featured,
-          contact_info
+          contact_info,
+          mini_site:mini_sites(theme, custom_colors, sections, published, views, last_updated),
+          products(id, exhibitor_id, name, description, category, images, specifications, price, featured)
         `)
         .order('company_name', { ascending: true });
 
@@ -472,7 +475,7 @@ export class SupabaseService {
       const { data, error } = await safeSupabase
         .from('partners')
         .select(
-          `id, company_name, partner_type, sector, description, logo_url, website, verified, featured, partnership_level, benefits, contact_info, created_at`
+          `id, company_name, partner_type, sector, description, logo_url, website, verified, featured, partnership_level, benefits, contact_info, views, created_at`
         )
         .order('partner_type');
 
@@ -492,6 +495,7 @@ export class SupabaseService {
         country: partner.contact_info?.country || '',
         verified: partner.verified,
         featured: partner.featured,
+        views: partner.views || 0,
         // FIX: benefits can be an array of objects {name, features, description} or strings
         // Extract only the name if it's an object, otherwise use the string directly
         contributions: Array.isArray(partner.benefits)
@@ -531,7 +535,7 @@ export class SupabaseService {
       const { data, error } = await safeSupabase
         .from('partners')
         .select(
-          `id, company_name, partner_type, sector, description, logo_url, website, verified, featured, partnership_level, benefits, contact_info, created_at,
+          `id, company_name, partner_type, sector, description, logo_url, website, verified, featured, partnership_level, benefits, contact_info, created_at, views,
            mission, vision, values_list, certifications, awards, social_media, key_figures, testimonials, news, expertise, clients, video_url, gallery, established_year, employees, country,
            projects:partner_projects(*)`
         )
@@ -589,6 +593,7 @@ export class SupabaseService {
         country: data.country || data.contact_info?.country || 'Maroc',
         verified: data.verified ?? true,
         featured: data.featured ?? false,
+        views: data.views || 0,
         contributions: data.benefits || [
           "Sponsoring Session Plénière",
           "Espace Networking Premium",
@@ -1794,38 +1799,56 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
+      // Record in minisite_views table for historical tracking
+      const { data: userData } = await safeSupabase.auth.getUser();
+      await safeSupabase.from('minisite_views').insert({
+        exhibitor_id: exhibitorId,
+        viewer_id: userData?.user?.id || null,
+        viewed_at: new Date().toISOString()
+      }).select(); // Select to ensure it waited
+
       // ⚡ FIX N+1: Utiliser RPC pour incrémentation atomique (3 queries → 1 RPC)
-      const { data, error } = await safeSupabase.rpc('increment_minisite_views', {
+      await safeSupabase.rpc('increment_minisite_views', {
         p_exhibitor_id: exhibitorId
       });
-
-      if (error) {
-        throw error;
-      }
-
-      if (data && !data.success) {
-        console.warn('Incrémentation vues mini-site échouée:', data.error);
-      }
     } catch (error: any) {
-      // Fallback si la fonction RPC n'existe pas encore (migration non appliquée)
-      if (error?.message?.includes('function increment_minisite_views') ||
-          error?.code === '42883' || // function does not exist
-          error?.code === 'PGRST202') { // function not found
+      console.warn('Erreur incrementMiniSiteViews:', error.message);
+    }
+  }
 
-        console.warn('⚠️ RPC increment_minisite_views non disponible, utilisation fallback');
+  static async incrementPartnerViews(partnerId: string): Promise<void> {
+    if (!this.checkSupabaseConnection()) return;
 
-        // Méthode traditionnelle (2 queries)
-        let userId = exhibitorId;
+    const safeSupabase = supabase!;
+    try {
+      // Atomically increment partner views if column exists
+      // If not, we'll try to insert into a view tracking table later
+      const { data, error } = await safeSupabase.rpc('increment_partner_views', {
+        p_partner_id: partnerId
+      });
 
-        const { data: exhibitor } = await safeSupabase
-          .from('exhibitors')
-          .select('user_id')
-          .eq('id', exhibitorId)
-          .maybeSingle();
-
-        if (exhibitor?.user_id) {
-          userId = exhibitor.user_id;
-        }
+      if (error) throw error;
+    } catch (error) {
+       console.warn('Erreur incrementPartnerViews:', error);
+       // Fallback manual increment if RPC missing
+       try {
+         const { data: partner } = await safeSupabase
+           .from('partners')
+           .select('views')
+           .eq('id', partnerId)
+           .single();
+         
+         if (partner) {
+           await safeSupabase
+             .from('partners')
+             .update({ views: (partner.views || 0) + 1 })
+             .eq('id', partnerId);
+         }
+       } catch (err) {
+         console.error('Fallback incrementPartnerViews failed:', err);
+       }
+    }
+  }
 
         const { data: miniSite } = await safeSupabase
           .from('mini_sites')

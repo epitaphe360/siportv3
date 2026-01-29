@@ -40,7 +40,7 @@ export const FeaturedPartners: React.FC = () => {
       'museum': 'Museum',
       'silver': 'Silver',
       'gold': 'Gold',
-      'platinium': 'Platinium'
+      'platinum': 'platinum'
     };
     return labels[tier as keyof typeof labels] || tier;
   };
@@ -50,7 +50,7 @@ export const FeaturedPartners: React.FC = () => {
       'museum': 'default' as const,
       'silver': 'info' as const,
       'gold': 'warning' as const,
-      'platinium': 'error' as const
+      'platinum': 'error' as const
     };
     return colors[tier as keyof typeof colors] || 'default';
   };
@@ -162,7 +162,7 @@ export const FeaturedPartners: React.FC = () => {
                   <div className="flex items-center space-x-4 mb-6 text-sm text-gray-500 border-t border-gray-50 pt-4">
                     <div className="flex items-center">
                       <Eye className="h-4 w-4 mr-1 text-gray-400" />
-                      <span>0 vues</span>
+                      <span>{partner.views || 0} vues</span>
                     </div>
                     <div className="flex items-center">
                       <Handshake className="h-4 w-4 mr-1 text-gray-400" />
