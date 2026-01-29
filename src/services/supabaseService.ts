@@ -420,8 +420,34 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      // First try: exhibitor_profiles table
-      console.log('📊 Chargement des exposants depuis exhibitor_profiles...');
+      // Priorité: utiliser 'exhibitors' table (qui a les vraies données)
+      // Fallback: exhibitor_profiles si exhibitors n'existe pas
+      console.log('📊 Chargement des exposants depuis exhibitors...');
+      
+      const { data: exhibitorsData, error: exhibitorsError } = await safeSupabase
+        .from('exhibitors')
+        .select(`
+          id,
+          user_id,
+          company_name,
+          category,
+          sector,
+          description,
+          logo_url,
+          website,
+          verified,
+          featured,
+          contact_info
+        `)
+        .order('company_name', { ascending: true });
+
+      if (!exhibitorsError && exhibitorsData && exhibitorsData.length > 0) {
+        console.log(`✅ ${exhibitorsData.length} exposants chargés depuis exhibitors`);
+        return exhibitorsData.map(this.transformExhibitorDBToExhibitor);
+      }
+
+      // Fallback: essayer exhibitor_profiles si exhibitors ne retourne rien ou erreur
+      console.log('⚠️ exhibitors vide ou erreur, essai fallback exhibitor_profiles:', exhibitorsError?.message);
       const { data: profiles, error: profilesError } = await safeSupabase
         .from('exhibitor_profiles')
         .select(`
@@ -439,8 +465,13 @@ export class SupabaseService {
         `)
         .order('company_name', { ascending: true });
 
-      if (!profilesError && profiles && profiles.length > 0) {
-        console.log(`✅ ${profiles.length} exposants chargés depuis exhibitor_profiles`);
+      if (profilesError) {
+        console.error('❌ Erreur exhibitor_profiles:', profilesError);
+        throw profilesError;
+      }
+
+      if (profiles && profiles.length > 0) {
+        console.log(`✅ ${profiles.length} exposants chargés depuis exhibitor_profiles (fallback)`);
         return profiles.map((p: any) => ({
           id: p.id,
           userId: p.user_id,
@@ -466,35 +497,6 @@ export class SupabaseService {
           markets: [],
           standNumber: p.stand_number
         }));
-      }
-
-      // Fallback: Try exhibitors table
-      console.log('⚠️ exhibitor_profiles vide ou erreur, essai fallback exhibitors:', profilesError?.message);
-      const { data: exhibitorsData, error: exhibitorsError } = await safeSupabase
-        .from('exhibitors')
-        .select(`
-          id,
-          user_id,
-          company_name,
-          category,
-          sector,
-          description,
-          logo_url,
-          website,
-          verified,
-          featured,
-          contact_info
-        `)
-        .order('company_name', { ascending: true });
-
-      if (exhibitorsError) {
-        console.error('❌ Erreur exhibitors:', exhibitorsError);
-        throw exhibitorsError;
-      }
-
-      if (exhibitorsData && exhibitorsData.length > 0) {
-        console.log(`✅ ${exhibitorsData.length} exposants chargés depuis exhibitors (fallback)`);
-        return exhibitorsData.map(this.transformExhibitorDBToExhibitor);
       }
 
       console.warn('⚠️ Aucun exposant trouvé dans les deux tables');
