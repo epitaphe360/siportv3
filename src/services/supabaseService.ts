@@ -521,11 +521,13 @@ export class SupabaseService {
 
       return (data || []).map((partner: PartnerDB) => ({
         id: partner.id,
-        name: partner.company_name,
-        partner_tier: partner.partnership_level || partner.partner_type,
+        name: typeof partner.company_name === 'string' ? partner.company_name : 'Partenaire',
+        partner_tier: (typeof partner.partnership_level === 'object' && partner.partnership_level !== null)
+          ? ((partner.partnership_level as any).level || (partner.partnership_level as any).name || 'silver')
+          : (partner.partnership_level || partner.partner_type),
         category: partner.partner_type,
-        sector: partner.sector,
-        description: partner.description || '',
+        sector: typeof partner.sector === 'string' ? partner.sector : 'Autre',
+        description: typeof partner.description === 'string' ? partner.description : '',
         logo: partner.logo_url,
         website: partner.website,
         country: partner.contact_info?.country || '',
