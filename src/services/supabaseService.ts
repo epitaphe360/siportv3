@@ -420,8 +420,7 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      // Priorité: utiliser 'exhibitors' table (qui a les vraies données)
-      // Fallback: exhibitor_profiles si exhibitors n'existe pas
+      // Single source of truth: exhibitors table
       console.log('📊 Chargement des exposants depuis exhibitors...');
       
       const { data: exhibitorsData, error: exhibitorsError } = await safeSupabase
@@ -441,65 +440,17 @@ export class SupabaseService {
         `)
         .order('company_name', { ascending: true });
 
-      if (!exhibitorsError && exhibitorsData && exhibitorsData.length > 0) {
-        console.log(`✅ ${exhibitorsData.length} exposants chargés depuis exhibitors`);
+      if (exhibitorsError) {
+        console.error('❌ Erreur exhibitors:', exhibitorsError);
+        throw exhibitorsError;
+      }
+
+      if (exhibitorsData && exhibitorsData.length > 0) {
+        console.log(`✅ ${exhibitorsData.length} exposants chargés`);
         return exhibitorsData.map(this.transformExhibitorDBToExhibitor);
       }
 
-      // Fallback: essayer exhibitor_profiles si exhibitors ne retourne rien ou erreur
-      console.log('⚠️ exhibitors vide ou erreur, essai fallback exhibitor_profiles:', exhibitorsError?.message);
-      const { data: profiles, error: profilesError } = await safeSupabase
-        .from('exhibitor_profiles')
-        .select(`
-          id,
-          user_id,
-          company_name,
-          category,
-          sector,
-          description,
-          logo_url,
-          website,
-          email,
-          phone,
-          stand_number
-        `)
-        .order('company_name', { ascending: true });
-
-      if (profilesError) {
-        console.error('❌ Erreur exhibitor_profiles:', profilesError);
-        throw profilesError;
-      }
-
-      if (profiles && profiles.length > 0) {
-        console.log(`✅ ${profiles.length} exposants chargés depuis exhibitor_profiles (fallback)`);
-        return profiles.map((p: any) => ({
-          id: p.id,
-          userId: p.user_id,
-          companyName: p.company_name || 'Sans nom',
-          category: (p.category as any) || 'startup',
-          sector: p.sector || 'General',
-          description: p.description || '',
-          logo: p.logo_url,
-          website: p.website,
-          verified: false, 
-          featured: false,
-          contactInfo: {
-              email: p.email || '',
-              phone: p.phone || '',
-              address: '',
-              city: '',
-              country: 'France'
-          },
-          products: [],
-          availability: [],
-          miniSite: null,
-          certifications: [],
-          markets: [],
-          standNumber: p.stand_number
-        }));
-      }
-
-      console.warn('⚠️ Aucun exposant trouvé dans les deux tables');
+      console.warn('⚠️ Aucun exposant trouvé');
       return [];
 
     } catch (error) {
