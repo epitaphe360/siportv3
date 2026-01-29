@@ -5,6 +5,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { SkipToContent } from './components/common/SkipToContent';
+import { ScrollToTop } from './components/common/ScrollToTop';
 
 // Lazy load pages
 const HomePage = lazyRetry(() => import('./pages/HomePage'));
@@ -223,6 +224,7 @@ const App = () => {
 
   return (
     <ErrorBoundary>
+      <ScrollToTop />
       <div className="min-h-screen flex flex-col">
         <SkipToContent />
         <Header />
