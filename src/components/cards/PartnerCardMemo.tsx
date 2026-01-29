@@ -14,7 +14,7 @@ export interface PartnerCardProps {
 
 const PartnerCardComponent: React.FC<PartnerCardProps> = ({ partner, onClick }) => {
   const getTierIcon = (tier: string) => {
-    if (tier === 'platinium' || tier === 'platinum') {
+    if (tier === 'platinum' || tier === 'platinum') {
       return <Crown className="h-5 w-5 text-purple-500" />;
     }
     if (tier === 'gold') {
@@ -27,7 +27,7 @@ const PartnerCardComponent: React.FC<PartnerCardProps> = ({ partner, onClick }) 
   };
 
   const getTierBadgeColor = (tier: string) => {
-    if (tier === 'platinium' || tier === 'platinum') return 'bg-purple-100 text-purple-800';
+    if (tier === 'platinum' || tier === 'platinum') return 'bg-purple-100 text-purple-800';
     if (tier === 'gold') return 'bg-yellow-100 text-yellow-800';
     if (tier === 'silver') return 'bg-gray-100 text-gray-800';
     return 'bg-blue-100 text-blue-800';

@@ -254,7 +254,7 @@ export default function VisitorVIPRegistration() {
         email: data.email,
         name: fullName,
         type: 'visitor' as const,
-        visitor_level: 'standard' as const,
+        visitor_level: 'premium' as const, // ✅ FIX P0-1: Cohérent avec DB ligne 229
         status: 'pending_payment' as const,
         profile: {
           firstName: data.firstName,

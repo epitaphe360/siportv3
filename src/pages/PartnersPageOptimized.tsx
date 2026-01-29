@@ -279,7 +279,7 @@ export const PartnersPageOptimized: React.FC = () => {
             </div>
             <div>
               <div className="text-3xl font-bold text-purple-600">
-                {partners.filter((p) => p.partnerType === 'platinum' || p.partnerType === 'platinium').length}
+                {partners.filter((p) => p.partnerType === 'platinum' || p.partnerType === 'platinum').length}
               </div>
               <div className="text-sm text-gray-600">Platinum</div>
             </div>

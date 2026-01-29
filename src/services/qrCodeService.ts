@@ -114,8 +114,8 @@ export const ACCESS_LEVELS = {
     zones: ['public', 'exhibition_hall', 'partner_area', 'stand', 'vip_lounge', 'backstage'],
     events: ['public_conferences', 'partner_meetings', 'vip_events', 'keynotes']
   },
-  partner_platinium: {
-    level: 'platinium',
+  partner_platinum: {
+    level: 'platinum',
     displayName: '💎 Platinum Partner',
     color: '#E0E0E0',
     gradient: ['#B9F2FF', '#E0E0E0', '#FFFFFF'],
@@ -160,7 +160,7 @@ export interface QRCodePayload {
 
   // Type et niveau
   userType: 'visitor' | 'partner' | 'exhibitor' | 'admin' | 'security';
-  level: string; // 'free', 'premium', 'museum', 'silver', 'gold', 'platinium'
+  level: string; // 'free', 'premium', 'museum', 'silver', 'gold', 'platinum'
 
   // Sécurité
   iat: number; // Issued At timestamp

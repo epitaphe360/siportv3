@@ -313,7 +313,7 @@ export function getBadgeColor(accessLevel: string): string {
       return '#3F51B5'; // Indigo
     case 'partner_silver':
       return '#C0C0C0'; // Argent
-    case 'partner_platinium':
+    case 'partner_platinum':
       return '#E0E0E0'; // Platine
     case 'partner':
       return '#6f42c1'; // Violet (fallback)
@@ -347,7 +347,7 @@ export function getAccessLevelLabel(accessLevel: string): string {
       return 'Partenaire Silver';
     case 'partner_gold':
       return 'Partenaire Gold';
-    case 'partner_platinium':
+    case 'partner_platinum':
       return 'Partenaire Platinum';
     case 'partner':
       return 'Partenaire';

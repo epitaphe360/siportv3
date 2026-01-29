@@ -1,9 +1,12 @@
 /**
  * Informations bancaires pour les virements Partenaires et Exposants
  * Configuration des montants selon le tier (Museum, Silver, Gold, Platinum)
+ *
+ * ✅ FIX P0-3: Import des montants depuis Single Source of Truth
  */
 
 import { PartnerTier } from './partnerTiers';
+import { PARTNER_BILLING } from './partnerBilling';
 
 export const PARTNER_BANK_TRANSFER_INFO = {
   // Informations du compte bancaire
@@ -13,69 +16,39 @@ export const PARTNER_BANK_TRANSFER_INFO = {
   bic: 'BICFRPPXXX',
   swift: 'BICFRPPXXX',
 
-  // Montants par tier (en USD)
+  // ✅ Montants par tier - Import depuis SSOT
   amounts: {
     museum: {
-      amount: 20000.00,
-      currency: 'USD',
+      amount: PARTNER_BILLING.museum.amount,
+      currency: PARTNER_BILLING.museum.currency,
       tier: 'museum' as PartnerTier,
-      displayName: 'Museum Partner',
-      description: 'Partenariat Museum - Visibilité de base',
-      features: [
-        '1 stand de 9m²',
-        '10 rendez-vous B2B',
-        '3 membres d\'équipe',
-        'Logo sur site web',
-        'Listing dans catalogue'
-      ]
+      displayName: PARTNER_BILLING.museum.displayName,
+      description: PARTNER_BILLING.museum.description,
+      features: PARTNER_BILLING.museum.features
     },
     silver: {
-      amount: 48000.00,
-      currency: 'USD',
+      amount: PARTNER_BILLING.silver.amount,
+      currency: PARTNER_BILLING.silver.currency,
       tier: 'silver' as PartnerTier,
-      displayName: 'Silver Partner',
-      description: 'Partenariat Silver - Visibilité renforcée',
-      features: [
-        '2 stands de 18m² total',
-        '30 rendez-vous B2B',
-        '5 membres d\'équipe',
-        'Logo premium sur site',
-        'Article de blog dédié',
-        'Présence réseaux sociaux'
-      ]
+      displayName: PARTNER_BILLING.silver.displayName,
+      description: PARTNER_BILLING.silver.description,
+      features: PARTNER_BILLING.silver.features
     },
     gold: {
-      amount: 68000.00,
-      currency: 'USD',
+      amount: PARTNER_BILLING.gold.amount,
+      currency: PARTNER_BILLING.gold.currency,
       tier: 'gold' as PartnerTier,
-      displayName: 'Gold Partner',
-      description: 'Partenariat Gold - Visibilité maximale',
-      features: [
-        '3 stands de 27m² total',
-        '50 rendez-vous B2B',
-        '8 membres d\'équipe',
-        'Logo premium + bannière',
-        'Conférence dédiée 30min',
-        'Campagne email dédiée',
-        'Article de presse'
-      ]
+      displayName: PARTNER_BILLING.gold.displayName,
+      description: PARTNER_BILLING.gold.description,
+      features: PARTNER_BILLING.gold.features
     },
-    platinium: {
-      amount: 98000.00,
-      currency: 'USD',
-      tier: 'platinium' as PartnerTier,
-      displayName: 'Platinum Partner',
-      description: 'Partenariat Platinum - Visibilité VIP exclusive',
-      features: [
-        '5 stands de 45m² total',
-        'Rendez-vous B2B illimités',
-        '15 membres d\'équipe',
-        'Logo VIP + bannière homepage',
-        'Keynote 60min',
-        'Campagne marketing complète',
-        'Communiqué de presse officiel',
-        'Invitations gala VIP'
-      ]
+    platinum: {
+      amount: PARTNER_BILLING.platinum.amount,
+      currency: PARTNER_BILLING.platinum.currency,
+      tier: 'platinum' as PartnerTier,
+      displayName: PARTNER_BILLING.platinum.displayName,
+      description: PARTNER_BILLING.platinum.description,
+      features: PARTNER_BILLING.platinum.features
     }
   },
 

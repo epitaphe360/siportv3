@@ -17,7 +17,7 @@ export interface User {
   name: string;
   type: 'exhibitor' | 'partner' | 'visitor' | 'admin' | 'security';
   visitor_level?: 'free' | 'premium' | 'vip';
-  partner_tier?: 'museum' | 'silver' | 'gold' | 'platinium'; // Niveau partenaire
+  partner_tier?: 'museum' | 'silver' | 'gold' | 'platinum'; // Niveau partenaire
   profile: UserProfile;
   status: 'pending' | 'active' | 'suspended' | 'rejected' | 'pending_payment';
   projects?: PartnerProject[];
@@ -63,7 +63,7 @@ export interface UserProfile {
   standNumber?: string; // Numéro de stand pour les exposants
   standArea?: number; // Surface du stand en m² (9, 18, 36, 54+)
   // Partner specific fields  
-  partner_tier?: 'museum' | 'silver' | 'gold' | 'platinium'; // Niveau de partenariat
+  partner_tier?: 'museum' | 'silver' | 'gold' | 'platinum'; // Niveau de partenariat
 }
 
 export interface Exhibitor {

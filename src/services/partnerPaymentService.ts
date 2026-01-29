@@ -1,16 +1,19 @@
 /**
  * Service de paiement pour les upgrades de niveau partenaire
  * Gère Stripe, PayPal, et CMI pour les paiements partenaires
+ *
+ * ✅ FIX P0-3: Import des montants depuis Single Source of Truth
  */
 
 import { PartnerTier, getPartnerTierConfig } from '../config/partnerTiers';
+import { PARTNER_BILLING } from '../config/partnerBilling';
 
-// Constantes de prix (en centimes pour Stripe)
+// ✅ Constantes de prix (en centimes pour Stripe) - Import depuis SSOT
 const TIER_PRICES = {
-  museum: 2000000,    // $20,000 = 2,000,000 cents
-  silver: 4800000,    // $48,000 = 4,800,000 cents
-  gold: 6800000,      // $68,000 = 6,800,000 cents
-  platinium: 9800000  // $98,000 = 9,800,000 cents
+  museum: PARTNER_BILLING.museum.amount * 100,    // Convert USD to cents
+  silver: PARTNER_BILLING.silver.amount * 100,    // Convert USD to cents
+  gold: PARTNER_BILLING.gold.amount * 100,        // Convert USD to cents
+  platinum: PARTNER_BILLING.platinum.amount * 100 // Convert USD to cents
 };
 
 // Conversion EUR/MAD pour CMI
@@ -365,6 +368,19 @@ export async function createPartnerBankTransferRequest(
 
     const finalAmountUSD = finalAmountCents / 100;
 
+    // ✅ FIX P0-5: Validation du montant calculé
+    const expectedFullAmount = PARTNER_BILLING[targetTier].amount;
+    const expectedUpgradeAmount = currentTier
+      ? PARTNER_BILLING[targetTier].amount - PARTNER_BILLING[currentTier].amount
+      : expectedFullAmount;
+
+    if (Math.abs(finalAmountUSD - expectedUpgradeAmount) > 0.01) {
+      throw new Error(
+        `Erreur calcul montant: ${finalAmountUSD} USD calculé, ${expectedUpgradeAmount} USD attendu. ` +
+        `Tier cible: ${targetTier}, Tier actuel: ${currentTier || 'none'}`
+      );
+    }
+
     // Créer la demande de paiement
     const { data, error } = await supabase
       .from('payment_requests')
@@ -437,6 +453,21 @@ export async function approvePartnerBankTransfer(
       .single();
 
     if (fetchError) throw fetchError;
+
+    // ✅ FIX P0-5: Validation du montant avant approbation
+    const expectedAmount = PARTNER_BILLING[request.requested_level as PartnerTier].amount;
+    const requestAmount = Number(request.amount);
+
+    // Tolérance de 0.01 USD pour les arrondis
+    const tolerance = 0.01;
+    const amountDifference = Math.abs(requestAmount - expectedAmount);
+
+    if (amountDifference > tolerance) {
+      throw new Error(
+        `Montant invalide: ${requestAmount} USD reçu, ${expectedAmount} USD attendu pour le tier ${request.requested_level}. ` +
+        `Différence: ${amountDifference.toFixed(2)} USD. ⚠️ VALIDATION REFUSÉE - Possible tentative de fraude.`
+      );
+    }
 
     // Mettre à jour le statut de la demande
     const { error: updateRequestError } = await supabase

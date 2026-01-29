@@ -128,7 +128,7 @@ export function LevelBadge({ level, type, showIcon = true, size = 'md' }: LevelB
         museum: { label: 'Museum', color: 'bg-gradient-to-r from-amber-700 to-amber-900 text-white', icon: '🏛️' },
         silver: { label: 'Silver', color: 'bg-gradient-to-r from-gray-400 to-gray-600 text-white', icon: '🥈' },
         gold: { label: 'Gold', color: 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-white', icon: '🥇' },
-        platinium: { label: 'Platinium', color: 'bg-gradient-to-r from-purple-500 to-purple-700 text-white', icon: '💎' }
+        platinum: { label: 'platinum', color: 'bg-gradient-to-r from-purple-500 to-purple-700 text-white', icon: '💎' }
       };
       return configs[level] || configs.museum;
     }

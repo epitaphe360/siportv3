@@ -1,9 +1,13 @@
 /**
  * Configuration des niveaux partenaires et leurs quotas
  * 4 niveaux : Platinium, Gold, Silver, Musée
+ *
+ * ✅ FIX P0-3: Import des montants depuis Single Source of Truth
  */
 
-export type PartnerTier = 'museum' | 'silver' | 'gold' | 'platinium';
+import { PARTNER_BILLING } from './partnerBilling';
+
+export type PartnerTier = 'museum' | 'silver' | 'gold' | 'platinum';
 
 export interface PartnerTierConfig {
   id: PartnerTier;
@@ -38,7 +42,7 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierConfig> = {
     id: 'museum',
     name: 'Museum',
     displayName: 'Pass Musée',
-    price: 20000, // $20,000
+    price: PARTNER_BILLING.museum.amount, // ✅ Import depuis SSOT
     color: '#8B4513',
     icon: '🏛️',
 
@@ -76,7 +80,7 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierConfig> = {
     id: 'silver',
     name: 'Silver',
     displayName: 'Pass Silver',
-    price: 48000, // $48,000
+    price: PARTNER_BILLING.silver.amount, // ✅ Import depuis SSOT
     color: '#C0C0C0',
     icon: '🥈',
 
@@ -119,7 +123,7 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierConfig> = {
     id: 'gold',
     name: 'Gold',
     displayName: 'Pass Gold',
-    price: 68000, // $68,000
+    price: PARTNER_BILLING.gold.amount, // ✅ Import depuis SSOT
     color: '#FFD700',
     icon: '🥇',
 
@@ -162,11 +166,11 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierConfig> = {
     ]
   },
 
-  platinium: {
-    id: 'platinium',
+  platinum: {
+    id: 'platinum',
     name: 'Platinium',
     displayName: 'Pass Platinium',
-    price: 98000, // $98,000
+    price: PARTNER_BILLING.platinum.amount, // ✅ Import depuis SSOT
     color: '#E5E4E2',
     icon: '💎',
 
@@ -302,13 +306,13 @@ export const PARTNER_TIER_COLORS: Record<PartnerTier, string> = {
   museum: '#8B4513',
   silver: '#C0C0C0',
   gold: '#FFD700',
-  platinium: '#E5E4E2'
+  platinum: '#E5E4E2'
 };
 
 /**
  * Ordre des niveaux (pour comparaisons)
  */
-export const PARTNER_TIER_ORDER: PartnerTier[] = ['museum', 'silver', 'gold', 'platinium'];
+export const PARTNER_TIER_ORDER: PartnerTier[] = ['museum', 'silver', 'gold', 'platinum'];
 
 /**
  * Retourne l'index du niveau (pour comparaisons)

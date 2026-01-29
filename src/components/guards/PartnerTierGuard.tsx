@@ -24,12 +24,12 @@ interface PartnerTierGuardProps {
  *
  * @example
  * // Require exact tier
- * <PartnerTierGuard requiredTier="platinium">
- *   <PlatiniumOnlyFeature />
+ * <PartnerTierGuard requiredTier="platinum">
+ *   <platinumOnlyFeature />
  * </PartnerTierGuard>
  *
  * @example
- * // Require minimum tier (silver, gold, or platinium)
+ * // Require minimum tier (silver, gold, or platinum)
  * <PartnerTierGuard minimumTier="silver">
  *   <PremiumFeature />
  * </PartnerTierGuard>

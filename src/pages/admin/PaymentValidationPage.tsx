@@ -601,9 +601,9 @@ export default function PaymentValidationPage() {
                           <p className="font-semibold text-gray-900">
                             {request.metadata.partnerTier === 'gold' && '🥇 Gold Partner'}
                             {request.metadata.partnerTier === 'silver' && '🥈 Silver Partner'}
-                            {request.metadata.partnerTier === 'platinium' && '💎 Platinum Partner'}
+                            {request.metadata.partnerTier === 'platinum' && '💎 Platinum Partner'}
                             {request.metadata.partnerTier === 'museum' && '🏛️ Museum Partner'}
-                            {!['gold', 'silver', 'platinium', 'museum'].includes(request.metadata.partnerTier) && request.metadata.partnerTier}
+                            {!['gold', 'silver', 'platinum', 'museum'].includes(request.metadata.partnerTier) && request.metadata.partnerTier}
                           </p>
                         </div>
                       )}

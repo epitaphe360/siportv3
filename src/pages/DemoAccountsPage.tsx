@@ -106,10 +106,10 @@ export const DemoAccountsPage: React.FC = () => {
         color: 'yellow'
       },
       {
-        email: 'partner-platinium@test.siport.com',
+        email: 'partner-platinum@test.siport.com',
         password: 'Test123456!',
-        name: 'Platinium Port Authority',
-        description: 'Sponsor Platinium',
+        name: 'platinum Port Authority',
+        description: 'Sponsor platinum',
         icon: Trophy,
         color: 'slate'
       }
