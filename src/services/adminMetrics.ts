@@ -187,7 +187,12 @@ export class AdminMetricsService {
     if (!client) return 0;
     try {
       // Compter les fichiers uploadés (approximation)
-      const { data } = await client.from('media_contents').select('file_size');
+      // Note: file_size column may not exist in all deployments
+      const { data, error } = await client.from('media_contents').select('*').limit(100);
+      if (error) {
+        // Table or column doesn't exist - return 0 silently
+        return 0;
+      }
       if (data && Array.isArray(data)) {
         const totalBytes = data.reduce((sum: number, item: any) => sum + (item.file_size || 0), 0);
         const totalGB = totalBytes / (1024 * 1024 * 1024);
@@ -195,7 +200,7 @@ export class AdminMetricsService {
       }
       return 0;
     } catch (err) {
-      console.error('AdminMetricsService.calculateStorageUsage error', err);
+      // Silent fail - storage metrics are not critical
       return 0;
     }
   }
