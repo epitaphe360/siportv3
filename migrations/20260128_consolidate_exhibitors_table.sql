@@ -12,7 +12,13 @@ SELECT
   id,
   user_id,
   company_name,
-  COALESCE(category::text, 'port-industry')::exhibitor_category,
+  -- Map category values to valid enum values
+  (CASE 
+    WHEN category::text IN ('institutional', 'port-industry', 'port-operations', 'academic') THEN category::text
+    WHEN category::text ILIKE '%startup%' OR category::text ILIKE '%tech%' THEN 'port-industry'
+    WHEN category::text ILIKE '%port%' THEN 'port-operations'
+    ELSE 'port-industry'
+  END)::exhibitor_category as category,
   sector,
   description,
   logo_url,
