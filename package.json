@@ -38,6 +38,8 @@
     "test:e2e:ui": "playwright test --ui",
     "test:journey": "playwright test tests/e2e/user-journey-exhibitor.spec.ts --headed --workers=1",
     "test:journey:debug": "playwright test tests/e2e/user-journey-exhibitor.spec.ts --debug",
+    "test:journey:comprehensive": "playwright test tests/e2e/user-journey-comprehensive.spec.ts --headed --workers=1",
+    "test:journey:comprehensive:debug": "playwright test tests/e2e/user-journey-comprehensive.spec.ts --debug",
     "test:e2e:report": "playwright show-report",
     "test:all": "npm run test:unit && npm run test:e2e",
     "test:auth": "playwright test tests/e2e/auth.spec.ts",

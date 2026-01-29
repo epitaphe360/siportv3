@@ -76,6 +76,7 @@ const minimalUserProfile = (overrides: Partial<User['profile']> = {}): User['pro
   linkedin: overrides.linkedin,
   website: overrides.website,
   bio: overrides.bio ?? '',
+  standArea: overrides.standArea ?? 9, // Défaut à 9m² pour les nouveaux exposants
   interests: overrides.interests ?? [],
   objectives: overrides.objectives ?? [],
   companyDescription: overrides.companyDescription,

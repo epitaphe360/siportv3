@@ -24,6 +24,7 @@ import useAuthStore from '../../store/authStore';
 import { useExhibitorStore } from '../../store/exhibitorStore';
 import { motion } from 'framer-motion';
 import { ROUTES } from '../../lib/routes';
+import { getStandAreaFromSize } from '../../utils/standSizeHelpers';
 
 interface NewExhibitorForm {
   // Informations entreprise
@@ -176,6 +177,7 @@ export default function ExhibitorCreationSimulator({ exhibitorToEdit, editMode =
       // Mode création - code existant
       // Création de l'exposant dans Supabase
       // 1. Créer d'abord l'utilisateur pour l'exposant
+
       const userData = {
         email: formData.email,
         name: formData.contactName,
@@ -189,6 +191,7 @@ export default function ExhibitorCreationSimulator({ exhibitorToEdit, editMode =
           country: formData.country,
           website: formData.website,
           bio: formData.description,
+          standArea: getStandAreaFromSize(formData.standSize), // Utiliser la fonction helper
           interests: [],
           objectives: [],
           sectors: [formData.sector],
