@@ -12,7 +12,7 @@ SELECT
   id,
   user_id,
   company_name,
-  category,
+  COALESCE(category::text, 'port-industry')::exhibitor_category,
   sector,
   description,
   logo_url,
