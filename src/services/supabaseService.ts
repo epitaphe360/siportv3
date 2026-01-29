@@ -491,7 +491,7 @@ export class SupabaseService {
           return {
             id: profile.id,
             userId: profile.user_id,
-            companyName: profile.company_name,
+            companyName: profile.company_name || 'Exposant sans nom',
             category: (profile.category || 'port-industry') as ExhibitorCategory,
             sector: profile.sector || '',
             description: profile.description || '',
@@ -509,7 +509,45 @@ export class SupabaseService {
         });
       }
 
-      console.warn('⚠️ Aucun exposant trouvé dans aucune table');
+      // Tentative 3: Table 'users' (fallback ultime pour les comptes fraîchement créés mais non synchronisés)
+      console.log('🔄 Tentative de repli sur la table users...');
+      const { data: usersData, error: usersError } = await safeSupabase
+        .from('users')
+        .select('id, email, name, profile, type, created_at')
+        .eq('type', 'exhibitor');
+
+      if (!usersError && usersData && usersData.length > 0) {
+        console.log(`✅ ${usersData.length} exposants chargés depuis 'users'`);
+        return usersData.map(u => {
+          const profile = u.profile || {};
+          return {
+            id: u.id, // Pour les users sans profil séparé, l'ID user sert d'ID exposant
+            userId: u.id,
+            companyName: profile.companyName || profile.company || u.name || 'Exposant',
+            category: (profile.category || 'port-industry') as ExhibitorCategory,
+            sector: profile.sector || profile.industry || '',
+            description: profile.description || profile.companyDescription || '',
+            logo: profile.logo || profile.logo_url,
+            website: profile.website,
+            verified: false,
+            featured: false,
+            contactInfo: {
+              email: u.email,
+              phone: profile.phone || '',
+              address: '',
+              city: '',
+              country: profile.country || ''
+            },
+            products: [],
+            miniSite: null,
+            availability: [],
+            certifications: [],
+            markets: []
+          };
+        });
+      }
+
+      console.warn('⚠️ Aucun exposant trouvé dans aucune table (exhibitors, exhibitor_profiles, users)');
       return [];
 
     } catch (error) {
