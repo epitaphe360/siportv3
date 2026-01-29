@@ -421,7 +421,7 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      // Single source of truth: exhibitors table
+      // Tentative 1: Table consolidée 'exhibitors'
       console.log('📊 Chargement des exposants depuis exhibitors...');
       
       const { data: exhibitorsData, error: exhibitorsError } = await safeSupabase
@@ -443,17 +443,73 @@ export class SupabaseService {
         `)
         .order('company_name', { ascending: true });
 
-      if (exhibitorsError) {
-        console.error('❌ Erreur exhibitors:', exhibitorsError);
-        throw exhibitorsError;
-      }
-
-      if (exhibitorsData && exhibitorsData.length > 0) {
-        console.log(`✅ ${exhibitorsData.length} exposants chargés`);
+      // Si la table existe et contient des données
+      if (!exhibitorsError && exhibitorsData && exhibitorsData.length > 0) {
+        console.log(`✅ ${exhibitorsData.length} exposants chargés depuis 'exhibitors'`);
         return exhibitorsData.map(this.transformExhibitorDBToExhibitor);
       }
 
-      console.warn('⚠️ Aucun exposant trouvé');
+      // Tentative 2: Table legacy 'exhibitor_profiles' (ou si 'exhibitors' est vide)
+      console.log('🔄 Tentative de repli sur exhibitor_profiles...');
+      const { data: profilesData, error: profilesError } = await safeSupabase
+        .from('exhibitor_profiles')
+        .select(`
+          id,
+          user_id,
+          company_name,
+          category,
+          sector,
+          description,
+          logo_url,
+          website,
+          email,
+          phone,
+          country
+        `)
+        .order('company_name', { ascending: true });
+
+      if (profilesError) {
+        console.warn('⚠️ Erreur exhibitor_profiles:', profilesError.message);
+        // Si les deux ont échoué, on retourne vide
+        return [];
+      }
+
+      if (profilesData && profilesData.length > 0) {
+        console.log(`✅ ${profilesData.length} exposants chargés depuis 'exhibitor_profiles'`);
+        
+        // Transformer les profil legacy en format UI Exhibitor
+        return profilesData.map(profile => {
+          // Gérer le cas où contact_info n'existe pas dans le legacy
+          const contactInfo = {
+            email: profile.email || '',
+            phone: profile.phone || '',
+            address: '',
+            city: '',
+            country: profile.country || 'Maroc'
+          };
+
+          return {
+            id: profile.id,
+            userId: profile.user_id,
+            companyName: profile.company_name,
+            category: (profile.category || 'port-industry') as ExhibitorCategory,
+            sector: profile.sector || '',
+            description: profile.description || '',
+            logo: profile.logo_url,
+            website: profile.website,
+            verified: profile.verified || false,
+            featured: profile.featured || false,
+            contactInfo,
+            products: [],
+            miniSite: null,
+            availability: [],
+            certifications: [],
+            markets: []
+          };
+        });
+      }
+
+      console.warn('⚠️ Aucun exposant trouvé dans aucune table');
       return [];
 
     } catch (error) {
@@ -842,6 +898,7 @@ export class SupabaseService {
 
     return {
       id: exhibitorDB.id,
+      userId: exhibitorDB.user_id,
       companyName: exhibitorDB.company_name,
       category: exhibitorDB.category as ExhibitorCategory,
       sector: exhibitorDB.sector,
@@ -853,7 +910,10 @@ export class SupabaseService {
       contactInfo: exhibitorDB.contact_info,
       products,
       miniSite,
-      standNumber: exhibitorDB.user?.profile?.standNumber || undefined
+      standNumber: exhibitorDB.user?.profile?.standNumber || undefined,
+      availability: [],
+      certifications: [],
+      markets: []
     };
   }
 
