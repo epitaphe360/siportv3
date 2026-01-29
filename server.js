@@ -18,9 +18,25 @@ const PORT = process.env.PORT || (process.env.NODE_ENV === 'production' ? 5000 :
 // JSON body parser for API endpoints
 app.use(express.json());
 
-// CORS middleware - Allow all origins for preflight
+// CORS middleware - Whitelist specific origins only
+const allowedOrigins = [
+  'http://localhost:5173', // Development
+  'http://localhost:3000', // Development
+  'https://siportevent.com', // Production
+  'https://www.siportevent.com', // Production with www
+  // Add your Railway deployment URL here when available
+  // 'https://your-app.railway.app'
+];
+
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  const origin = req.headers.origin;
+
+  // Check if origin is in whitelist
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Credentials', 'true');
+  }
+
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Client-Info, Apikey');
   res.header('Access-Control-Max-Age', '86400');
@@ -52,10 +68,9 @@ const smtpConfig = {
   auth: {
     user: process.env.SMTP_USER || 'contact@siportevent.com',
     pass: process.env.SMTP_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false
   }
+  // TLS certificate validation enabled (secure default)
+  // Removed: tls: { rejectUnauthorized: false }
 };
 
 // Create reusable transporter (only if SMTP_PASS is configured)
