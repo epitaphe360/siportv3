@@ -19,7 +19,7 @@ import type {
 
 export class MediaService {
   // Optimized columns for media queries
-  private static readonly MEDIA_COLUMNS = 'id, title, description, type, status, category, published_at, thumbnail_url, duration, sponsor_partner_id, tags, created_at, views_count, url, video_url, audio_url';
+  private static readonly MEDIA_COLUMNS = 'id, title, description, type, status, category, published_at, thumbnail_url, duration, sponsor_partner_id, tags, created_at, views_count, video_url, audio_url';
 
   /**
    * Récupérer tous les médias avec filtres

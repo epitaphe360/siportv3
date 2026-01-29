@@ -17,6 +17,7 @@ import { supabase } from '../../lib/supabase';
 import { ROUTES } from '../../lib/routes';
 import { COUNTRIES } from '../../data/countries';
 import useAuthStore from '../../store/authStore';
+import { useRecaptcha } from '../../hooks/useRecaptcha';
 
 const vipVisitorSchema = z.object({
   firstName: z.string().min(2, 'Prénom requis'),
@@ -61,7 +62,8 @@ export default function VisitorVIPRegistration() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const navigate = useNavigate();
-  const { setUser } = useAuthStore();
+  const { user: currentUser, setUser } = useAuthStore();
+  const { executeRecaptcha, isReady: isRecaptchaReady } = useRecaptcha();
 
   const {
     register,
@@ -71,7 +73,17 @@ export default function VisitorVIPRegistration() {
     setValue
   } = useForm<VIPVisitorForm>({
     resolver: zodResolver(vipVisitorSchema),
-    mode: 'onChange'
+    mode: 'onChange',
+    defaultValues: {
+      firstName: currentUser?.profile?.firstName || '',
+      lastName: currentUser?.profile?.lastName || '',
+      email: currentUser?.email || '',
+      phone: currentUser?.profile?.phone || '',
+      country: currentUser?.profile?.country || '',
+      company: currentUser?.profile?.company || '',
+      position: currentUser?.profile?.position || '',
+      sector: currentUser?.profile?.businessSector || ''
+    }
   });
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,6 +121,17 @@ export default function VisitorVIPRegistration() {
       const fullName = `${data.firstName} ${data.lastName}`.trim();
       console.log('📝 Full name:', fullName);
 
+      // 0. reCAPTCHA verification
+      let recaptchaToken: string | undefined;
+      if (isRecaptchaReady) {
+        try {
+          recaptchaToken = await executeRecaptcha('visitor_vip_registration');
+          console.log('🔐 reCAPTCHA token obtenu');
+        } catch (reErr) {
+          console.warn('⚠️ reCAPTCHA failed, proceeding without:', reErr);
+        }
+      }
+
       // 1. Upload photo to Supabase Storage (OPTIONNEL - ne bloque pas)
       let photoUrl = '';
       if (photoFile) {
@@ -116,10 +139,10 @@ export default function VisitorVIPRegistration() {
         try {
           const fileExt = photoFile.name.split('.').pop() || 'jpg';
           const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-          const filePath = `visitor-photos/${fileName}`;
+          const filePath = `${fileName}`;
 
           const { error: uploadError } = await supabase.storage
-            .from('public')
+            .from('visitor-photos')
             .upload(filePath, photoFile, {
               cacheControl: '3600',
               upsert: false
@@ -129,7 +152,7 @@ export default function VisitorVIPRegistration() {
             console.warn('⚠️ Photo upload échoué (non bloquant):', uploadError);
           } else {
             const { data: urlData } = supabase.storage
-              .from('public')
+              .from('visitor-photos')
               .getPublicUrl(filePath);
             photoUrl = urlData.publicUrl;
             console.log('✅ Photo uploadée:', photoUrl);
@@ -141,46 +164,51 @@ export default function VisitorVIPRegistration() {
         console.log('📷 Pas de photo sélectionnée');
       }
 
-      // 2. Create Supabase Auth user with password
-      console.log('👤 Création compte auth...');
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: data.email,
-        password: data.password,
-        options: {
-          data: {
-            name: fullName,
-            type: 'visitor',
-            visitor_level: 'premium'
+      // 2. Auth: Check if logged in or need to sign up
+      let userId = currentUser?.id;
+      
+      if (!userId) {
+        console.log('👤 Création compte auth...');
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email: data.email,
+          password: data.password,
+          options: {
+            data: {
+              name: fullName,
+              type: 'visitor',
+              visitor_level: 'premium'
+            },
+            captchaToken: recaptchaToken
           }
+        });
+
+        if (authError) {
+          console.error('❌ Erreur auth:', authError);
+          throw authError;
         }
-      });
-
-      if (authError) {
-        console.error('❌ Erreur auth:', authError);
-        throw authError;
-      }
-      if (!authData.user) {
-        console.error('❌ Pas de user créé');
-        throw new Error('Échec création utilisateur');
-      }
-      console.log('✅ Auth user créé:', authData.user.id);
-      console.log('📋 Session créée?', !!authData.session);
-      if (authData.session) {
-        console.log('📋 Session access_token:', authData.session.access_token?.substring(0, 20) + '...');
+        if (!authData.user) {
+          console.error('❌ Pas de user créé');
+          throw new Error('Échec création utilisateur');
+        }
+        userId = authData.user.id;
+        console.log('✅ Auth user créé:', userId);
+      } else {
+        console.log('👤 Utilisateur déjà connecté, on passe la création Auth:', userId);
       }
 
-      // 3. Create user profile with EXPLICIT vip level and pending_payment status
-      console.log('📋 Création profil utilisateur...');
+      // 3. Update or Create user profile
+      console.log('📋 Mise à jour profil utilisateur...');
       const { error: userError } = await supabase
         .from('users')
-        .insert([{
-          id: authData.user.id,
+        .upsert([{
+          id: userId,
           email: data.email,
           name: fullName,
           type: 'visitor',
           visitor_level: 'premium',
           status: 'pending_payment',
           profile: {
+            ...(currentUser?.profile || {}),
             firstName: data.firstName,
             lastName: data.lastName,
             phone: data.phone,
@@ -188,25 +216,23 @@ export default function VisitorVIPRegistration() {
             businessSector: data.sector,
             position: data.position,
             company: data.company,
-            photoUrl: photoUrl
+            photoUrl: photoUrl || currentUser?.profile?.photoUrl || ''
           }
         }]);
 
       if (userError) {
-        console.error('❌ Erreur création profil:', userError);
+        console.error('❌ Erreur profil (UPSERT):', userError);
         throw userError;
       }
-      console.log('✅ Profil utilisateur créé avec succès');
+      console.log('✅ Profil utilisateur synchronisé');
 
-      // 4. CRITICAL: Update local auth store BEFORE navigation
-      // This ensures ProtectedRoute sees the user as authenticated
-      // NOTE: visitor_level is 'standard' until payment is confirmed, then upgraded to 'premium'
+      // 4. CRITICAL: Update local auth store
       const localUser = {
-        id: authData.user.id,
+        id: userId,
         email: data.email,
         name: fullName,
         type: 'visitor' as const,
-        visitor_level: 'standard' as const, // NOT premium until payment is done
+        visitor_level: 'standard' as const,
         status: 'pending_payment' as const,
         profile: {
           firstName: data.firstName,
@@ -216,24 +242,23 @@ export default function VisitorVIPRegistration() {
           company: data.company,
           position: data.position,
           businessSector: data.sector,
-          photoUrl: photoUrl,
-          bio: '',
-          interests: [],
-          objectives: [],
-          sectors: [],
-          products: [],
-          videos: [],
-          images: [],
-          participationObjectives: [],
-          thematicInterests: [],
-          collaborationTypes: [],
-          expertise: [],
-          visitObjectives: [],
-          competencies: []
+          photoUrl: photoUrl || currentUser?.profile?.photoUrl || '',
+          bio: currentUser?.profile?.bio || '',
+          interests: currentUser?.profile?.interests || [],
+          objectives: currentUser?.profile?.objectives || [],
+          sectors: currentUser?.profile?.sectors || [],
+          products: currentUser?.profile?.products || [],
+          videos: currentUser?.profile?.videos || [],
+          images: currentUser?.profile?.images || [],
+          participationObjectives: currentUser?.profile?.participationObjectives || [],
+          thematicInterests: currentUser?.profile?.thematicInterests || [],
+          collaborationTypes: currentUser?.profile?.collaborationTypes || [],
+          expertise: currentUser?.profile?.expertise || [],
+          visitObjectives: currentUser?.profile?.visitObjectives || [],
+          competencies: currentUser?.profile?.competencies || []
         },
-        createdAt: new Date().toISOString()
+        createdAt: currentUser?.createdAt || new Date().toISOString()
       };
-      console.log('📦 Mise à jour du store local avec:', localUser.email);
       setUser(localUser);
 
       // 5. Create payment request in database (non bloquant)
@@ -241,7 +266,7 @@ export default function VisitorVIPRegistration() {
         const { error: paymentError } = await supabase
           .from('payment_requests')
           .insert([{
-            user_id: authData.user.id,
+            user_id: userId,
             amount: 700,
             status: 'pending',
             payment_method: null,
@@ -266,7 +291,7 @@ export default function VisitorVIPRegistration() {
             email: data.email,
             name: fullName,
             level: 'premium',
-            userId: authData.user.id,
+            userId: userId,
             includePaymentInstructions: true
           }
         });

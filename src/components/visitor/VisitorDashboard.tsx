@@ -470,36 +470,39 @@ export default memo(function VisitorDashboard() {
             animate="visible"
             className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8"
           >
-            <motion.div variants={itemVariants}>
-              <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 h-full">
-                <div className="flex items-start space-x-3 mb-4">
-                  <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-                    <Network className="h-5 w-5 text-white" />
+            {/* Réseautage IA - Masqué pour les visiteurs free */}
+            {userLevel !== 'free' && (
+              <motion.div variants={itemVariants}>
+                <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 h-full">
+                  <div className="flex items-start space-x-3 mb-4">
+                    <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+                      <Network className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900">Réseautage IA</h3>
+                      <p className="text-gray-600 text-sm mt-1">
+                        Découvrez des connexions pertinentes grâce à l'intelligence artificielle
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900">Réseautage IA</h3>
-                    <p className="text-gray-600 text-sm mt-1">
-                      Découvrez des connexions pertinentes grâce à l'intelligence artificielle
-                    </p>
+                  <div className="space-y-3">
+                    <Link to={ROUTES.NETWORKING}>
+                      <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-md hover:shadow-lg transition-all">
+                        <Network className="h-4 w-4 mr-2" />
+                        Explorer le réseau
+                      </Button>
+                    </Link>
+                    <Link to={ROUTES.PROFILE_MATCHING}>
+                      <Button variant="outline" className="w-full border-purple-200 text-purple-700 hover:bg-purple-50">
+                        <Target className="h-4 w-4 mr-2" />
+                        Configurer mon matching
+                        <ArrowRight className="h-4 w-4 ml-2" />
+                      </Button>
+                    </Link>
                   </div>
-                </div>
-                <div className="space-y-3">
-                  <Link to={ROUTES.NETWORKING}>
-                    <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-md hover:shadow-lg transition-all">
-                      <Network className="h-4 w-4 mr-2" />
-                      Explorer le réseau
-                    </Button>
-                  </Link>
-                  <Link to={ROUTES.PROFILE_MATCHING}>
-                    <Button variant="outline" className="w-full border-purple-200 text-purple-700 hover:bg-purple-50">
-                      <Target className="h-4 w-4 mr-2" />
-                      Configurer mon matching
-                      <ArrowRight className="h-4 w-4 ml-2" />
-                    </Button>
-                  </Link>
-                </div>
-              </Card>
-            </motion.div>
+                </Card>
+              </motion.div>
+            )}
 
             {/* Prendre un rendez-vous - Masqué pour les visiteurs free */}
             {userLevel !== 'free' && (

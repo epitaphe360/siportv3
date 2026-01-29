@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import { ROUTES } from '../../lib/routes';
 import { COUNTRIES } from '../../data/countries';
+import { useRecaptcha } from '../../hooks/useRecaptcha';
 
 const freeVisitorSchema = z.object({
   firstName: z.string().min(2, 'Prénom requis'),
@@ -47,6 +48,7 @@ export default function VisitorFreeRegistration() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
+  const { executeRecaptcha, isReady: isRecaptchaReady } = useRecaptcha();
 
   const {
     register,
@@ -64,6 +66,16 @@ export default function VisitorFreeRegistration() {
     try {
       const fullName = `${data.firstName} ${data.lastName}`.trim();
 
+      // 0. verify reCAPTCHA
+      let recaptchaToken: string | undefined;
+      if (isRecaptchaReady) {
+        try {
+          recaptchaToken = await executeRecaptcha('visitor_free_registration');
+        } catch (reErr) {
+          console.warn('⚠️ reCAPTCHA failed, proceeding without:', reErr);
+        }
+      }
+
       // 1. Créer l'utilisateur Supabase Auth (sans mot de passe)
       const temporaryPassword = `temp-${Date.now()}-${Math.random().toString(36)}`;
 
@@ -75,7 +87,8 @@ export default function VisitorFreeRegistration() {
             name: fullName,
             type: 'visitor',
             visitor_level: 'free'
-          }
+          },
+          captchaToken: recaptchaToken
         }
       });
 

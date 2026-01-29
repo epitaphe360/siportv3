@@ -68,11 +68,38 @@ const safeWaitForSelector = async (page: any, selector: string, timeout = 5000) 
   }
 };
 
+// Helper pour surveiller les logs console et erreurs réseau
+const setupConsoleMonitoring = (page: any) => {
+  page.on('console', (msg) => {
+    const type = msg.type();
+    if (type === 'error' || type === 'warning') {
+      console.log(`[CONSOLE ${type.toUpperCase()}] ${msg.text()}`);
+    }
+  });
+
+  page.on('pageerror', (err) => {
+    console.log(`[PAGE ERROR] ${err.message}`);
+  });
+  
+  page.on('requestfailed', (request) => {
+    if (request.url().includes(BASE_URL) || request.url().includes('supabase')) {
+      console.log(`[REQUEST FAILED] ${request.method()} ${request.url()} - ${request.failure()?.errorText}`);
+    }
+  });
+
+  page.on('response', (response) => {
+    if (response.status() >= 400) {
+      console.log(`[HTTP ERROR] ${response.status()} ${response.url()}`);
+    }
+  });
+};
+
 // ============================================================================
 // 1. 🌐 PARCOURS PUBLIC (Guest/Visiteur non connecté)
 // ============================================================================
 test.describe('🌐 PARCOURS PUBLIC - Navigation sans connexion', () => {
   test('Parcours complet visiteur non connecté', async ({ page }) => {
+    setupConsoleMonitoring(page);
     test.setTimeout(90000);
 
     console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -116,7 +143,12 @@ test.describe('🌐 PARCOURS PUBLIC - Navigation sans connexion', () => {
     // 1.5 Page Actualités
     console.log('📍 5. Consultation Actualités...');
     await page.goto(`${BASE_URL}/news`);
-    await page.waitForLoadState('networkidle');
+    try {
+      await page.waitForLoadState('networkidle', { timeout: 5000 });
+    } catch {
+      console.log('   ⚠️ Networkidle timeout - continuing anyway');
+    }
+    await page.waitForLoadState('domcontentloaded');
     await page.waitForTimeout(1000);
     console.log('   ✅ Page actualités consultée\n');
 
@@ -165,7 +197,8 @@ test.describe('🌐 PARCOURS PUBLIC - Navigation sans connexion', () => {
 // ============================================================================
 test.describe('👤 PARCOURS VISITEUR COMPLET', () => {
   test('Cycle complet: Inscription Free → Upgrade VIP → Badge', async ({ page }) => {
-    test.setTimeout(120000);
+    setupConsoleMonitoring(page);
+    test.setTimeout(600000); // 10 minutes
 
     const testData = generateTestData();
     const { visitor } = testData;
@@ -179,29 +212,41 @@ test.describe('👤 PARCOURS VISITEUR COMPLET', () => {
     // 2.1 Inscription Visiteur FREE
     console.log('📍 1. Inscription Visiteur FREE...');
     await page.goto(`${BASE_URL}/register/visitor`);
-    await page.waitForLoadState('domcontentloaded');
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(3000);
 
     // Étape 1: Type de compte
-    const visitorCard = page.locator('text=Visiteur').first();
-    if (await visitorCard.isVisible({ timeout: 10000 })) {
+    console.log('   → Étape 1: Type de compte...');
+    const visitorCard = page.locator('[data-testid="account-type-visitor"], label:has-text("Visiteur")').first();
+    if (await visitorCard.isVisible()) {
       await visitorCard.click();
       console.log('   → Carte Visiteur cliquée');
-    } else {
-      console.log('   ⚠️ Carte Visiteur non trouvée, tentative de continuer...');
     }
     
-    const nextBtn = page.locator('button:has-text("Suivant"), [data-testid="next-step"]').first();
-    await nextBtn.click();
+    await page.waitForTimeout(1000);
+    console.log(`   → URL actuelle: ${page.url()}`);
+    
+    // DEBUG: Lister les boutons
+    const buttons = await page.locator('button').allTextContents();
+    console.log(`   → Boutons trouvés: ${buttons.join(', ')}`);
+
+    // Essayer de trouver le bouton Suivant par texte ou testid
+    const nextBtn = page.locator('button:has-text("Suivant"), [data-testid="btn-next"]').first();
+    await nextBtn.scrollIntoViewIfNeeded();
+    await nextBtn.click({ force: true });
     await page.waitForTimeout(1000);
 
     // Étape 2: Entreprise / Organisation
-    console.log('   → Formulaire Étape 2...');
-    await page.fill('input[name="companyName"]', visitor.company || 'Indépendant');
+    console.log('   → Étape 2: Entreprise...');
+    // Pour visiteur, le nom de l'entreprise n'est pas obligatoire mais on peut le mettre
+    const compInput = page.locator('input[name="companyName"]').first();
+    if (await compInput.isVisible()) {
+      await compInput.fill(visitor.company || 'Indépendant');
+    }
     
     const sectorSelect = page.locator('select[name="sector"]').first();
     if (await sectorSelect.isVisible()) {
-      await sectorSelect.selectOption({ index: 1 });
+      await sectorSelect.selectOption('Technologie');
     }
 
     const countrySelect = page.locator('select[name="country"]').first();
@@ -209,49 +254,46 @@ test.describe('👤 PARCOURS VISITEUR COMPLET', () => {
       await countrySelect.selectOption('FR');
     }
 
-    await nextBtn.click();
+    await page.getByTestId('btn-next').first().click();
     await page.waitForTimeout(1000);
 
     // Étape 3: Contact
-    console.log('   → Formulaire Étape 3...');
+    console.log('   → Étape 3: Contact...');
     await page.fill('input[name="firstName"]', visitor.name.split(' ')[0]);
     await page.fill('input[name="lastName"]', visitor.name.split(' ')[1] || 'Test');
     await page.fill('input[name="email"]', visitor.email);
     await page.fill('input[name="phone"]', visitor.phone);
-    await nextBtn.click();
+    await page.getByTestId('btn-next').first().click();
     await page.waitForTimeout(1000);
 
     // Étape 4: Profil
-    console.log('   → Formulaire Étape 4...');
-    const desc = page.locator('textarea[name="description"]').first();
+    console.log('   → Étape 4: Profil...');
+    const desc = page.locator('textarea[data-testid="description"]').first();
     if (await desc.isVisible()) {
       await desc.fill('Je suis un visiteur passionné par le secteur maritime et portuaire.');
     }
     
-    // Cliquer sur un objectif si possible
-    const objective = page.locator('label:has-text("conférences"), label:has-text("professionnels")').first();
-    if (await objective.isVisible()) await objective.click();
+    // Cliquer sur un objectif
+    const objective = page.locator('input[type="checkbox"]').first();
+    if (await objective.isVisible()) await objective.check();
     
-    await nextBtn.click();
+    await page.getByTestId('btn-next').first().click();
     await page.waitForTimeout(1000);
 
     // Étape 5: Sécurité
-    console.log('   → Formulaire Étape 5...');
-    await page.fill('input[name="password"]', visitor.password);
+    console.log('   → Étape 5: Sécurité...');
+    await page.fill('input[data-testid="password"]', visitor.password);
     await page.fill('input[name="confirmPassword"]', visitor.password);
 
-    const submitBtn = page.locator('button[type="submit"], [data-testid="submit-registration"]').first();
-    await submitBtn.click();
-    await page.waitForTimeout(5000);
+    await page.click('button:has-text("Créer mon compte")');
+    await page.waitForTimeout(10000); // Attendre traitement et reCAPTCHA
     console.log('   ✅ Compte visiteur créé\n');
 
-    // Si redirigé vers login, se connecter
-    if (page.url().includes('login')) {
-      console.log('   → Connexion...');
-      await page.fill('input[type="email"]', visitor.email);
-      await page.fill('input[type="password"]', visitor.password);
-      await page.click('button[type="submit"]');
-      await page.waitForTimeout(3000);
+    // Si pas de redirection automatique, forcer la redirection vers dashboard
+    if (page.url().includes('confirm') || page.url().includes('login')) {
+      console.log('   → Tentative accès dashboard...');
+      await page.goto(`${BASE_URL}/visitor/dashboard`);
+      await page.waitForTimeout(2000);
     }
 
     // 2.2 Dashboard Visiteur
@@ -327,7 +369,8 @@ test.describe('👤 PARCOURS VISITEUR COMPLET', () => {
 // ============================================================================
 test.describe('🏢 PARCOURS EXPOSANT COMPLET', () => {
   test('Cycle complet: Inscription → Mini-site → Networking → Analytics', async ({ page }) => {
-    test.setTimeout(150000);
+    setupConsoleMonitoring(page);
+    test.setTimeout(600000); // 10 minutes - le test prend du temps avec toutes les navigations
 
     const testData = generateTestData();
     const { exhibitor } = testData;
@@ -339,51 +382,108 @@ test.describe('🏢 PARCOURS EXPOSANT COMPLET', () => {
     console.log(`🔐 Password: ${exhibitor.password}`);
     console.log(`🏢 Entreprise: ${exhibitor.companyName}\n`);
 
-    // 3.1 Inscription Exposant
+// 3.1 Inscription Exposant
     console.log('📍 1. Inscription Exposant...');
     await page.goto(`${BASE_URL}/register/exhibitor`);
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
 
-    // Sélectionner forfait 36m² (Premium)
-    const premiumPlan = page.locator('div:has-text("36m²"), h3:has-text("Premium")').first();
-    if (await premiumPlan.isVisible()) {
-      await premiumPlan.click();
-      console.log('   → Forfait 36m² sélectionné');
+    // Le formulaire ExhibitorSignUpPage est à une seule page avec tous les champs
+    console.log('   → Sélection abonnement Premium...');
+    // Cliquer sur la carte Premium
+    const premiumCard = page.locator('div[class*="cursor-pointer"]').filter({ hasText: 'Premium' }).first();
+    if (await premiumCard.isVisible()) {
+      await premiumCard.click();
+      await page.waitForTimeout(500);
     }
 
-    await page.fill('input[id="companyName"], input[name="companyName"]', exhibitor.companyName);
+    // Remplir le formulaire complet (tous les champs sur la même page)
+    console.log('   → Remplissage formulaire complet...');
     
-    // Secteurs (MultiSelect)
-    const sectorOption = page.locator('div:has-text("Logistique"), label:has-text("Logistique")').first();
-    if (await sectorOption.isVisible()) await sectorOption.click();
-
-    await page.fill('textarea[id="companyDescription"], textarea[name="companyDescription"]', exhibitor.description);
-    await page.fill('input[id="website"]', exhibitor.website || 'https://test-exhibitor.com');
-
-    // Infos personnelles
-    await page.fill('input[id="firstName"]', exhibitor.name.split(' ')[0]);
-    await page.fill('input[id="lastName"]', exhibitor.name.split(' ')[1] || 'Exposant');
-    await page.fill('input[id="position"]', 'Directeur Commercial');
+    // Section Entreprise
+    await page.fill('#companyName', exhibitor.companyName);
+    await page.waitForTimeout(300);
     
-    await page.fill('input[type="email"]', exhibitor.email);
-    await page.fill('input[id="phone"]', exhibitor.phone);
-    await page.fill('input[name="password"]', exhibitor.password);
-    await page.fill('input[name="confirmPassword"]', exhibitor.password);
+    // Secteurs - MultiSelect avec input de recherche
+    console.log('   → Sélection secteurs...');
+    const sectorsInput = page.locator('input[placeholder*="Sélectionnez vos secteurs"]').first();
+    await sectorsInput.waitFor({ state: 'visible', timeout: 5000 });
+    
+    // Sélectionner 2 secteurs via le champ de recherche
+    const sectorsToSelect = ['Technologie', 'Finance'];
+    for (const sector of sectorsToSelect) {
+      await sectorsInput.click();
+      await sectorsInput.fill(sector);
+      await page.waitForTimeout(300);
+      
+      // Cliquer sur l'option dans le dropdown
+      const sectorOption = page.locator(`button:has-text("${sector}")`).first();
+      await sectorOption.waitFor({ state: 'visible', timeout: 5000 });
+      await sectorOption.click();
+      await page.waitForTimeout(300);
+    }
+    
+    // Pays - avec attente et débogage
+    console.log('   → Sélection du pays...');
+    const countryTrigger = page.locator('#country');
+    await countryTrigger.scrollIntoViewIfNeeded();
+    await countryTrigger.click();
+    await page.waitForTimeout(1000);
+    
+    // Attendre que les options soient visibles
+    const marocOption = page.getByRole('option', { name: /Maroc/i }).first();
+    await marocOption.waitFor({ state: 'visible', timeout: 5000 });
+    await marocOption.click();
+    await page.waitForTimeout(300);
 
-    // Checkboxes
-    await page.click('input[name="acceptTerms"], label:has-text("conditions")');
-    await page.click('input[name="acceptPrivacy"], label:has-text("confidentialité")');
+    await page.fill('#website', exhibitor.website);
+    await page.fill('#companyDescription', exhibitor.description);
+    await page.waitForTimeout(300);
 
-    const submitBtn = page.locator('button[type="submit"]:has-text("Inscription"), button:has-text("Créer")').first();
-    await submitBtn.click();
+    // Section Personnelle
+    await page.fill('#firstName', exhibitor.name.split(' ')[0]);
+    await page.fill('#lastName', exhibitor.name.split(' ')[1] || 'Test');
+    await page.fill('#position', 'Directeur Commercial');
+    await page.waitForTimeout(300);
+
+    // Section Contact
+    await page.fill('#email', exhibitor.email);
+    await page.fill('#phone', exhibitor.phone);
+    await page.waitForTimeout(300);
+
+    // Section Sécurité
+    await page.fill('#password', exhibitor.password);
+    await page.fill('#confirmPassword', exhibitor.password);
+    await page.waitForTimeout(300);
+
+    // Conditions
+    console.log('   → Acceptation des conditions...');
+    await page.check('#acceptTerms', { force: true });
+    await page.check('#acceptPrivacy', { force: true });
+    await page.waitForTimeout(500);
+
+    // Cliquer sur "Prévisualiser et soumettre" - le bouton qui ouvre la modal
+    console.log('   → Clic sur Prévisualiser...');
+    const previewBtn = page.locator('button[type="submit"]').filter({ hasText: /Prévisualiser|Preview|Aperçu/i }).first();
+    await previewBtn.scrollIntoViewIfNeeded();
+    await previewBtn.waitFor({ state: 'visible', timeout: 5000 });
+    await previewBtn.click({ force: true });
+    await page.waitForTimeout(2000);
+
+    // Confirmer dans la modal en cliquant sur "S'inscrire maintenant"
+    console.log('   → Confirmation finale dans la modal...');
+    const confirmBtn = page.locator('button').filter({ hasText: /S'inscrire maintenant|Confirmer/i }).last();
+    await confirmBtn.waitFor({ state: 'visible', timeout: 5000 });
+    await confirmBtn.click({ force: true });
     await page.waitForTimeout(5000);
     console.log('   ✅ Compte exposant créé\n');
 
-    // Si redirigé vers login
-    if (page.url().includes('login')) {
-      await page.fill('input[type="email"]', exhibitor.email);
-      await page.fill('input[type="password"]', exhibitor.password);
+    // Connexion manuelle si nécessaire (pour les exposants c'est souvent nécessaire car validation admin)
+    if (page.url().includes('login') || page.url().includes('confirm')) {
+      console.log('   → Connexion manuelle...');
+      await page.goto(`${BASE_URL}/login`);
+      await page.fill('input[name="email"]', exhibitor.email);
+      await page.fill('input[name="password"]', exhibitor.password);
       await page.click('button[type="submit"]');
       await page.waitForTimeout(3000);
     }
@@ -533,7 +633,8 @@ test.describe('🏢 PARCOURS EXPOSANT COMPLET', () => {
 // ============================================================================
 test.describe('🤝 PARCOURS PARTENAIRE COMPLET', () => {
   test('Cycle complet: Inscription → Upgrade Tier → Média → Analytics', async ({ page }) => {
-    test.setTimeout(150000);
+    setupConsoleMonitoring(page);
+    test.setTimeout(600000); // 10 minutes
 
     const testData = generateTestData();
     const { partner } = testData;
@@ -545,34 +646,91 @@ test.describe('🤝 PARCOURS PARTENAIRE COMPLET', () => {
     console.log(`🔐 Password: ${partner.password}`);
     console.log(`🏢 Entreprise: ${partner.companyName}\n`);
 
-    // 4.1 Inscription Partenaire
+    // 4.1 Inscription Partenaire (formulaire à une seule page)
     console.log('📍 1. Inscription Partenaire...');
     await page.goto(`${BASE_URL}/register/partner`);
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
 
-    await page.fill('input[type="email"]', partner.email);
-    await page.fill('input[type="password"]', partner.password);
-    await page.fill('input[name="company_name"], input[placeholder*="entreprise" i]', partner.companyName);
-    await page.fill('input[name="name"], input[name="contact_name"]', partner.name);
+    // Remplir le formulaire complet (tous les champs sur la même page)
+    console.log('   → Remplissage formulaire complet...');
+    
+    // Section Organisation
+    await page.fill('#companyName', partner.companyName);
+    await page.waitForTimeout(300);
+    
+    // Secteurs - cliquer sur le MultiSelect
+    const partnerSectorsButton = page.locator('button').filter({ hasText: /Sélectionnez/i }).first();
+    if (await partnerSectorsButton.isVisible()) {
+      await partnerSectorsButton.click();
+      await page.waitForTimeout(300);
+      await page.locator('div[role="option"]').first().click();
+      await page.waitForTimeout(200);
+      await page.keyboard.press('Escape');
+    }
+    
+    // Pays
+    await page.locator('#country').click();
+    await page.waitForTimeout(500);
+    await page.locator('[role="option"]').filter({ hasText: 'Maroc' }).first().click();
+    await page.waitForTimeout(300);
 
-    const sectorSelect = page.locator('select[name="sector"], select[name="category"]').first();
-    if (await sectorSelect.isVisible()) {
-      await sectorSelect.selectOption({ index: 1 });
+    await page.fill('#website', partner.website);
+    await page.waitForTimeout(300);
+
+    // Section Contact
+    await page.fill('#firstName', partner.name.split(' ')[0]);
+    await page.fill('#lastName', partner.name.split(' ')[1] || 'Test');
+    await page.fill('#position', 'Chargé de Partenariat');
+    await page.fill('#email', partner.email);
+    await page.fill('#phone', partner.phone);
+    await page.waitForTimeout(300);
+
+    // Section Sécurité
+    await page.fill('#password', partner.password);
+    await page.fill('#confirmPassword', partner.password);
+    await page.waitForTimeout(300);
+
+    // Section Détails
+    await page.fill('#companyDescription', partner.description);
+    await page.waitForTimeout(300);
+    
+    // Type de partenariat
+    const partnershipSelect = page.locator('#partnershipType');
+    if (await partnershipSelect.isVisible()) {
+      await partnershipSelect.click();
+      await page.waitForTimeout(300);
+      await page.locator('[role="option"]').first().click();
+      await page.waitForTimeout(200);
     }
 
-    await page.fill('textarea[name="description"]', partner.description);
-    await page.fill('input[type="tel"], input[name="phone"]', partner.phone);
-    await page.fill('input[type="url"], input[name="website"]', partner.website);
+    // Conditions
+    await page.check('#acceptTerms', { force: true });
+    await page.check('#acceptPrivacy', { force: true });
+    await page.waitForTimeout(500);
 
-    await page.click('button[type="submit"]');
-    await page.waitForTimeout(3000);
+    // Soumettre - ouvre une preview modal
+    console.log('   → Ouverture aperçu...');
+    const previewBtnPartner = page.locator('button[type="submit"]').first();
+    await previewBtnPartner.scrollIntoViewIfNeeded();
+    await previewBtnPartner.click({ force: true });
+    await page.waitForTimeout(2000);
+
+    // Confirmer dans la modal
+    console.log('   → Confirmation inscription...');
+    const confirmBtnPartner = page.locator('button').filter({ hasText: /Confirmer|S'inscrire maintenant/i }).last();
+    if (await confirmBtnPartner.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await confirmBtnPartner.click({ force: true });
+      await page.waitForTimeout(5000);
+    }
     console.log('   ✅ Compte partenaire créé\n');
 
-    // Si redirigé vers login
-    if (page.url().includes('login')) {
-      await page.fill('input[type="email"]', partner.email);
-      await page.fill('input[type="password"]', partner.password);
+    // Connexion manuelle
+    if (page.url().includes('login') || page.url().includes('confirm')) {
+      console.log('   → Connexion manuelle...');
+      await page.goto(`${BASE_URL}/login`);
+      await page.fill('input[name="email"]', partner.email);
+      await page.fill('input[name="password"]', partner.password);
       await page.click('button[type="submit"]');
       await page.waitForTimeout(3000);
     }

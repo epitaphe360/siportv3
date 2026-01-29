@@ -47,11 +47,14 @@ export const Header: React.FC = memo(() => {
     setIsProfileOpen(false);
   }, [logout]);
 
+  const isFreeVisitor = user?.type === 'visitor' && (user?.visitor_level === 'free' || !user?.visitor_level);
+
   const navigation = [
     { name: t('nav.home'), href: ROUTES.HOME },
     { name: t('nav.exhibitors'), href: ROUTES.EXHIBITORS },
     { name: t('nav.partners'), href: ROUTES.PARTNERS },
-    { name: t('nav.networking'), href: ROUTES.NETWORKING },
+    // Cacher le réseautage pour les visiteurs free
+    ...(isFreeVisitor ? [] : [{ name: t('nav.networking'), href: ROUTES.NETWORKING }]),
   ];
 
   const infoMenuItems = [

@@ -34,12 +34,12 @@ export interface AppointmentEmailData {
 }
 
 export class EmailService {
-  private static readonly FROM_EMAIL = process.env.VITE_EMAIL_FROM_ADDRESS || 'noreply@siportevent.com';
+  private static readonly FROM_EMAIL = import.meta.env.VITE_EMAIL_FROM_ADDRESS || 'noreply@siportevent.com';
   private static readonly SUPPORT_EMAIL = 'support@siportevent.com';
-  private static readonly APP_URL = process.env.VITE_APP_URL || 'https://siportevent.com';
+  private static readonly APP_URL = import.meta.env.VITE_APP_URL || 'https://siportevent.com';
   // Use VITE_API_URL if defined, otherwise default to localhost:5000 (prod) or 3000 (dev)
   // For safety in this environment, defaulting to localhost:3000 as per server.js default
-  private static readonly API_BASE_URL = process.env.VITE_API_URL || 'http://localhost:3000';
+  private static readonly API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
   /**
    * Send email via Node.js Backend API (using SMTP)

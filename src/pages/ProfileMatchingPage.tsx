@@ -137,6 +137,9 @@ export default function ProfileMatchingPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [completionPercentage, setCompletionPercentage] = useState(0);
 
+  // Vérification du niveau d'accès (Premium requis pour le matching IA)
+  const isFreeVisitor = user?.type === 'visitor' && (user?.visitor_level === 'free' || !user?.visitor_level);
+
   const [formData, setFormData] = useState({
     sectors: user?.profile?.sectors || [],
     interests: user?.profile?.interests || [],
@@ -147,6 +150,36 @@ export default function ProfileMatchingPage() {
     companySize: user?.profile?.companySize || '',
     bio: user?.profile?.bio || ''
   });
+
+  if (isFreeVisitor) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-8 text-center">
+        <div className="bg-purple-100 p-6 rounded-full mb-6">
+          <Sparkles className="h-16 w-16 text-purple-600 outline-none" />
+        </div>
+        <h2 className="text-3xl font-bold text-gray-900 mb-4">Optimisation par IA</h2>
+        <p className="text-gray-600 text-lg max-w-md mb-8">
+          La configuration du matching intelligent est réservée aux membres Premium et VIP.
+          Améliorez votre profil pour obtenir des recommandations ultra-pertinentes.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Button 
+            onClick={() => navigate(ROUTES.VISITOR_UPGRADE)}
+            className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg"
+          >
+            Découvrir les offres Premium
+          </Button>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate(-1)}
+            className="px-8 py-3 rounded-xl border-2"
+          >
+            Retour
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   // ✅ Resynchroniser le formulaire quand le user change (après sauvegarde ou rechargement)
   useEffect(() => {

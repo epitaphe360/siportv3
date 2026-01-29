@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Star, Heart, MessageCircle, Handshake, TrendingUp, Calendar } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Star, Heart, MessageCircle, Handshake, TrendingUp, Calendar, Lock, ArrowRight } from 'lucide-react';
 import { Badge } from '../ui/badge';
+import { Button } from '../ui/Button';
+import { Card } from '../ui/Card';
+import { ROUTES } from '../../lib/routes';
 import { MatchmakingService } from '../../services/matchmaking';
 import useAuthStore from '../../store/authStore';
 import type { MatchScore } from '../../types/site-builder';
 
 export const MatchmakingDashboard: React.FC = () => {
   const { user } = useAuthStore();
+  const navigate = useNavigate();
   const [recommendations, setRecommendations] = useState<MatchScore[]>([]);
   const [networkStrength, setNetworkStrength] = useState(0);
   const [filters, setFilters] = useState({
@@ -17,12 +22,48 @@ export const MatchmakingDashboard: React.FC = () => {
   });
   const [loading, setLoading] = useState(true);
 
+  // Vérification du niveau d'accès (Réseautage IA réservé aux comptes Premium/VIP)
+  const isFreeVisitor = user?.type === 'visitor' && (user?.visitor_level === 'free' || !user?.visitor_level);
+
   useEffect(() => {
-    if (user) {
+    if (user && !isFreeVisitor) {
       loadRecommendations();
       loadNetworkStrength();
+    } else if (user && isFreeVisitor) {
+      setLoading(false);
     }
-  }, [user]);
+  }, [user, isFreeVisitor]);
+
+  if (isFreeVisitor) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center">
+        <div className="bg-purple-100 p-6 rounded-full mb-6">
+          <Lock className="h-16 w-16 text-purple-600" />
+        </div>
+        <h2 className="text-3xl font-bold text-gray-900 mb-4">Fonctionnalité Premium</h2>
+        <p className="text-gray-600 text-lg max-w-md mb-8">
+          Le réseautage intelligent par IA est réservé aux membres Premium et VIP.
+          Boostez votre expérience et découvrez des connexions stratégiques.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Button 
+            onClick={() => navigate(ROUTES.VISITOR_UPGRADE)}
+            className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
+          >
+            Passer au niveau Premium
+            <ArrowRight className="h-5 w-5 ml-2" />
+          </Button>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate(-1)}
+            className="px-8 py-3 rounded-xl border-2"
+          >
+            Retour
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   const loadRecommendations = async () => {
     if (!user) return;

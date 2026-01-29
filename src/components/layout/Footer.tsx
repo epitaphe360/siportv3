@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '../../hooks/useTranslation';
 import { ROUTES } from '../../lib/routes';
+import useAuthStore from '../../store/authStore';
 import {
   Anchor,
   Mail,
@@ -18,9 +19,12 @@ import { MoroccanPattern } from '../ui/MoroccanDecor';
 export const Footer: React.FC = memo(() => {
   const currentYear = new Date().getFullYear();
   const { t } = useTranslation();
+  const { user } = useAuthStore();
+  const isFreeVisitor = user?.type === 'visitor' && (user?.visitor_level === 'free' || !user?.visitor_level);
 
   return (
     <footer className="bg-slate-950 text-white relative overflow-hidden font-sans border-t border-slate-900">
+
       {/* Background Pattern Premium */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[300px] bg-blue-600/5 rounded-full blur-[120px] pointer-events-none"></div>
@@ -71,7 +75,7 @@ export const Footer: React.FC = memo(() => {
               {[
                 { label: 'Accueil', href: ROUTES.HOME },
                 { label: 'Catalogue Exposants', href: ROUTES.EXHIBITORS },
-                { label: 'Réseautage B2B', href: ROUTES.NETWORKING },
+                ...(isFreeVisitor ? [] : [{ label: 'Réseautage B2B', href: ROUTES.NETWORKING }]),
                 { label: 'Conférences', href: ROUTES.EVENTS },
                 { label: 'Actualités', href: ROUTES.NEWS }
               ].map((link) => (

@@ -334,7 +334,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
           // Récupérer les notifications (optimized: 65% bandwidth reduction)
           const { data: notifications, error: notifError } = await supabaseClient
             .from('notifications')
-            .select('id, type, title, message, created_at, read, action_url, user_id')
+            .select('id, type, title, message, created_at, is_read, action_url, user_id')
             .eq('user_id', user.id)
             .order('created_at', { ascending: false })
             .limit(20);
@@ -344,7 +344,7 @@ export const useVisitorStore = create<VisitorState>((set, get) => ({
           // Récupérer les informations du salon (configuration globale) (optimized: 60% bandwidth reduction)
           const { data: salonConfig, error: salonError } = await supabaseClient
             .from('salon_config')
-            .select('name, start_time, end_date, venue, city, country, address, opening_time, closing_time, exhibitors_count, visitors_count, conferences_count, countries_count')
+            .select('name, start_date, end_date, venue')
             .maybeSingle();
 
           if (salonError) console.warn('Erreur lors de la récupération des infos salon:', salonError);
