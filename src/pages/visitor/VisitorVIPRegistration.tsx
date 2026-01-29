@@ -25,7 +25,7 @@ const vipVisitorSchema = z.object({
   email: z.string().email('Email invalide'),
   password: z.string()
     .min(12, 'Le mot de passe doit contenir au moins 12 caractères')
-    .max(128, 'Le mot de passe ne doit pas dépasser 128 caractères')
+    .max(72, 'Le mot de passe ne doit pas dépasser 72 caractères') // Limite bcrypt Supabase
     .regex(/[A-Z]/, 'Doit contenir une majuscule')
     .regex(/[a-z]/, 'Doit contenir une minuscule')
     .regex(/[0-9]/, 'Doit contenir un chiffre')
@@ -136,12 +136,14 @@ export default function VisitorVIPRegistration() {
       let photoUrl = '';
       if (photoFile) {
         console.log('📷 Upload photo en cours...');
+        console.log('   📁 Fichier:', photoFile.name, 'Taille:', photoFile.size);
         try {
           const fileExt = photoFile.name.split('.').pop() || 'jpg';
           const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
           const filePath = `${fileName}`;
 
-          const { error: uploadError } = await supabase.storage
+          console.log('   📤 Upload vers visitor-photos/', filePath);
+          const { error: uploadError, data: uploadData } = await supabase.storage
             .from('visitor-photos')
             .upload(filePath, photoFile, {
               cacheControl: '3600',
@@ -150,7 +152,10 @@ export default function VisitorVIPRegistration() {
 
           if (uploadError) {
             console.warn('⚠️ Photo upload échoué (non bloquant):', uploadError);
+            console.warn('   Code:', uploadError.message);
+            toast.warning('Photo non uploadée (non bloquant)');
           } else {
+            console.log('   ✅ Upload réussi:', uploadData);
             const { data: urlData } = supabase.storage
               .from('visitor-photos')
               .getPublicUrl(filePath);
@@ -159,6 +164,7 @@ export default function VisitorVIPRegistration() {
           }
         } catch (photoErr) {
           console.warn('⚠️ Erreur photo (non bloquant):', photoErr);
+          toast.warning('Photo non uploadée (non bloquant)');
         }
       } else {
         console.log('📷 Pas de photo sélectionnée');
@@ -169,6 +175,10 @@ export default function VisitorVIPRegistration() {
       
       if (!userId) {
         console.log('👤 Création compte auth...');
+        console.log('   📧 Email:', data.email);
+        console.log('   🔒 Password length:', data.password.length);
+        console.log('   👤 Name:', fullName);
+        
         const { data: authData, error: authError } = await supabase.auth.signUp({
           email: data.email,
           password: data.password,
@@ -183,7 +193,18 @@ export default function VisitorVIPRegistration() {
         });
 
         if (authError) {
-          console.error('❌ Erreur auth:', authError);
+          console.error('❌ Erreur auth signUp:', authError);
+          console.error('   Code:', authError.status);
+          console.error('   Message:', authError.message);
+          
+          // Messages d'erreur plus clairs
+          if (authError.message?.includes('User already registered')) {
+            toast.error('Cet email est déjà utilisé');
+          } else if (authError.message?.includes('Password')) {
+            toast.error('Le mot de passe ne respecte pas les exigences');
+          } else {
+            toast.error(`Erreur d'inscription: ${authError.message}`);
+          }
           throw authError;
         }
         if (!authData.user) {
@@ -315,7 +336,27 @@ export default function VisitorVIPRegistration() {
 
     } catch (error: any) {
       console.error('❌ ERREUR INSCRIPTION VIP:', error);
-      toast.error(error.message || 'Erreur lors de l\'inscription');
+      console.error('   Type:', typeof error);
+      console.error('   Message:', error.message);
+      console.error('   Code:', error.code);
+      console.error('   Status:', error.status);
+      
+      // Message d'erreur plus spécifique selon le type
+      let errorMessage = 'Erreur lors de l\'inscription';
+      
+      if (error.message?.includes('already registered')) {
+        errorMessage = 'Cet email est déjà utilisé. Connectez-vous ou utilisez un autre email.';
+      } else if (error.message?.includes('Password')) {
+        errorMessage = 'Le mot de passe ne respecte pas les exigences de sécurité.';
+      } else if (error.message?.includes('Invalid')) {
+        errorMessage = 'Données invalides. Vérifiez vos informations.';
+      } else if (error.status === 422) {
+        errorMessage = 'Erreur de validation. Vérifiez votre email et mot de passe.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
