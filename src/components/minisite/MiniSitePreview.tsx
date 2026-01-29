@@ -359,12 +359,16 @@ export default function MiniSitePreview({ exhibitorId: propExhibitorId, exhibito
               {/* Features */}
               {aboutSection.data?.features && aboutSection.data.features.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                  {aboutSection.data.features.map((feature: string, index: number) => (
-                    <Card key={index} className="p-6 text-center hover:shadow-lg transition-shadow">
-                      <Award className="h-8 w-8 mx-auto mb-3" style={{ color: theme.accentColor }} />
-                      <h3 className="font-semibold text-gray-900">{feature}</h3>
-                    </Card>
-                  ))}
+                  {aboutSection.data.features.map((feature: any, index: number) => {
+                    const featureName = typeof feature === 'string' ? feature : (feature?.name || feature?.title || '');
+                    if (!featureName) return null;
+                    return (
+                      <Card key={index} className="p-6 text-center hover:shadow-lg transition-shadow">
+                        <Award className="h-8 w-8 mx-auto mb-3" style={{ color: theme.accentColor }} />
+                        <h3 className="font-semibold text-gray-900">{featureName}</h3>
+                      </Card>
+                    );
+                  })}
                 </div>
               )}
 
@@ -432,12 +436,16 @@ export default function MiniSitePreview({ exhibitorId: propExhibitorId, exhibito
                         <p className="text-gray-600 mb-4 flex-1">{product.description}</p>
                         {product.features && product.features.length > 0 && (
                           <ul className="space-y-2 mb-4">
-                            {product.features.slice(0, 3).map((feature: string, idx: number) => (
-                              <li key={idx} className="flex items-center text-sm text-gray-600">
-                                <Award className="h-4 w-4 mr-2" style={{ color: theme.accentColor }} />
-                                {feature}
-                              </li>
-                            ))}
+                            {product.features.slice(0, 3).map((feature: any, idx: number) => {
+                              const featureName = typeof feature === 'string' ? feature : (feature?.name || feature?.title || '');
+                              if (!featureName) return null;
+                              return (
+                                <li key={idx} className="flex items-center text-sm text-gray-600">
+                                  <Award className="h-4 w-4 mr-2" style={{ color: theme.accentColor }} />
+                                  {featureName}
+                                </li>
+                              );
+                            })}
                           </ul>
                         )}
                         {product.price && (

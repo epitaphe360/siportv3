@@ -396,7 +396,7 @@ export default function EnhancedProductModal({ product: rawProduct, theme, onClo
                           className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                         >
                           <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: theme.accentColor }} />
-                          <span className="text-gray-700">{feature}</span>
+                          <span className="text-gray-700">{typeof feature === 'string' ? feature : (feature?.name || feature?.title || '')}</span>
                         </motion.li>
                       ))}
                     </ul>

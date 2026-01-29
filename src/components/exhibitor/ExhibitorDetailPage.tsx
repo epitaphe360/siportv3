@@ -279,21 +279,25 @@ export default function ExhibitorDetailPage() {
 
           {/* Features Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {exhibitor.miniSite?.about?.features.map((feature, index) => (
-              <motion.div
-                key={feature}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="text-center p-6 bg-white rounded-lg shadow-sm"
-              >
-                <div className="bg-blue-100 p-3 rounded-lg w-12 h-12 mx-auto mb-4">
-                  <Award className="h-6 w-6 text-blue-600" />
-                </div>
-                <h3 className="font-semibold text-gray-900">{feature}</h3>
-              </motion.div>
-            ))}
+            {exhibitor.miniSite?.about?.features.map((feature: any, index: number) => {
+              const featureName = typeof feature === 'string' ? feature : (feature?.name || feature?.title || '');
+              if (!featureName) return null;
+              return (
+                <motion.div
+                  key={`feature-${index}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="text-center p-6 bg-white rounded-lg shadow-sm"
+                >
+                  <div className="bg-blue-100 p-3 rounded-lg w-12 h-12 mx-auto mb-4">
+                    <Award className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <h3 className="font-semibold text-gray-900">{featureName}</h3>
+                </motion.div>
+              );
+            })}
           </div>
 
           {/* Certifications */}

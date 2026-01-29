@@ -502,12 +502,16 @@ export default function MiniSiteBuilder() {
                                 <p className="text-gray-600 mb-6">{(section.content as AboutContent).description}</p>
                                 {(section.content as AboutContent).features.length > 0 && (
                                   <div className="grid grid-cols-2 gap-4">
-                                    {(section.content as AboutContent).features.map((feature: string) => (
-                                      <div key={feature} className="flex items-center space-x-2">
-                                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: siteSettings.primaryColor }}></div>
-                                        <span className="text-sm text-gray-700">{feature}</span>
-                                      </div>
-                                    ))}
+                                    {(section.content as AboutContent).features.map((feature: any, idx: number) => {
+                                      const featureName = typeof feature === 'string' ? feature : (feature?.name || feature?.title || '');
+                                      if (!featureName) return null;
+                                      return (
+                                        <div key={`feature-${idx}`} className="flex items-center space-x-2">
+                                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: siteSettings.primaryColor }}></div>
+                                          <span className="text-sm text-gray-700">{featureName}</span>
+                                        </div>
+                                      );
+                                    })}
                                   </div>
                                 )}
                               </div>
@@ -523,9 +527,11 @@ export default function MiniSiteBuilder() {
                                       <h3 className="font-semibold text-gray-900 mb-2">{product.name}</h3>
                                       <p className="text-gray-600 text-sm mb-4">{product.description}</p>
                                       <div className="flex flex-wrap gap-1">
-                                        {product.features.map((feature: string) => (
-                                          <Badge key={feature} variant="info" size="sm">{feature}</Badge>
-                                        ))}
+                                        {product.features.map((feature: any, idx: number) => {
+                                          const featureName = typeof feature === 'string' ? feature : (feature?.name || feature?.title || '');
+                                          if (!featureName) return null;
+                                          return <Badge key={`pf-${idx}`} variant="info" size="sm">{featureName}</Badge>;
+                                        })}
                                       </div>
                                     </div>
                                   ))}
