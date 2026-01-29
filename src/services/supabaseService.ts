@@ -420,7 +420,8 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      // Use exhibitor_profiles as the source of truth
+      // First try: exhibitor_profiles table
+      console.log('📊 Chargement des exposants depuis exhibitor_profiles...');
       const { data: profiles, error: profilesError } = await safeSupabase
         .from('exhibitor_profiles')
         .select(`
@@ -435,68 +436,73 @@ export class SupabaseService {
           email,
           phone,
           stand_number
-        `);
+        `)
+        .order('company_name', { ascending: true });
 
-      if (profilesError) {
-          // If exhibitor_profiles invalid, fallback to old exhibitors table logic if needed, 
-          // but for now let's assume profiles is the way foward.
-          // Or check if error is "relation does not exist" -> then fallback.
-          console.warn('Erreur exhibitor_profiles, essai fallback exhibitors:', profilesError.message);
-          throw profilesError; 
+      if (!profilesError && profiles && profiles.length > 0) {
+        console.log(`✅ ${profiles.length} exposants chargés depuis exhibitor_profiles`);
+        return profiles.map((p: any) => ({
+          id: p.id,
+          userId: p.user_id,
+          companyName: p.company_name || 'Sans nom',
+          category: (p.category as any) || 'startup',
+          sector: p.sector || 'General',
+          description: p.description || '',
+          logo: p.logo_url,
+          website: p.website,
+          verified: false, 
+          featured: false,
+          contactInfo: {
+              email: p.email || '',
+              phone: p.phone || '',
+              address: '',
+              city: '',
+              country: 'France'
+          },
+          products: [],
+          availability: [],
+          miniSite: null,
+          certifications: [],
+          markets: [],
+          standNumber: p.stand_number
+        }));
       }
-      
-      return (profiles || []).map((p: any) => ({
-        id: p.id,
-        userId: p.user_id,
-        companyName: p.company_name || 'Sans nom',
-        category: (p.category as any) || 'startup',
-        sector: p.sector || 'General',
-        description: p.description || '',
-        logo: p.logo_url,
-        website: p.website,
-        verified: false, 
-        featured: false,
-        contactInfo: {
-            email: p.email || '',
-            phone: p.phone || '',
-            address: '',
-            city: '',
-            country: 'France' // Default
-        },
-        products: [], // Profiles don't have products directly joined yet in this query
-        availability: [],
-        miniSite: null,
-        certifications: [],
-        markets: [],
-        standNumber: p.stand_number
-      }));
+
+      // Fallback: Try exhibitors table
+      console.log('⚠️ exhibitor_profiles vide ou erreur, essai fallback exhibitors:', profilesError?.message);
+      const { data: exhibitorsData, error: exhibitorsError } = await safeSupabase
+        .from('exhibitors')
+        .select(`
+          id,
+          user_id,
+          company_name,
+          category,
+          sector,
+          description,
+          logo_url,
+          website,
+          verified,
+          featured,
+          contact_info
+        `)
+        .order('company_name', { ascending: true });
+
+      if (exhibitorsError) {
+        console.error('❌ Erreur exhibitors:', exhibitorsError);
+        throw exhibitorsError;
+      }
+
+      if (exhibitorsData && exhibitorsData.length > 0) {
+        console.log(`✅ ${exhibitorsData.length} exposants chargés depuis exhibitors (fallback)`);
+        return exhibitorsData.map(this.transformExhibitorDBToExhibitor);
+      }
+
+      console.warn('⚠️ Aucun exposant trouvé dans les deux tables');
+      return [];
 
     } catch (error) {
-       // Fallback to original implementation if table not found (for safety)
-       try {
-          const { data: exhibitorsData, error: exhibitorsError } = await safeSupabase
-            .from('exhibitors')
-            .select(`
-              id,
-              user_id,
-              company_name,
-              category,
-              sector,
-              description,
-              logo_url,
-              website,
-              verified,
-              featured,
-              contact_info
-            `);
-    
-          if (exhibitorsError) throw exhibitorsError;
-    
-          return (exhibitorsData || []).map(this.transformExhibitorDBToExhibitor);
-       } catch (e) {
-          console.error('Erreur lors de la récupération des exposants (toutes tables):', e);
-          return [];
-       }
+       console.error('❌ Erreur critique getExhibitors:', error);
+       return [];
     }
   }
 

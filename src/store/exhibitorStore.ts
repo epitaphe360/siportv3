@@ -119,6 +119,8 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
     const { exhibitors } = get();
     const filters = { ...get().filters, ...newFilters };
     
+    console.log('🔍 Filtre appliqué:', filters, `sur ${exhibitors.length} exposants`);
+    
     const filtered = exhibitors.filter(exhibitor => {
       const sector = exhibitor.sector || '';
       const companyName = exhibitor.companyName || '';
@@ -135,6 +137,7 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
       return matchesCategory && matchesSector && matchesSearch;
     });
 
+    console.log(`📊 ${filtered.length} exposants après filtrage`);
     set({ filters, filteredExhibitors: filtered });
   },
 
