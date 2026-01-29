@@ -5,7 +5,7 @@
 export const SUPPORT_CONFIG = {
   // WhatsApp - Principal canal de communication
   whatsapp: {
-    number: '+212612345678', // À remplacer par votre numéro WhatsApp
+    number: '+33766504580', // Numéro WhatsApp de support
     message: 'Bonjour, je souhaiterais entrer en contact avec votre équipe commerciale',
   },
   
@@ -13,7 +13,7 @@ export const SUPPORT_CONFIG = {
   email: 'contact@siportevent.com',
   
   // Téléphone
-  phone: '+212123456789',
+  phone: '+33766504580',
   
   // Horaires d'ouverture
   hours: {
@@ -34,17 +34,17 @@ export const SUPPORT_CONFIG = {
   teams: {
     commercial: {
       name: 'Équipe Commerciale',
-      whatsapp: '+212612345678',
+      whatsapp: '+33766504580',
       email: 'commercial@siportevent.com',
     },
     support: {
       name: 'Support Technique',
-      whatsapp: '+212612345678',
+      whatsapp: '+33766504580',
       email: 'support@siportevent.com',
     },
     exhibitors: {
       name: 'Exposants',
-      whatsapp: '+212612345678',
+      whatsapp: '+33766504580',
       email: 'exposants@siports.com',
     },
   },

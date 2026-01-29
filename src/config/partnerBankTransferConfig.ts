@@ -158,8 +158,8 @@ export const PARTNER_BANK_TRANSFER_INFO = {
   // Contact support partenaires
   support: {
     email: 'partners@siport.com',
-    phone: '+33 1 23 45 67 89',
-    whatsapp: '+212 6 12 34 56 78',
+    phone: '+33 7 66 50 45 80',
+    whatsapp: '+33 7 66 50 45 80',
     hours: {
       fr: 'Lundi - Vendredi: 9h00 - 18h00 (GMT+1)',
       en: 'Monday - Friday: 9:00 AM - 6:00 PM (GMT+1)',
