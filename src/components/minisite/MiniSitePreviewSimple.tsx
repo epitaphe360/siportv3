@@ -501,7 +501,11 @@ export default function MiniSitePreviewSimple() {
           {/* Features/Values - TOUJOURS AFFICHÉES avec design amélioré */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             {features.length > 0 ? (
-              features.map((feature: string, index: number) => {
+              features.map((feature: any, index: number) => {
+                // Ensure feature is a string
+                const featureName = typeof feature === 'string' ? feature : (feature?.name || feature?.title || '');
+                if (!featureName) return null;
+                
                 const featureIcons = [Sparkles, Star, Award, CheckCircle2];
                 const FeatureIcon = featureIcons[index % featureIcons.length];
                 const isExpanded = expandedFeatures[index] || false;
@@ -532,7 +536,7 @@ export default function MiniSitePreviewSimple() {
                 
                 return (
                   <Card 
-                    key={feature} 
+                    key={featureName} 
                     className="p-8 text-center hover:shadow-2xl transition-all duration-300 group bg-white/80 backdrop-blur-sm border-2 border-transparent hover:border-blue-200 hover:-translate-y-2 relative overflow-hidden cursor-pointer"
                     onClick={() => setExpandedFeatures(prev => ({ ...prev, [index]: !prev[index] }))}
                   >
@@ -547,9 +551,9 @@ export default function MiniSitePreviewSimple() {
                       >
                         <FeatureIcon className="h-8 w-8 text-white" />
                       </div>
-                      <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-blue-600 transition-colors">{feature}</h3>
+                      <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-blue-600 transition-colors">{featureName}</h3>
                       {isExpanded && (
-                        <p className="text-sm text-gray-600 mt-3 leading-relaxed">{getFeatureDescription(feature)}</p>
+                        <p className="text-sm text-gray-600 mt-3 leading-relaxed">{getFeatureDescription(featureName)}</p>
                       )}
                       <div className="h-1 w-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto mt-4 transform origin-center transition-all duration-300 group-hover:w-full"></div>
                     </div>
