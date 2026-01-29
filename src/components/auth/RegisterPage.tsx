@@ -151,6 +151,7 @@ const registrationSchema = z.object({
 type RegistrationForm = z.infer<typeof registrationSchema>;
 
 export default function RegisterPage() {
+  console.log('Rendering RegisterPage, step:', 1);
   const [currentStep, setCurrentStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -167,19 +168,37 @@ export default function RegisterPage() {
   const requestedLevel = params.get('level');
   const nextPath = params.get('next') || '';
 
+  // Déterminer le type de compte par défaut basé sur l'URL
+  const getDefaultAccountType = () => {
+    if (requestedLevel) return 'visitor';
+    if (location.pathname.includes('/visitor')) return 'visitor';
+    if (location.pathname.includes('/exhibitor')) return 'exhibitor';
+    if (location.pathname.includes('/partner')) return 'partner';
+    return undefined;
+  };
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
+    setValue,
     trigger
   } = useForm<RegistrationForm>({
     resolver: zodResolver(registrationSchema),
     mode: 'onChange',
     defaultValues: {
-      accountType: requestedLevel ? 'visitor' : undefined
+      accountType: getDefaultAccountType()
     }
   });
+
+  // Synchroniser le type de compte si l'URL change
+  useEffect(() => {
+    const defaultType = getDefaultAccountType();
+    if (defaultType) {
+      setValue('accountType', defaultType as any);
+    }
+  }, [location.pathname, setValue]);
 
   const watchedAccountType = watch('accountType');
   const watchedSector = watch('sector');

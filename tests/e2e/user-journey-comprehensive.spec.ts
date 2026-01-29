@@ -21,7 +21,7 @@ import { test, expect } from '@playwright/test';
  * npm run test:journey:comprehensive:debug
  */
 
-const BASE_URL = 'http://localhost:9323';
+const BASE_URL = 'http://localhost:9324';
 
 // Helpers pour générer des données de test
 const generateTestData = () => {
@@ -179,17 +179,70 @@ test.describe('👤 PARCOURS VISITEUR COMPLET', () => {
     // 2.1 Inscription Visiteur FREE
     console.log('📍 1. Inscription Visiteur FREE...');
     await page.goto(`${BASE_URL}/register/visitor`);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(2000);
+
+    // Étape 1: Type de compte
+    const visitorCard = page.locator('text=Visiteur').first();
+    if (await visitorCard.isVisible({ timeout: 10000 })) {
+      await visitorCard.click();
+      console.log('   → Carte Visiteur cliquée');
+    } else {
+      console.log('   ⚠️ Carte Visiteur non trouvée, tentative de continuer...');
+    }
+    
+    const nextBtn = page.locator('button:has-text("Suivant"), [data-testid="next-step"]').first();
+    await nextBtn.click();
     await page.waitForTimeout(1000);
 
-    await page.fill('input[type="email"]', visitor.email);
-    await page.fill('input[type="password"]', visitor.password);
-    await page.fill('input[name="name"], input[name="full_name"]', visitor.name);
-    await page.fill('input[type="tel"], input[name="phone"]', visitor.phone);
+    // Étape 2: Entreprise / Organisation
+    console.log('   → Formulaire Étape 2...');
+    await page.fill('input[name="companyName"]', visitor.company || 'Indépendant');
+    
+    const sectorSelect = page.locator('select[name="sector"]').first();
+    if (await sectorSelect.isVisible()) {
+      await sectorSelect.selectOption({ index: 1 });
+    }
 
-    const submitBtn = page.locator('button[type="submit"]').first();
+    const countrySelect = page.locator('select[name="country"]').first();
+    if (await countrySelect.isVisible()) {
+      await countrySelect.selectOption('FR');
+    }
+
+    await nextBtn.click();
+    await page.waitForTimeout(1000);
+
+    // Étape 3: Contact
+    console.log('   → Formulaire Étape 3...');
+    await page.fill('input[name="firstName"]', visitor.name.split(' ')[0]);
+    await page.fill('input[name="lastName"]', visitor.name.split(' ')[1] || 'Test');
+    await page.fill('input[name="email"]', visitor.email);
+    await page.fill('input[name="phone"]', visitor.phone);
+    await nextBtn.click();
+    await page.waitForTimeout(1000);
+
+    // Étape 4: Profil
+    console.log('   → Formulaire Étape 4...');
+    const desc = page.locator('textarea[name="description"]').first();
+    if (await desc.isVisible()) {
+      await desc.fill('Je suis un visiteur passionné par le secteur maritime et portuaire.');
+    }
+    
+    // Cliquer sur un objectif si possible
+    const objective = page.locator('label:has-text("conférences"), label:has-text("professionnels")').first();
+    if (await objective.isVisible()) await objective.click();
+    
+    await nextBtn.click();
+    await page.waitForTimeout(1000);
+
+    // Étape 5: Sécurité
+    console.log('   → Formulaire Étape 5...');
+    await page.fill('input[name="password"]', visitor.password);
+    await page.fill('input[name="confirmPassword"]', visitor.password);
+
+    const submitBtn = page.locator('button[type="submit"], [data-testid="submit-registration"]').first();
     await submitBtn.click();
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(5000);
     console.log('   ✅ Compte visiteur créé\n');
 
     // Si redirigé vers login, se connecter
@@ -292,22 +345,39 @@ test.describe('🏢 PARCOURS EXPOSANT COMPLET', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1000);
 
-    await page.fill('input[type="email"]', exhibitor.email);
-    await page.fill('input[type="password"]', exhibitor.password);
-    await page.fill('input[name="company_name"], input[placeholder*="entreprise" i]', exhibitor.companyName);
-    await page.fill('input[name="name"], input[name="contact_name"]', exhibitor.name);
-
-    const sectorSelect = page.locator('select[name="sector"], select[name="category"]').first();
-    if (await sectorSelect.isVisible()) {
-      await sectorSelect.selectOption({ index: 1 });
+    // Sélectionner forfait 36m² (Premium)
+    const premiumPlan = page.locator('div:has-text("36m²"), h3:has-text("Premium")').first();
+    if (await premiumPlan.isVisible()) {
+      await premiumPlan.click();
+      console.log('   → Forfait 36m² sélectionné');
     }
 
-    await page.fill('textarea[name="description"]', exhibitor.description);
-    await page.fill('input[type="tel"], input[name="phone"]', exhibitor.phone);
-    await page.fill('input[type="url"], input[name="website"]', exhibitor.website);
+    await page.fill('input[id="companyName"], input[name="companyName"]', exhibitor.companyName);
+    
+    // Secteurs (MultiSelect)
+    const sectorOption = page.locator('div:has-text("Logistique"), label:has-text("Logistique")').first();
+    if (await sectorOption.isVisible()) await sectorOption.click();
 
-    await page.click('button[type="submit"]');
-    await page.waitForTimeout(3000);
+    await page.fill('textarea[id="companyDescription"], textarea[name="companyDescription"]', exhibitor.description);
+    await page.fill('input[id="website"]', exhibitor.website || 'https://test-exhibitor.com');
+
+    // Infos personnelles
+    await page.fill('input[id="firstName"]', exhibitor.name.split(' ')[0]);
+    await page.fill('input[id="lastName"]', exhibitor.name.split(' ')[1] || 'Exposant');
+    await page.fill('input[id="position"]', 'Directeur Commercial');
+    
+    await page.fill('input[type="email"]', exhibitor.email);
+    await page.fill('input[id="phone"]', exhibitor.phone);
+    await page.fill('input[name="password"]', exhibitor.password);
+    await page.fill('input[name="confirmPassword"]', exhibitor.password);
+
+    // Checkboxes
+    await page.click('input[name="acceptTerms"], label:has-text("conditions")');
+    await page.click('input[name="acceptPrivacy"], label:has-text("confidentialité")');
+
+    const submitBtn = page.locator('button[type="submit"]:has-text("Inscription"), button:has-text("Créer")').first();
+    await submitBtn.click();
+    await page.waitForTimeout(5000);
     console.log('   ✅ Compte exposant créé\n');
 
     // Si redirigé vers login

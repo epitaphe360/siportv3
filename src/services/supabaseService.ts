@@ -967,11 +967,11 @@ export class SupabaseService {
         email,
         password,
         options: {
-          emailRedirectTo: undefined, // Désactiver l'email de confirmation
           data: {
             name: userData.name,
             type: userData.type
-          }
+          },
+          captchaToken: recaptchaToken // ✅ Supporter le reCAPTCHA natif si activé dans Supabase
         }
       });
 
@@ -984,7 +984,11 @@ export class SupabaseService {
       });
 
       if (authError) {
-        console.error('❌ Erreur Auth:', authError);
+        console.error('❌ Erreur Auth (Détails):', {
+          message: authError.message,
+          status: authError.status,
+          name: authError.name
+        });
         throw authError;
       }
       if (!authData.user) {

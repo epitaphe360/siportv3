@@ -19,9 +19,17 @@ interface RecaptchaGoogleResponse {
 }
 
 serve(async (req) => {
+  const origin = req.headers.get('Origin') || '*';
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response(null, { 
+      status: 204, 
+      headers: {
+        ...corsHeaders,
+        'Access-Control-Allow-Origin': origin,
+      }
+    });
   }
 
   try {
@@ -32,7 +40,11 @@ serve(async (req) => {
         JSON.stringify({ success: false, error: 'Token manquant' }),
         {
           status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          headers: { 
+            ...corsHeaders, 
+            'Access-Control-Allow-Origin': origin,
+            'Content-Type': 'application/json' 
+          },
         }
       );
     }
@@ -82,7 +94,11 @@ serve(async (req) => {
         }),
         {
           status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          headers: { 
+            ...corsHeaders, 
+            'Access-Control-Allow-Origin': origin,
+            'Content-Type': 'application/json' 
+          },
         }
       );
     }
@@ -99,7 +115,11 @@ serve(async (req) => {
         }),
         {
           status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          headers: { 
+            ...corsHeaders, 
+            'Access-Control-Allow-Origin': origin,
+            'Content-Type': 'application/json' 
+          },
         }
       );
     }
@@ -115,7 +135,11 @@ serve(async (req) => {
       }),
       {
         status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 
+          ...corsHeaders, 
+          'Access-Control-Allow-Origin': origin,
+          'Content-Type': 'application/json' 
+        },
       }
     );
   } catch (error) {
@@ -127,7 +151,11 @@ serve(async (req) => {
       }),
       {
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 
+          ...corsHeaders, 
+          'Access-Control-Allow-Origin': origin,
+          'Content-Type': 'application/json' 
+        },
       }
     );
   }
