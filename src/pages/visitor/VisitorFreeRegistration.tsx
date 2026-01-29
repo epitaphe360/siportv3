@@ -149,15 +149,34 @@ export default function VisitorFreeRegistration() {
         console.warn('Erreur envoi email:', emailError);
       }
 
-      // 5. Logout immédiat - visiteur gratuit n'a pas accès au dashboard
+      // 5. Envoyer email pour définir le mot de passe
+      console.log('📧 Envoi email de définition de mot de passe...');
+      try {
+        const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+          data.email,
+          {
+            redirectTo: `${window.location.origin}/auth/reset-password?type=initial-setup`
+          }
+        );
+
+        if (resetError) {
+          console.warn('⚠️ Reset password email failed (non-bloquant):', resetError);
+        } else {
+          console.log('✅ Email de définition de mot de passe envoyé');
+        }
+      } catch (resetErr) {
+        console.warn('⚠️ Reset password non-bloquant:', resetErr);
+      }
+
+      // 6. Logout immédiat - visiteur gratuit n'a pas accès au dashboard sans mot de passe défini
       await supabase.auth.signOut();
 
       // Succès !
       setShowSuccess(true);
-      toast.success('Inscription réussie ! Vérifiez votre email.');
+      toast.success('📧 Inscription réussie ! Vérifiez votre email pour définir votre mot de passe.');
 
       setTimeout(() => {
-        navigate(`${ROUTES.SIGNUP_CONFIRMATION}?email=${encodeURIComponent(data.email)}&type=visitor&level=free`);
+        navigate(`${ROUTES.SIGNUP_CONFIRMATION}?email=${encodeURIComponent(data.email)}&type=visitor&level=free&needsPassword=true`);
       }, 6000);
 
     } catch (error: any) {

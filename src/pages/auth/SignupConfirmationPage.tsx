@@ -13,12 +13,14 @@ export default function SignupConfirmationPage() {
   const email = searchParams.get('email') || '';
   const userType = searchParams.get('type') || 'visitor';
   const userLevel = searchParams.get('level') || '';
+  const needsPassword = searchParams.get('needsPassword') === 'true';
   const [countdown, setCountdown] = useState(60);
 
   // Messages personnalisés selon le type
   const getTitle = () => {
     if (userType === 'exhibitor') return 'Inscription Exposant Réussie !';
     if (userType === 'partner') return 'Inscription Partenaire Réussie !';
+    if (userLevel === 'free' && needsPassword) return '📧 Badge Gratuit + Définition Mot de Passe';
     if (userLevel === 'free') return 'Badge Gratuit Envoyé !';
     if (userLevel === 'premium') return 'Inscription VIP Réussie !';
     return 'Inscription réussie !';
@@ -27,12 +29,38 @@ export default function SignupConfirmationPage() {
   const getDescription = () => {
     if (userType === 'exhibitor') return 'Votre demande de compte exposant a été enregistrée';
     if (userType === 'partner') return 'Votre demande de compte partenaire a été enregistrée';
+    if (userLevel === 'free' && needsPassword) return 'Votre badge gratuit vous a été envoyé + un email pour définir votre mot de passe';
     if (userLevel === 'free') return 'Votre badge d\'accès gratuit vous a été envoyé par email';
     if (userLevel === 'premium') return 'Votre compte VIP a été créé avec succès';
     return 'Votre compte a été créé avec succès';
   };
 
   const getInstructions = () => {
+    if (userLevel === 'free' && needsPassword) {
+      return [
+        {
+          step: 1,
+          title: '🔐 Définissez votre mot de passe',
+          description: 'Cliquez sur le lien dans l\'email "Définir votre mot de passe" pour créer votre mot de passe sécurisé'
+        },
+        {
+          step: 2,
+          title: '🎫 Téléchargez votre badge gratuit',
+          description: 'Un autre email contient votre badge QR à imprimer ou sauvegarder sur mobile'
+        },
+        {
+          step: 3,
+          title: '🚪 Accédez au salon',
+          description: 'Présentez votre badge QR à l\'entrée pour accéder gratuitement'
+        },
+        {
+          step: 4,
+          title: '💻 Connectez-vous au dashboard',
+          description: 'Utilisez votre email et mot de passe pour accéder à vos fonctionnalités limitées'
+        }
+      ];
+    }
+    
     if (userLevel === 'free') {
       return [
         {

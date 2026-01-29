@@ -22,7 +22,7 @@ function parseHashTokens(hash: string) {
 const resetPasswordSchema = z.object({
   password: z.string()
     .min(12, 'Le mot de passe doit contenir au moins 12 caractères')
-    .max(128, 'Le mot de passe ne doit pas dépasser 128 caractères')
+    .max(72, 'Le mot de passe ne doit pas dépasser 72 caractères') // Limite bcrypt Supabase
     .regex(/[A-Z]/, 'Doit contenir au moins une majuscule')
     .regex(/[a-z]/, 'Doit contenir au moins une minuscule')
     .regex(/[0-9]/, 'Doit contenir au moins un chiffre')
@@ -84,13 +84,44 @@ export default function ResetPasswordPage() {
       }
 
       // Update user password (requires an authenticated session set via tokens)
-  const { error: updErr } = await (supabase as any).auth.updateUser({ password: data.password });
-  if (updErr) {
+      const { error: updErr } = await (supabase as any).auth.updateUser({ password: data.password });
+      if (updErr) {
         setError(updErr.message || 'Erreur lors de la réinitialisation du mot de passe.');
       } else {
-        setMessage('Mot de passe changé avec succès. Vous pouvez maintenant vous connecter.');
+        // Mettre à jour hasPassword dans le profil utilisateur
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            const { data: userData } = await supabase
+              .from('users')
+              .select('profile')
+              .eq('id', user.id)
+              .single();
+
+            await supabase
+              .from('users')
+              .update({
+                profile: {
+                  ...(userData?.profile || {}),
+                  hasPassword: true
+                }
+              })
+              .eq('id', user.id);
+
+            console.log('✅ hasPassword mis à jour');
+          }
+        } catch (profileErr) {
+          console.warn('⚠️ Erreur mise à jour profil (non bloquant):', profileErr);
+        }
+
+        setMessage('✅ Mot de passe défini avec succès. Vous pouvez maintenant vous connecter.');
         // Clear URL fragment for security
         try { history.replaceState({}, '', window.location.pathname); } catch (e) { console.warn(e) }
+        
+        // Rediriger vers login après 3 secondes
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 3000);
       }
     } catch (err: unknown) {
       setError(err?.message || String(err));
