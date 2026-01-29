@@ -29,6 +29,8 @@ export interface UserProfile {
   firstName: string;
   lastName: string;
   avatar?: string;
+  photoUrl?: string; // URL photo pour badge VIP
+  hasPassword?: boolean; // Indique si l'utilisateur a un compte auth avec password
   visitorType?: 'individual' | 'freelancer' | 'company'; // Nouveau champ pour distinguer le type de visiteur
   company?: string;
   position?: string;

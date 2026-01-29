@@ -112,7 +112,8 @@ export default function VisitorFreeRegistration() {
             country: data.country,
             businessSector: data.sector,
             position: data.position || '',
-            company: data.company || ''
+            company: data.company || '',
+            hasPassword: false // Compte FREE sans auth password initial
           }
         }]);
 

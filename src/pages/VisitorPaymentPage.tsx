@@ -4,6 +4,9 @@ import { motion } from 'framer-motion';
 import { useTranslation } from '../hooks/useTranslation';
 import { Elements } from '@stripe/react-stripe-js';
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import {
   CreditCard,
   Building2,
@@ -12,7 +15,10 @@ import {
   Shield,
   Loader,
   AlertCircle,
-  Crown
+  Crown,
+  Lock,
+  Upload,
+  Camera
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Card } from '../components/ui/Card';
@@ -38,13 +44,50 @@ const IS_DEV = import.meta.env.DEV;
 
 type PaymentMethod = 'stripe' | 'paypal' | 'cmi';
 
+// Schema pour les données VIP manquantes (pour upgrade FREE → VIP)
+const upgradeVIPSchema = z.object({
+  password: z.string()
+    .min(12, 'Le mot de passe doit contenir au moins 12 caractères')
+    .max(72, 'Le mot de passe ne doit pas dépasser 72 caractères')
+    .regex(/[A-Z]/, 'Doit contenir une majuscule')
+    .regex(/[a-z]/, 'Doit contenir une minuscule')
+    .regex(/[0-9]/, 'Doit contenir un chiffre')
+    .regex(/[!@#$%^&*]/, 'Doit contenir un caractère spécial'),
+  confirmPassword: z.string(),
+  position: z.string().optional(),
+  company: z.string().optional(),
+  photo: z.any().optional()
+}).refine((data) => data.password === data.confirmPassword, {
+  message: 'Les mots de passe ne correspondent pas',
+  path: ['confirmPassword']
+});
+
+type UpgradeVIPForm = z.infer<typeof upgradeVIPSchema>;
+
 export default function VisitorPaymentPage() {
-  const { user } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showUpgradeForm, setShowUpgradeForm] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+
+  const {
+    register,
+    handleSubmit: handleUpgradeSubmit,
+    formState: { errors: upgradeErrors },
+    setValue
+  } = useForm<UpgradeVIPForm>({
+    resolver: zodResolver(upgradeVIPSchema),
+    mode: 'onChange',
+    defaultValues: {
+      position: user?.profile?.position || '',
+      company: user?.profile?.company || ''
+    }
+  });
 
   // Redirect if already VIP
   React.useEffect(() => {
@@ -150,6 +193,117 @@ export default function VisitorPaymentPage() {
 
   // TEST ONLY: Simulate successful payment
   const handleSimulateSuccess = async () => {
+    if (!user) return;
+    
+    // Si l'utilisateur n'a pas de password auth, montrer le formulaire d'upgrade d'abord
+    if (!user.profile?.hasPassword) {
+      setShowUpgradeForm(true);
+      return;
+    }
+    
+    await completeVIPUpgrade();
+  };
+
+  // Handler pour photo upload
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        toast.error('Veuillez sélectionner une image');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('La photo ne doit pas dépasser 5MB');
+        return;
+      }
+      setPhotoFile(file);
+      setValue('photo', e.target.files);
+      const reader = new FileReader();
+      reader.onloadend = () => setPhotoPreview(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Compléter les données VIP manquantes pour visiteur FREE
+  const onSubmitUpgradeData = async (data: UpgradeVIPForm) => {
+    if (!user) return;
+    setIsProcessing(true);
+
+    try {
+      // 1. Upload photo si fournie
+      let photoUrl = user.profile?.photoUrl || '';
+      if (photoFile) {
+        const fileExt = photoFile.name.split('.').pop() || 'jpg';
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('visitor-photos')
+          .upload(fileName, photoFile);
+
+        if (!uploadError && uploadData) {
+          const { data: urlData } = supabase.storage
+            .from('visitor-photos')
+            .getPublicUrl(fileName);
+          photoUrl = urlData.publicUrl;
+        }
+      }
+
+      // 2. Créer compte auth avec password
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: user.email,
+        password: data.password,
+        options: {
+          data: {
+            name: user.name,
+            type: 'visitor',
+            visitor_level: 'premium'
+          }
+        }
+      });
+
+      if (authError) {
+        console.error('Erreur création auth:', authError);
+        toast.error('Erreur lors de la création du compte sécurisé');
+        return;
+      }
+
+      // 3. Mettre à jour profil avec données complètes
+      await supabase.from('users').update({
+        profile: {
+          ...user.profile,
+          position: data.position || user.profile?.position,
+          company: data.company || user.profile?.company,
+          photoUrl,
+          hasPassword: true
+        }
+      }).eq('id', user.id);
+
+      // 4. Mettre à jour le store local
+      setUser({
+        ...user,
+        profile: {
+          ...user.profile,
+          position: data.position || user.profile?.position,
+          company: data.company || user.profile?.company,
+          photoUrl,
+          hasPassword: true
+        }
+      });
+
+      toast.success('Profil VIP complété avec succès');
+      setShowUpgradeForm(false);
+      
+      // Maintenant faire l'upgrade VIP
+      await completeVIPUpgrade();
+    } catch (error) {
+      console.error('Erreur upgrade données:', error);
+      toast.error('Erreur lors de la mise à jour du profil');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Finaliser l'upgrade VIP
+  const completeVIPUpgrade = async () => {
     if (!user) return;
     setIsProcessing(true);
     try {
@@ -437,6 +591,151 @@ export default function VisitorPaymentPage() {
             Annuler et retourner aux options d'abonnement
           </button>
         </div>
+
+        {/* Modal: Formulaire données VIP complémentaires */}
+        {showUpgradeForm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            >
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-yellow-100 p-2 rounded-lg">
+                      <Crown className="h-6 w-6 text-yellow-600" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900">Finalisation VIP Premium</h2>
+                      <p className="text-sm text-gray-600">Complétez votre profil pour finaliser l'upgrade</p>
+                    </div>
+                  </div>
+                </div>
+
+                <form onSubmit={handleUpgradeSubmit(onSubmitUpgradeData)} className="space-y-6">
+                  {/* Password */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <Lock className="h-4 w-4 inline mr-1" />
+                      Mot de passe sécurisé *
+                    </label>
+                    <input
+                      type="password"
+                      {...register('password')}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                      placeholder="Min. 12 caractères"
+                    />
+                    {upgradeErrors.password && (
+                      <p className="text-red-500 text-xs mt-1">{upgradeErrors.password.message}</p>
+                    )}
+                  </div>
+
+                  {/* Confirm Password */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Confirmer le mot de passe *
+                    </label>
+                    <input
+                      type="password"
+                      {...register('confirmPassword')}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                      placeholder="Confirmez votre mot de passe"
+                    />
+                    {upgradeErrors.confirmPassword && (
+                      <p className="text-red-500 text-xs mt-1">{upgradeErrors.confirmPassword.message}</p>
+                    )}
+                  </div>
+
+                  {/* Position (si manquant) */}
+                  {!user?.profile?.position && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Fonction
+                      </label>
+                      <input
+                        type="text"
+                        {...register('position')}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                        placeholder="Ex: Directeur Commercial"
+                      />
+                    </div>
+                  )}
+
+                  {/* Company (si manquant) */}
+                  {!user?.profile?.company && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Entreprise
+                      </label>
+                      <input
+                        type="text"
+                        {...register('company')}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                        placeholder="Nom de votre entreprise"
+                      />
+                    </div>
+                  )}
+
+                  {/* Photo */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <Camera className="h-4 w-4 inline mr-1" />
+                      Photo de profil (optionnelle)
+                    </label>
+                    <div className="flex items-center space-x-4">
+                      {photoPreview && (
+                        <img src={photoPreview} alt="Preview" className="h-20 w-20 rounded-full object-cover border-2 border-yellow-400" />
+                      )}
+                      <label className="cursor-pointer flex-1">
+                        <div className="px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg text-center hover:border-yellow-500 transition">
+                          <Upload className="h-6 w-6 mx-auto mb-1 text-gray-400" />
+                          <span className="text-sm text-gray-600">Cliquer pour choisir une photo</span>
+                        </div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handlePhotoChange}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Buttons */}
+                  <div className="flex space-x-3 pt-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowUpgradeForm(false)}
+                      disabled={isProcessing}
+                      className="flex-1"
+                    >
+                      Annuler
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={isProcessing}
+                      className="flex-1 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700"
+                    >
+                      {isProcessing ? (
+                        <>
+                          <Loader className="mr-2 h-5 w-5 animate-spin" />
+                          Finalisation...
+                        </>
+                      ) : (
+                        <>
+                          <Check className="mr-2 h-5 w-5" />
+                          Finaliser mon profil VIP
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
       </div>
     </div>
   );

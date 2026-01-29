@@ -237,7 +237,8 @@ export default function VisitorVIPRegistration() {
             businessSector: data.sector,
             position: data.position,
             company: data.company,
-            photoUrl: photoUrl || currentUser?.profile?.photoUrl || ''
+            photoUrl: photoUrl || currentUser?.profile?.photoUrl || '',
+            hasPassword: true // Compte VIP avec auth password
           }
         }]);
 
@@ -264,6 +265,7 @@ export default function VisitorVIPRegistration() {
           position: data.position,
           businessSector: data.sector,
           photoUrl: photoUrl || currentUser?.profile?.photoUrl || '',
+          hasPassword: true, // Compte VIP avec auth password
           bio: currentUser?.profile?.bio || '',
           interests: currentUser?.profile?.interests || [],
           objectives: currentUser?.profile?.objectives || [],
