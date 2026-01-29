@@ -1850,27 +1850,6 @@ export class SupabaseService {
     }
   }
 
-        const { data: miniSite } = await safeSupabase
-          .from('mini_sites')
-          .select('id, view_count')
-          .eq('exhibitor_id', userId)
-          .maybeSingle();
-
-        if (miniSite) {
-          await safeSupabase
-            .from('mini_sites')
-            .update({
-              view_count: (miniSite.view_count || 0) + 1,
-              updated_at: new Date().toISOString()
-            })
-            .eq('id', miniSite.id);
-        }
-      } else {
-        console.error('Erreur incrémentation vues:', error);
-      }
-    }
-  }
-
   static async getPublishedMiniSites(): Promise<{ data: any[] | null; error: any }> {
     if (!this.checkSupabaseConnection()) return { data: null, error: 'Supabase non connecté' };
 
