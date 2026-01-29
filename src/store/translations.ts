@@ -63,7 +63,7 @@ export const allTranslations = {
     'pages.partners.tier_museum': 'Musée',
     'pages.partners.tier_silver': 'Silver',
     'pages.partners.tier_gold': 'Gold',
-    'pages.partners.tier_platinum': 'platinum',
+    'pages.partners.tier_platinum': 'Platinum',
     'pages.partners.view_details': 'Voir détails',
     'pages.partners.no_results': 'Aucun partenaire trouvé',
     
@@ -599,7 +599,7 @@ export const allTranslations = {
     'pages.partners.tier_museum': 'Museum',
     'pages.partners.tier_silver': 'Silver',
     'pages.partners.tier_gold': 'Gold',
-    'pages.partners.tier_platinum': 'platinum',
+    'pages.partners.tier_platinum': 'Platinum',
     'pages.partners.view_details': 'View Details',
     'pages.partners.no_results': 'No partners found',
     
