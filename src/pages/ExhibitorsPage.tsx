@@ -86,7 +86,7 @@ export default function ExhibitorsPage() {
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       {/* Header Premium Immersif */}
-      <div className="relative bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] pt-16 pb-24 px-4 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] pt-32 pb-24 px-4 overflow-hidden">
         {/* Pattern Zellige Subtil */}
         <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
         

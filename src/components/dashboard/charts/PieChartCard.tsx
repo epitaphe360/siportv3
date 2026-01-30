@@ -107,15 +107,15 @@ export function PieChartCard({
     >
       <Card className="p-6 h-full flex flex-col">
         <h3 className="text-lg font-semibold text-gray-900 mb-6">{title}</h3>
-        <ResponsiveContainer width="100%" height={height - 100}>
-          <PieChart>
+        <ResponsiveContainer width="100%" height={height - 80}>
+          <PieChart margin={{ top: 20, bottom: 10 }}>
             <Pie
               data={data}
               cx="50%"
               cy="50%"
-              labelLine={false}
+              labelLine={true}
               label={renderLabel}
-              outerRadius={80}
+              outerRadius={70}
               fill="#8884d8"
               dataKey="value"
               animationDuration={1500}

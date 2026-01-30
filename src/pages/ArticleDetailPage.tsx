@@ -181,7 +181,7 @@ export default function ArticleDetailPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Barre de progression de lecture */}
-      <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
+      <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-[101]">
         <div 
           className="h-full bg-blue-600 transition-all duration-300"
           style={{ width: `${readingProgress}%` }}
@@ -189,7 +189,7 @@ export default function ArticleDetailPage() {
       </div>
 
       {/* Header Article */}
-      <div className="bg-gray-50 border-b border-gray-200">
+      <div className="bg-gray-50 border-b border-gray-200 pt-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between mb-4">
             <Link to={ROUTES.NEWS}>
