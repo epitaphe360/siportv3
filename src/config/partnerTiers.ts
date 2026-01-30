@@ -41,8 +41,8 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierConfig> = {
   museum: {
     id: 'museum',
     name: 'Museum',
-    displayName: 'Pass Musée',
-    price: PARTNER_BILLING.museum.amount, // ✅ Import depuis SSOT
+    displayName: 'Partenaire Musée',
+    price: PARTNER_BILLING.museum.amount, // ✅ Import depuis SSOT ($20k)
     color: '#8B4513',
     icon: '🏛️',
 
@@ -59,17 +59,32 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierConfig> = {
     },
 
     features: [
+      'Logo sur le site (4ème ligne)',
+      'Mini-site dédié Premium Exposure',
+      'Bannière rotative Web',
+      'Présence newsletter',
+      'Vidéos "Inside SIPORT"',
+      'Interview Live Studio "Meet The Leaders"',
+      'Inclusion podcast',
+      'Priorité algorithmique',
       'Stand exposition standard',
       '20 rendez-vous B2B',
       '5 inscriptions événements',
       '10 fichiers média',
       '3 membres d\'équipe',
       'Présentation de 5 produits',
-      'Badge partenaire',
+      'Badge "Partenaire Musée"',
       'Listing dans l\'annuaire'
     ],
 
     exclusivePerks: [
+      'Logo en 4ème ligne sur le site',
+      'Mini-site Premium Exposure',
+      'Bannière Web rotative',
+      'Présence dans e-mailings',
+      'Capsules vidéo marquées',
+      'Interview "Meet The Leaders"',
+      'Mention "Best Moments"',
       'Présence dans la zone Musée',
       'Accès aux conférences',
       'Networking de base'
