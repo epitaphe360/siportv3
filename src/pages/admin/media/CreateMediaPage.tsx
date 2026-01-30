@@ -5,10 +5,12 @@ import { Link } from 'react-router-dom';
 import { ROUTES } from '../../../lib/routes';
 import { mediaService } from '../../../services/mediaService';
 import { toast } from 'sonner';
+import { useTranslation } from '../../../hooks/useTranslation';
 import type { MediaType } from '../../../types/media';
 
 export const CreateMediaPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     type: 'webinar' as MediaType,

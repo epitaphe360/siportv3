@@ -8,6 +8,7 @@ import { Button } from '../../../components/ui/Button';
 import { Badge } from '../../../components/ui/Badge';
 import { supabase } from '../../../lib/supabase';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../../../hooks/useTranslation';
 
 interface Media {
   id: string;
@@ -26,6 +27,7 @@ type FilterType = 'all' | 'webinar' | 'podcast' | 'capsule_inside' | 'live_studi
 
 export const ManageMediaPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [media, setMedia] = useState<Media[]>([]);
   const [filteredMedia, setFilteredMedia] = useState<Media[]>([]);
   const [loading, setLoading] = useState(true);
