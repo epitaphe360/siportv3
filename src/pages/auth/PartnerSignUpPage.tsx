@@ -23,7 +23,7 @@ import { useEmailValidation } from '@/hooks/useEmailValidation';
 import { useTranslation, Language } from '@/utils/translations';
 import useAuthStore from '../../store/authStore';
 import { motion } from 'framer-motion';
-import { Building, Mail, Lock, User, Phone, Globe, Briefcase, MapPin, Languages, AlertCircle, Save } from 'lucide-react';
+import { Building, Mail, Lock, User, Phone, Globe, Briefcase, MapPin, Languages, AlertCircle, Save, Crown } from 'lucide-react';
 import { sendPartnerPaymentInstructions } from '../../services/partnerSignupEmailService';
 
 // Validation renforcée du mot de passe (standardisée à 12 caractères minimum)
@@ -45,6 +45,7 @@ const partnerSignUpSchema = z.object({
   sectors: z.array(z.string()).min(1, "Sélectionnez au moins un secteur d'activité"),
   country: z.string().min(2, "Le pays est requis"),
   website: z.string().url("L'URL du site web est invalide").optional().or(z.literal('')),
+  partnerTier: z.string().min(2, "Le niveau de partenariat est requis"),
   firstName: z.string().min(2, "Le prénom est requis"),
   lastName: z.string().min(2, "Le nom de famille est requis"),
   position: z.string().min(2, "Le poste est requis"),
@@ -86,6 +87,7 @@ export default function PartnerSignUpPage() {
       acceptTerms: false,
       acceptPrivacy: false,
       sectors: [],
+      partnerTier: 'museum', // Default to museum
     }
   });
 
@@ -159,6 +161,7 @@ export default function PartnerSignUpPage() {
     register('acceptTerms');
     register('acceptPrivacy');
     register('sectors');
+    register('partnerTier');
   }, [register]);
 
   // Quand le formulaire est valide, stocker les données et ouvrir la preview
@@ -224,8 +227,12 @@ export default function PartnerSignUpPage() {
       // Supprimer le brouillon après succès
       clearLocalStorage();
 
-      toast.success(t.title || 'Inscription réussie ! Consultez votre email pour confirmer votre compte.');
-      navigate(`${ROUTES.SIGNUP_CONFIRMATION}?email=${encodeURIComponent(email)}&type=partner`);
+      toast.success(t.title || 'Inscription réussie !');
+      
+      // ✅ FIX: Redirection vers le choix du mode de paiement IMPÉDIATEMENT lors de l'inscription
+      // Cela évite que l'utilisateur ne se retrouve sur le tableau de bord sans avoir payé
+      // Note: Cela suppose que l'auto-login a fonctionné ou qu'on utilise le userId/email pour pré-remplir
+      navigate(`${ROUTES.PARTNER_PAYMENT_SELECTION}?tier=${data.partnerTier}`);
     } catch (error) {
       console.error("Sign up error:", error);
       toast.error(error instanceof Error ? error.message : "Une erreur s'est produite lors de l'inscription.");
@@ -289,6 +296,25 @@ export default function PartnerSignUpPage() {
                     <Input id="companyName" {...register('companyName')} placeholder="Nom de votre organisation" className="pl-10" />
                   </div>
                   {errors.companyName && <p className="text-red-500 text-xs mt-1">{errors.companyName.message}</p>}
+                </div>
+                <div>
+                  <Label htmlFor="partnerTier">Niveau de Partenariat *</Label>
+                  <div className="relative">
+                    <Crown className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 z-10 pointer-events-none" />
+                    <Select onValueChange={(value: string) => setValue('partnerTier', value)} defaultValue="museum">
+                      <SelectTrigger id="partnerTier" className="pl-10">
+                        <SelectValue placeholder="Sélectionnez votre niveau" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="museum">🏛️ Museum Partner (18.400 €)</SelectItem>
+                        <SelectItem value="silver">🥈 Silver Partner (Contactez-nous)</SelectItem>
+                        <SelectItem value="gold">🥇 Gold Partner (Contactez-nous)</SelectItem>
+                        <SelectItem value="platinum">💎 Platinum Partner (Contactez-nous)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {errors.partnerTier && <p className="text-red-500 text-xs mt-1">{errors.partnerTier.message}</p>}
+                  <p className="text-xs text-gray-500 mt-1">Vous pourrez changer de niveau ultérieurement.</p>
                 </div>
                 <div>
                   <Label htmlFor="sectors">Secteur(s) d'activité *</Label>
