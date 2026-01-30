@@ -11,7 +11,11 @@ import {
   TrendingUp,
   Award,
   ArrowRight,
-  Target
+  Target,
+  Crown,
+  Headphones,
+  Video,
+  Zap
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
@@ -386,6 +390,91 @@ export default memo(function VisitorDashboard() {
               upgradeLink={userLevel === 'free' ? ROUTES.VISITOR_UPGRADE : undefined}
             />
           </motion.div>
+
+          {/* VIP Benefits Section - Exclusive for Premium/VIP */}
+          {(userLevel === 'premium' || userLevel === 'vip') && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mb-8"
+            >
+              <Card className="p-6 bg-gradient-to-r from-yellow-50 to-amber-50 border border-yellow-200 rounded-xl shadow-lg relative overflow-hidden">
+                 {/* Decorative background element */}
+                <div className="absolute top-0 right-0 p-4 opacity-10">
+                  <Crown className="w-32 h-32 text-yellow-600" />
+                </div>
+                
+                <div className="flex items-center gap-3 mb-6 relative z-10">
+                  <div className="p-2 bg-yellow-100 rounded-lg">
+                    <Crown className="h-6 w-6 text-yellow-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">Vos Avantages VIP Exclusifs</h3>
+                    <p className="text-yellow-700 text-sm">Profitez pleinement de votre expérience premium</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10">
+                  <div className="flex items-start gap-3 p-3 bg-white/60 rounded-lg border border-yellow-100 transition-all hover:bg-white hover:shadow-sm">
+                    <Calendar className="h-5 w-5 text-yellow-600 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-gray-900">10 Rendez-vous B2B</p>
+                      <p className="text-xs text-gray-600">Accès garanti aux exposants</p>
+                    </div>
+                  </div>
+                  
+                  <Link to={ROUTES.CHAT} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg border border-yellow-100 hover:bg-white hover:shadow-sm transition-all">
+                    <MessageCircle className="h-5 w-5 text-yellow-600 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-gray-900">Messagerie Directe</p>
+                      <p className="text-xs text-gray-600">Contactez les exposants</p>
+                    </div>
+                  </Link>
+
+                  <Link to={ROUTES.BADGE} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg border border-yellow-100 hover:bg-white hover:shadow-sm transition-all">
+                    <Award className="h-5 w-5 text-yellow-600 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-gray-900">Badge VIP Virtuel</p>
+                      <p className="text-xs text-gray-600">Avec QR code prioritaire</p>
+                    </div>
+                  </Link>
+
+                  <Link to={ROUTES.PROFILE_MATCHING} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg border border-yellow-100 hover:bg-white hover:shadow-sm transition-all">
+                    <Sparkles className="h-5 w-5 text-yellow-600 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-gray-900">IA Matching Prioritaire</p>
+                      <p className="text-xs text-gray-600">Algorithmes de recommandation</p>
+                    </div>
+                  </Link>
+
+                  <Link to={ROUTES.WEBINARS} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg border border-yellow-100 hover:bg-white hover:shadow-sm transition-all">
+                    <Video className="h-5 w-5 text-yellow-600 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-gray-900">Webinaires Exclusifs</p>
+                      <p className="text-xs text-gray-600">Accès au contenu premium</p>
+                    </div>
+                  </Link>
+
+                  <Link to={ROUTES.SUPPORT} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg border border-yellow-100 hover:bg-white hover:shadow-sm transition-all">
+                    <Headphones className="h-5 w-5 text-yellow-600 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-gray-900">Support Prioritaire</p>
+                      <p className="text-xs text-gray-600">Assistance dédiée VIP</p>
+                    </div>
+                  </Link>
+                  
+                   <Link to={ROUTES.NEWS} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg border border-yellow-100 hover:bg-white hover:shadow-sm transition-all">
+                    <Zap className="h-5 w-5 text-yellow-600 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-gray-900">Nouveautés Prioritaires</p>
+                      <p className="text-xs text-gray-600">Accès avant-première</p>
+                    </div>
+                  </Link>
+                </div>
+              </Card>
+            </motion.div>
+          )}
 
           {/* Message d'erreur global */}
           {error && (

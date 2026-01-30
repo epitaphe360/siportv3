@@ -221,7 +221,7 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierConfig> = {
     id: 'platinum',
     name: 'Platinium',
     displayName: 'Pass Platinium',
-    price: PARTNER_BILLING.platinum.amount, // ✅ Import depuis SSOT
+    price: PARTNER_BILLING.platinum.amount, // ✅ Import depuis SSOT ($98k)
     color: '#E5E4E2',
     icon: '💎',
 
@@ -238,6 +238,17 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierConfig> = {
     },
 
     features: [
+      'Logo en 1ère ligne partout',
+      'Mini-site premium',
+      'Bannière Web rotative',
+      'Section "Top Innovations"',
+      'Newsletters en 1ère ligne',
+      'Webinaires sponsorisés',
+      'Capsules vidéo "Inside SIPORT"',
+      'Podcast SIPORT Talks',
+      'Interview Live Studio prioritaire',
+      'Testimonial vidéo (3 min)',
+      'Support VIP 24/7',
       'Stand exposition Platinium (3 stands)',
       'Rendez-vous B2B illimités',
       'Inscriptions événements illimitées',
@@ -254,6 +265,16 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierConfig> = {
     ],
 
     exclusivePerks: [
+      'Logo en 1ère ligne sur tous les canaux',
+      'Mini-site "Premium Exposure" complet',
+      'Webinaires sponsorisés avec replay',
+      'Capsules vidéo exclusives marquées',
+      'Inclusion podcast prioritaire',
+      'Interview Live Studio "Meet The Leaders"',
+      'Vidéo testimonial 3 min premium',
+      'Rendez-vous illimités',
+      'Support VIP dédié',
+      'Priorité© algorithmique maximale',
       'Emplacement stand premium exclusif',
       'Logo sponsor principal',
       'Accès VIP Executive',
