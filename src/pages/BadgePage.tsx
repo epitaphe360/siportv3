@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useState, useRef } from 'react';
-import { QRCodeSVG } from 'qrcode.react';
+import { QRCodeCanvas } from 'qrcode.react';
 import { toast } from 'sonner';
 import { Download, Printer, RefreshCw, AlertTriangle, CheckCircle, XCircle, Scan, Calendar, User, Briefcase, Building } from 'lucide-react';
 import useAuthStore from '../store/authStore';
@@ -294,7 +294,7 @@ export default function BadgePage() {
               {/* QR Code */}
               <div className="text-center p-6 bg-white">
                 <div className="inline-block p-4 bg-white rounded-xl border border-gray-200 shadow-inner">
-                  <QRCodeSVG value={qrData} size={160} level="H" includeMargin={false} />
+                  <QRCodeCanvas value={qrData} size={160} level="H" includeMargin={false} />
                 </div>
                 <div className="text-xs text-gray-400 mt-2 font-mono">
                   ID: {badge.badgeCode}
