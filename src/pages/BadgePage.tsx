@@ -329,7 +329,7 @@ export default function BadgePage() {
                 <li><span className="font-semibold">Portez</span> votre badge visiblement.</li>
               </ol>
 
-              {badge.accessLevel === 'vip' && (
+              {(badge.accessLevel === 'vip' || badge.accessLevel === 'premium') && (
                 <div className="mt-4 bg-yellow-50 p-3 rounded-lg border border-yellow-200 text-yellow-800 text-sm">
                   <strong className="block mb-1 flex items-center gap-1">
                     <span className="text-lg">👑</span> Avantages VIP
