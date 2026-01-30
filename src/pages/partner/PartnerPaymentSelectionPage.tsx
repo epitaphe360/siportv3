@@ -32,6 +32,14 @@ export default function PartnerPaymentSelectionPage() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
 
+  // Redirect if already active
+  React.useEffect(() => {
+    if (user?.status === 'active') {
+      toast.info('Votre compte est déjà actif');
+      navigate('/partner/dashboard');
+    }
+  }, [user, navigate]);
+
   const tier = (searchParams.get('tier') || 'museum') as PartnerTier;
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null);
   const [processing, setProcessing] = useState(false);
