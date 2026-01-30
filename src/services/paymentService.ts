@@ -211,10 +211,10 @@ export async function createPaymentRecord(params: {
         amount: params.amount,
         currency: params.currency,
         payment_method: params.paymentMethod,
-        transaction_id: params.transactionId,
+        transfer_reference: params.transactionId,
         status: params.status,
       })
-      .select('id, user_id, requested_level, amount, currency, payment_method, transaction_id, status, transfer_proof_url, admin_notes, approved_at, rejected_at, created_at');
+      .select('id, user_id, requested_level, amount, currency, payment_method, transfer_reference, status, transfer_proof_url, admin_notes, approved_at, rejected_at, created_at');
 
     // ✅ Handle RLS errors specifically
     if (error) {
@@ -305,7 +305,7 @@ export async function getPaymentHistory(userId: string) {
   try {
     const { data, error } = await supabase
       .from('payment_requests')
-      .select('id, user_id, requested_level, amount, currency, payment_method, transaction_id, status, transfer_proof_url, admin_notes, approved_at, rejected_at, created_at')
+      .select('id, user_id, requested_level, amount, currency, payment_method, transfer_reference, status, transfer_proof_url, admin_notes, approved_at, rejected_at, created_at')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
 

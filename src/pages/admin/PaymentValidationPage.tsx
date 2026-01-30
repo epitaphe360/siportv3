@@ -146,7 +146,7 @@ export default function PaymentValidationPage() {
       // Récupérer d'abord les payment_requests
       let query = supabase
         .from('payment_requests')
-        .select('id, user_id, amount, currency, status, payment_method, transaction_id, description, metadata, transfer_reference, transfer_date, transfer_proof_url, validated_by, validated_at, validation_notes, created_at, updated_at')
+        .select('id, user_id, amount, currency, status, payment_method, description, metadata, transfer_reference, transfer_date, transfer_proof_url, validated_by, validated_at, validation_notes, created_at, updated_at')
         .order('created_at', { ascending: false })
         .range(0, 49);
 
@@ -316,7 +316,7 @@ export default function PaymentValidationPage() {
       req.users?.name?.toLowerCase().includes(search) ||
       req.users?.email?.toLowerCase().includes(search) ||
       req.users?.company_name?.toLowerCase().includes(search) ||
-      req.transaction_id?.toLowerCase().includes(search) ||
+      req.transfer_reference?.toLowerCase().includes(search) ||
       req.description?.toLowerCase().includes(search)
     );
   });

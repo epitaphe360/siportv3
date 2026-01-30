@@ -66,6 +66,9 @@ export const allTranslations = {
     'pages.partners.tier_platinum': 'Platinum',
     'pages.partners.view_details': 'Voir détails',
     'pages.partners.no_results': 'Aucun partenaire trouvé',
+    'pages.partners.category_education': 'Éducation & Formation',
+    'pages.partners.try_modify': 'Essayez de modifier vos filtres',
+    'pages.partners.reset_filters': 'Réinitialiser les filtres',
     
     'pages.events.title': 'Événements',
     'pages.events.description': 'Les conférences, ateliers et activités du salon',
@@ -241,6 +244,7 @@ export const allTranslations = {
     'actions.add': 'Ajouter',
     'actions.view': 'Voir',
     'actions.view_details': 'Fiche complète',
+    'actions.schedule_meeting': 'Prendre rendez-vous',
     'actions.download': 'Télécharger',
     'actions.share': 'Partager',
     'actions.close': 'Fermer',
@@ -539,6 +543,22 @@ export const allTranslations = {
     'common.error_403_desc': 'Vous n\'avez pas les permissions nécessaires pour accéder à cette page.',
     'common.back_dashboard': 'Retour au tableau de bord',
     'common.sending': 'Envoi...',
+    'common.view': 'Voir détails',
+    'common.edit': 'Modifier',
+    'common.delete': 'Supprimer',
+    
+    // UI Elements
+    'ui.sync_official': 'Synchroniser avec le site officiel',
+    'ui.share_article': 'Partager cet article',
+    'ui.back_to_top': 'Retour en haut',
+    'ui.search_by': 'Rechercher par...',
+
+    // Admin Media
+    'admin_media.create_title_example': 'Ex: Interview Innovation Portuaire',
+    'admin_media.create_description_placeholder': 'Décrivez le contenu du média...',
+    'admin_media.duration_example': '120',
+    'admin_media.tags_example': 'Ex: Innovation, Tech, Interview',
+    'admin_media.manager_title': 'Gestionnaire de Médias',
   },
   
   en: {
@@ -602,6 +622,9 @@ export const allTranslations = {
     'pages.partners.tier_platinum': 'Platinum',
     'pages.partners.view_details': 'View Details',
     'pages.partners.no_results': 'No partners found',
+    'pages.partners.category_education': 'Education & Training',
+    'pages.partners.try_modify': 'Try modifying your filters',
+    'pages.partners.reset_filters': 'Reset filters',
     
     'pages.events.title': 'Events',
     'pages.events.description': 'Conferences, workshops and exhibition activities',
@@ -773,6 +796,7 @@ export const allTranslations = {
     'actions.add': 'Add',
     'actions.view': 'View',
     'actions.view_details': 'Full Profile',
+    'actions.schedule_meeting': 'Schedule Meeting',
     'actions.download': 'Download',
     'actions.share': 'Share',
     'actions.close': 'Close',
@@ -1068,6 +1092,22 @@ export const allTranslations = {
     'common.error_403_desc': 'You do not have the necessary permissions to access this page.',
     'common.back_dashboard': 'Back to dashboard',
     'common.sending': 'Sending...',
+    'common.view': 'View details',
+    'common.edit': 'Edit',
+    'common.delete': 'Delete',
+
+    // UI Elements
+    'ui.sync_official': 'Sync with official site',
+    'ui.share_article': 'Share this article',
+    'ui.back_to_top': 'Back to top',
+    'ui.search_by': 'Search by...',
+
+    // Admin Media
+    'admin_media.create_title_example': 'Ex: Port Innovation Interview',
+    'admin_media.create_description_placeholder': 'Describe media content...',
+    'admin_media.duration_example': '120',
+    'admin_media.tags_example': 'Ex: Innovation, Tech, Interview',
+    'admin_media.manager_title': 'Media Manager',
   },
   
   ar: {
@@ -1131,6 +1171,9 @@ export const allTranslations = {
     'pages.partners.tier_platinum': 'بلاتيني',
     'pages.partners.view_details': 'عرض التفاصيل',
     'pages.partners.no_results': 'لم يتم العثور على شركاء',
+    'pages.partners.category_education': 'التعليم والتدريب',
+    'pages.partners.try_modify': 'حاول تعديل الفلاتر',
+    'pages.partners.reset_filters': 'إعادة تعيين الفلاتر',
     
     'pages.events.title': 'الفعاليات',
     'pages.events.description': 'المؤتمرات والورش وأنشطة المعرض',
@@ -1272,6 +1315,7 @@ export const allTranslations = {
     'actions.add': 'إضافة',
     'actions.view': 'عرض',
     'actions.view_details': 'الملف الكامل',
+    'actions.schedule_meeting': 'حجز موعد',
     'actions.download': 'تحميل',
     'actions.share': 'مشاركة',
     'actions.close': 'إغلاق',
@@ -1597,6 +1641,22 @@ export const allTranslations = {
     'common.error_403_desc': 'ليس لديك الأذونات اللازمة للوصول إلى هذه الصفحة.',
     'common.back_dashboard': 'العودة إلى لوحة التحكم',
     'common.sending': 'جاري الإرسال...',
+    'common.view': 'عرض التفاصيل',
+    'common.edit': 'تعديل',
+    'common.delete': 'حذف',
+
+    // UI Elements
+    'ui.sync_official': 'مزامنة مع الموقع الرسمي',
+    'ui.share_article': 'شارك هذا المقال',
+    'ui.back_to_top': 'العودة إلى الأعلى',
+    'ui.search_by': 'البحث عن طريق...',
+
+    // Admin Media
+    'admin_media.create_title_example': 'مثال: مقابلة الابتكار في الموانئ',
+    'admin_media.create_description_placeholder': 'صف محتوى الوسائط...',
+    'admin_media.duration_example': '120',
+    'admin_media.tags_example': 'مثال: ابتكار، تكنولوجيا، مقابلة',
+    'admin_media.manager_title': 'مدير الوسائط',
   },
     
     
