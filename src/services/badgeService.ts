@@ -110,8 +110,8 @@ export async function generateBadgeFromUser(userId: string): Promise<UserBadge> 
       .from('users')
       .select(`
         id, type, visitor_level, name, email, profile,
-        exhibitors:exhibitors!exhibitors_user_id_fkey(companyName, standNumber),
-        partners:partners!partners_user_id_fkey(organizationName)
+        exhibitors:exhibitors!exhibitors_user_id_fkey(company_name, stand_number),
+        partners:partners!partners_user_id_fkey(company_name)
       `)
       .eq('id', userId)
       .single();
@@ -136,12 +136,12 @@ export async function generateBadgeFromUser(userId: string): Promise<UserBadge> 
     // Ajuster selon le type
     if (user.type === 'exhibitor' && user.exhibitors && user.exhibitors.length > 0) {
       const exhibitor = user.exhibitors[0];
-      badgeParams.companyName = exhibitor.companyName;
+      badgeParams.companyName = exhibitor.company_name;
       badgeParams.position = user.profile?.position;
-      badgeParams.standNumber = exhibitor.standNumber;
+      badgeParams.standNumber = exhibitor.stand_number;
     } else if (user.type === 'partner' && user.partners && user.partners.length > 0) {
       const partner = user.partners[0];
-      badgeParams.companyName = partner.organizationName;
+      badgeParams.companyName = partner.company_name;
       badgeParams.position = user.profile?.position;
     } else if (user.type === 'visitor') {
       badgeParams.companyName = user.profile?.company;
