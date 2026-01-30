@@ -14,7 +14,7 @@ import PartnerCard from '../components/partner/PartnerCard';
 interface Partner {
   id: string;
   name: string;
-  partner_tier: PartnerTier; // Nouveau système: museum, silver, gold, platinum
+  partner_tier: PartnerTier; // Nouveau systï¿½me: museum, silver, gold, platinum
   category: string;
   description: string;
   logo: string;
@@ -28,7 +28,7 @@ interface Partner {
   employees: string;
 }
 
-// Les partenaires sont maintenant chargés depuis Supabase
+// Les partenaires sont maintenant chargï¿½s depuis Supabase
 
 export default function PartnersPage() {
   const { t } = useTranslation();
@@ -70,7 +70,7 @@ export default function PartnersPage() {
         console.error('Erreur lors du chargement des partenaires:', error);
         setPartners([]);
         setFilteredPartners([]);
-        // Statistiques par défaut
+        // Statistiques par dï¿½faut
         setPartnerStats({
           museum: 0,
           silver: 0,
@@ -103,7 +103,7 @@ export default function PartnersPage() {
     setFilteredPartners(filtered);
   }, [partners, searchTerm, selectedTier, selectedCountry]);
 
-  // ? OPTIMISÉ: Mémoriser les tiers pour éviter recréation
+  // ? OPTIMISï¿½: Mï¿½moriser les tiers pour ï¿½viter recrï¿½ation
   const partnerTiers = useMemo(() => [
     { value: '', label: t('pages.partners.filter_tier') },
     { value: 'museum', label: t('pages.partners.tier_museum') + ' ($20k)' },
@@ -112,14 +112,14 @@ export default function PartnersPage() {
     { value: 'platinum', label: t('pages.partners.tier_platinum') + ' ($98k)' }
   ], [t]);
 
-  // ? OPTIMISÉ: Mémoriser les pays
+  // ? OPTIMISï¿½: Mï¿½moriser les pays
   const countries = useMemo(() => {
     const partnerCountries = [...new Set(partners.map(p => p.country).filter(Boolean))];
     const allCountryNames = COUNTRIES.map(c => c.name);
     return [...new Set([...allCountryNames, ...partnerCountries])].sort();
   }, [partners]);
 
-  // ? OPTIMISÉ: useCallback pour les handlers
+  // ? OPTIMISï¿½: useCallback pour les handlers
   const handleViewDetails = useCallback((partnerId: string) => {
     navigate(`/partners/${partnerId}`);
   }, [navigate]);
@@ -257,7 +257,7 @@ export default function PartnersPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
           <Card>
             <div className="p-6 text-center">
-              <div className="text-4xl mb-2">???</div>
+              <div className="text-4xl mb-2">ğŸ›ï¸</div>
               <div className="text-2xl font-bold text-gray-900">{partnerStats.museum}</div>
               <div className="text-sm text-gray-600">Museum</div>
               <div className="text-xs text-gray-500">$20k</div>
@@ -266,7 +266,7 @@ export default function PartnersPage() {
 
           <Card>
             <div className="p-6 text-center">
-              <div className="text-4xl mb-2">??</div>
+              <div className="text-4xl mb-2">ğŸ¥ˆ</div>
               <div className="text-2xl font-bold text-gray-900">{partnerStats.silver}</div>
               <div className="text-sm text-gray-600">Silver</div>
               <div className="text-xs text-gray-500">$48k</div>
@@ -275,7 +275,7 @@ export default function PartnersPage() {
 
           <Card>
             <div className="p-6 text-center">
-              <div className="text-4xl mb-2">??</div>
+              <div className="text-4xl mb-2">ğŸ¥‡</div>
               <div className="text-2xl font-bold text-gray-900">{partnerStats.gold}</div>
               <div className="text-sm text-gray-600">Gold</div>
               <div className="text-xs text-gray-500">$68k</div>
@@ -284,9 +284,9 @@ export default function PartnersPage() {
 
           <Card>
             <div className="p-6 text-center">
-              <div className="text-4xl mb-2">??</div>
+              <div className="text-4xl mb-2">ğŸ’</div>
               <div className="text-2xl font-bold text-gray-900">{partnerStats.platinum}</div>
-              <div className="text-sm text-gray-600">platinum</div>
+              <div className="text-sm text-gray-600">Platinum</div>
               <div className="text-xs text-gray-500">$98k</div>
             </div>
           </Card>
@@ -334,7 +334,7 @@ export default function PartnersPage() {
             </Button>
           </div>
         ) : (
-          // ? OPTIMISÉ: Utilisation du composant PartnerCard mémorisé
+          // ? OPTIMISï¿½: Utilisation du composant PartnerCard mï¿½morisï¿½
           <div className={viewMode === CONFIG.viewModes.grid
             ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
             : 'space-y-6'
