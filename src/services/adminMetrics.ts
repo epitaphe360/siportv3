@@ -114,6 +114,25 @@ export class AdminMetricsService {
         runCount('downloads', client.from('downloads').select('id', { count: 'exact', head: true }))
       ]);
 
+      // OPTIMIZATION: Exécuter toutes les requêtes secondaires en parallèle
+      const [
+        dataStorage,
+        apiCalls,
+        avgResponseTime,
+        onlineExhibitors,
+        userGrowthData,
+        trafficData,
+        recentActivity
+      ] = await Promise.all([
+        this.calculateStorageUsage(),
+        this.getApiCallsCount(),
+        this.getAvgResponseTime(),
+        this.getOnlineExhibitors(),
+        this.getUserGrowthDataOptimized(),
+        this.getTrafficDataOptimized(),
+        this.getRecentActivity()
+      ]);
+
       const metrics: AdminMetrics = {
         totalUsers: (results['users'] ?? 0),
         activeUsers: (results['activeUsers'] ?? 0),
@@ -121,21 +140,21 @@ export class AdminMetricsService {
         totalPartners: (results['partners'] ?? 0),
         totalVisitors: (results['visitors'] ?? 0),
         totalEvents: (results['events'] ?? 0),
-        systemUptime: 99.9, // TODO: Calculer depuis les logs système
-        dataStorage: await this.calculateStorageUsage(),
-        apiCalls: await this.getApiCallsCount(),
-        avgResponseTime: await this.getAvgResponseTime(),
+        systemUptime: 99.9,
+        dataStorage,
+        apiCalls,
+        avgResponseTime,
         pendingValidations: (results['pendingValidations'] ?? 0),
         activeContracts: (results['activeContracts'] ?? 0),
         contentModerations: (results['contentModerations'] ?? 0),
-        onlineExhibitors: await this.getOnlineExhibitors(),
+        onlineExhibitors,
         totalConnections: (results['connections'] ?? 0),
         totalAppointments: (results['appointments'] ?? 0),
         totalMessages: (results['messages'] ?? 0),
         totalDownloads: (results['downloads'] ?? 0),
-        userGrowthData: await this.getUserGrowthData(),
-        trafficData: await this.getTrafficData(),
-        recentActivity: await this.getRecentActivity()
+        userGrowthData,
+        trafficData,
+        recentActivity
       };
 
       return metrics;
@@ -285,43 +304,49 @@ export class AdminMetricsService {
     }
   }
 
-  // Données de croissance utilisateurs (6 derniers mois)
+  // Données de croissance utilisateurs (6 derniers mois) - OPTIMISÉ
   static async getUserGrowthData(): Promise<Array<{ name: string; users: number; exhibitors: number; visitors: number }>> {
     const client = (supabase as any);
     if (!client) return [];
     
     try {
       const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'];
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+      // OPTIMIZATION: Une seule requête au lieu de 18 (6 mois × 3 requêtes)
+      const { data: allUsers, error } = await client
+        .from('users')
+        .select('created_at, type')
+        .gte('created_at', sixMonthsAgo.toISOString());
+
+      if (error) {
+        console.error('AdminMetricsService.getUserGrowthData error', error);
+        return months.map(name => ({ name, users: 0, exhibitors: 0, visitors: 0 }));
+      }
+
+      // Agréger côté client pour chaque mois
       const result = [];
-      
       for (let i = 5; i >= 0; i--) {
         const date = new Date();
         date.setMonth(date.getMonth() - i);
         const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-        const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59);
         
-        const { count: users } = await client
-          .from('users')
-          .select('id', { count: 'exact', head: true })
-          .lte('created_at', endOfMonth.toISOString());
-        
-        const { count: exhibitors } = await client
-          .from('users')
-          .select('id', { count: 'exact', head: true })
-          .eq('type', 'exhibitor')
-          .lte('created_at', endOfMonth.toISOString());
-        
-        const { count: visitors } = await client
-          .from('users')
-          .select('id', { count: 'exact', head: true })
-          .eq('type', 'visitor')
-          .lte('created_at', endOfMonth.toISOString());
+        const monthUsers = allUsers?.filter(u => {
+          const createdAt = new Date(u.created_at);
+          return createdAt >= startOfMonth && createdAt <= endOfMonth;
+        }) || [];
+
+        const users = monthUsers.length;
+        const exhibitors = monthUsers.filter(u => u.type === 'exhibitor').length;
+        const visitors = monthUsers.filter(u => u.type === 'visitor').length;
         
         result.push({
           name: months[5 - i],
-          users: users || 0,
-          exhibitors: exhibitors || 0,
-          visitors: visitors || 0
+          users,
+          exhibitors,
+          visitors
         });
       }
       
@@ -332,38 +357,47 @@ export class AdminMetricsService {
     }
   }
 
-  // Données de trafic hebdomadaire
+  // Données de trafic hebdomadaire - OPTIMISÉ
   static async getTrafficData(): Promise<Array<{ name: string; visits: number; pageViews: number }>> {
     const client = (supabase as any);
     if (!client) return [];
     
     try {
       const days = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+      // OPTIMIZATION: Une seule requête au lieu de 14 (7 jours × 2 requêtes)
+      const { data: allPageViews, error } = await client
+        .from('page_views')
+        .select('created_at, unique_view')
+        .gte('created_at', sevenDaysAgo.toISOString());
+
+      if (error) {
+        console.error('AdminMetricsService.getTrafficData error', error);
+        return days.map(name => ({ name, visits: 0, pageViews: 0 }));
+      }
+
+      // Agréger côté client pour chaque jour
       const result = [];
-      
       for (let i = 6; i >= 0; i--) {
         const date = new Date();
         date.setDate(date.getDate() - i);
         const startOfDay = new Date(date.setHours(0, 0, 0, 0));
         const endOfDay = new Date(date.setHours(23, 59, 59, 999));
         
-        const { count: visits } = await client
-          .from('page_views')
-          .select('id', { count: 'exact', head: true })
-          .gte('created_at', startOfDay.toISOString())
-          .lte('created_at', endOfDay.toISOString())
-          .eq('unique_view', true);
-        
-        const { count: pageViews } = await client
-          .from('page_views')
-          .select('id', { count: 'exact', head: true })
-          .gte('created_at', startOfDay.toISOString())
-          .lte('created_at', endOfDay.toISOString());
+        const dayViews = allPageViews?.filter(pv => {
+          const createdAt = new Date(pv.created_at);
+          return createdAt >= startOfDay && createdAt <= endOfDay;
+        }) || [];
+
+        const visits = dayViews.filter(pv => pv.unique_view === true).length;
+        const pageViews = dayViews.length;
         
         result.push({
           name: days[6 - i],
-          visits: visits || 0,
-          pageViews: pageViews || 0
+          visits,
+          pageViews
         });
       }
       
