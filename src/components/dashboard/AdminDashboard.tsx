@@ -717,7 +717,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Actions Administrateur - Modern Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 gap-6 mb-8">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -729,11 +729,11 @@ export default function AdminDashboard() {
                   <Plus className="h-6 w-6 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900">
-                  Actions Rapides
+                  Actions Rapides & Navigation
                 </h3>
               </div>
 
-              <div className="space-y-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Section Exposants & Partenaires */}
                 <div>
                   <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center">
@@ -894,72 +894,60 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 </div>
-              </div>
+                {/* Section Navigation & Stats */}
+                <div>
+                  <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center">
+                    <BarChart3 className="h-4 w-4 mr-1.5" />
+                    Navigation & Statistiques
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Link to={ROUTES.METRICS}>
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        className="bg-gradient-to-br from-slate-50 to-gray-100 p-4 rounded-lg border-2 border-slate-200 hover:border-slate-400 transition-all cursor-pointer h-full"
+                      >
+                        <BarChart3 className="h-6 w-6 text-slate-600 mb-2" />
+                        <div className="font-semibold text-slate-900 text-sm">Métriques</div>
+                        <div className="text-xs text-slate-600">Performance</div>
+                      </motion.div>
+                    </Link>
 
-            </div>
-          </motion.div>
+                    <Link to={ROUTES.ADMIN_USERS}>
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-all cursor-pointer h-full"
+                      >
+                        <Users className="h-6 w-6 text-blue-600 mb-2" />
+                        <div className="font-semibold text-blue-900 text-sm">Utilisateurs</div>
+                        <div className="text-xs text-blue-600">{adminMetrics.totalUsers.toLocaleString()}</div>
+                      </motion.div>
+                    </Link>
 
-          {/* Navigation Section */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.7 }}
-          >
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="bg-gradient-to-br from-slate-500 to-slate-600 p-3 rounded-lg">
-                  <BarChart3 className="h-6 w-6 text-white" />
+                    <Link to={ROUTES.ADMIN_PAVILIONS}>
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border-2 border-green-200 hover:border-green-400 transition-all cursor-pointer h-full"
+                      >
+                        <Building2 className="h-6 w-6 text-green-600 mb-2" />
+                        <div className="font-semibold text-green-900 text-sm">Pavillons</div>
+                        <div className="text-xs text-green-600">{adminMetrics.totalExhibitors}</div>
+                      </motion.div>
+                    </Link>
+
+                    <Link to={ROUTES.ADMIN_EVENTS}>
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer h-full"
+                      >
+                        <Calendar className="h-6 w-6 text-purple-600 mb-2" />
+                        <div className="font-semibold text-purple-900 text-sm">Événements</div>
+                        <div className="text-xs text-purple-600">{adminMetrics.totalEvents}</div>
+                      </motion.div>
+                    </Link>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">
-                  Navigation Admin
-                </h3>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <Link to={ROUTES.METRICS}>
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-gradient-to-br from-slate-50 to-gray-100 p-4 rounded-lg border-2 border-slate-200 hover:border-slate-400 transition-all cursor-pointer"
-                  >
-                    <BarChart3 className="h-6 w-6 text-slate-600 mb-2" />
-                    <div className="font-semibold text-slate-900 text-sm">Métriques</div>
-                    <div className="text-xs text-slate-600">Performance</div>
-                  </motion.div>
-                </Link>
-
-                <Link to={ROUTES.ADMIN_USERS}>
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-all cursor-pointer"
-                  >
-                    <Users className="h-6 w-6 text-blue-600 mb-2" />
-                    <div className="font-semibold text-blue-900 text-sm">Utilisateurs</div>
-                    <div className="text-xs text-blue-600">{adminMetrics.totalUsers.toLocaleString()}</div>
-                  </motion.div>
-                </Link>
-
-                <Link to={ROUTES.ADMIN_PAVILIONS}>
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border-2 border-green-200 hover:border-green-400 transition-all cursor-pointer"
-                  >
-                    <Building2 className="h-6 w-6 text-green-600 mb-2" />
-                    <div className="font-semibold text-green-900 text-sm">Pavillons</div>
-                    <div className="text-xs text-green-600">{adminMetrics.totalExhibitors}</div>
-                  </motion.div>
-                </Link>
-
-	                <Link to={ROUTES.ADMIN_EVENTS}>
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer"
-                  >
-	                    <Calendar className="h-6 w-6 text-purple-600 mb-2" />
-                    <div className="font-semibold text-purple-900 text-sm">Événements</div>
-                    <div className="text-xs text-purple-600">{adminMetrics.totalEvents}</div>
-                  </motion.div>
-                </Link>
-              </div>
             </div>
           </motion.div>
         </div>
