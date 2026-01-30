@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import { 
   ArrowLeft,
@@ -33,8 +33,11 @@ export default function NewsArticleCreationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const { user } = useAuthStore();
-  const { createNewsArticle } = useNewsStore();
+  const { createNewsArticle, updateNewsArticle, getArticleById, fetchNews, articles } = useNewsStore(); // Added updateNewsArticle, getArticleById, fetchNews, articles
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get('edit');
+  const isEditMode = !!editId;
   
   const [formData, setFormData] = useState<NewArticleForm>({
     title: '',
@@ -48,6 +51,35 @@ export default function NewsArticleCreationForm() {
     readTime: 5,
     sourceUrl: ''
   });
+
+  useEffect(() => {
+    const loadArticle = async () => {
+      if (isEditMode && editId) {
+        // Ensure articles are loaded
+        if (articles.length === 0) {
+           await fetchNews();
+        }
+        
+        const article = getArticleById(editId);
+        if (article) {
+          setFormData({
+            title: article.title,
+            excerpt: article.excerpt,
+            content: article.content,
+            author: article.author,
+            category: article.category,
+            tags: article.tags || [],
+            featured: article.featured,
+            image: article.image || '',
+            readTime: article.readTime,
+            sourceUrl: article.sourceUrl || ''
+          });
+        }
+      }
+    };
+    
+    loadArticle();
+  }, [isEditMode, editId, getArticleById, fetchNews, articles.length]); // Dependencies
 
   const [newTag, setNewTag] = useState('');
 
@@ -86,20 +118,26 @@ export default function NewsArticleCreationForm() {
         readTime: formData.readTime,
         source: 'siports' as const,
         sourceUrl: formData.sourceUrl,
-        publishedAt: new Date(),
-        views: 0
+        // Don't update publishedAt on edit, only on create
+        ...(isEditMode ? {} : { publishedAt: new Date() }),
+        views: isEditMode ? undefined : 0
       };
 
-      await createNewsArticle(articleData);
-      
-  toast.success(`🎉 Article publié: ${formData.title} — ${formData.category}`);
+      if (isEditMode && editId) {
+        await updateNewsArticle(editId, articleData);
+        toast.success(`🎉 Article mis à jour : ${formData.title}`);
+      } else {
+        await createNewsArticle(articleData as any);
+        toast.success(`🎉 Article publié : ${formData.title}`);
+      }
       
       // Rediriger vers la page des actualités
-  navigate(ROUTES.NEWS);
+      navigate(ROUTES.ADMIN_NEWS); // Changed from ROUTES.NEWS to ADMIN_NEWS to go back to admin list
       
     } catch (error) {
-  setIsSubmitting(false);
-  toast.error(error instanceof Error ? `Erreur création article: ${error.message}` : 'Erreur inconnue lors de la création de l\'article');
+      setIsSubmitting(false);
+      const action = isEditMode ? 'modification' : 'création';
+      toast.error(error instanceof Error ? `Erreur ${action} article: ${error.message}` : `Erreur inconnue lors de la ${action} de l'article`);
     }
   };
 
@@ -154,10 +192,10 @@ export default function NewsArticleCreationForm() {
             animate={{ opacity: 1, y: 0 }}
           >
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Créer un Nouvel Article
+              {isEditMode ? 'Modifier l\'Article' : 'Créer un Nouvel Article'}
             </h1>
             <p className="text-gray-600">
-              Publier une nouvelle actualité portuaire
+              {isEditMode ? 'Mettre à jour les informations de l\'article' : 'Publier une nouvelle actualité portuaire'}
             </p>
           </motion.div>
         </div>
