@@ -118,6 +118,7 @@ const PartnerSupportPageComponent = lazyRetry(() => import('./pages/partners/Par
 
 // Admin media approval
 const PartnerMediaApprovalPage = lazyRetry(() => import('./pages/admin/PartnerMediaApprovalPage'));
+const VIPVisitorsPage = lazyRetry(() => import('./pages/admin/VIPVisitorsPage'));
 
 // Error pages
 const UnauthorizedPage = lazyRetry(() => import('./pages/UnauthorizedPage'));
@@ -332,6 +333,7 @@ const App = () => {
             <Route path={ROUTES.NEWS_DETAIL} element={<ArticleDetailPage />} />
             <Route path={ROUTES.ADMIN_DASHBOARD} element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_PAYMENT_VALIDATION} element={<ProtectedRoute requiredRole="admin"><PaymentValidationPage /></ProtectedRoute>} />
+            <Route path={ROUTES.ADMIN_VIP_VISITORS} element={<ProtectedRoute requiredRole="admin"><VIPVisitorsPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_USERS} element={<ProtectedRoute requiredRole="admin"><UserManagementPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_CREATE_USER} element={<ProtectedRoute requiredRole="admin"><CreateUserPage /></ProtectedRoute>} />
             <Route path={ROUTES.ADMIN_PARTNERS} element={<ProtectedRoute requiredRole="admin"><AdminPartnersPage /></ProtectedRoute>} />

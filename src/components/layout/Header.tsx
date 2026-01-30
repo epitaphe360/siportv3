@@ -260,6 +260,13 @@ export const Header: React.FC = memo(() => {
                             Tableau de Bord Admin
                           </Link>
                           <Link
+                            to={ROUTES.ADMIN_PAYMENT_VALIDATION}
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={closeProfile}
+                          >
+                            Validation Paiements
+                          </Link>
+                          <Link
                             to={ROUTES.METRICS}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                             onClick={closeProfile}

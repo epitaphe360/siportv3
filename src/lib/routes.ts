@@ -45,6 +45,7 @@ export const ROUTES = {
   ADMIN_PARTNERS_MANAGE: '/admin/partners-manage',
   ADMIN_CREATE_EVENT: '/admin/create-event',
   ADMIN_EVENTS: '/admin/events',
+  ADMIN_VIP_VISITORS: '/admin/vip-visitors',
   ADMIN_CREATE_NEWS: '/admin/create-news',
   ADMIN_NEWS: '/admin/news',
   MINISITE_PREVIEW: '/minisite/:exhibitorId',

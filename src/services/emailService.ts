@@ -333,6 +333,69 @@ export class EmailService {
       html,
     });
   }
+
+  /**
+   * Send payment receipt email
+   */
+  static async sendPaymentReceipt(
+    email: string, 
+    name: string, 
+    amount: number, 
+    currency: string, 
+    transactionId: string
+  ): Promise<boolean> {
+    const date = new Date().toLocaleDateString('fr-FR');
+    
+    const html = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); padding: 40px; text-align: center; color: white;">
+          <h1 style="margin: 0; font-size: 32px;">Paiement Reçu</h1>
+          <p style="margin: 10px 0 0 0;">Commande confirmée</p>
+        </div>
+        
+        <div style="padding: 40px; background: white;">
+          <h2 style="color: #111827;">Merci ${name} !</h2>
+          
+          <p>Nous avons bien reçu votre paiement pour le <strong>Pass VIP Visitor</strong>.</p>
+          
+          <div style="background: #F3F4F6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 8px 0; color: #6B7280;">Numéro de transaction</td>
+                <td style="padding: 8px 0; text-align: right; font-family: monospace;">${transactionId}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; color: #6B7280;">Date</td>
+                <td style="padding: 8px 0; text-align: right;">${date}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; color: #6B7280;">Article</td>
+                <td style="padding: 8px 0; text-align: right;">Pass Premium VIP</td>
+              </tr>
+              <tr style="border-top: 2px solid #E5E7EB;">
+                <td style="padding: 16px 0 0 0; font-weight: bold; color: #111827;">Total payé</td>
+                <td style="padding: 16px 0 0 0; text-align: right; font-weight: bold; color: #111827; font-size: 18px;">${amount} ${currency}</td>
+              </tr>
+            </table>
+          </div>
+          
+          <p>Votre statut est désormais <strong>Premium VIP</strong>. Vous avez accès à toutes les fonctionnalités exclusives.</p>
+          
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="${this.APP_URL}/dashboard" style="display: inline-block; padding: 14px 28px; background: #10B981; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">Accéder au Dashboard</a>
+          </div>
+          
+          <p style="margin-top: 30px; font-size: 12px; color: #9CA3AF;">Ceci est un reçu automatique, conservez-le pour vos archives.</p>
+        </div>
+      </div>
+    `;
+
+    return this.sendViaSupabase({
+      to: email,
+      subject: `Reçu de paiement - Commande #${transactionId.substring(0, 8)}`,
+      html,
+    });
+  }
 }
 
 export default EmailService;

@@ -20,7 +20,10 @@ import {
   Eye,
   MessageCircle,
   Video,
-  CheckCircle
+  CheckCircle,
+  CreditCard,
+  Crown,
+  Handshake
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
@@ -329,7 +332,7 @@ export default function AdminDashboard() {
               </div>
 
               <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -357,6 +360,118 @@ export default function AdminDashboard() {
                       </svg>
                     </div>
                   </motion.button>
+
+                  <Link to={ROUTES.ADMIN_PAYMENT_VALIDATION} className="block h-full">
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="h-full bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border-2 border-blue-200 hover:border-blue-400 shadow-md hover:shadow-lg transition-all cursor-pointer"
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="bg-blue-500 p-2 rounded-lg">
+                          <CreditCard className="h-5 w-5 text-white" />
+                        </div>
+                        <Badge variant="default" className="bg-blue-500 text-white border-none">
+                          Action
+                        </Badge>
+                      </div>
+                      <div className="text-xl font-bold text-blue-800 mb-2 mt-4">
+                        Validation Paiements
+                      </div>
+                      <div className="text-sm font-medium text-blue-900 mb-1">
+                        Gérer les preuves
+                      </div>
+                      <div className="text-xs text-blue-600 flex items-center mt-3">
+                        <span>Accéder</span>
+                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </motion.div>
+                  </Link>
+
+                  <Link to={ROUTES.ADMIN_EXHIBITORS} className="block h-full">
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="h-full bg-gradient-to-br from-emerald-50 to-teal-50 p-6 rounded-xl border-2 border-emerald-200 hover:border-emerald-400 shadow-md hover:shadow-lg transition-all cursor-pointer"
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="bg-emerald-500 p-2 rounded-lg">
+                          <Building2 className="h-5 w-5 text-white" />
+                        </div>
+                        <Badge variant="default" className="bg-emerald-500 text-white border-none">
+                          Gestion
+                        </Badge>
+                      </div>
+                      <div className="text-xl font-bold text-emerald-800 mb-2 mt-4">
+                         Exposants
+                      </div>
+                      <div className="text-sm font-medium text-emerald-900 mb-1">
+                        Liste & Abonnements
+                      </div>
+                      <div className="text-xs text-emerald-600 flex items-center mt-3">
+                        <span>Gérer</span>
+                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </motion.div>
+                  </Link>
+
+                  <Link to={ROUTES.ADMIN_PARTNERS_MANAGE} className="block h-full">
+                     <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="h-full bg-gradient-to-br from-purple-50 to-fuchsia-50 p-6 rounded-xl border-2 border-purple-200 hover:border-purple-400 shadow-md hover:shadow-lg transition-all cursor-pointer"
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="bg-purple-500 p-2 rounded-lg">
+                          <Handshake className="h-5 w-5 text-white" />
+                        </div>
+                        <Badge variant="default" className="bg-purple-500 text-white border-none">
+                          VIP
+                        </Badge>
+                      </div>
+                      <div className="text-xl font-bold text-purple-800 mb-2 mt-4">
+                        Partenaires
+                      </div>
+                      <div className="text-sm font-medium text-purple-900 mb-1">
+                        Liste & Packs
+                      </div>
+                      <div className="text-xs text-purple-600 flex items-center mt-3">
+                        <span>Gérer</span>
+                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </motion.div>
+                  </Link>
+
+                  <Link to={ROUTES.ADMIN_VIP_VISITORS} className="block h-full">
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="h-full bg-gradient-to-br from-yellow-50 to-amber-50 p-6 rounded-xl border-2 border-yellow-200 hover:border-yellow-400 shadow-md hover:shadow-lg transition-all cursor-pointer"
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="bg-yellow-500 p-2 rounded-lg">
+                          <Crown className="h-5 w-5 text-white" />
+                        </div>
+                        <Badge variant="default" className="bg-yellow-500 text-white border-none">
+                          VIP
+                        </Badge>
+                      </div>
+                      <div className="text-xl font-bold text-yellow-800 mb-2 mt-4">
+                        Gestion Visiteurs VIP
+                      </div>
+                      <div className="text-sm font-medium text-yellow-900 mb-1">
+                        Consulter la liste
+                      </div>
+                      <div className="text-xs text-yellow-600 flex items-center mt-3">
+                        <span>Voir</span>
+                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </motion.div>
+                  </Link>
 
                   <motion.div
                     whileHover={{ scale: 1.02 }}

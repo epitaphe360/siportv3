@@ -168,7 +168,7 @@ export default function ExhibitorManagementPage() {
                 onChange={(e) => setFilterCategory(e.target.value)}
                 className="pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white min-w-[200px]"
               >
-                <option value="all">Toutes les catégories</option>
+                <option value="all">Tous les types d'abonnement</option>
                 {categories.map(cat => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
@@ -253,9 +253,9 @@ export default function ExhibitorManagementPage() {
                   </div>
 
                   <div className="space-y-2 mb-4">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Filter className="h-4 w-4 mr-2 text-blue-500" />
-                      {exhibitor.category}
+                    <div className="flex items-center text-sm font-medium bg-blue-50 text-blue-800 p-2 rounded-md">
+                      <Filter className="h-4 w-4 mr-2" />
+                      Type: {exhibitor.category}
                     </div>
                     {exhibitor.contactInfo?.country && (
                       <div className="flex items-center text-sm text-gray-600">

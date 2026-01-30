@@ -267,9 +267,9 @@ export default function PartnerManagementPage() {
                   </div>
 
                   <div className="space-y-2 mb-4">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Filter className="h-4 w-4 mr-2 text-indigo-500" />
-                      {partner.partner_tier}
+                    <div className="flex items-center text-sm font-medium bg-purple-50 text-purple-800 p-2 rounded-md">
+                      <Star className="h-4 w-4 mr-2" />
+                      Pack: {partner.partner_tier ? partner.partner_tier.charAt(0).toUpperCase() + partner.partner_tier.slice(1) : 'Standard'}
                     </div>
                     {partner.country && (
                       <div className="flex items-center text-sm text-gray-600">

@@ -38,6 +38,7 @@ import {
 } from '../services/paymentService';
 import { ROUTES } from '../lib/routes';
 import { supabase } from '../lib/supabase';
+import { EmailService } from '../services/emailService';
 
 // Add this for testing purposes
 const IS_DEV = import.meta.env.DEV;
@@ -337,6 +338,19 @@ export default function VisitorPaymentPage() {
       
       // Show success toast
       toast.success('🎉 Paiement VIP simulé avec succès !');
+
+      // Send Receipt Email
+      try {
+        await EmailService.sendPaymentReceipt(
+          user.email,
+          user.name,
+          PAYMENT_AMOUNTS.VIP_PASS,
+          'EUR',
+          `sim_${Date.now()}`
+        );
+      } catch (emailErr) {
+        console.warn('Failed to send receipt email', emailErr);
+      }
       
       // Navigate to success page
       navigate(ROUTES.VISITOR_PAYMENT_SUCCESS);
