@@ -23,7 +23,8 @@ import {
   CheckCircle,
   CreditCard,
   Crown,
-  Handshake
+  Handshake,
+  RefreshCw
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
@@ -732,81 +733,169 @@ export default function AdminDashboard() {
                 </h3>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                {/* Exposants */}
-                <div className="border-l-4 border-emerald-500 pl-3">
-                  <h4 className="text-xs font-semibold text-gray-700 mb-2">📦 Exposants</h4>
-                  <Link to={ROUTES.ADMIN_CREATE_EXHIBITOR} className="block mb-2">
-                    <div className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 p-2 rounded text-xs font-medium transition">➕ Créer</div>
-                  </Link>
-                  <Link to={ROUTES.ADMIN_EXHIBITORS} className="block">
-                    <div className="bg-teal-50 hover:bg-teal-100 text-teal-700 p-2 rounded text-xs font-medium transition">📋 Gérer</div>
-                  </Link>
-                </div>
-
-                {/* Partenaires */}
-                <div className="border-l-4 border-purple-500 pl-3">
-                  <h4 className="text-xs font-semibold text-gray-700 mb-2">🤝 Partenaires</h4>
-                  <Link to={ROUTES.ADMIN_CREATE_PARTNER} className="block mb-2">
-                    <div className="bg-purple-50 hover:bg-purple-100 text-purple-700 p-2 rounded text-xs font-medium transition">➕ Créer</div>
-                  </Link>
-                  <Link to={ROUTES.ADMIN_PARTNERS_MANAGE} className="block">
-                    <div className="bg-pink-50 hover:bg-pink-100 text-pink-700 p-2 rounded text-xs font-medium transition">📋 Gérer</div>
-                  </Link>
-                </div>
-
-                {/* Événements */}
-                <div className="border-l-4 border-orange-500 pl-3">
-                  <h4 className="text-xs font-semibold text-gray-700 mb-2">📅 Événements</h4>
-                  <Link to={ROUTES.ADMIN_CREATE_EVENT} className="block mb-2">
-                    <div className="bg-orange-50 hover:bg-orange-100 text-orange-700 p-2 rounded text-xs font-medium transition">➕ Créer</div>
-                  </Link>
-                  <Link to={ROUTES.ADMIN_EVENTS} className="block">
-                    <div className="bg-red-50 hover:bg-red-100 text-red-700 p-2 rounded text-xs font-medium transition">📋 Gérer</div>
-                  </Link>
-                </div>
-
-                {/* Contenu */}
-                <div className="border-l-4 border-blue-500 pl-3">
-                  <h4 className="text-xs font-semibold text-gray-700 mb-2">📝 Contenu</h4>
-                  <Link to={ROUTES.ADMIN_CREATE_NEWS} className="block mb-2">
-                    <div className="bg-blue-50 hover:bg-blue-100 text-blue-700 p-2 rounded text-xs font-medium transition">➕ Créer</div>
-                  </Link>
-                  <Link to={ROUTES.ADMIN_NEWS} className="block">
-                    <div className="bg-cyan-50 hover:bg-cyan-100 text-cyan-700 p-2 rounded text-xs font-medium transition">📋 Gérer</div>
-                  </Link>
-                </div>
-
-                {/* Médias */}
-                <div className="border-l-4 border-rose-500 pl-3">
-                  <h4 className="text-xs font-semibold text-gray-700 mb-2">🎥 Médias</h4>
-                  <Link to={ROUTES.ADMIN_MEDIA_MANAGE} className="block mb-2">
-                    <div className="bg-rose-50 hover:bg-rose-100 text-rose-700 p-2 rounded text-xs font-medium transition">📹 Gérer</div>
-                  </Link>
-                  <Link to={ROUTES.ADMIN_PARTNER_MEDIA_APPROVAL} className="block">
-                    <div className="bg-amber-50 hover:bg-amber-100 text-amber-700 p-2 rounded text-xs font-medium transition">✅ Valider</div>
-                  </Link>
-                </div>
-
-                {/* Synchronisation */}
-                <div className="border-l-4 border-indigo-500 pl-3">
-                  <h4 className="text-xs font-semibold text-gray-700 mb-2">🔄 Sync</h4>
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleImportArticles}
-                    className="block"
-                  >
-                    <div className={`bg-indigo-50 hover:bg-indigo-100 text-indigo-700 p-2 rounded text-xs font-medium transition ${isImportingArticles ? 'opacity-70' : ''}`}>
-                      {isImportingArticles ? '⏳ Sync...' : '🔄 Sync Articles'}
+              <div className="space-y-5">
+                {/* Section Exposants & Partenaires */}
+                <div>
+                  <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center">
+                    <Building2 className="h-4 w-4 mr-1.5" />
+                    Gestion Participants
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Exposants */}
+                    <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-4 rounded-xl border-2 border-emerald-200 hover:border-emerald-400 transition-all">
+                      <h4 className="text-sm font-bold text-emerald-900 mb-3 flex items-center">
+                        <div className="bg-emerald-500 p-1.5 rounded-lg mr-2">
+                          <Building2 className="h-4 w-4 text-white" />
+                        </div>
+                        Exposants
+                      </h4>
+                      <div className="space-y-2">
+                        <Link to={ROUTES.ADMIN_CREATE_EXHIBITOR}>
+                          <motion.div whileHover={{ scale: 1.03 }} className="bg-white hover:bg-emerald-50 text-emerald-700 p-2.5 rounded-lg text-xs font-semibold transition shadow-sm border border-emerald-200">
+                            ➕ Créer un exposant
+                          </motion.div>
+                        </Link>
+                        <Link to={ROUTES.ADMIN_EXHIBITORS}>
+                          <motion.div whileHover={{ scale: 1.03 }} className="bg-white hover:bg-teal-50 text-teal-700 p-2.5 rounded-lg text-xs font-semibold transition shadow-sm border border-teal-200">
+                            📋 Gérer les exposants
+                          </motion.div>
+                        </Link>
+                      </div>
                     </div>
-                  </motion.div>
+
+                    {/* Partenaires */}
+                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all">
+                      <h4 className="text-sm font-bold text-purple-900 mb-3 flex items-center">
+                        <div className="bg-purple-500 p-1.5 rounded-lg mr-2">
+                          <Users className="h-4 w-4 text-white" />
+                        </div>
+                        Partenaires
+                      </h4>
+                      <div className="space-y-2">
+                        <Link to={ROUTES.ADMIN_CREATE_PARTNER}>
+                          <motion.div whileHover={{ scale: 1.03 }} className="bg-white hover:bg-purple-50 text-purple-700 p-2.5 rounded-lg text-xs font-semibold transition shadow-sm border border-purple-200">
+                            ➕ Créer un partenaire
+                          </motion.div>
+                        </Link>
+                        <Link to={ROUTES.ADMIN_PARTNERS_MANAGE}>
+                          <motion.div whileHover={{ scale: 1.03 }} className="bg-white hover:bg-pink-50 text-pink-700 p-2.5 rounded-lg text-xs font-semibold transition shadow-sm border border-pink-200">
+                            📋 Gérer les partenaires
+                          </motion.div>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section Événements & Contenu */}
+                <div>
+                  <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center">
+                    <Calendar className="h-4 w-4 mr-1.5" />
+                    Gestion Contenu
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Événements */}
+                    <div className="bg-gradient-to-br from-orange-50 to-red-50 p-4 rounded-xl border-2 border-orange-200 hover:border-orange-400 transition-all">
+                      <h4 className="text-sm font-bold text-orange-900 mb-3 flex items-center">
+                        <div className="bg-orange-500 p-1.5 rounded-lg mr-2">
+                          <Calendar className="h-4 w-4 text-white" />
+                        </div>
+                        Événements
+                      </h4>
+                      <div className="space-y-2">
+                        <Link to={ROUTES.ADMIN_CREATE_EVENT}>
+                          <motion.div whileHover={{ scale: 1.03 }} className="bg-white hover:bg-orange-50 text-orange-700 p-2.5 rounded-lg text-xs font-semibold transition shadow-sm border border-orange-200">
+                            ➕ Créer un événement
+                          </motion.div>
+                        </Link>
+                        <Link to={ROUTES.ADMIN_EVENTS}>
+                          <motion.div whileHover={{ scale: 1.03 }} className="bg-white hover:bg-red-50 text-red-700 p-2.5 rounded-lg text-xs font-semibold transition shadow-sm border border-red-200">
+                            📋 Gérer les événements
+                          </motion.div>
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* Contenu */}
+                    <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-4 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all">
+                      <h4 className="text-sm font-bold text-blue-900 mb-3 flex items-center">
+                        <div className="bg-blue-500 p-1.5 rounded-lg mr-2">
+                          <FileText className="h-4 w-4 text-white" />
+                        </div>
+                        Articles
+                      </h4>
+                      <div className="space-y-2">
+                        <Link to={ROUTES.ADMIN_CREATE_NEWS}>
+                          <motion.div whileHover={{ scale: 1.03 }} className="bg-white hover:bg-blue-50 text-blue-700 p-2.5 rounded-lg text-xs font-semibold transition shadow-sm border border-blue-200">
+                            ➕ Créer un article
+                          </motion.div>
+                        </Link>
+                        <Link to={ROUTES.ADMIN_NEWS}>
+                          <motion.div whileHover={{ scale: 1.03 }} className="bg-white hover:bg-cyan-50 text-cyan-700 p-2.5 rounded-lg text-xs font-semibold transition shadow-sm border border-cyan-200">
+                            📋 Gérer les articles
+                          </motion.div>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section Médias & Synchronisation */}
+                <div>
+                  <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center">
+                    <Video className="h-4 w-4 mr-1.5" />
+                    Gestion Médias
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Médias */}
+                    <div className="bg-gradient-to-br from-rose-50 to-pink-50 p-4 rounded-xl border-2 border-rose-200 hover:border-rose-400 transition-all">
+                      <h4 className="text-sm font-bold text-rose-900 mb-3 flex items-center">
+                        <div className="bg-rose-500 p-1.5 rounded-lg mr-2">
+                          <Video className="h-4 w-4 text-white" />
+                        </div>
+                        Médias
+                      </h4>
+                      <div className="space-y-2">
+                        <Link to={ROUTES.ADMIN_MEDIA_MANAGE}>
+                          <motion.div whileHover={{ scale: 1.03 }} className="bg-white hover:bg-rose-50 text-rose-700 p-2.5 rounded-lg text-xs font-semibold transition shadow-sm border border-rose-200">
+                            📹 Gérer les médias
+                          </motion.div>
+                        </Link>
+                        <Link to={ROUTES.ADMIN_PARTNER_MEDIA_APPROVAL}>
+                          <motion.div whileHover={{ scale: 1.03 }} className="bg-white hover:bg-amber-50 text-amber-700 p-2.5 rounded-lg text-xs font-semibold transition shadow-sm border border-amber-200">
+                            ✅ Valider les médias
+                          </motion.div>
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* Synchronisation */}
+                    <div className="bg-gradient-to-br from-indigo-50 to-violet-50 p-4 rounded-xl border-2 border-indigo-200 hover:border-indigo-400 transition-all">
+                      <h4 className="text-sm font-bold text-indigo-900 mb-3 flex items-center">
+                        <div className="bg-indigo-500 p-1.5 rounded-lg mr-2">
+                          <RefreshCw className="h-4 w-4 text-white" />
+                        </div>
+                        Synchronisation
+                      </h4>
+                      <div className="space-y-2">
+                        <motion.div
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.97 }}
+                          onClick={handleImportArticles}
+                        >
+                          <div className={`bg-white hover:bg-indigo-50 text-indigo-700 p-2.5 rounded-lg text-xs font-semibold transition shadow-sm border border-indigo-200 cursor-pointer ${isImportingArticles ? 'opacity-70' : ''}`}>
+                            {isImportingArticles ? '⏳ Synchronisation...' : '🔄 Sync articles'}
+                          </div>
+                        </motion.div>
+                        <div className="bg-white/50 p-2.5 rounded-lg text-xs text-indigo-600 border border-indigo-100">
+                          💡 <span className="font-mono text-[10px]">node scripts/sync-siport-news.mjs</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="mt-4 pt-4 border-t border-gray-200 text-xs text-blue-600">
-                💡 Manuel: <code className="bg-gray-100 px-1 rounded">node scripts/sync-siport-news.mjs</code>
-              </div>
             </div>
           </motion.div>
 
