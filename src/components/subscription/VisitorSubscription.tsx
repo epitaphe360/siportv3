@@ -15,20 +15,19 @@ export default function VisitorSubscription({ currentLevel, onUpgrade }: Visitor
 
   const features = {
     free: ['Accès au salon', 'Liste des exposants', 'Plan du salon'],
-    premium: ['Accès prioritaire', 'Conférences en replay', 'Badge Premium', 'Support prioritaire'],
-    vip: ['Accès VIP Lounge', 'Rencontres exclusives', 'Badge VIP', 'Conciergerie', 'Parking réservé']
+    vip: ['Accès VIP Lounge', 'Rencontres exclusives', 'Badge VIP', 'Conciergerie', 'Parking réservé', '10 Rendez-vous B2B', 'Soirée Gala', 'Déjeuners Networking']
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-900">Mon Abonnement</h2>
-        <Badge variant={currentLevel === 'vip' ? 'destructive' : currentLevel === 'premium' ? 'default' : 'secondary'}>
+        <Badge variant={currentLevel === 'vip' ? 'destructive' : 'secondary'}>
           {currentLevel.toUpperCase()}
         </Badge>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* FREE */}
         <Card className={`p-6 border-2 ${currentLevel === 'free' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
           <div className="flex items-center gap-2 mb-4">
@@ -46,28 +45,6 @@ export default function VisitorSubscription({ currentLevel, onUpgrade }: Visitor
             <Button disabled className="w-full">Actuel</Button>
           ) : (
             <Button variant="outline" className="w-full" disabled>Inclus</Button>
-          )}
-        </Card>
-
-        {/* PREMIUM */}
-        <Card className={`p-6 border-2 ${currentLevel === 'premium' ? 'border-purple-500 bg-purple-50' : 'border-gray-200'}`}>
-          <div className="flex items-center gap-2 mb-4">
-            <Star className="h-6 w-6 text-purple-500" />
-            <h3 className="font-bold text-lg">Premium</h3>
-          </div>
-          <ul className="space-y-2 mb-6">
-            {features.premium.map((f, i) => (
-              <li key={i} className="flex items-center gap-2 text-sm">
-                <Check className="h-4 w-4 text-green-500" /> {f}
-              </li>
-            ))}
-          </ul>
-          {currentLevel === 'premium' ? (
-            <Button disabled className="w-full">Actuel</Button>
-          ) : (
-            <Button onClick={() => onUpgrade('premium')} className="w-full bg-purple-600 hover:bg-purple-700">
-              Passer Premium
-            </Button>
           )}
         </Card>
 

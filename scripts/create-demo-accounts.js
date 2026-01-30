@@ -38,7 +38,7 @@ const demoAccounts = [
   
   // Visitors
   { email: 'visitor-vip@test.siport.com', name: 'VIP Visitor', type: 'visitor', profile: { visitor_level: 'vip' } },
-  { email: 'visitor-premium@test.siport.com', name: 'Premium Visitor', type: 'visitor', profile: { visitor_level: 'premium' } },
+  // visitor-premium@test.siport.com removed
   { email: 'visitor-basic@test.siport.com', name: 'Basic Visitor', type: 'visitor', profile: { visitor_level: 'basic' } },
   { email: 'visitor-free@test.siport.com', name: 'Free Visitor', type: 'visitor', profile: { visitor_level: 'free' } },
 ];

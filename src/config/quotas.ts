@@ -11,8 +11,8 @@
 
 export const VISITOR_QUOTAS: Record<string, number> = {
   free: 0,       // FREE: Aucun rendez-vous autorisé (CDC)
-  premium: 10,   // VIP: 10 demandes de rendez-vous maximum (CDC)
-  vip: 10,       // Alias pour VIP
+  // premium: 10,   // OLD DEPRECATED
+  vip: 10,       // VIP: 10 demandes de rendez-vous maximum (CDC)
   // Quotas illimités pour exposants et partenaires
   exhibitor: 999999,  // EXPOSANT: Illimité (ils reçoivent les RDV)
   partner: 999999,    // PARTENAIRE: Illimité
@@ -40,7 +40,7 @@ export const calculateRemainingQuota = (
 
 export const VISITOR_LEVELS: Record<string, { label: string, color: string, icon: string, access: string[] }> = {
   free: { label: 'Free Pass', color: '#6c757d', icon: '🟢', access: ['Accès limité', 'Badge uniquement', 'Aucun rendez-vous'] },
-  premium: { label: 'Premium VIP Pass', color: '#ffd700', icon: '👑', access: ['Invitation inauguration', '10 demandes de rendez-vous B2B', 'Networking illimité', 'Ateliers spécialisés', 'Soirée gala exclusive', 'Conférences', 'Déjeuners networking'] },
+  // premium removed - consolidated to vip
   vip: { label: 'Premium VIP Pass', color: '#ffd700', icon: '👑', access: ['Invitation inauguration', '10 demandes de rendez-vous B2B', 'Networking illimité', 'Ateliers spécialisés', 'Soirée gala exclusive', 'Conférences', 'Déjeuners networking'] }
 };
 
