@@ -7,12 +7,13 @@ import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { Card } from '../ui/Card';
 import useAuthStore from '../../store/authStore';
+import { getMinSlotDate, getMaxSlotDate } from '../../config/salonInfo';
 
 export const AppointmentCalendarWidget: React.FC = () => {
   const { appointments, timeSlots, fetchAppointments, fetchTimeSlots, isLoading } = useAppointmentStore();
   const { user } = useAuthStore();
   const [selectedDate, setSelectedDate] = React.useState(() => {
-    const eventDay1 = new Date('2026-04-01T00:00:00');
+    const eventDay1 = new Date(`${getMinSlotDate()}T00:00:00`);
     return eventDay1;
   });
 
@@ -29,8 +30,8 @@ export const AppointmentCalendarWidget: React.FC = () => {
       newDate.setDate(newDate.getDate() + days);
       
       // Limiter entre le 1er et le 3 avril 2026
-      const minDate = new Date('2026-04-01T00:00:00');
-      const maxDate = new Date('2026-04-03T00:00:00');
+      const minDate = new Date(`${getMinSlotDate()}T00:00:00`);
+      const maxDate = new Date(`${getMaxSlotDate()}T00:00:00`);
       
       if (newDate < minDate) return minDate;
       if (newDate > maxDate) return maxDate;

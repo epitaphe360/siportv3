@@ -7,6 +7,7 @@ import { Badge } from '../ui/Badge';
 import { TimeSlot } from '../../types';
 import { toast } from 'sonner';
 import { SupabaseService } from '../../services/supabaseService';
+import { getMinSlotDate, getMaxSlotDate } from '../../config/salonInfo';
 
 interface AvailabilityManagerProps {
   userId: string;
@@ -19,7 +20,7 @@ export default function AvailabilityManager({ userId, userType, onAvailabilityUp
   const [isLoading, setIsLoading] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newSlot, setNewSlot] = useState({
-    date: '2026-04-01',
+    date: getMinSlotDate(),
     startTime: '',
     endTime: '',
     type: 'in-person' as const,
@@ -90,7 +91,7 @@ export default function AvailabilityManager({ userId, userType, onAvailabilityUp
       setTimeSlots(prev => [...prev, newTimeSlot]);
       onAvailabilityUpdate?.([...timeSlots, newTimeSlot]);
       setNewSlot({
-        date: '2026-04-01',
+        date: getMinSlotDate(),
         startTime: '',
         endTime: '',
         type: 'in-person',
@@ -241,8 +242,8 @@ export default function AvailabilityManager({ userId, userType, onAvailabilityUp
                 type="date"
                 value={newSlot.date}
                 onChange={(e) => setNewSlot({...newSlot, date: e.target.value})}
-                min="2026-04-01"
-                max="2026-04-03"
+                min={getMinSlotDate()}
+                max={getMaxSlotDate()}
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
               <p className="mt-2 text-xs bg-blue-100 text-blue-800 font-semibold px-3 py-2 rounded-lg inline-flex items-center">

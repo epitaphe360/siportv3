@@ -10,6 +10,7 @@ import { TimeSlot } from '../../types';
 import { toast } from 'sonner';
 import { SupabaseService } from '../../services/supabaseService';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getMinSlotDate, getMaxSlotDate } from '../../config/salonInfo';
 
 interface PublicAvailabilityCalendarProps {
   userId: string;
@@ -25,11 +26,11 @@ export default function PublicAvailabilityCalendar({
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [selectedWeek, setSelectedWeek] = useState(new Date('2026-04-01T00:00:00'));
+  const [selectedWeek, setSelectedWeek] = useState(new Date(`${getMinSlotDate()}T00:00:00`));
   const [viewMode, setViewMode] = useState<'week' | 'list'>('week');
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
   const [newSlot, setNewSlot] = useState({
-    date: '2026-04-01',
+    date: getMinSlotDate(),
     startTime: '',
     endTime: '',
     type: 'in-person' as const,
@@ -697,8 +698,8 @@ export default function PublicAvailabilityCalendar({
                       type="date"
                       value={newSlot.date}
                       onChange={(e) => setNewSlot({ ...newSlot, date: e.target.value })}
-                      min="2026-04-01"
-                      max="2026-04-03"
+                      min={getMinSlotDate()}
+                      max={getMaxSlotDate()}
                       className="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                       data-testid="input-slot-date"
                     />
