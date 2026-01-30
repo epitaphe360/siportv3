@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { 
+import {
   ArrowLeft,
   MapPin,
   Calendar,
@@ -30,10 +30,18 @@ import { motion } from 'framer-motion';
 import { useNewsStore } from '../../store/newsStore';
 import { ROUTES } from '../../lib/routes';
 import PublicAvailability from '../availability/PublicAvailability';
+import { useTranslation } from '../../hooks/useTranslation';
+import {
+  getHeroSection,
+  getAboutSection,
+  getGallerySection,
+  getTestimonialsSection
+} from '../../utils/miniSiteHelpers';
 
 export default function ExhibitorDetailPage() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthStore();
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const { exhibitors, selectExhibitor, selectedExhibitor, fetchExhibitors } = useExhibitorStore();
   const { articles, fetchNews } = useNewsStore();
@@ -115,7 +123,12 @@ export default function ExhibitorDetailPage() {
   // local non-null alias pour simplifier les accès (après la garde)
   const exhibitor = selectedExhibitor!;
 
-// Les données du mini-site sont maintenant chargées depuis Supabase
+  // Les données du mini-site sont maintenant chargées depuis Supabase
+  // Extract sections using helper functions
+  const heroSection = getHeroSection(exhibitor.miniSite);
+  const aboutSection = getAboutSection(exhibitor.miniSite);
+  const gallerySection = getGallerySection(exhibitor.miniSite);
+  const testimonialsSection = getTestimonialsSection(exhibitor.miniSite);
 
   const formatDate = (date: Date | string) => {
     const d = typeof date === 'string' ? new Date(date) : date;
@@ -184,7 +197,7 @@ export default function ExhibitorDetailPage() {
 
       {/* Hero Section */}
       <section id="accueil" className="relative h-96 bg-cover bg-center" style={{
-        backgroundImage: `url(${exhibitor.heroImage})`
+        backgroundImage: `url(${heroSection?.backgroundImage || 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1200'})`
       }}>
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
@@ -194,10 +207,10 @@ export default function ExhibitorDetailPage() {
             className="text-white max-w-2xl"
           >
             <h1 className="text-4xl lg:text-6xl font-bold mb-4">
-              {exhibitor.miniSite?.hero?.title}
+              {heroSection?.title || exhibitor.companyName}
             </h1>
             <p className="text-xl mb-8 opacity-90">
-              {exhibitor.miniSite?.hero?.subtitle}
+              {heroSection?.subtitle || exhibitor.description}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50"
@@ -209,7 +222,7 @@ export default function ExhibitorDetailPage() {
                 }}
               >
                 <Zap className="h-4 w-4 mr-2" />
-                {exhibitor.miniSite?.hero?.ctaText}
+                {heroSection?.ctaText || 'Découvrir nos solutions'}
               </Button>
               <Button
                 variant="outline"
@@ -241,7 +254,7 @@ export default function ExhibitorDetailPage() {
             
             {/* Stats Hero */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {exhibitor.miniSite?.hero?.stats.map((stat, index) => (
+              {heroSection?.stats?.map((stat, index) => (
                 <motion.div
                   key={`stat-${stat.label || stat.number}-${index}`}
                   initial={{ opacity: 0, y: 20 }}
@@ -270,21 +283,20 @@ export default function ExhibitorDetailPage() {
             className="text-center mb-12"
           >
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              {exhibitor.miniSite?.about?.title}
+              {aboutSection?.title || 'À propos de nous'}
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              {exhibitor.miniSite?.about?.description}
+              {aboutSection?.description || exhibitor.description}
             </p>
           </motion.div>
 
           {/* Features Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {exhibitor.miniSite?.about?.features.map((feature: any, index: number) => {
-              const featureName = typeof feature === 'string' ? feature : (feature?.name || feature?.title || '');
-              if (!featureName) return null;
+            {aboutSection?.values?.map((value: string, index: number) => {
+              if (!value) return null;
               return (
                 <motion.div
-                  key={`feature-${index}`}
+                  key={`value-${index}`}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -294,7 +306,7 @@ export default function ExhibitorDetailPage() {
                   <div className="bg-blue-100 p-3 rounded-lg w-12 h-12 mx-auto mb-4">
                     <Award className="h-6 w-6 text-blue-600" />
                   </div>
-                  <h3 className="font-semibold text-gray-900">{featureName}</h3>
+                  <h3 className="font-semibold text-gray-900">{value}</h3>
                 </motion.div>
               );
             })}
@@ -311,10 +323,10 @@ export default function ExhibitorDetailPage() {
               Certifications & Accréditations
             </h3>
             <div className="flex flex-wrap justify-center gap-4">
-              {exhibitor.miniSite?.about?.certifications.map((cert) => (
-                <Badge key={cert} variant="success" className="px-4 py-2">
+              {aboutSection?.certifications?.map((cert) => (
+                <Badge key={cert.name} variant="success" className="px-4 py-2">
                   <Award className="h-4 w-4 mr-2" />
-                  {cert}
+                  {cert.name}
                 </Badge>
               ))}
             </div>
@@ -436,9 +448,9 @@ export default function ExhibitorDetailPage() {
                         <Download className="h-4 w-4" />
                       </Button>
                     </div>
-                    <Button 
+                    <Button
                       size="sm"
-                      onClick={() => handleAppointmentClick(exhibitor.id)}
+                      onClick={handleAppointmentClick}
                     >
                       <Calendar className="h-4 w-4 mr-1" />
                       RDV
@@ -537,9 +549,9 @@ export default function ExhibitorDetailPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {exhibitor.miniSite.gallery.map((image, index) => (
+            {gallerySection?.images?.map((image, index) => (
               <motion.div
-                key={`gallery-${image.slice(-30)}-${index}`}
+                key={`gallery-${index}`}
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
@@ -547,8 +559,8 @@ export default function ExhibitorDetailPage() {
                 className="aspect-square overflow-hidden rounded-lg cursor-pointer hover:scale-105 transition-transform shadow-lg"
               >
                 <img
-                  src={image}
-                  alt={`Réalisation ${index + 1}`}
+                  src={image.url}
+                  alt={image.alt || `Réalisation ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
               </motion.div>
@@ -575,7 +587,7 @@ export default function ExhibitorDetailPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {exhibitor.miniSite.testimonials.map((testimonial, index) => (
+            {testimonialsSection?.testimonials?.map((testimonial, index) => (
               <motion.div
                 key={testimonial.name}
                 initial={{ opacity: 0, y: 20 }}
@@ -587,25 +599,25 @@ export default function ExhibitorDetailPage() {
                   <div className="p-6">
                     <div className="flex items-center space-x-4 mb-4">
                       <img
-                        src={testimonial.avatar}
+                        src={testimonial.avatar || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100'}
                         alt={testimonial.name}
                         className="h-12 w-12 rounded-full object-cover"
                       />
                       <div>
                         <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
-                        <p className="text-sm text-gray-600">{testimonial.position}</p>
+                        <p className="text-sm text-gray-600">{testimonial.role}</p>
                         <p className="text-sm text-gray-500">{testimonial.company}</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center mb-3">
-                      {[...Array(testimonial.rating)].map((_, i) => (
+                      {[...Array(testimonial.rating || 5)].map((_, i) => (
                         <Star key={`star-${i}`} className="h-4 w-4 text-yellow-500 fill-current" />
                       ))}
                     </div>
-                    
+
                     <p className="text-gray-700 italic">
-                      "{testimonial.comment}"
+                      "{testimonial.content}"
                     </p>
                   </div>
                 </Card>
@@ -976,11 +988,11 @@ export default function ExhibitorDetailPage() {
           >
             <MessageCircle className="h-5 w-5" />
           </Button>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="rounded-full w-12 h-12 shadow-lg bg-white"
             title={t('ui.book_appointment')}
-            onClick={() => handleAppointmentClick(exhibitor.id)}
+            onClick={handleAppointmentClick}
           >
             <Calendar className="h-5 w-5" />
           </Button>

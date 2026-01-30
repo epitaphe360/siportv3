@@ -503,7 +503,7 @@ export default function ExhibitorDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24">
+    <div className="min-h-screen bg-gray-50 pt-32">
       {/* Header avec gradient premium et glass morphism */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}

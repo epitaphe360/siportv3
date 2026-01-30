@@ -319,7 +319,7 @@ export default function PartnerDashboard() {
   const partnerTier = (user.partner_tier || user.profile?.partner_tier || 'museum') as string;
 
   return (
-    <div className="min-h-screen bg-slate-50 pt-24">
+    <div className="min-h-screen bg-slate-50 pt-32">
       {/* Premium Hero Header */}
       <div className="bg-slate-900 pt-12 pb-24 relative overflow-hidden">
         <MoroccanPattern className="opacity-10" color="white" scale={1.2} />

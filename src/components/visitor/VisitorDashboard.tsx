@@ -282,7 +282,7 @@ export default memo(function VisitorDashboard() {
   // Note: VisitorLevelGuard removed - FREE visitors CAN access dashboard
   // They just have limited features (0 B2B appointments quota)
   return (
-      <div className="min-h-screen bg-gray-50 pt-24">
+      <div className="min-h-screen bg-gray-50 pt-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header Premium avec Glass Morphism */}
           <motion.div
