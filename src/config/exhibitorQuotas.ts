@@ -137,7 +137,7 @@ export const EXHIBITOR_QUOTAS: Record<ExhibitorLevel, ExhibitorQuotaConfig> = {
       appointments: 30,  // CDC: 30 créneaux B2B
       teamMembers: 8,
       demoSessions: 20,
-      mediaUploads: 40,
+      mediaUploads: 999,  // CDC: Médias illimités (999 = pratiquement illimité)
       productShowcase: 20,
       leadScans: 300,
       meetingRoomHours: 12,
@@ -152,7 +152,7 @@ export const EXHIBITOR_QUOTAS: Record<ExhibitorLevel, ExhibitorQuotaConfig> = {
       '30 rendez-vous B2B max',
       '8 badges exposant',
       '20 sessions démo',
-      '40 fichiers média',
+      'Médias illimités (photos, vidéos, brochures)',
       '300 scans badges/jour',
       '12h salle réunion premium',
       '8 prises électriques + backup',
@@ -164,7 +164,10 @@ export const EXHIBITOR_QUOTAS: Record<ExhibitorLevel, ExhibitorQuotaConfig> = {
       'Live streaming autorisé',
       'WiFi dédié fiber',
       'Service traiteur VIP',
-      'Design stand personnalisé'
+      'Design stand personnalisé',
+      'Support technique prioritaire',
+      'Accès API Supabase limité',
+      'Badge virtuel personnalisé'
     ]
   },
 
