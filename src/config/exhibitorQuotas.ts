@@ -182,11 +182,11 @@ export const EXHIBITOR_QUOTAS: Record<ExhibitorLevel, ExhibitorQuotaConfig> = {
     icon: '🏛️',
 
     quotas: {
-      appointments: -1, // illimité
+      appointments: -1, // CDC: illimité
       teamMembers: 15,
       demoSessions: -1, // illimité
-      mediaUploads: 100,
-      productShowcase: 50,
+      mediaUploads: -1, // CDC: illimité (stockage médias illimité)
+      productShowcase: -1, // CDC: Store produits complet (illimité)
       leadScans: -1, // illimité
       meetingRoomHours: -1, // illimité
       electricalOutlets: 16,
@@ -200,7 +200,8 @@ export const EXHIBITOR_QUOTAS: Record<ExhibitorLevel, ExhibitorQuotaConfig> = {
       'Rendez-vous B2B illimités',
       '15 badges exposant',
       'Sessions démo illimitées',
-      '100 fichiers média',
+      'Stockage médias illimité',
+      'Store produits complet (produits illimités)',
       'Scans badges illimités',
       'Salle réunion privée dédiée',
       '16 prises + infrastructure électrique complète',
@@ -209,15 +210,24 @@ export const EXHIBITOR_QUOTAS: Record<ExhibitorLevel, ExhibitorQuotaConfig> = {
       'Zone VIP lounge',
       'Espace démonstration multi-zones',
       'Stockage 15m² sécurisé',
+      'Mise en avant permanente et prioritaire',
       'Featured homepage spotlight',
       'Live streaming multi-caméras',
       'WiFi dédié entreprise 1Gbps',
+      'Support VIP 24/7 dédié',
       'Service conciergerie 24/7',
       'Design architectural signature',
       'Chef de projet dédié',
       'Installation/démontage premium',
       'Catering VIP illimité',
-      'Zone media press'
+      'Zone media press',
+      'Mini-site Premium avec scripts personnalisés',
+      'Accès API Supabase complet',
+      'Outils de réseautage illimités',
+      'Chat et messagerie illimitée',
+      'Personnalisation avancée',
+      'Priorité algorithmique',
+      'Badge virtuel personnalisé VIP'
     ]
   }
 };
