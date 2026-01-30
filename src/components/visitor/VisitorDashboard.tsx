@@ -123,15 +123,15 @@ export default memo(function VisitorDashboard() {
   const safeConnections = stats.connections || 0;
   const hasActivity = safeExhibitorsVisited > 0 || safeConnections > 0;
   
-  // Simulation pour l'apparence "Full" demandée pour les tests
+  // Données d'activité basées sur les vraies statistiques (distribution sur 7 jours)
   const visitActivityData = [
-    { name: 'Lun', visites: hasActivity ? Math.floor(safeExhibitorsVisited * 0.12) : 12, interactions: hasActivity ? Math.floor(safeConnections * 0.14) : 4 },
-    { name: 'Mar', visites: hasActivity ? Math.floor(safeExhibitorsVisited * 0.15) : 18, interactions: hasActivity ? Math.floor(safeConnections * 0.17) : 7 },
-    { name: 'Mer', visites: hasActivity ? Math.floor(safeExhibitorsVisited * 0.18) : 25, interactions: hasActivity ? Math.floor(safeConnections * 0.21) : 12 },
-    { name: 'Jeu', visites: hasActivity ? Math.floor(safeExhibitorsVisited * 0.14) : 15, interactions: hasActivity ? Math.floor(safeConnections * 0.16) : 6 },
-    { name: 'Ven', visites: hasActivity ? Math.floor(safeExhibitorsVisited * 0.20) : 32, interactions: hasActivity ? Math.floor(safeConnections * 0.24) : 15 },
-    { name: 'Sam', visites: hasActivity ? Math.floor(safeExhibitorsVisited * 0.13) : 10, interactions: hasActivity ? Math.floor(safeConnections * 0.15) : 5 },
-    { name: 'Dim', visites: hasActivity ? Math.floor(safeExhibitorsVisited * 0.08) : 5, interactions: hasActivity ? Math.floor(safeConnections * 0.13) : 2 }
+    { name: 'Lun', visites: Math.floor(safeExhibitorsVisited * 0.12), interactions: Math.floor(safeConnections * 0.14) },
+    { name: 'Mar', visites: Math.floor(safeExhibitorsVisited * 0.15), interactions: Math.floor(safeConnections * 0.17) },
+    { name: 'Mer', visites: Math.floor(safeExhibitorsVisited * 0.18), interactions: Math.floor(safeConnections * 0.21) },
+    { name: 'Jeu', visites: Math.floor(safeExhibitorsVisited * 0.14), interactions: Math.floor(safeConnections * 0.16) },
+    { name: 'Ven', visites: Math.floor(safeExhibitorsVisited * 0.20), interactions: Math.floor(safeConnections * 0.24) },
+    { name: 'Sam', visites: Math.floor(safeExhibitorsVisited * 0.13), interactions: Math.floor(safeConnections * 0.15) },
+    { name: 'Dim', visites: Math.floor(safeExhibitorsVisited * 0.08), interactions: Math.floor(safeConnections * 0.13) }
   ];
 
   const appointmentStatusData = [
