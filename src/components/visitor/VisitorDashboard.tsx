@@ -135,16 +135,16 @@ export default memo(function VisitorDashboard() {
   ];
 
   const appointmentStatusData = [
-    { name: 'Confirmés', value: confirmedAppointments.length || 3, color: '#10b981' },
-    { name: 'En attente', value: pendingAppointments.length || 2, color: '#f59e0b' },
-    { name: 'Refusés', value: refusedAppointments.length || 0, color: '#ef4444' }
+    { name: 'Confirmés', value: confirmedAppointments.length, color: '#10b981' },
+    { name: 'En attente', value: pendingAppointments.length, color: '#f59e0b' },
+    { name: 'Refusés', value: refusedAppointments.length, color: '#ef4444' }
   ];
 
   const interestAreasData = [
-    { name: 'Exposants Visités', value: stats.exhibitorsVisited || 14 },
-    { name: 'Favoris', value: stats.bookmarks || 8 },
-    { name: 'Connexions', value: stats.connections || 5 },
-    { name: 'Messages', value: stats.messagesSent || 4 }
+    { name: 'Exposants Visités', value: stats.exhibitorsVisited },
+    { name: 'Favoris', value: stats.bookmarks },
+    { name: 'Connexions', value: stats.connections },
+    { name: 'Messages', value: stats.messagesSent }
   ];
 
   const {
