@@ -382,7 +382,7 @@ export default function PartnerDashboard() {
                 veuillez finaliser votre règlement. Accès actuellement limité à la soumission de preuve.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link to="/partner/bank-transfer">
+                <Link to="/partner/payment-selection">
                   <Button className="bg-white text-orange-600 hover:bg-orange-50 font-black px-10 py-7 rounded-2xl shadow-xl transition-all hover:scale-105">
                     Effectuer le Paiement
                   </Button>
