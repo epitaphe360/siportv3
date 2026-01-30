@@ -96,35 +96,64 @@ export default function PartnerDashboard() {
 
   // Vérifier si le profil partenaire existe
   useEffect(() => {
-    // ✅ Permettre l'accès avec pending_payment
-    if (!user || user.type !== 'partner' || !['active', 'pending_payment'].includes(user.status || '')) return;
+    // MODIFIED: Restreindre l'accès si pending_payment
+    if (!user || user.type !== 'partner') return;
 
-    const checkProfile = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('partner_profiles')
-          .select('id')
-          .eq('user_id', user.id)
-          .maybeSingle();
+    if (user.status === 'pending_payment') return;
 
-        if (error && error.code !== 'PGRST116') {
-          console.error('Erreur vérification profil:', error);
+    // Si actif, vérifier profil
+    if (user.status === 'active') {
+      const checkProfile = async () => {
+        try {
+          const { data, error } = await supabase
+            .from('partner_profiles')
+            .select('id')
+            .eq('user_id', user.id)
+            .maybeSingle();
+
+          if (error && error.code !== 'PGRST116') {
+            console.error('Erreur vérification profil:', error);
+          }
+
+          setHasProfile(!!data);
+          
+          // Si pas de profil et compte activé, afficher le modal
+          if (!data && user.status === 'active') {
+             setShowProfileModal(true);
+          }
+        } catch (err) {
+          console.error('Erreur:', err);
+          setHasProfile(false);
         }
+      };
 
-        setHasProfile(!!data);
-        
-        // Si pas de profil et compte activé, afficher le modal
-        if (!data && user.status === 'active') {
-          setShowProfileModal(true);
-        }
-      } catch (err) {
-        console.error('Erreur:', err);
-        setHasProfile(false);
-      }
-    };
-
-    checkProfile();
+      checkProfile();
+    }
   }, [user]);
+
+  // 🔒 SECURITY: Bloquer l'accès au Dashboard si le paiement n'est pas fait
+  if (user?.status === 'pending_payment') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8 text-center space-y-6">
+          <div className="mx-auto w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mb-6">
+             <CreditCard className="w-12 h-12 text-orange-600" />
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900">Activation Requise</h2>
+          <p className="text-lg text-gray-600">
+            Votre compte est créé mais nécessite une validation de paiement pour activer l'accès au tableau de bord.
+          </p>
+          <div className="pt-4 flex justify-center gap-4">
+            <Link to="/partner/payment-selection">
+              <Button className="bg-gradient-to-r from-orange-600 to-amber-600 text-white px-8 py-4 rounded-xl text-lg hover:shadow-lg hover:scale-105 transition-all">
+                Finaliser le Paiement
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Animation variants
   const containerVariants = {
