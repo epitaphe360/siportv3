@@ -14,6 +14,7 @@ interface UserDB {
   name: string;
   type: 'exhibitor' | 'partner' | 'visitor' | 'admin' | 'security';
   profile: UserProfile;
+  visitor_level?: 'free' | 'premium' | 'vip';
   status?: 'active' | 'pending' | 'suspended' | 'rejected';
   created_at: string;
   updated_at: string;
@@ -264,7 +265,7 @@ export class SupabaseService {
       // Optimized: Select only necessary columns instead of *
       const { data: usersData, error: userError } = await safeSupabase
         .from('users')
-        .select('id, email, name, type, profile, status, created_at')
+        .select('id, email, name, type, profile, visitor_level, status, created_at')
         .eq('email', email)
         .range(0, 0);
 
@@ -898,12 +899,18 @@ export class SupabaseService {
   // ==================== TRANSFORMATION METHODS ====================
   private static transformUserDBToUser(userDB: UserDB | null): User | null {
     if (!userDB) return null;
+    
+    // Check both column and profile for visitor_level
+    // Cast profile as any to access visitor_level if it's not in UserProfile type explicitly
+    const profileLevel = (userDB.profile as any)?.visitor_level;
+    const effectiveLevel = userDB.visitor_level || profileLevel;
+
     return {
       id: userDB.id,
       email: userDB.email,
       name: userDB.name,
       type: userDB.type,
-      visitor_level: userDB.visitor_level,
+      visitor_level: effectiveLevel,
       profile: userDB.profile,
       status: userDB.status || 'active',
       projects: userDB.partner_projects || [],
