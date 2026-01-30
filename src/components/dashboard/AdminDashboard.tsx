@@ -80,6 +80,9 @@ export default function AdminDashboard() {
     { name: 'Messages', value: adminMetrics.totalMessages || 0 },
     { name: 'Documents', value: adminMetrics.totalDownloads || 0 },
   ];
+  
+  // Vérifier si toutes les activités sont à 0
+  const hasActivityData = activityData.some(item => item.value > 0);
 
   // Utiliser les vraies données de trafic depuis les métriques
   const trafficData = adminMetrics.trafficData || [];
@@ -230,7 +233,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24">
+    <div className="min-h-screen bg-gray-50 pt-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header Administrateur - Modern Design */}
         <div className="mb-8">
