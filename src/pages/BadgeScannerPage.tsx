@@ -523,10 +523,10 @@ export default function BadgeScannerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 pt-24 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900 flex items-center">
             <QrCode className="h-8 w-8 mr-3" />
             Scanner de Badges
@@ -537,7 +537,7 @@ export default function BadgeScannerPage() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <Card className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -581,11 +581,14 @@ export default function BadgeScannerPage() {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Scanner Section */}
           <div>
             <Card className="p-6">
-              <h2 className="text-xl font-bold mb-4">Scanner</h2>
+              <h2 className="text-xl font-bold mb-4 flex items-center">
+                <Camera className="h-5 w-5 mr-2 text-blue-600" />
+                Scanner
+              </h2>
 
               {cameraPermission === 'denied' && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4 flex items-start">
@@ -606,7 +609,7 @@ export default function BadgeScannerPage() {
               <div
                 id="qr-reader"
                 ref={videoRef}
-                className="w-full aspect-square bg-black rounded-lg overflow-hidden mb-4"
+                className="w-full aspect-video bg-black rounded-lg overflow-hidden mb-4 border-2 border-gray-200"
               />
 
               {/* Scanner Controls */}
@@ -646,7 +649,10 @@ export default function BadgeScannerPage() {
           {/* History Section */}
           <div>
             <Card className="p-6">
-              <h2 className="text-xl font-bold mb-4">Historique des scans</h2>
+              <h2 className="text-xl font-bold mb-4 flex items-center">
+                <Clock className="h-5 w-5 mr-2 text-green-600" />
+                Historique des scans
+              </h2>
 
               {scanHistory.length === 0 ? (
                 <div className="text-center py-12 text-gray-500">
@@ -654,7 +660,7 @@ export default function BadgeScannerPage() {
                   <p>Aucun badge scanné</p>
                 </div>
               ) : (
-                <div className="space-y-3 max-h-[600px] overflow-y-auto">
+                <div className="space-y-3 max-h-[500px] overflow-y-auto">
                   {scanHistory.map((badge) => (
                     <Card key={`badge-${badge.visitorId || badge.fullName}-${badge.scannedAt.getTime()}`} className="p-4 hover:shadow-md transition-shadow">
                       <div className="flex items-start justify-between">
