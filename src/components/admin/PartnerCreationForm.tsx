@@ -13,7 +13,8 @@ import {
   CheckCircle,
   Loader,
   Building2,
-  DollarSign
+  DollarSign,
+  ChevronDown
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
@@ -393,15 +394,106 @@ export default function PartnerCreationForm({ partnerToEdit, editMode = false }:
                     Pays *
                   </label>
                   <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input
-                      type="text"
+                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none z-10" />
+                    <select
                       value={formData.country}
                       onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      placeholder="Pays de l'organisation"
-                      aria-label="Pays de l'organisation"
-                    />
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 appearance-none bg-white cursor-pointer"
+                    >
+                      <option value="">Sélectionnez un pays</option>
+                      <optgroup label="Afrique du Nord & Moyen-Orient">
+                        <option value="Algérie">🇩🇿 Algérie</option>
+                        <option value="Maroc">🇲🇦 Maroc</option>
+                        <option value="Tunisie">🇹🇳 Tunisie</option>
+                        <option value="Égypte">🇪🇬 Égypte</option>
+                        <option value="Libye">🇱🇾 Libye</option>
+                        <option value="Mauritanie">🇲🇷 Mauritanie</option>
+                        <option value="Arabie Saoudite">🇸🇦 Arabie Saoudite</option>
+                        <option value="Émirats Arabes Unis">🇦🇪 Émirats Arabes Unis</option>
+                        <option value="Qatar">🇶🇦 Qatar</option>
+                        <option value="Koweït">🇰🇼 Koweït</option>
+                        <option value="Bahreïn">🇧🇭 Bahreïn</option>
+                        <option value="Oman">🇴🇲 Oman</option>
+                        <option value="Jordanie">🇯🇴 Jordanie</option>
+                        <option value="Liban">🇱🇧 Liban</option>
+                        <option value="Irak">🇮🇶 Irak</option>
+                        <option value="Syrie">🇸🇾 Syrie</option>
+                        <option value="Palestine">🇵🇸 Palestine</option>
+                        <option value="Yémen">🇾🇪 Yémen</option>
+                      </optgroup>
+                      <optgroup label="Europe">
+                        <option value="France">🇫🇷 France</option>
+                        <option value="Allemagne">🇩🇪 Allemagne</option>
+                        <option value="Espagne">🇪🇸 Espagne</option>
+                        <option value="Italie">🇮🇹 Italie</option>
+                        <option value="Royaume-Uni">🇬🇧 Royaume-Uni</option>
+                        <option value="Belgique">🇧🇪 Belgique</option>
+                        <option value="Pays-Bas">🇳🇱 Pays-Bas</option>
+                        <option value="Suisse">🇨🇭 Suisse</option>
+                        <option value="Portugal">🇵🇹 Portugal</option>
+                        <option value="Grèce">🇬🇷 Grèce</option>
+                        <option value="Turquie">🇹🇷 Turquie</option>
+                        <option value="Pologne">🇵🇱 Pologne</option>
+                        <option value="Autriche">🇦🇹 Autriche</option>
+                        <option value="Suède">🇸🇪 Suède</option>
+                        <option value="Norvège">🇳🇴 Norvège</option>
+                        <option value="Danemark">🇩🇰 Danemark</option>
+                        <option value="Finlande">🇫🇮 Finlande</option>
+                        <option value="Irlande">🇮🇪 Irlande</option>
+                        <option value="Russie">🇷🇺 Russie</option>
+                      </optgroup>
+                      <optgroup label="Afrique Subsaharienne">
+                        <option value="Sénégal">🇸🇳 Sénégal</option>
+                        <option value="Côte d'Ivoire">🇨🇮 Côte d'Ivoire</option>
+                        <option value="Nigeria">🇳🇬 Nigeria</option>
+                        <option value="Ghana">🇬🇭 Ghana</option>
+                        <option value="Cameroun">🇨🇲 Cameroun</option>
+                        <option value="Kenya">🇰🇪 Kenya</option>
+                        <option value="Afrique du Sud">🇿🇦 Afrique du Sud</option>
+                        <option value="Éthiopie">🇪🇹 Éthiopie</option>
+                        <option value="Tanzanie">🇹🇿 Tanzanie</option>
+                        <option value="Mali">🇲🇱 Mali</option>
+                        <option value="Burkina Faso">🇧🇫 Burkina Faso</option>
+                        <option value="Niger">🇳🇪 Niger</option>
+                        <option value="Gabon">🇬🇦 Gabon</option>
+                        <option value="Congo">🇨🇬 Congo</option>
+                        <option value="RD Congo">🇨🇩 RD Congo</option>
+                        <option value="Angola">🇦🇴 Angola</option>
+                        <option value="Mozambique">🇲🇿 Mozambique</option>
+                      </optgroup>
+                      <optgroup label="Asie">
+                        <option value="Chine">🇨🇳 Chine</option>
+                        <option value="Japon">🇯🇵 Japon</option>
+                        <option value="Corée du Sud">🇰🇷 Corée du Sud</option>
+                        <option value="Inde">🇮🇳 Inde</option>
+                        <option value="Singapour">🇸🇬 Singapour</option>
+                        <option value="Malaisie">🇲🇾 Malaisie</option>
+                        <option value="Indonésie">🇮🇩 Indonésie</option>
+                        <option value="Thaïlande">🇹🇭 Thaïlande</option>
+                        <option value="Vietnam">🇻🇳 Vietnam</option>
+                        <option value="Philippines">🇵🇭 Philippines</option>
+                        <option value="Pakistan">🇵🇰 Pakistan</option>
+                        <option value="Bangladesh">🇧🇩 Bangladesh</option>
+                        <option value="Iran">🇮🇷 Iran</option>
+                      </optgroup>
+                      <optgroup label="Amériques">
+                        <option value="États-Unis">🇺🇸 États-Unis</option>
+                        <option value="Canada">🇨🇦 Canada</option>
+                        <option value="Mexique">🇲🇽 Mexique</option>
+                        <option value="Brésil">🇧🇷 Brésil</option>
+                        <option value="Argentine">🇦🇷 Argentine</option>
+                        <option value="Chili">🇨🇱 Chili</option>
+                        <option value="Colombie">🇨🇴 Colombie</option>
+                        <option value="Pérou">🇵🇪 Pérou</option>
+                        <option value="Venezuela">🇻🇪 Venezuela</option>
+                        <option value="Cuba">🇨🇺 Cuba</option>
+                      </optgroup>
+                      <optgroup label="Océanie">
+                        <option value="Australie">🇦🇺 Australie</option>
+                        <option value="Nouvelle-Zélande">🇳🇿 Nouvelle-Zélande</option>
+                      </optgroup>
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
                   </div>
                 </div>
 

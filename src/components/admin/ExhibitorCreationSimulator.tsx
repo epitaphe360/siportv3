@@ -43,6 +43,8 @@ interface NewExhibitorForm {
   // Informations commerciales
   packageType: 'base' | 'standard' | 'premium' | 'elite';
   standSize: string;
+  standNumber: string;
+  standArea: number;
   contractValue: string;
   paymentStatus: 'pending' | 'partial' | 'completed';
   
@@ -76,6 +78,8 @@ export default function ExhibitorCreationSimulator({ exhibitorToEdit, editMode =
     position: exhibitorToEdit?.contactInfo?.position || '',
     packageType: exhibitorToEdit?.packageType || 'base',
     standSize: exhibitorToEdit?.standSize || '9m²',
+    standNumber: exhibitorToEdit?.standNumber || '',
+    standArea: exhibitorToEdit?.standArea || 9,
     contractValue: exhibitorToEdit?.contractValue || '',
     paymentStatus: exhibitorToEdit?.paymentStatus || 'pending',
     products: exhibitorToEdit?.products?.slice(0, 5).map((p: any) => ({
@@ -162,9 +166,15 @@ export default function ExhibitorCreationSimulator({ exhibitorToEdit, editMode =
           sector: formData.sector,
           description: formData.description,
           website: formData.website,
+          standNumber: formData.standNumber,
+          standArea: formData.standArea,
           contactInfo: {
             ...exhibitorToEdit.contactInfo,
-            country: formData.country
+            country: formData.country,
+            name: formData.contactName,
+            email: formData.email,
+            phone: formData.phone,
+            position: formData.position
           }
         });
         
@@ -191,7 +201,7 @@ export default function ExhibitorCreationSimulator({ exhibitorToEdit, editMode =
           country: formData.country,
           website: formData.website,
           bio: formData.description,
-          standArea: getStandAreaFromSize(formData.standSize), // Utiliser la fonction helper
+          standArea: formData.standArea,
           interests: [],
           objectives: [],
           sectors: [formData.sector],
@@ -217,6 +227,8 @@ export default function ExhibitorCreationSimulator({ exhibitorToEdit, editMode =
         description: formData.description,
         logo: undefined,
         website: formData.website,
+        standNumber: formData.standNumber,
+        standArea: formData.standArea,
         contactInfo: {
           email: formData.email,
           phone: formData.phone,
@@ -661,6 +673,7 @@ export default function ExhibitorCreationSimulator({ exhibitorToEdit, editMode =
                           ...formData,
                           packageType: pkg.type as 'base' | 'standard' | 'premium' | 'elite',
                           standSize: pkg.standSize,
+                          standArea: parseInt(pkg.standSize),
                           contractValue: pkg.price
                         });
                       }
@@ -675,6 +688,7 @@ export default function ExhibitorCreationSimulator({ exhibitorToEdit, editMode =
                         ...formData,
                         packageType: pkg.type as 'base' | 'standard' | 'premium' | 'elite',
                         standSize: pkg.standSize,
+                        standArea: parseInt(pkg.standSize),
                         contractValue: pkg.price
                       });
                     }}
@@ -696,6 +710,40 @@ export default function ExhibitorCreationSimulator({ exhibitorToEdit, editMode =
                     </ul>
                   </div>
                 ))}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Numéro de stand
+                  </label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <input
+                      type="text"
+                      value={formData.standNumber}
+                      onChange={(e) => setFormData({ ...formData, standNumber: e.target.value })}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Ex: A123"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Superficie exacte (m²)
+                  </label>
+                  <div className="relative">
+                    <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <input
+                      type="number"
+                      value={formData.standArea}
+                      onChange={(e) => setFormData({ ...formData, standArea: parseInt(e.target.value) || 0 })}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Ex: 12"
+                    />
+                  </div>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

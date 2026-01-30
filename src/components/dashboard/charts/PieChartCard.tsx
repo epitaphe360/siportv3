@@ -46,8 +46,10 @@ export function PieChartCard({
     );
   }
 
-  // Empty state: No data available
-  if (!data || data.length === 0) {
+  // Empty state: No data available or all values are 0
+  const total = data.reduce((sum, item) => sum + item.value, 0);
+  
+  if (!data || data.length === 0 || total === 0) {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
@@ -66,12 +68,30 @@ export function PieChartCard({
               <p className="text-xs text-gray-400 mt-1">Les données apparaîtront ici une fois disponibles</p>
             </div>
           </div>
+          
+          {/* Afficher quand même les catégories avec 0 */}
+          {data && data.length > 0 && (
+            <div className="mt-4 grid grid-cols-3 gap-2">
+              {data.map((item, index) => (
+                <div
+                  key={item.name}
+                  className="text-center p-2 bg-gray-50 rounded-lg border border-gray-200 opacity-50"
+                >
+                  <div
+                    className="w-2 h-2 rounded-full mx-auto mb-1"
+                    style={{ backgroundColor: colors[index % colors.length] }}
+                  />
+                  <p className="text-xs text-gray-600 font-medium">{item.name}</p>
+                  <p className="text-sm font-bold text-gray-900 mt-1">0</p>
+                  <p className="text-xs text-gray-500">(0.0%)</p>
+                </div>
+              ))}
+            </div>
+          )}
         </Card>
       </motion.div>
     );
   }
-
-  const total = data.reduce((sum, item) => sum + item.value, 0);
 
   const renderLabel = (entry: any) => {
     if (!showPercentage) return '';

@@ -18,6 +18,7 @@ export default function ExhibitorManagementPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterStandArea, setFilterStandArea] = useState<string>('all');
 
   useEffect(() => {
     fetchExhibitors();
@@ -67,10 +68,12 @@ export default function ExhibitorManagementPage() {
     const matchesStatus = filterStatus === 'all' || 
                          (filterStatus === 'verified' && exhibitor.verified) ||
                          (filterStatus === 'unverified' && !exhibitor.verified);
-    return matchesSearch && matchesCategory && matchesStatus;
+    const matchesStandArea = filterStandArea === 'all' || (exhibitor.standArea && exhibitor.standArea.toString() === filterStandArea);
+    return matchesSearch && matchesCategory && matchesStatus && matchesStandArea;
   });
 
   const categories = Array.from(new Set(exhibitors.map(e => e.category)));
+  const standAreas = Array.from(new Set(exhibitors.map(e => e.standArea).filter(Boolean))).sort((a, b) => (a || 0) - (b || 0));
   const verifiedCount = exhibitors.filter(e => e.verified).length;
 
   return (
@@ -185,6 +188,18 @@ export default function ExhibitorManagementPage() {
                 <option value="unverified">Non vérifiés</option>
               </select>
             </div>
+            <div className="relative">
+              <select
+                value={filterStandArea}
+                onChange={(e) => setFilterStandArea(e.target.value)}
+                className="pl-4 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white min-w-[150px]"
+              >
+                <option value="all">Toutes surfaces</option>
+                {standAreas.map(area => (
+                  <option key={area} value={area}>{area} m²</option>
+                ))}
+              </select>
+            </div>
           </div>
         </Card>
 
@@ -257,6 +272,18 @@ export default function ExhibitorManagementPage() {
                       <Filter className="h-4 w-4 mr-2" />
                       Type: {exhibitor.category}
                     </div>
+                    
+                    {(exhibitor.standNumber || exhibitor.standArea) && (
+                      <div className="flex items-center text-sm font-medium bg-gray-50 text-gray-800 p-2 rounded-md">
+                        <Building2 className="h-4 w-4 mr-2 text-gray-500" />
+                        <span>
+                          {exhibitor.standNumber && `Stand ${exhibitor.standNumber}`}
+                          {exhibitor.standNumber && exhibitor.standArea && ' - '}
+                          {exhibitor.standArea && `${exhibitor.standArea} m²`}
+                        </span>
+                      </div>
+                    )}
+
                     {exhibitor.contactInfo?.country && (
                       <div className="flex items-center text-sm text-gray-600">
                         <MapPin className="h-4 w-4 mr-2 text-blue-500" />

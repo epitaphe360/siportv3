@@ -87,6 +87,7 @@ export interface Exhibitor {
   revenue?: string;
   markets: string[];
   standNumber?: string; // Numéro de stand pour la carte interactive
+  standArea?: number; // Surface en m2
 }
 
 export interface Partner {

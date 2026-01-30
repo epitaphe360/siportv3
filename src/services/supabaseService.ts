@@ -103,6 +103,8 @@ interface ExhibitorDB {
   website?: string;
   verified: boolean;
   featured: boolean;
+  stand_number?: string;
+  stand_area?: number;
   contact_info: ContactInfo;
   products?: ProductDB[];
   mini_site?: MiniSiteData;
@@ -437,6 +439,8 @@ export class SupabaseService {
           website,
           verified,
           featured,
+          stand_number,
+          stand_area,
           contact_info,
           mini_site:mini_sites(theme, custom_colors, sections, published, views, last_updated),
           products(id, exhibitor_id, name, description, category, images, specifications, price, featured)
@@ -945,6 +949,8 @@ export class SupabaseService {
       website: exhibitorDB.website,
       verified: exhibitorDB.verified,
       featured: exhibitorDB.featured,
+      standNumber: exhibitorDB.stand_number,
+      standArea: exhibitorDB.stand_area,
       contactInfo: exhibitorDB.contact_info,
       products,
       miniSite,
@@ -2048,10 +2054,17 @@ export class SupabaseService {
 	    const safeSupabase = supabase!;
 	    try {
 	      const updateData: Record<string, any> = {};
+	      if (data.companyName !== undefined) updateData.company_name = data.companyName;
+	      if (data.category !== undefined) updateData.category = data.category;
+	      if (data.sector !== undefined) updateData.sector = data.sector;
+	      if (data.description !== undefined) updateData.description = data.description;
 	      if (data.verified !== undefined) updateData.verified = data.verified;
 	      if (data.featured !== undefined) updateData.featured = data.featured;
 	      if (data.website !== undefined) updateData.website = data.website;
 	      if (data.logo !== undefined) updateData.logo_url = data.logo;
+	      if (data.contactInfo !== undefined) updateData.contact_info = data.contactInfo;
+	      if (data.standNumber !== undefined) updateData.stand_number = data.standNumber;
+	      if (data.standArea !== undefined) updateData.stand_area = data.standArea;
 	      // Ajoutez d'autres champs à mettre à jour si nécessaire
 	
 	      const { error } = await safeSupabase
@@ -3153,7 +3166,9 @@ export class SupabaseService {
         website: exhibitorData.website,
         contact_info: exhibitorData.contactInfo || {},
         verified: exhibitorData.verified || false,
-        featured: exhibitorData.featured || false
+        featured: exhibitorData.featured || false,
+        stand_number: exhibitorData.standNumber,
+        stand_area: exhibitorData.standArea
       }])
       .select(`*, user:users!exhibitors_user_id_fkey(*), products:products!fk_products_exhibitor(*), mini_site:mini_sites!mini_sites_exhibitor_id_fkey(*)`)
       .single();
