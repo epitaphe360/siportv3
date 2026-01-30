@@ -1,15 +1,16 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../../../hooks/useTranslation';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Play, CheckCircle, XCircle, Clock, Eye, TrendingUp, BarChart3, Plus } from 'lucide-react';
+import { ArrowLeft, Play, CheckCircle, XCircle, Clock, Eye, TrendingUp, BarChart3, Plus, Radio, Mic, Video as VideoIcon, Award, Users } from 'lucide-react';
 import { mediaService } from '../../../services/mediaService';
-import type { MediaContent } from '../../../types/media';
+import type { MediaContent, MediaType } from '../../../types/media';
 import { ROUTES } from '../../../lib/routes';
 
 export const MediaManagementPage: React.FC = () => {
   const [media, setMedia] = useState<MediaContent[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
+  const [selectedType, setSelectedType] = useState<MediaType | 'all'>('all');
   const [stats, setStats] = useState({
     total: 0,
     pending: 0,
@@ -21,13 +22,14 @@ export const MediaManagementPage: React.FC = () => {
   useEffect(() => {
     loadMedia();
     loadStats();
-  }, [filter]);
+  }, [filter, selectedType]);
 
   const loadMedia = async () => {
     try {
       setLoading(true);
       const data = await mediaService.getMedia({
-        status: filter === 'all' ? undefined : filter
+        status: filter === 'all' ? undefined : filter,
+        type: selectedType === 'all' ? undefined : selectedType
       });
       setMedia(data);
     } catch (error) {
@@ -162,7 +164,98 @@ export const MediaManagementPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Filters */}
+        {/* Type Filters */}
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-4">Type de Média</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+            <button
+              onClick={() => setSelectedType('all')}
+              className={`p-4 rounded-xl border-2 transition-all ${
+                selectedType === 'all'
+                  ? 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-500 shadow-md'
+                  : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <Play className="w-6 h-6 mx-auto mb-2 text-blue-600" />
+              <div className="text-xs font-semibold text-gray-900">Tous</div>
+              <div className="text-xs text-gray-500">{media.length}</div>
+            </button>
+            <button
+              onClick={() => setSelectedType('webinar')}
+              className={`p-4 rounded-xl border-2 transition-all ${
+                selectedType === 'webinar'
+                  ? 'bg-gradient-to-br from-purple-50 to-pink-50 border-purple-500 shadow-md'
+                  : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <Radio className="w-6 h-6 mx-auto mb-2 text-purple-600" />
+              <div className="text-xs font-semibold text-gray-900">Webinaires</div>
+              <div className="text-xs text-gray-500">{media.filter(m => m.type === 'webinar').length}</div>
+            </button>
+            <button
+              onClick={() => setSelectedType('podcast')}
+              className={`p-4 rounded-xl border-2 transition-all ${
+                selectedType === 'podcast'
+                  ? 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-500 shadow-md'
+                  : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <Mic className="w-6 h-6 mx-auto mb-2 text-green-600" />
+              <div className="text-xs font-semibold text-gray-900">Podcasts</div>
+              <div className="text-xs text-gray-500">{media.filter(m => m.type === 'podcast').length}</div>
+            </button>
+            <button
+              onClick={() => setSelectedType('capsule_inside')}
+              className={`p-4 rounded-xl border-2 transition-all ${
+                selectedType === 'capsule_inside'
+                  ? 'bg-gradient-to-br from-orange-50 to-red-50 border-orange-500 shadow-md'
+                  : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <VideoIcon className="w-6 h-6 mx-auto mb-2 text-orange-600" />
+              <div className="text-xs font-semibold text-gray-900">Inside</div>
+              <div className="text-xs text-gray-500">{media.filter(m => m.type === 'capsule_inside').length}</div>
+            </button>
+            <button
+              onClick={() => setSelectedType('live_studio')}
+              className={`p-4 rounded-xl border-2 transition-all ${
+                selectedType === 'live_studio'
+                  ? 'bg-gradient-to-br from-red-50 to-rose-50 border-red-500 shadow-md'
+                  : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <Users className="w-6 h-6 mx-auto mb-2 text-red-600" />
+              <div className="text-xs font-semibold text-gray-900">Live Studio</div>
+              <div className="text-xs text-gray-500">{media.filter(m => m.type === 'live_studio').length}</div>
+            </button>
+            <button
+              onClick={() => setSelectedType('best_moments')}
+              className={`p-4 rounded-xl border-2 transition-all ${
+                selectedType === 'best_moments'
+                  ? 'bg-gradient-to-br from-yellow-50 to-amber-50 border-yellow-500 shadow-md'
+                  : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <Award className="w-6 h-6 mx-auto mb-2 text-yellow-600" />
+              <div className="text-xs font-semibold text-gray-900">Best Moments</div>
+              <div className="text-xs text-gray-500">{media.filter(m => m.type === 'best_moments').length}</div>
+            </button>
+            <button
+              onClick={() => setSelectedType('testimonial')}
+              className={`p-4 rounded-xl border-2 transition-all ${
+                selectedType === 'testimonial'
+                  ? 'bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-500 shadow-md'
+                  : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <Users className="w-6 h-6 mx-auto mb-2 text-cyan-600" />
+              <div className="text-xs font-semibold text-gray-900">Témoignages</div>
+              <div className="text-xs text-gray-500">{media.filter(m => m.type === 'testimonial').length}</div>
+            </button>
+          </div>
+        </div>
+
+        {/* Status Filters */}
         <div className="bg-white rounded-lg shadow p-4 mb-6">
           <div className="flex flex-wrap gap-2">
             {['all', 'pending', 'approved', 'rejected'].map((status) => (
