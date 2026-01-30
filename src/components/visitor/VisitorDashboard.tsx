@@ -15,7 +15,8 @@ import {
   Crown,
   Headphones,
   Video,
-  Zap
+  Zap,
+  Clock
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
