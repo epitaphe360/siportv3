@@ -619,8 +619,13 @@ export default function ExhibitorDashboard() {
         </div>
       </motion.div>
 
-      {/* Bouton d'accès rapide mini-site */}
-      <div className="max-w-7xl mx-auto px-4 mt-4 flex justify-end">
+      {/* Boutons d'accès rapide */}
+      <div className="max-w-7xl mx-auto px-4 mt-4 flex flex-wrap justify-end gap-3">
+        <Link to={ROUTES.BADGE}>
+          <Button variant="outline" size="lg" className="border-2 border-siports-primary text-siports-primary hover:bg-siports-primary hover:text-white">
+            🎫 Mon Badge Virtuel
+          </Button>
+        </Link>
         <Link to={ROUTES.MINISITE_CREATION}>
           <Button variant="default" size="lg">
             🎨 Créer / Modifier mon mini-site exposant

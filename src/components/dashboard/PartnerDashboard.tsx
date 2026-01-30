@@ -316,6 +316,11 @@ export default function PartnerDashboard() {
             </div>
 
             <div className="flex flex-wrap gap-4">
+              <Link to={ROUTES.BADGE}>
+                <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/30 shadow-[0_0_15px_rgba(255,255,255,0.2)] px-8 py-6 rounded-2xl font-bold transition-all hover:scale-105">
+                  🎫 Mon Badge Virtuel
+                </Button>
+              </Link>
               <Link to={ROUTES.PARTNER_ANALYTICS}>
                 <Button className="bg-indigo-600 hover:bg-indigo-500 text-white border-none shadow-[0_0_20px_rgba(79,70,229,0.4)] px-8 py-6 rounded-2xl font-bold transition-all hover:scale-105">
                   <BarChart3 className="h-5 w-5 mr-3" />

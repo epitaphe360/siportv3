@@ -304,6 +304,11 @@ export default memo(function VisitorDashboard() {
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+                  <Link to={ROUTES.BADGE}>
+                    <Button variant="outline" size="md" className="border-white/40 text-white hover:bg-white/10 hover:border-white/60 backdrop-blur-sm">
+                      🎫 Mon Badge Virtuel
+                    </Button>
+                  </Link>
                   <div className="hidden md:flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg">
                     <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                     <span className="text-white text-sm font-medium">Connecté</span>
