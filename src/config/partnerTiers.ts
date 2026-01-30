@@ -95,7 +95,7 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierConfig> = {
     id: 'silver',
     name: 'Silver',
     displayName: 'Pass Silver',
-    price: PARTNER_BILLING.silver.amount, // ✅ Import depuis SSOT
+    price: PARTNER_BILLING.silver.amount, // ✅ Import depuis SSOT ($48k)
     color: '#C0C0C0',
     icon: '🥈',
 
@@ -112,6 +112,15 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierConfig> = {
     },
 
     features: [
+      'Logo en 3ème ligne',
+      'Mini-site dédié',
+      'Bannière rotative',
+      'Section "Top Innovations"',
+      'Présence newsletters',
+      'Capsules vidéo sponsorisées',
+      'Podcast SIPORT Talks',
+      'Interview Live Studio',
+      'Testimonial vidéo (1 min)',
       'Stand exposition premium',
       '50 rendez-vous B2B',
       '10 inscriptions événements',
@@ -126,6 +135,14 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierConfig> = {
     ],
 
     exclusivePerks: [
+      'Logo visible en 3ème ligne prioritaire',
+      'Présence dans toutes les newsletters',
+      'Mini-site avec actualités complètes',
+      'Capsules vidéo "Inside SIPORT"',
+      'Interview audio dans le Podcast',
+      'Interview Live Studio "Meet The Leaders"',
+      'Vidéo testimonial diffusée',
+      '50 rendez-vous mensuels',
       'Emplacement stand prioritaire',
       'Logo sur support communication',
       'Accès VIP conférences',
