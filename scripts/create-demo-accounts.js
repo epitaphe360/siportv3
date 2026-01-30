@@ -22,10 +22,10 @@ const demoAccounts = [
   { email: 'admin.siports@siports.com', name: 'Admin SIPORTS', type: 'admin', profile: { role: 'administrator' } },
   
   // Exhibitors
-  { email: 'exhibitor-54m@test.siport.com', name: 'ABB Marine & Ports', type: 'exhibitor', profile: { sector: 'Technology' } },
-  { email: 'exhibitor-36m@test.siport.com', name: 'Advanced Port Systems', type: 'exhibitor', profile: { sector: 'Automation' } },
-  { email: 'exhibitor-18m@test.siport.com', name: 'Maritime Equipment Co', type: 'exhibitor', profile: { sector: 'Equipment' } },
-  { email: 'exhibitor-9m@test.siport.com', name: 'StartUp Port Innovations', type: 'exhibitor', profile: { sector: 'IoT' } },
+  { email: 'exhibitor-54m@test.siport.com', name: 'ABB Marine & Ports', type: 'exhibitor', profile: { sector: 'Technology', standArea: 54 } },
+  { email: 'exhibitor-36m@test.siport.com', name: 'Advanced Port Systems', type: 'exhibitor', profile: { sector: 'Automation', standArea: 36 } },
+  { email: 'exhibitor-18m@test.siport.com', name: 'Maritime Equipment Co', type: 'exhibitor', profile: { sector: 'Equipment', standArea: 18 } },
+  { email: 'exhibitor-9m@test.siport.com', name: 'StartUp Port Innovations', type: 'exhibitor', profile: { sector: 'IoT', standArea: 9 } },
   
   // Partners
   { email: 'partner-gold@test.siport.com', name: 'Gold Partner Industries', type: 'partner', profile: { level: 'gold' } },

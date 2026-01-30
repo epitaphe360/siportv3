@@ -9,10 +9,10 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
 const DEMO_ACCOUNTS = [
   { email: 'admin.siports@siports.com', password: 'Admin123!', type: 'admin', name: 'Admin SIPORTS' },
-  { email: 'exhibitor-54m@test.siport.com', password: 'Admin123!', type: 'exhibitor', name: 'ABB Marine & Ports' },
-  { email: 'exhibitor-36m@test.siport.com', password: 'Admin123!', type: 'exhibitor', name: 'Advanced Port Systems' },
-  { email: 'exhibitor-18m@test.siport.com', password: 'Admin123!', type: 'exhibitor', name: 'Maritime Equipment Co' },
-  { email: 'exhibitor-9m@test.siport.com', password: 'Admin123!', type: 'exhibitor', name: 'StartUp Port Innovations' },
+  { email: 'exhibitor-54m@test.siport.com', password: 'Admin123!', type: 'exhibitor', name: 'ABB Marine & Ports', standArea: 54 },
+  { email: 'exhibitor-36m@test.siport.com', password: 'Admin123!', type: 'exhibitor', name: 'Advanced Port Systems', standArea: 36 },
+  { email: 'exhibitor-18m@test.siport.com', password: 'Admin123!', type: 'exhibitor', name: 'Maritime Equipment Co', standArea: 18 },
+  { email: 'exhibitor-9m@test.siport.com', password: 'Admin123!', type: 'exhibitor', name: 'StartUp Port Innovations', standArea: 9 },
   { email: 'partner-gold@test.siport.com', password: 'Admin123!', type: 'partner', name: 'Gold Partner Industries' },
   { email: 'partner-silver@test.siport.com', password: 'Admin123!', type: 'partner', name: 'Silver Tech Group' },
   { email: 'partner-platinium@test.siport.com', password: 'Admin123!', type: 'partner', name: 'Platinium Global Corp' },
@@ -21,7 +21,6 @@ const DEMO_ACCOUNTS = [
   { email: 'partner-oceanfreight@test.siport.com', password: 'Admin123!', type: 'partner', name: 'OceanFreight Logistics' },
   { email: 'partner-coastal@test.siport.com', password: 'Admin123!', type: 'partner', name: 'Coastal Maritime Services' },
   { email: 'visitor-vip@test.siport.com', password: 'Admin123!', type: 'visitor', name: 'VIP Visitor' },
-  { email: 'visitor-premium@test.siport.com', password: 'Admin123!', type: 'visitor', name: 'Premium Visitor' },
   { email: 'visitor-basic@test.siport.com', password: 'Admin123!', type: 'visitor', name: 'Basic Visitor' },
   { email: 'visitor-free@test.siport.com', password: 'Admin123!', type: 'visitor', name: 'Free Visitor' },
 ];
@@ -87,7 +86,10 @@ async function setupDemoAccounts() {
               name: account.name,
               type: account.type,
               status: 'active',
-              profile: JSON.stringify({ role: account.type }),
+              profile: JSON.stringify({ 
+                role: account.type,
+                standArea: (account as any).standArea
+              }),
             }
           ])
           .select();
