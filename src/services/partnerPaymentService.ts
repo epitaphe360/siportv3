@@ -420,7 +420,7 @@ export async function getPartnerBankTransferRequests(userId: string): Promise<an
 
     const { data, error } = await supabase
       .from('payment_requests')
-      .select('id, user_id, requested_level, amount, currency, payment_method, transaction_id, status, proof_url, admin_notes, approved_at, rejected_at, created_at, validated_by, validated_at, validation_notes')
+      .select('id, user_id, requested_level, amount, currency, payment_method, transaction_id, status, transfer_proof_url, admin_notes, approved_at, rejected_at, created_at, validated_by, validated_at, validation_notes')
       .eq('user_id', userId)
       .eq('payment_method', 'bank_transfer')
       .order('created_at', { ascending: false });
@@ -448,7 +448,7 @@ export async function approvePartnerBankTransfer(
     // Récupérer la demande
     const { data: request, error: fetchError } = await supabase
       .from('payment_requests')
-      .select('id, user_id, requested_level, amount, currency, payment_method, transaction_id, status, proof_url, admin_notes, approved_at, rejected_at, created_at, validated_by, validated_at, validation_notes')
+      .select('id, user_id, requested_level, amount, currency, payment_method, transaction_id, status, transfer_proof_url, admin_notes, approved_at, rejected_at, created_at, validated_by, validated_at, validation_notes')
       .eq('id', requestId)
       .single();
 
@@ -524,7 +524,7 @@ export async function rejectPartnerBankTransfer(
     // Récupérer la demande
     const { data: request, error: fetchError } = await supabase
       .from('payment_requests')
-      .select('id, user_id, requested_level, amount, currency, payment_method, transaction_id, status, proof_url, admin_notes, approved_at, rejected_at, created_at, validated_by, validated_at, validation_notes')
+      .select('id, user_id, requested_level, amount, currency, payment_method, transaction_id, status, transfer_proof_url, admin_notes, approved_at, rejected_at, created_at, validated_by, validated_at, validation_notes')
       .eq('id', requestId)
       .single();
 
