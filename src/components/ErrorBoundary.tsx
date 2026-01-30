@@ -63,16 +63,23 @@ export class ErrorBoundary extends Component<Props, State> {
               Une erreur inattendue s'est produite. Nous nous excusons pour ce désagrément.
             </p>
 
-            {process.env.NODE_ENV === 'development' && this.state.error && (
-              <details className="mb-6 p-4 bg-red-50 rounded border border-red-200">
-                <summary className="cursor-pointer font-semibold text-red-900 mb-2">
-                  Détails de l'erreur (dev uniquement)
-                </summary>
-                <pre className="text-xs text-red-800 overflow-auto">
+            {/* Always show error details for debugging */}
+            {this.state.error && (
+              <div className="mb-6 p-4 bg-red-50 rounded border border-red-200 overflow-auto max-h-96 text-left">
+                <p className="font-bold text-red-800 mb-2">Message d'erreur :</p>
+                <pre className="text-xs text-red-700 whitespace-pre-wrap font-mono mb-4">
                   {this.state.error.toString()}
-                  {this.state.errorInfo?.componentStack}
                 </pre>
-              </details>
+                
+                {this.state.errorInfo && (
+                  <details>
+                    <summary className="text-xs font-bold text-red-800 cursor-pointer mb-2">Voir la stack trace</summary>
+                    <pre className="text-xs text-red-600 whitespace-pre-wrap font-mono">
+                      {this.state.errorInfo.componentStack}
+                    </pre>
+                  </details>
+                )}
+              </div>
             )}
 
             <div className="flex gap-3">
