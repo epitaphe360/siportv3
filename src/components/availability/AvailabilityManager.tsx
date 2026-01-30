@@ -19,7 +19,7 @@ export default function AvailabilityManager({ userId, userType, onAvailabilityUp
   const [isLoading, setIsLoading] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newSlot, setNewSlot] = useState({
-    date: '',
+    date: '2026-04-01',
     startTime: '',
     endTime: '',
     type: 'in-person' as const,
@@ -90,7 +90,7 @@ export default function AvailabilityManager({ userId, userType, onAvailabilityUp
       setTimeSlots(prev => [...prev, newTimeSlot]);
       onAvailabilityUpdate?.([...timeSlots, newTimeSlot]);
       setNewSlot({
-        date: '',
+        date: '2026-04-01',
         startTime: '',
         endTime: '',
         type: 'in-person',
