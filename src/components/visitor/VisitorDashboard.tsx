@@ -16,7 +16,8 @@ import {
   Headphones,
   Video,
   Zap,
-  Clock
+  Clock,
+  MapPin
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
