@@ -68,7 +68,7 @@ export default function ChatInterface() {
   const activeConv = conversations.find(c => c.id === activeConversation);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Bouton de retour */}
         <div className="mb-6">
@@ -108,6 +108,26 @@ export default function ChatInterface() {
                         </div>
                       </div>
                     ))}
+                  </div>
+                ) : conversations.length === 0 ? (
+                  <div className="p-8 text-center">
+                    <MessageCircle className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500 text-sm mb-2 font-medium">Aucune conversation</p>
+                    <p className="text-gray-400 text-xs mb-4">
+                      Commencez une nouvelle conversation en visitant le profil d'un exposant ou partenaire
+                    </p>
+                    <div className="flex flex-col gap-2">
+                      <Link to={ROUTES.EXHIBITORS}>
+                        <Button variant="outline" size="sm" className="w-full">
+                          Voir les Exposants
+                        </Button>
+                      </Link>
+                      <Link to={ROUTES.PARTNERS}>
+                        <Button variant="outline" size="sm" className="w-full">
+                          Voir les Partenaires
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 ) : (
                   <div className="space-y-1">
