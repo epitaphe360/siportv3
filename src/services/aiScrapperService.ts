@@ -82,7 +82,7 @@ class AIScrapperService {
       const response = await fetch(proxyUrl);
       const data = await response.json();
 
-      if (!data.contents) {
+      if (!data || !data.contents) {
         throw new Error('Impossible de récupérer le contenu du site');
       }
 

@@ -5,7 +5,7 @@ import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import { toast } from 'sonner';
 import aiScrapperService from '../../services/aiScrapperService';
-import { SupabaseService } from '../../services/supabaseService';
+import { supabase } from '../../lib/supabase';
 
 interface PartnerProfileScrapperProps {
   partnerId: string;
@@ -65,24 +65,29 @@ export default function PartnerProfileScrapper({ partnerId, onSuccess }: Partner
     const savingToast = toast.loading('💾 Sauvegarde du profil...');
 
     try {
-      // Sauvegarder dans la table partners via SupabaseService
-      await SupabaseService.updatePartner(partnerId, {
-        company_name: scrapResult.companyName,
-        description: scrapResult.description,
-        sector: scrapResult.sector,
-        logo_url: scrapResult.logoUrl || undefined,
-        website: websiteUrl,
-        contact_info: {
-          email: scrapResult.contactEmail,
-          phone: scrapResult.contactPhone,
+      // Sauvegarder dans la table partner_profiles via upsert
+      const { error } = await supabase
+        .from('partner_profiles')
+        .upsert({
+          user_id: partnerId,
+          company_name: scrapResult.companyName,
+          description: scrapResult.description,
+          sector: scrapResult.sector,
+          logo_url: scrapResult.logoUrl || null,
+          website: websiteUrl,
+          contact_email: scrapResult.contactEmail,
+          contact_phone: scrapResult.contactPhone,
           address: scrapResult.address,
-          social: scrapResult.socialLinks
-        },
-        // Champs additionnels
-        services: scrapResult.services || [],
-        founded_year: scrapResult.foundedYear,
-        employee_count: scrapResult.employeeCount
-      });
+          social_links: scrapResult.socialLinks,
+          services: scrapResult.services || [],
+          founded_year: scrapResult.foundedYear,
+          employee_count: scrapResult.employeeCount,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id'
+        });
+
+      if (error) throw error;
 
       toast.dismiss(savingToast);
       toast.success('✅ Profil sauvegardé avec succès!');

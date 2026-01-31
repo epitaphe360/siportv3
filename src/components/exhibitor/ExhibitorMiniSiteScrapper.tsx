@@ -6,6 +6,7 @@ import { Card } from '../ui/Card';
 import { toast } from 'sonner';
 import aiScrapperService from '../../services/aiScrapperService';
 import { SupabaseService } from '../../services/supabaseService';
+import { supabase } from '../../lib/supabase';
 
 interface ExhibitorMiniSiteScrapperProps {
   exhibitorId: string;
@@ -98,14 +99,19 @@ export default function ExhibitorMiniSiteScrapper({ exhibitorId, userId, onSucce
       };
 
       // Vérifier si un mini-site existe déjà
-      const existingMiniSite = await SupabaseService.getMiniSiteByExhibitorId(userId);
+      const existingMiniSite = await SupabaseService.getMiniSite(userId);
 
       if (existingMiniSite) {
-        // Mettre à jour
-        await SupabaseService.updateMiniSite(existingMiniSite.id, miniSiteData);
+        // Mettre à jour le mini-site existant
+        const { error: updateError } = await supabase
+          .from('mini_sites')
+          .update(miniSiteData)
+          .eq('id', existingMiniSite.id);
+
+        if (updateError) throw updateError;
       } else {
-        // Créer
-        await SupabaseService.createMiniSite(miniSiteData);
+        // Créer un nouveau mini-site
+        await SupabaseService.createMiniSite(userId, miniSiteData);
       }
 
       toast.dismiss(savingToast);

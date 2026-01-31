@@ -92,7 +92,8 @@ export default function PartnerProfileEditor({ partnerId, onSave }: PartnerProfi
     try {
       const { error } = await supabase
         .from('partner_profiles')
-        .update({
+        .upsert({
+          user_id: partnerId,
           company_name: profile.company_name,
           description: profile.description,
           sector: profile.sector,
@@ -103,8 +104,9 @@ export default function PartnerProfileEditor({ partnerId, onSave }: PartnerProfi
           founded_year: profile.founded_year,
           employee_count: profile.employee_count,
           updated_at: new Date().toISOString()
-        })
-        .eq('user_id', partnerId);
+        }, {
+          onConflict: 'user_id'
+        });
 
       if (error) throw error;
 
