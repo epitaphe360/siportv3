@@ -340,6 +340,7 @@ export interface DashboardStats {
   messages: number;
   catalogDownloads?: number;
   miniSiteViews?: number;
+  products?: number;
 }
 
 export interface Activity {

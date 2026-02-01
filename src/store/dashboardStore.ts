@@ -56,7 +56,8 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
         appointments: 0,
         messages: 0,
         catalogDownloads: 0,
-        miniSiteViews: 0
+        miniSiteViews: 0,
+        products: 0
       };
 
       // TOUJOURS compter depuis les vraies tables pour avoir les données exactes
@@ -173,6 +174,16 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
             
             if (!error) {
               stats.miniSiteViews = miniSiteViewsCount || 0;
+            }
+
+            // Compter les produits
+            const { count: productsCount, error: productsError } = await supabase
+              .from('products')
+              .select('*', { count: 'exact', head: true })
+              .eq('exhibitor_id', exhibitor.id);
+            
+            if (!productsError) {
+              stats.products = productsCount || 0;
             }
           }
         } catch (err) {
