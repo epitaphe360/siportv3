@@ -494,7 +494,7 @@ export class SupabaseService {
           };
 
           return {
-            id: profile.id,
+            id: profile.user_id || profile.id, // Utiliser user_id car c'est la clé dans mini_sites
             userId: profile.user_id,
             companyName: profile.company_name || 'Exposant sans nom',
             category: (profile.category || 'port-industry') as ExhibitorCategory,
@@ -1705,6 +1705,57 @@ export class SupabaseService {
     }
   }
 
+  static async createConversation(userId1: string, userId2: string): Promise<ChatConversation | null> {
+    if (!this.checkSupabaseConnection()) return null;
+    
+    const safeSupabase = supabase!;
+    try {
+      // Check if conversation already exists
+      const { data: existing, error: existingError } = await safeSupabase
+        .from('conversations')
+        .select('*')
+        .contains('participants', [userId1, userId2])
+        .limit(1)
+        .single();
+
+      // If conversation exists, return it
+      if (!existingError && existing) {
+        return {
+          id: existing.id,
+          participants: existing.participants,
+          unreadCount: 0,
+          createdAt: new Date(existing.created_at),
+          updatedAt: new Date(existing.updated_at)
+        };
+      }
+
+      // Create new conversation
+      const { data, error } = await safeSupabase
+        .from('conversations')
+        .insert({
+          type: 'direct',
+          participants: [userId1, userId2],
+          created_by: userId1,
+          is_active: true
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      return {
+        id: data.id,
+        participants: data.participants,
+        unreadCount: 0,
+        createdAt: new Date(data.created_at),
+        updatedAt: new Date(data.updated_at)
+      };
+    } catch (error) {
+      console.error('Erreur création conversation:', error);
+      return null;
+    }
+  }
+
   static async sendMessage(conversationId: string, senderId: string, receiverId: string, content: string, type: 'text' | 'image' = 'text'): Promise<ChatMessage | null> {
     if (!this.checkSupabaseConnection()) return null;
     
@@ -2019,16 +2070,65 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      // Chercher par exhibitor_id dans la table exhibitors
-      const { data, error } = await safeSupabase
+      // 1. Chercher d'abord dans la table exhibitors par ID
+      const { data: exhibitorData, error: exhibitorError } = await safeSupabase
         .from('exhibitors')
         .select('id, company_name, logo_url, description, website, contact_info')
         .eq('id', exhibitorId)
         .maybeSingle();
 
-      if (error) throw error;
+      if (exhibitorData) {
+        console.log('[MiniSite] Exposant trouvé dans exhibitors:', exhibitorData.company_name);
+        return exhibitorData;
+      }
 
-      return data;
+      // 2. Fallback: chercher dans exhibitor_profiles par user_id (structure legacy)
+      console.log('[MiniSite] Pas trouvé dans exhibitors, recherche dans exhibitor_profiles...');
+      const { data: profileData, error: profileError } = await safeSupabase
+        .from('exhibitor_profiles')
+        .select('user_id, company_name, logo_url, description, website, phone, email')
+        .eq('user_id', exhibitorId)
+        .maybeSingle();
+
+      if (profileData) {
+        console.log('[MiniSite] Exposant trouvé dans exhibitor_profiles:', profileData.company_name);
+        // Mapper les champs pour correspondre à la structure attendue
+        return {
+          id: profileData.user_id,
+          company_name: profileData.company_name,
+          logo_url: profileData.logo_url,
+          description: profileData.description,
+          website: profileData.website,
+          contact_info: {
+            phone: profileData.phone,
+            email: profileData.email
+          }
+        };
+      }
+
+      // 3. Fallback: chercher dans users si c'est un exposant
+      console.log('[MiniSite] Pas trouvé dans exhibitor_profiles, recherche dans users...');
+      const { data: userData } = await safeSupabase
+        .from('users')
+        .select('id, name, email')
+        .eq('id', exhibitorId)
+        .eq('type', 'exhibitor')
+        .maybeSingle();
+
+      if (userData) {
+        console.log('[MiniSite] Exposant basique trouvé dans users:', userData.name);
+        return {
+          id: userData.id,
+          company_name: userData.name || 'Exposant',
+          logo_url: null,
+          description: null,
+          website: null,
+          contact_info: { email: userData.email }
+        };
+      }
+
+      console.warn('[MiniSite] Aucun exposant trouvé pour ID:', exhibitorId);
+      return null;
     } catch (error) {
       console.error('Erreur récupération exposant pour mini-site:', error);
       return null;
@@ -2658,6 +2758,13 @@ export class SupabaseService {
         return String(dateStr).split('T')[0];
       };
 
+      // Helper pour parser une date string en Date locale
+      const parseLocalDateToDate = (dateStr: string | Date): Date => {
+        if (dateStr instanceof Date) return dateStr;
+        const [year, month, day] = String(dateStr).split('T')[0].split('-').map(Number);
+        return new Date(year, month - 1, day);
+      };
+
       // Transform DB rows to TimeSlot interface (snake_case → camelCase)
       interface TimeSlotRow {
         id: string;
@@ -2682,7 +2789,7 @@ export class SupabaseService {
       const transformed = (data || []).map((row: TimeSlotRow) => ({
         id: row.id,
         userId: row.exhibitor_id || row.user_id,
-        date: parseLocalDate(row.slot_date || row.date),
+        date: parseLocalDateToDate(row.slot_date || row.date),
         startTime: row.start_time || row.startTime,
         endTime: row.end_time || row.endTime,
         duration: row.duration || 0,

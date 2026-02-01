@@ -99,18 +99,30 @@ export const MiniSiteSetupModal: React.FC<MiniSiteSetupModalProps> = ({
         .update(updateData)
         .eq('id', userId);
 
+      // Save to localStorage as a redundant safety measure
+      localStorage.setItem(`siports_minisite_skipped_${userId}`, 'true');
+
       // Create products if found
       if (scrapResult.data.products && scrapResult.data.products.length > 0) {
+        // Resolve exhibitor ID first
+        const { data: exhibitor } = await supabase
+          .from('exhibitors')
+          .select('id')
+          .eq('user_id', userId)
+          .maybeSingle();
+        
+        const targetExhibitorId = exhibitor?.id || userId; // Fallback to userId if no exhibitor entry
+
         const products = scrapResult.data.products.map((product: any) => ({
-          exhibitor_id: userId,
+          exhibitor_id: targetExhibitorId,
           name: product.name,
           description: product.description,
           category: product.category || 'Autre',
-          image_url: product.image || null
+          images: product.image ? [product.image] : []
         }));
 
         await supabase
-          .from('exhibitor_products')
+          .from('products')
           .insert(products);
       }
 
@@ -159,6 +171,8 @@ export const MiniSiteSetupModal: React.FC<MiniSiteSetupModalProps> = ({
         .update({ minisite_created: true })
         .eq('id', userId);
 
+      localStorage.setItem(`siports_minisite_skipped_${userId}`, 'true');
+
       toast.success('Vous allez être redirigé vers l\'éditeur de mini-site');
       onClose();
 
@@ -182,11 +196,14 @@ export const MiniSiteSetupModal: React.FC<MiniSiteSetupModalProps> = ({
         .update({ minisite_created: true })
         .eq('id', userId);
 
+      localStorage.setItem(`siports_minisite_skipped_${userId}`, 'true');
+
       toast.success('Vous pourrez créer votre mini-site plus tard depuis votre tableau de bord');
       onClose();
     } catch (error) {
       console.error('Error marking minisite as skipped:', error);
       // Fermer quand même la popup même si l'update échoue
+      localStorage.setItem(`siports_minisite_skipped_${userId}`, 'true');
       onClose();
     }
   };
