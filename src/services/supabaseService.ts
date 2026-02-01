@@ -2711,6 +2711,87 @@ export class SupabaseService {
     return this.getTimeSlotsByExhibitor(userId);
   }
 
+
+  static async createTimeSlotsBulk(slotsData: Omit<TimeSlot, 'id' | 'currentBookings' | 'available'>[]): Promise<TimeSlot[]> {
+     if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+    const safeSupabase = supabase!;
+
+    if (slotsData.length === 0) return [];
+
+    try {
+        console.log(`[BULK_CREATE] Processing ${slotsData.length} slots...`);
+
+        // Résoudre l'exhibitor_id (on suppose que tous les slots sont pour le même user)
+        let resolvedExhibitorId: string | null = null;
+        let userId = (slotsData[0] as any).userId;
+
+        if (userId) {
+             const { data: exhibitor } = await safeSupabase
+                .from('exhibitors')
+                .select('id')
+                .eq('user_id', userId)
+                .maybeSingle();
+            
+            if (exhibitor) {
+                resolvedExhibitorId = exhibitor.id;
+            } else {
+                 console.warn('[BULK_CREATE] Exhibitor not found for user, creating one...');
+                  // Fallback creation logic similar to createTimeSlot
+                 const { data: user } = await safeSupabase.from('users').select('name').eq('id', userId).single();
+                  const { data: newExhibitor } = await safeSupabase
+                    .from('exhibitors')
+                    .insert({ user_id: userId, company_name: user?.name || 'Exposant', category: 'institutional', sector: 'General', description: 'Auto-created' })
+                    .select('id')
+                    .single();
+                  if (newExhibitor) resolvedExhibitorId = newExhibitor.id;
+            }
+        }
+
+        if (!resolvedExhibitorId) throw new Error('Failed to resolve exhibitor ID');
+
+        // Préparer les données DB
+        const dbSlots = slotsData.map(slot => ({
+            exhibitor_id: resolvedExhibitorId,
+            slot_date: (slot as any).date,
+            start_time: slot.startTime,
+            end_time: slot.endTime,
+            duration: slot.duration,
+            type: slot.type,
+            max_bookings: slot.maxBookings,
+            available: true,
+            location: slot.location
+        }));
+
+        // Batch insert
+        const { data, error } = await safeSupabase
+            .from('time_slots')
+            .insert(dbSlots)
+            .select();
+
+        if (error) throw error;
+        
+        console.log(`[BULK_CREATE] Successfully created ${data?.length} slots`);
+        
+        return data.map((dbSlot: any) => ({
+            id: dbSlot.id,
+            exhibitorId: dbSlot.exhibitor_id,
+            date: dbSlot.slot_date,
+            startTime: dbSlot.start_time,
+            endTime: dbSlot.end_time,
+            duration: dbSlot.duration,
+            type: dbSlot.type,
+            maxBookings: dbSlot.max_bookings,
+            currentBookings: dbSlot.current_bookings,
+            available: dbSlot.available,
+            location: dbSlot.location
+        }));
+
+    } catch (error) {
+        console.error('❌ Erreur createTimeSlotsBulk:', error);
+        throw error;
+    }
+  }
+
   static async createTimeSlot(slotData: Omit<TimeSlot, 'id' | 'currentBookings' | 'available'>): Promise<TimeSlot> {
     if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
     const safeSupabase = supabase!;
@@ -2887,6 +2968,54 @@ export class SupabaseService {
       }
       throw error;
     }
+  }
+
+  static async updateTimeSlot(slotId: string, updateData: Partial<TimeSlot>): Promise<TimeSlot> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+    const safeSupabase = supabase!;
+    
+    const updates: Record<string, any> = {};
+    if (updateData.date) {
+        const d = new Date(updateData.date);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        updates.slot_date = `${year}-${month}-${day}`;
+    }
+    if (updateData.startTime) updates.start_time = updateData.startTime;
+    if (updateData.endTime) updates.end_time = updateData.endTime;
+    if (updateData.maxBookings !== undefined) updates.max_bookings = updateData.maxBookings;
+    if (updateData.type) updates.type = updateData.type;
+    if (updateData.location !== undefined) updates.location = updateData.location;
+    
+    const { data, error } = await safeSupabase
+      .from('time_slots')
+      .update(updates)
+      .eq('id', slotId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    
+    const parseLocalDateString = (dateStr: string | Date): Date => {
+        if (dateStr instanceof Date) return dateStr;
+        const [year, month, day] = String(dateStr).split('T')[0].split('-').map(Number);
+        return new Date(year, month - 1, day);
+    };
+
+    return {
+       id: data.id,
+       userId: data.exhibitor_id,
+       date: parseLocalDateString(data.slot_date),
+       startTime: data.start_time,
+       endTime: data.end_time,
+       duration: data.duration,
+       type: data.type,
+       maxBookings: data.max_bookings,
+       currentBookings: data.current_bookings,
+       available: data.current_bookings < data.max_bookings,
+       location: data.location
+    } as TimeSlot;
   }
 
   static async deleteTimeSlot(slotId: string): Promise<void> {
