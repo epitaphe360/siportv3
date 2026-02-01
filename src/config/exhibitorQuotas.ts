@@ -49,7 +49,7 @@ export const EXHIBITOR_QUOTAS: Record<ExhibitorLevel, ExhibitorQuotaConfig> = {
     icon: '📦',
 
     quotas: {
-      appointments: 0,  // CDC: 0 créneaux B2B (encourage montée gamme)
+      appointments: 20,  // CDC: Augmenté à 20 pour permettre l'usage de base
       teamMembers: 2,
       demoSessions: 3,
       mediaUploads: 5,
@@ -64,7 +64,7 @@ export const EXHIBITOR_QUOTAS: Record<ExhibitorLevel, ExhibitorQuotaConfig> = {
 
     features: [
       'Stand 9m² (3x3m)',
-      'Aucun rendez-vous B2B (upgrade requis)',
+      '20 rendez-vous B2B inclus',
       '2 badges exposant',
       '3 sessions démo',
       '5 fichiers média',
