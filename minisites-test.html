@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Mini-Sites - SIPORTS 2026</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 50px;
+    }
+    
+    .header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    
+    .header p {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+    
+    .minisites-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-bottom: 50px;
+    }
+    
+    .minisite-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .minisite-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    }
+    
+    .card-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+    }
+    
+    .card-header h2 {
+      font-size: 1.5em;
+      margin-bottom: 5px;
+    }
+    
+    .card-header p {
+      opacity: 0.9;
+      font-size: 0.9em;
+    }
+    
+    .card-body {
+      padding: 20px;
+    }
+    
+    .exhibitor-id {
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-family: monospace;
+      font-size: 0.85em;
+      word-break: break-all;
+    }
+    
+    .url {
+      background: #e8f4f8;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-family: monospace;
+      font-size: 0.85em;
+      word-break: break-all;
+      border-left: 4px solid #0ea5e9;
+    }
+    
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      flex: 1;
+      min-width: 120px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+      border: 2px solid #ddd;
+    }
+    
+    .btn-secondary:hover {
+      background: #e0e0e0;
+      border-color: #999;
+    }
+    
+    .status {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    
+    .status.published {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    
+    .status.draft {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    .info-box {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-top: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .info-box h3 {
+      color: #667eea;
+      margin-bottom: 15px;
+      font-size: 1.3em;
+    }
+    
+    .info-box ul {
+      list-style: none;
+      margin-left: 20px;
+    }
+    
+    .info-box li {
+      margin-bottom: 10px;
+      color: #333;
+      position: relative;
+      padding-left: 20px;
+    }
+    
+    .info-box li:before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #667eea;
+      font-weight: bold;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .stat-number {
+      font-size: 2em;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      font-size: 0.9em;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🌐 Mini-Sites SIPORTS 2026</h1>
+      <p>Testez tous les mini-sites des exposants</p>
+    </div>
+    
+    <div class="minisites-grid" id="minisites">
+      <!-- Sera rempli par JavaScript -->
+    </div>
+    
+    <div class="info-box">
+      <h3>📊 Statistiques</h3>
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-number" id="total-minisites">4</div>
+          <div class="stat-label">Mini-sites Total</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="published-minisites">4</div>
+          <div class="stat-label">Mini-sites Publiés</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="total-exhibitors">4</div>
+          <div class="stat-label">Exposants</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="info-box">
+      <h3>ℹ️ Information</h3>
+      <ul>
+        <li>Tous les mini-sites ont été créés et publiés automatiquement</li>
+        <li>Cliquez sur "Voir le Mini-Site" pour consulter chaque vitrine</li>
+        <li>Chaque mini-site contient des sections Hero, About et produits/services</li>
+        <li>Les URLs sont uniques et basées sur l'ID de l'exposant</li>
+      </ul>
+    </div>
+  </div>
+  
+  <script>
+    // Données des mini-sites créés
+    const minisites = [
+      {
+        name: 'ABB Marine & Ports',
+        category: 'Technologie',
+        exhibitorId: 'bdc36cff-f8a7-42b5-ad0a-377b83a4afc9',
+        published: true,
+        description: 'Solutions innovantes pour l\'industrie portuaire'
+      },
+      {
+        name: 'Advanced Port Systems',
+        category: 'Systèmes',
+        exhibitorId: 'af542668-e467-4ea8-9e2f-33301dafe53c',
+        published: true,
+        description: 'Systèmes avancés de gestion portuaire'
+      },
+      {
+        name: 'Maritime Equipment Co',
+        category: 'Équipement',
+        exhibitorId: '05bde359-ab2c-454a-82f5-d21f298c1976',
+        published: true,
+        description: 'Équipements maritimes de qualité professionnelle'
+      },
+      {
+        name: 'StartUp Port Innovations',
+        category: 'Innovation',
+        exhibitorId: 'f86febbd-5c7a-431d-a989-4d0c58242b12',
+        published: true,
+        description: 'Solutions innovantes pour les ports modernes'
+      }
+    ];
+    
+    // Déterminer l'URL de base
+    const baseUrl = window.location.hostname === 'localhost' 
+      ? `http://localhost:9324` 
+      : window.location.origin;
+    
+    // Afficher les mini-sites
+    const minisitesContainer = document.getElementById('minisites');
+    minisites.forEach(site => {
+      const miniSiteUrl = `${baseUrl}/minisite/${site.exhibitorId}`;
+      const card = document.createElement('div');
+      card.className = 'minisite-card';
+      card.innerHTML = `
+        <div class="card-header">
+          <h2>${site.name}</h2>
+          <p>${site.category}</p>
+        </div>
+        <div class="card-body">
+          <div class="status published">✓ Publié</div>
+          <p style="color: #666; margin-bottom: 15px;">${site.description}</p>
+          <div class="exhibitor-id">
+            <strong>Exhibitor ID:</strong><br>
+            ${site.exhibitorId}
+          </div>
+          <div class="url">
+            <strong>URL:</strong><br>
+            ${miniSiteUrl}
+          </div>
+          <div class="buttons">
+            <a href="${miniSiteUrl}" target="_blank" class="btn btn-primary">
+              👁️ Voir le Mini-Site
+            </a>
+            <button class="btn btn-secondary" onclick="copyToClipboard('${miniSiteUrl}')">
+              📋 Copier URL
+            </button>
+          </div>
+        </div>
+      `;
+      minisitesContainer.appendChild(card);
+    });
+    
+    // Fonction pour copier l'URL
+    function copyToClipboard(url) {
+      navigator.clipboard.writeText(url).then(() => {
+        alert('URL copiée dans le presse-papiers !');
+      });
+    }
+  </script>
+</body>
+</html>
