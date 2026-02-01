@@ -213,22 +213,30 @@ export const useChatStore = create<ChatState>((set, get) => ({
       throw new Error('Utilisateur non connecté');
     }
 
-    const newConversationId = Date.now().toString();
-    const newConversation: ChatConversation = {
-      id: newConversationId,
-      participants: [currentUserId, userId],
-      unreadCount: 0,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
+    try {
+      // Create conversation in Supabase
+      const conversation = await SupabaseService.createConversation(currentUserId, userId);
+      if (!conversation) {
+        throw new Error('Impossible de créer la conversation');
+      }
 
-    const { conversations } = get();
-    set({ 
-      conversations: [newConversation, ...conversations],
-      activeConversation: newConversationId
-    });
+      const { conversations } = get();
+      // Check if already in list
+      const exists = conversations.some(c => c.id === conversation.id);
+      if (!exists) {
+        set({ 
+          conversations: [conversation, ...conversations],
+          activeConversation: conversation.id
+        });
+      } else {
+        set({ activeConversation: conversation.id });
+      }
 
-    return newConversationId;
+      return conversation.id;
+    } catch (error) {
+      console.error('Erreur startConversation:', error);
+      throw error;
+    }
   },
 
   sendBotMessage: async (message) => {

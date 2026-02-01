@@ -1705,6 +1705,57 @@ export class SupabaseService {
     }
   }
 
+  static async createConversation(userId1: string, userId2: string): Promise<ChatConversation | null> {
+    if (!this.checkSupabaseConnection()) return null;
+    
+    const safeSupabase = supabase!;
+    try {
+      // Check if conversation already exists
+      const { data: existing, error: existingError } = await safeSupabase
+        .from('conversations')
+        .select('*')
+        .contains('participants', [userId1, userId2])
+        .limit(1)
+        .single();
+
+      // If conversation exists, return it
+      if (!existingError && existing) {
+        return {
+          id: existing.id,
+          participants: existing.participants,
+          unreadCount: 0,
+          createdAt: new Date(existing.created_at),
+          updatedAt: new Date(existing.updated_at)
+        };
+      }
+
+      // Create new conversation
+      const { data, error } = await safeSupabase
+        .from('conversations')
+        .insert({
+          type: 'direct',
+          participants: [userId1, userId2],
+          created_by: userId1,
+          is_active: true
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      return {
+        id: data.id,
+        participants: data.participants,
+        unreadCount: 0,
+        createdAt: new Date(data.created_at),
+        updatedAt: new Date(data.updated_at)
+      };
+    } catch (error) {
+      console.error('Erreur création conversation:', error);
+      return null;
+    }
+  }
+
   static async sendMessage(conversationId: string, senderId: string, receiverId: string, content: string, type: 'text' | 'image' = 'text'): Promise<ChatMessage | null> {
     if (!this.checkSupabaseConnection()) return null;
     
