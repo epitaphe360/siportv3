@@ -74,7 +74,16 @@ export default function ExhibitorDashboard() {
       if (!user?.id || user?.status !== 'active') return;
 
       try {
-        // Check both the user flag AND if a mini-site actually exists in the database
+        // 1. Get exhibitor ID for this user (some mini-sites use this instead of user_id)
+        const { data: exhibitor } = await supabase
+          .from('exhibitors')
+          .select('id')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        const exhibitorId = exhibitor?.id;
+
+        // 2. Check both the user flag AND if a mini-site actually exists in the database
         const [userResult, miniSiteResult] = await Promise.all([
           supabase
             .from('users')
@@ -84,7 +93,7 @@ export default function ExhibitorDashboard() {
           supabase
             .from('mini_sites')
             .select('id')
-            .eq('exhibitor_id', user.id)
+            .in('exhibitor_id', [user.id, exhibitorId].filter(Boolean) as string[])
             .maybeSingle()
         ]);
 
@@ -92,7 +101,7 @@ export default function ExhibitorDashboard() {
 
         // Show popup only if:
         // 1. minisite_created flag is false AND
-        // 2. No mini-site exists in the mini_sites table
+        // 2. No mini-site exists in the mini_sites table (checked via user_id or exhibitor_id)
         const hasMiniSiteInDB = !!miniSiteResult.data;
         const flagSaysCreated = !!userResult.data?.minisite_created;
 

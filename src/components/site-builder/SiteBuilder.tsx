@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { Button } from '../ui/Button';
@@ -9,6 +9,7 @@ import { MobilePreview } from './MobilePreview';
 import { Save, Eye, Settings, Image, Code, Smartphone } from 'lucide-react';
 import { useTranslation } from '../../hooks/useTranslation';
 import { supabase } from '../../lib/supabase';
+import useAuthStore from '../../store/authStore';
 import toast from 'react-hot-toast';
 import type { SiteSection, MiniSite, SEOConfig } from '../../types/site-builder';
 
@@ -20,6 +21,7 @@ interface SiteBuilderProps {
 
 export const SiteBuilder: React.FC<SiteBuilderProps> = ({ siteId, templateId, onSave }) => {
   const { t } = useTranslation();
+  const { user } = useAuthStore();
   const [sections, setSections] = useState<SiteSection[]>([]);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
   const [showImageLibrary, setShowImageLibrary] = useState(false);
@@ -42,9 +44,32 @@ export const SiteBuilder: React.FC<SiteBuilderProps> = ({ siteId, templateId, on
     updatedAt: new Date().toISOString()
   });
   const [saving, setSaving] = useState(false);
+  const [resolvedExhibitorId, setResolvedExhibitorId] = useState<string | null>(null);
+
+  // Load exhibitor ID for current user
+  useEffect(() => {
+    const fetchExhibitorId = async () => {
+      if (!user?.id) return;
+      
+      const { data } = await supabase
+        .from('exhibitors')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      if (data) {
+        setResolvedExhibitorId(data.id);
+      } else {
+        // Fallback: use user ID itself if no entry in exhibitors table
+        setResolvedExhibitorId(user.id);
+      }
+    };
+    
+    fetchExhibitorId();
+  }, [user?.id]);
 
   // Load existing site or template
-  React.useEffect(() => {
+  useEffect(() => {
     if (siteId) {
       loadSite(siteId);
     } else if (templateId) {
@@ -183,34 +208,63 @@ export const SiteBuilder: React.FC<SiteBuilderProps> = ({ siteId, templateId, on
   };
 
   const saveSite = async () => {
+    if (!resolvedExhibitorId && !siteId) {
+      toast.error('Impossible d\'identifier l\'exposant. Veuillez vous reconnecter.');
+      return;
+    }
+    
     setSaving(true);
     try {
       const siteData = {
         ...siteConfig,
         sections,
+        exhibitorId: siteConfig.exhibitorId || resolvedExhibitorId,
         updatedAt: new Date().toISOString()
+      };
+
+      // Prepare data for DB (convert camelCase to snake_case if necessary)
+      const dbData = {
+        title: siteData.title,
+        slug: siteData.slug || `site-${siteData.exhibitorId || 'unknown'}`,
+        sections: siteData.sections,
+        seo: siteData.seo,
+        published: siteData.published,
+        exhibitor_id: siteData.exhibitorId,
+        template_id: siteData.templateId,
+        updated_at: siteData.updatedAt
       };
 
       if (siteId) {
         const { error } = await supabase
           .from('mini_sites')
-          .update(siteData)
+          .update(dbData)
           .eq('id', siteId);
         if (error) throw error;
       } else {
         const { data, error } = await supabase
           .from('mini_sites')
-          .insert([siteData])
+          .insert([{ ...dbData, created_at: new Date().toISOString() }])
           .select()
           .single();
         if (error) throw error;
         if (data) {
-          setSiteConfig(data);
+          setSiteConfig({
+            ...siteData,
+            id: data.id,
+          });
         }
       }
 
+      // Mark user as having created a mini-site
+      if (user?.id) {
+        await supabase
+          .from('users')
+          .update({ minisite_created: true })
+          .eq('id', user.id);
+      }
+
       toast.success(t('siteBuilder.saved'));
-      onSave?.(siteData);
+      onSave?.(siteData as MiniSite);
     } catch (error) {
       console.error('Error saving site:', error);
       toast.error(t('siteBuilder.saveError'));

@@ -101,16 +101,25 @@ export const MiniSiteSetupModal: React.FC<MiniSiteSetupModalProps> = ({
 
       // Create products if found
       if (scrapResult.data.products && scrapResult.data.products.length > 0) {
+        // Resolve exhibitor ID first
+        const { data: exhibitor } = await supabase
+          .from('exhibitors')
+          .select('id')
+          .eq('user_id', userId)
+          .maybeSingle();
+        
+        const targetExhibitorId = exhibitor?.id || userId; // Fallback to userId if no exhibitor entry
+
         const products = scrapResult.data.products.map((product: any) => ({
-          exhibitor_id: userId,
+          exhibitor_id: targetExhibitorId,
           name: product.name,
           description: product.description,
           category: product.category || 'Autre',
-          image_url: product.image || null
+          images: product.image ? [product.image] : []
         }));
 
         await supabase
-          .from('exhibitor_products')
+          .from('products')
           .insert(products);
       }
 

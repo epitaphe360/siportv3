@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   Calendar, Plus, Users, MapPin, Video, Globe, Save, X,
   Clock, Trash2, Edit, ChevronLeft, ChevronRight, Grid3x3, List,
-  Lock, Unlock
+  Lock, Unlock, Wand2
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
@@ -347,14 +347,30 @@ export default function PublicAvailabilityCalendar({
             <div className="flex flex-col items-end space-y-3">
               {/* Bouton Ajouter Créneau - Toujours visible si editable */}
               {isEditable && (
-                <Button
-                  onClick={() => setShowAddModal(true)}
-                  className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white px-6 py-2.5 font-bold shadow-lg shadow-emerald-900/30 hover:shadow-xl transition-all duration-200 border border-white/20"
-                  data-testid="button-add-slot-header"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Nouveau Créneau
-                </Button>
+                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                  <Button
+                    onClick={() => {
+                      setModalTab('bulk');
+                      setShowAddModal(true);
+                    }}
+                    className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white px-4 py-2.5 font-bold shadow-lg shadow-amber-900/30 hover:shadow-xl transition-all duration-200 border border-white/20"
+                    data-testid="button-bulk-generate-header"
+                  >
+                    <Wand2 className="w-4 h-4 mr-2" />
+                    Génération Automatique
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setModalTab('single');
+                      setShowAddModal(true);
+                    }}
+                    className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white px-4 py-2.5 font-bold shadow-lg shadow-emerald-900/30 hover:shadow-xl transition-all duration-200 border border-white/20"
+                    data-testid="button-add-slot-header"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Nouveau Créneau
+                  </Button>
+                </div>
               )}
               
               <Badge variant="info" className="px-4 py-1.5 text-xs font-bold bg-blue-500/20 text-blue-300 border-blue-500/30 backdrop-blur-sm uppercase tracking-wider">
@@ -684,14 +700,31 @@ export default function PublicAvailabilityCalendar({
             Commencez par ajouter vos créneaux de disponibilité pour permettre aux visiteurs de prendre rendez-vous avec vous pendant SIPORT 2026.
           </p>
           {isEditable && (
-            <Button
-              onClick={() => setShowAddModal(true)}
-              className="px-8 py-3 text-lg"
-              data-testid="button-add-first-slot"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Créer mon premier créneau
-            </Button>
+            <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+              <Button
+                onClick={() => {
+                  setModalTab('bulk');
+                  setShowAddModal(true);
+                }}
+                variant="outline"
+                className="px-8 py-3 text-lg border-2 border-amber-500 text-amber-600 hover:bg-amber-50"
+                data-testid="button-bulk-generate-empty"
+              >
+                <Wand2 className="w-5 h-5 mr-2" />
+                Générer tout mon planning
+              </Button>
+              <Button
+                onClick={() => {
+                  setModalTab('single');
+                  setShowAddModal(true);
+                }}
+                className="px-8 py-3 text-lg"
+                data-testid="button-add-first-slot"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Créer un créneau manuel
+              </Button>
+            </div>
           )}
         </Card>
       )}
