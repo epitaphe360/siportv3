@@ -71,10 +71,17 @@ export default function ExhibitorDashboard() {
     let timeoutId: NodeJS.Timeout;
 
     const checkMiniSiteStatus = async () => {
+      // 1. Basic checks
       if (!user?.id || user?.status !== 'active') return;
+      if (user?.type !== 'exhibitor' && user?.role !== 'exhibitor') return;
+      
+      // 2. Local storage check (immediate escape)
+      if (localStorage.getItem(`siports_minisite_skipped_${user.id}`) === 'true') {
+        return;
+      }
 
       try {
-        // 1. Get exhibitor ID for this user (some mini-sites use this instead of user_id)
+        // 3. Get exhibitor ID for this user
         const { data: exhibitor } = await supabase
           .from('exhibitors')
           .select('id')
@@ -83,7 +90,7 @@ export default function ExhibitorDashboard() {
 
         const exhibitorId = exhibitor?.id;
 
-        // 2. Check both the user flag AND if a mini-site actually exists in the database
+        // 4. Check both the user flag AND if a mini-site actually exists in the database
         const [userResult, miniSiteResult] = await Promise.all([
           supabase
             .from('users')
@@ -94,22 +101,33 @@ export default function ExhibitorDashboard() {
             .from('mini_sites')
             .select('id')
             .in('exhibitor_id', [user.id, exhibitorId].filter(Boolean) as string[])
-            .maybeSingle()
+            .limit(1)
         ]);
 
-        if (userResult.error) throw userResult.error;
-
-        // Show popup only if:
-        // 1. minisite_created flag is false AND
-        // 2. No mini-site exists in the mini_sites table (checked via user_id or exhibitor_id)
-        const hasMiniSiteInDB = !!miniSiteResult.data;
         const flagSaysCreated = !!userResult.data?.minisite_created;
+        const hasMiniSiteInDB = !!(miniSiteResult.data && miniSiteResult.data.length > 0);
 
-        if (isMounted && !flagSaysCreated && !hasMiniSiteInDB) {
+        // Debug log for troubleshooting if needed
+        console.log('[MiniSiteCheck]', { flagSaysCreated, hasMiniSiteInDB, exhibitorId });
+
+        // If site exists in DB or flag is already set, don't show modal
+        if (flagSaysCreated || hasMiniSiteInDB) {
+          if (hasMiniSiteInDB && !flagSaysCreated) {
+            // Auto-update flag if site exists but flag is missing
+            await supabase
+              .from('users')
+              .update({ minisite_created: true })
+              .eq('id', user.id);
+          }
+          return;
+        }
+
+        // Show popup only if truly no site found and flag is false
+        if (isMounted) {
           // Small delay so dashboard loads first
           timeoutId = setTimeout(() => {
             if (isMounted) setShowMiniSiteSetup(true);
-          }, 1500);
+          }, 2000);
         }
       } catch (err) {
         if (isMounted) console.error('Error checking minisite status:', err);

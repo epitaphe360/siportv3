@@ -99,6 +99,9 @@ export const MiniSiteSetupModal: React.FC<MiniSiteSetupModalProps> = ({
         .update(updateData)
         .eq('id', userId);
 
+      // Save to localStorage as a redundant safety measure
+      localStorage.setItem(`siports_minisite_skipped_${userId}`, 'true');
+
       // Create products if found
       if (scrapResult.data.products && scrapResult.data.products.length > 0) {
         // Resolve exhibitor ID first
@@ -168,6 +171,8 @@ export const MiniSiteSetupModal: React.FC<MiniSiteSetupModalProps> = ({
         .update({ minisite_created: true })
         .eq('id', userId);
 
+      localStorage.setItem(`siports_minisite_skipped_${userId}`, 'true');
+
       toast.success('Vous allez être redirigé vers l\'éditeur de mini-site');
       onClose();
 
@@ -191,11 +196,14 @@ export const MiniSiteSetupModal: React.FC<MiniSiteSetupModalProps> = ({
         .update({ minisite_created: true })
         .eq('id', userId);
 
+      localStorage.setItem(`siports_minisite_skipped_${userId}`, 'true');
+
       toast.success('Vous pourrez créer votre mini-site plus tard depuis votre tableau de bord');
       onClose();
     } catch (error) {
       console.error('Error marking minisite as skipped:', error);
       // Fermer quand même la popup même si l'update échoue
+      localStorage.setItem(`siports_minisite_skipped_${userId}`, 'true');
       onClose();
     }
   };
