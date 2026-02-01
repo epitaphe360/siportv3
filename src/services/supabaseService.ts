@@ -2707,6 +2707,13 @@ export class SupabaseService {
         return String(dateStr).split('T')[0];
       };
 
+      // Helper pour parser une date string en Date locale
+      const parseLocalDateToDate = (dateStr: string | Date): Date => {
+        if (dateStr instanceof Date) return dateStr;
+        const [year, month, day] = String(dateStr).split('T')[0].split('-').map(Number);
+        return new Date(year, month - 1, day);
+      };
+
       // Transform DB rows to TimeSlot interface (snake_case → camelCase)
       interface TimeSlotRow {
         id: string;
@@ -2731,7 +2738,7 @@ export class SupabaseService {
       const transformed = (data || []).map((row: TimeSlotRow) => ({
         id: row.id,
         userId: row.exhibitor_id || row.user_id,
-        date: parseLocalDate(row.slot_date || row.date),
+        date: parseLocalDateToDate(row.slot_date || row.date),
         startTime: row.start_time || row.startTime,
         endTime: row.end_time || row.endTime,
         duration: row.duration || 0,

@@ -54,6 +54,40 @@ export default function PublicAvailabilityCalendar({
     fetchTimeSlots();
   }, [userId]);
 
+  // Populate form when editing an existing slot
+  useEffect(() => {
+    if (selectedSlot) {
+      const formatDateForInput = (date: Date | string): string => {
+        let dateObj: Date;
+        if (date instanceof Date) {
+          dateObj = date;
+        } else if (typeof date === 'string' && date.includes('T')) {
+          dateObj = new Date(date);
+        } else if (typeof date === 'string') {
+          // YYYY-MM-DD format
+          return date;
+        } else {
+          dateObj = new Date();
+        }
+        
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
+
+      setNewSlot({
+        date: formatDateForInput(selectedSlot.date),
+        startTime: selectedSlot.startTime,
+        endTime: selectedSlot.endTime,
+        type: selectedSlot.type,
+        maxBookings: selectedSlot.maxBookings,
+        location: selectedSlot.location || '',
+        description: ''
+      });
+    }
+  }, [selectedSlot]);
+
   const fetchTimeSlots = async () => {
     setIsLoading(true);
     try {
@@ -114,19 +148,41 @@ export default function PublicAvailabilityCalendar({
       // peuvent recevoir simultanément au même stand
       // Pas de validation de chevauchement ou duplication
 
-      const newTimeSlot = await SupabaseService.createTimeSlot({
-        userId,
-        date: newSlot.date,
-        startTime: newSlot.startTime,
-        endTime: newSlot.endTime,
-        duration,
-        type: newSlot.type,
-        maxBookings: newSlot.maxBookings || 1, // Valeur par défaut
-        location: newSlot.location || undefined
-      });
+      let result;
+      
+      if (selectedSlot) {
+        // MODE MODIFICATION: Update existing slot
+        console.log('🔄 Modification du créneau:', selectedSlot.id);
+        result = await SupabaseService.updateTimeSlot(selectedSlot.id, {
+          date: newSlot.date,
+          startTime: newSlot.startTime,
+          endTime: newSlot.endTime,
+          duration,
+          type: newSlot.type,
+          maxBookings: newSlot.maxBookings || 1,
+          location: newSlot.location || undefined
+        });
+        
+        toast.success('✅ Créneau modifié avec succès');
+        setTimeSlots(prev => prev.map(s => s.id === selectedSlot.id ? result : s));
+      } else {
+        // MODE CRÉATION: Create new slot
+        console.log('➕ Création d\'un nouveau créneau');
+        result = await SupabaseService.createTimeSlot({
+          userId,
+          date: newSlot.date,
+          startTime: newSlot.startTime,
+          endTime: newSlot.endTime,
+          duration,
+          type: newSlot.type,
+          maxBookings: newSlot.maxBookings || 1, // Valeur par défaut
+          location: newSlot.location || undefined
+        });
 
-      toast.success('✅ Créneau ajouté avec succès');
-      setTimeSlots(prev => [...prev, newTimeSlot]);
+        toast.success('✅ Créneau ajouté avec succès');
+        setTimeSlots(prev => [...prev, result]);
+      }
+      
       resetForm();
       setShowAddModal(false);
     } catch (error: any) {
