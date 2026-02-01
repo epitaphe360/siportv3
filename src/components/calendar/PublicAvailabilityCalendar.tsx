@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import {
   Calendar, Plus, Users, MapPin, Video, Globe, Save, X,
-  Clock, Trash2, Edit, ChevronLeft, ChevronRight, Grid3x3, List
+  Clock, Trash2, Edit, ChevronLeft, ChevronRight, Grid3x3, List,
+  Lock, Unlock
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
@@ -11,6 +12,7 @@ import { toast } from 'sonner';
 import { SupabaseService } from '../../services/supabaseService';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getMinSlotDate, getMaxSlotDate } from '../../config/salonInfo';
+import { BulkSlotGenerator } from './BulkSlotGenerator';
 
 interface PublicAvailabilityCalendarProps {
   userId: string;
@@ -26,6 +28,7 @@ export default function PublicAvailabilityCalendar({
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [modalTab, setModalTab] = useState<'single' | 'bulk'>('single');
   const [selectedWeek, setSelectedWeek] = useState(new Date(`${getMinSlotDate()}T00:00:00`));
   const [viewMode, setViewMode] = useState<'week' | 'list'>('week');
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
@@ -156,6 +159,30 @@ export default function PublicAvailabilityCalendar({
       description: ''
     });
     setSelectedSlot(null);
+  };
+
+  const handleToggleSlotStatus = async (e: React.MouseEvent, slot: TimeSlot) => {
+    e.stopPropagation();
+    
+    const isFull = slot.currentBookings >= slot.maxBookings;
+    let newMax = slot.maxBookings;
+    
+    if (isFull) {
+        if (!confirm(`Le créneau est complet (${slot.currentBookings}/${slot.maxBookings}). Voulez-vous augmenter la capacité à ${slot.currentBookings + 1} pour le réouvrir ?`)) return;
+        newMax = slot.currentBookings + 1;
+    } else {
+        if (!confirm(`Voulez-vous fermer ce créneau ? (Capacité réduite à ${slot.currentBookings})`)) return;
+        newMax = slot.currentBookings;
+    }
+
+    try {
+        const updated = await SupabaseService.updateTimeSlot(slot.id, { maxBookings: newMax });
+        setTimeSlots(prev => prev.map(s => s.id === slot.id ? updated : s));
+        toast.success(isFull ? 'Créneau réouvert' : 'Créneau fermé temporairement');
+    } catch (error) {
+        console.error('Erreur toggle:', error);
+        toast.error('Erreur lors de la mise à jour du statut');
+    }
   };
 
   const handleDeleteSlot = async (slotId: string) => {
@@ -419,9 +446,10 @@ export default function PublicAvailabilityCalendar({
                           animate={{ opacity: 1, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.95 }}
                           className={`p-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer border-l-4 border-white overflow-hidden relative group/slot ${
-                            slot.type === 'virtual' ? 'bg-blue-600 text-white' : 
+                            slot.currentBookings >= slot.maxBookings ? 'bg-red-500 text-white' :
+                            (slot.type === 'virtual' ? 'bg-blue-600 text-white' : 
                             slot.type === 'in-person' ? 'bg-emerald-600 text-white' : 
-                            'bg-amber-500 text-white'
+                            'bg-amber-500 text-white')
                           }`}
                           onClick={() => {
                             setSelectedSlot(slot);
@@ -440,8 +468,8 @@ export default function PublicAvailabilityCalendar({
                                 {slot.startTime}
                               </span>
                             </div>
-                            <div className="px-2 py-1 bg-white/20 rounded-md text-[10px] font-black uppercase tracking-tighter">
-                              {slot.maxBookings - slot.currentBookings} Libres
+                            <div className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-tighter ${slot.currentBookings >= slot.maxBookings ? 'bg-white text-red-600' : 'bg-white/20 text-white'}`}>
+                              {slot.currentBookings >= slot.maxBookings ? 'COMPLET' : `${slot.maxBookings - slot.currentBookings} LIBRES`}
                             </div>
                           </div>
 
@@ -451,7 +479,14 @@ export default function PublicAvailabilityCalendar({
                           </div>
 
                           {isEditable && (
-                            <div className="flex items-center space-x-2 mt-3 pt-3 border-t border-white/10">
+                            <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-white/10">
+                              <button
+                                onClick={(e) => handleToggleSlotStatus(e, slot)}
+                                className="flex items-center justify-center space-x-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg py-1.5 px-3 text-[10px] font-bold transition-colors w-full uppercase tracking-widest"
+                              >
+                                {slot.currentBookings >= slot.maxBookings ? <Unlock className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
+                                <span>{slot.currentBookings >= slot.maxBookings ? 'Ouvrir' : 'Fermer'}</span>
+                              </button>
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -538,10 +573,11 @@ export default function PublicAvailabilityCalendar({
                     layout
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="group flex items-center justify-between p-5 bg-white border-2 border-gray-100 rounded-2xl hover:border-blue-500 hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-300"
+                    className={`group flex items-center justify-between p-5 bg-white border-2 rounded-2xl transition-all duration-300 ${slot.currentBookings >= slot.maxBookings ? 'border-red-200 bg-red-50' : 'border-gray-100 hover:border-blue-500 hover:shadow-2xl hover:shadow-blue-900/10'}`}
                   >
                     <div className="flex items-center space-x-6 flex-1">
                       <div className={`p-4 rounded-2xl shadow-lg transform group-hover:scale-110 transition-transform ${
+                        slot.currentBookings >= slot.maxBookings ? 'bg-red-500 text-white' :
                         slot.type === 'virtual' ? 'bg-blue-600 text-white' : 
                         slot.type === 'in-person' ? 'bg-emerald-600 text-white' : 
                         'bg-amber-500 text-white shadow-amber-100'
@@ -559,11 +595,12 @@ export default function PublicAvailabilityCalendar({
                             })}
                           </span>
                           <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                            slot.currentBookings >= slot.maxBookings ? 'border-red-200 text-red-600 bg-white' :
                             slot.type === 'virtual' ? 'border-blue-200 text-blue-600 bg-blue-50' : 
                             slot.type === 'in-person' ? 'border-emerald-200 text-emerald-600 bg-emerald-50' : 
                             'border-amber-200 text-amber-600 bg-amber-50'
                           }`}>
-                            {slot.type === 'virtual' ? 'Virtuel' : slot.type === 'in-person' ? 'Présentiel' : 'Hybride'}
+                            {slot.currentBookings >= slot.maxBookings ? 'COMPLET' : (slot.type === 'virtual' ? 'Virtuel' : slot.type === 'in-person' ? 'Présentiel' : 'Hybride')}
                           </span>
                         </div>
                         <div className="flex items-center space-x-6 text-sm text-gray-500 font-bold">
@@ -581,17 +618,35 @@ export default function PublicAvailabilityCalendar({
                       </div>
 
                       <div className="text-right pr-6 border-r-2 border-gray-50 mr-6">
-                        <div className="text-3xl font-black text-gray-900">
-                          {slot.maxBookings - slot.currentBookings}
-                        </div>
-                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
-                          places disponibles
-                        </div>
+                        {slot.currentBookings >= slot.maxBookings ? (
+                           <>
+                             <div className="text-xl font-black text-red-600">COMPLET</div>
+                             <div className="text-[10px] font-black text-red-400 uppercase tracking-widest leading-none">
+                               plus de place
+                             </div>
+                           </>
+                        ) : (
+                           <>
+                             <div className="text-3xl font-black text-gray-900">
+                               {slot.maxBookings - slot.currentBookings}
+                             </div>
+                             <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
+                               places disponibles
+                             </div>
+                           </>
+                        )}
                       </div>
                     </div>
 
                     {isEditable && (
                       <div className="flex flex-col space-y-2">
+                        <button
+                           onClick={(e) => handleToggleSlotStatus(e, slot)}
+                           className={`p-2.5 rounded-xl transition-all shadow-sm ${slot.currentBookings >= slot.maxBookings ? 'bg-red-100 text-red-600 hover:bg-red-600 hover:text-white' : 'bg-gray-50 text-gray-600 hover:bg-gray-600 hover:text-white'}`}
+                           title={slot.currentBookings >= slot.maxBookings ? 'Réouvrir' : 'Fermer le créneau'}
+                         >
+                            {slot.currentBookings >= slot.maxBookings ? <Unlock className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+                         </button>
                         <button
                           onClick={() => {
                             setSelectedSlot(slot);
@@ -671,7 +726,7 @@ export default function PublicAvailabilityCalendar({
                       <Calendar className="w-6 h-6" />
                     </div>
                     <h3 className="text-2xl font-bold">
-                      {selectedSlot ? 'Modifier le créneau' : 'Nouveau créneau'}
+                        {modalTab === 'bulk' ? 'Générateur de créneaux' : (selectedSlot ? 'Modifier le créneau' : 'Nouveau créneau')}
                     </h3>
                   </div>
                   <button
@@ -686,161 +741,174 @@ export default function PublicAvailabilityCalendar({
                 </div>
               </div>
 
+               {/* TABS FOR SINGLE VS BULK (Only show if creating new) */}
+               {!selectedSlot && (
+                  <div className="flex border-b border-gray-200">
+                      <button
+                          className={`flex-1 py-4 text-sm font-bold uppercase tracking-wide transition-colors ${modalTab === 'single' ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
+                          onClick={() => setModalTab('single')}
+                      >
+                          Créneau unique
+                      </button>
+                      <button
+                          className={`flex-1 py-4 text-sm font-bold uppercase tracking-wide transition-colors ${modalTab === 'bulk' ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
+                          onClick={() => setModalTab('bulk')}
+                      >
+                          Générateur (Masse)
+                      </button>
+                  </div>
+               )}
+
               {/* Body Modal */}
-              <div className="p-6 space-y-6">
-                {/* Date et Type */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      📅 Date du créneau *
-                    </label>
-                    <input
-                      type="date"
-                      value={newSlot.date}
-                      onChange={(e) => setNewSlot({ ...newSlot, date: e.target.value })}
-                      min={getMinSlotDate()}
-                      max={getMaxSlotDate()}
-                      className="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                      data-testid="input-slot-date"
-                    />
-                  </div>
+              <div className="p-6">
+                 {modalTab === 'single' || selectedSlot ? (
+                    <div className="space-y-6">
+                        {/* Date et Type */}
+                        <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            📅 Date du créneau *
+                            </label>
+                            <input
+                            type="date"
+                            value={newSlot.date}
+                            onChange={(e) => setNewSlot({ ...newSlot, date: e.target.value })}
+                            min={getMinSlotDate()}
+                            max={getMaxSlotDate()}
+                            className="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                            data-testid="input-slot-date"
+                            />
+                        </div>
 
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      📍 Type de rencontre *
-                    </label>
-                    <select
-                      value={newSlot.type}
-                      onChange={(e) => setNewSlot({ ...newSlot, type: e.target.value as any })}
-                      className="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                      data-testid="select-slot-type"
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            📍 Type de rencontre *
+                            </label>
+                            <select
+                            value={newSlot.type}
+                            onChange={(e) => setNewSlot({ ...newSlot, type: e.target.value as any })}
+                            className="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                            data-testid="select-slot-type"
+                            >
+                            <option value="in-person">🏢 Présentiel</option>
+                            <option value="virtual">💻 Virtuel</option>
+                            <option value="hybrid">🔄 Hybride</option>
+                            </select>
+                        </div>
+                        </div>
+
+                        {/* Horaires */}
+                        <div className="grid grid-cols-3 gap-4">
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            ⏰ Heure de début *
+                            </label>
+                            <input
+                            type="time"
+                            value={newSlot.startTime}
+                            onChange={(e) => setNewSlot({ ...newSlot, startTime: e.target.value })}
+                            className="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                            data-testid="input-start-time"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            ⏱️ Heure de fin *
+                            </label>
+                            <input
+                            type="time"
+                            value={newSlot.endTime}
+                            onChange={(e) => setNewSlot({ ...newSlot, endTime: e.target.value })}
+                            className="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                            data-testid="input-end-time"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            👥 Participants max *
+                            </label>
+                            <div className="flex items-center space-x-2">
+                                <Users className="w-5 h-5 text-gray-400" />
+                                <input
+                                    type="number"
+                                    min="1"
+                                    max="50"
+                                    value={newSlot.maxBookings}
+                                    onChange={(e) => setNewSlot({ ...newSlot, maxBookings: parseInt(e.target.value) || 1 })}
+                                    className="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                    data-testid="input-max-bookings"
+                                />
+                            </div>
+                        </div>
+                        </div>
+
+                        {/* Lieu et Description */}
+                         <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                🏛️ Lieu / Lien visioconférence
+                            </label>
+                            <input
+                                type="text"
+                                value={newSlot.location}
+                                onChange={(e) => setNewSlot({ ...newSlot, location: e.target.value })}
+                                placeholder="Stand A12, Salle B, https://meet.google.com/..."
+                                className="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                            />
+                             <p className="text-xs text-gray-500 mt-1">
+                                Pour les RDV virtuels, indiquez le lien de visioconférence
+                            </p>
+                         </div>
+
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                📝 Description (optionnel)
+                            </label>
+                            <textarea
+                                value={newSlot.description}
+                                onChange={(e) => setNewSlot({ ...newSlot, description: e.target.value })}
+                                placeholder="Sujet du rendez-vous, agenda, préparation nécessaire..."
+                                className="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                rows={4}
+                            />
+                        </div>
+                    </div>
+                 ) : (
+                    <BulkSlotGenerator userId={userId} onGenerate={fetchTimeSlots} onClose={() => setShowAddModal(false)} />
+                 )}
+              </div>
+
+               {/* Footer Action */}
+               {(modalTab === 'single' || selectedSlot) && (
+                <div className="p-6 border-t border-gray-100 bg-gray-50/50 rounded-b-2xl flex justify-end space-x-4">
+                    <Button
+                    variant="ghost"
+                    onClick={() => setShowAddModal(false)}
+                    className="px-6 py-3 text-lg"
                     >
-                      <option value="in-person">🏢 Présentiel</option>
-                      <option value="virtual">💻 Virtuel</option>
-                      <option value="hybrid">🔄 Hybride</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Horaires */}
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      ⏰ Heure de début *
-                    </label>
-                    <input
-                      type="time"
-                      value={newSlot.startTime}
-                      onChange={(e) => setNewSlot({ ...newSlot, startTime: e.target.value })}
-                      className="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                      data-testid="input-start-time"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      ⏱️ Heure de fin *
-                    </label>
-                    <input
-                      type="time"
-                      value={newSlot.endTime}
-                      onChange={(e) => setNewSlot({ ...newSlot, endTime: e.target.value })}
-                      className="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                      data-testid="input-end-time"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      👥 Participants max *
-                    </label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="50"
-                      value={newSlot.maxBookings || ''}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        // Gestion du NaN - utiliser une string vide si invalide
-                        setNewSlot({
-                          ...newSlot,
-                          maxBookings: value ? parseInt(value, 10) : 1
-                        });
-                      }}
-                      placeholder="5"
-                      className="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                      data-testid="input-max-bookings"
-                    />
-                  </div>
-                </div>
-
-                {/* Lieu */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    🏛️ Lieu / Lien visioconférence
-                  </label>
-                  <input
-                    type="text"
-                    value={newSlot.location}
-                    onChange={(e) => setNewSlot({ ...newSlot, location: e.target.value })}
-                    placeholder="Stand A12, Salle B, https://meet.google.com/..."
-                    className="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                    data-testid="input-location"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Pour les RDV virtuels, indiquez le lien de visioconférence
-                  </p>
-                </div>
-
-                {/* Description */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    📝 Description (optionnel)
-                  </label>
-                  <textarea
-                    value={newSlot.description}
-                    onChange={(e) => setNewSlot({ ...newSlot, description: e.target.value })}
-                    placeholder="Sujet du rendez-vous, agenda, préparation nécessaire..."
-                    rows={4}
-                    className="w-full p-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
-                    data-testid="textarea-description"
-                  />
-                </div>
-
-                {/* Actions */}
-                <div className="flex items-center space-x-3 pt-4 border-t">
-                  <Button
+                    Annuler
+                    </Button>
+                    <Button
                     onClick={handleAddTimeSlot}
-                    disabled={isLoading || !newSlot.date || !newSlot.startTime || !newSlot.endTime}
-                    className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 text-lg font-semibold"
+                    disabled={isLoading}
+                    className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold shadow-lg shadow-blue-500/30 transform hover:scale-105 transition-all"
                     data-testid="button-save-slot"
-                  >
+                    >
                     {isLoading ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                        <span className="flex items-center">
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
                         Enregistrement...
-                      </>
+                        </span>
                     ) : (
-                      <>
+                        <span className="flex items-center">
                         <Save className="w-5 h-5 mr-2" />
                         {selectedSlot ? 'Modifier' : 'Créer le créneau'}
-                      </>
+                        </span>
                     )}
-                  </Button>
-
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      setShowAddModal(false);
-                      resetForm();
-                    }}
-                    className="px-6 py-3 text-lg"
-                    data-testid="button-cancel-slot"
-                  >
-                    Annuler
-                  </Button>
+                    </Button>
                 </div>
-              </div>
+               )}
             </motion.div>
           </div>
         )}

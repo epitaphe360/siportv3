@@ -8,7 +8,7 @@ import {
   Users, Building2, Handshake, Eye, EyeOff, Crown, 
   Store, Warehouse, Factory, Ship,
   Trophy, Medal, Award, Landmark,
-  LogIn, Copy, ArrowRight, BarChart3
+  LogIn, Copy, ArrowRight, BarChart3, Shield
 } from 'lucide-react';
 
 interface DemoAccount {
@@ -29,7 +29,7 @@ export const DemoAccountsPage: React.FC = () => {
     visitors: [
       {
         email: 'visitor-free@test.siport.com',
-        password: 'Test123456!',
+        password: 'Test@123456',
         name: 'Visiteur Gratuit',
         description: 'Accès de base au salon',
         icon: Users,
@@ -37,7 +37,7 @@ export const DemoAccountsPage: React.FC = () => {
       },
       {
         email: 'visitor-vip@test.siport.com',
-        password: 'Test123456!',
+        password: 'Test@123456',
         name: 'Visiteur VIP',
         description: 'Accès premium avec badge numérique',
         icon: Crown,
@@ -48,7 +48,7 @@ export const DemoAccountsPage: React.FC = () => {
     exhibitors: [
       {
         email: 'exhibitor-9m@test.siport.com',
-        password: 'Test123456!',
+        password: 'Test@123456',
         name: 'TechMarine Solutions',
         description: 'Stand 9m² - Starter',
         icon: Store,
@@ -56,7 +56,7 @@ export const DemoAccountsPage: React.FC = () => {
       },
       {
         email: 'exhibitor-18m@test.siport.com',
-        password: 'Test123456!',
+        password: 'Test@123456',
         name: 'OceanLogistics Pro',
         description: 'Stand 18m² - Business',
         icon: Warehouse,
@@ -64,7 +64,7 @@ export const DemoAccountsPage: React.FC = () => {
       },
       {
         email: 'exhibitor-36m@test.siport.com',
-        password: 'Test123456!',
+        password: 'Test@123456',
         name: 'PortTech Industries',
         description: 'Stand 36m² - Premium',
         icon: Factory,
@@ -72,7 +72,7 @@ export const DemoAccountsPage: React.FC = () => {
       },
       {
         email: 'exhibitor-54m@test.siport.com',
-        password: 'Test123456!',
+        password: 'Test@123456',
         name: 'Global Shipping Alliance',
         description: 'Stand 54m² - Enterprise',
         icon: Ship,
@@ -82,8 +82,16 @@ export const DemoAccountsPage: React.FC = () => {
     
     partners: [
       {
+        email: 'demo.partner@siports.com',
+        password: 'Admin123!',
+        name: 'Demo Partner',
+        description: 'Partenaire Bronze - Compte de démonstration',
+        icon: Landmark,
+        color: 'amber'
+      },
+      {
         email: 'partner-museum@test.siport.com',
-        password: 'Test123456!',
+        password: 'Test@123456',
         name: 'Musée Maritime National',
         description: 'Partenaire institutionnel',
         icon: Landmark,
@@ -91,7 +99,7 @@ export const DemoAccountsPage: React.FC = () => {
       },
       {
         email: 'partner-silver@test.siport.com',
-        password: 'Test123456!',
+        password: 'Test@123456',
         name: 'Silver Maritime Services',
         description: 'Sponsor Silver',
         icon: Medal,
@@ -99,7 +107,7 @@ export const DemoAccountsPage: React.FC = () => {
       },
       {
         email: 'partner-gold@test.siport.com',
-        password: 'Test123456!',
+        password: 'Test@123456',
         name: 'Gold Shipping Corp',
         description: 'Sponsor Gold',
         icon: Award,
@@ -107,7 +115,7 @@ export const DemoAccountsPage: React.FC = () => {
       },
       {
         email: 'partner-platinum@test.siport.com',
-        password: 'Test123456!',
+        password: 'Test@123456',
         name: 'platinum Port Authority',
         description: 'Sponsor platinum',
         icon: Trophy,
@@ -118,11 +126,22 @@ export const DemoAccountsPage: React.FC = () => {
     marketing: [
       {
         email: 'marketing@siports.com',
-        password: 'Test123456!',
+        password: 'Test@123456',
         name: 'Agence Marketing',
         description: 'Accès au tableau de bord marketing',
         icon: BarChart3,
         color: 'pink'
+      }
+    ] as DemoAccount[],
+    
+    admin: [
+      {
+        email: 'admin@siports.com',
+        password: 'Admin123!',
+        name: 'Administrateur',
+        description: 'Accès complet à toutes les fonctionnalités',
+        icon: Shield,
+        color: 'red'
       }
     ] as DemoAccount[]
   };
@@ -145,6 +164,8 @@ export const DemoAccountsPage: React.FC = () => {
         navigate('/partner/dashboard');
       } else if (email.includes('marketing')) {
         navigate('/marketing/dashboard');
+      } else if (email.includes('admin')) {
+        navigate('/admin/dashboard');
       }
     } catch (error: any) {
       toast.error(error.message || 'Erreur de connexion');
@@ -239,7 +260,7 @@ export const DemoAccountsPage: React.FC = () => {
             <div className="flex items-center space-x-2">
               <span className="text-sm font-medium text-gray-700">Mot de passe universel:</span>
               <code className="px-3 py-1 bg-gray-100 rounded font-mono text-sm font-semibold text-blue-600">
-                {showPassword ? 'Test123456!' : '••••••••'}
+                {showPassword ? 'Test@123456' : '••••••••'}
               </code>
               <button
                 onClick={() => setShowPassword(!showPassword)}
@@ -248,7 +269,7 @@ export const DemoAccountsPage: React.FC = () => {
                 {showPassword ? <EyeOff className="h-5 w-5 text-gray-600" /> : <Eye className="h-5 w-5 text-gray-600" />}
               </button>
               <button
-                onClick={() => copyToClipboard('Test123456!', 'Mot de passe')}
+                onClick={() => copyToClipboard('Test@123456', 'Mot de passe')}
                 className="p-2 hover:bg-gray-100 rounded-full transition"
               >
                 <Copy className="h-5 w-5 text-gray-600" />
@@ -318,6 +339,22 @@ export const DemoAccountsPage: React.FC = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {demoAccounts.marketing.map(renderAccountCard)}
+          </div>
+        </section>
+
+        {/* Admin Section */}
+        <section className="mb-12">
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="p-3 bg-red-100 rounded-lg">
+              <Shield className="h-6 w-6 text-red-600" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">⚙️ Administrateur</h2>
+              <p className="text-gray-600">Accès complet à toutes les fonctionnalités de la plateforme</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {demoAccounts.admin.map(renderAccountCard)}
           </div>
         </section>
 

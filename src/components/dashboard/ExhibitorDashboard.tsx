@@ -74,16 +74,29 @@ export default function ExhibitorDashboard() {
       if (!user?.id || user?.status !== 'active') return;
 
       try {
-        const { data, error } = await supabase
-          .from('users')
-          .select('minisite_created')
-          .eq('id', user.id)
-          .maybeSingle();
+        // Check both the user flag AND if a mini-site actually exists in the database
+        const [userResult, miniSiteResult] = await Promise.all([
+          supabase
+            .from('users')
+            .select('minisite_created')
+            .eq('id', user.id)
+            .maybeSingle(),
+          supabase
+            .from('mini_sites')
+            .select('id')
+            .eq('exhibitor_id', user.id)
+            .maybeSingle()
+        ]);
 
-        if (error) throw error;
+        if (userResult.error) throw userResult.error;
 
-        // Show popup if mini-site not created yet
-        if (isMounted && !data?.minisite_created) {
+        // Show popup only if:
+        // 1. minisite_created flag is false AND
+        // 2. No mini-site exists in the mini_sites table
+        const hasMiniSiteInDB = !!miniSiteResult.data;
+        const flagSaysCreated = !!userResult.data?.minisite_created;
+
+        if (isMounted && !flagSaysCreated && !hasMiniSiteInDB) {
           // Small delay so dashboard loads first
           timeoutId = setTimeout(() => {
             if (isMounted) setShowMiniSiteSetup(true);

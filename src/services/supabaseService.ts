@@ -494,7 +494,7 @@ export class SupabaseService {
           };
 
           return {
-            id: profile.id,
+            id: profile.user_id || profile.id, // Utiliser user_id car c'est la clé dans mini_sites
             userId: profile.user_id,
             companyName: profile.company_name || 'Exposant sans nom',
             category: (profile.category || 'port-industry') as ExhibitorCategory,
@@ -2019,16 +2019,65 @@ export class SupabaseService {
 
     const safeSupabase = supabase!;
     try {
-      // Chercher par exhibitor_id dans la table exhibitors
-      const { data, error } = await safeSupabase
+      // 1. Chercher d'abord dans la table exhibitors par ID
+      const { data: exhibitorData, error: exhibitorError } = await safeSupabase
         .from('exhibitors')
         .select('id, company_name, logo_url, description, website, contact_info')
         .eq('id', exhibitorId)
         .maybeSingle();
 
-      if (error) throw error;
+      if (exhibitorData) {
+        console.log('[MiniSite] Exposant trouvé dans exhibitors:', exhibitorData.company_name);
+        return exhibitorData;
+      }
 
-      return data;
+      // 2. Fallback: chercher dans exhibitor_profiles par user_id (structure legacy)
+      console.log('[MiniSite] Pas trouvé dans exhibitors, recherche dans exhibitor_profiles...');
+      const { data: profileData, error: profileError } = await safeSupabase
+        .from('exhibitor_profiles')
+        .select('user_id, company_name, logo_url, description, website, phone, email')
+        .eq('user_id', exhibitorId)
+        .maybeSingle();
+
+      if (profileData) {
+        console.log('[MiniSite] Exposant trouvé dans exhibitor_profiles:', profileData.company_name);
+        // Mapper les champs pour correspondre à la structure attendue
+        return {
+          id: profileData.user_id,
+          company_name: profileData.company_name,
+          logo_url: profileData.logo_url,
+          description: profileData.description,
+          website: profileData.website,
+          contact_info: {
+            phone: profileData.phone,
+            email: profileData.email
+          }
+        };
+      }
+
+      // 3. Fallback: chercher dans users si c'est un exposant
+      console.log('[MiniSite] Pas trouvé dans exhibitor_profiles, recherche dans users...');
+      const { data: userData } = await safeSupabase
+        .from('users')
+        .select('id, name, email')
+        .eq('id', exhibitorId)
+        .eq('type', 'exhibitor')
+        .maybeSingle();
+
+      if (userData) {
+        console.log('[MiniSite] Exposant basique trouvé dans users:', userData.name);
+        return {
+          id: userData.id,
+          company_name: userData.name || 'Exposant',
+          logo_url: null,
+          description: null,
+          website: null,
+          contact_info: { email: userData.email }
+        };
+      }
+
+      console.warn('[MiniSite] Aucun exposant trouvé pour ID:', exhibitorId);
+      return null;
     } catch (error) {
       console.error('Erreur récupération exposant pour mini-site:', error);
       return null;
@@ -2711,6 +2760,87 @@ export class SupabaseService {
     return this.getTimeSlotsByExhibitor(userId);
   }
 
+
+  static async createTimeSlotsBulk(slotsData: Omit<TimeSlot, 'id' | 'currentBookings' | 'available'>[]): Promise<TimeSlot[]> {
+     if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+    const safeSupabase = supabase!;
+
+    if (slotsData.length === 0) return [];
+
+    try {
+        console.log(`[BULK_CREATE] Processing ${slotsData.length} slots...`);
+
+        // Résoudre l'exhibitor_id (on suppose que tous les slots sont pour le même user)
+        let resolvedExhibitorId: string | null = null;
+        let userId = (slotsData[0] as any).userId;
+
+        if (userId) {
+             const { data: exhibitor } = await safeSupabase
+                .from('exhibitors')
+                .select('id')
+                .eq('user_id', userId)
+                .maybeSingle();
+            
+            if (exhibitor) {
+                resolvedExhibitorId = exhibitor.id;
+            } else {
+                 console.warn('[BULK_CREATE] Exhibitor not found for user, creating one...');
+                  // Fallback creation logic similar to createTimeSlot
+                 const { data: user } = await safeSupabase.from('users').select('name').eq('id', userId).single();
+                  const { data: newExhibitor } = await safeSupabase
+                    .from('exhibitors')
+                    .insert({ user_id: userId, company_name: user?.name || 'Exposant', category: 'institutional', sector: 'General', description: 'Auto-created' })
+                    .select('id')
+                    .single();
+                  if (newExhibitor) resolvedExhibitorId = newExhibitor.id;
+            }
+        }
+
+        if (!resolvedExhibitorId) throw new Error('Failed to resolve exhibitor ID');
+
+        // Préparer les données DB
+        const dbSlots = slotsData.map(slot => ({
+            exhibitor_id: resolvedExhibitorId,
+            slot_date: (slot as any).date,
+            start_time: slot.startTime,
+            end_time: slot.endTime,
+            duration: slot.duration,
+            type: slot.type,
+            max_bookings: slot.maxBookings,
+            available: true,
+            location: slot.location
+        }));
+
+        // Batch insert
+        const { data, error } = await safeSupabase
+            .from('time_slots')
+            .insert(dbSlots)
+            .select();
+
+        if (error) throw error;
+        
+        console.log(`[BULK_CREATE] Successfully created ${data?.length} slots`);
+        
+        return data.map((dbSlot: any) => ({
+            id: dbSlot.id,
+            exhibitorId: dbSlot.exhibitor_id,
+            date: dbSlot.slot_date,
+            startTime: dbSlot.start_time,
+            endTime: dbSlot.end_time,
+            duration: dbSlot.duration,
+            type: dbSlot.type,
+            maxBookings: dbSlot.max_bookings,
+            currentBookings: dbSlot.current_bookings,
+            available: dbSlot.available,
+            location: dbSlot.location
+        }));
+
+    } catch (error) {
+        console.error('❌ Erreur createTimeSlotsBulk:', error);
+        throw error;
+    }
+  }
+
   static async createTimeSlot(slotData: Omit<TimeSlot, 'id' | 'currentBookings' | 'available'>): Promise<TimeSlot> {
     if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
     const safeSupabase = supabase!;
@@ -2887,6 +3017,54 @@ export class SupabaseService {
       }
       throw error;
     }
+  }
+
+  static async updateTimeSlot(slotId: string, updateData: Partial<TimeSlot>): Promise<TimeSlot> {
+    if (!this.checkSupabaseConnection()) throw new Error('Supabase not connected');
+    const safeSupabase = supabase!;
+    
+    const updates: Record<string, any> = {};
+    if (updateData.date) {
+        const d = new Date(updateData.date);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        updates.slot_date = `${year}-${month}-${day}`;
+    }
+    if (updateData.startTime) updates.start_time = updateData.startTime;
+    if (updateData.endTime) updates.end_time = updateData.endTime;
+    if (updateData.maxBookings !== undefined) updates.max_bookings = updateData.maxBookings;
+    if (updateData.type) updates.type = updateData.type;
+    if (updateData.location !== undefined) updates.location = updateData.location;
+    
+    const { data, error } = await safeSupabase
+      .from('time_slots')
+      .update(updates)
+      .eq('id', slotId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    
+    const parseLocalDateString = (dateStr: string | Date): Date => {
+        if (dateStr instanceof Date) return dateStr;
+        const [year, month, day] = String(dateStr).split('T')[0].split('-').map(Number);
+        return new Date(year, month - 1, day);
+    };
+
+    return {
+       id: data.id,
+       userId: data.exhibitor_id,
+       date: parseLocalDateString(data.slot_date),
+       startTime: data.start_time,
+       endTime: data.end_time,
+       duration: data.duration,
+       type: data.type,
+       maxBookings: data.max_bookings,
+       currentBookings: data.current_bookings,
+       available: data.current_bookings < data.max_bookings,
+       location: data.location
+    } as TimeSlot;
   }
 
   static async deleteTimeSlot(slotId: string): Promise<void> {
