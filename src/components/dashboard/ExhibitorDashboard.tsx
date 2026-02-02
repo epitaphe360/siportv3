@@ -97,11 +97,13 @@ export default function ExhibitorDashboard() {
             .select('minisite_created')
             .eq('id', user.id)
             .maybeSingle(),
-          supabase
-            .from('mini_sites')
-            .select('id')
-            .in('exhibitor_id', [user.id, exhibitorId].filter(Boolean) as string[])
-            .limit(1)
+          exhibitorId
+            ? supabase
+                .from('mini_sites')
+                .select('id')
+                .eq('exhibitor_id', exhibitorId)
+                .limit(1)
+            : Promise.resolve({ data: null })
         ]);
 
         const flagSaysCreated = !!userResult.data?.minisite_created;
