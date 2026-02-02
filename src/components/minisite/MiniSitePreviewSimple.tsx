@@ -241,50 +241,22 @@ export default function MiniSitePreviewSimple() {
   const contactInfo = exhibitorData.contact_info || {};
   const socialLinks = contactInfo.social || {};
 
+  // Fonction de scroll avec offset pour le header sticky
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const headerOffset = 80; // Hauteur du header sticky
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: theme.fontFamily }}>
-      
-      {/* ═══════════════════════════════════════════════════════════════════ */}
-      {/* HEADER FLOTTANT */}
-      {/* ═══════════════════════════════════════════════════════════════════ */}
-      <div className="fixed top-0 left-0 right-0 z-50 p-4">
-        <div className="max-w-6xl mx-auto bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg px-6 py-3">
-          <div className="flex items-center justify-between">
-            <Button variant="ghost" size="sm" onClick={() => navigate(ROUTES.EXHIBITORS)}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Retour
-            </Button>
-            
-            <div className="flex items-center gap-3">
-              <SafeImage 
-                src={exhibitorData.logo_url} 
-                alt={exhibitorData.company_name}
-                className="h-8 w-8 rounded-lg object-contain bg-gray-100"
-                fallback={<div className="h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center"><Building2 className="h-5 w-5 text-gray-400" /></div>}
-              />
-              <span className="font-semibold hidden md:inline">{exhibitorData.company_name}</span>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-500 hidden sm:flex items-center gap-1">
-                <Eye className="h-4 w-4" />
-                {miniSiteData.views}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href)
-                    .then(() => toast.success('Lien copié !'))
-                    .catch(() => toast.error('Impossible de copier'));
-                }}
-              >
-                <Share2 className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {/* BARRE DE NAVIGATION STICKY */}
@@ -312,28 +284,28 @@ export default function MiniSitePreviewSimple() {
             {/* Navigation Links */}
             <div className="hidden md:flex items-center gap-8">
               <button
-                onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                🏠 Vue d'ensemble
+              </button>
+              <button
+                onClick={() => scrollToSection('products')}
                 className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
               >
                 📦 Produits
               </button>
               <button
-                onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => scrollToSection('about')}
                 className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
               >
                 ℹ️ À propos
               </button>
               <button
-                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => scrollToSection('contact')}
                 className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
               >
                 💬 Contact
-              </button>
-              <button
-                onClick={() => navigate(ROUTES.EXHIBITORS)}
-                className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
-              >
-                🌐 Mini-site
               </button>
             </div>
 
@@ -442,7 +414,7 @@ export default function MiniSitePreviewSimple() {
               size="lg"
               className="text-lg px-8 py-6 rounded-xl"
               style={{ backgroundColor: theme.accentColor }}
-              onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => scrollToSection('products')}
             >
               {heroSection?.content?.ctaText || 'Découvrir nos solutions'}
             </Button>
@@ -450,7 +422,7 @@ export default function MiniSitePreviewSimple() {
               size="lg"
               variant="outline"
               className="text-lg px-8 py-6 rounded-xl bg-white/10 border-white/30 text-white hover:bg-white/20"
-              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => scrollToSection('contact')}
             >
               <MessageCircle className="h-5 w-5 mr-2" />
               Nous contacter
@@ -463,7 +435,7 @@ export default function MiniSitePreviewSimple() {
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/60 cursor-pointer"
-          onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+          onClick={() => scrollToSection('about')}
         >
           <ChevronDown className="h-8 w-8" />
         </motion.div>
@@ -798,7 +770,7 @@ export default function MiniSitePreviewSimple() {
                 <Button
                   size="lg"
                   className="rounded-xl px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
-                  onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
+                  onClick={() => scrollToSection('contact')}
                 >
                   <MessageCircle className="h-5 w-5 mr-2" />
                   Contactez-nous
@@ -974,9 +946,7 @@ export default function MiniSitePreviewSimple() {
             product={selectedProduct}
             theme={theme}
             onClose={() => setSelectedProduct(null)}
-            onContactClick={() => {
-              document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
-            }}
+            onContactClick={() => scrollToSection('contact')}
           />
         )}
       </AnimatePresence>

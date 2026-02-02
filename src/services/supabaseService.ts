@@ -1827,27 +1827,50 @@ export class SupabaseService {
         .eq('exhibitor_id', exhibitorId)
         .maybeSingle();
 
-      // Si pas trouvé, l'ID est peut-être l'exhibitor.id, donc chercher le user_id associé
+      // Si pas trouvé, l'ID pourrait être:
+      // 1. L'exhibitor.id - donc chercher le user_id associé pour trouver le mini-site
+      // 2. Le user_id - donc chercher l'exhibitor.id pour trouver le mini-site
       if (!data) {
         console.log('[MiniSite] Pas trouvé par exhibitor_id direct, recherche via exhibitors table...');
 
-        // Chercher l'exhibitor pour obtenir son user_id
-        const { data: exhibitor } = await safeSupabase
+        // Stratégie 1: L'ID fourni est exhibitors.id, chercher son user_id
+        const { data: exhibitorById } = await safeSupabase
           .from('exhibitors')
-          .select('user_id')
+          .select('id, user_id')
           .eq('id', exhibitorId)
           .maybeSingle();
 
-        if (exhibitor?.user_id) {
+        if (exhibitorById?.user_id) {
           // Chercher le mini-site avec le user_id de l'exposant
           const result = await safeSupabase
             .from('mini_sites')
             .select('*')
-            .eq('exhibitor_id', exhibitor.user_id)
+            .eq('exhibitor_id', exhibitorById.user_id)
             .maybeSingle();
 
           data = result.data;
           error = result.error;
+        }
+
+        // Stratégie 2: L'ID fourni est le user_id, chercher l'exhibitor.id correspondant
+        if (!data) {
+          const { data: exhibitorByUserId } = await safeSupabase
+            .from('exhibitors')
+            .select('id, user_id')
+            .eq('user_id', exhibitorId)
+            .maybeSingle();
+
+          if (exhibitorByUserId?.id) {
+            // Chercher le mini-site avec l'exhibitor.id
+            const result = await safeSupabase
+              .from('mini_sites')
+              .select('*')
+              .eq('exhibitor_id', exhibitorByUserId.id)
+              .maybeSingle();
+
+            data = result.data;
+            error = result.error;
+          }
         }
       }
 

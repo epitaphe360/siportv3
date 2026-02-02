@@ -18,7 +18,9 @@ import {
   Mail,
   Phone,
   CheckCircle,
-  Send
+  Send,
+  Package,
+  Settings
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
@@ -334,132 +336,159 @@ export default function ExhibitorDetailPage() {
         </div>
       </section>
 
-      {/* Products Section */}
-      <section id="produits" className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Products Section - Design Amélioré */}
+      <section id="produits" className="py-20 bg-gradient-to-br from-slate-50 via-white to-blue-50/30 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-100/40 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-indigo-100/30 to-transparent rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-center mb-16"
           >
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Nos Produits & Services
+            <Badge className="mb-4 bg-blue-100 text-blue-700 border-blue-200">
+              <Package className="h-4 w-4 mr-2" />
+              Nos Solutions
+            </Badge>
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent mb-4">
+              Produits & Services
             </h2>
-            <p className="text-lg text-gray-600">
-              Découvrez notre gamme complète de solutions portuaires innovantes
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Découvrez notre gamme de solutions innovantes pour l'industrie maritime et portuaire
             </p>
           </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {exhibitor.products.map((product, index) => (
               <motion.div
                 key={product.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
+                className="group"
               >
-                <Card hover className="h-full">
-                  {product.images?.[0] && (
-                    <img
-                      src={product.images[0]}
-                      alt={product.name}
-                      className="w-full h-48 object-cover rounded-t-lg"
-                    />
-                  )}
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-3">
-                      <Badge variant="info" size="sm">
+                <Card className="h-full bg-white/80 backdrop-blur-sm border border-gray-100 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden">
+                  {/* Image avec overlay gradient */}
+                  <div className="relative h-52 overflow-hidden">
+                    {product.images?.[0] ? (
+                      <img
+                        src={product.images[0]}
+                        alt={product.name}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                        <Package className="h-16 w-16 text-white/50" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    {/* Badges en haut */}
+                    <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
+                      <Badge className="bg-white/95 text-blue-700 shadow-lg backdrop-blur-sm">
                         {product.category}
                       </Badge>
                       {product.featured && (
-                        <Badge variant="warning" size="sm">
-                          <Star className="h-3 w-3 mr-1" />
+                        <Badge className="bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-lg">
+                          <Star className="h-3 w-3 mr-1 fill-current" />
                           Vedette
                         </Badge>
                       )}
                     </div>
-                    
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                  </div>
+                  
+                  {/* Contenu */}
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
                       {product.name}
                     </h3>
                     
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-gray-600 mb-5 line-clamp-3 leading-relaxed">
                       {product.description}
                     </p>
                     
+                    {/* Spécifications avec icône */}
                     {product.specifications && (
-                      <div className="mb-4">
-                        <h4 className="font-medium text-gray-900 mb-2">Spécifications :</h4>
-                        <p className="text-sm text-gray-600">{product.specifications}</p>
+                      <div className="mb-5 p-3 bg-gray-50 rounded-xl border border-gray-100">
+                        <div className="flex items-start gap-2">
+                          <Settings className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                          <p className="text-sm text-gray-600 line-clamp-2">{product.specifications}</p>
+                        </div>
                       </div>
                     )}
                     
-                    <div className="flex space-x-3">
-                      <Button size="sm" className="flex-1"
+                    {/* Actions */}
+                    <div className="flex gap-3 pt-2">
+                      <Button 
+                        size="sm" 
+                        className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md hover:shadow-lg transition-all"
                         onClick={() => {
-                          // Rediriger vers la section contact avec le produit sélectionné
                           const contactSection = document.getElementById('contact');
                           if (contactSection) {
                             contactSection.scrollIntoView({ behavior: 'smooth' });
-                            
-                            // Préremplir le formulaire avec les données du produit
                             setTimeout(() => {
-                              const subjectField = document.querySelector('select[name="subject"]') as HTMLSelectElement;
                               const messageField = document.querySelector('textarea[name="message"]') as HTMLTextAreaElement;
-                              
-                              if (subjectField) {
-                                subjectField.value = 'quote';
-                              }
-                              
                               if (messageField) {
-                                messageField.value = `Demande de devis pour : ${product.name}\n\nCatégorie : ${product.category}\nSpécifications : ${product.specifications || 'À définir'}\n\nMerci de me faire parvenir un devis détaillé pour ce produit.`;
+                                messageField.value = `Demande de devis pour : ${product.name}\n\nCatégorie : ${product.category}\nSpécifications : ${product.specifications || 'À définir'}\n\nMerci de me faire parvenir un devis détaillé.`;
                               }
-                              
-                              // Mettre en évidence les champs
-                              subjectField?.focus();
                             }, 500);
                           }
                         }}
                       >
                         <Target className="h-4 w-4 mr-2" />
-                        Demander un devis
+                        Devis
                       </Button>
-                      <Button variant="outline" size="sm"
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="hover:bg-blue-50 hover:border-blue-300 transition-all"
                         onClick={() => {
-                          const docData = {
-                            product: product.name,
-                            type: 'Fiche technique PDF',
-                            size: '1.2 MB'
-                          };
-                          
-                          // Simulation téléchargement
-                          const link = document.createElement('a');
-                          link.href = 'data:application/pdf;base64,JVBERi0xLjQKJdPr6eEK';
-                          link.download = `fiche-${docData.product.toLowerCase().replace(/\s+/g, '-')}.pdf`;
-                          document.body.appendChild(link);
-                          link.click();
-                          document.body.removeChild(link);
-                          
-                          toast('📄 Téléchargement de la fiche technique en cours...', { icon: '📄' });
+                          toast.success('📄 Téléchargement de la fiche technique...');
                         }}
                       >
                         <Download className="h-4 w-4" />
                       </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="hover:bg-green-50 hover:border-green-300 hover:text-green-600 transition-all"
+                        onClick={handleAppointmentClick}
+                      >
+                        <Calendar className="h-4 w-4" />
+                      </Button>
                     </div>
-                    <Button
-                      size="sm"
-                      onClick={handleAppointmentClick}
-                    >
-                      <Calendar className="h-4 w-4 mr-1" />
-                      RDV
-                    </Button>
                   </div>
                 </Card>
               </motion.div>
             ))}
           </div>
+          
+          {/* CTA en bas de section */}
+          {exhibitor.products.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mt-12 text-center"
+            >
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 text-blue-700"
+                onClick={() => {
+                  const contactSection = document.getElementById('contact');
+                  contactSection?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
+                <MessageCircle className="h-5 w-5 mr-2" />
+                Contactez-nous pour plus d'informations
+              </Button>
+            </motion.div>
+          )}
         </div>
       </section>
 
