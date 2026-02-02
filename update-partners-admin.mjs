@@ -15,7 +15,7 @@ const enrichedData = {
     contact_info: { email: 'contact@goldpartner.com', phone: '+212 5 22 12 34 56' },
     certifications: ['ISO 9001', 'ISO 14001'],
     key_figures: { ceo: 'Ahmed Bennani', headquarters: 'Casablanca' },
-    logo_url: 'https://gpitzcyyfecxqvjdvkbp.supabase.co/storage/v1/object/public/assets/partners/gold-partner.png'
+    logo_url: 'https://eqjoqgpbxhsfgcovipgu.supabase.co/storage/v1/object/public/assets/partners/gold-partner.png'
   },
   'Silver Tech Group': {
     partner_type: 'Sponsor Gold',
@@ -28,7 +28,7 @@ const enrichedData = {
     contact_info: { email: 'tech@silvertech.com', phone: '+212 5 22 54 32 10' },
     certifications: ['ISO 27001', 'SOC 2'],
     key_figures: { ceo: 'Karim El Idrissi', headquarters: 'Rabat' },
-    logo_url: 'https://gpitzcyyfecxqvjdvkbp.supabase.co/storage/v1/object/public/assets/partners/silver-tech.png'
+    logo_url: 'https://eqjoqgpbxhsfgcovipgu.supabase.co/storage/v1/object/public/assets/partners/silver-tech.png'
   },
   'Platinium Global Corp': {
     partner_type: 'Sponsor Platine',
@@ -41,7 +41,7 @@ const enrichedData = {
     contact_info: { email: 'logistics@platinum.com', phone: '+212 5 22 98 76 54' },
     certifications: ['ISO 9001', 'CSSF'],
     key_figures: { ceo: 'Fatima Bennani', headquarters: 'Casablanca' },
-    logo_url: 'https://gpitzcyyfecxqvjdvkbp.supabase.co/storage/v1/object/public/assets/partners/platinum-global.png'
+    logo_url: 'https://eqjoqgpbxhsfgcovipgu.supabase.co/storage/v1/object/public/assets/partners/platinum-global.png'
   },
   'PortTech Solutions': {
     partner_type: 'Sponsor Argent',
@@ -54,7 +54,7 @@ const enrichedData = {
     contact_info: { email: 'solutions@porttech.ma', phone: '+212 5 22 34 12 90' },
     certifications: ['ISO 27001'],
     key_figures: { ceo: 'Mohamed Cheddadi', headquarters: 'Fez' },
-    logo_url: 'https://gpitzcyyfecxqvjdvkbp.supabase.co/storage/v1/object/public/assets/partners/porttech.png'
+    logo_url: 'https://eqjoqgpbxhsfgcovipgu.supabase.co/storage/v1/object/public/assets/partners/porttech.png'
   },
   'EcoMarine Solutions': {
     partner_type: 'Sponsor Bronze',
@@ -67,7 +67,7 @@ const enrichedData = {
     contact_info: { email: 'eco@ecomarine.ma', phone: '+212 5 22 12 34 78' },
     certifications: ['ISO 14001', 'EMAS'],
     key_figures: { ceo: 'Youssef Mansouri', headquarters: 'Tanger' },
-    logo_url: 'https://gpitzcyyfecxqvjdvkbp.supabase.co/storage/v1/object/public/assets/partners/ecomarine.png'
+    logo_url: 'https://eqjoqgpbxhsfgcovipgu.supabase.co/storage/v1/object/public/assets/partners/ecomarine.png'
   },
   'Maritime Tech Innovations': {
     partner_type: 'Partenaire Technologie',
@@ -80,7 +80,7 @@ const enrichedData = {
     contact_info: { email: 'innovation@martech.ma', phone: '+212 5 22 56 78 90' },
     certifications: ['ISO 9001'],
     key_figures: { ceo: 'Dr. Leila Amrani', headquarters: 'Casablanca' },
-    logo_url: 'https://gpitzcyyfecxqvjdvkbp.supabase.co/storage/v1/object/public/assets/partners/martech-innovation.png'
+    logo_url: 'https://eqjoqgpbxhsfgcovipgu.supabase.co/storage/v1/object/public/assets/partners/martech-innovation.png'
   },
   'Tanger Med Logistics': {
     partner_type: 'Partenaire Stratégique',
@@ -93,7 +93,7 @@ const enrichedData = {
     contact_info: { email: 'ops@tangermed.ma', phone: '+212 5 39 34 56 78' },
     certifications: ['ISO 9001', 'OHSAS 18001'],
     key_figures: { ceo: 'Hassan Al Houari', headquarters: 'Tanger' },
-    logo_url: 'https://gpitzcyyfecxqvjdvkbp.supabase.co/storage/v1/object/public/assets/partners/tangmed-logistics.png'
+    logo_url: 'https://eqjoqgpbxhsfgcovipgu.supabase.co/storage/v1/object/public/assets/partners/tangmed-logistics.png'
   },
   'Global Trade Finance Corp': {
     partner_type: 'Partenaire Financier',
@@ -106,7 +106,7 @@ const enrichedData = {
     contact_info: { email: 'finance@globaltrade.ma', phone: '+212 5 22 78 90 12' },
     certifications: ['ISO 27001'],
     key_figures: { ceo: 'Samira Rachid', headquarters: 'Casablanca' },
-    logo_url: 'https://gpitzcyyfecxqvjdvkbp.supabase.co/storage/v1/object/public/assets/partners/globaltrade.png'
+    logo_url: 'https://eqjoqgpbxhsfgcovipgu.supabase.co/storage/v1/object/public/assets/partners/globaltrade.png'
   }
 };
 

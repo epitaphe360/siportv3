@@ -147,9 +147,9 @@ interface MiniSiteFieldData {
   theme?: string;
   custom_colors?: Record<string, string>;
   sections?: MiniSiteSection[];
-  published?: boolean;
-  views?: number;
-  last_updated?: string;
+  is_published?: boolean;
+  view_count?: number;
+  updated_at?: string;
 }
 
 interface EventDB {
@@ -443,7 +443,7 @@ export class SupabaseService {
           stand_number,
           stand_area,
           contact_info,
-          mini_site:mini_sites(theme, custom_colors, sections, published, views, last_updated),
+          mini_site:mini_sites(theme, custom_colors, sections, is_published, view_count, updated_at),
           products(id, exhibitor_id, name, description, category, images, specifications, price, featured)
         `)
         .order('company_name', { ascending: true });
@@ -940,9 +940,9 @@ export class SupabaseService {
       theme: miniSiteData.theme || 'default',
       customColors: miniSiteData.custom_colors || {},
       sections: miniSiteData.sections || [],
-      published: miniSiteData.published || false,
-      views: miniSiteData.views || 0,
-      lastUpdated: new Date(miniSiteData.last_updated || Date.now())
+      published: miniSiteData.is_published || false,
+      views: miniSiteData.view_count || 0,
+      lastUpdated: new Date(miniSiteData.updated_at || Date.now())
     } : null;
 
     return {
@@ -1855,6 +1855,34 @@ export class SupabaseService {
         if (error) {
           console.warn('[MiniSite] Erreur:', error.message);
         }
+        
+        // FALLBACK: Si l'exposant existe mais n'a pas de mini-site dans la table 'mini_sites',
+        // on retourne une structure par défaut pour éviter l'erreur 404/406.
+        // On vérifie d'abord si l'ID correspond à un exposant valide.
+        const { data: exhibitorCheck } = await safeSupabase
+          .from('exhibitors')
+          .select('id, user_id, company_name')
+          .or(`id.eq.${exhibitorId},user_id.eq.${exhibitorId}`)
+          .maybeSingle();
+          
+        if (exhibitorCheck) {
+             console.log('[MiniSite] Exposant trouvé sans mini-site (Custom). Génération structure par défaut.');
+             return {
+                id: `default-${exhibitorCheck.id}`,
+                exhibitor_id: exhibitorCheck.user_id, // L'ID attendu par le frontend pour les produits, etc.
+                published: true, // On force à true pour que la page s'affiche
+                views: 0,
+                last_updated: new Date().toISOString(),
+                theme: {
+                    primaryColor: '#1e40af',
+                    secondaryColor: '#3b82f6',
+                    accentColor: '#60a5fa',
+                    fontFamily: 'Inter'
+                },
+                sections: [] // Pas de sections custom, le frontend utilisera les infos de base
+             };
+        }
+
         return null;
       }
 
@@ -1924,7 +1952,7 @@ export class SupabaseService {
         .from('exhibitors')
         .select('id')
         .eq('user_id', exhibitorId)
-        .single();
+        .maybeSingle();
 
       if (exhibitorError || !exhibitorData) {
         return [];
@@ -2020,8 +2048,8 @@ export class SupabaseService {
       // Récupérer tous les mini-sites publiés avec les infos des exposants
       const { data: minisites, error: minisitesError } = await safeSupabase
         .from('mini_sites')
-        .select('id, exhibitor_id, theme, view_count, published')
-        .eq('published', true);
+        .select('id, exhibitor_id, theme, view_count, is_published, updated_at')
+        .eq('is_published', true);
 
       if (minisitesError) throw minisitesError;
 
@@ -2033,7 +2061,7 @@ export class SupabaseService {
       const exhibitorIds = minisites.map(ms => ms.exhibitor_id);
       const { data: exhibitors, error: exhibitorsError } = await safeSupabase
         .from('exhibitors')
-        .select('id, user_id, company_name, logo_url, category, sector')
+        .select('id, user_id, company_name, logo_url, description, category, sector')
         .or(exhibitorIds.map(id => `user_id.eq.${id},id.eq.${id}`).join(','));
 
       if (exhibitorsError) {
@@ -2050,11 +2078,13 @@ export class SupabaseService {
           id: ms.id,
           exhibitor_id: ms.exhibitor_id,
           company_name: exhibitor?.company_name || 'Exposant',
+          description: exhibitor?.description,
           category: exhibitor?.category || 'Non spécifié',
           sector: exhibitor?.sector || 'Non spécifié',
           theme: ms.theme || 'modern',
           views: ms.view_count || 0,
-          logo_url: exhibitor?.logo_url
+          logo_url: exhibitor?.logo_url,
+          last_updated: ms.updated_at
         };
       });
 
@@ -2127,7 +2157,20 @@ export class SupabaseService {
         };
       }
 
-      console.warn('[MiniSite] Aucun exposant trouvé pour ID:', exhibitorId);
+      // 4. DERNIER FALLBACK: Vérifier via exhibitors.user_id au lieu de exhibitors.id
+      console.log('[MiniSite] Pas trouvé via ID, recherche via user_id dans exhibitors...');
+      const { data: exhibitorByUserId } = await safeSupabase
+        .from('exhibitors')
+        .select('id, user_id, company_name, logo_url, description, website, contact_info')
+        .eq('user_id', exhibitorId)
+        .maybeSingle();
+
+      if (exhibitorByUserId) {
+        console.log('[MiniSite] ✅ Exposant trouvé via user_id:', exhibitorByUserId.company_name);
+        return exhibitorByUserId;
+      }
+
+      console.warn('[MiniSite] ❌ AUCUN exposant trouvé pour ID:', exhibitorId);
       return null;
     } catch (error) {
       console.error('Erreur récupération exposant pour mini-site:', error);
@@ -2727,6 +2770,8 @@ export class SupabaseService {
 
       // Si pas de résultats, vérifier si c'est un user_id et essayer de résoudre l'exhibitor_id
       if (!error && (!data || data.length === 0)) {
+        // IMPORTANT: Use maybeSingle() here to avoid 406 Not Acceptable errors (PGRST116)
+        // when valid UUID is passed but no exhibitor matches.
         const { data: exhibitor } = await safeSupabase
           .from('exhibitors')
           .select('id')

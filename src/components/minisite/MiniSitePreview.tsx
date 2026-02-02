@@ -139,32 +139,64 @@ export default function MiniSitePreview({ exhibitorId: propExhibitorId, exhibito
   }, [exhibitorId]);
 
   const loadMiniSiteData = async () => {
-    if (!exhibitorId) return;
+    if (!exhibitorId) {
+      console.warn('[MiniSite] No exhibitorId provided');
+      return;
+    }
 
     setIsLoading(true);
     setError(null);
+    console.log(`[MiniSite] Loading data for exhibitor: ${exhibitorId}`);
 
     try {
       // Charger le mini-site
       const miniSite = await SupabaseService.getMiniSite(exhibitorId);
+      console.log('[MiniSite] Received site data:', miniSite);
       
+      // IMPORTANT: On ne bloque plus si miniSite est null - on génère un fallback
       if (!miniSite) {
-        setError('Ce mini-site n\'existe pas ou n\'est pas encore publié.');
-        setIsLoading(false);
-        return;
+        console.warn(`[MiniSite] Site not found for ID: ${exhibitorId}, generating default structure`);
+        // Créer une structure mini-site par défaut au lieu de bloquer
+        setMiniSiteData({
+          id: `default-${exhibitorId}`,
+          exhibitor_id: exhibitorId,
+          theme: {
+            primaryColor: '#1e40af',
+            secondaryColor: '#3b82f6',
+            accentColor: '#60a5fa',
+            fontFamily: 'Inter'
+          },
+          sections: [],
+          published: true,
+          views: 0,
+          last_updated: new Date().toISOString()
+        });
+      } else {
+        setMiniSiteData(miniSite);
       }
-
-      setMiniSiteData(miniSite);
 
       // Charger les informations de l'exposant
       const exhibitor = await SupabaseService.getExhibitorForMiniSite(exhibitorId);
+      console.log('[MiniSite] Received exhibitor data:', exhibitor);
       
       if (exhibitor) {
         setExhibitorData(exhibitor);
+      } else {
+        console.warn(`[MiniSite] Exhibitor profile not found for ID: ${exhibitorId}, using fallback`);
+        // Créer des données exposant par défaut
+        setExhibitorData({
+          id: exhibitorId,
+          company_name: 'Exposant SIPORTS',
+          logo_url: undefined,
+          description: 'Découvrez notre stand lors du salon SIPORTS 2026',
+          website: undefined,
+          contact_info: {}
+        });
       }
 
       // Charger les produits
       const exhibitorProducts = await SupabaseService.getExhibitorProducts(exhibitorId);
+      console.log('[MiniSite] Received products:', exhibitorProducts?.length);
       setProducts(exhibitorProducts);
 
       // Incrémenter le compteur de vues
@@ -172,7 +204,11 @@ export default function MiniSitePreview({ exhibitorId: propExhibitorId, exhibito
 
     } catch (err: any) {
       console.error('Erreur lors du chargement du mini-site:', err);
-      setError('Erreur lors du chargement du mini-site.');
+      // Log more details about the error
+      if (err instanceof Error) {
+        console.error('Error details:', err.message, err.stack);
+      }
+      setError(`Erreur lors du chargement du mini-site: ${err?.message || 'Erreur inconnue'}`);
     } finally {
       setIsLoading(false);
     }
@@ -206,8 +242,8 @@ export default function MiniSitePreview({ exhibitorId: propExhibitorId, exhibito
     );
   }
 
-  // Error state - Beautiful error page
-  if (error || !miniSiteData || !exhibitorData) {
+  // Error state - Seulement si erreur explicite ET pas de données du tout
+  if (error && !miniSiteData && !exhibitorData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 via-white to-orange-50 p-4">
         <motion.div

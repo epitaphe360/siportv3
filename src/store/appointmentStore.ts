@@ -471,10 +471,11 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
       // 🔐 SÉCURITÉ: Vérification de quota côté serveur (protection contre bypass côté client)
       // La vérification sera faite dans la fonction RPC book_appointment_atomic
-      // On garde juste une vérification légère côté client pour UX (feedback rapide)
       const { supabase } = await import('../lib/supabase');
 
-      // Vérification rapide côté client (pour UX seulement, pas de sécurité)
+      // OPTIMISATION: On saute la vérification RPC préalable pour éviter les faux positifs dues aux caches ou logiques divergentes.
+      // On laisse book_appointment_atomic faire l'autorité finale.
+      /*
       const { data: quotaData, error: quotaError } = await supabase.rpc('check_b2b_quota_available', {
         p_user_id: visitorId
       });
@@ -496,6 +497,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
           );
         }
       }
+      */
 
       // Prevent duplicate booking of the same time slot by the same visitor (UX seulement)
       if (appointments.some(a => a.visitorId === visitorId && a.timeSlotId === timeSlotId)) {

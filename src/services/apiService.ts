@@ -28,7 +28,7 @@ const SAFE_COLUMNS: Record<AllowedTable, string> = {
   'events': 'id, title, description, type, event_date, start_time, end_time, location, capacity, registered, category, virtual, featured, meeting_link, tags',
   'news_articles': 'id, title, content, excerpt, author, tags, featured_image, published, published_at, views',
   'partners': 'id, company_name, partner_type, description, logo_url, website, sector, verified, featured, contact_info',
-  'mini_sites': 'id, exhibitor_id, theme, custom_colors, sections, published, views, last_updated',
+  'mini_sites': 'id, exhibitor_id, theme, custom_colors, sections, is_published, view_count, updated_at',
   'users': 'id, email, name, type, visitor_level, status, created_at, updated_at',
   'activities': 'id, user_id, activity_type, description, related_entity_type, related_entity_id, is_public, created_at',
   'analytics': 'id, user_id, event_type, event_data, session_id, created_at',

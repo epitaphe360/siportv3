@@ -138,8 +138,22 @@ export default function MiniSitePreviewSimple() {
         return;
       }
 
+      // Si l'exposant n'est pas trouvé, créer une structure minimale pour éviter l'erreur
+      if (!exhibitor) {
+        console.warn('[MiniSite] Exhibitor data missing, using fallback');
+        setExhibitorData({
+          id: exhibitorId!,
+          company_name: 'Exposant',
+          logo_url: null,
+          description: 'Informations en cours de mise à jour',
+          website: null,
+          contact_info: {}
+        });
+      } else {
+        setExhibitorData(exhibitor);
+      }
+
       setMiniSiteData(miniSite);
-      setExhibitorData(exhibitor);
       setProducts(prods || []);
       
       await SupabaseService.incrementMiniSiteViews(exhibitorId);
@@ -163,8 +177,8 @@ export default function MiniSitePreviewSimple() {
     );
   }
 
-  // Error - Mini-site non trouvé
-  if (error || !miniSiteData || !exhibitorData) {
+  // Error - Mini-site non trouvé (On accepte maintenant exhibitorData null si miniSiteData existe)
+  if (error || !miniSiteData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
         <Card className="max-w-lg w-full p-8 text-center shadow-xl border-0">

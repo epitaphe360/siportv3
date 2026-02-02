@@ -30,37 +30,20 @@ export default function MiniSiteListPage() {
   const loadMiniSites = async () => {
     setIsLoading(true);
     try {
-      // Récupérer tous les mini-sites publiés avec les infos des exposants
-      const { data, error } = await (SupabaseService as any).supabase
-        .from('mini_sites')
-        .select(`
-          id,
-          exhibitor_id,
-          views,
-          published,
-          last_updated,
-          exhibitors!inner (
-            company_name,
-            logo_url,
-            description
-          )
-        `)
-        .eq('published', true)
-        .order('views', { ascending: false })
-        .range(0, 49);
+      const { data, error } = await SupabaseService.getPublishedMiniSites();
 
       if (error) throw error;
 
-      const formattedData = data?.map((item: any) => ({
+      const formattedData = (data || []).map((item: any) => ({
         id: item.id,
         exhibitor_id: item.exhibitor_id,
-        company_name: item.exhibitors?.company_name || 'Exposant',
-        logo_url: item.exhibitors?.logo_url,
-        description: item.exhibitors?.description,
+        company_name: item.company_name || 'Exposant',
+        logo_url: item.logo_url,
+        description: item.description,
         views: item.views || 0,
-        published: item.published,
-        last_updated: item.last_updated
-      })) || [];
+        published: true,
+        last_updated: item.last_updated || new Date().toISOString()
+      }));
 
       setMiniSites(formattedData);
     } catch (error) {

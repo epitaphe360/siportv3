@@ -109,7 +109,7 @@ export class AdminMetricsService {
         runCount('events', client.from('events').select('id', { count: 'exact', head: true })),
         runCount('pendingValidations', client.from('registration_requests').select('id', { count: 'exact', head: true }).eq('status', 'pending')),
         runCount('activeContracts', client.from('partners').select('id', { count: 'exact', head: true }).eq('verified', true)),
-        runCount('contentModerations', client.from('mini_sites').select('id', { count: 'exact', head: true }).eq('published', false)),
+        runCount('contentModerations', client.from('mini_sites').select('id', { count: 'exact', head: true }).eq('is_published', false)),
         runCount('connections', client.from('connections').select('id', { count: 'exact', head: true })),
         runCount('appointments', client.from('appointments').select('id', { count: 'exact', head: true })),
         runCount('messages', client.from('messages').select('id', { count: 'exact', head: true })),
@@ -194,7 +194,7 @@ export class AdminMetricsService {
     const client = (supabase as any);
     if (!client) return defaultMetrics.contentModerations;
     try {
-      const res = await client.from('mini_sites').select('id', { count: 'exact', head: true }).eq('published', false);
+      const res = await client.from('mini_sites').select('id', { count: 'exact', head: true }).eq('is_published', false);
       return (res && typeof res.count === 'number') ? res.count : defaultMetrics.contentModerations;
     } catch (err) {
       console.error('AdminMetricsService.getContentModerations error', err);

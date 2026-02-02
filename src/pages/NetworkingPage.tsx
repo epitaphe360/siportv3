@@ -200,6 +200,7 @@ export default function NetworkingPage() {
   }, [showAppointmentModal, selectedExhibitorForRDV?.id, fetchTimeSlots]);
 
   const handleConfirmAppointment = async () => {
+    console.log('[NetworkingPage] handleConfirmAppointment started', { selectedExhibitorForRDV, selectedTimeSlot });
     if (!selectedExhibitorForRDV) {
       toast.error('Aucun exposant sélectionné');
       return;

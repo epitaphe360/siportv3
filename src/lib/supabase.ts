@@ -141,9 +141,9 @@ export type Database = {
           theme: string;
           custom_colors: Record<string, unknown>;
           sections: Record<string, unknown>[];
-          published: boolean;
-          views: number;
-          last_updated: string;
+          is_published: boolean;
+          view_count: number;
+          updated_at: string;
           created_at: string;
         };
         Insert: {
@@ -152,9 +152,9 @@ export type Database = {
           theme: string;
           custom_colors?: Record<string, unknown>;
           sections?: Record<string, unknown>[];
-          published?: boolean;
-          views?: number;
-          last_updated?: string;
+          is_published?: boolean;
+          view_count?: number;
+          updated_at?: string;
           created_at?: string;
         };
         Update: {
@@ -163,9 +163,9 @@ export type Database = {
           theme?: string;
           custom_colors?: Record<string, unknown>;
           sections?: Record<string, unknown>[];
-          published?: boolean;
-          views?: number;
-          last_updated?: string;
+          is_published?: boolean;
+          view_count?: number;
+          updated_at?: string;
           created_at?: string;
         };
       };

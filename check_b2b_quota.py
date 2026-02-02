@@ -1,8 +1,10 @@
 
 import os
 import json
-import requests
+import uuid
 import sys
+# Standard library imports only to ensure it runs everywhere
+from urllib import request, parse, error
 
 # Configuration
 SUPABASE_URL = "https://eqjoqgpbxhsfgcovipgu.supabase.co"
@@ -16,101 +18,106 @@ HEADERS = {
     "Prefer": "return=representation"
 }
 
+def make_request(url, method='GET', data=None, headers=None):
+    if headers is None:
+        headers = {}
+    
+    req = request.Request(url, method=method)
+    for k, v in headers.items():
+        req.add_header(k, v)
+        
+    if data:
+        json_data = json.dumps(data).encode('utf-8')
+        req.data = json_data
+        # Ensure Content-Type is set if not already
+        if 'Content-Type' not in headers:
+            req.add_header('Content-Type', 'application/json')
+
+    try:
+        with request.urlopen(req) as r:
+            content = r.read().decode('utf-8')
+            if content:
+                return json.loads(content)
+            return None
+    except error.HTTPError as e:
+        print(f"HTTP Error {e.code}: {e.reason}")
+        error_content = e.read().decode('utf-8')
+        print(error_content)
+        return None
+    except Exception as e:
+        print(f"Request Error: {e}")
+        return None
+
 def main():
-
-    log_file = open("quota_verification_result.txt", "w", encoding="utf-8")
-
-    def log_print(*args, **kwargs):
-        print(*args, **kwargs)
-        print(*args, file=log_file, **kwargs)
-
-    log_print("Initializing Supabase check (using requests)...")
-
-    log_print("Searching for user 'Exposant 18m Test'...")
+    print("Initializing Supabase check (using urllib)...")
+    print("Searching for user 'Exposant 18m Test'...")
     user_id = None
     
-    # 1. Search in public.users (via REST)
-    # Filter by some fields if possible using query params or fetch all
-    # To filter by text search in Supabase PostgREST:
-    # column=ilike.*pattern*
-    
-    # We'll try to fetch all first as there shouldn't be too many for this test
+    # 1. Search in public.users
     try:
         url = f"{SUPABASE_URL}/rest/v1/users?select=*"
-        response = requests.get(url, headers=HEADERS)
+        users = make_request(url, headers=HEADERS)
         
-        if response.status_code == 200:
-            users = response.json()
-            log_print(f"Found {len(users)} users in public.users table.")
+        if users:
+            print(f"Found {len(users)} users in public.users table.")
             for user in users:
                 full_name = user.get('full_name', '') or user.get('name', '') or \
                            (str(user.get('first_name') or '') + ' ' + str(user.get('last_name') or '')).strip()
                 
-                log_print(f"Checking user: {full_name} (ID: {user.get('id')})")
+                print(f"Checking user: {full_name} (ID: {user.get('id')})")
                 
                 if "Exposant 18m Test" in full_name:
-                    log_print(f"MATCH FOUND in public.users: {full_name}")
+                    print(f"MATCH FOUND in public.users: {full_name}")
                     user_id = user.get('id')
                     break
         else:
-            log_print(f"Error querying public.users: {response.status_code} {response.text}")
-
+            print("No users returned from public.users or error occurred.")
     except Exception as e:
-        log_print(f"Exception querying public.users: {e}")
+        print(f"Exception querying public.users: {e}")
 
-    # 2. If not found, try auth.users (via Admin API / GoTrue API)
-    # Supabase Admin API endpoint: /auth/v1/admin/users
+    # 2. If not found, try auth.users
     if not user_id:
-        log_print("Searching in auth.users via Admin API...")
+        print("Searching in auth.users via Admin API...")
         try:
             url = f"{SUPABASE_URL}/auth/v1/admin/users"
-            response = requests.get(url, headers=HEADERS)
+            response_data = make_request(url, headers=HEADERS)
             
-            if response.status_code == 200:
-                data = response.json()
-                users = data.get('users', [])
-                log_print(f"Found {len(users)} users in auth.users.")
+            if response_data:
+                users = response_data.get('users', [])
+                print(f"Found {len(users)} users in auth.users.")
                 
                 for user in users:
                     meta = user.get('user_metadata', {})
                     full_name = meta.get('full_name', '') or meta.get('name', '')
                     email = user.get('email', '')
                     
-                    log_print(f"Checking Auth User: {email} | Name: {full_name}")
+                    print(f"Checking Auth User: {email} | Name: {full_name}")
                     
-                    if "Exposant 18m Test" in full_name or "Exposant 18m Test" in email: # Broad check
-                        log_print(f"MATCH FOUND in auth.users: {email}")
+                    if "Exposant 18m Test" in full_name or "Exposant 18m Test" in email: 
+                        print(f"MATCH FOUND in auth.users: {email}")
                         user_id = user.get('id')
                         break
-            else:
-                 log_print(f"Error querying auth admin: {response.status_code} {response.text}")
-
         except Exception as e:
-            log_print(f"Exception querying auth admin: {e}")
+            print(f"Exception querying auth admin: {e}")
 
     # 3. Call RPC
     if user_id:
-        log_print(f"User ID found: {user_id}")
-        log_print("Calling rpc 'check_b2b_quota_available'...")
+        print(f"User ID found: {user_id}")
+        print("Calling rpc 'check_b2b_quota_available'...")
         
         try:
             url = f"{SUPABASE_URL}/rest/v1/rpc/check_b2b_quota_available"
             payload = {'p_user_id': user_id}
             
-            response = requests.post(url, headers=HEADERS, json=payload)
+            result = make_request(url, method='POST', data=payload, headers=HEADERS)
             
-            if response.status_code == 200:
-                log_print("RPC Result:")
-                log_print(json.dumps(response.json(), indent=2))
-            else:
-                log_print(f"RPC Error: {response.status_code} {response.text}")
+            print("RPC Result:")
+            print(json.dumps(result, indent=2))
                 
         except Exception as e:
-            log_print(f"Error calling RPC: {e}")
+            print(f"Error calling RPC: {e}")
     else:
-        log_print("User 'Exposant 18m Test' not found.")
-    
-    log_file.close()
+        print("User 'Exposant 18m Test' not found.")
 
 if __name__ == "__main__":
     main()
