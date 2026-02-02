@@ -510,7 +510,21 @@ export default function PublicAvailabilityCalendar({
                   {/* Créneaux du jour */}
                   <div className="p-4 space-y-3 flex-1 min-h-[300px] bg-gradient-to-b from-transparent to-gray-50/50 pb-20">
                     <AnimatePresence mode="popLayout">
-                      {daySlots.map((slot) => (
+                      {daySlots.map((slot, index) => {
+                        // Palette de couleurs variées pour chaque créneau
+                        const colorPalette = [
+                          'from-blue-500 to-blue-600',
+                          'from-green-500 to-green-600',
+                          'from-purple-500 to-purple-600',
+                          'from-orange-500 to-orange-600',
+                          'from-pink-500 to-pink-600',
+                          'from-cyan-500 to-cyan-600',
+                          'from-indigo-500 to-indigo-600',
+                          'from-teal-500 to-teal-600',
+                        ];
+                        const colorGradient = colorPalette[index % colorPalette.length];
+                        
+                        return (
                         <motion.div
                           key={slot.id}
                           layout
@@ -518,10 +532,8 @@ export default function PublicAvailabilityCalendar({
                           animate={{ opacity: 1, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.95 }}
                           className={`p-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer border-l-4 border-white overflow-hidden relative group/slot ${
-                            slot.currentBookings >= slot.maxBookings ? 'bg-red-500 text-white' :
-                            (slot.type === 'virtual' ? 'bg-blue-600 text-white' : 
-                            slot.type === 'in-person' ? 'bg-emerald-600 text-white' : 
-                            'bg-amber-500 text-white')
+                            slot.currentBookings >= slot.maxBookings ? 'bg-gradient-to-br from-red-500 to-red-600 text-white' :
+                            `bg-gradient-to-br ${colorGradient} text-white`
                           }`}
                           onClick={() => {
                             setSelectedSlot(slot);
@@ -572,7 +584,8 @@ export default function PublicAvailabilityCalendar({
                             </div>
                           )}
                         </motion.div>
-                      ))}
+                        );
+                      })}
                     </AnimatePresence>
 
                     {/* Message si aucun créneau */}
