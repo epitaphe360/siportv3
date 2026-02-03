@@ -5,6 +5,7 @@ import { supabase as supabaseClient, isSupabaseReady } from '../lib/supabase';
 import { generateDemoTimeSlots } from '../config/demoTimeSlots';
 import { emailTemplateService } from '../services/emailTemplateService';
 import logger from '../utils/logger';
+import useAuthStore from './authStore';
 
 // 🔒 Protection contre les race conditions: Promise singleton pour booking
 let bookingPromise: Promise<void> | null = null;
@@ -453,25 +454,21 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       set({ isBooking: true });
 
     try {
-      // Récupérer l'utilisateur connecté via import dynamique
-      let resolvedUser: any = null;
-      try {
-        const mod = await import('../store/authStore');
-        resolvedUser = mod?.default?.getState ? mod.default.getState().user : null;
-      } catch {
-        resolvedUser = null;
-      }
+      // Récupérer l'utilisateur connecté directement du store
+      const resolvedUser = useAuthStore.getState().user;
 
       // CRITICAL: User must be authenticated
       if (!resolvedUser?.id) {
+        logger.error('User not authenticated during appointment booking', { user: resolvedUser });
         throw new Error('Vous devez être connecté pour réserver un rendez-vous.');
       }
 
       const visitorId = resolvedUser.id;
+      logger.info('[appointmentStore] User authenticated for booking', { visitorId });
 
       // 🔐 SÉCURITÉ: Vérification de quota côté serveur (protection contre bypass côté client)
       // La vérification sera faite dans la fonction RPC book_appointment_atomic
-      const { supabase } = await import('../lib/supabase');
+      const supabase = supabaseClient;
 
       // OPTIMISATION: On saute la vérification RPC préalable pour éviter les faux positifs dues aux caches ou logiques divergentes.
       // On laisse book_appointment_atomic faire l'autorité finale.
@@ -585,21 +582,16 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
     if (!appointment) return;
 
-    // Get authenticated user via import dynamique
-    let resolvedUser: any = null;
-    try {
-      const mod = await import('../store/authStore');
-      resolvedUser = mod?.default?.getState ? mod.default.getState().user : null;
-    } catch {
-      resolvedUser = null;
-    }
+    // Get authenticated user directly from store
+    const resolvedUser = useAuthStore.getState().user;
 
     if (!resolvedUser?.id) {
+      logger.error('User not authenticated during appointment cancellation', { user: resolvedUser });
       throw new Error('Vous devez être connecté pour annuler un rendez-vous.');
     }
 
     // ATOMIC CANCEL: Use RPC function with proper slot management
-    const { supabase } = await import('../lib/supabase');
+    const supabase = supabaseClient;
 
     const { data, error } = await supabase.rpc('cancel_appointment_atomic', {
       p_appointment_id: appointmentId,

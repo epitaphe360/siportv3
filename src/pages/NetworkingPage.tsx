@@ -245,6 +245,7 @@ export default function NetworkingPage() {
     // Try to call the canonical booking flow
     appointmentStore.bookAppointment(selectedTimeSlot, appointmentMessage)
       .then(() => {
+        console.log('[NetworkingPage] Appointment booking succeeded');
         toast.success(`Demande de RDV envoyée à ${getDisplayName(selectedExhibitorForRDV)}`);
         setShowAppointmentModal(false);
         setSelectedExhibitorForRDV(null);
@@ -252,8 +253,10 @@ export default function NetworkingPage() {
         setAppointmentMessage('');
       })
       .catch((err: unknown) => {
-        console.error('Booking failed', err);
-        toast.error(err?.message || 'Échec de la réservation');
+        console.error('Booking failed:', err);
+        const errorMessage = err instanceof Error ? err.message : String(err) || 'Échec de la réservation';
+        console.log('[NetworkingPage] Error message:', errorMessage);
+        toast.error(errorMessage);
       });
   };
 
