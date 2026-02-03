@@ -523,26 +523,36 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     // ATOMIC BOOKING: Use RPC function with row-level locking
     // This prevents ALL race conditions and overbooking
     // Note: supabase already imported at line 438
+    logger.info('[appointmentStore] Calling book_appointment_atomic RPC', { timeSlotId, visitorId, exhibitorIdForSlot });
 
     const { data, error } = await supabase.rpc('book_appointment_atomic', {
       p_time_slot_id: timeSlotId,
       p_visitor_id: visitorId,
       p_exhibitor_id: exhibitorIdForSlot,
-      p_notes: message || null
+      p_message: message || null
     });
 
+    logger.info('[appointmentStore] RPC response', { data, error });
+
     if (error) {
+      logger.error('[appointmentStore] RPC error', { error });
       throw new Error(error.message || 'Erreur lors de la réservation');
     }
 
-    if (!data || !data.success) {
-      throw new Error(data?.error || 'Erreur lors de la réservation');
+    // La fonction RPC retourne un tableau avec un seul élément
+    const result = Array.isArray(data) ? data[0] : data;
+    
+    if (!result || !result.success) {
+      logger.error('[appointmentStore] Booking failed', { result });
+      throw new Error(result?.error_message || 'Erreur lors de la réservation');
     }
+
+    logger.info('[appointmentStore] Booking successful', { appointmentId: result.appointment_id });
 
     // Success! Update local state with server data
     // STATUS: 'pending' - Le RDV est en attente de confirmation par l'exposant/partenaire
     const newAppointment: Appointment = {
-      id: data.appointment_id,
+      id: result.appointment_id,
       exhibitorId: exhibitorIdForSlot,
       visitorId,
       timeSlotId,
@@ -552,11 +562,11 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       meetingType: 'in-person'
     };
 
-    // Update time slot with server data
+    // Update time slot with server data (le RPC ne retourne pas ces données, on incrémente localement)
     const updatedSlots = timeSlots.map(s => s.id === timeSlotId ? {
       ...s,
-      currentBookings: data.current_bookings,
-      available: data.available
+      currentBookings: (s.currentBookings || 0) + 1,
+      available: ((s.currentBookings || 0) + 1) < (s.maxBookings || 1)
     } : s);
 
     set({
