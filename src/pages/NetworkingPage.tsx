@@ -204,20 +204,24 @@ export default function NetworkingPage() {
 
   const handleConfirmAppointment = async () => {
     // DEBUG: Alert pour confirmer que le clic est capturé
+    alert('BOUTON CLIQUÉ! Regardez la console F12');
     console.log('🚨🚨🚨 BUTTON CLICKED! 🚨🚨🚨');
     console.log('[NetworkingPage] handleConfirmAppointment started', { selectedExhibitorForRDV, selectedTimeSlot });
     
     if (!selectedExhibitorForRDV) {
       console.log('❌ No exhibitor selected');
+      alert('Erreur: Aucun exposant sélectionné');
       toast.error('Aucun exposant sélectionné');
       return;
     }
     if (!selectedTimeSlot) {
       console.log('❌ No time slot selected');
+      alert('Erreur: Aucun créneau sélectionné - selectedTimeSlot = ' + selectedTimeSlot);
       toast.error('Veuillez sélectionner un créneau horaire');
       return;
     }
     
+    alert('Validation OK! selectedTimeSlot = ' + selectedTimeSlot);
     console.log('✅ Validation passed, proceeding with booking...');
     
     // Quotas B2B selon visitor_level OU type d'utilisateur - utilise le système centralisé
