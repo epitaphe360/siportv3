@@ -290,13 +290,15 @@ export class SupabaseService {
             .from('exhibitors')
             .select('id, user_id, company_name, category, sector, description, logo_url, website, verified, featured, stand_number, stand_area, contact_info, created_at, updated_at')
             .eq('user_id', userData.id)
-            .single();
+            .maybeSingle();
           
           if (!exhibitorError && exhibitorResult) {
             exhibitorData = exhibitorResult;
+          } else if (exhibitorError) {
+            console.warn('⚠️ Erreur lors de la récupération des données exposant:', exhibitorError.message);
           }
         } catch (e) {
-          console.warn('⚠️ Erreur lors de la récupération des données exposant:', e);
+          console.warn('⚠️ Exception lors de la récupération des données exposant:', e);
         }
       }
 
