@@ -56,7 +56,7 @@ export default function NetworkingPage() {
     aiInsights,
     showAppointmentModal,
     selectedExhibitorForRDV,
-    selectedTimeSlot,
+    // selectedTimeSlot, // DÉSACTIVÉ - utilise state local
     appointmentMessage,
     generateRecommendations,
     addToFavorites,
@@ -66,9 +66,12 @@ export default function NetworkingPage() {
   loadAIInsights,
     setShowAppointmentModal,
     setSelectedExhibitorForRDV,
-    setSelectedTimeSlot,
+    // setSelectedTimeSlot, // DÉSACTIVÉ - utilise state local
     setAppointmentMessage,
   } = useNetworkingStore();
+
+  // 🔧 FIX: Utiliser un state React local au lieu du store Zustand
+  const [selectedTimeSlot, setSelectedTimeSlot] = React.useState<string>('');
 
   const [activeTab, setActiveTab] = React.useState<keyof typeof CONFIG.tabIds>(CONFIG.tabIds.recommendations);
   const [searchTerm, setSearchTerm] = React.useState('');
