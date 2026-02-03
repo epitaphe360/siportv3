@@ -18,6 +18,8 @@ interface UserDB {
   status?: 'active' | 'pending' | 'suspended' | 'rejected';
   created_at: string;
   updated_at: string;
+  exhibitor?: ExhibitorDB;
+  partner_projects?: PartnerProject[];
 }
 
 interface PartnerDB {
@@ -265,7 +267,7 @@ export class SupabaseService {
       // Optimized: Select only necessary columns instead of *
       const { data: usersData, error: userError } = await safeSupabase
         .from('users')
-        .select('id, email, name, type, profile, visitor_level, status, created_at')
+        .select('id, email, name, type, profile, visitor_level, status, created_at, updated_at')
         .eq('email', email)
         .range(0, 0);
 
@@ -278,6 +280,24 @@ export class SupabaseService {
 
       if (!userData) {
         throw new Error('Aucun profil utilisateur trouvé pour cet email');
+      }
+
+      // Si c'est un exposant, récupérer les données d'exhibitor
+      let exhibitorData: ExhibitorDB | null = null;
+      if (userData.type === 'exhibitor') {
+        try {
+          const { data: exhibitorResult, error: exhibitorError } = await safeSupabase
+            .from('exhibitors')
+            .select('id, user_id, company_name, category, sector, description, logo_url, website, verified, featured, stand_number, stand_area, contact_info, created_at, updated_at')
+            .eq('user_id', userData.id)
+            .single();
+          
+          if (!exhibitorError && exhibitorResult) {
+            exhibitorData = exhibitorResult;
+          }
+        } catch (e) {
+          console.warn('⚠️ Erreur lors de la récupération des données exposant:', e);
+        }
       }
 
       // Si c'est un partenaire, on tente de récupérer ses projets séparément
@@ -321,6 +341,7 @@ export class SupabaseService {
 
       const combinedData = {
         ...userData,
+        exhibitor: exhibitorData,
         partner_projects: projects
       };
 
@@ -905,13 +926,26 @@ export class SupabaseService {
     const profileLevel = (userDB.profile as any)?.visitor_level;
     const effectiveLevel = userDB.visitor_level || profileLevel;
 
+    // Enrichir le profil avec les données d'exhibitor si disponibles
+    let enrichedProfile = { ...userDB.profile } as any || {};
+    
+    // Si c'est un exhibitor et qu'on a les données d'exhibitor, enrichir le profil
+    if (userDB.type === 'exhibitor' && userDB.exhibitor) {
+      enrichedProfile.standArea = userDB.exhibitor.stand_area || enrichedProfile.standArea || 9;
+      enrichedProfile.companyName = userDB.exhibitor.company_name || enrichedProfile.companyName;
+      enrichedProfile.website = userDB.exhibitor.website || enrichedProfile.website;
+      enrichedProfile.standNumber = userDB.exhibitor.stand_number || enrichedProfile.standNumber;
+      enrichedProfile.companyDescription = userDB.exhibitor.description || enrichedProfile.companyDescription;
+      enrichedProfile.sectors = (userDB.exhibitor.sector ? [userDB.exhibitor.sector] : enrichedProfile.sectors) || [];
+    }
+
     return {
       id: userDB.id,
       email: userDB.email,
       name: userDB.name,
       type: userDB.type,
       visitor_level: effectiveLevel,
-      profile: userDB.profile,
+      profile: enrichedProfile,
       status: userDB.status || 'active',
       projects: userDB.partner_projects || [],
       createdAt: new Date(userDB.created_at),
