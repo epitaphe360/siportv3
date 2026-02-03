@@ -20,27 +20,27 @@ export const DemoAccountsPage: React.FC = () => {
   // 🚀 TOUS LES COMPTES RAPIDES
   const quickAccounts: QuickAccount[] = [
     // Visiteurs
-    { email: 'visitor-free@test.siport.com', password: 'Test@123456', label: '👤 Visiteur Gratuit', type: 'visitor', color: '#3B82F6' },
-    { email: 'visitor-vip@test.siport.com', password: 'Test@123456', label: '👑 Visiteur VIP', type: 'visitor', color: '#8B5CF6' },
+    { email: 'visitor-free@test.siport.com', password: 'Demo2026!', label: '👤 Visiteur Gratuit', type: 'visitor', color: '#3B82F6' },
+    { email: 'visitor-vip@test.siport.com', password: 'Demo2026!', label: '👑 Visiteur VIP', type: 'visitor', color: '#8B5CF6' },
     
     // Exposants
-    { email: 'exhibitor-9m@test.siport.com', password: 'Test@123456', label: '🏪 Exposant 9m²', type: 'exhibitor', color: '#10B981' },
-    { email: 'exhibitor-18m@test.siport.com', password: 'Test@123456', label: '🏭 Exposant 18m²', type: 'exhibitor', color: '#14B8A6' },
-    { email: 'exhibitor-36m@test.siport.com', password: 'Test@123456', label: '🏗️ Exposant 36m²', type: 'exhibitor', color: '#06B6D4' },
-    { email: 'exhibitor-54m@test.siport.com', password: 'Test@123456', label: '🚢 Exposant 54m²', type: 'exhibitor', color: '#6366F1' },
+    { email: 'exhibitor-9m@test.siport.com', password: 'Demo2026!', label: '🏪 Exposant 9m²', type: 'exhibitor', color: '#10B981' },
+    { email: 'exhibitor-18m@test.siport.com', password: 'Demo2026!', label: '🏭 Exposant 18m²', type: 'exhibitor', color: '#14B8A6' },
+    { email: 'exhibitor-36m@test.siport.com', password: 'Demo2026!', label: '🏗️ Exposant 36m²', type: 'exhibitor', color: '#06B6D4' },
+    { email: 'exhibitor-54m@test.siport.com', password: 'Demo2026!', label: '🚢 Exposant 54m²', type: 'exhibitor', color: '#6366F1' },
     
     // Partenaires
-    { email: 'demo.partner@siports.com', password: 'Admin123!', label: '🤝 Partner Demo', type: 'partner', color: '#F59E0B' },
-    { email: 'partner-museum@test.siport.com', password: 'Test@123456', label: '🏛️ Musée Maritime', type: 'partner', color: '#D97706' },
-    { email: 'partner-silver@test.siport.com', password: 'Test@123456', label: '🥈 Sponsor Silver', type: 'partner', color: '#9CA3AF' },
-    { email: 'partner-gold@test.siport.com', password: 'Test@123456', label: '🥇 Sponsor Gold', type: 'partner', color: '#EAB308' },
-    { email: 'partner-platinum@test.siport.com', password: 'Test@123456', label: '💎 Sponsor Platinum', type: 'partner', color: '#64748B' },
+    { email: 'demo.partner@siports.com', password: 'Demo2026!', label: '🤝 Partner Demo', type: 'partner', color: '#F59E0B' },
+    { email: 'partner-museum@test.siport.com', password: 'Demo2026!', label: '🏛️ Musée Maritime', type: 'partner', color: '#D97706' },
+    { email: 'partner-silver@test.siport.com', password: 'Demo2026!', label: '🥈 Sponsor Silver', type: 'partner', color: '#9CA3AF' },
+    { email: 'partner-gold@test.siport.com', password: 'Demo2026!', label: '🥇 Sponsor Gold', type: 'partner', color: '#EAB308' },
+    { email: 'partner-platinum@test.siport.com', password: 'Demo2026!', label: '💎 Sponsor Platinum', type: 'partner', color: '#64748B' },
     
     // Marketing
-    { email: 'marketing@siports.com', password: 'Test@123456', label: '📊 Marketing', type: 'marketing', color: '#EC4899' },
+    { email: 'marketing@siports.com', password: 'Demo2026!', label: '📊 Marketing', type: 'marketing', color: '#EC4899' },
     
     // Admin
-    { email: 'admin@siports.com', password: 'Admin123!', label: '⚙️ Administrateur', type: 'admin', color: '#EF4444' },
+    { email: 'admin@siports.com', password: 'Demo2026!', label: '⚙️ Administrateur', type: 'admin', color: '#EF4444' },
   ];
 
   const handleLogin = async (account: QuickAccount) => {
@@ -186,8 +186,8 @@ export const DemoAccountsPage: React.FC = () => {
           borderRadius: '12px'
         }}>
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
-            💡 Mot de passe par défaut: <code style={{ color: '#60a5fa' }}>Test@123456</code> | 
-            Admin: <code style={{ color: '#f87171' }}>Admin123!</code>
+            💡 Mot de passe par défaut: <code style={{ color: '#60a5fa' }}>Demo2026!</code> | 
+            Admin: <code style={{ color: '#f87171' }}>Demo2026!</code>
           </p>
         </div>
       </div>

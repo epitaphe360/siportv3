@@ -331,7 +331,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDemoLogin('visitor-free@test.siport.com', 'Test@123456')}
+                    onClick={() => handleDemoLogin('visitor-free@test.siport.com', 'Demo2026!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 border-0"
                   >
                     ✅ Connexion
@@ -350,7 +350,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDemoLogin('visitor-vip@test.siport.com', 'Test@123456')}
+                    onClick={() => handleDemoLogin('visitor-vip@test.siport.com', 'Demo2026!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 border-0"
                   >
                     ✅ Connexion
@@ -369,7 +369,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDemoLogin('exhibitor-9m@test.siport.com', 'Test@123456')}
+                    onClick={() => handleDemoLogin('exhibitor-9m@test.siport.com', 'Demo2026!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 border-0"
                   >
                     ✅ Connexion
@@ -388,7 +388,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDemoLogin('exhibitor-18m@test.siport.com', 'Test@123456')}
+                    onClick={() => handleDemoLogin('exhibitor-18m@test.siport.com', 'Demo2026!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:from-purple-700 hover:to-purple-800 border-0"
                   >
                     ✅ Connexion
@@ -407,7 +407,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDemoLogin('exhibitor-36m@test.siport.com', 'Test@123456')}
+                    onClick={() => handleDemoLogin('exhibitor-36m@test.siport.com', 'Demo2026!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-purple-700 to-purple-800 text-white hover:from-purple-800 hover:to-purple-900 border-0"
                   >
                     ✅ Connexion
@@ -426,7 +426,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDemoLogin('exhibitor-54m@test.siport.com', 'Test@123456')}
+                    onClick={() => handleDemoLogin('exhibitor-54m@test.siport.com', 'Demo2026!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-purple-800 to-purple-900 text-white hover:from-purple-900 hover:to-purple-950 border-0"
                   >
                     ✅ Connexion
@@ -445,7 +445,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDemoLogin('demo.partner@siports.com', 'Admin123!')}
+                    onClick={() => handleDemoLogin('demo.partner@siports.com', 'Demo2026!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 border-0"
                   >
                     ✅ Connexion
@@ -464,7 +464,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDemoLogin('partner-silver@test.siport.com', 'Test@123456')}
+                    onClick={() => handleDemoLogin('partner-silver@test.siport.com', 'Demo2026!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-gray-400 to-gray-500 text-white hover:from-gray-500 hover:to-gray-600 border-0"
                   >
                     ✅ Connexion
@@ -483,7 +483,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDemoLogin('partner-gold@test.siport.com', 'Test@123456')}
+                    onClick={() => handleDemoLogin('partner-gold@test.siport.com', 'Demo2026!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 border-0"
                   >
                     ✅ Connexion
@@ -502,7 +502,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDemoLogin('partner-platinum@test.siport.com', 'Test@123456')}
+                    onClick={() => handleDemoLogin('partner-platinum@test.siport.com', 'Demo2026!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 border-0"
                   >
                     ✅ Connexion
@@ -521,7 +521,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDemoLogin('partner-museum@test.siport.com', 'Test@123456')}
+                    onClick={() => handleDemoLogin('partner-museum@test.siport.com', 'Demo2026!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-700 hover:to-amber-800 border-0"
                   >
                     ✅ Connexion
@@ -540,7 +540,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDemoLogin('marketing@siports.com', 'Test@123456')}
+                    onClick={() => handleDemoLogin('marketing@siports.com', 'Demo2026!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-pink-500 to-pink-600 text-white hover:from-pink-600 hover:to-pink-700 border-0"
                   >
                     ✅ Connexion
@@ -559,7 +559,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDemoLogin('admin@siports.com', 'Admin123!')}
+                    onClick={() => handleDemoLogin('admin@siports.com', 'Demo2026!')}
                     className="w-full text-xs h-8 bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 border-0"
                   >
                     ✅ Connexion Admin
@@ -576,7 +576,7 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => handleDemoLogin('exhibitor-9m@test.siport.com', 'Test@123456')}
+                      onClick={() => handleDemoLogin('exhibitor-9m@test.siport.com', 'Demo2026!')}
                       className="text-[10px] h-8 bg-white hover:bg-purple-50 border-purple-200"
                     >
                       🚢 TechMarine
@@ -585,7 +585,7 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => handleDemoLogin('exhibitor-18m@test.siport.com', 'Test@123456')}
+                      onClick={() => handleDemoLogin('exhibitor-18m@test.siport.com', 'Demo2026!')}
                       className="text-[10px] h-8 bg-white hover:bg-purple-50 border-purple-200"
                     >
                       🌊 OceanLogistics
@@ -594,7 +594,7 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => handleDemoLogin('exhibitor-36m@test.siport.com', 'Test@123456')}
+                      onClick={() => handleDemoLogin('exhibitor-36m@test.siport.com', 'Demo2026!')}
                       className="text-[10px] h-8 bg-white hover:bg-purple-50 border-purple-200"
                     >
                       ⚙️ PortTech
@@ -603,7 +603,7 @@ export default function LoginPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => handleDemoLogin('exhibitor-54m@test.siport.com', 'Test@123456')}
+                      onClick={() => handleDemoLogin('exhibitor-54m@test.siport.com', 'Demo2026!')}
                       className="text-[10px] h-8 bg-white hover:bg-purple-50 border-purple-200"
                     >
                       🌐 Global Ship.
@@ -617,7 +617,7 @@ export default function LoginPage() {
                 {/* Note */}
                 <div className="col-span-2 p-2 bg-blue-100/50 rounded-lg">
                   <p className="text-[10px] text-blue-800 text-center">
-                    💡 <strong>Mot de passe:</strong> Test@123456 (Admin123! pour admin et demo.partner)
+                    💡 <strong>Mot de passe:</strong> Demo2026! (Demo2026! pour admin et demo.partner)
                   </p>
                 </div>
               </div>
