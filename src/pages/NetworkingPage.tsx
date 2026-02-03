@@ -72,6 +72,7 @@ export default function NetworkingPage() {
 
   // 🔧 FIX: Utiliser un state React local au lieu du store Zustand
   const [selectedTimeSlot, setSelectedTimeSlot] = React.useState<string>('');
+  const [isBookingInProgress, setIsBookingInProgress] = React.useState(false);
 
   const [activeTab, setActiveTab] = React.useState<keyof typeof CONFIG.tabIds>(CONFIG.tabIds.recommendations);
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -180,12 +181,23 @@ export default function NetworkingPage() {
       navigate(`${ROUTES.LOGIN}?redirect=${encodeURIComponent('/networking?action=book_appointment')}`);
       return;
     }
+    
+    // Vérifier si l'utilisateur a déjà un RDV avec cet exposant
+    const hasExistingAppointment = appointments.some(
+      apt => apt.exhibitorId === profile.id && apt.visitorId === user?.id && apt.status !== 'cancelled'
+    );
+    
+    if (hasExistingAppointment) {
+      toast.error('Vous avez déjà un rendez-vous avec cet exposant/partenaire');
+      return;
+    }
+    
     setSelectedExhibitorForRDV(profile);
     setShowAppointmentModal(true);
   };
 
   // Subscribe to appointment store to get time slots for selected exhibitor
-  const { timeSlots, fetchTimeSlots } = useAppointmentStore();
+  const { timeSlots, fetchTimeSlots, appointments } = useAppointmentStore();
 
   // When the appointment modal is shown for a selected exhibitor, fetch their time slots
   React.useEffect(() => {
@@ -206,48 +218,34 @@ export default function NetworkingPage() {
   }, [showAppointmentModal, selectedExhibitorForRDV?.id, fetchTimeSlots]);
 
   const handleConfirmAppointment = async () => {
-    // DEBUG: Alert pour confirmer que le clic est capturé
-    alert('BOUTON CLIQUÉ! Regardez la console F12');
-    console.log('🚨🚨🚨 BUTTON CLICKED! 🚨🚨🚨');
+    console.log('🚨 BUTTON CLICKED!');
     console.log('[NetworkingPage] handleConfirmAppointment started', { selectedExhibitorForRDV, selectedTimeSlot });
     
     if (!selectedExhibitorForRDV) {
-      console.log('❌ No exhibitor selected');
-      alert('Erreur: Aucun exposant sélectionné');
       toast.error('Aucun exposant sélectionné');
       return;
     }
     if (!selectedTimeSlot) {
-      console.log('❌ No time slot selected');
-      alert('Erreur: Aucun créneau sélectionné - selectedTimeSlot = ' + selectedTimeSlot);
       toast.error('Veuillez sélectionner un créneau horaire');
       return;
     }
     
-    alert('Validation OK! selectedTimeSlot = ' + selectedTimeSlot);
     console.log('✅ Validation passed, proceeding with booking...');
     
-    // Quotas B2B selon visitor_level OU type d'utilisateur - utilise le système centralisé
-    // ✅ Les exposants/partenaires utilisent leur TYPE, les visiteurs utilisent leur NIVEAU
-    const userType = user?.type; // 'exhibitor', 'partner', 'visitor', etc.
+    const userType = user?.type;
     const visitorLevel = user?.visitor_level || 'free';
-
-    // ✅ Utiliser le type pour exposants/partenaires, le niveau pour visiteurs
     const quotaKey = (userType === 'exhibitor' || userType === 'partner' || userType === 'admin' || userType === 'security')
       ? userType
       : visitorLevel;
-
-    const quota = getVisitorQuota(quotaKey); // Depuis quotas.ts
+    const quota = getVisitorQuota(quotaKey);
     console.log('📊 Quota check:', { userType, visitorLevel, quotaKey, quota });
 
-    // Récupérer les VRAIS rendez-vous depuis appointmentStore
     const appointmentStore = useAppointmentStore.getState();
     const userAppointments = appointmentStore.appointments.filter(
       (a: any) => a.visitorId === user?.id && a.status === 'confirmed'
     );
     console.log('📅 User appointments:', userAppointments.length);
 
-    // ✅ Vérifier le quota uniquement si ce n'est pas illimité (999999)
     if (quota !== 999999 && userAppointments.length >= quota) {
       if (quota === 0) {
         toast.error(
@@ -263,20 +261,44 @@ export default function NetworkingPage() {
     
     console.log('🚀 Calling bookAppointment with:', { selectedTimeSlot, appointmentMessage });
     
-    // Try to call the canonical booking flow
+    setIsBookingInProgress(true);
     try {
       await appointmentStore.bookAppointment(selectedTimeSlot, appointmentMessage);
       console.log('✅ [NetworkingPage] Appointment booking succeeded');
-      toast.success(`Demande de RDV envoyée à ${getDisplayName(selectedExhibitorForRDV)}`);
+      
       setShowAppointmentModal(false);
-      setSelectedExhibitorForRDV(null);
       setSelectedTimeSlot('');
       setAppointmentMessage('');
+      
+      toast.success(
+        `✅ Demande de RDV envoyée à ${getDisplayName(selectedExhibitorForRDV)} !\n` +
+        `Le rendez-vous est en attente de confirmation.`,
+        { duration: 5000 }
+      );
+      
+      await appointmentStore.fetchAppointments();
+      setSelectedExhibitorForRDV(null);
     } catch (err: unknown) {
       console.error('❌ Booking failed:', err);
       const errorMessage = err instanceof Error ? err.message : String(err) || 'Échec de la réservation';
       console.log('[NetworkingPage] Error message:', errorMessage);
-      toast.error(errorMessage);
+      
+      // Messages d'erreur détaillés selon le cas
+      if (errorMessage.includes('complet')) {
+        toast.error('❌ Ce créneau vient d\'être réservé par quelqu\'un d\'autre. Veuillez en choisir un autre.');
+      } else if (errorMessage.includes('déjà un rendez-vous')) {
+        toast.error('❌ Vous avez déjà un rendez-vous avec cet exposant/partenaire');
+      } else if (errorMessage.includes('déjà réservé ce créneau')) {
+        toast.error('❌ Vous avez déjà réservé ce créneau horaire');
+      } else if (errorMessage.includes('passé')) {
+        toast.error('❌ Ce créneau est dans le passé. Veuillez choisir un créneau futur.');
+      } else if (errorMessage.includes('dates du salon')) {
+        toast.error('❌ Ce créneau est en dehors des dates du salon (1-3 Avril 2026)');
+      } else {
+        toast.error(`❌ ${errorMessage}`);
+      }
+    } finally {
+      setIsBookingInProgress(false);
     }
   };
 
@@ -813,15 +835,32 @@ export default function NetworkingPage() {
                           {/* Actions */}
                           <div className="p-6 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between gap-3">
                             <div className="flex-1">
-                              {/* ✅ FIX: Remplacer "Connecter" par "Calendrier de disponibilité" */}
-                              <Button
-                                size="sm"
-                                onClick={() => handleBookAppointment(profile)}
-                                className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg rounded-xl h-11 font-bold"
-                              >
-                                <Calendar className="h-4 w-4 mr-2" />
-                                Calendrier
-                              </Button>
+                              {/* ✅ Vérifier si déjà un RDV avec cet exposant */}
+                              {(() => {
+                                const hasAppointment = appointments.some(
+                                  apt => apt.exhibitorId === profile.id && apt.visitorId === user?.id && apt.status !== 'cancelled'
+                                );
+                                
+                                if (hasAppointment) {
+                                  return (
+                                    <div className="w-full bg-green-50 border-2 border-green-300 text-green-700 rounded-xl h-11 font-bold flex items-center justify-center">
+                                      <CheckCircle className="h-4 w-4 mr-2" />
+                                      Rendez-vous pris
+                                    </div>
+                                  );
+                                }
+                                
+                                return (
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleBookAppointment(profile)}
+                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg rounded-xl h-11 font-bold"
+                                  >
+                                    <Calendar className="h-4 w-4 mr-2" />
+                                    Calendrier
+                                  </Button>
+                                );
+                              })()}
                             </div>
                             
                             <div className="flex items-center space-x-2">
@@ -1010,15 +1049,32 @@ export default function NetworkingPage() {
                               <Eye className="h-4 w-4 mr-2" />
                               Profil
                             </Button>
-                            {/* ✅ FIX: Remplacer "Connecter" par "Calendrier" pour afficher la disponibilité */}
-                            <Button
-                              size="sm"
-                              onClick={() => handleBookAppointment(profile)}
-                              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-10 font-bold"
-                            >
-                              <Calendar className="h-4 w-4 mr-2" />
-                              Calendrier
-                            </Button>
+                            {/* ✅ Vérifier si déjà un RDV avec cet exposant */}
+                            {(() => {
+                              const hasAppointment = appointments.some(
+                                apt => apt.exhibitorId === profile.id && apt.visitorId === user?.id && apt.status !== 'cancelled'
+                              );
+                              
+                              if (hasAppointment) {
+                                return (
+                                  <div className="flex-1 bg-green-50 border-2 border-green-300 text-green-700 rounded-xl h-10 font-bold flex items-center justify-center text-sm">
+                                    <CheckCircle className="h-4 w-4 mr-2" />
+                                    RDV pris
+                                  </div>
+                                );
+                              }
+                              
+                              return (
+                                <Button
+                                  size="sm"
+                                  onClick={() => handleBookAppointment(profile)}
+                                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-10 font-bold"
+                                >
+                                  <Calendar className="h-4 w-4 mr-2" />
+                                  Calendrier
+                                </Button>
+                              );
+                            })()}
                           </div>
                         </Card>
                       </motion.div>
@@ -1585,6 +1641,53 @@ export default function NetworkingPage() {
             </div>
 
             <div className="p-6 space-y-6">
+              {/* Afficher si l'utilisateur a déjà un RDV avec cet exposant */}
+              {(() => {
+                const existingAppointment = appointments.find(
+                  apt => apt.exhibitorId === selectedExhibitorForRDV.id && apt.visitorId === user?.id && apt.status !== 'cancelled'
+                );
+                
+                if (existingAppointment) {
+                  return (
+                    <div className="bg-green-50 border-2 border-green-300 rounded-xl p-6">
+                      <div className="flex items-start space-x-4">
+                        <CheckCircle className="h-8 w-8 text-green-600 flex-shrink-0" />
+                        <div className="flex-1">
+                          <h4 className="text-lg font-bold text-green-900 mb-2">
+                            {existingAppointment.status === 'confirmed' ? '✅ Rendez-vous confirmé' : '⏳ Rendez-vous en attente'}
+                          </h4>
+                          <p className="text-green-700 mb-4">
+                            {existingAppointment.status === 'confirmed' 
+                              ? 'Votre rendez-vous avec cet exposant a été confirmé.'
+                              : 'Votre demande de rendez-vous est en attente de confirmation par l\'exposant.'}
+                          </p>
+                          <Button
+                            variant="outline"
+                            className="border-red-300 text-red-700 hover:bg-red-50"
+                            onClick={async () => {
+                              if (confirm('Êtes-vous sûr de vouloir annuler ce rendez-vous ?')) {
+                                try {
+                                  await appointmentStore.cancelAppointment(existingAppointment.id);
+                                  toast.success('Rendez-vous annulé avec succès');
+                                  setShowAppointmentModal(false);
+                                  await appointmentStore.fetchAppointments();
+                                } catch (err) {
+                                  toast.error('Erreur lors de l\'annulation');
+                                }
+                              }
+                            }}
+                          >
+                            <X className="h-4 w-4 mr-2" />
+                            Annuler ce rendez-vous
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
+
               {/* Sélection du créneau horaire - Vue Calendrier améliorée */}
               <div>
                 <label className="block text-sm font-bold text-gray-900 mb-3 flex items-center">
@@ -1613,25 +1716,54 @@ export default function NetworkingPage() {
                             year: 'numeric'
                           }) : String(slot.date || '');
                           const isSelected = selectedTimeSlot === slot.id;
+                          
+                          // Vérifier si ce créneau est déjà réservé par l'utilisateur
+                          const isAlreadyBooked = appointments.some(
+                            apt => apt.timeSlotId === slot.id && apt.visitorId === user?.id
+                          );
+                          
+                          // Récupérer le RDV pour afficher son statut
+                          const bookedAppointment = appointments.find(
+                            apt => apt.timeSlotId === slot.id && apt.visitorId === user?.id
+                          );
 
                           return (
                             <button
                               key={slot.id}
                               onClick={() => {
+                                if (isAlreadyBooked) {
+                                  toast.info('Vous avez déjà réservé ce créneau');
+                                  return;
+                                }
                                 console.log('🟢 SLOT CLICKED:', slot.id, slot);
                                 setSelectedTimeSlot(slot.id);
                               }}
-                              className={`p-3 sm:p-4 border-2 rounded-lg sm:rounded-xl text-left transition-all ${
-                                isSelected
+                              disabled={isAlreadyBooked}
+                              className={`p-3 sm:p-4 border-2 rounded-lg sm:rounded-xl text-left transition-all relative ${
+                                isAlreadyBooked
+                                  ? 'border-green-300 bg-green-50 opacity-75 cursor-not-allowed'
+                                  : isSelected
                                   ? 'border-blue-600 bg-blue-50 shadow-lg'
                                   : 'border-gray-200 hover:border-blue-300 hover:shadow-md'
                               }`}
                             >
+                              {isAlreadyBooked && bookedAppointment && (
+                                <div className={`absolute top-2 right-2 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center ${
+                                  bookedAppointment.status === 'confirmed' ? 'bg-green-600' :
+                                  bookedAppointment.status === 'pending' ? 'bg-yellow-600' :
+                                  'bg-gray-600'
+                                }`}>
+                                  <CheckCircle className="h-3 w-3 mr-1" />
+                                  {bookedAppointment.status === 'confirmed' ? 'Confirmé' :
+                                   bookedAppointment.status === 'pending' ? 'En attente' :
+                                   'Réservé'}
+                                </div>
+                              )}
                               <div className="flex items-start justify-between mb-1 sm:mb-2">
                                 <div className="font-bold text-gray-900 capitalize text-xs sm:text-sm leading-tight pr-2">
                                   {dateLabel}
                                 </div>
-                                {isSelected && (
+                                {isSelected && !isAlreadyBooked && (
                                   <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 flex-shrink-0" />
                                 )}
                               </div>
@@ -1682,16 +1814,26 @@ export default function NetworkingPage() {
 
               {/* Actions */}
               <div className="flex space-x-3 pt-4 border-t">
-                <button
-                  type="button"
-                  style={{ backgroundColor: selectedTimeSlot ? 'green' : 'gray', color: 'white', padding: '20px', fontSize: '20px', cursor: 'pointer' }}
-                  onClick={() => {
-                    alert('CLICK DÉTECTÉ! selectedTimeSlot=' + selectedTimeSlot);
-                    handleConfirmAppointment();
-                  }}
+                <Button
+                  onClick={() => handleConfirmAppointment()}
+                  disabled={!selectedTimeSlot || isBookingInProgress}
+                  className={`flex-1 h-14 text-lg font-bold ${
+                    selectedTimeSlot && !isBookingInProgress
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
                 >
-                  {selectedTimeSlot ? `ENVOYER (slot: ${selectedTimeSlot.substring(0,8)}...)` : 'SÉLECTIONNEZ UN CRÉNEAU'}
-                </button>
+                  {isBookingInProgress ? (
+                    <>
+                      <div className="animate-spin mr-2 h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
+                      Envoi en cours...
+                    </>
+                  ) : selectedTimeSlot ? (
+                    'Envoyer la Demande'
+                  ) : (
+                    'Sélectionnez un créneau'
+                  )}
+                </Button>
                 <Button
                   variant="outline"
                   onClick={() => {

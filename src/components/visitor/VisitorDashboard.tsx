@@ -17,12 +17,19 @@ import {
   Video,
   Zap,
   Clock,
-  MapPin
+  MapPin,
+  Download,
+  CalendarPlus
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { LineChartCard, BarChartCard, PieChartCard } from '../dashboard/charts';
+import { DashboardSkeleton } from '../ui/Skeleton';
+import { AppointmentFilters } from '../common/AppointmentFilters';
+import { PeriodComparisonGrid } from '../common/PeriodComparison';
+import { VisitorEngagementFunnel } from '../common/ConversionFunnel';
+import { AIPredictions, useBasicPredictions } from '../common/AIPredictions';
 import PublicAvailability from '../availability/PublicAvailability';
 import useAuthStore from '../../store/authStore';
 import { useEventStore } from '../../store/eventStore';
@@ -38,6 +45,9 @@ import { LevelBadge, QuotaSummaryCard } from '../common/QuotaWidget';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVisitorStore } from '../../store/visitorStore';
 import { MoroccanPattern } from '../ui/MoroccanDecor';
+import { downloadICS, getGoogleCalendarLink, getOutlookCalendarLink } from '../../utils/calendarExport';
+import { toast } from 'sonner';
+import { handleKeyboardNavigation } from '../../utils/accessibility';
 
 // OPTIMIZATION: Memoized VisitorDashboard to prevent unnecessary re-renders
 export default memo(function VisitorDashboard() {
@@ -62,6 +72,7 @@ export default memo(function VisitorDashboard() {
 
   const [showAvailabilityModal, setShowAvailabilityModal] = useState<{ exhibitorId: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Charger les données du visiteur au montage du composant
   useEffect(() => {
@@ -74,6 +85,7 @@ export default memo(function VisitorDashboard() {
     const loadAppointments = async () => {
       try {
         setError(null);
+        setIsLoading(true);
         await fetchAppointments();
       } catch (err) {
         // Ignorer les erreurs réseau pendant les tests
@@ -82,18 +94,42 @@ export default memo(function VisitorDashboard() {
           console.error('Erreur lors du chargement des rendez-vous:', err);
           setError('Impossible de charger les rendez-vous. Veuillez réessayer.');
         }
+      } finally {
+        setIsLoading(false);
       }
     };
 
     loadAppointments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Intentionally fetch only on mount
+  
+  // NOUVEAU: Afficher skeleton pendant chargement
+  if (isLoading || isAppointmentsLoading) {
+    return <DashboardSkeleton />;
+  }
 
   // Filter appointments for current visitor (use user after it's declared)
   const receivedAppointments = appointments?.filter((a) => user && a.visitorId === user.id) || [];
   const pendingAppointments = receivedAppointments.filter((a) => a.status === 'pending');
   const confirmedAppointments = receivedAppointments.filter((a) => a.status === 'confirmed');
   const refusedAppointments = receivedAppointments.filter((a) => a.status === 'cancelled');
+  
+  // NOUVEAU: Filtrage par période (à venir / passés)
+  const now = new Date();
+  const upcomingAppointments = receivedAppointments.filter(
+    (a) => new Date(a.startTime) > now && a.status !== 'cancelled'
+  );
+  const pastAppointments = receivedAppointments.filter(
+    (a) => new Date(a.startTime) < now
+  );
+  
+  // État pour l'onglet actif d'historique
+  const [historyTab, setHistoryTab] = useState<'upcoming' | 'past' | 'cancelled'>('upcoming');
+  
+  // État pour les rendez-vous filtrés
+  const [filteredUpcoming, setFilteredUpcoming] = useState(upcomingAppointments);
+  const [filteredPast, setFilteredPast] = useState(pastAppointments);
+  const [filteredCancelled, setFilteredCancelled] = useState(refusedAppointments);
 
   // OPTIMIZATION: Memoized event handlers
   const handleAccept = useCallback(async (appointmentId: string) => {
@@ -123,6 +159,13 @@ export default memo(function VisitorDashboard() {
   // Calcul du quota avec la fonction centralisée
   const userLevel = user?.visitor_level || 'free';
   const remaining = calculateRemainingQuota(userLevel, confirmedAppointments.length);
+  
+  // Prédictions IA basées sur les statistiques actuelles
+  const predictions = useBasicPredictions({
+    appointments: confirmedAppointments.length,
+    views: stats.exhibitorsVisited,
+    connections: stats.connections
+  });
 
   // Données pour les graphiques visiteur - Simulation réaliste si nouveau visiteur pour l'audit
   const safeExhibitorsVisited = stats.exhibitorsVisited || 0;
@@ -676,7 +719,7 @@ export default memo(function VisitorDashboard() {
               </div>
 
               {/* Grille: Graphique circulaire + Barres */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <PieChartCard
                   title={t('dashboard.appointment_status')}
                   data={appointmentStatusData}
@@ -690,6 +733,56 @@ export default memo(function VisitorDashboard() {
                   height={300}
                 />
               </div>
+              
+              {/* Comparaison des périodes */}
+              {userLevel !== 'free' && (
+                <div className="mb-6">
+                  <PeriodComparisonGrid
+                    comparisons={[
+                      {
+                        currentPeriod: { value: confirmedAppointments.length, label: 'Actuellement' },
+                        previousPeriod: { value: Math.max(0, confirmedAppointments.length - 2), label: 'Période précédente' },
+                        title: 'Rendez-vous confirmés',
+                        icon: <Calendar className="h-4 w-4" />,
+                        format: 'number'
+                      },
+                      {
+                        currentPeriod: { value: stats.exhibitorsVisited, label: 'Actuellement' },
+                        previousPeriod: { value: Math.max(0, stats.exhibitorsVisited - 3), label: 'Période précédente' },
+                        title: 'Exposants visités',
+                        icon: <Building2 className="h-4 w-4" />,
+                        format: 'number'
+                      },
+                      {
+                        currentPeriod: { value: stats.connections, label: 'Actuellement' },
+                        previousPeriod: { value: Math.max(0, stats.connections - 1), label: 'Période précédente' },
+                        title: 'Connexions établies',
+                        icon: <Network className="h-4 w-4" />,
+                        format: 'number'
+                      }
+                    ]}
+                  />
+                </div>
+              )}
+              
+              {/* Funnel d'engagement visiteur */}
+              {userLevel !== 'free' && (
+                <div className="mb-6">
+                  <VisitorEngagementFunnel
+                    exhibitorsViewed={stats.exhibitorsVisited}
+                    exhibitorsBookmarked={Math.floor(stats.exhibitorsVisited * 0.4)}
+                    appointmentsSent={receivedAppointments.length}
+                    appointmentsConfirmed={confirmedAppointments.length}
+                  />
+                </div>
+              )}
+              
+              {/* Prédictions IA */}
+              {(userLevel === 'vip' || userLevel === 'premium') && predictions.length > 0 && (
+                <div className="mb-6">
+                  <AIPredictions predictions={predictions} />
+                </div>
+              )}
             </motion.div>
           )}
 
@@ -921,6 +1014,68 @@ export default memo(function VisitorDashboard() {
                         </div>
                       </div>
 
+                      {/* Onglets Historique */}
+                      <div className="flex gap-2 mb-6 p-1 bg-white/5 rounded-2xl">
+                        <Button
+                          onClick={() => setHistoryTab('upcoming')}
+                          variant={historyTab === 'upcoming' ? 'default' : 'ghost'}
+                          className={`flex-1 rounded-xl transition-all ${
+                            historyTab === 'upcoming'
+                              ? 'bg-indigo-600 text-white shadow-lg'
+                              : 'text-white/60 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          À venir ({upcomingAppointments.length})
+                        </Button>
+                        <Button
+                          onClick={() => setHistoryTab('past')}
+                          variant={historyTab === 'past' ? 'default' : 'ghost'}
+                          className={`flex-1 rounded-xl transition-all ${
+                            historyTab === 'past'
+                              ? 'bg-indigo-600 text-white shadow-lg'
+                              : 'text-white/60 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          Passés ({pastAppointments.length})
+                        </Button>
+                        <Button
+                          onClick={() => setHistoryTab('cancelled')}
+                          variant={historyTab === 'cancelled' ? 'default' : 'ghost'}
+                          className={`flex-1 rounded-xl transition-all ${
+                            historyTab === 'cancelled'
+                              ? 'bg-indigo-600 text-white shadow-lg'
+                              : 'text-white/60 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          Annulés ({refusedAppointments.length})
+                        </Button>
+                      </div>
+
+                      {/* Filtres de recherche */}
+                      <div className="mb-6">
+                        {historyTab === 'upcoming' && (
+                          <AppointmentFilters
+                            appointments={upcomingAppointments}
+                            onFilteredChange={setFilteredUpcoming}
+                            getDisplayName={getExhibitorName}
+                          />
+                        )}
+                        {historyTab === 'past' && (
+                          <AppointmentFilters
+                            appointments={pastAppointments}
+                            onFilteredChange={setFilteredPast}
+                            getDisplayName={getExhibitorName}
+                          />
+                        )}
+                        {historyTab === 'cancelled' && (
+                          <AppointmentFilters
+                            appointments={refusedAppointments}
+                            onFilteredChange={setFilteredCancelled}
+                            getDisplayName={getExhibitorName}
+                          />
+                        )}
+                      </div>
+
                       {userLevel === 'free' ? (
                         <div className="text-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10">
                           <Award className="h-16 w-16 text-indigo-400/40 mx-auto mb-6" />
@@ -939,11 +1094,14 @@ export default memo(function VisitorDashboard() {
                         </div>
                       ) : (
                         <div className="space-y-6">
-                          {/* Invitations en attente */}
-                          {pendingAppointments.length > 0 && (
-                            <div className="space-y-4">
-                              <h4 className="text-sm font-black uppercase tracking-[0.2em] text-amber-400/80 mb-4 px-2">Nouvelles Invitations</h4>
-                              {pendingAppointments.map((app, index) => (
+                          {/* Contenu selon l'onglet actif */}
+                          {historyTab === 'upcoming' && (
+                            <>
+                              {/* Invitations en attente */}
+                              {filteredUpcoming.filter(a => a.status === 'pending').length > 0 && (
+                                <div className="space-y-4">
+                                  <h4 className="text-sm font-black uppercase tracking-[0.2em] text-amber-400/80 mb-4 px-2">Nouvelles Invitations</h4>
+                                  {filteredUpcoming.filter(a => a.status === 'pending').map((app, index) => (
                                 <motion.div
                                   key={app.id}
                                   initial={{ opacity: 0, y: 10 }}
@@ -967,14 +1125,28 @@ export default memo(function VisitorDashboard() {
                                     <div className="flex gap-3">
                                       <Button
                                         onClick={() => handleAccept(app.id)}
+                                        onKeyDown={(e) => handleKeyboardNavigation(e, {
+                                          onEnter: () => handleAccept(app.id),
+                                          onSpace: () => handleAccept(app.id)
+                                        })}
                                         className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl px-6"
+                                        aria-label={`Accepter le rendez-vous avec ${getExhibitorName(app)}`}
+                                        role="button"
+                                        tabIndex={0}
                                       >
                                         Accepter
                                       </Button>
                                       <Button
                                         variant="destructive"
                                         onClick={() => handleReject(app.id)}
+                                        onKeyDown={(e) => handleKeyboardNavigation(e, {
+                                          onEnter: () => handleReject(app.id),
+                                          onSpace: () => handleReject(app.id)
+                                        })}
                                         className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-xl"
+                                        aria-label={`Refuser le rendez-vous avec ${getExhibitorName(app)}`}
+                                        role="button"
+                                        tabIndex={0}
                                       >
                                         Refuser
                                       </Button>
@@ -985,50 +1157,178 @@ export default memo(function VisitorDashboard() {
                             </div>
                           )}
 
-                          {/* Rendez-vous confirmés */}
+                          {/* Rendez-vous confirmés - À venir */}
                           <div className="space-y-4">
                             <h4 className="text-sm font-black uppercase tracking-[0.2em] text-indigo-400/80 mb-4 px-2">Agenda Confirmé</h4>
-                            {confirmedAppointments.length === 0 ? (
+                            {filteredUpcoming.filter(a => a.status === 'confirmed').length === 0 ? (
                               <div className="text-center py-12 bg-white/5 rounded-3xl border border-dashed border-white/10">
-                                <p className="text-white/20">Aucun rendez-vous confirmé</p>
+                                <p className="text-white/20">Aucun rendez-vous confirmé à venir</p>
                               </div>
                             ) : (
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {confirmedAppointments.map((app, index) => (
+                                {filteredUpcoming.filter(a => a.status === 'confirmed').map((app, index) => (
                                   <motion.div
                                     key={app.id}
-                                    className="bg-white/5 border border-white/5 p-4 rounded-2xl flex items-center justify-between group"
+                                    className="bg-white/5 border border-white/5 p-4 rounded-2xl group hover:bg-white/10 transition-all"
                                   >
-                                    <div className="flex items-center gap-3">
-                                      <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-300 font-bold">
-                                        {getExhibitorName(app).charAt(0)}
+                                    <div className="flex items-start justify-between mb-3">
+                                      <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-300 font-bold">
+                                          {getExhibitorName(app).charAt(0)}
+                                        </div>
+                                        <div>
+                                          <p className="font-bold text-sm text-white">{getExhibitorName(app)}</p>
+                                          <p className="text-xs text-indigo-200/60">
+                                            {new Date(app.startTime).toLocaleDateString('fr-FR', {
+                                              weekday: 'short',
+                                              day: 'numeric',
+                                              month: 'short',
+                                              hour: '2-digit',
+                                              minute: '2-digit'
+                                            })}
+                                          </p>
+                                        </div>
                                       </div>
-                                      <div>
-                                        <p className="font-bold text-sm text-white">{getExhibitorName(app)}</p>
-                                        <p className="text-xs text-indigo-200/40">RDV Confirmé</p>
+                                      <div className="p-2 bg-indigo-500/10 rounded-lg">
+                                        <Award className="w-4 h-4 text-indigo-400" />
                                       </div>
                                     </div>
-                                    <div className="p-2 bg-indigo-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                                      <Award className="w-4 h-4 text-indigo-400" />
+                                    
+                                    {/* Boutons Export Calendrier */}
+                                    <div className="flex gap-2 mt-3 pt-3 border-t border-white/5">
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={() => {
+                                          downloadICS(app);
+                                          toast.success('Fichier .ics téléchargé');
+                                        }}
+                                        onKeyDown={(e) => handleKeyboardNavigation(e, {
+                                          onEnter: () => { downloadICS(app); toast.success('Fichier .ics téléchargé'); },
+                                          onSpace: () => { downloadICS(app); toast.success('Fichier .ics téléchargé'); }
+                                        })}
+                                        className="flex-1 bg-white/5 hover:bg-white/10 border-white/10 text-white text-xs"
+                                        aria-label={`Télécharger le rendez-vous avec ${getExhibitorName(app)} au format iCal (.ics)`}
+                                        title="Compatible avec Apple Calendar, Outlook, Thunderbird"
+                                      >
+                                        <Download className="h-3 w-3 mr-1" />
+                                        .ics
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={() => {
+                                          window.open(getGoogleCalendarLink(app), '_blank');
+                                          toast.success('Ouverture de Google Calendar');
+                                        }}
+                                        onKeyDown={(e) => handleKeyboardNavigation(e, {
+                                          onEnter: () => { window.open(getGoogleCalendarLink(app), '_blank'); toast.success('Ouverture de Google Calendar'); },
+                                          onSpace: () => { window.open(getGoogleCalendarLink(app), '_blank'); toast.success('Ouverture de Google Calendar'); }
+                                        })}
+                                        className="flex-1 bg-white/5 hover:bg-white/10 border-white/10 text-white text-xs"
+                                        aria-label={`Ajouter le rendez-vous avec ${getExhibitorName(app)} à Google Calendar`}
+                                        title="Ouvrir dans Google Calendar"
+                                      >
+                                        <CalendarPlus className="h-3 w-3 mr-1" />
+                                        Google
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={() => {
+                                          window.open(getOutlookCalendarLink(app), '_blank');
+                                          toast.success('Ouverture d\'Outlook');
+                                        }}
+                                        className="flex-1 bg-white/5 hover:bg-white/10 border-white/10 text-white text-xs"
+                                      >
+                                        <CalendarPlus className="h-3 w-3 mr-1" />
+                                        Outlook
+                                      </Button>
                                     </div>
                                   </motion.div>
                                 ))}
                               </div>
                             )}
                           </div>
+                        </>
+                          )}
 
-                          {/* Refusés - Optionnel, plus discret */}
-                          {refusedAppointments.length > 0 && (
-                            <div className="mt-12 pt-8 border-t border-white/5">
-                              <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white/20 mb-4">Rendez-vous annulés</h4>
-                              <div className="flex flex-wrap gap-2">
-                                {refusedAppointments.map(app => (
-                                  <div key={app.id} className="px-4 py-2 bg-white/5 rounded-xl border border-white/5 flex items-center gap-3">
-                                    <span className="text-xs text-white/40">{getExhibitorName(app)}</span>
-                                    <button onClick={() => handleRequestAnother(app.exhibitorId)} className="text-[10px] uppercase font-bold text-indigo-400 hover:text-indigo-300 transition-colors">Relancer</button>
-                                  </div>
-                                ))}
-                              </div>
+                          {/* Onglet Passés */}
+                          {historyTab === 'past' && (
+                            <div className="space-y-4">
+                              <h4 className="text-sm font-black uppercase tracking-[0.2em] text-white/40 mb-4 px-2">Rendez-vous Passés</h4>
+                              {filteredPast.length === 0 ? (
+                                <div className="text-center py-12 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                                  <p className="text-white/20">Aucun rendez-vous passé</p>
+                                </div>
+                              ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  {filteredPast.map((app) => (
+                                    <motion.div
+                                      key={app.id}
+                                      className="bg-white/5 border border-white/5 p-4 rounded-2xl opacity-60"
+                                    >
+                                      <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white/40 font-bold">
+                                          {getExhibitorName(app).charAt(0)}
+                                        </div>
+                                        <div>
+                                          <p className="font-bold text-sm text-white/60">{getExhibitorName(app)}</p>
+                                          <p className="text-xs text-white/40">
+                                            {new Date(app.startTime).toLocaleDateString('fr-FR', {
+                                              day: 'numeric',
+                                              month: 'short',
+                                              year: 'numeric',
+                                              hour: '2-digit',
+                                              minute: '2-digit'
+                                            })}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </motion.div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Onglet Annulés */}
+                          {historyTab === 'cancelled' && (
+                            <div className="space-y-4">
+                              <h4 className="text-sm font-black uppercase tracking-[0.2em] text-red-400/60 mb-4 px-2">Rendez-vous Annulés</h4>
+                              {filteredCancelled.length === 0 ? (
+                                <div className="text-center py-12 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                                  <p className="text-white/20">Aucun rendez-vous annulé</p>
+                                </div>
+                              ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  {filteredCancelled.map(app => (
+                                    <motion.div
+                                      key={app.id}
+                                      className="bg-white/5 border border-red-500/10 p-4 rounded-2xl"
+                                    >
+                                      <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                          <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 font-bold">
+                                            {getExhibitorName(app).charAt(0)}
+                                          </div>
+                                          <div>
+                                            <p className="font-bold text-sm text-white/60">{getExhibitorName(app)}</p>
+                                            <p className="text-xs text-red-300/40">Annulé</p>
+                                          </div>
+                                        </div>
+                                        <Button
+                                          size="sm"
+                                          onClick={() => handleRequestAnother(app.exhibitorId)}
+                                          className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white"
+                                        >
+                                          Relancer
+                                        </Button>
+                                      </div>
+                                    </motion.div>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>

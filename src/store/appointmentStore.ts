@@ -75,7 +75,7 @@ async function sendAppointmentNotifications(
 
     // Envoyer email au visiteur
     if (type === 'confirmed') {
-      const visitorTemplate = emailTemplateService.createAppointmentConfirmationEmail(emailData);
+      const visitorTemplate = emailTemplateService.generateAppointmentConfirmation(emailData);
       await emailTemplateService.sendEmail(visitorProfile.email, visitorTemplate);
     } else if (type === 'cancelled') {
       // Pour l'annulation, créer un template simple
@@ -537,6 +537,39 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     }
     console.log('✅ ExhibitorId is valid');
 
+    // NOUVELLE RÈGLE: Vérifier qu'on n'a pas déjà un RDV avec cet exposant/partenaire
+    console.log('🔍 Checking if user already has appointment with this exhibitor...');
+    const hasExistingAppointment = appointments.some(
+      a => a.visitorId === visitorId && a.exhibitorId === exhibitorIdForSlot && a.status !== 'cancelled'
+    );
+    if (hasExistingAppointment) {
+      console.log('❌ User already has appointment with this exhibitor!');
+      throw new Error('Vous avez déjà un rendez-vous avec cet exposant/partenaire');
+    }
+    console.log('✅ No existing appointment with this exhibitor');
+
+    // VALIDATION TEMPORELLE: Vérifier que le créneau est valide
+    const slotDate = slot.date ? new Date(slot.date) : null;
+    const now = new Date();
+    const salonStart = new Date('2026-04-01T00:00:00');
+    const salonEnd = new Date('2026-04-03T23:59:59');
+
+    if (!slotDate) {
+      console.log('❌ Slot has no date!');
+      throw new Error('Ce créneau n\'a pas de date valide');
+    }
+
+    if (slotDate < now) {
+      console.log('❌ Slot is in the past!');
+      throw new Error('Ce créneau est dans le passé. Veuillez choisir un créneau futur.');
+    }
+
+    if (slotDate < salonStart || slotDate > salonEnd) {
+      console.log('❌ Slot is outside salon dates!');
+      throw new Error('Ce créneau est en dehors des dates du salon (1-3 Avril 2026)');
+    }
+    console.log('✅ Slot date is valid');
+
     // Additional validation: Verify slot is not already fully booked
     console.log('🔍 Checking availability:', { available: slot.available, currentBookings: slot.currentBookings, maxBookings: slot.maxBookings });
     if (!slot.available || (slot.currentBookings || 0) >= (slot.maxBookings || 1)) {
@@ -551,11 +584,13 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
     console.log('🚀 Calling book_appointment_atomic RPC...', { timeSlotId, visitorId, exhibitorIdForSlot });
     logger.info('[appointmentStore] Calling book_appointment_atomic RPC', { timeSlotId, visitorId, exhibitorIdForSlot });
 
+    // Signature from 20251224 migration: (p_time_slot_id, p_visitor_id, p_exhibitor_id, p_notes, p_meeting_type)
     const { data, error } = await supabase.rpc('book_appointment_atomic', {
       p_time_slot_id: timeSlotId,
       p_visitor_id: visitorId,
       p_exhibitor_id: exhibitorIdForSlot,
-      p_message: message || null
+      p_notes: message || null,
+      p_meeting_type: 'in-person'
     });
 
     console.log('📩 RPC Response:', { data, error });
@@ -567,14 +602,14 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       throw new Error(error.message || 'Erreur lors de la réservation');
     }
 
-    // La fonction RPC retourne un tableau avec un seul élément
-    const result = Array.isArray(data) ? data[0] : data;
+    // The function returns a JSONB object
+    const result = data;
     console.log('📊 RPC Result:', result);
     
     if (!result || !result.success) {
       console.log('❌ Booking failed:', result);
       logger.error('[appointmentStore] Booking failed', { result });
-      throw new Error(result?.error_message || 'Erreur lors de la réservation');
+      throw new Error(result?.error || result?.error_message || 'Erreur lors de la réservation');
     }
     console.log('✅✅✅ BOOKING SUCCESS! ✅✅✅');
 

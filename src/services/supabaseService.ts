@@ -288,7 +288,7 @@ export class SupabaseService {
         try {
           const { data: exhibitorResult, error: exhibitorError } = await safeSupabase
             .from('exhibitors')
-            .select('id, user_id, company_name, category, sector, description, logo_url, website, verified, featured, stand_number, stand_area, contact_info, created_at, updated_at')
+            .select('id, user_id, company_name, category, sector, description, logo_url, website, verified, featured, stand_number, contact_info, created_at, updated_at')
             .eq('user_id', userData.id)
             .maybeSingle();
           

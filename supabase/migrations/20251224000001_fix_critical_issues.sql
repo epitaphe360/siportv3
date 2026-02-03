@@ -112,7 +112,7 @@ CREATE OR REPLACE FUNCTION book_appointment_atomic(
   p_visitor_id UUID,
   p_exhibitor_id UUID,
   p_notes TEXT DEFAULT NULL,
-  p_meeting_type TEXT DEFAULT 'in-person'
+  p_meeting_type meeting_type DEFAULT 'in-person'
 ) RETURNS JSONB AS $$
 DECLARE
   v_current_bookings INTEGER;

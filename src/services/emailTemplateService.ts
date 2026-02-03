@@ -354,7 +354,7 @@ L'équipe SIPORT 2026
     try {
       logger.info('Sending email via API', { to, subject: template.subject });
 
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
       
       const response = await fetch(`${API_URL}/api/send-email`, {
         method: 'POST',
