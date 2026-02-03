@@ -187,28 +187,38 @@ export default function NetworkingPage() {
   // When the appointment modal is shown for a selected exhibitor, fetch their time slots
   React.useEffect(() => {
     if (showAppointmentModal && selectedExhibitorForRDV?.id) {
+      console.log('📥 Modal opened, fetching time slots for:', selectedExhibitorForRDV.id);
       // clear any previously selected slot
       setSelectedTimeSlot('');
       // fetch exhibitor slots (best-effort)
-      try {
-        fetchTimeSlots(selectedExhibitorForRDV.id);
-      } catch {
-        // ignore errors, UI will fallback to empty list
-        // console.warn('Failed to fetch exhibitor time slots', e);
-      }
+      fetchTimeSlots(selectedExhibitorForRDV.id)
+        .then(() => {
+          const currentSlots = useAppointmentStore.getState().timeSlots;
+          console.log('📅 Time slots loaded:', currentSlots.length, currentSlots);
+        })
+        .catch((e) => {
+          console.error('❌ Failed to fetch time slots:', e);
+        });
     }
   }, [showAppointmentModal, selectedExhibitorForRDV?.id, fetchTimeSlots]);
 
   const handleConfirmAppointment = async () => {
+    // DEBUG: Alert pour confirmer que le clic est capturé
+    console.log('🚨🚨🚨 BUTTON CLICKED! 🚨🚨🚨');
     console.log('[NetworkingPage] handleConfirmAppointment started', { selectedExhibitorForRDV, selectedTimeSlot });
+    
     if (!selectedExhibitorForRDV) {
+      console.log('❌ No exhibitor selected');
       toast.error('Aucun exposant sélectionné');
       return;
     }
     if (!selectedTimeSlot) {
+      console.log('❌ No time slot selected');
       toast.error('Veuillez sélectionner un créneau horaire');
       return;
     }
+    
+    console.log('✅ Validation passed, proceeding with booking...');
     
     // Quotas B2B selon visitor_level OU type d'utilisateur - utilise le système centralisé
     // ✅ Les exposants/partenaires utilisent leur TYPE, les visiteurs utilisent leur NIVEAU
@@ -221,12 +231,14 @@ export default function NetworkingPage() {
       : visitorLevel;
 
     const quota = getVisitorQuota(quotaKey); // Depuis quotas.ts
+    console.log('📊 Quota check:', { userType, visitorLevel, quotaKey, quota });
 
     // Récupérer les VRAIS rendez-vous depuis appointmentStore
     const appointmentStore = useAppointmentStore.getState();
     const userAppointments = appointmentStore.appointments.filter(
       (a: any) => a.visitorId === user?.id && a.status === 'confirmed'
     );
+    console.log('📅 User appointments:', userAppointments.length);
 
     // ✅ Vérifier le quota uniquement si ce n'est pas illimité (999999)
     if (quota !== 999999 && userAppointments.length >= quota) {
@@ -242,22 +254,23 @@ export default function NetworkingPage() {
       return;
     }
     
+    console.log('🚀 Calling bookAppointment with:', { selectedTimeSlot, appointmentMessage });
+    
     // Try to call the canonical booking flow
-    appointmentStore.bookAppointment(selectedTimeSlot, appointmentMessage)
-      .then(() => {
-        console.log('[NetworkingPage] Appointment booking succeeded');
-        toast.success(`Demande de RDV envoyée à ${getDisplayName(selectedExhibitorForRDV)}`);
-        setShowAppointmentModal(false);
-        setSelectedExhibitorForRDV(null);
-        setSelectedTimeSlot('');
-        setAppointmentMessage('');
-      })
-      .catch((err: unknown) => {
-        console.error('Booking failed:', err);
-        const errorMessage = err instanceof Error ? err.message : String(err) || 'Échec de la réservation';
-        console.log('[NetworkingPage] Error message:', errorMessage);
-        toast.error(errorMessage);
-      });
+    try {
+      await appointmentStore.bookAppointment(selectedTimeSlot, appointmentMessage);
+      console.log('✅ [NetworkingPage] Appointment booking succeeded');
+      toast.success(`Demande de RDV envoyée à ${getDisplayName(selectedExhibitorForRDV)}`);
+      setShowAppointmentModal(false);
+      setSelectedExhibitorForRDV(null);
+      setSelectedTimeSlot('');
+      setAppointmentMessage('');
+    } catch (err: unknown) {
+      console.error('❌ Booking failed:', err);
+      const errorMessage = err instanceof Error ? err.message : String(err) || 'Échec de la réservation';
+      console.log('[NetworkingPage] Error message:', errorMessage);
+      toast.error(errorMessage);
+    }
   };
 
   const handleFavoriteToggle = (userId: string, userName: string, isFavorite: boolean) => {
@@ -1597,7 +1610,10 @@ export default function NetworkingPage() {
                           return (
                             <button
                               key={slot.id}
-                              onClick={() => setSelectedTimeSlot(slot.id)}
+                              onClick={() => {
+                                console.log('🟢 SLOT CLICKED:', slot.id, slot);
+                                setSelectedTimeSlot(slot.id);
+                              }}
                               className={`p-3 sm:p-4 border-2 rounded-lg sm:rounded-xl text-left transition-all ${
                                 isSelected
                                   ? 'border-blue-600 bg-blue-50 shadow-lg'
@@ -1659,14 +1675,20 @@ export default function NetworkingPage() {
 
               {/* Actions */}
               <div className="flex space-x-3 pt-4 border-t">
-                <Button
-                  onClick={handleConfirmAppointment}
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 text-lg font-semibold rounded-xl"
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🔴 NATIVE BUTTON CLICKED');
+                    handleConfirmAppointment();
+                  }}
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 text-lg font-semibold rounded-xl inline-flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={!selectedTimeSlot}
                 >
                   <Calendar className="h-5 w-5 mr-2" />
                   Envoyer la Demande
-                </Button>
+                </button>
                 <Button
                   variant="outline"
                   onClick={() => {

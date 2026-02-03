@@ -441,34 +441,46 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
   },
 
   bookAppointment: async (timeSlotId, message) => {
+    console.log('🔴🔴🔴 bookAppointment CALLED 🔴🔴🔴', { timeSlotId, message });
+    
     // 🔒 PROTECTION ATOMIQUE contre les race conditions
     // Utilisation d'une Promise singleton pour garantir qu'un seul booking est en cours
     if (bookingPromise) {
+      console.log('⚠️ Booking already in progress, blocking');
       logger.warn('Tentative de booking concurrent détectée et bloquée');
       throw new Error('Une réservation est déjà en cours. Veuillez patienter.');
     }
 
+    console.log('✅ No concurrent booking, proceeding...');
+
     // Créer la Promise singleton
     bookingPromise = (async () => {
+      console.log('📦 Inside bookingPromise IIFE');
       const { appointments, timeSlots } = get();
+      console.log('📊 Current state:', { appointmentsCount: appointments.length, timeSlotsCount: timeSlots.length });
       set({ isBooking: true });
 
     try {
+      console.log('🔑 Getting user from authStore...');
       // Récupérer l'utilisateur connecté directement du store
       const resolvedUser = useAuthStore.getState().user;
+      console.log('👤 Resolved user:', resolvedUser?.id, resolvedUser?.email);
 
       // CRITICAL: User must be authenticated
       if (!resolvedUser?.id) {
+        console.log('❌ User not authenticated!');
         logger.error('User not authenticated during appointment booking', { user: resolvedUser });
         throw new Error('Vous devez être connecté pour réserver un rendez-vous.');
       }
 
       const visitorId = resolvedUser.id;
+      console.log('✅ User authenticated:', visitorId);
       logger.info('[appointmentStore] User authenticated for booking', { visitorId });
 
       // 🔐 SÉCURITÉ: Vérification de quota côté serveur (protection contre bypass côté client)
       // La vérification sera faite dans la fonction RPC book_appointment_atomic
       const supabase = supabaseClient;
+      console.log('🔌 Supabase client ready:', !!supabase);
 
       // OPTIMISATION: On saute la vérification RPC préalable pour éviter les faux positifs dues aux caches ou logiques divergentes.
       // On laisse book_appointment_atomic faire l'autorité finale.
@@ -497,32 +509,46 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       */
 
       // Prevent duplicate booking of the same time slot by the same visitor (UX seulement)
+      console.log('🔍 Checking for duplicate bookings...');
       if (appointments.some(a => a.visitorId === visitorId && a.timeSlotId === timeSlotId)) {
+        console.log('❌ Duplicate booking detected!');
         throw new Error('Vous avez déjà réservé ce créneau');
       }
+      console.log('✅ No duplicate booking');
 
     // CRITICAL: Validate time slot ownership
+    console.log('🔍 Looking for slot in timeSlots array:', timeSlotId);
+    console.log('📋 Available slots:', timeSlots.map(s => ({ id: s.id, exhibitorId: s.exhibitorId })));
     const slot = timeSlots.find(s => s.id === timeSlotId);
 
     if (!slot) {
+      console.log('❌ Slot NOT found in timeSlots!');
       throw new Error('Créneau non trouvé. Veuillez actualiser la page.');
     }
+    console.log('✅ Slot found:', slot);
 
     const exhibitorIdForSlot = slot.exhibitorId;
+    console.log('🏢 ExhibitorId for slot:', exhibitorIdForSlot);
 
     if (!exhibitorIdForSlot) {
+      console.log('❌ Slot has no exhibitorId!');
       // Time slot exists but has no owner - data integrity violation
       throw new Error('Ce créneau n\'a pas de propriétaire valide. Veuillez contacter le support.');
     }
+    console.log('✅ ExhibitorId is valid');
 
     // Additional validation: Verify slot is not already fully booked
+    console.log('🔍 Checking availability:', { available: slot.available, currentBookings: slot.currentBookings, maxBookings: slot.maxBookings });
     if (!slot.available || (slot.currentBookings || 0) >= (slot.maxBookings || 1)) {
+      console.log('❌ Slot is full!');
       throw new Error('Ce créneau est complet. Veuillez en choisir un autre.');
     }
+    console.log('✅ Slot is available');
 
     // ATOMIC BOOKING: Use RPC function with row-level locking
     // This prevents ALL race conditions and overbooking
     // Note: supabase already imported at line 438
+    console.log('🚀 Calling book_appointment_atomic RPC...', { timeSlotId, visitorId, exhibitorIdForSlot });
     logger.info('[appointmentStore] Calling book_appointment_atomic RPC', { timeSlotId, visitorId, exhibitorIdForSlot });
 
     const { data, error } = await supabase.rpc('book_appointment_atomic', {
@@ -532,20 +558,25 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       p_message: message || null
     });
 
+    console.log('📩 RPC Response:', { data, error });
     logger.info('[appointmentStore] RPC response', { data, error });
 
     if (error) {
+      console.log('❌ RPC Error:', error);
       logger.error('[appointmentStore] RPC error', { error });
       throw new Error(error.message || 'Erreur lors de la réservation');
     }
 
     // La fonction RPC retourne un tableau avec un seul élément
     const result = Array.isArray(data) ? data[0] : data;
+    console.log('📊 RPC Result:', result);
     
     if (!result || !result.success) {
+      console.log('❌ Booking failed:', result);
       logger.error('[appointmentStore] Booking failed', { result });
       throw new Error(result?.error_message || 'Erreur lors de la réservation');
     }
+    console.log('✅✅✅ BOOKING SUCCESS! ✅✅✅');
 
     logger.info('[appointmentStore] Booking successful', { appointmentId: result.appointment_id });
 
