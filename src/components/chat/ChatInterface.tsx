@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { ROUTES } from '../../lib/routes';
 import { toast } from 'sonner';
 import { 
@@ -21,6 +21,9 @@ import { useChatStore } from '../../store/chatStore';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ChatInterface() {
+  const [searchParams] = useSearchParams();
+  const targetUserId = searchParams.get('userId');
+  
   const {
     conversations,
     activeConversation,
@@ -29,15 +32,49 @@ export default function ChatInterface() {
     onlineUsers,
     fetchConversations,
     setActiveConversation,
-    sendMessage
+    sendMessage,
+    startConversation
   } = useChatStore();
 
   const [messageInput, setMessageInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [isCreatingConversation, setIsCreatingConversation] = useState(false);
 
   useEffect(() => {
     fetchConversations();
   }, [fetchConversations]);
+
+  // Auto-créer conversation si userId est en paramètre
+  useEffect(() => {
+    if (targetUserId && !isCreatingConversation && conversations.length > 0) {
+      const existingConv = conversations.find(c => 
+        c.participants.includes(targetUserId) || 
+        c.participants.some(p => p === targetUserId)
+      );
+      
+      if (existingConv) {
+        // Conversation existe, ouvrir celle-ci
+        setActiveConversation(existingConv.id);
+      } else {
+        // Créer nouvelle conversation
+        setIsCreatingConversation(true);
+        startConversation(targetUserId)
+          .then(convId => {
+            if (convId) {
+              setActiveConversation(convId);
+              toast.success('Conversation créée ! Vous pouvez maintenant envoyer un message.');
+            }
+          })
+          .catch(err => {
+            console.error('Erreur création conversation:', err);
+            toast.error('Impossible de créer la conversation');
+          })
+          .finally(() => {
+            setIsCreatingConversation(false);
+          });
+      }
+    }
+  }, [targetUserId, conversations, isCreatingConversation, setActiveConversation, startConversation]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
