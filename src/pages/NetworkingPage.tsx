@@ -1684,17 +1684,13 @@ export default function NetworkingPage() {
               <div className="flex space-x-3 pt-4 border-t">
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('🔴 NATIVE BUTTON CLICKED');
+                  style={{ backgroundColor: selectedTimeSlot ? 'green' : 'gray', color: 'white', padding: '20px', fontSize: '20px', cursor: 'pointer' }}
+                  onClick={() => {
+                    alert('CLICK DÉTECTÉ! selectedTimeSlot=' + selectedTimeSlot);
                     handleConfirmAppointment();
                   }}
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 text-lg font-semibold rounded-xl inline-flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={!selectedTimeSlot}
                 >
-                  <Calendar className="h-5 w-5 mr-2" />
-                  Envoyer la Demande
+                  {selectedTimeSlot ? `ENVOYER (slot: ${selectedTimeSlot.substring(0,8)}...)` : 'SÉLECTIONNEZ UN CRÉNEAU'}
                 </button>
                 <Button
                   variant="outline"

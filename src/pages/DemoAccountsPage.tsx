@@ -1,172 +1,69 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { Card } from '../components/ui/Card';
-import { Button } from '../components/ui/Button';
 import { toast } from 'sonner';
-import { 
-  Users, Building2, Handshake, Eye, EyeOff, Crown, 
-  Store, Warehouse, Factory, Ship,
-  Trophy, Medal, Award, Landmark,
-  LogIn, Copy, ArrowRight, BarChart3, Shield
-} from 'lucide-react';
+import { LogIn, Eye, EyeOff } from 'lucide-react';
 
-interface DemoAccount {
+interface QuickAccount {
   email: string;
   password: string;
-  name: string;
-  description: string;
-  icon: React.ElementType;
+  label: string;
+  type: 'visitor' | 'exhibitor' | 'partner' | 'marketing' | 'admin';
   color: string;
 }
 
 export const DemoAccountsPage: React.FC = () => {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswords, setShowPasswords] = useState(false);
   const [loggingIn, setLoggingIn] = useState<string | null>(null);
 
-  const demoAccounts = {
-    visitors: [
-      {
-        email: 'visitor-free@test.siport.com',
-        password: 'Test@123456',
-        name: 'Visiteur Gratuit',
-        description: 'Accès de base au salon',
-        icon: Users,
-        color: 'blue'
-      },
-      {
-        email: 'visitor-vip@test.siport.com',
-        password: 'Test@123456',
-        name: 'Visiteur VIP',
-        description: 'Accès premium avec badge numérique',
-        icon: Crown,
-        color: 'purple'
-      }
-    ] as DemoAccount[],
+  // 🚀 TOUS LES COMPTES RAPIDES
+  const quickAccounts: QuickAccount[] = [
+    // Visiteurs
+    { email: 'visitor-free@test.siport.com', password: 'Test@123456', label: '👤 Visiteur Gratuit', type: 'visitor', color: '#3B82F6' },
+    { email: 'visitor-vip@test.siport.com', password: 'Test@123456', label: '👑 Visiteur VIP', type: 'visitor', color: '#8B5CF6' },
     
-    exhibitors: [
-      {
-        email: 'exhibitor-9m@test.siport.com',
-        password: 'Test@123456',
-        name: 'TechMarine Solutions',
-        description: 'Stand 9m² - Starter',
-        icon: Store,
-        color: 'green'
-      },
-      {
-        email: 'exhibitor-18m@test.siport.com',
-        password: 'Test@123456',
-        name: 'OceanLogistics Pro',
-        description: 'Stand 18m² - Business',
-        icon: Warehouse,
-        color: 'teal'
-      },
-      {
-        email: 'exhibitor-36m@test.siport.com',
-        password: 'Test@123456',
-        name: 'PortTech Industries',
-        description: 'Stand 36m² - Premium',
-        icon: Factory,
-        color: 'cyan'
-      },
-      {
-        email: 'exhibitor-54m@test.siport.com',
-        password: 'Test@123456',
-        name: 'Global Shipping Alliance',
-        description: 'Stand 54m² - Enterprise',
-        icon: Ship,
-        color: 'indigo'
-      }
-    ] as DemoAccount[],
+    // Exposants
+    { email: 'exhibitor-9m@test.siport.com', password: 'Test@123456', label: '🏪 Exposant 9m²', type: 'exhibitor', color: '#10B981' },
+    { email: 'exhibitor-18m@test.siport.com', password: 'Test@123456', label: '🏭 Exposant 18m²', type: 'exhibitor', color: '#14B8A6' },
+    { email: 'exhibitor-36m@test.siport.com', password: 'Test@123456', label: '🏗️ Exposant 36m²', type: 'exhibitor', color: '#06B6D4' },
+    { email: 'exhibitor-54m@test.siport.com', password: 'Test@123456', label: '🚢 Exposant 54m²', type: 'exhibitor', color: '#6366F1' },
     
-    partners: [
-      {
-        email: 'demo.partner@siports.com',
-        password: 'Admin123!',
-        name: 'Demo Partner',
-        description: 'Partenaire Bronze - Compte de démonstration',
-        icon: Landmark,
-        color: 'amber'
-      },
-      {
-        email: 'partner-museum@test.siport.com',
-        password: 'Test@123456',
-        name: 'Musée Maritime National',
-        description: 'Partenaire institutionnel',
-        icon: Landmark,
-        color: 'amber'
-      },
-      {
-        email: 'partner-silver@test.siport.com',
-        password: 'Test@123456',
-        name: 'Silver Maritime Services',
-        description: 'Sponsor Silver',
-        icon: Medal,
-        color: 'gray'
-      },
-      {
-        email: 'partner-gold@test.siport.com',
-        password: 'Test@123456',
-        name: 'Gold Shipping Corp',
-        description: 'Sponsor Gold',
-        icon: Award,
-        color: 'yellow'
-      },
-      {
-        email: 'partner-platinum@test.siport.com',
-        password: 'Test@123456',
-        name: 'platinum Port Authority',
-        description: 'Sponsor platinum',
-        icon: Trophy,
-        color: 'slate'
-      }
-    ] as DemoAccount[],
+    // Partenaires
+    { email: 'demo.partner@siports.com', password: 'Admin123!', label: '🤝 Partner Demo', type: 'partner', color: '#F59E0B' },
+    { email: 'partner-museum@test.siport.com', password: 'Test@123456', label: '🏛️ Musée Maritime', type: 'partner', color: '#D97706' },
+    { email: 'partner-silver@test.siport.com', password: 'Test@123456', label: '🥈 Sponsor Silver', type: 'partner', color: '#9CA3AF' },
+    { email: 'partner-gold@test.siport.com', password: 'Test@123456', label: '🥇 Sponsor Gold', type: 'partner', color: '#EAB308' },
+    { email: 'partner-platinum@test.siport.com', password: 'Test@123456', label: '💎 Sponsor Platinum', type: 'partner', color: '#64748B' },
     
-    marketing: [
-      {
-        email: 'marketing@siports.com',
-        password: 'Test@123456',
-        name: 'Agence Marketing',
-        description: 'Accès au tableau de bord marketing',
-        icon: BarChart3,
-        color: 'pink'
-      }
-    ] as DemoAccount[],
+    // Marketing
+    { email: 'marketing@siports.com', password: 'Test@123456', label: '📊 Marketing', type: 'marketing', color: '#EC4899' },
     
-    admin: [
-      {
-        email: 'admin@siports.com',
-        password: 'Admin123!',
-        name: 'Administrateur',
-        description: 'Accès complet à toutes les fonctionnalités',
-        icon: Shield,
-        color: 'red'
-      }
-    ] as DemoAccount[]
-  };
+    // Admin
+    { email: 'admin@siports.com', password: 'Admin123!', label: '⚙️ Administrateur', type: 'admin', color: '#EF4444' },
+  ];
 
-  const handleLogin = async (email: string, password: string) => {
-    setLoggingIn(email);
+  const handleLogin = async (account: QuickAccount) => {
+    setLoggingIn(account.email);
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({ 
+        email: account.email, 
+        password: account.password 
+      });
       
       if (error) throw error;
       
-      toast.success('Connexion réussie !');
+      toast.success(`✅ Connecté: ${account.label}`);
       
-      // Redirection selon le type de compte
-      if (email.includes('visitor')) {
-        navigate('/visitor/dashboard');
-      } else if (email.includes('exhibitor')) {
-        navigate('/exhibitor/dashboard');
-      } else if (email.includes('partner')) {
-        navigate('/partner/dashboard');
-      } else if (email.includes('marketing')) {
-        navigate('/marketing/dashboard');
-      } else if (email.includes('admin')) {
-        navigate('/admin/dashboard');
-      }
+      // Redirection selon le type
+      const routes: Record<string, string> = {
+        visitor: '/visitor/dashboard',
+        exhibitor: '/exhibitor/dashboard',
+        partner: '/partner/dashboard',
+        marketing: '/marketing/dashboard',
+        admin: '/admin/dashboard'
+      };
+      navigate(routes[account.type] || '/');
     } catch (error: any) {
       toast.error(error.message || 'Erreur de connexion');
     } finally {
@@ -174,198 +71,124 @@ export const DemoAccountsPage: React.FC = () => {
     }
   };
 
-  const copyToClipboard = (text: string, type: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success(`${type} copié !`);
-  };
-
-  const renderAccountCard = (account: DemoAccount) => {
-    const Icon = account.icon;
-    const isLoading = loggingIn === account.email;
-    
-    return (
-      <Card key={account.email} className="p-6 hover:shadow-lg transition-all border-l-4" 
-            style={{ borderLeftColor: `var(--color-${account.color}-500)` }}>
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center space-x-3">
-            <div className={`p-3 bg-${account.color}-100 rounded-lg`}>
-              <Icon className={`h-6 w-6 text-${account.color}-600`} />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900">{account.name}</h3>
-              <p className="text-sm text-gray-600">{account.description}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-3 mb-4">
-          <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-            <span className="text-sm text-gray-700">{account.email}</span>
-            <button
-              onClick={() => copyToClipboard(account.email, 'Email')}
-              className="p-1 hover:bg-gray-200 rounded"
-            >
-              <Copy className="h-4 w-4 text-gray-600" />
-            </button>
-          </div>
-          
-          <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-            <span className="text-sm font-mono text-gray-700">
-              {showPassword ? account.password : '••••••••'}
-            </span>
-            <button
-              onClick={() => copyToClipboard(account.password, 'Mot de passe')}
-              className="p-1 hover:bg-gray-200 rounded"
-            >
-              <Copy className="h-4 w-4 text-gray-600" />
-            </button>
-          </div>
-        </div>
-
-        <Button
-          onClick={() => handleLogin(account.email, account.password)}
-          disabled={isLoading}
-          className="w-full"
-          style={{ backgroundColor: `var(--color-${account.color}-600)` }}
-        >
-          {isLoading ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-              Connexion...
-            </>
-          ) : (
-            <>
-              <LogIn className="h-4 w-4 mr-2" />
-              Se connecter
-            </>
-          )}
-        </Button>
-      </Card>
-    );
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div style={{ 
+      minHeight: '100vh', 
+      background: 'linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%)',
+      padding: '20px'
+    }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            🚀 Connexion rapide - Comptes de démonstration
+        <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+          <h1 style={{ fontSize: '2.5rem', color: 'white', marginBottom: '10px' }}>
+            ⚡ COMPTES RAPIDES
           </h1>
-          <p className="text-lg text-gray-600 mb-6">
-            Explorez toutes les fonctionnalités avec nos comptes de test
+          <p style={{ color: '#94a3b8', fontSize: '1.1rem' }}>
+            Cliquez sur un compte pour vous connecter instantanément
           </p>
-          
-          <div className="inline-flex items-center space-x-4 p-4 bg-white rounded-lg shadow-md">
-            <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium text-gray-700">Mot de passe universel:</span>
-              <code className="px-3 py-1 bg-gray-100 rounded font-mono text-sm font-semibold text-blue-600">
-                {showPassword ? 'Test@123456' : '••••••••'}
-              </code>
-              <button
-                onClick={() => setShowPassword(!showPassword)}
-                className="p-2 hover:bg-gray-100 rounded-full transition"
-              >
-                {showPassword ? <EyeOff className="h-5 w-5 text-gray-600" /> : <Eye className="h-5 w-5 text-gray-600" />}
-              </button>
-              <button
-                onClick={() => copyToClipboard('Test@123456', 'Mot de passe')}
-                className="p-2 hover:bg-gray-100 rounded-full transition"
-              >
-                <Copy className="h-5 w-5 text-gray-600" />
-              </button>
-            </div>
-          </div>
+          <button
+            onClick={() => setShowPasswords(!showPasswords)}
+            style={{
+              marginTop: '15px',
+              padding: '8px 16px',
+              background: '#334155',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+          >
+            {showPasswords ? <EyeOff size={18} /> : <Eye size={18} />}
+            {showPasswords ? 'Masquer mots de passe' : 'Afficher mots de passe'}
+          </button>
         </div>
 
-        {/* Visiteurs Section */}
-        <section className="mb-12">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="p-3 bg-blue-100 rounded-lg">
-              <Users className="h-6 w-6 text-blue-600" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">👥 Visiteurs</h2>
-              <p className="text-gray-600">Accès au salon et fonctionnalités visiteurs</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {demoAccounts.visitors.map(renderAccountCard)}
-          </div>
-        </section>
+        {/* Grille de comptes */}
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
+          gap: '15px' 
+        }}>
+          {quickAccounts.map((account) => (
+            <button
+              key={account.email}
+              onClick={() => handleLogin(account)}
+              disabled={loggingIn === account.email}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                padding: '16px 20px',
+                background: loggingIn === account.email ? '#1e293b' : '#0f172a',
+                border: `2px solid ${account.color}`,
+                borderRadius: '12px',
+                cursor: loggingIn === account.email ? 'wait' : 'pointer',
+                transition: 'all 0.2s',
+                opacity: loggingIn === account.email ? 0.7 : 1,
+              }}
+              onMouseEnter={(e) => {
+                if (loggingIn !== account.email) {
+                  e.currentTarget.style.background = account.color + '20';
+                  e.currentTarget.style.transform = 'scale(1.02)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#0f172a';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              <div style={{ 
+                fontSize: '1.2rem', 
+                fontWeight: 'bold', 
+                color: account.color,
+                marginBottom: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                {loggingIn === account.email ? (
+                  <span style={{ animation: 'spin 1s linear infinite' }}>⏳</span>
+                ) : (
+                  <LogIn size={18} />
+                )}
+                {account.label}
+              </div>
+              <div style={{ 
+                fontSize: '0.85rem', 
+                color: '#94a3b8',
+                fontFamily: 'monospace'
+              }}>
+                {account.email}
+              </div>
+              {showPasswords && (
+                <div style={{ 
+                  fontSize: '0.8rem', 
+                  color: '#64748b',
+                  fontFamily: 'monospace',
+                  marginTop: '4px'
+                }}>
+                  🔑 {account.password}
+                </div>
+              )}
+            </button>
+          ))}
+        </div>
 
-        {/* Exposants Section */}
-        <section className="mb-12">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="p-3 bg-green-100 rounded-lg">
-              <Building2 className="h-6 w-6 text-green-600" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">🏢 Exposants</h2>
-              <p className="text-gray-600">Gestion de stand et mini-site personnalisé</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {demoAccounts.exhibitors.map(renderAccountCard)}
-          </div>
-        </section>
-
-        {/* Partenaires Section */}
-        <section className="mb-12">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="p-3 bg-amber-100 rounded-lg">
-              <Handshake className="h-6 w-6 text-amber-600" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">🤝 Partenaires</h2>
-              <p className="text-gray-600">Sponsors et partenaires institutionnels</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {demoAccounts.partners.map(renderAccountCard)}
-          </div>
-        </section>
-
-        {/* Marketing Section */}
-        <section className="mb-12">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="p-3 bg-pink-100 rounded-lg">
-              <BarChart3 className="h-6 w-6 text-pink-600" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">📊 Marketing & Communication</h2>
-              <p className="text-gray-600">Gestion des médias et contenus promotionnels</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {demoAccounts.marketing.map(renderAccountCard)}
-          </div>
-        </section>
-
-        {/* Admin Section */}
-        <section className="mb-12">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="p-3 bg-red-100 rounded-lg">
-              <Shield className="h-6 w-6 text-red-600" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">⚙️ Administrateur</h2>
-              <p className="text-gray-600">Accès complet à toutes les fonctionnalités de la plateforme</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {demoAccounts.admin.map(renderAccountCard)}
-          </div>
-        </section>
-
-        {/* Footer */}
-        <div className="mt-12 text-center">
-          <div className="inline-flex items-center space-x-2 p-4 bg-blue-50 rounded-lg">
-            <ArrowRight className="h-5 w-5 text-blue-600" />
-            <p className="text-sm text-gray-700">
-              Cliquez sur <strong>Se connecter</strong> pour accéder directement au tableau de bord
-            </p>
-          </div>
+        {/* Note */}
+        <div style={{ 
+          textAlign: 'center', 
+          marginTop: '30px',
+          padding: '15px',
+          background: 'rgba(255,255,255,0.05)',
+          borderRadius: '12px'
+        }}>
+          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
+            💡 Mot de passe par défaut: <code style={{ color: '#60a5fa' }}>Test@123456</code> | 
+            Admin: <code style={{ color: '#f87171' }}>Admin123!</code>
+          </p>
         </div>
       </div>
     </div>
