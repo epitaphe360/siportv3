@@ -2892,7 +2892,8 @@ export class SupabaseService {
 
       const transformed = (data || []).map((row: TimeSlotRow) => ({
         id: row.id,
-        userId: row.exhibitor_id || row.user_id,
+        exhibitorId: row.exhibitor_id || row.user_id, // Important: bookAppointment expects exhibitorId
+        userId: row.exhibitor_id || row.user_id, // Keep for backward compat
         date: parseLocalDateToDate(row.slot_date || row.date),
         startTime: row.start_time || row.startTime,
         endTime: row.end_time || row.endTime,
