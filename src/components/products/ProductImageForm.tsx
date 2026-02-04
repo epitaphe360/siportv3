@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MultiImageUploader } from '../ui/upload';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface ProductImageFormProps {
   productId: string;
@@ -18,6 +19,7 @@ const ProductImageForm: React.FC<ProductImageFormProps> = ({
   onCancel,
   maxImages = 8
 }) => {
+  const { t } = useTranslation();
   const [images, setImages] = useState<string[]>(initialImages);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +30,7 @@ const ProductImageForm: React.FC<ProductImageFormProps> = ({
 
   const handleSave = async () => {
     if (images.length === 0) {
-      setError('Veuillez télécharger au moins une image pour ce produit');
+      setError(t('products.min_one_image'));
       return;
     }
 
@@ -39,7 +41,7 @@ const ProductImageForm: React.FC<ProductImageFormProps> = ({
       await onSave(images);
     } catch (err: unknown) {
       console.error('Erreur lors de la sauvegarde:', err);
-      setError(err instanceof Error ? err.message : 'Erreur lors de la sauvegarde des images');
+      setError(err instanceof Error ? err.message : t('products.error_saving_images'));
     } finally {
       setIsSaving(false);
     }
@@ -47,12 +49,11 @@ const ProductImageForm: React.FC<ProductImageFormProps> = ({
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">
-      <h2 className="text-xl font-semibold mb-4">Images du produit</h2>
+      <h2 className="text-xl font-semibold mb-4">{t('products.product_images')}</h2>
       
       <div className="mb-6">
         <p className="text-gray-600 text-sm mb-4">
-          Téléchargez des photos de votre produit. La première image sera utilisée comme image principale.
-          Vous pouvez réorganiser les images par glisser-déposer.
+          {t('products.upload_images_desc')}
         </p>
         
         <MultiImageUploader
@@ -81,7 +82,7 @@ const ProductImageForm: React.FC<ProductImageFormProps> = ({
             className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
             disabled={isSaving}
           >
-            Annuler
+            {t('common.cancel')}
           </button>
         )}
         
@@ -91,7 +92,7 @@ const ProductImageForm: React.FC<ProductImageFormProps> = ({
           className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-blue-300"
           disabled={isSaving}
         >
-          {isSaving ? 'Enregistrement...' : 'Enregistrer'}
+          {isSaving ? t('common.saving') : t('common.save')}
         </button>
       </div>
     </div>

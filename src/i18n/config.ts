@@ -58,6 +58,7 @@ const resources = {
         error: 'Erreur',
         success: 'Succès',
         save: 'Enregistrer',
+        saving: 'Enregistrement...',
         cancel: 'Annuler',
         delete: 'Supprimer',
         edit: 'Modifier',
@@ -509,6 +510,12 @@ const resources = {
         company_placeholder: 'Ex: Consultant indépendant',
         sector_placeholder: 'Ex: Consulting maritime',
         click_to_edit: 'Cliquer pour modifier'
+      },
+      products: {
+        min_one_image: 'Veuillez télécharger au moins une image pour ce produit',
+        error_saving_images: 'Erreur lors de la sauvegarde des images',
+        product_images: 'Images du produit',
+        upload_images_desc: 'Téléchargez des photos de votre produit. La première image sera utilisée comme image principale. Vous pouvez réorganiser les images par glisser-déposer.'
       },
       siteBuilder: {
         search_template: 'Rechercher un template...',
@@ -1306,6 +1313,7 @@ const resources = {
         error: 'Error',
         success: 'Success',
         save: 'Save',
+        saving: 'Saving...',
         cancel: 'Cancel',
         delete: 'Delete',
         edit: 'Edit',
@@ -1757,6 +1765,12 @@ const resources = {
         company_placeholder: 'Ex: Independent Consultant',
         sector_placeholder: 'Ex: Maritime Consulting',
         click_to_edit: 'Click to edit'
+      },
+      products: {
+        min_one_image: 'Please upload at least one image for this product',
+        error_saving_images: 'Error saving images',
+        product_images: 'Product Images',
+        upload_images_desc: 'Upload photos of your product. The first image will be used as the main image. You can reorder images by drag and drop.'
       },
       siteBuilder: {
         search_template: 'Search for a template...',
