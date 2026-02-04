@@ -682,7 +682,11 @@ const resources = {
         drag_drop: 'Glissez-déposez ou cliquez pour sélectionner',
         select_file: 'Sélectionner un fichier',
         remove_image: 'Supprimer l\'image',
-        change_image: 'Changer l\'image'
+        change_image: 'Changer l\'image',
+        max_images_error: 'Vous ne pouvez pas télécharger plus de {{max}} images.',
+        file_not_image: 'Le fichier "{{name}}" n\'est pas une image.',
+        image_too_large: 'L\'image "{{name}}" est trop volumineuse. Taille maximale: {{max}}MB.',
+        images_count: '{{current}} sur {{max}} images ({{size}}MB max par image)'
       },
       form: {
         organization_name: 'Nom de l\'organisation',
@@ -1766,7 +1770,11 @@ const resources = {
         drag_drop: 'Drag and drop or click to select',
         select_file: 'Select a file',
         remove_image: 'Remove image',
-        change_image: 'Change image'
+        change_image: 'Change image',
+        max_images_error: 'You cannot upload more than {{max}} images.',
+        file_not_image: 'The file "{{name}}" is not an image.',
+        image_too_large: 'The image "{{name}}" is too large. Maximum size: {{max}}MB.',
+        images_count: '{{current}} of {{max}} images ({{size}}MB max per image)'
       },
       form: {
         organization_name: 'Organization name',

@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { StorageService } from '../../services/storageService';
 import { X, Plus, AlertCircle, Loader2 } from 'lucide-react';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface MultiImageUploaderProps {
   onImagesUploaded: (urls: string[]) => void;
@@ -19,10 +20,11 @@ const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
   bucketName = 'images',
   folderName = '',
   className = '',
-  label = 'Télécharger des images',
+  label,
   maxSizeMB = 5,
   maxImages = 10
 }) => {
+  const { t } = useTranslation();
   const [images, setImages] = useState<string[]>(currentImages);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +36,7 @@ const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
 
     // Vérifier le nombre maximum d'images
     if (images.length + files.length > maxImages) {
-      setError(`Vous ne pouvez pas télécharger plus de ${maxImages} images.`);
+      setError(t('upload.max_images_error', { max: maxImages }));
       return;
     }
 
@@ -53,13 +55,13 @@ const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
         
         // Vérifier le type de fichier
         if (!file.type.startsWith('image/')) {
-          throw new Error(`Le fichier "${file.name}" n'est pas une image.`);
+          throw new Error(t('upload.file_not_image', { name: file.name }));
         }
         
         // Vérifier la taille du fichier
         const maxSize = maxSizeMB * 1024 * 1024; // en octets
         if (file.size > maxSize) {
-          throw new Error(`L'image "${file.name}" est trop volumineuse. Taille maximale: ${maxSizeMB}MB.`);
+          throw new Error(t('upload.image_too_large', { name: file.name, max: maxSizeMB }));
         }
         
         uploadPromises.push(StorageService.uploadImage(file, bucketName, folderName));
@@ -74,7 +76,7 @@ const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
       onImagesUploaded(updatedImages);
       
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur lors du téléchargement');
+      setError(err instanceof Error ? err.message : t('upload.upload_error'));
       console.error('Erreur de téléchargement:', err);
     } finally {
       setIsUploading(false);
@@ -146,7 +148,7 @@ const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
         
         {/* Info sur le nombre d'images */}
         <div className="text-xs text-gray-500 mt-2">
-          {images.length} sur {maxImages} images ({maxSizeMB}MB max par image)
+          {t('upload.images_count', { current: images.length, max: maxImages, size: maxSizeMB })}
         </div>
         
         <input
