@@ -345,22 +345,22 @@ export default memo(function VisitorDashboard() {
                   </div>
                   <div>
                     <h1 className="text-3xl font-bold text-white mb-1">
-                      Espace Visiteur
+                      {t('visitor.visitor_area')}
                     </h1>
                     <p className="text-blue-100">
-                      Bienvenue {user.name}, niveau {userLevel.toUpperCase()} 🌟
+                      {t('visitor.welcome_message', { name: user.name, level: userLevel.toUpperCase() })} 🌟
                     </p>
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
                   <Link to={ROUTES.BADGE}>
                     <Button variant="outline" size="md" className="border-white/40 text-white hover:bg-white/10 hover:border-white/60 backdrop-blur-sm">
-                      🎫 Mon Badge Virtuel
+                      🎫 {t('visitor.my_virtual_badge')}
                     </Button>
                   </Link>
                   <div className="hidden md:flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg">
                     <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <span className="text-white text-sm font-medium">Connecté</span>
+                    <span className="text-white text-sm font-medium">{t('visitor.connected')}</span>
                   </div>
                   <div className="flex justify-end">
                     <LevelBadge level={userLevel} type="visitor" size="lg" />
@@ -618,9 +618,9 @@ export default memo(function VisitorDashboard() {
                       <Network className="h-5 w-5 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900">Réseautage IA</h3>
+                      <h3 className="text-lg font-semibold text-gray-900">{t('visitor.ai_networking')}</h3>
                       <p className="text-gray-600 text-sm mt-1">
-                        Découvrez des connexions pertinentes grâce à l'intelligence artificielle
+                        {t('visitor.ai_networking_desc')}
                       </p>
                     </div>
                   </div>
@@ -628,13 +628,13 @@ export default memo(function VisitorDashboard() {
                     <Link to={ROUTES.NETWORKING}>
                       <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-md hover:shadow-lg transition-all">
                         <Network className="h-4 w-4 mr-2" />
-                        Explorer le réseau
+                        {t('visitor.explore_network')}
                       </Button>
                     </Link>
                     <Link to={ROUTES.PROFILE_MATCHING}>
                       <Button variant="outline" className="w-full border-purple-200 text-purple-700 hover:bg-purple-50">
                         <Target className="h-4 w-4 mr-2" />
-                        Configurer mon matching
+                        {t('visitor.configure_matching')}
                         <ArrowRight className="h-4 w-4 ml-2" />
                       </Button>
                     </Link>
@@ -801,16 +801,16 @@ export default memo(function VisitorDashboard() {
                       <MessageCircle className="h-5 w-5 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900">Messagerie</h3>
+                      <h3 className="text-lg font-semibold text-gray-900">{t('visitor.messaging')}</h3>
                     <p className="text-gray-600 text-sm mt-1">
-                      Communiquez directement avec les exposants et partenaires
+                      {t('visitor.messaging_desc')}
                     </p>
                   </div>
                 </div>
                 <Link to={ROUTES.CHAT}>
                   <Button variant="outline" className="w-full border-2 hover:bg-gray-50">
                     <MessageCircle className="h-4 w-4 mr-2" />
-                    Ouvrir la messagerie
+                    {t('visitor.open_messaging')}
                   </Button>
                 </Link>
               </Card>
@@ -1079,18 +1079,18 @@ export default memo(function VisitorDashboard() {
                       {userLevel === 'free' ? (
                         <div className="text-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10">
                           <Award className="h-16 w-16 text-indigo-400/40 mx-auto mb-6" />
-                          <h4 className="text-2xl font-bold text-white mb-2">Fonctionnalité Premium</h4>
+                          <h4 className="text-2xl font-bold text-white mb-2">{t('visitor.premium_feature')}</h4>
                           <p className="max-w-md mx-auto text-indigo-100/60 mb-8">
-                            La prise de rendez-vous B2B est réservée aux visiteurs de niveau PRO et VIP.
+                            {t('visitor.b2b_reserved_message')}
                           </p>
                           <Button className="bg-gradient-to-r from-siports-gold to-yellow-600 text-white font-black px-8 py-4 rounded-xl">
-                            Passer au niveau supérieur
+                            {t('visitor.upgrade_level')}
                           </Button>
                         </div>
                       ) : isAppointmentsLoading ? (
                         <div className="text-center py-20">
                           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-400 mx-auto mb-4"></div>
-                          <p className="text-indigo-200/40">Chargement de vos rendez-vous...</p>
+                          <p className="text-indigo-200/40">{t('visitor.loading_appointments')}</p>
                         </div>
                       ) : (
                         <div className="space-y-6">

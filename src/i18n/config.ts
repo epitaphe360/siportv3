@@ -1061,7 +1061,22 @@ const resources = {
         currently: 'Actuellement',
         previous_period: 'Période précédente',
         confirmed_appointments: 'Rendez-vous confirmés',
-        connections_established: 'Connexions établies'
+        connections_established: 'Connexions établies',
+        visitor_area: 'Espace Visiteur',
+        welcome_message: 'Bienvenue {{name}}, niveau {{level}}',
+        my_virtual_badge: 'Mon Badge Virtuel',
+        connected: 'Connecté',
+        ai_networking: 'Réseautage IA',
+        ai_networking_desc: 'Découvrez des connexions pertinentes grâce à l\'intelligence artificielle',
+        explore_network: 'Explorer le réseau',
+        configure_matching: 'Configurer mon matching',
+        messaging: 'Messagerie',
+        messaging_desc: 'Communiquez directement avec les exposants et partenaires',
+        open_messaging: 'Ouvrir la messagerie',
+        premium_feature: 'Fonctionnalité Premium',
+        b2b_reserved_message: 'La prise de rendez-vous B2B est réservée aux visiteurs de niveau PRO et VIP.',
+        upgrade_level: 'Passer au niveau supérieur',
+        loading_appointments: 'Chargement de vos rendez-vous...'
       }
     }
   },
@@ -2122,7 +2137,22 @@ const resources = {
         currently: 'Currently',
         previous_period: 'Previous period',
         confirmed_appointments: 'Confirmed appointments',
-        connections_established: 'Connections established'
+        connections_established: 'Connections established',
+        visitor_area: 'Visitor Area',
+        welcome_message: 'Welcome {{name}}, level {{level}}',
+        my_virtual_badge: 'My Virtual Badge',
+        connected: 'Connected',
+        ai_networking: 'AI Networking',
+        ai_networking_desc: 'Discover relevant connections through artificial intelligence',
+        explore_network: 'Explore Network',
+        configure_matching: 'Configure My Matching',
+        messaging: 'Messaging',
+        messaging_desc: 'Communicate directly with exhibitors and partners',
+        open_messaging: 'Open Messaging',
+        premium_feature: 'Premium Feature',
+        b2b_reserved_message: 'B2B appointment scheduling is reserved for PRO and VIP level visitors.',
+        upgrade_level: 'Upgrade to Higher Level',
+        loading_appointments: 'Loading your appointments...'
       }
     }
   },
