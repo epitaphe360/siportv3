@@ -843,6 +843,12 @@ const resources = {
         preview: 'Aperçu',
         publish: 'Publier'
       },
+      whatsapp: {
+        need_help: 'Besoin d\'aide ?',
+        chat_team: 'Discutez avec notre équipe sur WhatsApp',
+        contact_whatsapp: 'Contacter par WhatsApp',
+        available_24_7: 'Disponible 24/7'
+      },
       minisite: {
         new_product: 'Nouveau produit',
         product_description: 'Description du produit',
@@ -2000,6 +2006,12 @@ const resources = {
         meta_title: 'Meta title',
         meta_description: 'Meta description',
         preview: 'Preview'
+      },
+      whatsapp: {
+        need_help: 'Need help?',
+        chat_team: 'Chat with our team on WhatsApp',
+        contact_whatsapp: 'Contact via WhatsApp',
+        available_24_7: 'Available 24/7'
       },
       templates: {
         all: 'All',

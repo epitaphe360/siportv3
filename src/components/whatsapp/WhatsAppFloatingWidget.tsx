@@ -1,5 +1,6 @@
 import React from 'react';
 import { MessageCircle, X } from 'lucide-react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { openWhatsApp, SUPPORT_CONFIG } from '../../config/supportConfig';
 
 interface WhatsAppFloatingWidgetProps {
@@ -45,8 +46,7 @@ export function WhatsAppFloatingWidget({
   message = SUPPORT_CONFIG.whatsapp.message,
   phoneNumber = SUPPORT_CONFIG.whatsapp.number,
   defaultVisible = true,
-}: WhatsAppFloatingWidgetProps) {
-  const [isOpen, setIsOpen] = React.useState(defaultVisible);
+}: WhatsAppFloatingWidgetProps) {  const { t } = useTranslation();  const [isOpen, setIsOpen] = React.useState(defaultVisible);
   const [showTooltip, setShowTooltip] = React.useState(true);
 
   React.useEffect(() => {
@@ -86,8 +86,8 @@ export function WhatsAppFloatingWidget({
       {/* Tooltip */}
       {showTooltip && (
         <div className="mb-3 bg-gray-900 text-white text-sm rounded-lg px-4 py-2 shadow-lg max-w-xs animate-fade-in">
-          <p className="font-medium">Besoin d'aide ?</p>
-          <p className="text-gray-300">Discutez avec notre équipe sur WhatsApp</p>
+          <p className="font-medium">{t('whatsapp.need_help')}</p>
+          <p className="text-gray-300">{t('whatsapp.chat_team')}</p>
         </div>
       )}
 
@@ -96,8 +96,8 @@ export function WhatsAppFloatingWidget({
         <button
           onClick={handleClick}
           className="group relative inline-flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
-          aria-label="Contacter par WhatsApp"
-          title="Contacter par WhatsApp"
+          aria-label={t('whatsapp.contact_whatsapp')}
+          title={t('whatsapp.contact_whatsapp')}
         >
           <MessageCircle className="h-7 w-7" />
           
@@ -109,8 +109,8 @@ export function WhatsAppFloatingWidget({
         <button
           onClick={() => setIsOpen(false)}
           className="w-10 h-10 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full flex items-center justify-center transition"
-          aria-label="Fermer"
-          title="Fermer"
+          aria-label={t('common.close')}
+          title={t('common.close')}
         >
           <X className="h-5 w-5" />
         </button>
@@ -118,7 +118,7 @@ export function WhatsAppFloatingWidget({
 
       {/* Info supplémentaire */}
       <div className="mt-3 text-center text-xs text-gray-600">
-        <p>Disponible 24/7</p>
+        <p>{t('whatsapp.available_24_7')}</p>
       </div>
     </div>
   );
