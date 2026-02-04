@@ -810,6 +810,8 @@ const resources = {
         view_offers: 'Voir les offres',
         view_pricing: 'Voir les tarifs',
         add_favorite: 'Ajouter aux favoris',
+        accept: 'Accepter',
+        reject: 'Refuser',
         delete_section: 'Supprimer la section',
         delete_product: 'Supprimer ce produit',
         delete_article: 'Supprimer cet article',
@@ -980,7 +982,9 @@ const resources = {
         forbidden: 'Accès interdit',
         validation_error: 'Erreur de validation',
         unknown_error: 'Erreur inconnue',
-        unregister_event: 'Erreur lors de la désinscription'
+        unregister_event: 'Erreur lors de la désinscription',
+        accept_appointment: 'Impossible d\'accepter le rendez-vous. Veuillez réessayer.',
+        reject_appointment: 'Impossible de refuser le rendez-vous. Veuillez réessayer.'
       },
       confirm: {
         delete_image: 'Supprimer cette image ?',
@@ -1076,7 +1080,11 @@ const resources = {
         premium_feature: 'Fonctionnalité Premium',
         b2b_reserved_message: 'La prise de rendez-vous B2B est réservée aux visiteurs de niveau PRO et VIP.',
         upgrade_level: 'Passer au niveau supérieur',
-        loading_appointments: 'Chargement de vos rendez-vous...'
+        loading_appointments: 'Chargement de vos rendez-vous...',
+        new_invitations: 'Nouvelles Invitations',
+        action_required: 'Action Requise',
+        no_message: 'Aucun message',
+        appointment_with: 'le rendez-vous avec'
       }
     }
   },
@@ -1886,6 +1894,8 @@ const resources = {
         view_offers: 'View offers',
         view_pricing: 'View pricing',
         add_favorite: 'Add to favorites',
+        accept: 'Accept',
+        reject: 'Reject',
         delete_section: 'Delete section',
         delete_product: 'Delete this product',
         delete_article: 'Delete this article',
@@ -2056,7 +2066,9 @@ const resources = {
         forbidden: 'Access forbidden',
         validation_error: 'Validation error',
         unknown_error: 'Unknown error',
-        unregister_event: 'Error during event unregistration'
+        unregister_event: 'Error during event unregistration',
+        accept_appointment: 'Unable to accept the appointment. Please try again.',
+        reject_appointment: 'Unable to reject the appointment. Please try again.'
       },
       confirm: {
         delete_image: 'Delete this image?',
@@ -2152,7 +2164,11 @@ const resources = {
         premium_feature: 'Premium Feature',
         b2b_reserved_message: 'B2B appointment scheduling is reserved for PRO and VIP level visitors.',
         upgrade_level: 'Upgrade to Higher Level',
-        loading_appointments: 'Loading your appointments...'
+        loading_appointments: 'Loading your appointments...',
+        new_invitations: 'New Invitations',
+        action_required: 'Action Required',
+        no_message: 'No message',
+        appointment_with: 'appointment with'
       }
     }
   },

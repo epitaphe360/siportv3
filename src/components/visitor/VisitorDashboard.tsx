@@ -138,7 +138,7 @@ export default memo(function VisitorDashboard() {
       // Note: fetchAppointments() removed - store already updates local state
     } catch (err) {
       console.error('Erreur lors de l\'acceptation du rendez-vous:', err);
-      setError('Impossible d\'accepter le rendez-vous. Veuillez réessayer.');
+      setError(t('errors.accept_appointment'));
     }
   }, [updateAppointmentStatus]);
 
@@ -148,7 +148,7 @@ export default memo(function VisitorDashboard() {
       // Note: fetchAppointments() removed - store already updates local state
     } catch (err) {
       console.error('Erreur lors du refus du rendez-vous:', err);
-      setError('Impossible de refuser le rendez-vous. Veuillez réessayer.');
+      setError(t('errors.reject_appointment'));
     }
   }, [cancelAppointment]);
 
@@ -1100,7 +1100,7 @@ export default memo(function VisitorDashboard() {
                               {/* Invitations en attente */}
                               {filteredUpcoming.filter(a => a.status === 'pending').length > 0 && (
                                 <div className="space-y-4">
-                                  <h4 className="text-sm font-black uppercase tracking-[0.2em] text-amber-400/80 mb-4 px-2">Nouvelles Invitations</h4>
+                                  <h4 className="text-sm font-black uppercase tracking-[0.2em] text-amber-400/80 mb-4 px-2">{t('visitor.new_invitations')}</h4>
                                   {filteredUpcoming.filter(a => a.status === 'pending').map((app, index) => (
                                 <motion.div
                                   key={app.id}
@@ -1117,9 +1117,9 @@ export default memo(function VisitorDashboard() {
                                       <div>
                                         <div className="flex items-center gap-2 mb-1">
                                           <span className="font-bold text-lg">{getExhibitorName(app)}</span>
-                                          <span className="px-2 py-0.5 bg-amber-500/20 text-amber-300 text-[10px] font-black uppercase rounded-full border border-amber-500/20">Action Requise</span>
+                                          <span className="px-2 py-0.5 bg-amber-500/20 text-amber-300 text-[10px] font-black uppercase rounded-full border border-amber-500/20">{t('visitor.action_required')}</span>
                                         </div>
-                                        <p className="text-indigo-100/60 text-sm italic">"{app.message || 'Aucun message'}"</p>
+                                        <p className="text-indigo-100/60 text-sm italic">"{app.message || t('visitor.no_message')}"</p>
                                       </div>
                                     </div>
                                     <div className="flex gap-3">
@@ -1130,11 +1130,11 @@ export default memo(function VisitorDashboard() {
                                           onSpace: () => handleAccept(app.id)
                                         })}
                                         className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl px-6"
-                                        aria-label={`Accepter le rendez-vous avec ${getExhibitorName(app)}`}
+                                        aria-label={`${t('actions.accept')} ${t('visitor.appointment_with')} ${getExhibitorName(app)}`}
                                         role="button"
                                         tabIndex={0}
                                       >
-                                        Accepter
+                                        {t('actions.accept')}
                                       </Button>
                                       <Button
                                         variant="destructive"
@@ -1144,11 +1144,11 @@ export default memo(function VisitorDashboard() {
                                           onSpace: () => handleReject(app.id)
                                         })}
                                         className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-xl"
-                                        aria-label={`Refuser le rendez-vous avec ${getExhibitorName(app)}`}
+                                        aria-label={`${t('actions.reject')} ${t('visitor.appointment_with')} ${getExhibitorName(app)}`}
                                         role="button"
                                         tabIndex={0}
                                       >
-                                        Refuser
+                                        {t('actions.reject')}
                                       </Button>
                                     </div>
                                   </div>
