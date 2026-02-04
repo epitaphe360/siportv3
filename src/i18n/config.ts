@@ -1155,7 +1155,13 @@ const resources = {
         unknown_error: 'Erreur inconnue',
         unregister_event: 'Erreur lors de la désinscription',
         accept_appointment: 'Impossible d\'accepter le rendez-vous. Veuillez réessayer.',
-        reject_appointment: 'Impossible de refuser le rendez-vous. Veuillez réessayer.'
+        reject_appointment: 'Impossible de refuser le rendez-vous. Veuillez réessayer.',
+        oops: 'Oups !',
+        unexpected_error: 'Une erreur inattendue s\'est produite. Nous nous excusons pour ce désagrément.',
+        error_message: 'Message d\'erreur',
+        view_stack_trace: 'Voir la stack trace',
+        reload_page: 'Recharger la page',
+        back_to_home: 'Retour à l\'accueil'
       },
       confirm: {
         delete_image: 'Supprimer cette image ?',
@@ -2410,7 +2416,13 @@ const resources = {
         unknown_error: 'Unknown error',
         unregister_event: 'Error during event unregistration',
         accept_appointment: 'Unable to accept the appointment. Please try again.',
-        reject_appointment: 'Unable to reject the appointment. Please try again.'
+        reject_appointment: 'Unable to reject the appointment. Please try again.',
+        oops: 'Oops!',
+        unexpected_error: 'An unexpected error occurred. We apologize for the inconvenience.',
+        error_message: 'Error message',
+        view_stack_trace: 'View stack trace',
+        reload_page: 'Reload page',
+        back_to_home: 'Back to home'
       },
       confirm: {
         delete_image: 'Delete this image?',
