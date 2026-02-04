@@ -139,14 +139,14 @@ export default function PartnerDashboard() {
           <div className="mx-auto w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mb-6">
              <CreditCard className="w-12 h-12 text-orange-600" />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">Activation Requise</h2>
+          <h2 className="text-3xl font-bold text-gray-900">{t('partner.activation_required')}</h2>
           <p className="text-lg text-gray-600">
-            Votre compte est créé mais nécessite une validation de paiement pour activer l'accès au tableau de bord.
+            {t('partner.payment_validation_needed')}
           </p>
           <div className="pt-4 flex justify-center gap-4">
             <Link to="/partner/payment-selection">
               <Button className="bg-gradient-to-r from-orange-600 to-amber-600 text-white px-8 py-4 rounded-xl text-lg hover:shadow-lg hover:scale-105 transition-all">
-                Finaliser le Paiement
+                {t('partner.finalize_payment')}
               </Button>
             </Link>
           </div>
@@ -188,13 +188,13 @@ export default function PartnerDashboard() {
             <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
               <Shield className="h-10 w-10 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Accès Non Autorisé</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('partner.access_denied')}</h2>
             <p className="text-gray-600 mb-6">
-              Ce tableau de bord est réservé aux partenaires SIPORTS 2026.
+              {t('partner.reserved_partners')}
             </p>
             <Link to={ROUTES.DASHBOARD}>
               <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                Retour au Tableau de Bord
+                {t('common.back_to_dashboard')}
               </Button>
             </Link>
           </Card>
@@ -358,7 +358,7 @@ export default function PartnerDashboard() {
               </Link>
               <div className="hidden md:flex items-center gap-3 bg-slate-800/50 backdrop-blur-md px-6 py-4 rounded-2xl border border-slate-700/50">
                 <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                <span className="text-slate-200 font-bold uppercase tracking-wider text-sm">Dashboard Live</span>
+                <span className="text-slate-200 font-bold uppercase tracking-wider text-sm">{t('partner.dashboard_live')}</span>
               </div>
             </div>
           </div>
@@ -404,16 +404,15 @@ export default function PartnerDashboard() {
                 <div className="p-3 bg-white/20 backdrop-blur-md rounded-2xl">
                   <CreditCard className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-3xl font-black italic uppercase tracking-wider">Validation de Paiement Requise</h3>
+                <h3 className="text-3xl font-black italic uppercase tracking-wider">{t('partner.payment_validation_required')}</h3>
               </div>
               <p className="text-xl text-white/90 mb-8 max-w-2xl font-medium">
-                Pour activer toutes les fonctionnalités de votre compte partenaire "Premium", 
-                veuillez finaliser votre règlement. Accès actuellement limité à la soumission de preuve.
+                {t('partner.payment_activation_message')}
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link to="/partner/payment-selection">
                   <Button className="bg-white text-orange-600 hover:bg-orange-50 font-black px-10 py-7 rounded-2xl shadow-xl transition-all hover:scale-105">
-                    Effectuer le Paiement
+                    {t('partner.make_payment')}
                   </Button>
                 </Link>
                 <Link to="/support">
@@ -504,7 +503,7 @@ export default function PartnerDashboard() {
                   <div className="w-24 h-24 bg-indigo-100 rounded-[2rem] flex items-center justify-center mb-6">
                     <Sparkles className="h-12 w-12 text-indigo-600" />
                   </div>
-                  <h3 className="text-3xl font-black text-slate-900 mb-4">Génération IA Intelligent</h3>
+                  <h3 className="text-3xl font-black text-slate-900 mb-4">{t('partner.ai_generation')}</h3>
                   <p className="text-slate-600 mb-8 max-w-sm">
                     Laissez notre IA analyser votre site web et remplir automatiquement votre profil partenaire avec vos logos, descriptions et services.
                   </p>
@@ -556,8 +555,8 @@ export default function PartnerDashboard() {
                 <div className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-100">
                   <div className="p-10 border-b border-slate-100 flex items-center justify-between flex-wrap gap-4 bg-slate-50/50">
                     <div>
-                      <h2 className="text-3xl font-black text-slate-900 mb-2">Gestion des Rendez-vous</h2>
-                      <p className="text-slate-500 font-medium">Planifiez et gérez vos rencontres d'affaires B2B.</p>
+                      <h2 className="text-3xl font-black text-slate-900 mb-2">{t('partner.appointments_management')}</h2>
+                      <p className="text-slate-500 font-medium">{t('partner.appointments_description')}</p>
                     </div>
                     <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 px-4 py-2 font-bold rounded-xl">
                       {confirmedAppointments.length} Rendez-vous Confirmés
@@ -578,8 +577,8 @@ export default function PartnerDashboard() {
                         <Calendar className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-black text-slate-900">En attente</h3>
-                        <p className="text-sm text-slate-500">Demandes à traiter ({pendingAppointments.length})</p>
+                        <h3 className="text-2xl font-black text-slate-900">{t('partner.pending')}</h3>
+                        <p className="text-sm text-slate-500">{t('partner.pending_requests', { count: pendingAppointments.length })}</p>
                       </div>
                     </div>
                     <div className="space-y-4">
@@ -588,8 +587,8 @@ export default function PartnerDashboard() {
                           <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                             <Calendar className="h-8 w-8 text-gray-400" />
                           </div>
-                          <p className="text-slate-400 font-medium">Aucune demande en attente</p>
-                          <p className="text-xs text-slate-300 mt-1">Les nouvelles demandes apparaîtront ici</p>
+                          <p className="text-slate-400 font-medium">{t('partner.no_pending_requests')}</p>
+                          <p className="text-xs text-slate-300 mt-1">{t('partner.pending_requests_appear_here')}</p>
                         </div>
                       ) : (
                         pendingAppointments.map((app, index) => (
@@ -641,7 +640,7 @@ export default function PartnerDashboard() {
                         <Share2 className="h-6 w-6 text-indigo-400" />
                         Partager mon lien RDV
                       </h3>
-                      <p className="text-slate-300 mb-6">Partagez votre agenda directement avec vos clients et prospects pour simplifier la prise de contact.</p>
+                      <p className="text-slate-300 mb-6">{t('partner.share_calendar_description')}</p>
                       <Button variant="outline" className="w-full py-6 rounded-2xl border-white/20 text-white hover:bg-white/10 font-bold">
                         Copier mon lien de Stand Virtuel
                       </Button>
@@ -673,8 +672,8 @@ export default function PartnerDashboard() {
                 </div>
                 <Card className="p-10 bg-white rounded-[2.5rem] shadow-xl border-2 border-slate-100">
                   <div className="flex items-center justify-between mb-8">
-                    <h3 className="text-2xl font-black text-slate-900">Performance ROI Globale</h3>
-                    <Button variant="outline" className="rounded-xl">Exporter le Rapport PDF</Button>
+                    <h3 className="text-2xl font-black text-slate-900">{t('partner.global_roi_performance')}</h3>
+                    <Button variant="outline" className="rounded-xl">{t('partner.export_pdf_report')}</Button>
                   </div>
                   <BarChartCard
                     title="Répartition des Métriques"
@@ -716,8 +715,8 @@ export default function PartnerDashboard() {
                   <Sparkles className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Auto-Fill Profile with AI</h2>
-                  <p className="text-sm text-gray-600">Automatically extract information from your website</p>
+                  <h2 className="text-2xl font-bold text-gray-900">{t('partner.autofill_profile_ai')}</h2>
+                  <p className="text-sm text-gray-600">{t('partner.autofill_description')}</p>
                 </div>
               </div>
               <Button
@@ -757,8 +756,8 @@ export default function PartnerDashboard() {
                   <Edit className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Edit Profile Manually</h2>
-                  <p className="text-sm text-gray-600">Update your company information</p>
+                  <h2 className="text-2xl font-bold text-gray-900">{t('partner.edit_profile_manually')}</h2>
+                  <p className="text-sm text-gray-600">{t('partner.update_company_info')}</p>
                 </div>
               </div>
               <Button
