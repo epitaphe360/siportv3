@@ -446,7 +446,7 @@ export default function PublicAvailabilityCalendar({
                   }`}
                 >
                   <Grid3x3 className="w-4 h-4" />
-                  <span className="text-xs uppercase tracking-tight">Grille</span>
+                  <span className="text-xs uppercase tracking-tight">{t('calendar.grid_view')}</span>
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
@@ -457,7 +457,7 @@ export default function PublicAvailabilityCalendar({
                   }`}
                 >
                   <List className="w-4 h-4" />
-                  <span className="text-xs uppercase tracking-tight">Liste</span>
+                  <span className="text-xs uppercase tracking-tight">{t('calendar.list_view')}</span>
                 </button>
               </div>
             </div>
@@ -500,7 +500,7 @@ export default function PublicAvailabilityCalendar({
                         <div className={`text-3xl font-black ${
                           isToday ? 'text-white' : 'text-gray-900'
                         }`}>
-                          {day.getDate()} <span className="text-sm font-bold opacity-60">Avril</span>
+                          {day.getDate()} <span className="text-sm font-bold opacity-60">{day.toLocaleDateString('fr-FR', { month: 'long' })}</span>
                         </div>
                       </div>
                       <div className={`p-2.5 rounded-xl ${isToday ? 'bg-white/20' : 'bg-white shadow-sm'}`}>
@@ -555,7 +555,7 @@ export default function PublicAvailabilityCalendar({
                               </span>
                             </div>
                             <div className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-tighter ${slot.currentBookings >= slot.maxBookings ? 'bg-white text-red-600' : 'bg-white/20 text-white'}`}>
-                              {slot.currentBookings >= slot.maxBookings ? 'COMPLET' : `${slot.maxBookings - slot.currentBookings} LIBRES`}
+                              {slot.currentBookings >= slot.maxBookings ? t('status.full').toUpperCase() : `${slot.maxBookings - slot.currentBookings} ${t('status.available').toUpperCase()}`}
                             </div>
                           </div>
 
@@ -571,7 +571,7 @@ export default function PublicAvailabilityCalendar({
                                 className="flex items-center justify-center space-x-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg py-1.5 px-3 text-[10px] font-bold transition-colors w-full uppercase tracking-widest"
                               >
                                 {slot.currentBookings >= slot.maxBookings ? <Unlock className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
-                                <span>{slot.currentBookings >= slot.maxBookings ? 'Ouvrir' : 'Fermer'}</span>
+                                <span>{slot.currentBookings >= slot.maxBookings ? t('actions.open') : t('actions.close')}</span>
                               </button>
                               <button
                                 onClick={(e) => {
@@ -612,7 +612,7 @@ export default function PublicAvailabilityCalendar({
                           className="flex items-center space-x-2 bg-white border-2 border-gray-200 hover:border-blue-500 hover:text-blue-600 text-gray-500 px-4 py-2.5 rounded-xl text-xs font-black transition-all shadow-sm hover:shadow-md uppercase tracking-wider"
                         >
                           <Plus className="w-4 h-4" />
-                          <span>Ajouter</span>
+                          <span>{t('actions.add')}</span>
                         </button>
                       </div>
                     )}
@@ -632,10 +632,10 @@ export default function PublicAvailabilityCalendar({
                   <Calendar className="w-10 h-10 text-blue-600" />
                 </div>
                 <h4 className="text-xl font-black text-gray-900 mb-2">
-                  Aucun créneau configuré
+                  {t('calendar.no_slots_configured')}
                 </h4>
                 <p className="text-gray-500 mb-8 max-w-sm text-center">
-                  Vous n'avez pas encore défini de disponibilités pour les 3 jours du salon SIPORT.
+                  {t('calendar.no_availability_message')}
                 </p>
                 {isEditable && (
                   <Button
@@ -643,7 +643,7 @@ export default function PublicAvailabilityCalendar({
                     className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-blue-200"
                   >
                     <Plus className="w-5 h-5 mr-2" />
-                    Créer mon premier créneau
+                    {t('calendar.create_first_slot')}
                   </Button>
                 )}
               </div>
@@ -707,9 +707,9 @@ export default function PublicAvailabilityCalendar({
                       <div className="text-right pr-6 border-r-2 border-gray-50 mr-6">
                         {slot.currentBookings >= slot.maxBookings ? (
                            <>
-                             <div className="text-xl font-black text-red-600">COMPLET</div>
+                             <div className="text-xl font-black text-red-600">{t('status.full').toUpperCase()}</div>
                              <div className="text-[10px] font-black text-red-400 uppercase tracking-widest leading-none">
-                               plus de place
+                               {t('status.no_spots')}
                              </div>
                            </>
                         ) : (
@@ -718,7 +718,7 @@ export default function PublicAvailabilityCalendar({
                                {slot.maxBookings - slot.currentBookings}
                              </div>
                              <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
-                               places disponibles
+                               {t('status.spots_available')}
                              </div>
                            </>
                         )}
@@ -806,7 +806,7 @@ export default function PublicAvailabilityCalendar({
           onClick={() => setShowAddModal(true)}
           className="fixed bottom-8 right-8 z-40 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white p-4 rounded-full shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300 hover:scale-110 group"
           data-testid="button-add-slot-floating"
-          title="Ajouter un nouveau créneau"
+          title={t('calendar.add_new_slot')}
         >
           <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
         </button>

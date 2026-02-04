@@ -642,7 +642,12 @@ const resources = {
         schedule_slots: 'Planifiez vos créneaux pour faciliter les prises de rendez-vous',
         view_past_slots: 'Voir mes créneaux passés',
         create_my_availability: 'Créer mes disponibilités',
-        add_new_slot: 'Ajouter un nouveau créneau'
+        add_new_slot: 'Ajouter un nouveau créneau',
+        grid_view: 'Grille',
+        list_view: 'Liste',
+        no_slots_configured: 'Aucun créneau configuré',
+        no_availability_message: 'Vous n\'avez pas encore défini de disponibilités pour les 3 jours du salon SIPORT.',
+        create_first_slot: 'Créer mon premier créneau'
       },
       months: {
         january: 'Janvier',
@@ -915,7 +920,11 @@ const resources = {
         rejected: 'Rejeté',
         processing: 'En traitement',
         failed: 'Échoué',
-        succeeded: 'Réussi'
+        succeeded: 'Réussi',
+        full: 'Complet',
+        available: 'Libres',
+        no_spots: 'plus de place',
+        spots_available: 'places disponibles'
       },
       media: {
         no_file_to_upload: 'Aucun fichier à télécharger',
@@ -970,7 +979,8 @@ const resources = {
         unauthorized: 'Non autorisé',
         forbidden: 'Accès interdit',
         validation_error: 'Erreur de validation',
-        unknown_error: 'Erreur inconnue'
+        unknown_error: 'Erreur inconnue',
+        unregister_event: 'Erreur lors de la désinscription'
       },
       confirm: {
         delete_image: 'Supprimer cette image ?',
@@ -1003,7 +1013,8 @@ const resources = {
         attendees: 'Participants',
         location: 'Lieu',
         date_time: 'Date et heure',
-        organizer: 'Organisateur'
+        organizer: 'Organisateur',
+        unregister: 'Se désinscrire'
       },
       visitor: {
         view_offers: 'Voir les offres',
@@ -1011,7 +1022,39 @@ const resources = {
         vip_account: 'Compte VIP',
         upgrade: 'Mettre à niveau',
         quota_used: 'Quota utilisé',
-        quota_remaining: 'Quota restant'
+        quota_remaining: 'Quota restant',
+        refused: 'Refusés',
+        exhibitors_visited: 'Exposants Visités',
+        favorites: 'Favoris',
+        connections: 'Connexions',
+        messages: 'Messages',
+        b2b_appointments: 'Rendez-vous B2B',
+        vip_benefits_title: 'Vos Avantages VIP Exclusifs',
+        vip_benefits_subtitle: 'Profitez pleinement de votre expérience premium',
+        vip_appointments: '10 Rendez-vous B2B',
+        vip_appointments_desc: 'Accès garanti aux exposants',
+        vip_messaging: 'Messagerie Directe',
+        vip_messaging_desc: 'Contactez les exposants',
+        vip_badge: 'Badge VIP Virtuel',
+        vip_badge_desc: 'Avec QR code prioritaire',
+        vip_ai_matching: 'IA Matching Prioritaire',
+        vip_ai_matching_desc: 'Algorithmes de recommandation',
+        vip_webinars: 'Webinaires Exclusifs',
+        vip_webinars_desc: 'Accès au contenu premium',
+        schedule_appointment: 'Prendre un rendez-vous',
+        schedule_appointment_desc: 'Planifiez des rencontres avec les exposants selon leurs disponibilités',
+        program_appointment: 'Programmer un RDV',
+        appointments_remaining: 'RDV restants',
+        quota_reached: 'Quota RDV atteint pour votre niveau ({{level}}).',
+        your_activity: 'Votre Activité',
+        your_activity_desc: 'Suivez votre parcours au salon en temps réel',
+        personal: 'Personnel',
+        networking_hub: 'Networking Hub',
+        networking_hub_desc: 'Gérez votre agenda, vos inscriptions aux conférences et vos rendez-vous B2B en un seul lieu.',
+        my_schedule: 'Mon Agenda',
+        no_registered_events: 'Aucun événement inscrit',
+        browse_program: 'Parcourir le programme',
+        view_full_program: 'Voir le Programme Complet'
       }
     }
   },
@@ -1653,7 +1696,12 @@ const resources = {
         schedule_slots: 'Schedule your slots to facilitate appointment bookings',
         view_past_slots: 'View my past slots',
         create_my_availability: 'Create my availability',
-        add_new_slot: 'Add a new slot'
+        add_new_slot: 'Add a new slot',
+        grid_view: 'Grid',
+        list_view: 'List',
+        no_slots_configured: 'No slots configured',
+        no_availability_message: 'You have not yet defined any availability for the 3 days of the SIPORT event.',
+        create_first_slot: 'Create my first slot'
       },
       months: {
         january: 'January',
@@ -1926,7 +1974,11 @@ const resources = {
         rejected: 'Rejected',
         processing: 'Processing',
         failed: 'Failed',
-        succeeded: 'Succeeded'
+        succeeded: 'Succeeded',
+        full: 'Full',
+        available: 'Available',
+        no_spots: 'no spots left',
+        spots_available: 'spots available'
       },
       media: {
         no_file_to_upload: 'No file to upload',
@@ -1981,7 +2033,8 @@ const resources = {
         unauthorized: 'Unauthorized',
         forbidden: 'Access forbidden',
         validation_error: 'Validation error',
-        unknown_error: 'Unknown error'
+        unknown_error: 'Unknown error',
+        unregister_event: 'Error during event unregistration'
       },
       confirm: {
         delete_image: 'Delete this image?',
@@ -2014,7 +2067,8 @@ const resources = {
         attendees: 'Attendees',
         location: 'Location',
         date_time: 'Date and time',
-        organizer: 'Organizer'
+        organizer: 'Organizer',
+        unregister: 'Unregister'
       },
       visitor: {
         view_offers: 'View offers',
@@ -2022,7 +2076,39 @@ const resources = {
         vip_account: 'VIP Account',
         upgrade: 'Upgrade',
         quota_used: 'Quota used',
-        quota_remaining: 'Quota remaining'
+        quota_remaining: 'Quota remaining',
+        refused: 'Refused',
+        exhibitors_visited: 'Exhibitors Visited',
+        favorites: 'Favorites',
+        connections: 'Connections',
+        messages: 'Messages',
+        b2b_appointments: 'B2B Appointments',
+        vip_benefits_title: 'Your Exclusive VIP Benefits',
+        vip_benefits_subtitle: 'Make the most of your premium experience',
+        vip_appointments: '10 B2B Appointments',
+        vip_appointments_desc: 'Guaranteed access to exhibitors',
+        vip_messaging: 'Direct Messaging',
+        vip_messaging_desc: 'Contact exhibitors',
+        vip_badge: 'Virtual VIP Badge',
+        vip_badge_desc: 'With priority QR code',
+        vip_ai_matching: 'Priority AI Matching',
+        vip_ai_matching_desc: 'Recommendation algorithms',
+        vip_webinars: 'Exclusive Webinars',
+        vip_webinars_desc: 'Access to premium content',
+        schedule_appointment: 'Schedule an appointment',
+        schedule_appointment_desc: 'Plan meetings with exhibitors according to their availability',
+        program_appointment: 'Schedule Appointment',
+        appointments_remaining: 'Appointments remaining',
+        quota_reached: 'Appointment quota reached for your level ({{level}}).',
+        your_activity: 'Your Activity',
+        your_activity_desc: 'Track your journey at the event in real time',
+        personal: 'Personal',
+        networking_hub: 'Networking Hub',
+        networking_hub_desc: 'Manage your agenda, conference registrations and B2B appointments in one place.',
+        my_schedule: 'My Schedule',
+        no_registered_events: 'No registered events',
+        browse_program: 'Browse the program',
+        view_full_program: 'View Full Program'
       }
     }
   },

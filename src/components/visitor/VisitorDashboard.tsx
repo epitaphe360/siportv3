@@ -184,16 +184,16 @@ export default memo(function VisitorDashboard() {
   ];
 
   const appointmentStatusData = [
-    { name: 'Confirmés', value: confirmedAppointments.length, color: '#10b981' },
-    { name: 'En attente', value: pendingAppointments.length, color: '#f59e0b' },
-    { name: 'Refusés', value: refusedAppointments.length, color: '#ef4444' }
+    { name: t('status.confirmed'), value: confirmedAppointments.length, color: '#10b981' },
+    { name: t('status.pending'), value: pendingAppointments.length, color: '#f59e0b' },
+    { name: t('visitor.refused'), value: refusedAppointments.length, color: '#ef4444' }
   ];
 
   const interestAreasData = [
-    { name: 'Exposants Visités', value: stats.exhibitorsVisited },
-    { name: 'Favoris', value: stats.bookmarks },
-    { name: 'Connexions', value: stats.connections },
-    { name: 'Messages', value: stats.messagesSent }
+    { name: t('visitor.exhibitors_visited'), value: stats.exhibitorsVisited },
+    { name: t('visitor.favorites'), value: stats.bookmarks },
+    { name: t('visitor.connections'), value: stats.connections },
+    { name: t('visitor.messages'), value: stats.messagesSent }
   ];
 
   const {
@@ -217,7 +217,7 @@ export default memo(function VisitorDashboard() {
       await unregisterFromEvent(eventId);
       // Note: fetchUserEventRegistrations() removed - unregisterFromEvent already calls it internally
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Erreur lors de la désinscription');
+      setError(error instanceof Error ? error.message : t('errors.unregister_event'));
     }
   }, [unregisterFromEvent]);
 
@@ -426,7 +426,7 @@ export default memo(function VisitorDashboard() {
               type="visitor"
               quotas={[
                 {
-                  label: 'Rendez-vous B2B',
+                  label: t('visitor.b2b_appointments'),
                   current: confirmedAppointments.length,
                   limit: getVisitorQuota(userLevel),
                   icon: <Calendar className="h-4 w-4 text-gray-400" />
@@ -455,8 +455,8 @@ export default memo(function VisitorDashboard() {
                     <Crown className="h-6 w-6 text-yellow-600" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900">Vos Avantages VIP Exclusifs</h3>
-                    <p className="text-yellow-700 text-sm">Profitez pleinement de votre expérience premium</p>
+                    <h3 className="text-xl font-bold text-gray-900">{t('visitor.vip_benefits_title')}</h3>
+                    <p className="text-yellow-700 text-sm">{t('visitor.vip_benefits_subtitle')}</p>
                   </div>
                 </div>
 
@@ -464,40 +464,40 @@ export default memo(function VisitorDashboard() {
                   <div className="flex items-start gap-3 p-3 bg-white/60 rounded-lg border border-yellow-100 transition-all hover:bg-white hover:shadow-sm">
                     <Calendar className="h-5 w-5 text-yellow-600 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-gray-900">10 Rendez-vous B2B</p>
-                      <p className="text-xs text-gray-600">Accès garanti aux exposants</p>
+                      <p className="font-semibold text-gray-900">{t('visitor.vip_appointments')}</p>
+                      <p className="text-xs text-gray-600">{t('visitor.vip_appointments_desc')}</p>
                     </div>
                   </div>
                   
                   <Link to={ROUTES.CHAT} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg border border-yellow-100 hover:bg-white hover:shadow-sm transition-all">
                     <MessageCircle className="h-5 w-5 text-yellow-600 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-gray-900">Messagerie Directe</p>
-                      <p className="text-xs text-gray-600">Contactez les exposants</p>
+                      <p className="font-semibold text-gray-900">{t('visitor.vip_messaging')}</p>
+                      <p className="text-xs text-gray-600">{t('visitor.vip_messaging_desc')}</p>
                     </div>
                   </Link>
 
                   <Link to={ROUTES.BADGE} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg border border-yellow-100 hover:bg-white hover:shadow-sm transition-all">
                     <Award className="h-5 w-5 text-yellow-600 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-gray-900">Badge VIP Virtuel</p>
-                      <p className="text-xs text-gray-600">Avec QR code prioritaire</p>
+                      <p className="font-semibold text-gray-900">{t('visitor.vip_badge')}</p>
+                      <p className="text-xs text-gray-600">{t('visitor.vip_badge_desc')}</p>
                     </div>
                   </Link>
 
                   <Link to={ROUTES.PROFILE_MATCHING} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg border border-yellow-100 hover:bg-white hover:shadow-sm transition-all">
                     <Sparkles className="h-5 w-5 text-yellow-600 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-gray-900">IA Matching Prioritaire</p>
-                      <p className="text-xs text-gray-600">Algorithmes de recommandation</p>
+                      <p className="font-semibold text-gray-900">{t('visitor.vip_ai_matching')}</p>
+                      <p className="text-xs text-gray-600">{t('visitor.vip_ai_matching_desc')}</p>
                     </div>
                   </Link>
 
                   <Link to={ROUTES.WEBINARS} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg border border-yellow-100 hover:bg-white hover:shadow-sm transition-all">
                     <Video className="h-5 w-5 text-yellow-600 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-gray-900">Webinaires Exclusifs</p>
-                      <p className="text-xs text-gray-600">Accès au contenu premium</p>
+                      <p className="font-semibold text-gray-900">{t('visitor.vip_webinars')}</p>
+                      <p className="text-xs text-gray-600">{t('visitor.vip_webinars_desc')}</p>
                     </div>
                   </Link>
 
@@ -652,20 +652,20 @@ export default memo(function VisitorDashboard() {
                       <Calendar className="h-5 w-5 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900">Prendre un rendez-vous</h3>
+                      <h3 className="text-lg font-semibold text-gray-900">{t('visitor.schedule_appointment')}</h3>
                       <p className="text-gray-600 text-sm mt-1">
-                        Planifiez des rencontres avec les exposants selon leurs disponibilités
+                        {t('visitor.schedule_appointment_desc')}
                       </p>
                     </div>
                   </div>
                   <Link to={`${ROUTES.NETWORKING}?action=schedule`}>
                     <Button variant="outline" className="w-full border-2 hover:bg-gray-50" disabled={remaining <= 0}>
                       <Calendar className="h-4 w-4 mr-2" />
-                      Programmer un RDV
+                      {t('visitor.program_appointment')}
                     </Button>
                   </Link>
                   <div className="mt-3 flex items-center justify-between text-sm">
-                    <span className="text-gray-600">RDV restants:</span>
+                    <span className="text-gray-600">{t('visitor.appointments_remaining')}:</span>
                     <Badge variant={remaining > 0 ? "success" : "error"}>
                       <strong>{remaining}</strong>
                     </Badge>
@@ -673,7 +673,7 @@ export default memo(function VisitorDashboard() {
                   {remaining <= 0 && (
                     <p className="text-sm text-red-600 mt-2 flex items-center">
                       <TrendingUp className="h-4 w-4 mr-1" />
-                      Quota RDV atteint pour votre niveau ({userLevel}).
+                      {t('visitor.quota_reached', { level: userLevel })}
                     </p>
                   )}
                 </Card>
@@ -696,8 +696,8 @@ export default memo(function VisitorDashboard() {
                     <Activity className="h-6 w-6 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Votre Activité</h2>
-                    <p className="text-sm text-gray-600">Suivez votre parcours au salon en temps réel</p>
+                    <h2 className="text-2xl font-bold text-gray-900">{t('visitor.your_activity')}</h2>
+                    <p className="text-sm text-gray-600">{t('visitor.your_activity_desc')}</p>
                   </div>
                 </div>
                 <Badge className="bg-blue-100 text-blue-700 border-blue-300">
@@ -854,10 +854,10 @@ export default memo(function VisitorDashboard() {
                     <span className="text-[10px] font-black text-indigo-200 uppercase tracking-[0.2em]">SIPORT • Visitor Experience</span>
                   </div>
                   <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
-                    Personnel <span className="text-indigo-400">Networking Hub</span>
+                    {t('visitor.personal')} <span className="text-indigo-400">{t('visitor.networking_hub')}</span>
                   </h2>
                   <p className="text-indigo-100/60 text-lg font-medium italic">
-                    Gérez votre agenda, vos inscriptions aux conférences et vos rendez-vous B2B en un seul lieu.
+                    {t('visitor.networking_hub_desc')}
                   </p>
                 </div>
 
@@ -872,7 +872,7 @@ export default memo(function VisitorDashboard() {
                     }`}
                   >
                     <Calendar className="w-4 h-4" />
-                    <span>Mon Agenda</span>
+                    <span>{t('visitor.my_schedule')}</span>
                   </button>
                   <button
                     onClick={() => setActiveTab('appointments')}
@@ -883,7 +883,7 @@ export default memo(function VisitorDashboard() {
                     }`}
                   >
                     <Users className="w-4 h-4" />
-                    <span>Rendez-vous B2B</span>
+                    <span>{t('visitor.b2b_appointments')}</span>
                   </button>
                 </div>
               </div>
@@ -952,7 +952,7 @@ export default memo(function VisitorDashboard() {
                                   <button
                                     onClick={() => handleUnregisterFromEvent(event.id)}
                                     className="p-2 text-white/40 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition-all"
-                                    title="Se désinscrire"
+                                    title={t('events.unregister')}
                                   >
                                     <X className="h-5 w-5" />
                                   </button>
@@ -963,9 +963,9 @@ export default memo(function VisitorDashboard() {
                           {getUpcomingEvents().length === 0 && (
                             <div className="text-center py-12 bg-white/5 rounded-3xl border border-dashed border-white/10">
                               <Calendar className="h-12 w-12 text-white/20 mx-auto mb-4" />
-                              <p className="text-white/40">Aucun événement inscrit</p>
+                              <p className="text-white/40">{t('visitor.no_registered_events')}</p>
                               <Link to={ROUTES.EVENTS} className="mt-4 inline-block text-indigo-400 font-bold hover:text-indigo-300 transition-colors">
-                                Parcourir le programme →
+                                {t('visitor.browse_program')} →
                               </Link>
                             </div>
                           )}
@@ -974,7 +974,7 @@ export default memo(function VisitorDashboard() {
                         <div className="mt-8">
                           <Link to={ROUTES.EVENTS} className="block">
                             <Button className="w-full bg-indigo-600 hover:bg-indigo-500 text-white border-none py-6 rounded-2xl shadow-lg shadow-indigo-600/20 font-bold text-sm uppercase tracking-widest transition-all">
-                              Voir le Programme Complet
+                              {t('visitor.view_full_program')}
                             </Button>
                           </Link>
                         </div>
