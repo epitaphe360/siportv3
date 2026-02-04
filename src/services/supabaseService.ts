@@ -1000,7 +1000,6 @@ export class SupabaseService {
       contactInfo: exhibitorDB.contact_info,
       products,
       miniSite,
-      standNumber: exhibitorDB.user?.profile?.standNumber || undefined,
       availability: [],
       certifications: [],
       markets: []

@@ -48,6 +48,67 @@ export const srOnlyClass = 'sr-only absolute w-px h-px p-0 -m-px overflow-hidden
 
 /**
  * Keyboard event handler for custom interactive elements
+ * @param event - Keyboard event
+ * @param handlers - Object with handler functions for each key
+ */
+export function handleKeyboardNavigation(
+  event: React.KeyboardEvent,
+  handlers: {
+    onEnter?: () => void;
+    onSpace?: () => void;
+    onEscape?: () => void;
+    onArrowUp?: () => void;
+    onArrowDown?: () => void;
+    onArrowLeft?: () => void;
+    onArrowRight?: () => void;
+    onTab?: () => void;
+    onHome?: () => void;
+    onEnd?: () => void;
+  }
+): void {
+  const { key } = event;
+  
+  switch (key) {
+    case KeyboardKeys.ENTER:
+      handlers.onEnter?.();
+      break;
+    case KeyboardKeys.SPACE:
+      event.preventDefault();
+      handlers.onSpace?.();
+      break;
+    case KeyboardKeys.ESCAPE:
+      handlers.onEscape?.();
+      break;
+    case KeyboardKeys.ARROW_UP:
+      event.preventDefault();
+      handlers.onArrowUp?.();
+      break;
+    case KeyboardKeys.ARROW_DOWN:
+      event.preventDefault();
+      handlers.onArrowDown?.();
+      break;
+    case KeyboardKeys.ARROW_LEFT:
+      handlers.onArrowLeft?.();
+      break;
+    case KeyboardKeys.ARROW_RIGHT:
+      handlers.onArrowRight?.();
+      break;
+    case KeyboardKeys.TAB:
+      handlers.onTab?.();
+      break;
+    case KeyboardKeys.HOME:
+      event.preventDefault();
+      handlers.onHome?.();
+      break;
+    case KeyboardKeys.END:
+      event.preventDefault();
+      handlers.onEnd?.();
+      break;
+  }
+}
+
+/**
+ * Keyboard event handler for custom interactive elements
  * Activates on Enter or Space key
  *
  * @param callback - Function to call when activated
