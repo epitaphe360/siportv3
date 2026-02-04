@@ -71,7 +71,8 @@ const resources = {
         export: 'Exporter',
         import: 'Importer',
         refresh: 'Actualiser',
-        warning: 'Attention'
+        warning: 'Attention',
+        close_error: 'Fermer le message d\'erreur'
       },
       dashboard: {
         title: 'Tableau de bord',
@@ -1169,7 +1170,8 @@ const resources = {
         export: 'Export',
         import: 'Import',
         refresh: 'Refresh',
-        warning: 'Warning'
+        warning: 'Warning',
+        close_error: 'Close error message'
       },
       dashboard: {
         title: 'Dashboard',

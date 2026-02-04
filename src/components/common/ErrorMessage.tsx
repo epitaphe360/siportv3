@@ -1,5 +1,6 @@
 import React from 'react';
 import { AlertCircle, X } from 'lucide-react';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface ErrorMessageProps {
   message: string;
@@ -16,6 +17,8 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
   onDismiss,
   className = '' 
 }) => {
+  const { t } = useTranslation();
+  
   return (
     <div className={`mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start ${className}`}>
       <AlertCircle className="h-5 w-5 text-red-600 mr-3 flex-shrink-0 mt-0.5" />
@@ -26,7 +29,7 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
         <button 
           onClick={onDismiss}
           className="text-red-600 hover:text-red-800 ml-3 flex-shrink-0"
-          aria-label="Fermer le message d'erreur"
+          aria-label={t('common.close_error')}
         >
           <X className="h-4 w-4" />
         </button>
@@ -44,13 +47,16 @@ interface LoadingMessageProps {
  * Composant pour afficher un état de chargement
  */
 export const LoadingMessage: React.FC<LoadingMessageProps> = ({ 
-  message = 'Chargement en cours...',
+  message,
   className = ''
 }) => {
+  const { t } = useTranslation();
+  const loadingText = message || t('common.loading');
+  
   return (
     <div className={`text-center py-8 ${className}`}>
       <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
-      <p className="text-gray-600">{message}</p>
+      <p className="text-gray-600">{loadingText}</p>
     </div>
   );
 };
