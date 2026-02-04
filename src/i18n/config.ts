@@ -48,7 +48,10 @@ const resources = {
         confirm: 'Confirmer',
         quota_reached: 'Quota atteint ({{current}}/{{max}})',
         booking_success: 'Rendez-vous réservé avec succès',
-        no_slots: 'Aucun créneau disponible'
+        no_slots: 'Aucun créneau disponible',
+        calendar: 'Calendrier des Rendez-vous',
+        meeting_with: 'RDV avec {{name}}',
+        no_appointments_date: 'Aucun rendez-vous pour cette date.'
       },
       common: {
         loading: 'Chargement...',
@@ -60,6 +63,7 @@ const resources = {
         edit: 'Modifier',
         search: 'Rechercher',
         view: 'Voir',
+        view_all: 'Voir tout',
         download: 'Télécharger',
         upload: 'Téléverser',
         close: 'Fermer',
@@ -1247,7 +1251,10 @@ const resources = {
         confirm: 'Confirm',
         quota_reached: 'Quota reached ({{current}}/{{max}})',
         booking_success: 'Appointment booked successfully',
-        no_slots: 'No slots available'
+        no_slots: 'No slots available',
+        calendar: 'Appointment Calendar',
+        meeting_with: 'Meeting with {{name}}',
+        no_appointments_date: 'No appointments for this date.'
       },
       common: {
         loading: 'Loading...',
@@ -1259,6 +1266,7 @@ const resources = {
         edit: 'Edit',
         search: 'Search',
         view: 'View',
+        view_all: 'View All',
         download: 'Download',
         upload: 'Upload',
         close: 'Close',

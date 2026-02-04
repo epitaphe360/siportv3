@@ -8,8 +8,10 @@ import { Badge } from '../ui/Badge';
 import { Card } from '../ui/Card';
 import useAuthStore from '../../store/authStore';
 import { getMinSlotDate, getMaxSlotDate } from '../../config/salonInfo';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export const AppointmentCalendarWidget: React.FC = () => {
+  const { t } = useTranslation();
   const { appointments, timeSlots, fetchAppointments, fetchTimeSlots, isLoading } = useAppointmentStore();
   const { user } = useAuthStore();
   const [selectedDate, setSelectedDate] = React.useState(() => {
@@ -78,11 +80,11 @@ export const AppointmentCalendarWidget: React.FC = () => {
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-bold text-gray-900 flex items-center">
             <Calendar className="mr-2 h-5 w-5" />
-            Calendrier des Rendez-vous
+            {t('appointments.calendar')}
           </h3>
           <Link to={ROUTES.APPOINTMENTS}>
             <Button variant="ghost" size="sm" className="text-siports-primary">
-              Voir tout
+              {t('common.view_all')}
             </Button>
           </Link>
         </div>
@@ -105,7 +107,7 @@ export const AppointmentCalendarWidget: React.FC = () => {
           {isLoading ? (
             <div className="text-center py-10">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-siports-primary mx-auto"></div>
-              <p className="text-gray-500 mt-2">Chargement...</p>
+              <p className="text-gray-500 mt-2">{t('common.loading')}</p>
             </div>
           ) : todayAppointments.length > 0 ? (
             todayAppointments.map(appointment => (
@@ -114,7 +116,7 @@ export const AppointmentCalendarWidget: React.FC = () => {
                   <div className="flex items-center space-x-3">
                     <Clock className="h-4 w-4 text-gray-500" />
                     <div>
-                      <p className="font-semibold text-gray-800">{`RDV avec ${appointment.visitorId}`}</p>
+                      <p className="font-semibold text-gray-800">{t('appointments.meeting_with', { name: appointment.visitorId })}</p>
                       <p className="text-sm text-gray-600">
                         {appointment.slot.startTime} - {appointment.slot.endTime}
                       </p>
@@ -129,7 +131,7 @@ export const AppointmentCalendarWidget: React.FC = () => {
           ) : (
             <div className="text-center py-10">
               <Calendar className="h-10 w-10 text-gray-400 mx-auto mb-2" />
-              <p className="text-gray-600">Aucun rendez-vous pour cette date.</p>
+              <p className="text-gray-600">{t('appointments.no_appointments_date')}</p>
             </div>
           )}
         </div>
