@@ -1054,7 +1054,14 @@ const resources = {
         my_schedule: 'Mon Agenda',
         no_registered_events: 'Aucun événement inscrit',
         browse_program: 'Parcourir le programme',
-        view_full_program: 'Voir le Programme Complet'
+        view_full_program: 'Voir le Programme Complet',
+        live: 'En direct',
+        visits: 'Visites',
+        interactions: 'Interactions',
+        currently: 'Actuellement',
+        previous_period: 'Période précédente',
+        confirmed_appointments: 'Rendez-vous confirmés',
+        connections_established: 'Connexions établies'
       }
     }
   },
@@ -2108,7 +2115,14 @@ const resources = {
         my_schedule: 'My Schedule',
         no_registered_events: 'No registered events',
         browse_program: 'Browse the program',
-        view_full_program: 'View Full Program'
+        view_full_program: 'View Full Program',
+        live: 'Live',
+        visits: 'Visits',
+        interactions: 'Interactions',
+        currently: 'Currently',
+        previous_period: 'Previous period',
+        confirmed_appointments: 'Confirmed appointments',
+        connections_established: 'Connections established'
       }
     }
   },

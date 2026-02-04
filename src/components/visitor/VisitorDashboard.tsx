@@ -701,7 +701,7 @@ export default memo(function VisitorDashboard() {
                   </div>
                 </div>
                 <Badge className="bg-blue-100 text-blue-700 border-blue-300">
-                  En direct
+                  {t('visitor.live')}
                 </Badge>
               </div>
 
@@ -711,8 +711,8 @@ export default memo(function VisitorDashboard() {
                   title={t('dashboard.visit_activity_7days')}
                   data={visitActivityData}
                   dataKeys={[
-                    { key: 'visites', color: '#3b82f6', name: 'Visites' },
-                    { key: 'interactions', color: '#8b5cf6', name: 'Interactions' }
+                    { key: 'visites', color: '#3b82f6', name: t('visitor.visits') },
+                    { key: 'interactions', color: '#8b5cf6', name: t('visitor.interactions') }
                   ]}
                   height={300}
                 />
@@ -740,23 +740,23 @@ export default memo(function VisitorDashboard() {
                   <PeriodComparisonGrid
                     comparisons={[
                       {
-                        currentPeriod: { value: confirmedAppointments.length, label: 'Actuellement' },
-                        previousPeriod: { value: Math.max(0, confirmedAppointments.length - 2), label: 'Période précédente' },
-                        title: 'Rendez-vous confirmés',
+                        currentPeriod: { value: confirmedAppointments.length, label: t('visitor.currently') },
+                        previousPeriod: { value: Math.max(0, confirmedAppointments.length - 2), label: t('visitor.previous_period') },
+                        title: t('visitor.confirmed_appointments'),
                         icon: <Calendar className="h-4 w-4" />,
                         format: 'number'
                       },
                       {
-                        currentPeriod: { value: stats.exhibitorsVisited, label: 'Actuellement' },
-                        previousPeriod: { value: Math.max(0, stats.exhibitorsVisited - 3), label: 'Période précédente' },
-                        title: 'Exposants visités',
+                        currentPeriod: { value: stats.exhibitorsVisited, label: t('visitor.currently') },
+                        previousPeriod: { value: Math.max(0, stats.exhibitorsVisited - 3), label: t('visitor.previous_period') },
+                        title: t('visitor.exhibitors_visited'),
                         icon: <Building2 className="h-4 w-4" />,
                         format: 'number'
                       },
                       {
-                        currentPeriod: { value: stats.connections, label: 'Actuellement' },
-                        previousPeriod: { value: Math.max(0, stats.connections - 1), label: 'Période précédente' },
-                        title: 'Connexions établies',
+                        currentPeriod: { value: stats.connections, label: t('visitor.currently') },
+                        previousPeriod: { value: Math.max(0, stats.connections - 1), label: t('visitor.previous_period') },
+                        title: t('visitor.connections_established'),
                         icon: <Network className="h-4 w-4" />,
                         format: 'number'
                       }
