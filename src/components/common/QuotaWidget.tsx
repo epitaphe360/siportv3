@@ -81,7 +81,7 @@ export function QuotaWidget({
               {current} / {limit}
             </span>
             <span className="text-gray-500">
-              {remaining === Infinity ? '∞ restant' : `${remaining} restant${remaining > 1 ? 's' : ''}`}
+              {remaining === Infinity ? t('quota.remaining_unlimited') : t('quota.remaining', { count: remaining })}
             </span>
           </div>
         </div>
@@ -90,7 +90,7 @@ export function QuotaWidget({
       {isUnlimited && (
         <div className="flex items-center space-x-1 text-xs text-purple-600">
           <Crown className="h-3 w-3" />
-          <span className="font-medium">Illimité</span>
+          <span className="font-medium">{t('quota.unlimited')}</span>
         </div>
       )}
 
@@ -98,7 +98,7 @@ export function QuotaWidget({
         <a href={upgradeLink} className="block">
           <div className="flex items-center space-x-1 text-xs text-blue-600 hover:text-blue-700 cursor-pointer">
             <TrendingUp className="h-3 w-3" />
-            <span>Upgrader pour plus</span>
+            <span>{t('quota.upgrade_for_more')}</span>
           </div>
         </a>
       )}

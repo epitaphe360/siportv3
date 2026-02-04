@@ -849,6 +849,13 @@ const resources = {
         contact_whatsapp: 'Contacter par WhatsApp',
         available_24_7: 'Disponible 24/7'
       },
+      quota: {
+        remaining_unlimited: '∞ restant',
+        remaining: '{{count}} restant',
+        remaining_plural: '{{count}} restants',
+        unlimited: 'Illimité',
+        upgrade_for_more: 'Upgrader pour plus'
+      },
       minisite: {
         new_product: 'Nouveau produit',
         product_description: 'Description du produit',
@@ -2012,6 +2019,13 @@ const resources = {
         chat_team: 'Chat with our team on WhatsApp',
         contact_whatsapp: 'Contact via WhatsApp',
         available_24_7: 'Available 24/7'
+      },
+      quota: {
+        remaining_unlimited: '∞ remaining',
+        remaining: '{{count}} remaining',
+        remaining_plural: '{{count}} remaining',
+        unlimited: 'Unlimited',
+        upgrade_for_more: 'Upgrade for more'
       },
       templates: {
         all: 'All',
