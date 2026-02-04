@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CheckCircle, AlertCircle, Building, User, Mail, Phone, Globe, FileText } from 'lucide-react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Button } from './Button';
 import { Card } from './Card';
 
@@ -33,6 +34,8 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
   data,
   isLoading = false,
 }) => {
+  const { t } = useTranslation();
+  
   if (!isOpen) return null;
 
   const InfoRow = ({ icon: Icon, label, value }: { icon: any; label: string; value?: string }) => {
@@ -83,8 +86,8 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
                         <CheckCircle className="h-6 w-6 text-primary-600" />
                       </div>
                       <div>
-                        <h2 className="text-xl font-bold text-gray-900">Vérifiez vos informations</h2>
-                        <p className="text-sm text-gray-600">Assurez-vous que toutes les informations sont correctes</p>
+                        <h2 className="text-xl font-bold text-gray-900">{t('form.verify_information')}</h2>
+                        <p className="text-sm text-gray-600">{t('form.ensure_correct_before_submit')}</p>
                       </div>
                     </div>
                     <button
@@ -103,14 +106,14 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                           <Building className="h-5 w-5 text-primary-600" />
-                          Informations sur l'Organisation
+                          {t('form.organization_information')}
                         </h3>
                         <div className="space-y-1 bg-gray-50 rounded-lg p-4">
-                          <InfoRow icon={Building} label="Nom de l'organisation" value={data.companyName} />
-                          <InfoRow icon={FileText} label="Secteur d'activité" value={data.sector} />
-                          <InfoRow icon={Globe} label="Pays" value={data.country} />
-                          <InfoRow icon={Globe} label="Site web" value={data.website} />
-                          <InfoRow icon={FileText} label="Type de partenariat" value={data.partnershipType} />
+                          <InfoRow icon={Building} label={t('form.organization_name')} value={data.companyName} />
+                          <InfoRow icon={FileText} label={t('form.activity_sector')} value={data.sector} />
+                          <InfoRow icon={Globe} label={t('form.country')} value={data.country} />
+                          <InfoRow icon={Globe} label={t('form.website')} value={data.website} />
+                          <InfoRow icon={FileText} label={t('form.partnership_type')} value={data.partnershipType} />
                         </div>
                       </div>
 
@@ -118,13 +121,13 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                           <User className="h-5 w-5 text-primary-600" />
-                          Informations de Contact
+                          {t('form.contact_information')}
                         </h3>
                         <div className="space-y-1 bg-gray-50 rounded-lg p-4">
-                          <InfoRow icon={User} label="Nom complet" value={`${data.firstName || ''} ${data.lastName || ''}`} />
-                          <InfoRow icon={FileText} label="Poste / Fonction" value={data.position} />
-                          <InfoRow icon={Mail} label="Email" value={data.email} />
-                          <InfoRow icon={Phone} label="Téléphone" value={data.phone} />
+                          <InfoRow icon={User} label={t('form.full_name')} value={`${data.firstName || ''} ${data.lastName || ''}`} />
+                          <InfoRow icon={FileText} label={t('form.position')} value={data.position} />
+                          <InfoRow icon={Mail} label={t('form.email')} value={data.email} />
+                          <InfoRow icon={Phone} label={t('form.phone')} value={data.phone} />
                         </div>
                       </div>
 
@@ -133,7 +136,7 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
                         <div>
                           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                             <FileText className="h-5 w-5 text-primary-600" />
-                            Description
+                            {t('form.description')}
                           </h3>
                           <div className="bg-gray-50 rounded-lg p-4">
                             <p className="text-sm text-gray-700 whitespace-pre-wrap">{data.companyDescription}</p>
@@ -145,10 +148,9 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
                       <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
                         <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
                         <div>
-                          <p className="text-sm font-medium text-amber-900">Attention</p>
+                          <p className="text-sm font-medium text-amber-900">{t('common.warning')}</p>
                           <p className="text-sm text-amber-700 mt-1">
-                            Une fois validé, votre demande sera envoyée à notre équipe pour examen. 
-                            Vérifiez bien que toutes les informations sont exactes avant de continuer.
+                            {t('form.request_review_warning')}
                           </p>
                         </div>
                       </div>
@@ -162,7 +164,7 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
                       onClick={onClose}
                       disabled={isLoading}
                     >
-                      Modifier les informations
+                      {t('form.edit_information')}
                     </Button>
                     <Button
                       onClick={() => {
@@ -178,10 +180,10 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                           </svg>
-                          Envoi en cours...
+                          {t('form.sending')}
                         </span>
                       ) : (
-                        'Confirmer et envoyer'
+                        t('form.confirm_and_send')
                       )}
                     </Button>
                   </div>

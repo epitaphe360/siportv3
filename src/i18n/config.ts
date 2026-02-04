@@ -70,7 +70,8 @@ const resources = {
         filter: 'Filtrer',
         export: 'Exporter',
         import: 'Importer',
-        refresh: 'Actualiser'
+        refresh: 'Actualiser',
+        warning: 'Attention'
       },
       dashboard: {
         title: 'Tableau de bord',
@@ -715,7 +716,16 @@ const resources = {
         website: 'Site web',
         your_company: 'Nom de votre société',
         required: 'Requis',
-        optional: 'Optionnel'
+        optional: 'Optionnel',
+        verify_information: 'Vérifiez vos informations',
+        ensure_correct_before_submit: 'Assurez-vous que toutes les informations sont correctes avant de soumettre votre demande',
+        organization_information: 'Informations sur l\'Organisation',
+        contact_information: 'Informations de Contact',
+        activity_sector: 'Secteur d\'activité',
+        request_review_warning: 'Une fois validé, votre demande sera envoyée à notre équipe pour examen. Vérifiez bien que toutes les informations sont exactes avant de continuer.',
+        edit_information: 'Modifier les informations',
+        confirm_and_send: 'Confirmer et envoyer',
+        sending: 'Envoi en cours...'
       },
       seo: {
         page_title: 'Titre de la page',
@@ -1158,7 +1168,8 @@ const resources = {
         filter: 'Filter',
         export: 'Export',
         import: 'Import',
-        refresh: 'Refresh'
+        refresh: 'Refresh',
+        warning: 'Warning'
       },
       dashboard: {
         title: 'Dashboard',
@@ -1803,7 +1814,16 @@ const resources = {
         website: 'Website',
         your_company: 'Your company name',
         required: 'Required',
-        optional: 'Optional'
+        optional: 'Optional',
+        verify_information: 'Verify Your Information',
+        ensure_correct_before_submit: 'Make sure all information is correct before submitting your request',
+        organization_information: 'Organization Information',
+        contact_information: 'Contact Information',
+        activity_sector: 'Activity Sector',
+        request_review_warning: 'Once validated, your request will be sent to our team for review. Please ensure all information is accurate before continuing.',
+        edit_information: 'Edit Information',
+        confirm_and_send: 'Confirm and Send',
+        sending: 'Sending...'
       },
       seo: {
         page_title: 'Page title',
