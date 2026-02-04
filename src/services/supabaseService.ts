@@ -146,12 +146,13 @@ interface ErrorInfo {
 }
 
 interface MiniSiteFieldData {
+  id?: string;
   theme?: string;
   custom_colors?: Record<string, string>;
   sections?: MiniSiteSection[];
-  is_published?: boolean;
-  view_count?: number;
-  updated_at?: string;
+  published?: boolean;
+  views?: number;
+  last_updated?: string;
 }
 
 interface EventDB {
@@ -466,7 +467,7 @@ export class SupabaseService {
           stand_number,
           stand_area,
           contact_info,
-          mini_site:mini_sites(theme, custom_colors, sections, is_published, view_count, updated_at),
+          mini_site:mini_sites(id, theme, custom_colors, sections, published, views, last_updated),
           products(id, exhibitor_id, name, description, category, images, specifications, price, featured)
         `)
         .order('company_name', { ascending: true });
@@ -973,12 +974,14 @@ export class SupabaseService {
     const miniSiteData = Array.isArray(miniSiteArray) && miniSiteArray.length > 0 ? (miniSiteArray[0] as MiniSiteFieldData) : (miniSiteArray as MiniSiteFieldData);
 
     const miniSite = miniSiteData ? {
+      id: miniSiteData.id || '',
+      exhibitorId: exhibitorDB.id,
       theme: miniSiteData.theme || 'default',
-      customColors: miniSiteData.custom_colors || {},
+      customColors: miniSiteData.custom_colors || { primary: '#1e40af', secondary: '#3b82f6', accent: '#60a5fa' },
       sections: miniSiteData.sections || [],
-      published: miniSiteData.is_published || false,
-      views: miniSiteData.view_count || 0,
-      lastUpdated: new Date(miniSiteData.updated_at || Date.now())
+      published: miniSiteData.published || false,
+      views: miniSiteData.views || 0,
+      lastUpdated: new Date(miniSiteData.last_updated || Date.now())
     } : null;
 
     return {

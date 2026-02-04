@@ -44,6 +44,25 @@ export default function ExhibitorsPage() {
     { value: 'academic', label: t('pages.exhibitors.category_academic') }
   ], [t]);
 
+  // ⚡ OPTIMISÉ: Mémoriser les secteurs pour le filtre (correspondant aux données réelles)
+  const sectors = useMemo(() => [
+    { value: '', label: 'Tous les secteurs' },
+    { value: 'Exploitation Portuaire', label: 'Exploitation Portuaire' },
+    { value: 'Régulation Portuaire', label: 'Régulation Portuaire' },
+    { value: 'Hub Logistique', label: 'Hub Logistique' },
+    { value: 'Industrie & Export', label: 'Industrie & Export' },
+    { value: 'Technologies Portuaires', label: 'Technologies Portuaires' },
+    { value: 'Technologie Maritime', label: 'Technologie Maritime' },
+    { value: 'Culture & Heritage Maritime', label: 'Culture & Heritage Maritime' },
+    { value: 'Logistique Maritime', label: 'Logistique Maritime' },
+    { value: 'Services Portuaires Premium', label: 'Services Portuaires Premium' },
+    { value: 'Conseil Portuaire', label: 'Conseil Portuaire' },
+    { value: 'Patrimoine Maritime', label: 'Patrimoine Maritime' },
+    { value: 'Armement Maritime', label: 'Armement Maritime' },
+    { value: 'Gestion Portuaire', label: 'Gestion Portuaire' },
+    { value: 'Logistique Mondiale', label: 'Logistique Mondiale' }
+  ], []);
+
   // ⚡ OPTIMISÉ: useCallback pour éviter de recréer ces fonctions à chaque render
   const getCategoryLabel = useCallback((category: string) => {
     const labels = {
@@ -193,13 +212,17 @@ export default function ExhibitorsPage() {
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-2">
                     {t('profile.sector')}
                   </label>
-                  <input
-                    type="text"
-                    placeholder="Ex: Logistique"
+                  <select
                     value={filters.sector}
                     onChange={(e) => setFilters({ sector: e.target.value })}
-                    className="w-full px-5 py-3 bg-gray-50 border-2 border-transparent focus:border-blue-500 rounded-2xl text-slate-900 font-bold transition-all"
-                  />
+                    className="w-full px-5 py-3 bg-gray-50 border-2 border-transparent focus:border-blue-500 rounded-2xl text-slate-900 font-bold appearance-none transition-all cursor-pointer"
+                  >
+                    {sectors.map((sector) => (
+                      <option key={sector.value} value={sector.value}>
+                        {sector.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 
                 <div>

@@ -126,10 +126,10 @@ export const useExhibitorStore = create<ExhibitorState>((set, get) => ({
       const companyName = exhibitor.companyName || '';
       const description = exhibitor.description || '';
       const search = filters.search.toLowerCase();
-      const filterSector = filters.sector.toLowerCase();
 
       const matchesCategory = !filters.category || exhibitor.category === filters.category;
-      const matchesSector = !filters.sector || sector.toLowerCase().includes(filterSector);
+      // Comparaison exacte pour le secteur (au lieu de .includes())
+      const matchesSector = !filters.sector || sector === filters.sector;
       const matchesSearch = !filters.search || 
         companyName.toLowerCase().includes(search) ||
         description.toLowerCase().includes(search);
