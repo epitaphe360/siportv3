@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { cn } from '../../lib/utils';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface FormLabelProps {
   htmlFor: string;
@@ -33,6 +34,7 @@ export const FormLabel: React.FC<FormLabelProps> = memo(({
   error,
   className
 }) => {
+  const { t } = useTranslation();
   const descriptionId = description ? `${htmlFor}-desc` : undefined;
   const errorId = error ? `${htmlFor}-error` : undefined;
 
@@ -44,7 +46,7 @@ export const FormLabel: React.FC<FormLabelProps> = memo(({
       >
         {children}
         {required && (
-          <span className="text-red-600 ml-1" aria-label="required">
+          <span className="text-red-600 ml-1" aria-label={t('form.required')}>
             *
           </span>
         )}
