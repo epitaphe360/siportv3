@@ -40,7 +40,7 @@ export default function BadgePage() {
       setBadge(userBadge);
     } catch (err: any) {
       console.error('Error loading badge:', err);
-      setError(err.message || 'Erreur lors du chargement du badge');
+      setError(err.message || t('badge.error_loading'));
     } finally {
       setLoading(false);
     }
@@ -54,11 +54,11 @@ export default function BadgePage() {
       setError(null);
       const newBadge = await generateBadgeFromUser(user.id);
       setBadge(newBadge);
-      toast.success('Badge généré avec succès !');
+      toast.success(t('badge.badge_generated_success'));
     } catch (err: any) {
       console.error('Error generating badge:', err);
-      setError(err.message || 'Erreur lors de la génération du badge');
-      toast.error('Erreur lors de la génération du badge');
+      setError(err.message || t('badge.error_generating'));
+      toast.error(t('badge.error_generating'));
     } finally {
       setGenerating(false);
     }
@@ -85,12 +85,12 @@ export default function BadgePage() {
           a.click();
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
-          toast.success('Badge téléchargé !');
+          toast.success(t('badge.badge_downloaded'));
         }
       });
     } catch (err) {
       console.error('Error downloading badge:', err);
-      toast.error('Erreur lors du téléchargement. Veuillez faire une capture d\'écran du badge.');
+      toast.error(t('badge.download_error'));
     }
   }
 
@@ -111,8 +111,8 @@ export default function BadgePage() {
       <div className="max-w-4xl mx-auto p-8 text-center">
         <Card className="p-8">
           <AlertTriangle className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold mb-2">Connexion requise</h2>
-          <p className="text-gray-600">Vous devez être connecté pour voir votre badge.</p>
+          <h2 className="text-xl font-bold mb-2">{t('badge.login_required')}</h2>
+          <p className="text-gray-600">{t('badge.must_login_badge')}</p>
         </Card>
       </div>
     );
@@ -148,11 +148,11 @@ export default function BadgePage() {
       </style>
 
       <div className="no-print mb-8 text-center">
-        <h1 className="text-3xl font-bold mb-2">🎫 Mon Badge d'Accès</h1>
+        <h1 className="text-3xl font-bold mb-2">🎫 {t('badge.my_access_badge')}</h1>
         <p className="text-gray-600">
           {badge
-            ? 'Téléchargez ou imprimez votre badge pour accéder au salon.'
-            : 'Générez votre badge personnalisé avec QR code pour accéder au salon.'}
+            ? t('badge.download_print_info')
+            : t('badge.generate_badge_info')}
         </p>
       </div>
 
@@ -174,12 +174,12 @@ export default function BadgePage() {
             {generating ? (
               <>
                 <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
-                Génération...
+                {t('badge.generating')}
               </>
             ) : (
               <>
                 <Scan className="w-5 h-5 mr-2" />
-                ✨ Générer mon badge
+                ✨ {t('badge.generate_my_badge')}
               </>
             )}
           </Button>
@@ -196,7 +196,7 @@ export default function BadgePage() {
               className="border-green-600 text-green-700 hover:bg-green-50"
             >
               <Download className="w-4 h-4 mr-2" />
-              Télécharger PNG
+              {t('badge.download_png')}
             </Button>
             <Button
               onClick={handlePrintBadge}
@@ -204,7 +204,7 @@ export default function BadgePage() {
               className="border-gray-600 text-gray-700 hover:bg-gray-50"
             >
               <Printer className="w-4 h-4 mr-2" />
-              Imprimer
+              {t('badge.print')}
             </Button>
             <Button
               onClick={handleGenerateBadge}
@@ -213,7 +213,7 @@ export default function BadgePage() {
               className="text-yellow-600 hover:bg-yellow-50"
             >
               <RefreshCw className={`w-4 h-4 mr-2 ${generating ? 'animate-spin' : ''}`} />
-              {generating ? 'Régénération...' : 'Régénérer'}
+              {generating ? t('badge.regenerating') : t('badge.regenerate')}
             </Button>
           </div>
 
@@ -287,7 +287,7 @@ export default function BadgePage() {
               {/* Stand Number (if applicable) */}
               {badge.standNumber && (
                 <div className="text-center mb-4 text-gray-700 bg-gray-100 py-2 mx-6 rounded-lg">
-                  <span className="font-bold">Stand N°:</span> {badge.standNumber}
+                  <span className="font-bold">{t('badge.stand_number')}:</span> {badge.standNumber}
                 </div>
               )}
 
@@ -305,7 +305,7 @@ export default function BadgePage() {
               <div className="text-center p-3 bg-gray-900 text-white text-xs">
                 <div className="flex items-center justify-center gap-1 opacity-80 mb-1">
                   <Calendar className="w-3 h-3" />
-                  <span>Valide du</span>
+                  <span>{t('badge.valid_from')}</span>
                 </div>
                 <div className="font-bold text-sm tracking-widest">
                   1 - 3 AVRIL 2026
@@ -320,24 +320,24 @@ export default function BadgePage() {
             <Card className="p-6 bg-blue-50 border-blue-100">
               <h3 className="text-lg font-bold text-blue-900 mb-4 flex items-center gap-2">
                 <Scan className="w-5 h-5" />
-                Instructions d'utilisation
+                {t('badge.usage_instructions')}
               </h3>
               <ol className="list-decimal list-inside space-y-2 text-blue-800 text-sm">
-                <li><span className="font-semibold">Téléchargez</span> votre badge ou imprimez-le.</li>
-                <li><span className="font-semibold">Conservez</span> le badge sur votre téléphone.</li>
-                <li><span className="font-semibold">Présentez</span> le QR code à l'entrée.</li>
-                <li><span className="font-semibold">Portez</span> votre badge visiblement.</li>
+                <li><span className="font-semibold">{t('badge.instruction_1')}</span> {t('badge.instruction_1_desc')}</li>
+                <li><span className="font-semibold">{t('badge.instruction_2')}</span> {t('badge.instruction_2_desc')}</li>
+                <li><span className="font-semibold">{t('badge.instruction_3')}</span> {t('badge.instruction_3_desc')}</li>
+                <li><span className="font-semibold">{t('badge.instruction_4')}</span> {t('badge.instruction_4_desc')}</li>
               </ol>
 
               {(badge.accessLevel === 'vip' || badge.accessLevel === 'premium') && (
                 <div className="mt-4 bg-yellow-50 p-3 rounded-lg border border-yellow-200 text-yellow-800 text-sm">
                   <strong className="block mb-1 flex items-center gap-1">
-                    <span className="text-lg">👑</span> Avantages VIP
+                    <span className="text-lg">👑</span> {t('badge.vip_advantages')}
                   </strong>
                   <ul className="list-disc list-inside pl-1 space-y-1 text-xs">
-                    <li>Accès illimité à toutes les zones</li>
-                    <li>Rendez-vous B2B illimités</li>
-                    <li>Accès aux événements exclusifs</li>
+                    <li>{t('badge.vip_advantage_1')}</li>
+                    <li>{t('badge.vip_advantage_2')}</li>
+                    <li>{t('badge.vip_advantage_3')}</li>
                   </ul>
                 </div>
               )}
@@ -345,22 +345,22 @@ export default function BadgePage() {
 
             {/* Stats */}
             <Card className="p-6">
-              <h4 className="text-lg font-bold text-gray-900 mb-4">📊 Statistiques</h4>
+              <h4 className="text-lg font-bold text-gray-900 mb-4">📊 {t('badge.statistics')}</h4>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-gray-50 p-3 rounded-lg">
-                  <div className="text-xs text-gray-500 mb-1">Scans effectués</div>
+                  <div className="text-xs text-gray-500 mb-1">{t('badge.scans_done')}</div>
                   <div className="text-2xl font-bold text-gray-900">{badge.scanCount}</div>
                 </div>
                 <div className="bg-gray-50 p-3 rounded-lg">
-                  <div className="text-xs text-gray-500 mb-1">Statut</div>
+                  <div className="text-xs text-gray-500 mb-1">{t('badge.status')}</div>
                   <div className={`text-sm font-bold flex items-center gap-1 ${badge.status === 'active' ? 'text-green-600' : 'text-red-600'}`}>
                     {badge.status === 'active' ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
-                    {badge.status === 'active' ? 'Actif' : badge.status}
+                    {badge.status === 'active' ? t('badge.active') : badge.status}
                   </div>
                 </div>
                 {badge.lastScannedAt && (
                   <div className="col-span-2 bg-gray-50 p-3 rounded-lg">
-                    <div className="text-xs text-gray-500 mb-1">Dernier scan</div>
+                    <div className="text-xs text-gray-500 mb-1">{t('badge.last_scan')}</div>
                     <div className="text-sm font-medium text-gray-900">
                       {new Date(badge.lastScannedAt).toLocaleDateString('fr-FR', {
                         day: '2-digit',

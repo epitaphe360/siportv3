@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import useAuthStore from '../../store/authStore';
+import { useTranslation } from '../../hooks/useTranslation';
 import {
   generateSecureQRCode,
   ACCESS_LEVELS,
@@ -20,6 +21,7 @@ import {
 const QR_ROTATION_INTERVAL = 30 * 1000; // 30 secondes
 
 export default function DigitalBadge() {
+  const { t } = useTranslation();
   const { user } = useAuthStore();
   const [qrCodeDataURL, setQrCodeDataURL] = useState<string>('');
   const [payload, setPayload] = useState<QRCodePayload | null>(null);
@@ -55,7 +57,7 @@ export default function DigitalBadge() {
       setExpiresAt(newExpiry);
     } catch (err: any) {
       console.error('Error generating QR code:', err);
-      setError('Erreur lors de la génération du QR code');
+      setError(t('badge.error_generating'));
     } finally {
       setTimeout(() => setIsRotating(false), 500);
     }
@@ -102,7 +104,7 @@ export default function DigitalBadge() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Chargement de votre badge...</p>
+          <p className="text-gray-600">{t('badge.loading_badge')}</p>
         </div>
       </div>
     );
@@ -118,7 +120,7 @@ export default function DigitalBadge() {
 
   const accessLevel = ACCESS_LEVELS[accessKey] || {
     color: '#CCCCCC',
-    displayName: 'Niveau inconnu',
+    displayName: t('badge.unknown_level'),
     zones: [],
     events: []
   };
@@ -152,7 +154,7 @@ export default function DigitalBadge() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
                 <Shield className="h-6 w-6" style={{ color: accessLevel.color }} />
-                <h2 className="text-xl font-bold text-gray-900">Badge d'Accès</h2>
+                <h2 className="text-xl font-bold text-gray-900">{t('badge.access_badge')}</h2>
               </div>
               <div
                 className="px-3 py-1 rounded-full text-xs font-bold"
@@ -264,14 +266,14 @@ export default function DigitalBadge() {
 
                 <div className="flex items-center space-x-1 text-xs text-gray-500">
                   <RefreshCw className="h-3 w-3" />
-                  <span>Rotation automatique</span>
+                  <span>{t('badge.automatic_rotation')}</span>
                 </div>
               </div>
 
               {/* Security Indicator */}
               <div className="flex items-center justify-center space-x-2 text-xs text-green-600">
                 <CheckCircle className="h-4 w-4" />
-                <span className="font-medium">QR Code Sécurisé JWT</span>
+                <span className="font-medium">{t('badge.secure_qr_jwt')}</span>
               </div>
             </div>
           </div>
@@ -280,7 +282,7 @@ export default function DigitalBadge() {
           <div className="relative p-6 border-t border-gray-200 bg-gray-50">
             <h4 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
               <Sparkles className="h-4 w-4 mr-2" style={{ color: accessLevel.color }} />
-              Zones Autorisées
+              {t('badge.authorized_zones')}
             </h4>
             <div className="flex flex-wrap gap-2">
               {payload.zones.map((zone) => (
@@ -289,7 +291,7 @@ export default function DigitalBadge() {
                   className="px-3 py-1 rounded-full text-xs font-medium bg-white border"
                   style={{ borderColor: accessLevel.color, color: accessLevel.color }}
                 >
-                  {zone === 'all' ? '🌟 Accès Total' : zone.replace(/_/g, ' ').toUpperCase()}
+                  {zone === 'all' ? `🌟 ${t('badge.total_access')}` : zone.replace(/_/g, ' ').toUpperCase()}
                 </span>
               ))}
             </div>
@@ -317,7 +319,7 @@ export default function DigitalBadge() {
               }}
             >
               <RefreshCw className={`h-4 w-4 ${isRotating ? 'animate-spin' : ''}`} />
-              <span>Régénérer le QR Code</span>
+              <span>{t('badge.regenerate_qr')}</span>
             </button>
           </div>
         </Card>
@@ -327,10 +329,9 @@ export default function DigitalBadge() {
           <div className="flex items-start space-x-3">
             <Shield className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
             <div className="text-sm text-blue-900">
-              <p className="font-semibold mb-1">Sécurité Maximale</p>
+              <p className="font-semibold mb-1">{t('badge.max_security')}</p>
               <p className="text-blue-700">
-                Votre QR code se régénère automatiquement toutes les 30 secondes
-                pour une sécurité optimale. Ne partagez jamais votre badge.
+                {t('badge.security_info')}
               </p>
             </div>
           </div>
