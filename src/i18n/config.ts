@@ -92,7 +92,12 @@ const resources = {
         interest_areas: 'Centres d\'Intérêt',
         visitor_engagement_7days: 'Engagement Visiteurs (7 derniers jours)',
         brand_exposure_7days: 'Exposition de Marque (7 derniers jours)',
-        engagement_channels: 'Canaux d\'Engagement'
+        engagement_channels: 'Canaux d\'Engagement',
+        login_to_see_stats: 'Connectez-vous pour voir vos statistiques.',
+        minisite_views: 'Vues du mini-site',
+        appointments: 'Rendez-vous',
+        products: 'Produits',
+        profile_views: 'Vues de profil'
       },
       admin: {
         title: 'Administration',
@@ -1286,7 +1291,12 @@ const resources = {
         interest_areas: 'Interest Areas',
         visitor_engagement_7days: 'Visitor Engagement (Last 7 days)',
         brand_exposure_7days: 'Brand Exposure (Last 7 days)',
-        engagement_channels: 'Engagement Channels'
+        engagement_channels: 'Engagement Channels',
+        login_to_see_stats: 'Log in to see your statistics.',
+        minisite_views: 'Mini-site Views',
+        appointments: 'Appointments',
+        products: 'Products',
+        profile_views: 'Profile Views'
       },
       admin: {
         title: 'Administration',
