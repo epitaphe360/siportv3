@@ -9,22 +9,25 @@ import { validateUrl, extractDomain } from '../../utils/urlValidator';
 import { MiniSitePreviewModal } from './MiniSitePreviewModal';
 import { AlertCircle, Loader } from 'lucide-react';
 import useAuthStore from '../../store/authStore';
+import { useTranslation } from 'react-i18next';
 
 interface MiniSiteWizardProps {
   onSuccess?: () => void;
 }
 
-const steps = [
-  { label: 'Nom de la société', key: 'company', type: 'text', placeholder: 'Votre société' },
-  { label: 'Logo', key: 'logo', type: 'file', placeholder: '' },
-  { label: 'Description', key: 'description', type: 'textarea', placeholder: 'Décrivez votre activité...' },
-  { label: 'Documents (PDF, Brochure...)', key: 'documents', type: 'file', multiple: true, placeholder: '' },
-  { label: 'Produits principaux', key: 'products', type: 'textarea', placeholder: 'Listez vos produits phares...' },
-  { label: 'Réseaux sociaux', key: 'socials', type: 'text', placeholder: 'Lien LinkedIn, Facebook...' },
-];
-
 export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
   const { user } = useAuthStore();
+  const { t } = useTranslation();
+  
+  const steps = [
+    { label: t('minisite.step_company'), key: 'company', type: 'text', placeholder: t('minisite.placeholder_company') },
+    { label: t('minisite.step_logo'), key: 'logo', type: 'file', placeholder: '' },
+    { label: t('minisite.step_description'), key: 'description', type: 'textarea', placeholder: t('minisite.placeholder_description') },
+    { label: t('minisite.step_documents'), key: 'documents', type: 'file', multiple: true, placeholder: '' },
+    { label: t('minisite.step_products'), key: 'products', type: 'textarea', placeholder: t('minisite.placeholder_products') },
+    { label: t('minisite.step_socials'), key: 'socials', type: 'text', placeholder: t('minisite.placeholder_socials') },
+  ];
+  
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<any>({});
   const [loading, setLoading] = useState(false);
@@ -62,7 +65,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
     if (url.trim().length > 0) {
       const validation = validateUrl(url);
       if (!validation.isValid) {
-        setUrlError(validation.error || 'URL invalide');
+        setUrlError(validation.error || t('minisite.invalid_url'));
       }
     }
   };
@@ -75,7 +78,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
     // Valider l'URL
     const validation = validateUrl(importUrl);
     if (!validation.isValid) {
-      setUrlError(validation.error || 'URL invalide');
+      setUrlError(validation.error || t('minisite.invalid_url'));
       return;
     }
 
@@ -98,13 +101,13 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
       
       // Messages d'erreur plus explicites
       if (aiError.message?.includes('timeout')) {
-        setError(`Le site ${extractDomain(importUrl)} met trop de temps à répondre. Veuillez réessayer ou utiliser le mode manuel.`);
+        setError(t('minisite.timeout_error', { domain: extractDomain(importUrl) }));
       } else if (aiError.message?.includes('404') || aiError.message?.includes('Fetch failed')) {
-        setError(`Le site ${extractDomain(importUrl)} n'est pas accessible. Vérifiez l'URL et réessayez.`);
+        setError(t('minisite.not_accessible_error', { domain: extractDomain(importUrl) }));
       } else if (aiError.message?.includes('Agent IA indisponible')) {
-        setError('Le service de génération automatique est temporairement indisponible. Veuillez utiliser le mode manuel ou réessayer plus tard.');
+        setError(t('minisite.ai_unavailable'));
       } else {
-        setError(`Impossible de récupérer les informations du site. ${aiError.message || 'Erreur inconnue'}`);
+        setError(t('minisite.fetch_error', { message: aiError.message || t('minisite.unknown_error') }));
       }
     } finally {
       setLoading(false);
@@ -121,7 +124,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
     try {
       // Préparation des données pour la création du mini-site
       const miniSiteData = {
-        company: scrapedData.company || 'Entreprise',
+        company: scrapedData.company || t('minisite.default_company'),
         logo: scrapedData.logo || '',
         description: scrapedData.description || '',
         products: Array.isArray(scrapedData.products) ? scrapedData.products : [],
@@ -134,7 +137,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
 
       // Vérifier que l'utilisateur est connecté
       if (!user?.id) {
-        throw new Error('Vous devez être connecté pour créer un mini-site');
+        throw new Error(t('minisite.login_required'));
       }
 
       // CRITICAL FIX: Récupérer l'exhibitorId depuis le profil utilisateur
@@ -166,7 +169,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
       
     } catch (e: any) {
       console.error('❌ Erreur création mini-site:', e);
-      setError(e?.message || 'Erreur lors de la création du mini-site.');
+      setError(e?.message || t('minisite.creation_error'));
       setShowPreview(false);
     } finally {
       setIsCreating(false);
@@ -199,7 +202,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
     
     try {
       const miniSiteData = {
-        company: form.company || 'Entreprise',
+        company: form.company || t('minisite.default_company'),
         logo: form.logo || '',
         description: form.description || '',
         products: typeof form.products === 'string' ? form.products.split('\n').filter(Boolean) : [],
@@ -210,7 +213,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
 
       // Vérifier que l'utilisateur est connecté
       if (!user?.id) {
-        throw new Error('Vous devez être connecté pour créer un mini-site');
+        throw new Error(t('minisite.login_required'));
       }
 
       // CRITICAL FIX: Récupérer l'exhibitorId depuis le profil utilisateur
@@ -240,7 +243,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
 
     } catch (e: any) {
       console.error('❌ Erreur création mini-site:', e);
-      setError(e?.message || 'Erreur lors de la création du mini-site.');
+      setError(e?.message || t('minisite.creation_error'));
     }
     setLoading(false);
   };
@@ -248,13 +251,13 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
   if (success) {
     return (
       <Card className="p-8 text-center">
-        <div className="text-4xl mb-4">🎉</div>
-        <div className="text-lg font-bold mb-2">Mini-site généré avec succès !</div>
-        <div className="text-gray-600 mb-4">Vous pouvez maintenant le personnaliser ou le partager.</div>
+        <div className="text-4xl mb-4">{t('minisite.success_emoji')}</div>
+        <div className="text-lg font-bold mb-2">{t('minisite.success_title')}</div>
+        <div className="text-gray-600 mb-4">{t('minisite.success_message')}</div>
         <a href="/minisite" target="_blank" rel="noopener noreferrer">
-          <Button className="mb-2 w-full">Voir mon mini-site</Button>
+          <Button className="mb-2 w-full">{t('minisite.view_my_minisite')}</Button>
         </a>
-        <Button variant="outline" onClick={onSuccess} className="w-full">Retour au dashboard</Button>
+        <Button variant="outline" onClick={onSuccess} className="w-full">{t('minisite.back_to_dashboard')}</Button>
       </Card>
     );
   }
@@ -264,19 +267,19 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
   return (
     <>
       <Card className="max-w-lg mx-auto p-8 mt-8">
-        <div className="mb-6 text-xl font-bold text-center">🚀 Création de votre mini-site</div>
+        <div className="mb-6 text-xl font-bold text-center">{t('minisite.wizard_title')}</div>
         
         {/* Mode automatique avec URL prioritaire */}
         <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <label className="block font-medium mb-2 text-blue-800">
-            ✨ Création automatique depuis votre site web
+            {t('minisite.auto_creation_title')}
           </label>
           <input 
             type="url" 
             className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-200 ${
               urlError ? 'border-red-500' : 'border-blue-300'
             }`}
-            placeholder="https://votresite.com" 
+            placeholder={t('minisite.placeholder_url')} 
             value={importUrl} 
             onChange={handleUrlChange}
             disabled={loading}
@@ -289,7 +292,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
             </div>
           )}
           <div className="text-sm text-blue-600 mt-2">
-            🤖 Notre IA récupérera automatiquement : nom, logo, description, produits, contacts et réseaux sociaux.
+            {t('minisite.ai_info')}
           </div>
           {importUrl && !urlError && (
             <Button 
@@ -301,10 +304,10 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
               {loading ? (
                 <span className="flex items-center justify-center space-x-2">
                   <Loader className="h-4 w-4 animate-spin" />
-                  <span>Génération automatique en cours...</span>
+                  <span>{t('minisite.generating_auto')}</span>
                 </span>
               ) : (
-                '🚀 Créer automatiquement mon mini-site'
+                t('minisite.auto_generate_button')
               )}
             </Button>
           )}
@@ -316,7 +319,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
             <div className="flex items-start space-x-2">
               <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
               <div>
-                <div className="font-semibold text-red-900">Erreur</div>
+                <div className="font-semibold text-red-900">{t('minisite.error_title')}</div>
                 <div className="text-sm text-red-700 mt-1">{error}</div>
               </div>
             </div>
@@ -326,7 +329,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
         {/* Mode manuel en option */}
         <div className="border-t pt-4">
           <div className="text-center text-gray-500 mb-4 text-sm">
-            Ou remplissez manuellement les informations
+            {t('minisite.manual_alternative')}
           </div>
           
           <form onSubmit={e => { e.preventDefault(); step === steps.length - 1 ? handleManualSubmit() : handleNext(); }}>
@@ -370,17 +373,17 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
                 disabled={step === 0 || loading}
                 data-testid="button-previous"
               >
-                Précédent
+                {t('minisite.button_previous')}
               </Button>
               {step < steps.length - 1 ? (
-                <Button type="submit" disabled={loading} data-testid="button-next">Suivant</Button>
+                <Button type="submit" disabled={loading} data-testid="button-next">{t('minisite.button_next')}</Button>
               ) : (
                 <Button 
                   type="submit" 
                   disabled={loading}
                   data-testid="button-manual-generate"
                 >
-                  {loading ? 'Génération en cours...' : 'Générer mon mini-site'}
+                  {loading ? t('minisite.generating') : t('minisite.generate_button')}
                 </Button>
               )}
             </div>

@@ -547,7 +547,51 @@ const resources = {
         company_description: 'Description de votre entreprise',
         feature: 'Caractéristique',
         products_section_title: 'Titre de la section produits',
-        upload_images: 'Upload d\'images et médias'
+        upload_images: 'Upload d\'images et médias',
+        // Wizard labels
+        step_company: 'Nom de la société',
+        step_logo: 'Logo',
+        step_description: 'Description',
+        step_documents: 'Documents (PDF, Brochure...)',
+        step_products: 'Produits principaux',
+        step_socials: 'Réseaux sociaux',
+        // Placeholders
+        placeholder_company: 'Votre société',
+        placeholder_description: 'Décrivez votre activité...',
+        placeholder_products: 'Listez vos produits phares...',
+        placeholder_socials: 'Lien LinkedIn, Facebook...',
+        placeholder_url: 'https://votresite.com',
+        // Titles & Headers
+        wizard_title: '🚀 Création de votre mini-site',
+        auto_creation_title: '✨ Création automatique depuis votre site web',
+        manual_alternative: 'Ou remplissez manuellement les informations',
+        // Buttons
+        auto_generate_button: '🚀 Créer automatiquement mon mini-site',
+        generating_auto: 'Génération automatique en cours...',
+        generate_button: 'Générer mon mini-site',
+        generating: 'Génération en cours...',
+        button_previous: 'Précédent',
+        button_next: 'Suivant',
+        // Success
+        success_emoji: '🎉',
+        success_title: 'Mini-site généré avec succès !',
+        success_message: 'Vous pouvez maintenant le personnaliser ou le partager.',
+        view_my_minisite: 'Voir mon mini-site',
+        back_to_dashboard: 'Retour au dashboard',
+        // Errors
+        invalid_url: 'URL invalide',
+        timeout_error: 'Le site {{domain}} met trop de temps à répondre. Veuillez réessayer ou utiliser le mode manuel.',
+        not_accessible_error: 'Le site {{domain}} n\'est pas accessible. Vérifiez l\'URL et réessayez.',
+        ai_unavailable: 'Le service de génération automatique est temporairement indisponible. Veuillez utiliser le mode manuel ou réessayer plus tard.',
+        fetch_error: 'Impossible de récupérer les informations du site. {{message}}',
+        unknown_error: 'Erreur inconnue',
+        login_required: 'Vous devez être connecté pour créer un mini-site',
+        creation_error: 'Erreur lors de la création du mini-site.',
+        error_title: 'Erreur',
+        // AI Info
+        ai_info: '🤖 Notre IA récupérera automatiquement : nom, logo, description, produits, contacts et réseaux sociaux.',
+        // Fallback
+        default_company: 'Entreprise'
       },
       ui: {
         search: 'Rechercher...',
@@ -1808,7 +1852,51 @@ const resources = {
         company_description: 'Your company description',
         feature: 'Feature',
         products_section_title: 'Products section title',
-        upload_images: 'Image and media upload'
+        upload_images: 'Image and media upload',
+        // Wizard labels
+        step_company: 'Company Name',
+        step_logo: 'Logo',
+        step_description: 'Description',
+        step_documents: 'Documents (PDF, Brochure...)',
+        step_products: 'Main Products',
+        step_socials: 'Social Media',
+        // Placeholders
+        placeholder_company: 'Your company',
+        placeholder_description: 'Describe your business...',
+        placeholder_products: 'List your flagship products...',
+        placeholder_socials: 'LinkedIn, Facebook link...',
+        placeholder_url: 'https://yoursite.com',
+        // Titles & Headers
+        wizard_title: '🚀 Creating your mini-site',
+        auto_creation_title: '✨ Automatic creation from your website',
+        manual_alternative: 'Or fill in the information manually',
+        // Buttons
+        auto_generate_button: '🚀 Create my mini-site automatically',
+        generating_auto: 'Automatic generation in progress...',
+        generate_button: 'Generate my mini-site',
+        generating: 'Generation in progress...',
+        button_previous: 'Previous',
+        button_next: 'Next',
+        // Success
+        success_emoji: '🎉',
+        success_title: 'Mini-site successfully generated!',
+        success_message: 'You can now customize or share it.',
+        view_my_minisite: 'View my mini-site',
+        back_to_dashboard: 'Back to dashboard',
+        // Errors
+        invalid_url: 'Invalid URL',
+        timeout_error: 'The site {{domain}} is taking too long to respond. Please try again or use manual mode.',
+        not_accessible_error: 'The site {{domain}} is not accessible. Check the URL and try again.',
+        ai_unavailable: 'The automatic generation service is temporarily unavailable. Please use manual mode or try again later.',
+        fetch_error: 'Unable to retrieve site information. {{message}}',
+        unknown_error: 'Unknown error',
+        login_required: 'You must be logged in to create a mini-site',
+        creation_error: 'Error creating mini-site.',
+        error_title: 'Error',
+        // AI Info
+        ai_info: '🤖 Our AI will automatically retrieve: name, logo, description, products, contacts and social media.',
+        // Fallback
+        default_company: 'Company'
       },
       ui: {
         search: 'Search...',
