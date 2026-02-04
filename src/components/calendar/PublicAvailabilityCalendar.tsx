@@ -4,6 +4,7 @@ import {
   Clock, Trash2, Edit, ChevronLeft, ChevronRight, Grid3x3, List,
   Lock, Unlock, Wand2
 } from 'lucide-react';
+import { useTranslation } from '../../hooks/useTranslation';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
@@ -25,6 +26,7 @@ export default function PublicAvailabilityCalendar({
   isEditable = true,
   standalone = true
 }: PublicAvailabilityCalendarProps) {
+  const { t } = useTranslation();
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -355,15 +357,15 @@ export default function PublicAvailabilityCalendar({
               {/* Stats rapides */}
               <div className="grid grid-cols-3 gap-4 mt-6">
                 <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4">
-                  <div className="text-blue-100 text-sm mb-1">Total créneaux</div>
+                  <div className="text-blue-100 text-sm mb-1">{t('calendar.total_slots')}</div>
                   <div className="text-3xl font-bold">{timeSlots.length}</div>
                 </div>
                 <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4">
-                  <div className="text-blue-100 text-sm mb-1">Cette semaine</div>
+                  <div className="text-blue-100 text-sm mb-1">{t('calendar.this_week')}</div>
                   <div className="text-3xl font-bold">{weekSlots.length}</div>
                 </div>
                 <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4">
-                  <div className="text-blue-100 text-sm mb-1">Places disponibles</div>
+                  <div className="text-blue-100 text-sm mb-1">{t('calendar.available_spots')}</div>
                   <div className="text-3xl font-bold">
                     {timeSlots.reduce((sum, slot) => sum + (slot.maxBookings - slot.currentBookings), 0)}
                   </div>
@@ -386,16 +388,16 @@ export default function PublicAvailabilityCalendar({
               <div className="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-inner">
                 <div className="text-center">
                   <span className="block text-2xl font-black text-blue-400 leading-none">01-03</span>
-                  <span className="block text-xs font-bold uppercase tracking-widest text-white/60 mt-1">AVRIL</span>
+                  <span className="block text-xs font-bold uppercase tracking-widest text-white/60 mt-1">{t('months.april').toUpperCase()}</span>
                 </div>
               </div>
               <div>
                 <h3 className="text-2xl font-black tracking-tight text-white mb-1">
-                  Planning SIPORTS 2026
+                  {t('calendar.title')}
                 </h3>
                 <div className="flex items-center space-x-2 text-blue-200/80">
                   <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
-                  <p className="text-sm font-medium">Disponibilités pour les 3 jours de l'événement</p>
+                  <p className="text-sm font-medium">{t('calendar.event_days_description')}</p>
                 </div>
               </div>
             </div>
@@ -559,7 +561,7 @@ export default function PublicAvailabilityCalendar({
 
                           <div className="flex items-center space-x-2 text-xs font-medium text-white/90 mb-3 ml-1">
                             <MapPin className="w-3 h-3" />
-                            <span className="truncate">{slot.location || 'Lieu SIPORT'}</span>
+                            <span className="truncate">{slot.location || t('calendar.default_location')}</span>
                           </div>
 
                           {isEditable && (
@@ -594,8 +596,8 @@ export default function PublicAvailabilityCalendar({
                         <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mb-4 border-2 border-dashed border-gray-200 group-hover:border-blue-200 transition-colors">
                           <Clock className="w-8 h-8 text-gray-300 group-hover:text-blue-300 transition-all group-hover:scale-110" />
                         </div>
-                        <p className="text-gray-500 font-bold text-sm mb-1 uppercase tracking-tight">Aucun créneau</p>
-                        <p className="text-gray-400 text-xs mb-6">Planifiez vos disponibilités pour ce jour</p>
+                        <p className="text-gray-500 font-bold text-sm mb-1 uppercase tracking-tight">{t('calendar.no_slots')}</p>
+                        <p className="text-gray-400 text-xs mb-6">{t('calendar.plan_availability')}</p>
                       </div>
                     )}
 
