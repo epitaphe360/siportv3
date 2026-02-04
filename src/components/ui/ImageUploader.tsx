@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { StorageService } from '../../services/storageService';
 import { X, Check, AlertCircle, Image as ImageIcon, RefreshCw } from 'lucide-react';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface ImageUploaderProps {
   onImageUploaded: (url: string) => void;
@@ -18,9 +19,10 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   bucketName = 'images',
   folderName = '',
   className = '',
-  label = 'Télécharger une image',
+  label,
   maxSizeMB = 5
 }) => {
+  const { t } = useTranslation();
   const [previewUrl, setPreviewUrl] = useState<string>(currentImageUrl);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -41,14 +43,14 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 
     // Vérifier le type de fichier
     if (!file.type.startsWith('image/')) {
-      setError('Le fichier doit être une image.');
+      setError(t('upload.must_be_image'));
       return;
     }
 
     // Vérifier la taille du fichier
     const maxSize = maxSizeMB * 1024 * 1024; // en octets
     if (file.size > maxSize) {
-      setError(`L'image est trop volumineuse. Taille maximale: ${maxSizeMB}MB.`);
+      setError(`${t('upload.max_size')}: ${maxSizeMB}MB.`);
       return;
     }
 
