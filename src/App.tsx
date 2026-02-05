@@ -104,6 +104,7 @@ const TermsPage = lazyRetry(() => import('./pages/TermsPage'));
 const CookiesPage = lazyRetry(() => import('./pages/CookiesPage'));
 const AvailabilitySettingsPage = lazyRetry(() => import('./pages/AvailabilitySettingsPage'));
 const VenuePage = lazyRetry(() => import('./pages/VenuePage'));
+const AccommodationPage = lazyRetry(() => import('./pages/AccommodationPage'));
 
 // Partner pages
 const PartnerActivityPage = lazyRetry(() => import('./pages/partners/PartnerActivityPage'));
@@ -357,6 +358,7 @@ const App = () => {
             <Route path={ROUTES.COOKIES} element={<CookiesPage />} />
             <Route path={ROUTES.AVAILABILITY_SETTINGS} element={<AvailabilitySettingsPage />} />
             <Route path={ROUTES.VENUE} element={<VenuePage />} />
+            <Route path="/hebergement" element={<AccommodationPage />} />
 
             {/* Media routes - public access */}
             <Route path={ROUTES.WEBINARS} element={<WebinarsPage />} />

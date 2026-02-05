@@ -1,0 +1,356 @@
+import React, { useState } from 'react';
+import { useTranslation } from '../hooks/useTranslation';
+import { FaHotel, FaStar, FaMapMarkerAlt, FaPhone, FaWifi, FaParking, FaSwimmingPool, FaConciergeBell, FaUtensils, FaCheckCircle } from 'react-icons/fa';
+
+interface Hotel {
+  id: string;
+  name: string;
+  stars: number;
+  image: string;
+  distance: string;
+  amenities: string[];
+  standardPrice: number;
+  vipPrice: number;
+  description: string;
+  address: string;
+  phone: string;
+  website?: string;
+  featured?: boolean;
+}
+
+const AccommodationPage: React.FC = () => {
+  const { t } = useTranslation();
+  const [selectedHotel, setSelectedHotel] = useState<string | null>(null);
+
+  const hotels: Hotel[] = [
+    {
+      id: 'pullman',
+      name: 'Pullman Mazagan Royal Golf & Spa',
+      stars: 5,
+      image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800',
+      distance: '5 km du salon',
+      amenities: ['wifi', 'parking', 'pool', 'spa', 'restaurant', 'gym'],
+      standardPrice: 1200,
+      vipPrice: 1000,
+      description: 'Complexe luxueux avec golf 18 trous, spa de luxe et accès direct à la plage',
+      address: 'Route de Casablanca, El Jadida 24000',
+      phone: '+212 523 388 000',
+      website: 'https://www.pullmanhotels.com',
+      featured: true
+    },
+    {
+      id: 'ibis',
+      name: 'Ibis El Jadida',
+      stars: 3,
+      image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800',
+      distance: '3 km du salon',
+      amenities: ['wifi', 'parking', 'restaurant', 'bar'],
+      standardPrice: 450,
+      vipPrice: 380,
+      description: 'Hôtel moderne et confortable avec excellent rapport qualité-prix',
+      address: 'Boulevard de Suez, El Jadida',
+      phone: '+212 523 342 300'
+    },
+    {
+      id: 'mazagan',
+      name: 'Mazagan Beach & Golf Resort',
+      stars: 5,
+      image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800',
+      distance: '6 km du salon',
+      amenities: ['wifi', 'parking', 'pool', 'spa', 'restaurant', 'casino', 'beach'],
+      standardPrice: 1800,
+      vipPrice: 1500,
+      description: 'Resort 5 étoiles avec casino, plage privée et multiple restaurants gastronomiques',
+      address: 'Route Côtière, El Jadida',
+      phone: '+212 523 388 100',
+      website: 'https://www.mazaganbeachresort.com',
+      featured: true
+    },
+    {
+      id: 'royal',
+      name: 'Royal Golf El Jadida',
+      stars: 4,
+      image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800',
+      distance: '4 km du salon',
+      amenities: ['wifi', 'parking', 'pool', 'restaurant', 'golf'],
+      standardPrice: 800,
+      vipPrice: 650,
+      description: 'Hôtel élégant situé sur un parcours de golf avec vue panoramique',
+      address: 'Km 7 Route de Casablanca, El Jadida',
+      phone: '+212 523 353 200'
+    },
+    {
+      id: 'suisse',
+      name: 'Hôtel Suisse',
+      stars: 3,
+      image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800',
+      distance: '2 km du salon',
+      amenities: ['wifi', 'parking', 'restaurant'],
+      standardPrice: 350,
+      vipPrice: 300,
+      description: 'Hôtel familial avec service personnalisé au cœur d\'El Jadida',
+      address: '149 Avenue Fqih Mohamed Errafii, El Jadida',
+      phone: '+212 523 342 100'
+    },
+    {
+      id: 'provence',
+      name: 'Hôtel de Provence',
+      stars: 3,
+      image: 'https://images.unsplash.com/photo-1549294413-26f195200c16?w=800',
+      distance: '2.5 km du salon',
+      amenities: ['wifi', 'restaurant', 'terrace'],
+      standardPrice: 380,
+      vipPrice: 320,
+      description: 'Charme méditerranéen avec terrasse panoramique',
+      address: '42 Avenue Hassan II, El Jadida',
+      phone: '+212 523 351 400'
+    }
+  ];
+
+  const getAmenityIcon = (amenity: string) => {
+    switch (amenity) {
+      case 'wifi': return <FaWifi className="text-blue-600" />;
+      case 'parking': return <FaParking className="text-blue-600" />;
+      case 'pool': return <FaSwimmingPool className="text-blue-600" />;
+      case 'spa': return <FaConciergeBell className="text-blue-600" />;
+      case 'restaurant': return <FaUtensils className="text-blue-600" />;
+      case 'gym': return <FaConciergeBell className="text-blue-600" />;
+      case 'casino': return <FaConciergeBell className="text-blue-600" />;
+      case 'beach': return <FaSwimmingPool className="text-blue-600" />;
+      case 'golf': return <FaConciergeBell className="text-blue-600" />;
+      case 'bar': return <FaUtensils className="text-blue-600" />;
+      case 'terrace': return <FaConciergeBell className="text-blue-600" />;
+      default: return <FaCheckCircle className="text-blue-600" />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 py-12">
+      <div className="container mx-auto px-4 max-w-7xl">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-3 bg-blue-100 text-blue-700 px-6 py-2 rounded-full mb-4">
+            <FaHotel className="text-2xl" />
+            <span className="font-semibold">{t('accommodation.badge')}</span>
+          </div>
+          <h1 className="text-5xl font-bold text-gray-900 mb-4">
+            {t('accommodation.title')}
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            {t('accommodation.subtitle')}
+          </p>
+        </div>
+
+        {/* Info Banner */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl p-8 mb-12 shadow-xl">
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="text-4xl font-bold mb-2">{hotels.length}</div>
+              <div className="text-blue-100">{t('accommodation.hotels_partners')}</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold mb-2">-20%</div>
+              <div className="text-blue-100">{t('accommodation.vip_discount')}</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold mb-2">1-3</div>
+              <div className="text-blue-100">{t('accommodation.april_dates')}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* VIP Banner */}
+        <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-300 rounded-xl p-6 mb-12">
+          <div className="flex items-start gap-4">
+            <div className="bg-amber-500 text-white p-3 rounded-full">
+              <FaStar className="text-2xl" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                {t('accommodation.vip_advantage_title')}
+              </h3>
+              <p className="text-gray-700 mb-3">
+                {t('accommodation.vip_advantage_desc')}
+              </p>
+              <ul className="space-y-2">
+                <li className="flex items-center gap-2 text-gray-800">
+                  <FaCheckCircle className="text-green-600" />
+                  <span>{t('accommodation.vip_benefit_1')}</span>
+                </li>
+                <li className="flex items-center gap-2 text-gray-800">
+                  <FaCheckCircle className="text-green-600" />
+                  <span>{t('accommodation.vip_benefit_2')}</span>
+                </li>
+                <li className="flex items-center gap-2 text-gray-800">
+                  <FaCheckCircle className="text-green-600" />
+                  <span>{t('accommodation.vip_benefit_3')}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Hotels Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          {hotels.map((hotel) => (
+            <div
+              key={hotel.id}
+              className={`bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl ${
+                hotel.featured ? 'ring-2 ring-blue-500' : ''
+              }`}
+            >
+              {hotel.featured && (
+                <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white text-center py-2 font-semibold">
+                  {t('accommodation.featured_partner')}
+                </div>
+              )}
+              
+              {/* Image */}
+              <div className="relative h-48 overflow-hidden">
+                <img
+                  src={hotel.image}
+                  alt={hotel.name}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full shadow-lg flex items-center gap-1">
+                  {[...Array(hotel.stars)].map((_, i) => (
+                    <FaStar key={i} className="text-yellow-500 text-sm" />
+                  ))}
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{hotel.name}</h3>
+                
+                <div className="flex items-center gap-2 text-gray-600 mb-3">
+                  <FaMapMarkerAlt className="text-blue-600" />
+                  <span className="text-sm">{hotel.distance}</span>
+                </div>
+
+                <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                  {hotel.description}
+                </p>
+
+                {/* Amenities */}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {hotel.amenities.slice(0, 5).map((amenity) => (
+                    <div
+                      key={amenity}
+                      className="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-lg"
+                      title={t(`accommodation.amenity_${amenity}`)}
+                    >
+                      {getAmenityIcon(amenity)}
+                    </div>
+                  ))}
+                  {hotel.amenities.length > 5 && (
+                    <span className="text-xs text-gray-500 self-center">
+                      +{hotel.amenities.length - 5}
+                    </span>
+                  )}
+                </div>
+
+                {/* Pricing */}
+                <div className="border-t pt-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <div className="text-sm text-gray-600">{t('accommodation.standard_rate')}</div>
+                      <div className="text-2xl font-bold text-gray-900">
+                        {hotel.standardPrice} <span className="text-sm text-gray-600">MAD</span>
+                      </div>
+                      <div className="text-xs text-gray-500">{t('accommodation.per_night')}</div>
+                    </div>
+                  </div>
+
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-sm font-semibold text-green-800 flex items-center gap-1">
+                          <FaStar className="text-yellow-500" />
+                          {t('accommodation.vip_rate')}
+                        </div>
+                        <div className="text-2xl font-bold text-green-700">
+                          {hotel.vipPrice} <span className="text-sm">MAD</span>
+                        </div>
+                      </div>
+                      <div className="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+                        -{Math.round(((hotel.standardPrice - hotel.vipPrice) / hotel.standardPrice) * 100)}%
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setSelectedHotel(hotel.id)}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors duration-200"
+                  >
+                    {t('accommodation.view_details')}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* How to Book Section */}
+        <div className="bg-white rounded-2xl shadow-xl p-8 mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+            {t('accommodation.how_to_book')}
+          </h2>
+          <div className="grid md:grid-cols-4 gap-6">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl font-bold text-blue-600">1</span>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">{t('accommodation.step1_title')}</h3>
+              <p className="text-sm text-gray-600">{t('accommodation.step1_desc')}</p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl font-bold text-blue-600">2</span>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">{t('accommodation.step2_title')}</h3>
+              <p className="text-sm text-gray-600">{t('accommodation.step2_desc')}</p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl font-bold text-blue-600">3</span>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">{t('accommodation.step3_title')}</h3>
+              <p className="text-sm text-gray-600">{t('accommodation.step3_desc')}</p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl font-bold text-blue-600">4</span>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">{t('accommodation.step4_title')}</h3>
+              <p className="text-sm text-gray-600">{t('accommodation.step4_desc')}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Contact Banner */}
+        <div className="bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-2xl p-8 text-center">
+          <h3 className="text-2xl font-bold mb-3">{t('accommodation.need_help')}</h3>
+          <p className="text-gray-300 mb-6">{t('accommodation.contact_desc')}</p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <a
+              href="tel:+212523388000"
+              className="inline-flex items-center gap-2 bg-white text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+            >
+              <FaPhone />
+              +212 523 388 000
+            </a>
+            <a
+              href="mailto:hebergement@siports.dz"
+              className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+            >
+              hebergement@siports.dz
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AccommodationPage;
