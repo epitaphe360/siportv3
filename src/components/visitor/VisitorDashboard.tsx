@@ -102,11 +102,6 @@ export default memo(function VisitorDashboard() {
     loadAppointments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Intentionally fetch only on mount
-  
-  // NOUVEAU: Afficher skeleton pendant chargement
-  if (isLoading || isAppointmentsLoading) {
-    return <DashboardSkeleton />;
-  }
 
   // Filter appointments for current visitor (use user after it's declared)
   const receivedAppointments = appointments?.filter((a) => user && a.visitorId === user.id) || [];
@@ -140,7 +135,7 @@ export default memo(function VisitorDashboard() {
       console.error('Erreur lors de l\'acceptation du rendez-vous:', err);
       setError(t('errors.accept_appointment'));
     }
-  }, [updateAppointmentStatus]);
+  }, [updateAppointmentStatus, t]);
 
   const handleReject = useCallback(async (appointmentId: string) => {
     try {
@@ -150,7 +145,7 @@ export default memo(function VisitorDashboard() {
       console.error('Erreur lors du refus du rendez-vous:', err);
       setError(t('errors.reject_appointment'));
     }
-  }, [cancelAppointment]);
+  }, [cancelAppointment, t]);
 
   const handleRequestAnother = useCallback((exhibitorId: string) => {
     setShowAvailabilityModal({ exhibitorId });
@@ -219,7 +214,7 @@ export default memo(function VisitorDashboard() {
     } catch (error) {
       setError(error instanceof Error ? error.message : t('errors.unregister_event'));
     }
-  }, [unregisterFromEvent]);
+  }, [unregisterFromEvent, t]);
 
   // Auto-clear error messages after 5 seconds
   useEffect(() => {
@@ -230,6 +225,11 @@ export default memo(function VisitorDashboard() {
       return () => clearTimeout(timer);
     }
   }, [error]);
+  
+  // NOUVEAU: Afficher skeleton pendant chargement - MOVED AFTER ALL HOOKS
+  if (isLoading || isAppointmentsLoading) {
+    return <DashboardSkeleton />;
+  }
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('fr-FR', {
