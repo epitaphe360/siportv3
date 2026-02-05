@@ -24,6 +24,7 @@ export function QuotaWidget({
   upgradeLink,
   type = 'default'
 }: QuotaWidgetProps) {
+  const { t } = useTranslation();
   const isUnlimited = limit === 999999 || limit === -1;
   const percentage = isUnlimited ? 0 : Math.min((current / limit) * 100, 100);
   const remaining = isUnlimited ? Infinity : Math.max(0, limit - current);
