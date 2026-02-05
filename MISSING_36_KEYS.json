@@ -1,0 +1,150 @@
+{
+  "ui.error.network_error": {
+    "fr": "Erreur de connexion réseau",
+    "en": "Network connection error"
+  },
+  "ui.error.api_timeout": {
+    "fr": "La requête a expiré. Veuillez réessayer.",
+    "en": "Request timed out. Please try again."
+  },
+  "ui.error.server_unavailable": {
+    "fr": "Le serveur n'est pas disponible",
+    "en": "Server is unavailable"
+  },
+  "ui.error.connection_refused": {
+    "fr": "Connexion refusée par le serveur",
+    "en": "Connection refused by server"
+  },
+  "ui.error.data_sync_failed": {
+    "fr": "Échec de la synchronisation des données",
+    "en": "Data synchronization failed"
+  },
+  "ui.modal.confirm_action": {
+    "fr": "Confirmer l'action",
+    "en": "Confirm action"
+  },
+  "ui.modal.are_you_sure": {
+    "fr": "Êtes-vous sûr de cette action ?",
+    "en": "Are you sure about this action?"
+  },
+  "ui.modal.close_warning": {
+    "fr": "Fermer sans enregistrer ?",
+    "en": "Close without saving?"
+  },
+  "ui.modal.unsaved_changes": {
+    "fr": "Vous avez des modifications non enregistrées",
+    "en": "You have unsaved changes"
+  },
+  "ui.modal.delete_permanently": {
+    "fr": "Cette action est irréversible",
+    "en": "This action cannot be undone"
+  },
+  "ui.modal.continue": {
+    "fr": "Continuer",
+    "en": "Continue"
+  },
+  "ui.tooltip.required_field": {
+    "fr": "Ce champ est obligatoire",
+    "en": "This field is required"
+  },
+  "ui.tooltip.optional_field": {
+    "fr": "Ce champ est optionnel",
+    "en": "This field is optional"
+  },
+  "ui.tooltip.hover_help": {
+    "fr": "Survolez pour plus d'informations",
+    "en": "Hover for more information"
+  },
+  "ui.tooltip.character_limit": {
+    "fr": "Maximum {{max}} caractères",
+    "en": "Maximum {{max}} characters"
+  },
+  "ui.hint.password_strength": {
+    "fr": "Au moins 8 caractères, 1 majuscule et 1 chiffre",
+    "en": "At least 8 characters, 1 uppercase and 1 digit"
+  },
+  "ui.breadcrumb.home": {
+    "fr": "Accueil",
+    "en": "Home"
+  },
+  "ui.breadcrumb.current_page": {
+    "fr": "Page actuelle",
+    "en": "Current page"
+  },
+  "ui.breadcrumb.navigate_back": {
+    "fr": "Naviguer vers {{page}}",
+    "en": "Navigate to {{page}}"
+  },
+  "ui.navigation.skip_content": {
+    "fr": "Aller au contenu principal",
+    "en": "Skip to main content"
+  },
+  "ui.loading.please_wait": {
+    "fr": "Veuillez patienter...",
+    "en": "Please wait..."
+  },
+  "ui.loading.initializing": {
+    "fr": "Initialisation en cours",
+    "en": "Initializing"
+  },
+  "ui.loading.syncing": {
+    "fr": "Synchronisation en cours",
+    "en": "Syncing"
+  },
+  "ui.empty_state.no_data": {
+    "fr": "Aucune donnée disponible",
+    "en": "No data available"
+  },
+  "ui.empty_state.no_results": {
+    "fr": "Aucun résultat trouvé",
+    "en": "No results found"
+  },
+  "ui.confirmation.delete_item": {
+    "fr": "Supprimer cet élément définitivement ?",
+    "en": "Delete this item permanently?"
+  },
+  "ui.confirmation.discard_changes": {
+    "fr": "Abandonner les modifications ?",
+    "en": "Discard changes?"
+  },
+  "ui.aria.required": {
+    "fr": "Requis",
+    "en": "Required"
+  },
+  "ui.aria.invalid": {
+    "fr": "Invalide",
+    "en": "Invalid"
+  },
+  "ui.aria.button_pressed": {
+    "fr": "Bouton activé",
+    "en": "Button pressed"
+  },
+  "ui.aria.dropdown_expanded": {
+    "fr": "Menu déroulant ouvert",
+    "en": "Dropdown menu expanded"
+  },
+  "ui.pagination.first_page": {
+    "fr": "Première page",
+    "en": "First page"
+  },
+  "ui.pagination.last_page": {
+    "fr": "Dernière page",
+    "en": "Last page"
+  },
+  "ui.pagination.page_of": {
+    "fr": "Page {{current}} sur {{total}}",
+    "en": "Page {{current}} of {{total}}"
+  },
+  "ui.tabs.tab_panel": {
+    "fr": "Contenu de l'onglet",
+    "en": "Tab panel content"
+  },
+  "ui.accordion.expand": {
+    "fr": "Développer la section",
+    "en": "Expand section"
+  },
+  "ui.accordion.collapse": {
+    "fr": "Réduire la section",
+    "en": "Collapse section"
+  }
+}

@@ -4984,6 +4984,154 @@ const resources = {
     completez_votre_profil_depuis_votre_tabl: {
       fr: 'Complétez votre profil depuis votre tableau de bord',
       en: 'Complete your profile from your dashboard'
+    },
+    error_network_error: {
+      fr: 'Erreur de connexion réseau',
+      en: 'Network connection error'
+    },
+    error_api_timeout: {
+      fr: 'La requête a expiré. Veuillez réessayer.',
+      en: 'Request timed out. Please try again.'
+    },
+    error_server_unavailable: {
+      fr: 'Le serveur n\'est pas disponible',
+      en: 'Server is unavailable'
+    },
+    error_connection_refused: {
+      fr: 'Connexion refusée par le serveur',
+      en: 'Connection refused by server'
+    },
+    error_data_sync_failed: {
+      fr: 'Échec de la synchronisation des données',
+      en: 'Data synchronization failed'
+    },
+    modal_confirm_action: {
+      fr: 'Confirmer l\'action',
+      en: 'Confirm action'
+    },
+    modal_are_you_sure: {
+      fr: 'Êtes-vous sûr de cette action ?',
+      en: 'Are you sure about this action?'
+    },
+    modal_close_warning: {
+      fr: 'Fermer sans enregistrer ?',
+      en: 'Close without saving?'
+    },
+    modal_unsaved_changes: {
+      fr: 'Vous avez des modifications non enregistrées',
+      en: 'You have unsaved changes'
+    },
+    modal_delete_permanently: {
+      fr: 'Cette action est irréversible',
+      en: 'This action cannot be undone'
+    },
+    modal_continue: {
+      fr: 'Continuer',
+      en: 'Continue'
+    },
+    tooltip_required_field: {
+      fr: 'Ce champ est obligatoire',
+      en: 'This field is required'
+    },
+    tooltip_optional_field: {
+      fr: 'Ce champ est optionnel',
+      en: 'This field is optional'
+    },
+    tooltip_hover_help: {
+      fr: 'Survolez pour plus d\'informations',
+      en: 'Hover for more information'
+    },
+    tooltip_character_limit: {
+      fr: 'Maximum {{max}} caractères',
+      en: 'Maximum {{max}} characters'
+    },
+    hint_password_strength: {
+      fr: 'Au moins 8 caractères, 1 majuscule et 1 chiffre',
+      en: 'At least 8 characters, 1 uppercase and 1 digit'
+    },
+    breadcrumb_home: {
+      fr: 'Accueil',
+      en: 'Home'
+    },
+    breadcrumb_current_page: {
+      fr: 'Page actuelle',
+      en: 'Current page'
+    },
+    breadcrumb_navigate_back: {
+      fr: 'Naviguer vers {{page}}',
+      en: 'Navigate to {{page}}'
+    },
+    navigation_skip_content: {
+      fr: 'Aller au contenu principal',
+      en: 'Skip to main content'
+    },
+    loading_please_wait: {
+      fr: 'Veuillez patienter...',
+      en: 'Please wait...'
+    },
+    loading_initializing: {
+      fr: 'Initialisation en cours',
+      en: 'Initializing'
+    },
+    loading_syncing: {
+      fr: 'Synchronisation en cours',
+      en: 'Syncing'
+    },
+    empty_state_no_data: {
+      fr: 'Aucune donnée disponible',
+      en: 'No data available'
+    },
+    empty_state_no_results: {
+      fr: 'Aucun résultat trouvé',
+      en: 'No results found'
+    },
+    confirmation_delete_item: {
+      fr: 'Supprimer cet élément définitivement ?',
+      en: 'Delete this item permanently?'
+    },
+    confirmation_discard_changes: {
+      fr: 'Abandonner les modifications ?',
+      en: 'Discard changes?'
+    },
+    aria_required: {
+      fr: 'Requis',
+      en: 'Required'
+    },
+    aria_invalid: {
+      fr: 'Invalide',
+      en: 'Invalid'
+    },
+    aria_button_pressed: {
+      fr: 'Bouton activé',
+      en: 'Button pressed'
+    },
+    aria_dropdown_expanded: {
+      fr: 'Menu déroulant ouvert',
+      en: 'Dropdown menu expanded'
+    },
+    pagination_first_page: {
+      fr: 'Première page',
+      en: 'First page'
+    },
+    pagination_last_page: {
+      fr: 'Dernière page',
+      en: 'Last page'
+    },
+    pagination_page_of: {
+      fr: 'Page {{current}} sur {{total}}',
+      en: 'Page {{current}} of {{total}}'
+    },
+    tabs_tab_panel: {
+      fr: 'Contenu de l\'onglet',
+      en: 'Tab panel content'
+    },
+    accordion_expand: {
+      fr: 'Développer la section',
+      en: 'Expand section'
+    },
+    accordion_collapse: {
+      fr: 'Réduire la section',
+      en: 'Collapse section'
     }
   }
 };
