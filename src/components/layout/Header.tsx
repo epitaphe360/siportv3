@@ -66,13 +66,13 @@ export const Header: React.FC = memo(() => {
   ];
 
   const mediaMenuItems = [
-    { name: 'Webinaires', href: ROUTES.WEBINARS, description: 'Webinaires sponsorisés en replay', icon: Video },
-    { name: 'Podcasts', href: ROUTES.PODCASTS, description: 'SIPORT Talks - Épisodes audio', icon: Mic },
-    { name: 'Capsules Inside', href: ROUTES.CAPSULES_INSIDE, description: 'Capsules vidéo Inside SIPORT', icon: Play },
-    { name: 'Live Studio', href: ROUTES.LIVE_STUDIO, description: 'Meet The Leaders - Interviews live', icon: Video },
-    { name: 'Best Moments', href: ROUTES.BEST_MOMENTS, description: 'Meilleurs moments du salon', icon: Play },
-    { name: 'Testimonials', href: ROUTES.TESTIMONIALS, description: 'Témoignages vidéo', icon: Video },
-    { name: 'Bibliothèque Média', href: ROUTES.MEDIA_LIBRARY, description: 'Tous les contenus médias', icon: Play },
+    { name: t('media.webinars'), href: ROUTES.WEBINARS, description: t('media.webinars_desc'), icon: Video },
+    { name: t('media.podcasts'), href: ROUTES.PODCASTS, description: t('media.podcasts_desc'), icon: Mic },
+    { name: t('media.capsules'), href: ROUTES.CAPSULES_INSIDE, description: t('media.capsules_desc'), icon: Play },
+    { name: t('media.live_studio'), href: ROUTES.LIVE_STUDIO, description: t('media.live_studio_desc'), icon: Video },
+    { name: t('media.best_moments'), href: ROUTES.BEST_MOMENTS, description: t('media.best_moments_desc'), icon: Play },
+    { name: t('media.testimonials'), href: ROUTES.TESTIMONIALS, description: t('media.testimonials_desc'), icon: Video },
+    { name: t('media.library'), href: ROUTES.MEDIA_LIBRARY, description: t('media.library_desc'), icon: Play },
   ];
   return (
     <header className="fixed top-0 left-0 right-0 z-[100] transition-all duration-500 bg-white/80 backdrop-blur-2xl border-b border-slate-200/50 shadow-sm">
@@ -125,7 +125,7 @@ export const Header: React.FC = memo(() => {
                 className="px-5 py-2.5 text-xs font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 transition-all flex items-center gap-2 group"
               >
                 <Video className="w-4 h-4 text-blue-500" />
-                <span>Média</span>
+                <span>{t('media.menu_title')}</span>
                 <span className="absolute bottom-0 left-5 right-5 h-[2px] bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
               </button>
               
