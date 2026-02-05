@@ -1,0 +1,906 @@
+{
+  "pages.ui.demander_une_cle_api": {
+    "fr": "Demander une clé API",
+    "en": "of"
+  },
+  "pages.ui.article_copie_dans_le_pressepapiers_": {
+    "fr": "article copié dans le presse-papiers !",
+    "en": "Copied"
+  },
+  "pages.ui.hui_dans_leur_capacite_a_integrer_les_te": {
+    "fr": "hui dans leur capacité à intégrer les technologies émergentes tout en préservant leur efficacité opérationnelle.",
+    "en": "hui dans leur capacité à intégrer les technologies émergentes tout en préservant leur efficacité opérationnelle."
+  },
+  "pages.ui.engagement_croissant_vers_la_durabilite": {
+    "fr": "engagement croissant vers la durabilité. SIPORTS 2026 sera l",
+    "en": "From"
+  },
+  "pages.ui._inscription_newsletter_confirmee": {
+    "fr": "✅ Inscription newsletter confirmée.",
+    "en": "✅ Inscription newsletter confirmée."
+  },
+  "pages.ui.industrie_portuaire_mondiale_connait_une": {
+    "fr": "industrie portuaire mondiale connaît une transformation sans précédent. Les ports modernes ne sont plus seulement des points de transit, mais devienne",
+    "en": "Previous"
+  },
+  "pages.ui.ecosysteme_portuaire_les_operateurs_le": {
+    "fr": "écosystème portuaire. Les opérateurs, les transitaires, les transporteurs et même les autorités douanières doivent s",
+    "en": "To"
+  },
+  "pages.ui.section_commentaires__fonctionnalite_en": {
+    "fr": "Section commentaires - Fonctionnalité en développement",
+    "en": "Position"
+  },
+  "pages.ui.disponibilites_mises_a_jour": {
+    "fr": "Disponibilités mises à jour",
+    "en": "Disponibilités mises à jour"
+  },
+  "pages.ui.ce_badge_a_ete_revoque_ou_n": {
+    "fr": "Ce badge a été révoqué ou n\\",
+    "en": "Badge"
+  },
+  "pages.ui.scanner_active": {
+    "fr": "Scanner activé",
+    "en": "Enabled"
+  },
+  "pages.ui.arreter_le_scanner": {
+    "fr": "Arrêter le scanner",
+    "en": "Arrêter le scanner"
+  },
+  "pages.ui.a_que_last_scanned_at_on_compte_les_bad": {
+    "fr": "a que last_scanned_at, on compte les badges scannés aujourd",
+    "en": "To"
+  },
+  "pages.ui.stats_chargees": {
+    "fr": "Stats chargées:",
+    "en": "Stats chargées:"
+  },
+  "pages.ui.scanner_desactive": {
+    "fr": "Scanner désactivé",
+    "en": "Enabled"
+  },
+  "pages.ui.__photo_pour_verification_d": {
+    "fr": ", // Photo pour vérification d",
+    "en": "Photo"
+  },
+  "pages.ui._badge_valide_avec_succes": {
+    "fr": "✅ Badge validé avec succès:",
+    "en": "Success"
+  },
+  "pages.ui.qr_code_scanne": {
+    "fr": "QR Code scanné:",
+    "en": "of"
+  },
+  "pages.ui.badge_expire": {
+    "fr": "Badge expiré",
+    "en": "Badge"
+  },
+  "pages.ui.badge_valide": {
+    "fr": "Badge Validé",
+    "en": "Badge"
+  },
+  "pages.ui.lead_enregistre": {
+    "fr": "Lead enregistré:",
+    "en": "Lead enregistré:"
+  },
+  "pages.ui.scan_ignore__traitement_en_cours": {
+    "fr": "Scan ignoré - traitement en cours",
+    "en": "In Progress"
+  },
+  "pages.ui._qr_json_parse_extracted": {
+    "fr": "📋 QR JSON parsé, extracted:",
+    "en": "Audio"
+  },
+  "pages.ui.acceder_a_la_camera_verifiez_les_permis": {
+    "fr": "accéder à la caméra. Vérifiez les permissions.",
+    "en": "Access"
+  },
+  "pages.ui.erreur_camera": {
+    "fr": "Erreur caméra",
+    "en": "Error"
+  },
+  "pages.ui.badge_non_trouve": {
+    "fr": "Badge non trouvé",
+    "en": "Badge"
+  },
+  "pages.ui.erreur_arret_scanner": {
+    "fr": "Erreur arrêt scanner:",
+    "en": "Error"
+  },
+  "pages.ui.societe": {
+    "fr": "Société",
+    "en": "Company"
+  },
+  "pages.ui.votre_prenom": {
+    "fr": "Votre prénom",
+    "en": "Name"
+  },
+  "pages.ui.votre_message_minimum_10_caracteres": {
+    "fr": "Votre message (minimum 10 caractères)...",
+    "en": "Message"
+  },
+  "pages.ui.nom_de_votre_societe": {
+    "fr": "Nom de votre société",
+    "en": "Name"
+  },
+  "pages.ui.a_i_email_non_envoye_edge_function_m": {
+    "fr": "âš ï¸ Email non envoyé (Edge Function manquante):",
+    "en": "Email"
+  },
+  "pages.ui.le_message_doit_contenir_au_moins_10_car": {
+    "fr": "Le message doit contenir au moins 10 caractères",
+    "en": "Message"
+  },
+  "pages.ui.une_erreur_est_survenue_veuillez_reessa": {
+    "fr": "Une erreur est survenue. Veuillez réessayer plus tard.",
+    "en": "Error"
+  },
+  "pages.ui.decouvrir_les_exposants": {
+    "fr": "Découvrir les exposants",
+    "en": "Exhibitors"
+  },
+  "pages.ui.sauvegarder_mes_preferences": {
+    "fr": "Sauvegarder mes préférences",
+    "en": "To"
+  },
+  "pages.ui.preferences_de_cookies_mises_a_jour_": {
+    "fr": "Préférences de cookies mises à jour !",
+    "en": "of"
+  },
+  "pages.ui.utiliser_toutes_les_fonctionnalites_de_r": {
+    "fr": "utiliser toutes les fonctionnalités de réseautage.",
+    "en": "Position"
+  },
+  "pages.ui.est_pas_disponible_avec_le_forfait_gratu": {
+    "fr": "est pas disponible avec le forfait gratuit. Mettez à niveau pour accéder aux fonctionnalités de networking professionnel.",
+    "en": "Access"
+  },
+  "pages.ui.telechargement_de_la_brochure_demarre": {
+    "fr": "Téléchargement de la brochure démarré",
+    "en": "Loading"
+  },
+  "pages.ui.supabase_non_configure_impossible_d": {
+    "fr": "Supabase non configuré. Impossible d\\",
+    "en": "No"
+  },
+  "pages.ui.email_ne_doit_pas_depasser_255_caractere": {
+    "fr": "email ne doit pas dépasser 255 caractères",
+    "en": "Email"
+  },
+  "pages.ui.erreur_lors_de_la_demande_de_reinitialis": {
+    "fr": "Erreur lors de la demande de réinitialisation.",
+    "en": "Error"
+  },
+  "pages.ui.un_email_de_reinitialisation_a_ete_envoy": {
+    "fr": "Un email de réinitialisation a été envoyé si l\\",
+    "en": "Email"
+  },
+  "pages.ui.erreur_chargement_medias": {
+    "fr": "Erreur chargement médias:",
+    "en": "Loading"
+  },
+  "pages.ui._media_supprime": {
+    "fr": "🗑️ Média supprimé",
+    "en": "Deleted"
+  },
+  "pages.ui._media_publie": {
+    "fr": "✅ Média publié",
+    "en": "Published"
+  },
+  "pages.ui._article_supprime": {
+    "fr": "🗑️ Article supprimé",
+    "en": "Deleted"
+  },
+  "pages.ui.type_de_media": {
+    "fr": "Type de média",
+    "en": "Type"
+  },
+  "pages.ui._media_ajoute": {
+    "fr": "✅ Média ajouté",
+    "en": "Media"
+  },
+  "pages.ui._shortcode_copie_": {
+    "fr": "📋 Shortcode copié !",
+    "en": "Copied"
+  },
+  "pages.ui.categorie": {
+    "fr": "Catégorie",
+    "en": "Category"
+  },
+  "pages.ui.erreur_de_mise_a_jour": {
+    "fr": "Erreur de mise à jour",
+    "en": "Error"
+  },
+  "pages.ui._article_publie": {
+    "fr": "✅ Article publié",
+    "en": "Published"
+  },
+  "pages.ui.ont_pas_encore_cree_leurs_minisites_re": {
+    "fr": "ont pas encore créé leurs mini-sites. Revenez bientôt !",
+    "en": "Mini-Site"
+  },
+  "pages.ui.aucun_exposant_ne_correspond_a_votre_rec": {
+    "fr": "Aucun exposant ne correspond à votre recherche.",
+    "en": "To"
+  },
+  "pages.ui.etre_reserve_par_quelqu": {
+    "fr": "être réservé par quelqu\\",
+    "en": "être réservé par quelqu\\"
+  },
+  "pages.ui.filtres_reinitialises": {
+    "fr": "Filtres réinitialisés",
+    "en": "Filtres réinitialisés"
+  },
+  "pages.ui.decrivez_brievement_l": {
+    "fr": "Décrivez brièvement l",
+    "en": "Décrivez brièvement l"
+  },
+  "pages.ui._recommandations_ia_generees_avec_succe": {
+    "fr": "✨ Recommandations IA générées avec succès !",
+    "en": "Success"
+  },
+  "pages.ui._ce_creneau_est_dans_le_passe_veuillez": {
+    "fr": "❌ Ce créneau est dans le passé. Veuillez choisir un créneau futur.",
+    "en": "To"
+  },
+  "pages.ui.demande_refusee": {
+    "fr": "Demande refusée",
+    "en": "of"
+  },
+  "pages.ui.selectionnez_un_creneau": {
+    "fr": "Sélectionnez un créneau",
+    "en": "To"
+  },
+  "pages.ui._generation_de_vos_recommandations_ia_p": {
+    "fr": "🤖 Génération de vos recommandations IA personnalisées...",
+    "en": "of"
+  },
+  "pages.ui.vous_devez_etre_connecte": {
+    "fr": "Vous devez être connecté",
+    "en": "of"
+  },
+  "pages.ui.erreur_lors_de_la_generation": {
+    "fr": "Erreur lors de la génération",
+    "en": "Error"
+  },
+  "pages.ui.echec_de_la_reservation": {
+    "fr": "Échec de la réservation",
+    "en": "of"
+  },
+  "pages.ui.non_renseigne": {
+    "fr": "Non renseigné",
+    "en": "No"
+  },
+  "pages.ui.votre_rendezvous_avec_cet_exposant_a_et": {
+    "fr": "Votre rendez-vous avec cet exposant a été confirmé.",
+    "en": "of"
+  },
+  "pages.ui._rendezvous_confirme": {
+    "fr": "✅ Rendez-vous confirmé",
+    "en": "of"
+  },
+  "pages.ui._vos_recommandations_sont_pretes_": {
+    "fr": "✨ Vos recommandations sont prêtes !",
+    "en": "Audio"
+  },
+  "pages.ui.aucun_exposant_selectionne": {
+    "fr": "Aucun exposant sélectionné",
+    "en": "To"
+  },
+  "pages.ui.espace_b2b_preprogramme": {
+    "fr": "Espace B2B pré-programmé",
+    "en": "Scheduled"
+  },
+  "pages.ui.afterworks__receptions": {
+    "fr": "Afterworks & réceptions",
+    "en": "Afterworks & réceptions"
+  },
+  "pages.ui.rendezvous_annule_avec_succes": {
+    "fr": "Rendez-vous annulé avec succès",
+    "en": "Success"
+  },
+  "pages.ui._vous_avez_deja_reserve_ce_creneau_hora": {
+    "fr": "❌ Vous avez déjà réservé ce créneau horaire",
+    "en": "To"
+  },
+  "pages.ui.deja_reserve_ce_creneau": {
+    "fr": "déjà réservé ce créneau",
+    "en": "To"
+  },
+  "pages.ui.profil_utilisateur_non_trouve": {
+    "fr": "Profil utilisateur non trouvé",
+    "en": "User"
+  },
+  "pages.ui._vous_avez_deja_un_rendezvous_avec_cet": {
+    "fr": "❌ Vous avez déjà un rendez-vous avec cet exposant/partenaire",
+    "en": "of"
+  },
+  "pages.ui.vous_avez_deja_reserve_ce_creneau": {
+    "fr": "Vous avez déjà réservé ce créneau",
+    "en": "To"
+  },
+  "pages.ui.espaces_de_travail_et_de_detente": {
+    "fr": "Espaces de travail et de détente",
+    "en": "of"
+  },
+  "pages.ui.etesvous_sur_de_vouloir_annuler_ce_rend": {
+    "fr": "Êtes-vous sûr de vouloir annuler ce rendez-vous ?",
+    "en": "Cancel"
+  },
+  "pages.ui.erreur_chargement_donnees": {
+    "fr": "Erreur chargement données:",
+    "en": "Loading"
+  },
+  "pages.ui.erreur_lors_de_la_generation_des_recomma": {
+    "fr": "Erreur lors de la génération des recommandations",
+    "en": "Error"
+  },
+  "pages.ui.veuillez_selectionner_un_creneau_horaire": {
+    "fr": "Veuillez sélectionner un créneau horaire",
+    "en": "Select"
+  },
+  "pages.ui.le_reseautage_intelligent_est_reserve_au": {
+    "fr": "Le Réseautage Intelligent est réservé aux visiteurs Premium et VIP. Veuillez mettre à niveau votre compte.",
+    "en": "To"
+  },
+  "pages.ui.aucun_resultat_trouve_pour_votre_recherc": {
+    "fr": "Aucun résultat trouvé pour votre recherche",
+    "en": "To"
+  },
+  "pages.ui.veuillez_reessayer_plus_tard_ou_contact": {
+    "fr": ">Veuillez réessayer plus tard ou contacter l",
+    "en": "Contact"
+  },
+  "pages.ui.rencontres_ciblees_avec_des_decideurs": {
+    "fr": "Rencontres ciblées avec des décideurs",
+    "en": "of"
+  },
+  "pages.ui.vous_avez_deja_un_rendezvous_avec_cet_e": {
+    "fr": "Vous avez déjà un rendez-vous avec cet exposant/partenaire",
+    "en": "of"
+  },
+  "pages.ui.rechercher_dans_les_actualites": {
+    "fr": "Rechercher dans les actualités...",
+    "en": "News"
+  },
+  "pages.ui.toutes_les_actualites": {
+    "fr": "Toutes les Actualités",
+    "en": "News"
+  },
+  "pages.ui.articles_actualises": {
+    "fr": "Articles actualisés",
+    "en": "Articles actualisés"
+  },
+  "pages.ui.reinitialiser": {
+    "fr": "Réinitialiser",
+    "en": "Reset"
+  },
+  "pages.ui.debut_de_la_collaboration_strategique_av": {
+    "fr": "Début de la collaboration stratégique avec SIPORTS",
+    "en": "Start"
+  },
+  "pages.ui.completez_votre_profil_depuis_votre_tabl": {
+    "fr": "Complétez votre profil depuis votre tableau de bord pour apparaître dans notre annuaire des partenaires.",
+    "en": "Partners"
+  },
+  "pages.ui.optimisation_de_la_chaine_logistique_por": {
+    "fr": "Optimisation de la chaîne logistique portuaire avec des outils de gestion avancés et prédictifs.",
+    "en": "of"
+  },
+  "pages.ui.apprentissage_automatique_pour_automatis": {
+    "fr": "apprentissage automatique pour automatiser et optimiser vos opérations portuaires.",
+    "en": "To"
+  },
+  "pages.ui.projets_realises": {
+    "fr": "Projets réalisés",
+    "en": "Projets réalisés"
+  },
+  "pages.ui.a_pas_encore_complete_son_profil_ou_n": {
+    "fr": "a pas encore complété son profil ou n",
+    "en": "Completed"
+  },
+  "pages.ui.existe_pas_ou_a_ete_supprime": {
+    "fr": "existe pas ou a été supprimé.",
+    "en": "Deleted"
+  },
+  "pages.ui.infrastructure_cloud_evolutive_et_securi": {
+    "fr": "Infrastructure cloud évolutive et sécurisée pour une flexibilité maximale et une réduction des coûts.",
+    "en": "From"
+  },
+  "pages.ui.accompagnement_complet_dans_la_digitalis": {
+    "fr": "Accompagnement complet dans la digitalisation de vos processus et infrastructures pour optimiser votre compétitivité.",
+    "en": "of"
+  },
+  "pages.ui.un_accord_majeur_pour_la_digitalisation_": {
+    "fr": "un accord majeur pour la digitalisation des opérations portuaires.",
+    "en": "of"
+  },
+  "pages.ui.exploitation_intelligente_de_vos_donnees": {
+    "fr": "Exploitation intelligente de vos données massives pour des décisions stratégiques éclairées et prédictives.",
+    "en": "of"
+  },
+  "pages.ui.technologie_blockchain_pour_une_tracabil": {
+    "fr": "Technologie blockchain pour une traçabilité transparente et des transactions sécurisées et décentralisées.",
+    "en": "of"
+  },
+  "pages.ui.solutions_iot_innovantes_pour_connecter": {
+    "fr": "Solutions IoT innovantes pour connecter, surveiller et optimiser vos équipements et infrastructures en temps réel.",
+    "en": "of"
+  },
+  "pages.ui.message_envoye_avec_succes_": {
+    "fr": "Message envoyé avec succès !",
+    "en": "Message"
+  },
+  "pages.ui.protection_avancee_de_vos_systemes_et_do": {
+    "fr": "Protection avancée de vos systèmes et données contre les menaces cybernétiques avec des solutions de pointe.",
+    "en": "of"
+  },
+  "pages.ui.strategies_de_developpement_durable_inte": {
+    "fr": "Stratégies de développement durable intégrant réduction d",
+    "en": "From"
+  },
+  "pages.ui.partenaire_non_trouve": {
+    "fr": "Partenaire non trouvé",
+    "en": "Partner"
+  },
+  "pages.ui.solution_complete_et_personnalisee_adapt": {
+    "fr": "Solution complète et personnalisée adaptée à vos besoins spécifiques et enjeux métiers.",
+    "en": "Solution"
+  },
+  "pages.ui.erreur_incrementation_vues_partenaire": {
+    "fr": "Erreur incrémentation vues partenaire:",
+    "en": "Error"
+  },
+  "pages.ui.rapport_telecharge_avec_succes": {
+    "fr": "Rapport téléchargé avec succès",
+    "en": "Success"
+  },
+  "pages.ui.nouveau_partenariat_strategique": {
+    "fr": "Nouveau partenariat stratégique",
+    "en": "New"
+  },
+  "pages.ui.ecosysteme_portuaire_international_et_be": {
+    "fr": "écosystème portuaire international et bénéficiez d",
+    "en": "écosystème portuaire international et bénéficiez d"
+  },
+  "pages.ui.evenement_et_beneficiez_d": {
+    "fr": "événement et bénéficiez d",
+    "en": "Event"
+  },
+  "pages.ui.devenir_partenaire_media": {
+    "fr": "Devenir Partenaire Média",
+    "en": "of"
+  },
+  "pages.ui.les_analytics_sontelles_en_temps_reel": {
+    "fr": "Les analytics sont-elles en temps réel?",
+    "en": "Audio"
+  },
+  "pages.ui.les_quotas_sontils_partages_entre_les_m": {
+    "fr": "Les quotas sont-ils partagés entre les membres de l",
+    "en": "of"
+  },
+  "pages.ui.obtenir_une_visibilite_exceptionnelle_8": {
+    "fr": "obtenir une visibilité exceptionnelle. 87 rendez-vous qualifiés en 3 jours!",
+    "en": "of"
+  },
+  "pages.ui.pour_silver_et_gold_les_analytics_sont_": {
+    "fr": "Pour Silver et Gold, les analytics sont mises à jour toutes les heures. Platinium bénéficie d",
+    "en": "Time"
+  },
+  "pages.ui.le_roi_a_ete_immediat_nous_avons_signe_": {
+    "fr": "Le ROI a été immédiat. Nous avons signé 3 contrats majeurs dès la première semaine après le salon.",
+    "en": "First"
+  },
+  "pages.ui.oui_les_quotas_sont_globaux_pour_votre_": {
+    "fr": "Oui, les quotas sont globaux pour votre organisation et partagés entre tous les membres.",
+    "en": "To"
+  },
+  "pages.ui.niveau_silver_parfait_pour_une_premiere_": {
+    "fr": "Niveau Silver parfait pour une première participation. Les analytics nous ont beaucoup aidés.",
+    "en": "To"
+  },
+  "pages.ui.oui_vous_pouvez_upgrader_votre_niveau_a": {
+    "fr": "Oui, vous pouvez upgrader votre niveau à tout moment. Le prix sera ajusté au prorata.",
+    "en": "To"
+  },
+  "pages.ui.exposant_depuis_sa_page_detaillee": {
+    "fr": "exposant depuis sa page détaillée",
+    "en": "Since"
+  },
+  "pages.ui.produit_non_trouve": {
+    "fr": "Produit non trouvé",
+    "en": "From"
+  },
+  "pages.ui.5011000_employes": {
+    "fr": "501-1000 employés",
+    "en": "501-1000 employés"
+  },
+  "pages.ui.bio__presentation": {
+    "fr": "Bio / Présentation",
+    "en": "Presentation"
+  },
+  "pages.ui.decrivez_votre_activite_vos_competences": {
+    "fr": "Décrivez votre activité, vos compétences ou ce que vous recherchez...",
+    "en": "Décrivez votre activité, vos compétences ou ce que vous recherchez..."
+  },
+  "pages.ui.1000_employes": {
+    "fr": "1000+ employés",
+    "en": "1000+ employés"
+  },
+  "pages.ui.opportunites_d": {
+    "fr": "Opportunités d\\",
+    "en": "Opportunités d\\"
+  },
+  "pages.ui.1150_employes": {
+    "fr": "11-50 employés",
+    "en": "11-50 employés"
+  },
+  "pages.ui.110_employes": {
+    "fr": "1-10 employés",
+    "en": "1-10 employés"
+  },
+  "pages.ui._donnees_mises_a_jour_en_base": {
+    "fr": "✅ Données mises à jour en base:",
+    "en": "✅ Données mises à jour en base:"
+  },
+  "pages.ui.developper_mon_reseau": {
+    "fr": "Développer mon réseau",
+    "en": "To"
+  },
+  "pages.ui.51200_employes": {
+    "fr": "51-200 employés",
+    "en": "51-200 employés"
+  },
+  "pages.ui._erreur_lors_de_la_mise_a_jour": {
+    "fr": "❌ Erreur lors de la mise à jour:",
+    "en": "Error"
+  },
+  "pages.ui._profil_mis_a_jour_avec_succes__redire": {
+    "fr": "✅ Profil mis à jour avec succès ! Redirection vers votre réseau...",
+    "en": "To"
+  },
+  "pages.ui.erreur_lors_de_la_mise_a_jour_du_profil": {
+    "fr": "Erreur lors de la mise à jour du profil",
+    "en": "From"
+  },
+  "pages.ui.201500_employes": {
+    "fr": "201-500 employés",
+    "en": "201-500 employés"
+  },
+  "pages.ui.explorer_de_nouveaux_marches": {
+    "fr": "Explorer de nouveaux marchés",
+    "en": "New"
+  },
+  "pages.ui._mot_de_passe_defini_avec_succes_vous_": {
+    "fr": "✅ Mot de passe défini avec succès. Vous pouvez maintenant vous connecter.",
+    "en": "Password"
+  },
+  "pages.ui.le_mot_de_passe_ne_doit_pas_depasser_72_": {
+    "fr": "Le mot de passe ne doit pas dépasser 72 caractères",
+    "en": "Password"
+  },
+  "pages.ui.le_lien_de_reinitialisation_semble_inco": {
+    "fr": ">Le lien de réinitialisation semble incomplet ou expiré. Assurez-vous d",
+    "en": "of"
+  },
+  "pages.ui.doit_contenir_au_moins_un_caractere_spec": {
+    "fr": "Doit contenir au moins un caractère spécial",
+    "en": "To"
+  },
+  "pages.ui.nouveau_mot_de_passe_min_12_caracteres": {
+    "fr": "Nouveau mot de passe (min. 12 caractères)",
+    "en": "New"
+  },
+  "pages.ui.le_mot_de_passe_doit_contenir_au_moins_1": {
+    "fr": "Le mot de passe doit contenir au moins 12 caractères",
+    "en": "Password"
+  },
+  "pages.ui._erreur_mise_a_jour_profil_non_bloqua": {
+    "fr": "⚠️ Erreur mise à jour profil (non bloquant):",
+    "en": "Error"
+  },
+  "pages.ui.supabase_non_configure": {
+    "fr": "Supabase non configuré.",
+    "en": "No"
+  },
+  "pages.ui.erreur_lors_de_la_reinitialisation_du_mo": {
+    "fr": "Erreur lors de la réinitialisation du mot de passe.",
+    "en": "Password"
+  },
+  "pages.ui._haspassword_mis_a_jour": {
+    "fr": "✅ hasPassword mis à jour",
+    "en": "✅ hasPassword mis à jour"
+  },
+  "pages.ui.capsules_video_exclusives_marquees": {
+    "fr": "Capsules vidéo exclusives marquées",
+    "en": "Video"
+  },
+  "pages.ui.badge_virtuel_personnalise": {
+    "fr": "Badge virtuel personnalisé©",
+    "en": "Audio"
+  },
+  "pages.ui.partenaire_musee_20k": {
+    "fr": "Partenaire Musée (20k$)",
+    "en": "Partner"
+  },
+  "pages.ui.minisite_dedie": {
+    "fr": "Mini-site dédié",
+    "en": "Mini-Site"
+  },
+  "pages.ui.webinaires_sponsorises": {
+    "fr": "Webinaires sponsorisés",
+    "en": "Webinaires sponsorisés"
+  },
+  "pages.ui.messagerie_integree": {
+    "fr": "Messagerie intégrée",
+    "en": "Message"
+  },
+  "pages.ui.visibilite_renforcee_3eme_ligne": {
+    "fr": "Visibilité© renforcée 3ème ligne",
+    "en": "Visibilité© renforcée 3ème ligne"
+  },
+  "pages.ui.url_personnalisee": {
+    "fr": "URL personnalisé©e",
+    "en": "Audio"
+  },
+  "pages.ui.analytics_detailles": {
+    "fr": "Analytics détaillés",
+    "en": "Analytics détaillés"
+  },
+  "pages.ui.outils_de_reseautage_avances": {
+    "fr": "Outils de réseautage avancé©s",
+    "en": "To"
+  },
+  "pages.ui.logo_visible_en_3eme_ligne_prioritaire": {
+    "fr": "Logo visible en 3ème ligne prioritaire",
+    "en": "Logo visible en 3ème ligne prioritaire"
+  },
+  "pages.ui.profil__presence_de_base": {
+    "fr": "Profil & présence de base",
+    "en": "of"
+  },
+  "pages.ui.outils_de_reseautage_illimites": {
+    "fr": "Outils de réseautage illimités",
+    "en": "To"
+  },
+  "pages.ui.minisite_avec_scripts_personnalises": {
+    "fr": "Mini-site avec scripts personnalisé©s",
+    "en": "Mini-Site"
+  },
+  "pages.ui.testimonial_video_2_min": {
+    "fr": "Testimonial vidéo (2 min)",
+    "en": "Video"
+  },
+  "pages.ui.integration_api_personnalisee": {
+    "fr": "Intégration API personnalisé©e",
+    "en": "Audio"
+  },
+  "pages.ui.acces_prioritaire_aux_nouveautes": {
+    "fr": "Accès prioritaire aux nouveautés",
+    "en": "Access"
+  },
+  "pages.ui.chat_et_messagerie_illimitee": {
+    "fr": "Chat et messagerie illimitée",
+    "en": "Message"
+  },
+  "pages.ui.acces_api_supabase_limite": {
+    "fr": "Accès API Supabase limité",
+    "en": "Access"
+  },
+  "pages.ui.support_vip_dedie": {
+    "fr": "Support VIP dédié",
+    "en": "Support"
+  },
+  "pages.ui.visibilite_maximale__creneaux_illimite": {
+    "fr": "Visibilité© maximale + créneaux illimités",
+    "en": "To"
+  },
+  "pages.ui.acces_complet_a_l": {
+    "fr": "Accès complet à l\\",
+    "en": "Access"
+  },
+  "pages.ui.stockage_medias_illimite": {
+    "fr": "Stockage médias illimité",
+    "en": "Media"
+  },
+  "pages.ui.video_testimonial_diffusee": {
+    "fr": "Vidéo testimonial diffusée",
+    "en": "Video"
+  },
+  "pages.ui.minisite_dedie_avec_url_personnalisee": {
+    "fr": "Mini-site dédié avec URL personnalisé©e",
+    "en": "Mini-Site"
+  },
+  "pages.ui.minisite_personnalise": {
+    "fr": "Mini-site personnalisé©",
+    "en": "Mini-Site"
+  },
+  "pages.ui.webinaires_sponsorises_avec_replay": {
+    "fr": "Webinaires sponsorisés avec replay",
+    "en": "Webinaires sponsorisés avec replay"
+  },
+  "pages.ui.minisite_avec_actualites_completes": {
+    "fr": "Mini-site avec actualités complètes",
+    "en": "News"
+  },
+  "pages.ui.minisite_premium_avec_medias_illimites": {
+    "fr": "Mini-site premium avec médias illimités",
+    "en": "Mini-Site"
+  },
+  "pages.ui.newsletters_en_1ere_ligne": {
+    "fr": "Newsletters en 1ère ligne",
+    "en": "Newsletters en 1ère ligne"
+  },
+  "pages.ui.logo_visible_en_2eme_ligne_prioritaire": {
+    "fr": "Logo visible en 2ème ligne prioritaire",
+    "en": "Logo visible en 2ème ligne prioritaire"
+  },
+  "pages.ui.etre_authentifie_pour_s": {
+    "fr": "être authentifié pour s",
+    "en": "To"
+  },
+  "pages.ui.presentation_complete_de_produitsservic": {
+    "fr": "Présentation complète de produits/services",
+    "en": "From"
+  },
+  "pages.ui.store_produits_avance": {
+    "fr": "Store produits avancé©",
+    "en": "From"
+  },
+  "pages.ui.capsules_video": {
+    "fr": "Capsules vidéo",
+    "en": "Video"
+  },
+  "pages.ui.quel_est_le_delai_d": {
+    "fr": ">Quel est le délai d",
+    "en": ">Quel est le délai d"
+  },
+  "pages.ui.personnalisation_avancee": {
+    "fr": "Personnalisation avancé©e",
+    "en": "Audio"
+  },
+  "pages.ui.support_technique_vip_dedie": {
+    "fr": "Support technique VIP dédié",
+    "en": "Support"
+  },
+  "pages.ui.video_testimonial_2_min_diffusee": {
+    "fr": "Vidéo testimonial 2 min diffusée",
+    "en": "Video"
+  },
+  "pages.ui.testimonial_video_1_min": {
+    "fr": "Testimonial vidéo (1 min)",
+    "en": "Video"
+  },
+  "pages.ui.visibilite_maximale_1ere_ligne__illimi": {
+    "fr": "Visibilité© maximale 1ère ligne + illimité",
+    "en": "Visibilité© maximale 1ère ligne + illimité"
+  },
+  "pages.ui.visibilite_premium_2eme_ligne": {
+    "fr": "Visibilité© premium 2ème ligne",
+    "en": "Visibilité© premium 2ème ligne"
+  },
+  "pages.ui.acces_api_complet_pour_integrations": {
+    "fr": "Accès API complet pour intégrations",
+    "en": "Access"
+  },
+  "pages.ui.capsules_video__brand_awareness": {
+    "fr": "Capsules vidéo & brand awareness",
+    "en": "Video"
+  },
+  "pages.ui.voir_les_evenements_et_conferences": {
+    "fr": "Voir les événements et conférences",
+    "en": "Events"
+  },
+  "pages.ui.capsules_video_marquees": {
+    "fr": "Capsules vidéo marquées",
+    "en": "Video"
+  },
+  "pages.ui.testimonial_video_3_min": {
+    "fr": "Testimonial vidéo (3 min)",
+    "en": "Video"
+  },
+  "pages.ui.rendezvous_illimites": {
+    "fr": "Rendez-vous illimités",
+    "en": "of"
+  },
+  "pages.ui.newsletter_en_2eme_ligne": {
+    "fr": "Newsletter en 2ème ligne",
+    "en": "Newsletter en 2ème ligne"
+  },
+  "pages.ui.capsules_video_sponsorisees": {
+    "fr": "Capsules vidéo sponsorisées",
+    "en": "Video"
+  },
+  "pages.ui.creneaux_de_rendezvous_illimites": {
+    "fr": "Créneaux de rendez-vous illimités",
+    "en": "To"
+  },
+  "pages.ui.mot_de_passe_oublie": {
+    "fr": "Mot de passe oublié",
+    "en": "Password"
+  },
+  "pages.ui.veuillez_selectionner_au_moins_un_utilis": {
+    "fr": "Veuillez sélectionner au moins un utilisateur",
+    "en": "Select"
+  },
+  "pages.ui.action_groupee": {
+    "fr": "action groupée",
+    "en": "action groupée"
+  },
+  "pages.ui.aucun_utilisateur_retourne_par_supabase": {
+    "fr": "Aucun utilisateur retourné par Supabase. Vérifiez les politiques RLS.",
+    "en": "Back"
+  },
+  "pages.ui.erreur_lors_de_la_creation_du_compte_sec": {
+    "fr": "Erreur lors de la création du compte sécurisé",
+    "en": "From"
+  },
+  "pages.ui.vous_etes_deja_abonne_premium_vip_": {
+    "fr": "Vous êtes déjà abonné Premium VIP !",
+    "en": "Vous êtes déjà abonné Premium VIP !"
+  },
+  "pages.ui.paiement_paypal_reussi_": {
+    "fr": "Paiement PayPal réussi !",
+    "en": "Successful"
+  },
+  "pages.ui.min_12_caracteres": {
+    "fr": "Min. 12 caractères",
+    "en": "Min. 12 caractères"
+  },
+  "pages.ui.veuillez_selectionner_une_image": {
+    "fr": "Veuillez sélectionner une image",
+    "en": "Select"
+  },
+  "pages.ui.paiement_securise_via_votre_compte_paypa": {
+    "fr": "Paiement sécurisé via votre compte PayPal",
+    "en": "Paiement sécurisé via votre compte PayPal"
+  },
+  "pages.ui.doit_contenir_un_caractere_special": {
+    "fr": "Doit contenir un caractère spécial",
+    "en": "Doit contenir un caractère spécial"
+  },
+  "pages.ui.profil_vip_complete_avec_succes": {
+    "fr": "Profil VIP complété avec succès",
+    "en": "Completed"
+  },
+  "pages.ui.la_photo_ne_doit_pas_depasser_5mb": {
+    "fr": "La photo ne doit pas dépasser 5MB",
+    "en": "Photo"
+  },
+  "pages.ui.dev_simuler_paiement_reussi": {
+    "fr": "[DEV] Simuler Paiement Réussi",
+    "en": "Successful"
+  },
+  "pages.ui.erreur_upgrade_donnees": {
+    "fr": "Erreur upgrade données:",
+    "en": "Error"
+  },
+  "pages.ui._paiement_vip_simule_avec_succes_": {
+    "fr": "🎉 Paiement VIP simulé avec succès !",
+    "en": "Success"
+  },
+  "pages.ui.acces_lounge_prive": {
+    "fr": "Accès lounge privé",
+    "en": "Access"
+  },
+  "pages.ui.ont_permis_de_rencontrer_les_decideurs_c": {
+    "fr": "ont permis de rencontrer les décideurs clés. ROI exceptionnel !",
+    "en": "of"
+  },
+  "pages.ui.networking_illimite": {
+    "fr": "Networking illimité",
+    "en": "Networking illimité"
+  },
+  "pages.ui.ateliers_specialises": {
+    "fr": "Ateliers spécialisés",
+    "en": "Ateliers spécialisés"
+  },
+  "pages.ui.acces_au_networking_illimite_vaut_largem": {
+    "fr": "accès au networking illimité vaut largement l\\",
+    "en": "Access"
+  },
+  "pages.ui.le_pass_vip_a_transforme_ma_participatio": {
+    "fr": "Le Pass VIP a transformé ma participation. J\\",
+    "en": "Le Pass VIP a transformé ma participation. J\\"
+  }
+}

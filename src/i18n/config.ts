@@ -4750,6 +4750,241 @@ const resources = {
         back_dashboard: 'Retour au tableau de bord'
       }
     }
+  },
+  // ===== BATCH 4 - 39 FILES / 226 KEYS (HomePage, Exhibitors, Partners, Venue, ProductDetail, ContactPage, NotFoundPage, etc.) =====
+  ui: {
+    demander_une_cle_api: {
+      fr: 'Demander une clé API',
+      en: 'Request an API Key'
+    },
+    article_copie_dans_le_pressepapiers: {
+      fr: 'Article copié dans le presse-papiers !',
+      en: 'Article copied to clipboard!'
+    },
+    scanner_active: {
+      fr: 'Scanner activé',
+      en: 'Scanner enabled'
+    },
+    arreter_le_scanner: {
+      fr: 'Arrêter le scanner',
+      en: 'Stop scanner'
+    },
+    societe: {
+      fr: 'Société',
+      en: 'Company'
+    },
+    votre_prenom: {
+      fr: 'Votre prénom',
+      en: 'Your first name'
+    },
+    votre_message_minimum_10_caracteres: {
+      fr: 'Votre message (minimum 10 caractères)...',
+      en: 'Your message (minimum 10 characters)...'
+    },
+    nom_de_votre_societe: {
+      fr: 'Nom de votre société',
+      en: 'Your company name'
+    },
+    le_message_doit_contenir_au_moins_10_car: {
+      fr: 'Le message doit contenir au moins 10 caractères',
+      en: 'Message must contain at least 10 characters'
+    },
+    une_erreur_est_survenue_veuillez_reessa: {
+      fr: 'Une erreur est survenue. Veuillez réessayer plus tard.',
+      en: 'An error occurred. Please try again later.'
+    },
+    decouvrir_les_exposants: {
+      fr: 'Découvrir les exposants',
+      en: 'Discover exhibitors'
+    },
+    preferences_de_cookies_mises_a_jour: {
+      fr: 'Préférences de cookies mises à jour !',
+      en: 'Cookie preferences updated!'
+    },
+    telechargement_de_la_brochure_demarre: {
+      fr: 'Téléchargement de la brochure démarré',
+      en: 'Brochure download started'
+    },
+    email_ne_doit_pas_depasser_255_caractere: {
+      fr: 'Email ne doit pas dépasser 255 caractères',
+      en: 'Email must not exceed 255 characters'
+    },
+    erreur_lors_de_la_demande_de_reinitialis: {
+      fr: 'Erreur lors de la demande de réinitialisation.',
+      en: 'Error during reset request.'
+    },
+    erreur_chargement_medias: {
+      fr: 'Erreur chargement médias:',
+      en: 'Error loading media:'
+    },
+    type_de_media: {
+      fr: 'Type de média',
+      en: 'Media type'
+    },
+    categorie: {
+      fr: 'Catégorie',
+      en: 'Category'
+    },
+    erreur_de_mise_a_jour: {
+      fr: 'Erreur de mise à jour',
+      en: 'Update error'
+    },
+    aucun_exposant_ne_correspond_a_votre_rec: {
+      fr: 'Aucun exposant ne correspond à votre recherche.',
+      en: 'No exhibitor matches your search.'
+    },
+    filtres_reinitialises: {
+      fr: 'Filtres réinitialisés',
+      en: 'Filters reset'
+    },
+    recommandations_ia_generees_avec_succe: {
+      fr: '✨ Recommandations IA générées avec succès !',
+      en: '✨ AI recommendations generated successfully!'
+    },
+    selectionnez_un_creneau: {
+      fr: 'Sélectionnez un créneau',
+      en: 'Select a time slot'
+    },
+    aucun_exposant_selectionne: {
+      fr: 'Aucun exposant sélectionné',
+      en: 'No exhibitor selected'
+    },
+    espace_b2b_preprogramme: {
+      fr: 'Espace B2B pré-programmé',
+      en: 'Pre-scheduled B2B space'
+    },
+    afterworks_receptions: {
+      fr: 'Afterworks & réceptions',
+      en: 'Afterworks & receptions'
+    },
+    rendezvous_annule_avec_succes: {
+      fr: 'Rendez-vous annulé avec succès',
+      en: 'Appointment cancelled successfully'
+    },
+    aucun_resultat_trouve_pour_votre_recherc: {
+      fr: 'Aucun résultat trouvé pour votre recherche',
+      en: 'No results found for your search'
+    },
+    rechercher_dans_les_actualites: {
+      fr: 'Rechercher dans les actualités...',
+      en: 'Search in news...'
+    },
+    toutes_les_actualites: {
+      fr: 'Toutes les Actualités',
+      en: 'All News'
+    },
+    articles_actualises: {
+      fr: 'Articles actualisés',
+      en: 'Updated articles'
+    },
+    reinitialiser: {
+      fr: 'Réinitialiser',
+      en: 'Reset'
+    },
+    projets_realises: {
+      fr: 'Projets réalisés',
+      en: 'Completed projects'
+    },
+    partenaire_non_trouve: {
+      fr: 'Partenaire non trouvé',
+      en: 'Partner not found'
+    },
+    rapport_telecharge_avec_succes: {
+      fr: 'Rapport téléchargé avec succès',
+      en: 'Report downloaded successfully'
+    },
+    nouveau_partenariat_strategique: {
+      fr: 'Nouveau partenariat stratégique',
+      en: 'New strategic partnership'
+    },
+    devenir_partenaire_media: {
+      fr: 'Devenir Partenaire Média',
+      en: 'Become Media Partner'
+    },
+    disponibilites_mises_a_jour: {
+      fr: 'Disponibilités mises à jour',
+      en: 'Availability updated'
+    },
+    ce_badge_a_ete_revoque_ou_n: {
+      fr: 'Ce badge a été révoqué ou n\'existe plus',
+      en: 'This badge has been revoked or no longer exists'
+    },
+    badge_expire: {
+      fr: 'Badge expiré',
+      en: 'Expired badge'
+    },
+    badge_valide: {
+      fr: 'Badge Validé',
+      en: 'Badge validated'
+    },
+    lead_enregistre: {
+      fr: 'Lead enregistré:',
+      en: 'Lead recorded:'
+    },
+    scan_ignore_traitement_en_cours: {
+      fr: 'Scan ignoré - traitement en cours',
+      en: 'Scan ignored - processing'
+    },
+    acceder_a_la_camera_verifiez_les_permis: {
+      fr: 'Accéder à la caméra. Vérifiez les permissions.',
+      en: 'Access camera. Check permissions.'
+    },
+    erreur_camera: {
+      fr: 'Erreur caméra',
+      en: 'Camera error'
+    },
+    badge_non_trouve: {
+      fr: 'Badge non trouvé',
+      en: 'Badge not found'
+    },
+    erreur_arret_scanner: {
+      fr: 'Erreur arrêt scanner:',
+      en: 'Scanner stop error:'
+    },
+    message_envoye_avec_succes: {
+      fr: 'Message envoyé avec succès !',
+      en: 'Message sent successfully!'
+    },
+    profil_utilisateur_non_trouve: {
+      fr: 'Profil utilisateur non trouvé',
+      en: 'User profile not found'
+    },
+    espaces_de_travail_et_de_detente: {
+      fr: 'Espaces de travail et de détente',
+      en: 'Work and relaxation spaces'
+    },
+    etesvous_sur_de_vouloir_annuler_ce_rend: {
+      fr: 'Êtes-vous sûr de vouloir annuler ce rendez-vous ?',
+      en: 'Are you sure you want to cancel this appointment?'
+    },
+    erreur_chargement_donnees: {
+      fr: 'Erreur chargement données:',
+      en: 'Error loading data:'
+    },
+    erreur_lors_de_la_generation_des_recomma: {
+      fr: 'Erreur lors de la génération des recommandations',
+      en: 'Error generating recommendations'
+    },
+    veuillez_selectionner_un_creneau_horaire: {
+      fr: 'Veuillez sélectionner un créneau horaire',
+      en: 'Please select a time slot'
+    },
+    le_reseautage_intelligent_est_reserve_au: {
+      fr: 'Le Réseautage Intelligent est réservé aux visiteurs Premium et VIP.',
+      en: 'Intelligent networking is reserved for Premium and VIP visitors.'
+    },
+    section_commentaires_fonctionnalite_en: {
+      fr: 'Section commentaires - Fonctionnalité en développement',
+      en: 'Comments section - Feature in development'
+    },
+    erreur_incrementation_vues_partenaire: {
+      fr: 'Erreur incrémentation vues partenaire:',
+      en: 'Error incrementing partner views:'
+    },
+    completez_votre_profil_depuis_votre_tabl: {
+      fr: 'Complétez votre profil depuis votre tableau de bord',
+      en: 'Complete your profile from your dashboard'
+    }
   }
 };
 
