@@ -62,7 +62,7 @@ export const Header: React.FC = memo(() => {
     { name: t('nav.events'), href: ROUTES.EVENTS, description: t('menu.events_desc') },
     { name: t('nav.news'), href: ROUTES.NEWS, description: t('menu.news_desc') },
     { name: t('nav.accommodation'), href: '/hebergement', description: t('menu.accommodation_desc') },
-    { name: 'Subscriptions', href: ROUTES.VISITOR_SUBSCRIPTION, description: t('menu.subscriptions_desc') }
+    { name: t('nav.subscriptions'), href: ROUTES.VISITOR_SUBSCRIPTION, description: t('menu.subscriptions_desc') }
   ];
 
   const mediaMenuItems = [
