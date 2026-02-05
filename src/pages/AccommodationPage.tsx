@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from '../hooks/useTranslation';
-import { FaHotel, FaStar, FaMapMarkerAlt, FaPhone, FaWifi, FaParking, FaSwimmingPool, FaConciergeBell, FaUtensils, FaCheckCircle } from 'react-icons/fa';
+import { Hotel, Star, MapPin, Phone, Wifi, ParkingCircle, Waves, BellRing, UtensilsCrossed, CheckCircle } from 'lucide-react';
 
 interface Hotel {
   id: string;
@@ -109,18 +109,18 @@ const AccommodationPage: React.FC = () => {
 
   const getAmenityIcon = (amenity: string) => {
     switch (amenity) {
-      case 'wifi': return <FaWifi className="text-blue-600" />;
-      case 'parking': return <FaParking className="text-blue-600" />;
-      case 'pool': return <FaSwimmingPool className="text-blue-600" />;
-      case 'spa': return <FaConciergeBell className="text-blue-600" />;
-      case 'restaurant': return <FaUtensils className="text-blue-600" />;
-      case 'gym': return <FaConciergeBell className="text-blue-600" />;
-      case 'casino': return <FaConciergeBell className="text-blue-600" />;
-      case 'beach': return <FaSwimmingPool className="text-blue-600" />;
-      case 'golf': return <FaConciergeBell className="text-blue-600" />;
-      case 'bar': return <FaUtensils className="text-blue-600" />;
-      case 'terrace': return <FaConciergeBell className="text-blue-600" />;
-      default: return <FaCheckCircle className="text-blue-600" />;
+      case 'wifi': return <Wifi className="text-blue-600" size={20} />;
+      case 'parking': return <ParkingCircle className="text-blue-600" size={20} />;
+      case 'pool': return <Waves className="text-blue-600" size={20} />;
+      case 'spa': return <BellRing className="text-blue-600" size={20} />;
+      case 'restaurant': return <UtensilsCrossed className="text-blue-600" size={20} />;
+      case 'gym': return <BellRing className="text-blue-600" size={20} />;
+      case 'casino': return <BellRing className="text-blue-600" size={20} />;
+      case 'beach': return <Waves className="text-blue-600" size={20} />;
+      case 'golf': return <BellRing className="text-blue-600" size={20} />;
+      case 'bar': return <UtensilsCrossed className="text-blue-600" size={20} />;
+      case 'terrace': return <BellRing className="text-blue-600" size={20} />;
+      default: return <CheckCircle className="text-blue-600" size={20} />;
     }
   };
 
@@ -130,7 +130,7 @@ const AccommodationPage: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-3 bg-blue-100 text-blue-700 px-6 py-2 rounded-full mb-4">
-            <FaHotel className="text-2xl" />
+            <Hotel className="text-2xl" size={24} />
             <span className="font-semibold">{t('accommodation.badge')}</span>
           </div>
           <h1 className="text-5xl font-bold text-gray-900 mb-4">
@@ -163,7 +163,7 @@ const AccommodationPage: React.FC = () => {
         <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-300 rounded-xl p-6 mb-12">
           <div className="flex items-start gap-4">
             <div className="bg-amber-500 text-white p-3 rounded-full">
-              <FaStar className="text-2xl" />
+              <Star className="text-2xl" size={24} />
             </div>
             <div className="flex-1">
               <h3 className="text-xl font-bold text-gray-900 mb-2">
@@ -174,15 +174,15 @@ const AccommodationPage: React.FC = () => {
               </p>
               <ul className="space-y-2">
                 <li className="flex items-center gap-2 text-gray-800">
-                  <FaCheckCircle className="text-green-600" />
+                  <CheckCircle className="text-green-600" size={20} />
                   <span>{t('accommodation.vip_benefit_1')}</span>
                 </li>
                 <li className="flex items-center gap-2 text-gray-800">
-                  <FaCheckCircle className="text-green-600" />
+                  <CheckCircle className="text-green-600" size={20} />
                   <span>{t('accommodation.vip_benefit_2')}</span>
                 </li>
                 <li className="flex items-center gap-2 text-gray-800">
-                  <FaCheckCircle className="text-green-600" />
+                  <CheckCircle className="text-green-600" size={20} />
                   <span>{t('accommodation.vip_benefit_3')}</span>
                 </li>
               </ul>
@@ -214,7 +214,7 @@ const AccommodationPage: React.FC = () => {
                 />
                 <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full shadow-lg flex items-center gap-1">
                   {[...Array(hotel.stars)].map((_, i) => (
-                    <FaStar key={i} className="text-yellow-500 text-sm" />
+                    <Star key={i} className="text-yellow-500 text-sm" size={16} fill="currentColor" />
                   ))}
                 </div>
               </div>
@@ -224,7 +224,7 @@ const AccommodationPage: React.FC = () => {
                 <h3 className="text-xl font-bold text-gray-900 mb-2">{hotel.name}</h3>
                 
                 <div className="flex items-center gap-2 text-gray-600 mb-3">
-                  <FaMapMarkerAlt className="text-blue-600" />
+                  <MapPin className="text-blue-600" size={18} />
                   <span className="text-sm">{hotel.distance}</span>
                 </div>
 
@@ -266,7 +266,7 @@ const AccommodationPage: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="text-sm font-semibold text-green-800 flex items-center gap-1">
-                          <FaStar className="text-yellow-500" />
+                          <Star className="text-yellow-500" size={16} fill="currentColor" />
                           {t('accommodation.vip_rate')}
                         </div>
                         <div className="text-2xl font-bold text-green-700">
@@ -337,7 +337,7 @@ const AccommodationPage: React.FC = () => {
               href="tel:+212523388000"
               className="inline-flex items-center gap-2 bg-white text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
             >
-              <FaPhone />
+              <Phone size={20} />
               +212 523 388 000
             </a>
             <a
