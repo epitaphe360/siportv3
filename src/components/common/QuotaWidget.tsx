@@ -82,7 +82,12 @@ export function QuotaWidget({
               {current} / {limit}
             </span>
             <span className="text-gray-500">
-              {remaining === Infinity ? t('quota.remaining_unlimited') : t('quota.remaining', { count: remaining })}
+              {remaining === Infinity 
+                ? t('quota.remaining_unlimited') 
+                : remaining > 1 
+                  ? t('quota.remaining_plural', { count: remaining })
+                  : t('quota.remaining', { count: remaining })
+              }
             </span>
           </div>
         </div>

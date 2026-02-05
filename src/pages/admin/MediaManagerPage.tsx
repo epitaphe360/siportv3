@@ -4,6 +4,7 @@ import AdminMediaManager from '../../components/admin/media/AdminMediaManager';
 import { toast } from 'sonner';
 
 const MediaManagerPage: React.FC = () => {
+  const { t } = useTranslation();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handleImageSelect = (url: string) => {
