@@ -80,7 +80,32 @@ const resources = {
         refresh: 'Actualiser',
         warning: 'Attention',
         close_error: 'Fermer le message d\'erreur',
-        back_to_dashboard: 'Retour au Tableau de Bord'
+        back_to_dashboard: 'Retour au Tableau de Bord',
+        sending: 'Envoi...',
+        error_401: 'Accès non autorisé',
+        error_401_desc: 'Vous devez être connecté pour accéder à cette page.',
+        error_403: 'Accès interdit',
+        error_403_desc: 'Vous n\'avez pas les permissions nécessaires pour accéder à cette ressource.'
+      },
+      actions: {
+        accept: 'Accepter',
+        reject: 'Refuser',
+        open: 'Ouvrir',
+        close: 'Fermer',
+        add: 'Ajouter',
+        view_details: 'Voir les détails',
+        schedule_meeting: 'Planifier un RDV'
+      },
+      errors: {
+        oops: 'Oups !',
+        unexpected_error: 'Une erreur inattendue s\'est produite. Nous en sommes désolés.',
+        error_message: 'Message d\'erreur',
+        view_stack_trace: 'Voir la trace d\'erreur',
+        reload_page: 'Recharger la page',
+        back_to_home: 'Retour à l\'accueil',
+        accept_appointment: 'Erreur lors de l\'acceptation du rendez-vous',
+        reject_appointment: 'Erreur lors du refus du rendez-vous',
+        unregister_event: 'Erreur lors de la désinscription de l\'événement'
       },
       dashboard: {
         title: 'Tableau de bord',
@@ -173,7 +198,72 @@ const resources = {
         appointment_status: 'Statut des rendez-vous',
         visitor_space: 'Espace Visiteur',
         my_profile: 'Mon profil',
-        my_events: 'Mes événements'
+        my_events: 'Mes événements',
+        // Nouvelles clés manquantes
+        visitor_area: 'Espace Visiteur',
+        my_virtual_badge: 'Mon Badge Virtuel',
+        connected: 'Connecté',
+        b2b_appointments: 'Rendez-vous B2B',
+        // VIP Benefits Section
+        vip_benefits_title: 'Avantages VIP',
+        vip_benefits_subtitle: 'Profitez d\'avantages exclusifs avec votre statut VIP',
+        vip_appointments: 'RDV Illimités',
+        vip_appointments_desc: 'Planifiez autant de rendez-vous B2B que vous le souhaitez',
+        vip_messaging: 'Messagerie Prioritaire',
+        vip_messaging_desc: 'Contactez directement les exposants et partenaires',
+        vip_badge: 'Badge VIP',
+        vip_badge_desc: 'Badge distinctif avec accès à toutes les zones',
+        vip_ai_matching: 'Matching IA',
+        vip_ai_matching_desc: 'Recommandations personnalisées par intelligence artificielle',
+        vip_webinars: 'Webinaires Exclusifs',
+        vip_webinars_desc: 'Accès aux contenus premium et sessions privées',
+        vip_support_priority: 'Support Prioritaire',
+        vip_support_desc: 'Assistance dédiée VIP',
+        vip_news_priority: 'Nouveautés Prioritaires',
+        vip_news_desc: 'Accès avant-première',
+        // AI Networking Section
+        ai_networking: 'Réseautage IA',
+        ai_networking_desc: 'Découvrez des opportunités de networking personnalisées grâce à notre intelligence artificielle',
+        explore_network: 'Explorer le réseau',
+        configure_matching: 'Configurer le matching',
+        // Appointments Section
+        schedule_appointment_desc: 'Organisez vos rendez-vous B2B avec les exposants et partenaires',
+        program_appointment: 'Programmer un RDV',
+        appointments_remaining: 'RDV Restants',
+        quota_reached: 'Quota atteint pour le niveau {{level}}. Passez VIP pour des RDV illimités !',
+        // Activity Section
+        your_activity: 'Votre Activité',
+        your_activity_desc: 'Suivez vos interactions et statistiques',
+        live: 'EN DIRECT',
+        visits: 'Visites',
+        interactions: 'Interactions',
+        currently: 'Actuellement',
+        previous_period: 'Période précédente',
+        confirmed_appointments: 'RDV Confirmés',
+        connections_established: 'Connexions Établies',
+        // Messaging Section
+        messaging: 'Messagerie',
+        messaging_desc: 'Échangez avec les exposants et partenaires',
+        open_messaging: 'Ouvrir la Messagerie',
+        // Networking Hub Section
+        personal: 'Votre Hub',
+        networking_hub: 'Réseautage Personnalisé',
+        networking_hub_desc: 'Développez votre réseau professionnel',
+        my_schedule: 'Mon Programme',
+        // Events Section
+        no_registered_events: 'Aucun événement inscrit',
+        browse_program: 'Parcourir le programme',
+        view_full_program: 'Voir le Programme Complet',
+        // Premium Feature Section
+        premium_feature: 'Fonctionnalité Premium',
+        b2b_reserved_message: 'Les rendez-vous B2B sont réservés aux visiteurs VIP. Passez VIP pour débloquer cette fonctionnalité et bien plus !',
+        upgrade_level: 'Passer VIP Maintenant',
+        loading_appointments: 'Chargement des rendez-vous...',
+        // Invitations Section
+        new_invitations: 'Nouvelles Invitations',
+        action_required: 'Action Requise',
+        no_message: 'Pas de message',
+        appointment_with: 'rendez-vous avec'
       },
       media: {
         title: 'Médiathèque',
@@ -250,6 +340,13 @@ const resources = {
         download_invoice: 'Télécharger la facture'
       },
       partner: {
+        notFound: 'Partenaire introuvable',
+        notFoundDesc: "Nous ne trouvons pas le partenaire que vous recherchez.",
+        notFoundGeneric: 'Aucun partenaire trouvé',
+        backToList: 'Retour à la liste',
+        discoverSiports: 'Découvrir SIPORTS',
+        areYouPartner: 'Êtes-vous un partenaire ?',
+        completeProfile: 'Complétez votre profil pour plus de visibilité',
         back_to_dashboard: 'Retour au tableau de bord',
         priority: 'Prioritaire',
         details: 'Détails',
@@ -1213,7 +1310,32 @@ const resources = {
         refresh: 'Refresh',
         warning: 'Warning',
         close_error: 'Close error message',
-        back_to_dashboard: 'Back to Dashboard'
+        back_to_dashboard: 'Back to Dashboard',
+        sending: 'Sending...',
+        error_401: 'Unauthorized Access',
+        error_401_desc: 'You must be logged in to access this page.',
+        error_403: 'Forbidden',
+        error_403_desc: 'You don\'t have the necessary permissions to access this resource.'
+      },
+      actions: {
+        accept: 'Accept',
+        reject: 'Reject',
+        open: 'Open',
+        close: 'Close',
+        add: 'Add',
+        view_details: 'View Details',
+        schedule_meeting: 'Schedule Meeting'
+      },
+      errors: {
+        oops: 'Oops!',
+        unexpected_error: 'An unexpected error occurred. We apologize.',
+        error_message: 'Error Message',
+        view_stack_trace: 'View Stack Trace',
+        reload_page: 'Reload Page',
+        back_to_home: 'Back to Home',
+        accept_appointment: 'Error accepting appointment',
+        reject_appointment: 'Error rejecting appointment',
+        unregister_event: 'Error unregistering from event'
       },
       dashboard: {
         title: 'Dashboard',
@@ -1306,7 +1428,72 @@ const resources = {
         appointment_status: 'Appointment Status',
         visitor_space: 'Visitor Space',
         my_profile: 'My Profile',
-        my_events: 'My Events'
+        my_events: 'My Events',
+        // New missing keys
+        visitor_area: 'Visitor Area',
+        my_virtual_badge: 'My Virtual Badge',
+        connected: 'Connected',
+        b2b_appointments: 'B2B Appointments',
+        // VIP Benefits Section
+        vip_benefits_title: 'VIP Benefits',
+        vip_benefits_subtitle: 'Enjoy exclusive benefits with your VIP status',
+        vip_appointments: 'Unlimited Appointments',
+        vip_appointments_desc: 'Schedule as many B2B meetings as you want',
+        vip_messaging: 'Priority Messaging',
+        vip_messaging_desc: 'Contact exhibitors and partners directly',
+        vip_badge: 'VIP Badge',
+        vip_badge_desc: 'Distinctive badge with access to all zones',
+        vip_ai_matching: 'AI Matching',
+        vip_ai_matching_desc: 'Personalized recommendations by artificial intelligence',
+        vip_webinars: 'Exclusive Webinars',
+        vip_webinars_desc: 'Access to premium content and private sessions',
+        vip_support_priority: 'Priority Support',
+        vip_support_desc: 'Dedicated VIP Assistance',
+        vip_news_priority: 'Priority News',
+        vip_news_desc: 'Early Access',
+        // AI Networking Section
+        ai_networking: 'AI Networking',
+        ai_networking_desc: 'Discover personalized networking opportunities through our artificial intelligence',
+        explore_network: 'Explore Network',
+        configure_matching: 'Configure Matching',
+        // Appointments Section
+        schedule_appointment_desc: 'Organize your B2B appointments with exhibitors and partners',
+        program_appointment: 'Schedule Appointment',
+        appointments_remaining: 'Remaining Appointments',
+        quota_reached: 'Quota reached for {{level}} level. Upgrade to VIP for unlimited appointments!',
+        // Activity Section
+        your_activity: 'Your Activity',
+        your_activity_desc: 'Track your interactions and statistics',
+        live: 'LIVE',
+        visits: 'Visits',
+        interactions: 'Interactions',
+        currently: 'Currently',
+        previous_period: 'Previous Period',
+        confirmed_appointments: 'Confirmed Appointments',
+        connections_established: 'Connections Established',
+        // Messaging Section
+        messaging: 'Messaging',
+        messaging_desc: 'Exchange with exhibitors and partners',
+        open_messaging: 'Open Messaging',
+        // Networking Hub Section
+        personal: 'Your Hub',
+        networking_hub: 'Personalized Networking',
+        networking_hub_desc: 'Grow your professional network',
+        my_schedule: 'My Schedule',
+        // Events Section
+        no_registered_events: 'No registered events',
+        browse_program: 'Browse program',
+        view_full_program: 'View Full Program',
+        // Premium Feature Section
+        premium_feature: 'Premium Feature',
+        b2b_reserved_message: 'B2B appointments are reserved for VIP visitors. Upgrade to VIP to unlock this feature and more!',
+        upgrade_level: 'Upgrade to VIP Now',
+        loading_appointments: 'Loading appointments...',
+        // Invitations Section
+        new_invitations: 'New Invitations',
+        action_required: 'Action Required',
+        no_message: 'No message',
+        appointment_with: 'appointment with'
       },
       media: {
         title: 'Media Library',
@@ -1383,6 +1570,13 @@ const resources = {
         download_invoice: 'Download Invoice'
       },
       partner: {
+        notFound: 'Partner not found',
+        notFoundDesc: "We can't find the partner you are looking for.",
+        notFoundGeneric: 'No partner found',
+        backToList: 'Back to list',
+        discoverSiports: 'Discover SIPORTS',
+        areYouPartner: 'Are you a partner?',
+        completeProfile: 'Complete your profile for more visibility',
         back_to_dashboard: 'Back to dashboard',
         activation_required: 'Activation Required',
         payment_validation_needed: 'Your account has been created but requires payment validation to activate dashboard access.',

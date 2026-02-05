@@ -504,16 +504,16 @@ export default memo(function VisitorDashboard() {
                   <Link to={ROUTES.SUPPORT} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg border border-yellow-100 hover:bg-white hover:shadow-sm transition-all">
                     <Headphones className="h-5 w-5 text-yellow-600 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-gray-900">Support Prioritaire</p>
-                      <p className="text-xs text-gray-600">Assistance dédiée VIP</p>
+                      <p className="font-semibold text-gray-900">{t('visitor.vip_support_priority')}</p>
+                      <p className="text-xs text-gray-600">{t('visitor.vip_support_desc')}</p>
                     </div>
                   </Link>
                   
                    <Link to={ROUTES.NEWS} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg border border-yellow-100 hover:bg-white hover:shadow-sm transition-all">
                     <Zap className="h-5 w-5 text-yellow-600 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-gray-900">Nouveautés Prioritaires</p>
-                      <p className="text-xs text-gray-600">Accès avant-première</p>
+                      <p className="font-semibold text-gray-900">{t('visitor.vip_news_priority')}</p>
+                      <p className="text-xs text-gray-600">{t('visitor.vip_news_desc')}</p>
                     </div>
                   </Link>
                 </div>
