@@ -2975,6 +2975,109 @@ const resources = {
           contactTicket: 'Open a ticket',
           contactEmail: 'Send an email'
         }
+      },
+      // ===== 10 FILES BATCH 2 (EN) =====
+      unauthorized: {
+        access_denied: 'Unauthorized',
+        login_redirect: 'Please log in to access',
+        go_login_link: 'Go to login'
+      },
+      terms: {
+        acceptance: 'By accessing and using the SIPORTS 2026 platform, you agree to be bound by these terms of use',
+        dont_accept: 'If you do not accept these terms, please do not use our platform',
+        service_desc: 'SIPORTS 2026 is a digital platform that facilitates professional connections',
+        registration_conditions: 'To use our platform, you must',
+        min_age: 'Be at least 18 years old',
+        acceptable_use: 'You agree to use the platform responsibly and not to',
+        ip_rights: 'All SIPORTS 2026 platform content is protected by copyright',
+        our_responsibilities: 'Our responsibilities',
+        your_responsibilities: 'Your responsibilities',
+        termination_clause: 'We reserve the right to suspend or terminate your account if'
+      },
+      privacy: {
+        data_collection: 'SIPORTS 2026 collects the following information when you use our platform',
+        data_usage: 'Your data is used for',
+        data_sharing: 'We do not sell your personal data',
+        security_measures: 'We implement appropriate security measures to protect your data',
+        gdpr_rights: 'In accordance with GDPR, you have the following rights',
+        data_retention: 'We retain your data as long as necessary for',
+        cookies_usage: 'We use cookies to improve your experience'
+      },
+      partnership: {
+        title: 'SIPORTS 2026 Partnerships',
+        desc: 'Join the international port ecosystem and gain exceptional visibility with industry decision-makers',
+        premium_partner: 'Premium Partner',
+        technical_partner: 'Technical Partner',
+        media_partner: 'Media Partner',
+        benefits: 'Partnership Benefits',
+        international_visibility: 'International Visibility',
+        roi_return: 'Return on Investment',
+        contact_section: 'Ready to join us?',
+        contact_description: 'Contact our sales team to discuss your partnership project'
+      },
+      reset_password: {
+        title: 'Reset Password',
+        link_expired: 'The reset link appears to be incomplete or expired',
+        new_password_label: 'New Password',
+        password_min_length: 'Password must be at least 12 characters',
+        confirm_password_label: 'Confirm Password',
+        passwords_not_match: 'Passwords do not match',
+        success: '✅ Password set successfully. You can now log in',
+        change_btn: 'Change Password'
+      },
+      signup_confirmation: {
+        exhibitor_success: 'Exhibitor Registration Successful!',
+        partner_success: 'Partner Registration Successful!',
+        free_badge_password: '📧 Free Badge + Password Setup',
+        email_verification: 'Check your email',
+        email_sent_to: 'We sent a confirmation email to',
+        spam_warning: 'Can\'t find the email? Check your spam or junk folder',
+        need_help: 'Need help?',
+        validation_in_progress: 'Validation in progress',
+        resend_email_btn: 'Resend email',
+        go_home: 'Back to home'
+      },
+      registration_success: {
+        account_created: '✅ Account created!',
+        registration_success: 'Registration successful!',
+        congratulations: 'Congratulations! Your visitor account has been successfully created',
+        account_pending: 'Your account is pending validation',
+        features_access: 'You have access to',
+        exhibitor_catalog: 'Complete exhibitor catalog',
+        conference_program: 'Conference program',
+        meeting_planning: 'Meeting planning',
+        professional_network: 'Professional network'
+      },
+      dashboard_page: {
+        unauthorized_access: 'Unauthorized access',
+        login_dashboard: 'Please log in to access your dashboard',
+        unknown_user_type: 'Unknown user type',
+        contact_support: 'Contact support to resolve this issue'
+      },
+      subscription: {
+        visitor_free: 'Free Visitor',
+        free_access: 'Basic fair access',
+        visitor_vip: 'Premium Visitor',
+        vip_priority: 'Priority access + 10 meetings',
+        exhibitor_9m: 'Exhibitor 9m² (Base)',
+        exhibitor_18m: 'Exhibitor 18m² (Standard)',
+        exhibitor_36m: 'Exhibitor 36m² (Premium)',
+        exhibitor_54m: 'Exhibitor 54m²+ (Elite)',
+        partner_museum: 'Museum Partner (20k$)',
+        partner_silver: 'Silver Partner (48k$)',
+        partner_gold: 'Gold Partner (68k$)',
+        signup_free: 'Sign up for free',
+        mini_site: 'Customized mini-site',
+        unlimited_meetings: 'Unlimited meetings'
+      },
+      profile_matching: {
+        ai_optimization: 'AI Optimization',
+        ai_premium_only: 'Smart matching configuration is reserved for Premium and VIP members',
+        improve_profile: 'Upgrade your profile to get ultra-relevant recommendations',
+        discover_premium: 'Discover Premium offers',
+        company_size_1_10: '1-10 employees',
+        company_size_1000_plus: '1000+ employees',
+        go_back: 'Back'
       }
     }
   },
@@ -4303,6 +4406,109 @@ const resources = {
       contactTicket: 'Ouvrir un ticket',
       contactEmail: 'Envoyer un email'
     }
+  },
+  // ===== 10 FILES BATCH 2 =====
+  unauthorized: {
+    access_denied: 'Accès non autorisé',
+    login_redirect: 'Veuillez vous connecter pour accéder',
+    go_login_link: 'Aller à la connexion'
+  },
+  terms: {
+    acceptance: 'En accédant et utilisant la plateforme SIPORTS 2026, vous acceptez d\'être lié par les présentes conditions d\'utilisation',
+    dont_accept: 'Si vous n\'acceptez pas ces conditions, veuillez ne pas utiliser notre plateforme',
+    service_desc: 'SIPORTS 2026 est une plateforme digitale qui facilite les connexions professionnelles',
+    registration_conditions: 'Pour utiliser notre plateforme, vous devez',
+    min_age: 'Être âgé d\'au moins 18 ans',
+    acceptable_use: 'Vous vous engagez à utiliser la plateforme de manière responsable et à ne pas',
+    ip_rights: 'Tout le contenu de la plateforme SIPORTS 2026 est protégé par le droit d\'auteur',
+    our_responsibilities: 'Nos responsabilités',
+    your_responsibilities: 'Vos responsabilités',
+    termination_clause: 'Nous nous réservons le droit de suspendre ou résilier votre compte si'
+  },
+  privacy: {
+    data_collection: 'SIPORTS 2026 collecte les informations suivantes lorsque vous utilisez notre plateforme',
+    data_usage: 'Vos données sont utilisées pour',
+    data_sharing: 'Nous ne vendons pas vos données personnelles',
+    security_measures: 'Nous mettons en œuvre des mesures de sécurité appropriées pour protéger vos données',
+    gdpr_rights: 'Conformément au RGPD, vous disposez des droits suivants',
+    data_retention: 'Nous conservons vos données aussi longtemps que nécessaire pour',
+    cookies_usage: 'Nous utilisons des cookies pour améliorer votre expérience'
+  },
+  partnership: {
+    title: 'Partenariats SIPORTS 2026',
+    desc: 'Rejoignez l\'écosystème portuaire international et bénéficiez d\'une visibilité exceptionnelle auprès des décideurs du secteur',
+    premium_partner: 'Partenaire Premium',
+    technical_partner: 'Partenaire Technique',
+    media_partner: 'Partenaire Média',
+    benefits: 'Avantages du Partenariat',
+    international_visibility: 'Visibilité Internationale',
+    roi_return: 'Retour sur Investissement',
+    contact_section: 'Prêt à nous rejoindre ?',
+    contact_description: 'Contactez notre équipe commerciale pour discuter de votre projet de partenariat'
+  },
+  reset_password: {
+    title: 'Réinitialiser le mot de passe',
+    link_expired: 'Le lien de réinitialisation semble incomplet ou expiré',
+    new_password_label: 'Nouveau mot de passe',
+    password_min_length: 'Le mot de passe doit contenir au moins 12 caractères',
+    confirm_password_label: 'Confirmer le mot de passe',
+    passwords_not_match: 'Les mots de passe ne correspondent pas',
+    success: '✅ Mot de passe défini avec succès. Vous pouvez maintenant vous connecter',
+    change_btn: 'Changer le mot de passe'
+  },
+  signup_confirmation: {
+    exhibitor_success: 'Inscription Exposant Réussie !',
+    partner_success: 'Inscription Partenaire Réussie !',
+    free_badge_password: '📧 Badge Gratuit + Définition Mot de Passe',
+    email_verification: 'Vérifiez votre boîte email',
+    email_sent_to: 'Nous avons envoyé un email de confirmation à',
+    spam_warning: 'Vous ne trouvez pas l\'email ? Vérifiez votre dossier spam ou courrier indésirable',
+    need_help: 'Besoin d\'aide ?',
+    validation_in_progress: 'Validation en cours',
+    resend_email_btn: 'Renvoyer l\'email',
+    go_home: 'Retour à l\'accueil'
+  },
+  registration_success: {
+    account_created: '✅ Compte créé !',
+    registration_success: 'Inscription réussie !',
+    congratulations: 'Félicitations ! Votre compte visiteur a été créé avec succès',
+    account_pending: 'Votre compte est en attente de validation',
+    features_access: 'Vous avez accès à',
+    exhibitor_catalog: 'Catalogue complet des exposants',
+    conference_program: 'Programme des conférences',
+    meeting_planning: 'Planification des rendez-vous',
+    professional_network: 'Réseau professionnel'
+  },
+  dashboard_page: {
+    unauthorized_access: 'Accès non autorisé',
+    login_dashboard: 'Veuillez vous connecter pour accéder à votre tableau de bord',
+    unknown_user_type: 'Type d\'utilisateur non reconnu',
+    contact_support: 'Contactez le support pour résoudre ce problème'
+  },
+  subscription: {
+    visitor_free: 'Visiteur Gratuit',
+    free_access: 'Accès basique au salon',
+    visitor_vip: 'Visiteur Premium',
+    vip_priority: 'Accès prioritaire + 10 rendez-vous',
+    exhibitor_9m: 'Exposant 9m² (Base)',
+    exhibitor_18m: 'Exposant 18m² (Standard)',
+    exhibitor_36m: 'Exposant 36m² (Premium)',
+    exhibitor_54m: 'Exposant 54m²+ (Elite)',
+    partner_museum: 'Partenaire Musée (20k$)',
+    partner_silver: 'Partenaire Silver (48k$)',
+    partner_gold: 'Partenaire Gold (68k$)',
+    signup_free: 'S\'inscrire gratuitement',
+    mini_site: 'Mini-site personnalisé',
+    unlimited_meetings: 'Rendez-vous illimités'
+  },
+  profile_matching: {
+    ai_optimization: 'Optimisation par IA',
+    ai_premium_only: 'La configuration du matching intelligent est réservée aux membres Premium et VIP',
+    improve_profile: 'Améliorez votre profil pour obtenir des recommandations ultra-pertinentes',
+    discover_premium: 'Découvrir les offres Premium',
+    company_size_1_10: '1-10 employés',
+    company_size_1000_plus: '1000+ employés',
+    go_back: 'Retour'
   }
 };
 
