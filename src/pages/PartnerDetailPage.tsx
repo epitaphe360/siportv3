@@ -467,7 +467,7 @@ export default function PartnerDetailPage() {
           >
             {/* Hero Stats avec chiffres clés */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {(partner.keyFigures || [
+              {(Array.isArray(partner.keyFigures) && partner.keyFigures.length > 0 ? partner.keyFigures : [
                 { label: "Années d'expérience", value: `${partner.establishedYear ? new Date().getFullYear() - partner.establishedYear : 15}+`, icon: "Calendar" },
                 { label: "Employés", value: partner.employees || "500+", icon: "Users" },
                 { label: "Projets réalisés", value: `${partner.projects?.length || 50}+`, icon: "Target" },
