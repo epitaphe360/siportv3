@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from '../hooks/useTranslation';
-import { Hotel, Star, MapPin, Phone, Wifi, ParkingCircle, Waves, BellRing, UtensilsCrossed, CheckCircle } from 'lucide-react';
+import { Hotel, Star, MapPin, Phone, Wifi, ParkingCircle, Waves, BellRing, UtensilsCrossed, CheckCircle, X } from 'lucide-react';
+
+interface RoomRate {
+  roomType: string;
+  bbPrice: string;
+  dpPrice: string;
+}
 
 interface Hotel {
   id: string;
@@ -16,6 +22,7 @@ interface Hotel {
   phone: string;
   website?: string;
   featured?: boolean;
+  rates?: RoomRate[];
 }
 
 const AccommodationPage: React.FC = () => {
@@ -30,13 +37,19 @@ const AccommodationPage: React.FC = () => {
       image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800',
       distance: '5 km du salon',
       amenities: ['wifi', 'parking', 'pool', 'spa', 'restaurant', 'gym'],
-      standardPrice: 1200,
-      vipPrice: 1000,
+      standardPrice: 1340,
+      vipPrice: 1200,
       description: 'Complexe luxueux avec golf 18 trous, spa de luxe et accès direct à la plage',
       address: 'Route de Casablanca, El Jadida 24000',
       phone: '+212 523 388 000',
       website: 'https://www.pullmanhotels.com',
-      featured: true
+      featured: true,
+      rates: [
+        { roomType: 'Chambre Deluxe Single', bbPrice: '1340 DH', dpPrice: '1790 DH' },
+        { roomType: 'Chambre Deluxe Double', bbPrice: '1490 DH', dpPrice: '1940 DH' },
+        { roomType: 'Suite Junior Single', bbPrice: '2340 DH', dpPrice: '2790 DH' },
+        { roomType: 'Suite Junior Double', bbPrice: '3140 DH', dpPrice: '3590 DH' }
+      ]
     },
     {
       id: 'ibis',
@@ -57,14 +70,20 @@ const AccommodationPage: React.FC = () => {
       stars: 5,
       image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800',
       distance: '6 km du salon',
-      amenities: ['wifi', 'parking', 'pool', 'spa', 'restaurant', 'casino', 'beach'],
-      standardPrice: 1800,
-      vipPrice: 1500,
+      amenities: ['wifi', 'parking', 'pool', 'spa', 'restaurant', 'casino', 'beach, golf'],
+      standardPrice: 1810,
+      vipPrice: 1550,
       description: 'Resort 5 étoiles avec casino, plage privée et multiple restaurants gastronomiques',
       address: 'Route Côtière, El Jadida',
       phone: '+212 523 388 100',
       website: 'https://www.mazaganbeachresort.com',
-      featured: true
+      featured: true,
+      rates: [
+        { roomType: 'Chambre Vue Jardin et Piscine (Single)', bbPrice: '1810 DH', dpPrice: '2310 DH' },
+        { roomType: 'Chambre Vue Jardin et Piscine (Double)', bbPrice: '2030 DH', dpPrice: '3030 DH' },
+        { roomType: 'Suite Vue Partiel Océan', bbPrice: '2180 DH', dpPrice: '+50 DH - Taxe/P' },
+        { roomType: 'Suite Vue Plein Océan', bbPrice: '2550 DH', dpPrice: '+500 DH - Dinner/P' }
+      ]
     },
     {
       id: 'royal',
@@ -348,6 +367,96 @@ const AccommodationPage: React.FC = () => {
             </a>
           </div>
         </div>
+
+        {/* Modal Détails & Tarifs */}
+        {selectedHotel && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setSelectedHotel(null)}>
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+               {(() => {
+                 const hotel = hotels.find(h => h.id === selectedHotel);
+                 if (!hotel) return null;
+                 return (
+                   <div className="p-6">
+                      <div className="flex justify-between items-start mb-6">
+                        <h2 className="text-3xl font-bold text-gray-900">{hotel.name}</h2>
+                        <button onClick={() => setSelectedHotel(null)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                          <X size={24} className="text-gray-500" /> 
+                        </button>
+                      </div>
+
+                      <div className="flex flex-col md:flex-row gap-6 mb-8">
+                        <img src={hotel.image} alt={hotel.name} className="w-full md:w-1/3 h-48 object-cover rounded-xl" />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 text-gray-600 mb-2">
+                            <MapPin className="text-blue-600" size={18} />
+                            <span>{hotel.address}</span>
+                          </div>
+                          <p className="text-gray-700 mb-4">{hotel.description}</p>
+                          <div className="flex flex-wrap gap-2">
+                             {hotel.amenities.map(a => (
+                               <span key={a} className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+                                 {t(`accommodation.amenity_${a}`)}
+                               </span>
+                             ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {hotel.rates && (
+                        <div className="mb-8 bg-blue-50/50 rounded-xl p-6 border border-blue-100">
+                          <div className="flex items-center gap-3 mb-6">
+                            <div className="bg-blue-100 p-2 rounded-lg text-blue-600">
+                              <Star className="w-6 h-6" />
+                            </div>
+                            <div>
+                              <h3 className="text-xl font-bold text-gray-900">Tarifs Négociés SIPORTS 2026</h3>
+                              <p className="text-sm text-gray-500">Prix exclusifs pour les participants</p>
+                            </div>
+                          </div>
+                          
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+                              <thead>
+                                <tr className="bg-gray-50 border-b border-gray-100">
+                                  <th className="p-4 font-semibold text-gray-600 text-sm uppercase tracking-wider">Type de Chambre</th>
+                                  <th className="p-4 font-semibold text-blue-600 text-sm uppercase tracking-wider">BB (Petit-déjeuner)</th>
+                                  <th className="p-4 font-semibold text-gray-600 text-sm uppercase tracking-wider">DP (Demi-pension)</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-gray-100">
+                                {hotel.rates.map((rate, idx) => (
+                                  <tr key={idx} className="hover:bg-blue-50/30 transition-colors">
+                                    <td className="p-4 font-medium text-gray-900">{rate.roomType}</td>
+                                    <td className="p-4 font-bold text-blue-600 font-mono text-lg">{rate.bbPrice}</td>
+                                    <td className="p-4 text-gray-600 font-mono">{rate.dpPrice}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                          <p className="text-xs text-gray-500 mt-4 italic">
+                            * Les tarifs incluent la taxe de séjour (sauf mention contraire).
+                          </p>
+                        </div>
+                      )}
+                      
+                      <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-100">
+                         <a href={`tel:${hotel.phone}`} className="flex items-center justify-center gap-2 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
+                            <Phone size={18} />
+                            Appeler l'hôtel
+                         </a>
+                         {hotel.website && (
+                            <a href={hotel.website} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200">
+                               Réserver en ligne
+                            </a>
+                         )}
+                      </div>
+                   </div>
+                 );
+               })()}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
