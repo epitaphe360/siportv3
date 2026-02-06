@@ -169,11 +169,6 @@ export default memo(function ExhibitorDashboard() {
     loadAppointments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Intentionally fetch only on mount
-  
-  // Afficher skeleton pendant chargement
-  if (isLoading || isAppointmentsLoading) {
-    return <DashboardSkeleton />;
-  }
 
   // FIXED: Real data only - no more hardcoded simulated values
   // Display empty state when no data is available instead of fake data
@@ -594,6 +589,11 @@ export default memo(function ExhibitorDashboard() {
       variant: 'outline' as const
     },
   ];
+
+  // Afficher skeleton pendant chargement (Moved here to respect React Hook Rules)
+  if (isLoading || isAppointmentsLoading) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 pt-32">
