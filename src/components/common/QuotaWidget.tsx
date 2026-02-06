@@ -141,7 +141,7 @@ export function LevelBadge({ level, type, showIcon = true, size = 'md' }: LevelB
 
     if (type === 'exhibitor') {
       const configs: Record<string, any> = {
-        basic_9: { label: t('exhibitor_levels.basic_9'), color: 'bg-gradient-to-r from-slate-400 to-slate-600 text-white', icon: '📦' },
+        basic_9: { label: t('exhibitor_levels.basic_9'), color: 'bg-gradient-to-r from-slate-400 to-slate-600 text-white', icon: '🏢' },
         standard_18: { label: t('exhibitor_levels.standard_18'), color: 'bg-gradient-to-r from-blue-400 to-blue-600 text-white', icon: '🏪' },
         premium_36: { label: t('exhibitor_levels.premium_36'), color: 'bg-gradient-to-r from-orange-400 to-orange-600 text-white', icon: '🏬' },
         elite_54plus: { label: t('exhibitor_levels.elite_54plus'), color: 'bg-gradient-to-r from-purple-500 to-purple-700 text-white', icon: '🏛️' }

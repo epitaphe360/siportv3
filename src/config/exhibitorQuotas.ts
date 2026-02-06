@@ -46,7 +46,7 @@ export const EXHIBITOR_QUOTAS: Record<ExhibitorLevel, ExhibitorQuotaConfig> = {
     maxArea: 9,
     estimatedPrice: 5000, // $5k base
     color: '#94A3B8',
-    icon: '📦',
+    icon: '🏢',
 
     quotas: {
       appointments: 20,  // CDC: Augmenté à 20 pour permettre l'usage de base
