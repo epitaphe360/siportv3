@@ -462,7 +462,7 @@ export const Header: React.FC = memo(() => {
             {/* Mobile menu button */}
             <button
               onClick={toggleMenu}
-              className="md:hidden p-2 text-gray-400 hover:text-gray-600"
+              className="xl:hidden p-2 text-gray-400 hover:text-gray-600"
               aria-label="Menu"
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -472,7 +472,7 @@ export const Header: React.FC = memo(() => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 py-4">
+          <div className="xl:hidden border-t border-gray-200 py-4">
             <div className="space-y-2">
               {navigation.map((item) => (
                 <Link
