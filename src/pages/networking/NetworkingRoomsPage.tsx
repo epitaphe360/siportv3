@@ -11,3 +11,5 @@ export const NetworkingRoomsPage: React.FC = () => {
     </div>
   );
 };
+
+export default NetworkingRoomsPage;

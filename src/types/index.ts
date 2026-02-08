@@ -205,16 +205,24 @@ export interface TimeSlot {
 
 export interface Appointment {
   id: string;
-  exhibitorId: string;
+  exhibitorId?: string;
   visitorId: string;
-  timeSlotId: string;
+  timeSlotId?: string;
   status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
   message?: string;
   notes?: string;
   rating?: number;
-  createdAt: Date;
-  meetingType: 'in-person' | 'virtual' | 'hybrid';
+  createdAt?: Date;
+  date?: Date;
+  meetingType?: 'in-person' | 'virtual' | 'hybrid';
   meetingLink?: string;
+  // Propriétés de temps
+  startTime: string;
+  endTime?: string;
+  // Propriétés d'affichage
+  exhibitorName?: string;
+  location?: string;
+  type?: 'in-person' | 'virtual' | 'hybrid';
   // Relations pour affichage
   exhibitor?: {
     id: string;

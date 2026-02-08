@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { Card } from '../ui/Card';
-import { Badge } from '../ui/Badge';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
 interface PeriodData {

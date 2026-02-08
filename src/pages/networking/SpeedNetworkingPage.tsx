@@ -19,3 +19,5 @@ export const SpeedNetworkingPage: React.FC = () => {
     </div>
   );
 };
+
+export default SpeedNetworkingPage;

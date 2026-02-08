@@ -303,7 +303,9 @@ const exhibitors = [
           }
         },
         {
-          type: 'proServices & Filiales du Groupe',
+          type: 'products',
+          content: {
+            title: 'Services & Filiales du Groupe',
             items: [
               {
                 name: 'Tanger Med Port Authority',
@@ -327,18 +329,33 @@ const exhibitors = [
               },
               {
                 name: 'Tanger Med Utilities',
-                desccontact@tangermed.ma',
-            phone: '+212 539 349 250',
-            address: 'Route de Rabat, 90000 Tanger, Maroc',
-            fax: '+212 539 943 427',
-            website: 'https://www.tangermed.ma
+                description: 'Services aux entreprises et gestion des utilités industrielles',
+                image: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600'
+              },
               {
                 name: 'Tanger Med Passagers',
                 description: 'Terminal passagers et services maritimes de voyageurs',
-                image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19
-                description: 'Plus de 900 entreprises industrielles et logistiques',
-                image: 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=600'
-              }Portuaires Intégrés',
+                image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600'
+              }
+            ]
+          }
+        },
+        {
+          type: 'contact',
+          content: {
+            title: 'Nous Contacter',
+            email: 'contact@tangermed.ma',
+            phone: '+212 539 349 250',
+            address: 'Route de Rabat, 90000 Tanger, Maroc',
+            fax: '+212 539 943 427',
+            website: 'https://www.tangermed.ma'
+          }
+        }
+      ]
+    },
+    products: [
+      {
+        name: 'Services Portuaires Intégrés',
         description: 'Services complets de manutention de conteneurs, vracs et passagers avec capacité de 187 millions de tonnes annuels',
         category: 'Services',
         price: 'Sur devis',
@@ -359,9 +376,8 @@ const exhibitors = [
         category: 'Logistique',
         price: 'Sur devis',
         featured: true,
-        images: ['https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d
-    },
-    products: [
+        images: ['https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600']
+      },
       {
         name: 'Services de Transbordement',
         description: 'Services de transbordement rapide avec temps d\'escale optimisé',

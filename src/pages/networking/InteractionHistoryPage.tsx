@@ -8,3 +8,5 @@ export const InteractionHistoryPage: React.FC = () => {
     </div>
   );
 };
+
+export default InteractionHistoryPage;

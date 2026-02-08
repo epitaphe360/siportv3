@@ -109,6 +109,10 @@ export default function ProtectedRoute({
     // Allow pending_payment users if explicitly permitted OR if they are trying to reach any page
     // (because they might be navigating to payment)
     if (user.status === 'pending_payment') {
+      // Only allow access to payment-related pages
+      if (!allowPendingPayment) {
+        return <Navigate to={ROUTES.VISITOR_PAYMENT} replace />;
+      }
       // Continue to role check below
     } else if (user.status === 'pending') {
       return <Navigate to={ROUTES.PENDING_ACCOUNT} replace />;

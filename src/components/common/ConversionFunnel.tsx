@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
-import { TrendingUp, Users, Eye, Calendar, Download } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 
 interface FunnelStage {
   stage: string;

@@ -85,7 +85,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
     setLoading(true);
     
     try {
-      const domain = extractDomain(validation.normalizedUrl || importUrl);
+      // Domain extraction (used in error messages below via extractDomain)
       
       // Appel au service de scraping
       const generated = await AiAgentService.generate(validation.normalizedUrl || importUrl);
@@ -124,6 +124,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
     try {
       // Préparation des données pour la création du mini-site
       const miniSiteData = {
+        theme: scrapedData.theme || 'modern',
         company: scrapedData.company || t('minisite.default_company'),
         logo: scrapedData.logo || '',
         description: scrapedData.description || '',
@@ -152,7 +153,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
       }
 
       // Création du mini-site avec l'exhibitorId correct
-      const created = await SupabaseService.createMiniSite(exhibitorId, miniSiteData);
+      await SupabaseService.createMiniSite(exhibitorId, miniSiteData);
 
       // Publication automatique
       try {
@@ -202,6 +203,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
     
     try {
       const miniSiteData = {
+        theme: form.theme || 'modern',
         company: form.company || t('minisite.default_company'),
         logo: form.logo || '',
         description: form.description || '',
@@ -227,7 +229,7 @@ export default function MiniSiteWizard({ onSuccess }: MiniSiteWizardProps) {
         console.warn('Utilisation du userId comme exhibitorId:', err);
       }
 
-      const created = await SupabaseService.createMiniSite(exhibitorId, miniSiteData);
+      await SupabaseService.createMiniSite(exhibitorId, miniSiteData);
 
       // Publication automatique
       try {

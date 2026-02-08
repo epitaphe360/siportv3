@@ -3,15 +3,7 @@ import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { Search, Filter, X, Calendar, Clock } from 'lucide-react';
-
-interface Appointment {
-  id: string;
-  startTime: string;
-  status: string;
-  exhibitorId?: string;
-  visitorId?: string;
-  message?: string;
-}
+import type { Appointment } from '../../types';
 
 interface AppointmentFiltersProps {
   appointments: Appointment[];

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
-import { Sparkles, TrendingUp, Calendar, Target, Clock, Award } from 'lucide-react';
+import { Sparkles, TrendingUp, Calendar, Target, Award } from 'lucide-react';
 
 interface Prediction {
   metric: string;

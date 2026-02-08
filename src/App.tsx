@@ -48,8 +48,6 @@ const ModerationPanel = lazyRetry(() => import('./components/admin/ModerationPan
 const MiniSiteEditor = lazyRetry(() => import('./components/minisite/MiniSiteEditor'));
 const NewsPage = lazyRetry(() => import('./pages/NewsPage'));
 const ArticleDetailPage = lazyRetry(() => import('./pages/ArticleDetailPage'));
-const ExhibitorCreationSimulator = lazyRetry(() => import('./components/admin/ExhibitorCreationSimulator'));
-const PartnerCreationForm = lazyRetry(() => import('./components/admin/PartnerCreationForm'));
 const NewsArticleCreationForm = lazyRetry(() => import('./components/admin/NewsArticleCreationForm'));
 const EventCreationPage = lazyRetry(() => import('./pages/admin/EventCreationPage'));
 const EventManagementPage = lazyRetry(() => import('./pages/admin/EventManagementPage'));
@@ -170,7 +168,7 @@ if (import.meta.env.DEV) {
 
 const App = () => {
   const [isChatBotOpen, setIsChatBotOpen] = React.useState(false);
-  const { currentLanguage, getCurrentLanguage } = useLanguageStore();
+  const { currentLanguage } = useLanguageStore();
 
   // Initialize push notifications on app startup
   usePushNotifications();
@@ -246,7 +244,7 @@ const App = () => {
             <Route path={ROUTES.PARTNERS} element={<PartnersPage />} />
             <Route path={ROUTES.PARTNER_DETAIL} element={<PartnerDetailPage />} />
             <Route path={ROUTES.PAVILIONS} element={<PavillonsPage />} />
-            <Route path={ROUTES.METRICS} element={<MetricsPage />} />
+            <Route path={ROUTES.METRICS} element={<ProtectedRoute><MetricsPage /></ProtectedRoute>} />
             <Route path={ROUTES.NETWORKING} element={<NetworkingPage />} />
             <Route path={ROUTES.INTERACTION_HISTORY} element={<ProtectedRoute><InteractionHistoryPage /></ProtectedRoute>} />
             <Route path={ROUTES.NETWORKING_ROOMS} element={<ProtectedRoute><NetworkingRoomsPage /></ProtectedRoute>} />
@@ -306,7 +304,7 @@ const App = () => {
             <Route path={ROUTES.BADGE_DIGITAL} element={<ProtectedRoute><DigitalBadge /></ProtectedRoute>} />
             <Route path={ROUTES.BADGE_SCANNER} element={<ProtectedRoute><BadgeScannerPage /></ProtectedRoute>} />
             {/* FIXED: Permettre aux admins d'accéder au scanner QR (pas seulement 'security') */}
-            <Route path={ROUTES.SECURITY_SCANNER} element={<ProtectedRoute requiredRole={['admin', 'exhibitor', 'partner']}><QRScanner /></ProtectedRoute>} />
+            <Route path={ROUTES.SECURITY_SCANNER} element={<ProtectedRoute requiredRole={['admin', 'exhibitor', 'partner', 'security']}><QRScanner /></ProtectedRoute>} />
             <Route path={ROUTES.PARTNER_UPGRADE} element={<ProtectedRoute requiredRole="partner"><PartnerUpgradePage /></ProtectedRoute>} />
             <Route path={ROUTES.PARTNER_PAYMENT_SELECTION} element={<ProtectedRoute requiredRole="partner"><PartnerPaymentSelectionPage /></ProtectedRoute>} />
             <Route path={ROUTES.PARTNER_BANK_TRANSFER} element={<ProtectedRoute requiredRole="partner"><PartnerBankTransferPage /></ProtectedRoute>} />
@@ -356,7 +354,7 @@ const App = () => {
             <Route path={ROUTES.PRIVACY} element={<PrivacyPage />} />
             <Route path={ROUTES.TERMS} element={<TermsPage />} />
             <Route path={ROUTES.COOKIES} element={<CookiesPage />} />
-            <Route path={ROUTES.AVAILABILITY_SETTINGS} element={<AvailabilitySettingsPage />} />
+            <Route path={ROUTES.AVAILABILITY_SETTINGS} element={<ProtectedRoute><AvailabilitySettingsPage /></ProtectedRoute>} />
             <Route path={ROUTES.VENUE} element={<VenuePage />} />
             <Route path="/hebergement" element={<AccommodationPage />} />
 

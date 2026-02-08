@@ -112,10 +112,10 @@ export default memo(function VisitorDashboard() {
   // NOUVEAU: Filtrage par période (à venir / passés)
   const now = new Date();
   const upcomingAppointments = receivedAppointments.filter(
-    (a) => new Date(a.startTime) > now && a.status !== 'cancelled'
+    (a) => new Date(a.startTime || a.createdAt || 0) > now && a.status !== 'cancelled'
   );
   const pastAppointments = receivedAppointments.filter(
-    (a) => new Date(a.startTime) < now
+    (a) => new Date(a.startTime || a.createdAt || 0) < now
   );
   
   // État pour l'onglet actif d'historique
@@ -152,7 +152,7 @@ export default memo(function VisitorDashboard() {
   }, []);
 
   // Calcul du quota avec la fonction centralisée
-  const userLevel = user?.visitor_level || 'free';
+  const userLevel: string = user?.visitor_level || 'free';
   const remaining = calculateRemainingQuota(userLevel, confirmedAppointments.length);
   
   // Prédictions IA basées sur les statistiques actuelles
@@ -165,7 +165,6 @@ export default memo(function VisitorDashboard() {
   // Données pour les graphiques visiteur - Simulation réaliste si nouveau visiteur pour l'audit
   const safeExhibitorsVisited = stats.exhibitorsVisited || 0;
   const safeConnections = stats.connections || 0;
-  const hasActivity = safeExhibitorsVisited > 0 || safeConnections > 0;
   
   // Données d'activité basées sur les vraies statistiques (distribution sur 7 jours)
   const visitActivityData = [
@@ -231,14 +230,7 @@ export default memo(function VisitorDashboard() {
     return <DashboardSkeleton />;
   }
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('fr-FR', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    }).format(date);
-  };
+
 
   const getUpcomingEvents = () => {
     const now = new Date();
@@ -246,13 +238,15 @@ export default memo(function VisitorDashboard() {
     return events
       .filter(event => registeredEvents.includes(event.id))
       .sort((a, b) => {
-        const aIsFuture = a.date > now;
-        const bIsFuture = b.date > now;
+        const aDate = a.date || new Date(0);
+        const bDate = b.date || new Date(0);
+        const aIsFuture = aDate > now;
+        const bIsFuture = bDate > now;
         // Futurs en premier
         if (aIsFuture && !bIsFuture) return -1;
         if (!aIsFuture && bIsFuture) return 1;
         // Dans chaque groupe, trier par date
-        return a.date.getTime() - b.date.getTime();
+        return aDate.getTime() - bDate.getTime();
       })
       .slice(0, 5);
   };
@@ -262,7 +256,7 @@ export default memo(function VisitorDashboard() {
   };
 
   // Fonction helper pour afficher le nom de l'exposant
-  const getExhibitorName = (appointment: { exhibitor?: { companyName?: string; name?: string }; exhibitorId: string }) => {
+  const getExhibitorName = (appointment: { exhibitor?: { companyName?: string; name?: string }; exhibitorId?: string }) => {
     if (appointment.exhibitor?.companyName) {
       return appointment.exhibitor.companyName;
     }
@@ -584,7 +578,7 @@ export default memo(function VisitorDashboard() {
                 color: 'orange',
                 gradient: 'from-orange-500 to-pink-600'
               }
-            ].map((stat, index) => (
+            ].map((stat) => (
               <motion.div key={stat.label} variants={itemVariants}>
                 <Card className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-transparent hover:border-current group">
                   <div className="flex items-center">
@@ -729,7 +723,7 @@ export default memo(function VisitorDashboard() {
                   title={t('dashboard.interest_areas')}
                   data={interestAreasData}
                   dataKey="value"
-                  color="#3b82f6"
+                  colors={['#3b82f6']}
                   height={300}
                 />
               </div>
@@ -915,7 +909,7 @@ export default memo(function VisitorDashboard() {
                         
                         <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                           {getUpcomingEvents().map((event, index) => {
-                            const isPast = isEventPast(event.date);
+                            const isPast = event.date ? isEventPast(event.date) : false;
                             return (
                               <motion.div
                                 key={event.id}
@@ -1166,7 +1160,7 @@ export default memo(function VisitorDashboard() {
                               </div>
                             ) : (
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {filteredUpcoming.filter(a => a.status === 'confirmed').map((app, index) => (
+                                {filteredUpcoming.filter(a => a.status === 'confirmed').map((app) => (
                                   <motion.div
                                     key={app.id}
                                     className="bg-white/5 border border-white/5 p-4 rounded-2xl group hover:bg-white/10 transition-all"
@@ -1179,7 +1173,7 @@ export default memo(function VisitorDashboard() {
                                         <div>
                                           <p className="font-bold text-sm text-white">{getExhibitorName(app)}</p>
                                           <p className="text-xs text-indigo-200/60">
-                                            {new Date(app.startTime).toLocaleDateString('fr-FR', {
+                                            {new Date(app.startTime || app.createdAt || 0).toLocaleDateString('fr-FR', {
                                               weekday: 'short',
                                               day: 'numeric',
                                               month: 'short',
@@ -1275,7 +1269,7 @@ export default memo(function VisitorDashboard() {
                                         <div>
                                           <p className="font-bold text-sm text-white/60">{getExhibitorName(app)}</p>
                                           <p className="text-xs text-white/40">
-                                            {new Date(app.startTime).toLocaleDateString('fr-FR', {
+                                            {new Date(app.startTime || app.createdAt || 0).toLocaleDateString('fr-FR', {
                                               day: 'numeric',
                                               month: 'short',
                                               year: 'numeric',
@@ -1319,7 +1313,7 @@ export default memo(function VisitorDashboard() {
                                         </div>
                                         <Button
                                           size="sm"
-                                          onClick={() => handleRequestAnother(app.exhibitorId)}
+                                          onClick={() => app.exhibitorId && handleRequestAnother(app.exhibitorId)}
                                           className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white"
                                         >
                                           Relancer

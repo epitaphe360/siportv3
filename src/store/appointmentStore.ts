@@ -351,26 +351,9 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
 
     set({ isLoading: true });
     try {
-      // 🛠️ MOCK: Liste des exposants à forcer comme "complets" pour test
-      const fullExhibitorIds = [
-        '8157eab4-6b7f-46fb-80f9-0e0dc30faeab',
-        '7b52cb23-b734-42e8-b962-2ea002180bde',
-        '4c544867-72f7-4dff-9342-eff08147fcc7',
-        'bf2d59f0-0baf-4dcd-8ed8-68095f52ade7',
-        '4f085daf-d006-4018-81bf-b53bb0c9a8bf'
-      ];
-
       // If SupabaseService is available and supabase is configured, use it
       if (SupabaseService && typeof SupabaseService.getTimeSlotsByUser === 'function') {
-        let slots = await SupabaseService.getTimeSlotsByUser(exhibitorId);
-        
-        if (fullExhibitorIds.includes(exhibitorId)) {
-          slots = slots.map(slot => ({
-            ...slot,
-            available: false,
-            currentBookings: slot.maxBookings
-          }));
-        }
+        const slots = await SupabaseService.getTimeSlotsByUser(exhibitorId);
         
         set({ timeSlots: slots || [], isLoading: false });
         return;
@@ -396,7 +379,7 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
         if (error) throw error;
 
         // Transformer les données pour correspondre à l'interface TimeSlot
-        let transformedSlots = (data || []).map((slot: any) => ({
+        const transformedSlots = (data || []).map((slot: any) => ({
           id: slot.id,
           exhibitorId: slot.exhibitor_id,
           date: slot.slot_date ? new Date(slot.slot_date) : new Date(),
@@ -415,15 +398,6 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
           } : undefined
         }));
 
-        if (fullExhibitorIds.includes(exhibitorId)) {
-          console.log(`Mocking full availability for exhibitor ${exhibitorId}`);
-          transformedSlots = transformedSlots.map(slot => ({
-            ...slot,
-            available: false,
-            currentBookings: slot.maxBookings
-          }));
-        }
-
         set({ timeSlots: transformedSlots, isLoading: false });
         return;
       }
@@ -434,7 +408,8 @@ export const useAppointmentStore = create<AppointmentState>((set, get) => ({
       set({ timeSlots: demoSlots, isLoading: false });
     } catch (err) {
       console.error('Erreur lors de la récupération des créneaux:', err);
-      // En cas d'erreur, charger les données de démonstration
+      // En cas d'erreur, charger les données de démonstration avec avertissement
+      console.warn('⚠️ Fallback vers données de démo suite à une erreur réseau');
       const demoSlots = generateDemoTimeSlots();
       set({ timeSlots: demoSlots, isLoading: false });
     }

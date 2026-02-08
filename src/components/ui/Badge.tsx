@@ -3,7 +3,7 @@ import { clsx } from 'clsx';
 
 interface BadgeProps {
   children: React.ReactNode;
-  variant?: 'default' | 'success' | 'warning' | 'error' | 'info';
+  variant?: 'default' | 'success' | 'warning' | 'error' | 'info' | 'outline';
   size?: 'sm' | 'md';
   className?: string;
 }
@@ -21,7 +21,8 @@ const BadgeComponent: React.FC<BadgeProps> = ({
     success: 'bg-green-100 text-green-800 border border-green-200',
     warning: 'bg-siports-gold/20 text-siports-dark border border-siports-gold/30',
     error: 'bg-red-100 text-red-800 border border-red-200',
-    info: 'bg-siports-primary/10 text-siports-primary border border-siports-primary/20'
+    info: 'bg-siports-primary/10 text-siports-primary border border-siports-primary/20',
+    outline: 'bg-transparent border border-current'
   };
 
   const sizes = {

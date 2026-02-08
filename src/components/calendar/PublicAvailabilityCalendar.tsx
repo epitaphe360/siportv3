@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import {
   Calendar, Plus, Users, MapPin, Video, Globe, Save, X,
-  Clock, Trash2, Edit, ChevronLeft, ChevronRight, Grid3x3, List,
+  Clock, Trash2, Edit, Grid3x3, List,
   Lock, Unlock, Wand2
 } from 'lucide-react';
 import { useTranslation } from '../../hooks/useTranslation';
@@ -31,14 +31,13 @@ export default function PublicAvailabilityCalendar({
   const [isLoading, setIsLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [modalTab, setModalTab] = useState<'single' | 'bulk'>('single');
-  const [selectedWeek, setSelectedWeek] = useState(new Date(`${getMinSlotDate()}T00:00:00`));
   const [viewMode, setViewMode] = useState<'week' | 'list'>('week');
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
   const [newSlot, setNewSlot] = useState({
     date: getMinSlotDate(),
     startTime: '',
     endTime: '',
-    type: 'in-person' as const,
+    type: 'in-person' as 'in-person' | 'virtual' | 'hybrid',
     maxBookings: 5,
     location: '',
     description: ''
@@ -82,7 +81,7 @@ export default function PublicAvailabilityCalendar({
         date: formatDateForInput(selectedSlot.date),
         startTime: selectedSlot.startTime,
         endTime: selectedSlot.endTime,
-        type: selectedSlot.type,
+        type: selectedSlot.type as 'in-person' | 'virtual' | 'hybrid',
         maxBookings: selectedSlot.maxBookings,
         location: selectedSlot.location || '',
         description: ''
@@ -131,32 +130,17 @@ export default function PublicAvailabilityCalendar({
     try {
       const duration = calculateDuration(newSlot.startTime, newSlot.endTime);
 
-      // Normaliser les dates pour comparaison (format YYYY-MM-DD) - SANS conversion UTC
-      const normalizeDate = (date: string | Date): string => {
-        if (date instanceof Date) {
-          // Utiliser getFullYear/Month/Date pour éviter le décalage UTC
-          const year = date.getFullYear();
-          const month = String(date.getMonth() + 1).padStart(2, '0');
-          const day = String(date.getDate()).padStart(2, '0');
-          return `${year}-${month}-${day}`;
-        }
-        // Pour une string, prendre juste la partie date (YYYY-MM-DD)
-        return String(date).split('T')[0];
-      };
-
-      const newSlotDate = normalizeDate(newSlot.date);
-
       // Note: On permet les créneaux identiques (mêmes horaires) car plusieurs personnes
       // peuvent recevoir simultanément au même stand
       // Pas de validation de chevauchement ou duplication
 
-      let result;
+      let result: TimeSlot | undefined;
       
       if (selectedSlot) {
         // MODE MODIFICATION: Update existing slot
         console.log('🔄 Modification du créneau:', selectedSlot.id);
         result = await SupabaseService.updateTimeSlot(selectedSlot.id, {
-          date: newSlot.date,
+          date: newSlot.date as unknown as Date,
           startTime: newSlot.startTime,
           endTime: newSlot.endTime,
           duration,
@@ -166,13 +150,13 @@ export default function PublicAvailabilityCalendar({
         });
         
         toast.success('✅ Créneau modifié avec succès');
-        setTimeSlots(prev => prev.map(s => s.id === selectedSlot.id ? result : s));
+        if (result) setTimeSlots(prev => prev.map(s => s.id === selectedSlot.id ? result! : s));
       } else {
         // MODE CRÉATION: Create new slot
         console.log('➕ Création d\'un nouveau créneau');
         result = await SupabaseService.createTimeSlot({
-          userId,
-          date: newSlot.date,
+          exhibitorId: userId,
+          date: newSlot.date as unknown as Date,
           startTime: newSlot.startTime,
           endTime: newSlot.endTime,
           duration,
@@ -182,7 +166,7 @@ export default function PublicAvailabilityCalendar({
         });
 
         toast.success('✅ Créneau ajouté avec succès');
-        setTimeSlots(prev => [...prev, result]);
+        if (result) setTimeSlots(prev => [...prev, result!]);
       }
       
       resetForm();
@@ -265,36 +249,11 @@ export default function PublicAvailabilityCalendar({
     }
   };
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'virtual': return 'from-blue-500 to-blue-600';
-      case 'in-person': return 'from-green-500 to-green-600';
-      case 'hybrid': return 'from-purple-500 to-purple-600';
-      default: return 'from-gray-500 to-gray-600';
-    }
-  };
 
-  const getTypeBadgeColor = (type: string): 'success' | 'info' | 'warning' | 'default' => {
-    switch (type) {
-      case 'virtual': return 'info';
-      case 'in-person': return 'success';
-      case 'hybrid': return 'warning';
-      default: return 'default';
-    }
-  };
 
-  const getWeekDays = (date: Date) => {
-    const week = [];
-    const startOfWeek = new Date(date);
-    startOfWeek.setDate(date.getDate() - date.getDay() + 1); // Lundi
 
-    for (let i = 0; i < 7; i++) {
-      const day = new Date(startOfWeek);
-      day.setDate(startOfWeek.getDate() + i);
-      week.push(day);
-    }
-    return week;
-  };
+
+
 
   const weekDays = [
     new Date('2026-04-01T00:00:00'),
@@ -473,7 +432,6 @@ export default function PublicAvailabilityCalendar({
                 parseLocalDate(slot.date).toDateString() === day.toDateString()
               );
               const isToday = day.toDateString() === new Date().toDateString();
-              const isPast = day < new Date() && !isToday;
 
               return (
                 <motion.div

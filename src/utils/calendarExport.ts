@@ -3,7 +3,7 @@
  * Génère des fichiers .ics pour export vers Google Calendar, Outlook, etc.
  */
 
-import { Appointment } from '@/store/appointmentStore';
+import { Appointment } from '@/types';
 
 /**
  * Formate une date au format iCalendar (YYYYMMDDTHHmmssZ)

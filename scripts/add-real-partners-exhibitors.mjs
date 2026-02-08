@@ -240,76 +240,7 @@ const exhibitorsData = [
         {
           type: 'about',
           content: {
-     ,
-    minisite: {
-      theme: 'elegant',
-      custom_colors: {
-        primaryColor: '#0077be',
-        secondaryColor: '#005a8c',
-        accentColor: '#00c4cc',
-        fontFamily: 'Inter'
-      },
-      sections: [
-        {
-          type: 'hero',
-          content: {
-            title: 'Flexifoot - Solutions Portuaires Flottantes',
-            subtitle: 'Infrastructure marine modulaire et durable',
-            ctaText: 'Découvrez nos solutions',
-            ctaLink: '#solutions',
-            backgroundImage: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1920&q=80'
-          }
-        },
-        {
-          type: 'about',
-          content: {
-            title: 'Leader Européen des Structures Flottantes',
-            description: 'Flexifoot Systems conçoit et fabrique des structures modulaires flottantes innovantes depuis plus de 25 ans. Nos solutions s\'adaptent aux conditions marines les plus difficiles et respectent les normes environnementales les plus strictes.',
-            features: [
-              'Pontons modulaires et flexibles',
-              'Quais flottants personnalisables',
-              'Marinas et plateformes multi-usages',
-              'Technologies écologiques avancées'
-            ],
-            stats: [
-              { number: '25+', label: 'Ans d\'expérience' },
-              { number: '200+', label: 'Projets complétés' },
-              { number: '50+', label: 'Ports partenaires' },
-              { number: '15', label: 'Pays européens' }
-            ]
-          }
-        },
-        {
-          type: 'features',
-          content: {
-            title: 'Nos Solutions',
-            items: [
-              {
-                title: 'Pontons Modulaires',
-                description: 'Structures flottantes modularisées adaptables à toutes les géométries portuaires'
-              },
-              {
-                title: 'Quais Flottants',
-                description: 'Quais dynamiques pour accommoder les variations de marée et les conditions marines'
-              },
-              {
-                title: 'Marinas Flottantes',
-                description: 'Complexes portuaires complets avec service et infrastructures intégrées'
-              }
-            ]
-          }
-        },
-        {
-          type: 'contact',
-          content: {
-            title: 'Contact',
-            email: 'info@flexifoot.nl',
-            phone: '+31 20 598 2100',
-            address: 'Zeeburgerstraat 23, 1018 AE Amsterdam, Netherlands'
-          }
-        }
-      ]
-    }       title: 'Leader Mondial des Polymères',
+            title: 'Leader Mondial des Polymères',
             description: 'Depuis plus de 60 ans, igus développe des composants techniques innovants en plastique haute performance. Notre expertise dans les environnements marins corrosifs fait de nous le partenaire idéal pour la manutention containerisée et l\'automatisation portuaire.',
             features: [
               'Chaînes porte-câbles (E-Chains)',
@@ -378,6 +309,75 @@ const exhibitorsData = [
       primaryColor: '#0077be', 
       secondaryColor: '#005a8c', 
       accentColor: '#00c4cc' 
+    },
+    minisite: {
+      theme: 'elegant',
+      custom_colors: {
+        primaryColor: '#0077be',
+        secondaryColor: '#005a8c',
+        accentColor: '#00c4cc',
+        fontFamily: 'Inter'
+      },
+      sections: [
+        {
+          type: 'hero',
+          content: {
+            title: 'Flexifoot - Solutions Portuaires Flottantes',
+            subtitle: 'Infrastructure marine modulaire et durable',
+            ctaText: 'Découvrez nos solutions',
+            ctaLink: '#solutions',
+            backgroundImage: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1920&q=80'
+          }
+        },
+        {
+          type: 'about',
+          content: {
+            title: 'Leader Européen des Structures Flottantes',
+            description: 'Flexifoot Systems conçoit et fabrique des structures modulaires flottantes innovantes depuis plus de 25 ans. Nos solutions s\'adaptent aux conditions marines les plus difficiles et respectent les normes environnementales les plus strictes.',
+            features: [
+              'Pontons modulaires et flexibles',
+              'Quais flottants personnalisables',
+              'Marinas et plateformes multi-usages',
+              'Technologies écologiques avancées'
+            ],
+            stats: [
+              { number: '25+', label: 'Ans d\'expérience' },
+              { number: '200+', label: 'Projets complétés' },
+              { number: '50+', label: 'Ports partenaires' },
+              { number: '15', label: 'Pays européens' }
+            ]
+          }
+        },
+        {
+          type: 'features',
+          content: {
+            title: 'Nos Solutions',
+            items: [
+              {
+                title: 'Pontons Modulaires',
+                description: 'Structures flottantes modularisées adaptables à toutes les géométries portuaires'
+              },
+              {
+                title: 'Quais Flottants',
+                description: 'Quais dynamiques pour accommoder les variations de marée et les conditions marines'
+              },
+              {
+                title: 'Marinas Flottantes',
+                description: 'Complexes portuaires complets avec service et infrastructures intégrées'
+              }
+            ]
+          }
+        },
+        {
+          type: 'contact',
+          content: {
+            title: 'Contact',
+            email: 'info@flexifoot.nl',
+            phone: '+31 20 598 2100',
+            address: 'Zeeburgerstraat 23, 1018 AE Amsterdam, Netherlands'
+          }
+        }
+      ]
     }
   }
 ];
