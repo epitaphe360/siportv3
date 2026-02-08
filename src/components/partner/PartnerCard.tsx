@@ -154,23 +154,23 @@ const PartnerCard: React.FC<PartnerCardProps> = memo(({
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-start space-x-3 flex-1 min-w-0">
               <OptimizedImage
                 src={partner.logo}
                 alt={partner.name}
-                className="h-12 w-12 rounded-lg object-cover"
+                className="h-12 w-12 rounded-lg object-cover flex-shrink-0 mt-1"
                 fallback="/partner-placeholder.svg"
               />
-              <div className="min-w-0">
-                <h3 className="font-semibold text-gray-900 text-lg truncate">
+              <div className="min-w-0 flex-1">
+                <h3 className="font-semibold text-gray-900 text-lg leading-tight line-clamp-2" title={partner.name}>
                   {partner.name}
                 </h3>
                 {partner.sector && (
-                  <p className="text-sm text-gray-500 truncate">{partner.sector}</p>
+                  <p className="text-sm text-gray-500 truncate mt-1">{partner.sector}</p>
                 )}
               </div>
             </div>
-            <div className="flex items-center space-x-1 flex-shrink-0">
+            <div className="flex items-center space-x-1 flex-shrink-0 ml-2">
               {partner.featured && (
                 <Star className="h-4 w-4 text-yellow-500 fill-current" />
               )}
