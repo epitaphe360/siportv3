@@ -22,7 +22,14 @@ export const ConversionFunnel: React.FC<ConversionFunnelProps> = ({
 
   const stagesWithRates = useMemo(() => {
     return stages.map((stage, index) => {
-      const rate = index === 0 ? 100 : Math.round((stage.count / stages[0].count) * 100);
+      // Avoid division by zero: if first stage is 0, rate is 0 unless it's the first stage itself
+      let rate = 0;
+      if (index === 0) {
+        rate = 100;
+      } else if (stages[0].count > 0) {
+        rate = Math.round((stage.count / stages[0].count) * 100);
+      }
+      
       const dropoff = index > 0 ? stages[index - 1].count - stage.count : 0;
       const dropoffRate = index > 0 && stages[index - 1].count > 0
         ? Math.round((dropoff / stages[index - 1].count) * 100)

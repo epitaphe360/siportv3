@@ -83,16 +83,34 @@ const partnersEnrichedData = {
     key_figures: { revenue: '10M+', clients: '50+', employees: '180' }
   },
   'Tanger Med Logistics': {
-    partner_type: 'Logistics',
-    sector: 'Port Services',
-    contact_info: { email: 'logistics@tangermed.ma', phone: '+212 5 34 11 22 33', country: 'Morocco' },
-    partnership_level: 'Platinum',
-    mission: 'Être le leader logistique de la région méditerranéenne',
-    expertise: ['Logistique Portuaire', 'Fret', 'Manutention', 'Entreposage'],
-    employees: '400-600',
-    established_year: 2007,
-    certifications: ['ISO 9001', 'ISO 14001'],
-    key_figures: { revenue: '80M+', clients: '200+', employees: '500' }
+  'Tanger Med Special Agency': {
+    partner_type: 'Port & Logistics Operator',
+    sector: 'Opérations Portuaires, Logistique & Zones Industrielles',
+    contact_info: { email: 'contact@tangermed.ma', phone: '+212 539 349 250', country: 'Morocco' },
+    partnership_level: 'Strategic',
+    mission: 'Opérer et développer des plateformes portuaires, logistiques et industrielles de classe mondiale',
+    expertise: [
+      'Terminal management - 25 terminaux conteneurs et vracs',
+      'Manutention portuaire - 187 millions de tonnes annuelles',
+      'Conteneurisation - 11,44 millions EVP manutentionnés',
+      'Logistique portuaire intégrée',
+      'Zones d\'activités industrielles - 3 000 ha',
+      'Services d\'ingénierie spécialisée',
+      'Distribution d\'énergie et eau',
+      'Services aux passagers maritimes'
+    ],
+    employees: '1400+',
+    established_year: 2002,
+    certifications: ['ISO 9001', 'ISO 14001', 'OHSAS 18001'],
+    key_figures: { 
+      annual_volume: '187M tonnes', 
+      containers_handled: '11.44M EVP',
+      zones: '3000 Ha',
+      enterprises: '1400+',
+      terminals: '25',
+      ports_operated: '11',
+      revenue: '15.8B EUR'
+    }
   },
   'Global Trade Finance Corp': {
     partner_type: 'Finance',

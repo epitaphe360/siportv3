@@ -223,24 +223,24 @@ const exhibitors = [
   {
     id: randomUUID(),
     user_id: randomUUID(),
-    email: 'port@tangermed.ma',
+    email: 'contact@tangermed.ma',
     password: 'TangerMed2026!',
     name: 'Tanger Med',
-    company_name: 'Tanger Med Port Authority',
+    company_name: 'Tanger Med Special Agency',
     category: 'port-industry',
-    sector: 'Hub Logistique',
-    description: 'Tanger Med est le premier port en Afrique et en Méditerranée. Véritable hub logistique mondial, il connecte plus de 180 ports internationaux et offre des services portuaires de classe mondiale.',
-    logo_url: 'https://www.tmpa.ma/wp-content/uploads/2021/01/logo-tmpa.png',
+    sector: 'Hub Logistique & Services Portuaires',
+    description: 'Groupe Tanger Med opère et développe des plateformes portuaires, logistiques et industrielles. Premier port en Afrique et Méditerranée avec 11 ports et 25 terminaux à conteneurs et vracs, traitant 187 millions de tonnes et 11,44 millions de conteneurs EVP. Plus de 3 000 ha de zones d\'activités aménagées accueillant 1 400 entreprises dans l\'automobile, aéronautique, textile, agroalimentaire et logistique.',
+    logo_url: 'https://www.tangermed.ma/wp-content/uploads/2021/01/logo-tmsa.png',
     website: 'https://www.tangermed.ma',
     verified: true,
     featured: true,
     stand_number: 'B-201',
     stand_area: 54,
     contact_info: {
-      name: 'Hassan Abkari',
-      email: 'port@tangermed.ma',
-      phone: '+212 5 39 33 70 00',
-      address: 'Zone Franche Tanger Med, Tanger, Maroc'
+      name: 'Tanger Med Special Agency',
+      email: 'contact@tangermed.ma',
+      phone: '+212 539 349 250',
+      address: 'Route de Rabat, 90000 Tanger, Maroc'
     },
     minisite: {
       theme: 'elegant',
@@ -264,55 +264,102 @@ const exhibitors = [
         {
           type: 'about',
           content: {
-            title: 'Un Hub de Classe Mondiale',
-            description: 'Tanger Med est stratégiquement situé sur le Détroit de Gibraltar, à seulement 14 km de l\'Europe. Notre complexe portuaire intègre terminaux à conteneurs, zone franche et services logistiques intégrés.',
+            title: 'Premier Port d\'Afrique et Méditerranée',
+            description: 'Le Groupe Tanger Med, par sa Tanger Med Special Agency, opère le complexe portuaire le plus important du continent. Stratégiquement positionné sur le Détroit de Gibraltar à 14 km de l\'Europe, Tanger Med connecte plus de 180 ports internationaux. Le groupe gère également 3 000 ha de zones d\'activités économiques avec plus de 1 400 entreprises installées.',
             features: [
-              'Capacité de 9 millions EVP',
-              'Connecté à 180+ ports mondiaux',
-              'Zone franche intégrée',
-              'Services 24/7'
+              '11 ports opérés',
+              '25 terminaux à conteneurs et vracs',
+              '187 millions de tonnes traitées',
+              '11,44 millions de conteneurs EVP manutentionnés',
+              '3 000 ha de zones d\'activités',
+              '1 400 entreprises installées'
             ],
             stats: [
               { number: '#1', label: 'Port Africain' },
-              { number: '9M', label: 'EVP Capacité' },
-              { number: '180+', label: 'Ports connectés' },
-              { number: '1000+', label: 'Entreprises ZF' }
+              { number: '187M', label: 'Tonnes traitées' },
+              { number: '11.44M', label: 'Conteneurs EVP' },
+              { number: '1.4K', label: 'Entreprises ZA' }
             ]
           }
         },
         {
-          type: 'products',
+          type: 'features',
           content: {
-            title: 'Nos Terminaux',
+            title: 'Nos Domaines d\'Expertise',
             items: [
               {
-                name: 'TC1 - APM Terminals',
-                description: 'Terminal à conteneurs exploité par APM Terminals',
-                image: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=600'
+                title: 'Terminal management',
+                description: 'Solution complète et personnalisée adaptée à vos besoins spécifiques et enjeux métiers.'
               },
               {
-                name: 'TC2 - Eurogate',
-                description: 'Terminal moderne géré par Eurogate Tanger',
-                image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600'
+                title: 'Manutention',
+                description: 'Solution complète et personnalisée adaptée à vos besoins spécifiques et enjeux métiers.'
               },
               {
-                name: 'Zone Franche',
-                description: 'Plus de 900 entreprises industrielles et logistiques',
-                image: 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=600'
+                title: 'Conteneurs',
+                description: 'Solution complète et personnalisée adaptée à vos besoins spécifiques et enjeux métiers.'
               }
             ]
           }
         },
         {
-          type: 'contact',
-          content: {
-            title: 'Contact',
-            email: 'port@tangermed.ma',
-            phone: '+212 5 39 33 70 00',
-            address: 'Zone Portuaire Tanger Med, Maroc'
-          }
-        }
-      ]
+          type: 'proServices & Filiales du Groupe',
+            items: [
+              {
+                name: 'Tanger Med Port Authority',
+                description: 'Opération et gestion des terminaux à conteneurs et vracs',
+                image: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=600'
+              },
+              {
+                name: 'Tanger Med Zones',
+                description: '3 000 ha de zones d\'activités industrielles et logistiques',
+                image: 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=600'
+              },
+              {
+                name: 'Marsa Maroc',
+                description: 'Gestion de 25 terminaux à conteneurs et vracs dans le Maroc',
+                image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600'
+              },
+              {
+                name: 'Tanger Med Engineering',
+                description: 'Ingénierie spécialisée et maîtrise d\'œuvre',
+                image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600'
+              },
+              {
+                name: 'Tanger Med Utilities',
+                desccontact@tangermed.ma',
+            phone: '+212 539 349 250',
+            address: 'Route de Rabat, 90000 Tanger, Maroc',
+            fax: '+212 539 943 427',
+            website: 'https://www.tangermed.ma
+              {
+                name: 'Tanger Med Passagers',
+                description: 'Terminal passagers et services maritimes de voyageurs',
+                image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19
+                description: 'Plus de 900 entreprises industrielles et logistiques',
+                image: 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=600'
+              }Portuaires Intégrés',
+        description: 'Services complets de manutention de conteneurs, vracs et passagers avec capacité de 187 millions de tonnes annuels',
+        category: 'Services',
+        price: 'Sur devis',
+        featured: true,
+        images: ['https://images.unsplash.com/photo-1605745341112-85968b19335b?w=600']
+      },
+      {
+        name: 'Zones d\'Activités Industrielles',
+        description: '3 000 ha aménagées accueillant 1 400 entreprises dans les secteurs automobile, aéronautique, textile, agroalimentaire et logistique',
+        category: 'Infrastructure',
+        price: 'Location',
+        featured: true,
+        images: ['https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=600']
+      },
+      {
+        name: 'Logistique Portuaire',
+        description: 'Services complets de logistique portuaire, stockage et distribution à valeur ajoutée',
+        category: 'Logistique',
+        price: 'Sur devis',
+        featured: true,
+        images: ['https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d
     },
     products: [
       {

@@ -53,9 +53,15 @@ export const AIPredictions: React.FC<AIPredictionsProps> = ({
       <div className="space-y-4">
         {predictions.map((prediction, index) => {
           const growth = prediction.predicted - prediction.current;
-          const growthPercentage = prediction.current === 0 
-            ? 100 
-            : Math.round((growth / prediction.current) * 100);
+          
+          let growthPercentage = 0;
+          if (prediction.current > 0) {
+            growthPercentage = Math.round((growth / prediction.current) * 100);
+          } else if (prediction.predicted > 0) {
+            growthPercentage = 100; // New items = 100% "growth" or purely new
+          } else {
+            growthPercentage = 0; // 0 to 0 is 0% growth
+          }
 
           return (
             <div 

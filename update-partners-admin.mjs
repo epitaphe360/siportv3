@@ -84,16 +84,25 @@ const enrichedData = {
   },
   'Tanger Med Logistics': {
     partner_type: 'Partenaire Stratégique',
-    sector: 'Opérations Portuaires',
-    description: 'Logistique intégrée pour le port de Tanger',
-    mission: 'Excellente exécution logistique à Tanger Med',
-    expertise: ['Terminal management', 'Manutention', 'Conteneurs'],
-    employees: 600,
-    established_year: 2007,
-    contact_info: { email: 'ops@tangermed.ma', phone: '+212 5 39 34 56 78' },
-    certifications: ['ISO 9001', 'OHSAS 18001'],
-    key_figures: { ceo: 'Hassan Al Houari', headquarters: 'Tanger' },
-    logo_url: 'https://eqjoqgpbxhsfgcovipgu.supabase.co/storage/v1/object/public/assets/partners/tangmed-logistics.png'
+    sector: 'Opérations Portuaires & Logistique Intégrée',
+    description: 'Groupe Tanger Med opère et développe des plateformes portuaires, logistiques et industrielles. Premier port en Afrique et Méditerranée avec 11 ports et 25 terminaux.',
+    mission: 'Connecter le Maroc au monde avec excellence et innovation portuaire',
+    expertise: [
+      'Terminal management - 25 terminaux conteneurs et vracs',
+      'Manutention - 187 millions de tonnes traitées annuellement',
+      'Conteneurs - 11,44 millions d\'EVP manutentionnés',
+      'Zones d\'activités industrielles - 3 000 ha aménagées',
+      'Services logistiques à valeur ajoutée',
+      'Tanger Med Engineering - Ingénierie spécialisée',
+      'Tanger Med Utilities - Distribution énergie et eau',
+      'Tanger Med Passagers - Services voyageurs'
+    ],
+    employees: 1400,
+    established_year: 2002,
+    contact_info: { email: 'contact@tangermed.ma', phone: '+212 539 349 250' },
+    certifications: ['ISO 9001', 'ISO 14001', 'OHSAS 18001'],
+    key_figures: { ceo: 'Tanger Med Special Agency', headquarters: 'Tanger', annual_volume: '187M tonnes' },
+    logo_url: 'https://www.tangermed.ma/wp-content/uploads/2021/01/logo-tmsa.png'
   },
   'Global Trade Finance Corp': {
     partner_type: 'Partenaire Financier',

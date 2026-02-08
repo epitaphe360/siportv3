@@ -102,20 +102,20 @@ const exhibitorsData = [
     minisite_colors: { primaryColor: '#1a5f7a', secondaryColor: '#57c5b6', accentColor: '#159895' }
   },
   {
-    company_name: 'Tanger Med Port Authority',
-    email: 'port@tangermed.ma',
+    company_name: 'Tanger Med Special Agency',
+    email: 'contact@tangermed.ma',
     category: 'port-industry',
-    sector: 'Hub Logistique',
-    description: 'Tanger Med est le premier port en Afrique et en Méditerranée. Véritable hub logistique mondial, il connecte plus de 180 ports internationaux.',
-    logo_url: 'https://www.tmpa.ma/wp-content/uploads/2021/01/logo-tmpa.png',
+    sector: 'Hub Logistique & Services Portuaires',
+    description: 'Groupe Tanger Med opère et développe des plateformes portuaires, logistiques et industrielles. Premier port en Afrique et Méditerranée avec 11 ports et 25 terminaux à conteneurs et vracs, traitant 187 millions de tonnes et 11,44 millions de conteneurs EVP. Plus de 3 000 ha de zones d\'activités aménagées accueillant 1 400 entreprises.',
+    logo_url: 'https://www.tangermed.ma/wp-content/uploads/2021/01/logo-tmsa.png',
     website: 'https://www.tangermed.ma',
     stand_number: 'B-201',
     stand_area: 54,
     contact_info: {
-      name: 'Hassan Abkari',
-      email: 'port@tangermed.ma',
-      phone: '+212 5 39 33 70 00',
-      address: 'Zone Franche Tanger Med, Tanger, Maroc'
+      name: 'Tanger Med Special Agency',
+      email: 'contact@tangermed.ma',
+      phone: '+212 539 349 250',
+      address: 'Route de Rabat, 90000 Tanger, Maroc'
     },
     minisite_theme: 'elegant',
     minisite_colors: { primaryColor: '#0d4c92', secondaryColor: '#59c1bd', accentColor: '#a0e4cb' }

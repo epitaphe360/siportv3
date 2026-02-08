@@ -122,12 +122,20 @@ const partnersData = {
     employees: '200-350'
   },
   'Tanger Med Logistics': {
-    email: 'logistics@tangermed.ma',
-    phone: '+212 5 34 11 22 33',
+    email: 'contact@tangermed.ma',
+    phone: '+212 539 349 250',
     tier: 'platinum',
-    services: ['Logistique', 'Fret', 'Manutention'],
+    services: [
+      'Terminal management - Gestion de 25 terminaux',
+      'Manutention portuaire - 187 millions de tonnes',
+      'Conteneurs - 11,44 millions EVP',
+      'Logistique intégrée à valeur ajoutée',
+      'Zones industrielles - 1 400 entreprises',
+      'Ingénierie et construction',
+      'Services d\'utilités'
+    ],
     industry: 'Logistique Portuaire',
-    employees: '400-600'
+    employees: '1400+'
   },
   'Mediterranean Shipping Alliance': {
     email: 'info@medshipping.org',
